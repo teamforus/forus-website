@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="nl">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta name="description" content="Forus test app" />
+    <!-- <title>Forus test app</title> -->
+    <title><%= title %></title>
+    <base href="<%= base %>">
+</head>
+
+<body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+    <script>
+        var env_data = JSON.parse('<%= env_data %>');
+    </script>
+    <script src="<%= script %>"></script>
+</body>
+
+</html>

@@ -1,0 +1,123 @@
+{
+  "name": "forus",
+  "version": "1.0.0",
+  "description": "",
+  "private": true,
+  "main": "main.js",
+  "scripts": {
+    "start": "webpack serve --mode development",
+    "watch": "webpack --watch --mode development",
+    "build": "webpack --mode production"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@apideck/better-ajv-errors": "^0.3.3",
+    "@babel/core": "^7.16.0",
+    "@babel/plugin-proposal-class-properties": "^7.16.0",
+    "@babel/plugin-transform-flow-strip-types": "^7.16.0",
+    "@babel/preset-env": "^7.16.4",
+    "@babel/preset-react": "^7.16.0",
+    "@babel/preset-typescript": "^7.16.0",
+    "@mdi/react": "^1.5.0",
+    "@testing-library/jest-dom": "^5.16.4",
+    "@testing-library/react": "^13.2.0",
+    "@testing-library/user-event": "^13.5.0",
+    "@types/jest": "^27.0.3",
+    "@types/lodash": "^4.14.182",
+    "@types/node": "^16.11.9",
+    "@types/papaparse": "^5.3.1",
+    "@types/qrcode": "^1.4.1",
+    "@types/react": "^17.0.36",
+    "@types/react-datepicker": "^4.4.1",
+    "@types/react-dom": "^18.0.6",
+    "@types/react-router-dom": "^5.3.2",
+    "@types/sortablejs": "^1.13.0",
+    "@typescript-eslint/eslint-plugin": "^5.40.0",
+    "@typescript-eslint/parser": "^5.4.0",
+    "babel-eslint": "^10.0.3",
+    "babel-loader": "^8.2.3",
+    "babel-plugin-syntax-trailing-function-commas": "^6.22.0",
+    "babelify": "^10.0.0",
+    "browserify": "^17.0.0",
+    "copy-webpack-plugin": "^11.0.0",
+    "css-loader": "^6.5.1",
+    "eslint": "^8.3.0",
+    "eslint-config-fbjs": "^4.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-babel": "^5.3.1",
+    "eslint-plugin-eslint-plugin": "^4.0.2",
+    "eslint-plugin-flowtype": "^8.0.3",
+    "eslint-plugin-jest": "^25.2.4",
+    "eslint-plugin-jsx-a11y": "^6.5.1",
+    "eslint-plugin-no-for-of-loops": "^1.0.1",
+    "eslint-plugin-no-function-declare-after-return": "^1.1.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-react": "^7.27.1",
+    "eslint-plugin-react-hooks": "^4.3.0",
+    "html-loader": "^3.0.1",
+    "html-webpack-plugin": "^5.5.0",
+    "prettier": "^2.4.1",
+    "resolve-url-loader": "^4.0.0",
+    "sass": "^1.52.0",
+    "sass-loader": "^12.3.0",
+    "style-loader": "^3.3.1",
+    "styled-components": "^5.3.5",
+    "svg-inline-loader": "^0.8.2",
+    "tmp": "^0.2.1",
+    "ts-loader": "^9.2.6",
+    "typescript": "^4.6.4",
+    "url-loader": "^4.1.1",
+    "watchify": "^4.0.0",
+    "webpack": "^5.75.0",
+    "webpack-cli": "^4.9.1",
+    "webpack-dev-server": "^4.5.0",
+    "worker-loader": "^3.0.8"
+  },
+  "dependencies": {
+    "@babel/polyfill": "^7.12.1",
+    "@dnd-kit/core": "^6.0.5",
+    "@dnd-kit/sortable": "^7.0.1",
+    "@dnd-kit/utilities": "^3.2.0",
+    "@mdi/js": "^7.1.96",
+    "clean-webpack-plugin": "^4.0.0",
+    "colors": "^1.4.0",
+    "date-fns": "^2.29.3",
+    "lodash": "^4.17.21",
+    "prop-types": "^15.8.1",
+    "query-string": "^7.1.1",
+    "react": "^18.1.0",
+    "react-dom": "^18.1.0",
+    "react-router-dom": "^6.3.0",
+    "use-query-params": "^1.2.3"
+  },
+  "browser": {
+    "original-fs": true
+  },
+  "rules": {
+    "react/react-in-jsx-scope": "off"
+  },
+  "env": {
+    "browser": true,
+    "es2021": true,
+    "jest": true
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
