@@ -154,7 +154,7 @@ export default function ExternalFunds() {
         <Fragment>
             <div className="card-heading">
                 <div className="flex-row">
-                    <div className="flex-col">Fundsen</div>
+                    <div className="flex-col">Fondsen</div>
                     <div className="flex-col text-right form">
                         <div className="flex-row">
                             <div className="flex-col flex-grow">
