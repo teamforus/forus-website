@@ -6,7 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#000000" />
     <meta name="description" content="Forus test app" />
-    <!-- <title>Forus test app</title> -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:300,400,400i,500,600,700">
+    <link href="<%= libs.mdi.css %>" rel="stylesheet">
+    <link href="<%= libs.summernote.css %>" rel="stylesheet">
+    <link rel="shortcut icon" type="image/x-icon" href="<%= favicon %>">
     <title><%= title %></title>
     <base href="<%= base %>">
 </head>
@@ -14,10 +17,28 @@
 <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
-    <script>
-        var env_data = JSON.parse('<%= env_data %>');
-    </script>
+    <script>const env_data = JSON.parse('<%= JSON.stringify(env_data) %>');</script>
+    <script src="<%= libs.jquery.js %>"></script>
+    <script src="<%= libs.summernote.js %>"></script>
     <script src="<%= script %>"></script>
+
+    <% if (env_data?.config?.chat_id) { %>
+        <script>
+            (() => {
+                window.$zoho = window.$zoho || {};
+                window.$zoho.salesiq = window.$zoho.salesiq || { widgetcode: `<%= env_data?.config?.chat_id %>`, values: {}, ready: function () { } };
+                const d = document;
+                const s = d.createElement("script");
+                s.type = "text/javascript";
+                s.id = "zsiqscript";
+                s.defer = true;
+                s.src = "https://salesiq.zoho.eu/widget";
+                const t = d.getElementsByTagName("script")[0];
+                t.parentNode.insertBefore(s, t);
+                d.write("<div id='zsiqwidget'></div>");
+            })();
+        </script>
+    <% } %>
 </body>
 
 </html>
