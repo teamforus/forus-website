@@ -12,10 +12,11 @@ import Auth2FAProvider from '../../props/models/Auth2FAProvider';
 import QrCode from '../elements/qr-code/QrCode';
 import FormError from '../elements/forms/errors/FormError';
 import PincodeControl from '../elements/forms/controls/PincodeControl';
-import Auth2FAInfoBox from '../elements/auth2fa-info-box/Auth2FAInfoBox';
 import PhoneControl from '../elements/forms/controls/PhoneControl';
 import useAssetUrl from '../../hooks/useAssetUrl';
 import useTimer from '../../hooks/useTimer';
+import { ResponseError } from '../../props/ApiResponses';
+import Auth2FAInfoBox from '../elements/auth2fa-info-box/Auth2FAInfoBox';
 
 export default function Modal2FASetup({
     modal,
@@ -122,10 +123,10 @@ export default function Modal2FASetup({
                 setAuth2FA(res.data?.data);
                 goToStep('provider_select');
             },
-            (res) => {
+            (res: ResponseError) => {
                 pushDanger(res.data?.message || 'Unknown error.');
 
-                if (res.status == '429') {
+                if (res.status == 429) {
                     cancel();
                 }
             },

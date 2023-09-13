@@ -2,17 +2,15 @@ import React, { useCallback, useEffect, useState } from 'react';
 import Auth2FAInfoBox from '../../elements/auth2fa-info-box/Auth2FAInfoBox';
 import { useNavigate } from 'react-router-dom';
 import { getStateRouteUrl } from '../../../modules/state_router/Router';
-import Identity2FAState from '../../../props/models/Identity2FAState';
-import { useIdentity2FAService } from '../../../services/Identity2FAService';
-import usePushDanger from '../../../hooks/usePushDanger';
 import useOpenModal from '../../../hooks/useOpenModal';
 import Modal2FASetup from '../../modals/Modal2FASetup';
 import useAssetUrl from '../../../hooks/useAssetUrl';
+import useAuthIdentity2FAState from '../../../hooks/useAuthIdentity2FAState';
 
 export default function Auth2FA() {
     const [step, setStep] = useState(null);
     const [hidePane, setHidePanel] = useState(null);
-    const [auth2FAState, setAuth2FAState] = useState<Identity2FAState>(null);
+    const auth2FAState = useAuthIdentity2FAState();
 
     const [providerTypes, setProviderTypes] = useState<
         Array<{
@@ -25,8 +23,6 @@ export default function Auth2FA() {
     const assetUrl = useAssetUrl();
     const openModal = useOpenModal();
     const navigate = useNavigate();
-    const pushDanger = usePushDanger();
-    const identity2FAService = useIdentity2FAService();
 
     const goDashboard = useCallback(() => {
         return navigate(getStateRouteUrl('organizations'));
@@ -49,17 +45,6 @@ export default function Auth2FA() {
         },
         [auth2FAState, goDashboard, openModal],
     );
-
-    const fetchState = useCallback(() => {
-        identity2FAService.status().then(
-            (res) => setAuth2FAState(res.data.data),
-            (err) => pushDanger('Error!', err.data?.message || 'Unknown error.'),
-        );
-    }, [identity2FAService, pushDanger]);
-
-    useEffect(() => {
-        fetchState();
-    }, [fetchState]);
 
     useEffect(() => {
         if (!auth2FAState) {

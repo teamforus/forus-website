@@ -142,7 +142,9 @@ export default function Employees() {
                     adminEmployees={adminEmployees}
                     organization={activeOrganization}
                     onSubmit={(employee) => {
-                        setActiveOrganization({ ...activeOrganization, identity_address: employee.identity_address });
+                        setActiveOrganization(
+                            Object.assign(activeOrganization, { identity_address: employee.identity_address }),
+                        );
                     }}
                 />
             ));

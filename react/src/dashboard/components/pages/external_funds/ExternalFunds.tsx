@@ -131,7 +131,7 @@ export default function ExternalFunds() {
                 .then(
                     (res) => {
                         pushSuccess('Opgeslagen!');
-                        setActiveOrganization(res.data.data);
+                        setActiveOrganization(Object.assign(organization, res.data.data));
                     },
                     (res) => {
                         pushDanger('Error!', res.data.message);

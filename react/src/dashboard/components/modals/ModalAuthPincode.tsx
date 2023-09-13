@@ -10,6 +10,7 @@ import { useIdentityService } from '../../services/IdentityService';
 import ModalNotification from './ModalNotification';
 import useOpenModal from '../../hooks/useOpenModal';
 import useAssetUrl from '../../hooks/useAssetUrl';
+import { ResponseError } from '../../props/ApiResponses';
 
 export default function ModalAuthPincode({ modal }: { modal: ModalState }) {
     const openModal = useOpenModal();
@@ -39,7 +40,7 @@ export default function ModalAuthPincode({ modal }: { modal: ModalState }) {
                     />
                 ));
             },
-            (res) => {
+            (res: ResponseError) => {
                 form.setErrors({
                     ...res.data.errors,
                     ...(res.status == 404 ? { auth_code: ['Onbekende autorisatie code'] } : {}),

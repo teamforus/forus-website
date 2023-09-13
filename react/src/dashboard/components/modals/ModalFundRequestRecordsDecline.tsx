@@ -35,7 +35,7 @@ export default function ModalFundRequestRecordsDecline({
                     modal.close();
                     onSubmitted();
                 },
-                (res) => {
+                (res: ResponseError) => {
                     form.setIsLocked(false);
 
                     if (res.status === 422) {

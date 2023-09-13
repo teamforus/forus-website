@@ -14,6 +14,8 @@ import useSetProgress from '../../../hooks/useSetProgress';
 import useOpenModal from '../../../hooks/useOpenModal';
 import usePushSuccess from '../../../hooks/usePushSuccess';
 import usePushDanger from '../../../hooks/usePushDanger';
+import useAuthIdentity2FAState from '../../../hooks/useAuthIdentity2FAState';
+import Auth2FARestriction from '../../elements/auth2fa-restriction/Auth2FARestriction';
 
 export default function SecuritySessions() {
     const openModal = useOpenModal();
@@ -21,6 +23,7 @@ export default function SecuritySessions() {
     const pushSuccess = usePushSuccess();
     const setProgress = useSetProgress();
     const navigate = useNavigate();
+    const authIdentity2FAState = useAuthIdentity2FAState();
 
     const { signOut } = useContext(authContext);
     const { clearAll } = useContext(mainContext);
@@ -132,10 +135,24 @@ export default function SecuritySessions() {
     }, [clearAll, navigate, openModal, pushDanger, pushSuccess, sessionService, setProgress, signOut]);
 
     useEffect(() => {
-        fetchSessions();
-    }, [fetchSessions]);
+        if (authIdentity2FAState?.restrictions?.sessions?.restricted == false) {
+            fetchSessions();
+        }
+    }, [fetchSessions, authIdentity2FAState?.restrictions?.sessions?.restricted]);
 
-    if (!sessions) {
+    if (authIdentity2FAState?.restrictions?.sessions?.restricted !== false) {
+        return (
+            <Auth2FARestriction
+                type={'sessions'}
+                items={authIdentity2FAState?.restrictions?.sessions.funds}
+                itemName={'name'}
+                itemThumbnail={'logo.sizes.thumbnail'}
+                defaultThumbnail={'fund-thumbnail'}
+            />
+        );
+    }
+
+    if (!sessions || !authIdentity2FAState) {
         return <LoadingCard />;
     }
 

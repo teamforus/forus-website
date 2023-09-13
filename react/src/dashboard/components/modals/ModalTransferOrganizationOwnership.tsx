@@ -10,6 +10,7 @@ import { useTranslation } from 'react-i18next';
 import { useOrganizationService } from '../../services/OrganizationService';
 import SelectControl from '../elements/select-control/SelectControl';
 import SelectControlOptions from '../elements/select-control/templates/SelectControlOptions';
+import { ResponseError } from '../../props/ApiResponses';
 
 export default function ModalTransferOrganizationOwnership({
     modal,
@@ -43,7 +44,9 @@ export default function ModalTransferOrganizationOwnership({
                 .transferOwnership(organization.id, values)
                 .then(
                     () => onSuccess(),
-                    (res) => form.setErrors(res.status == '429' ? { email: [res.data.message] } : res.data.errors),
+                    (res: ResponseError) => {
+                        form.setErrors(res.status == 429 ? { email: [res.data.message] } : res.data.errors);
+                    },
                 )
                 .finally(() => form.setIsLocked(false));
         },
