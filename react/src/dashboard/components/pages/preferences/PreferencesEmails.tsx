@@ -108,8 +108,8 @@ export default function PreferencesEmails() {
             openModal((modal) => (
                 <ModalDangerZone
                     modal={modal}
-                    title={`Confirmation`}
-                    description={`Are you sure you want to remove this email "${email.email}"?`}
+                    title={`Pas op!`}
+                    description={`Weet u zeker dat u het volgende emailadres wilt verwijderen "${email.email}"?`}
                     buttonSubmit={{
                         text: 'Confirm',
                         onClick: () => {
