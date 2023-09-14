@@ -26,10 +26,11 @@ import Organization from '../../props/models/Organization';
 import { useAnnouncementService } from '../../services/AnnouncementService';
 import Announcement from '../../props/models/Announcement';
 import useAuthIdentity from '../../hooks/useAuthIdentity';
-import  useAppConfigs  from '../../hooks/useAppConfigs';
+import useAppConfigs from '../../hooks/useAppConfigs';
 import useOpenModal from '../../hooks/useOpenModal';
 import useAssetUrl from '../../hooks/useAssetUrl';
 import useThumbnailUrl from '../../hooks/useThumbnailUrl';
+import useAuthIdentity2FAState from '../../hooks/useAuthIdentity2FAState';
 
 interface IdentityMenuItemProps {
     url?: string;
@@ -63,6 +64,7 @@ export const LayoutHeader = () => {
     const openModal = useOpenModal();
     const appConfigs = useAppConfigs();
     const authIdentity = useAuthIdentity();
+    const authIdentity2FAState = useAuthIdentity2FAState();
     const assetUrl = useAssetUrl();
     const thumbnailUrl = useThumbnailUrl();
 
@@ -186,11 +188,13 @@ export const LayoutHeader = () => {
                                         url={getStateRouteUrl('preferences-notifications')}
                                         icon={<IconNotifications />}
                                     />
-                                    <IdentityMenuItem
-                                        name="Beveiliging"
-                                        url={getStateRouteUrl('security-2fa')}
-                                        icon={<IconSecurity />}
-                                    />
+                                    {(activeOrganization.allow_2fa_restrictions || authIdentity2FAState.required) && (
+                                        <IdentityMenuItem
+                                            name="Beveiliging"
+                                            url={getStateRouteUrl('security-2fa')}
+                                            icon={<IconSecurity />}
+                                        />
+                                    )}
                                     <IdentityMenuItem
                                         name="Sessies"
                                         url={getStateRouteUrl('security-sessions')}

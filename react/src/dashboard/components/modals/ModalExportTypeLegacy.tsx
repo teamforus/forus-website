@@ -32,7 +32,7 @@ export default function ModalExportTypeLegacy({
             <div className="modal-backdrop" onClick={modal.close} />
             <div className="modal-window form">
                 <div className="modal-close mdi mdi-close" onClick={modal.close} />
-                <div className="modal-header">{t('modals.modal_transfer_organization_ownership.title')}</div>
+                <div className="modal-header">{t('modals.modal_voucher_export.title')}</div>
 
                 <div className="modal-body modal-body-visible">
                     <div className="modal-section">

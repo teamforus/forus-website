@@ -464,9 +464,8 @@ export default function FundRequest() {
                 pushSuccess('Gelukt!', 'U heeft zich afgemeld van deze aanvraag.');
                 reloadRequest();
             },
-            (res) => {
+            () => {
                 pushDanger('Mislukt!', 'U kunt u zelf niet van deze aanvraag afhalen.');
-                console.error(res);
             },
         );
     }, [

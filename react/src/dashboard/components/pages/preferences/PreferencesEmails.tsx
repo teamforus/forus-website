@@ -9,6 +9,8 @@ import LoadingCard from '../../elements/loading-card/LoadingCard';
 import useOpenModal from '../../../hooks/useOpenModal';
 import useSetProgress from '../../../hooks/useSetProgress';
 import usePushSuccess from '../../../hooks/usePushSuccess';
+import useAuthIdentity2FAState from '../../../hooks/useAuthIdentity2FAState';
+import Auth2FARestriction from '../../elements/auth2fa-restriction/Auth2FARestriction';
 
 export default function PreferencesEmails() {
     const openModal = useOpenModal();
@@ -18,6 +20,7 @@ export default function PreferencesEmails() {
     const [showForm, setShowForm] = useState(false);
     const [emails, setEmails] = useState<PaginationData<IdentityEmail>>(null);
     const identityEmailService = useIdentityEmailsService();
+    const authIdentity2FAState = useAuthIdentity2FAState();
 
     const form = useFormBuilder({ email: '' }, (values) => {
         setProgress(0);
@@ -30,7 +33,7 @@ export default function PreferencesEmails() {
                     setShowForm(false);
                     form.setState('success');
                 },
-                (res) => {
+                (res: ResponseError) => {
                     form.setErrors(res.status === 429 ? { email: [res.data.message] } : res.data.errors);
                     form.setIsLocked(false);
                 },
@@ -134,10 +137,24 @@ export default function PreferencesEmails() {
     }, [form]);
 
     useEffect(() => {
-        fetchEmails();
-    }, [fetchEmails]);
+        if (authIdentity2FAState?.restrictions?.emails?.restricted == false) {
+            fetchEmails();
+        }
+    }, [fetchEmails, authIdentity2FAState?.restrictions?.emails?.restricted]);
 
-    if (!emails) {
+    if (authIdentity2FAState?.restrictions?.emails?.restricted !== false) {
+        return (
+            <Auth2FARestriction
+                type={'emails'}
+                items={authIdentity2FAState?.restrictions?.emails.funds}
+                itemName={'name'}
+                itemThumbnail={'logo.sizes.thumbnail'}
+                defaultThumbnail={'fund-thumbnail'}
+            />
+        );
+    }
+
+    if (!emails || !authIdentity2FAState) {
         return <LoadingCard />;
     }
 

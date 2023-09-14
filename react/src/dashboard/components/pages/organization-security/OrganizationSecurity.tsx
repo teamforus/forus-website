@@ -11,11 +11,13 @@ import usePushDanger from '../../../hooks/usePushDanger';
 import { mainContext } from '../../../contexts/MainContext';
 import useSetProgress from '../../../hooks/useSetProgress';
 import CheckboxControl from '../../elements/forms/controls/CheckboxControl';
+import { authContext } from '../../../contexts/AuthContext';
 
 export default function OrganizationSecurity() {
     const activeOrganization = useActiveOrganization();
     const [viewType, setViewType] = useState('employees');
     const organizationService = useOrganizationService();
+    const { updateIdentity } = useContext(authContext);
     const { setActiveOrganization } = useContext(mainContext);
 
     const pushDanger = usePushDanger();
@@ -75,9 +77,10 @@ export default function OrganizationSecurity() {
             organizationService
                 .update(activeOrganization.id, form.values)
                 .then(
-                    (e) => {
+                    (res) => {
                         pushSuccess('Opgeslagen!');
-                        setActiveOrganization(e.data.data);
+                        setActiveOrganization(Object.assign(activeOrganization, res.data.data));
+                        updateIdentity();
                     },
                     (err) => {
                         pushDanger('Error!', err.data?.message || 'Onbekende foutmelding.');

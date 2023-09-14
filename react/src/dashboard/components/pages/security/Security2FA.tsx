@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useIdentity2FAService } from '../../../services/Identity2FAService';
 import Identity2FAState from '../../../props/models/Identity2FAState';
 import useOpenModal from '../../../hooks/useOpenModal';
@@ -11,12 +11,14 @@ import usePushDanger from '../../../hooks/usePushDanger';
 import useSetProgress from '../../../hooks/useSetProgress';
 import Modal2FASetup from '../../modals/Modal2FASetup';
 import Modal2FADeactivate from '../../modals/Modal2FADeactivate';
+import { authContext } from '../../../contexts/AuthContext';
 
 export default function Security2FA() {
     const openModal = useOpenModal();
     const pushDanger = usePushDanger();
     const pushSuccess = usePushSuccess();
     const setProgress = useSetProgress();
+    const { updateIdentity } = useContext(authContext);
     const identity2FAService = useIdentity2FAService();
     const [auth2FAState, setAuth2FAState] = useState<Identity2FAState>(null);
 
@@ -56,11 +58,14 @@ export default function Security2FA() {
         identity2FAService
             .status()
             .then(
-                (res) => setAuth2FAState(res.data.data),
+                (res) => {
+                    updateIdentity();
+                    setAuth2FAState(res.data.data);
+                },
                 (err) => pushDanger('Error!', err.data?.message || 'Unknown error.'),
             )
             .finally(() => setProgress(100));
-    }, [identity2FAService, setProgress, pushDanger]);
+    }, [identity2FAService, setProgress, pushDanger, updateIdentity]);
 
     const setupAuth2FA = useCallback(
         (type: string) => {
