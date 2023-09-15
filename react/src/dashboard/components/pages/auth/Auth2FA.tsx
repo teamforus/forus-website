@@ -107,7 +107,7 @@ export default function Auth2FA() {
                                             />
                                         </div>
                                         <div className="sign_up-option-details">
-                                            <div className="sign_up-option-title">{provider_type.subtitle}</div>
+                                            <div className="sign_up-option-title">{provider_type.title}</div>
                                             <div className="sign_up-option-description">{provider_type.subtitle}</div>
                                         </div>
                                     </div>
