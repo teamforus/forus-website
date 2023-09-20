@@ -36,7 +36,6 @@
     @import 'blocks/block-external-validators';
     @import 'blocks/block-danger_zone';
     @import 'blocks/block-sessions';
-    @import 'blocks/block-products';
     @import 'blocks/block-providers';
     @import 'blocks/block-breadcrumbs';
     @import 'blocks/block-provider-product';
@@ -5250,10 +5249,10 @@ body {
     &.block-label-tabs {
         display: flex;
         margin-left: 10px;
-        border-top-left-radius: calc(var(--boarder-radius) / 2);
-        border-top-right-radius: calc(var(--boarder-radius) / 2);
-        border-bottom-left-radius: calc(var(--boarder-radius) / 2);
-        border-bottom-right-radius: calc(var(--boarder-radius) / 2);
+        border-top-left-radius: calc(var(--border-radius) / 2);
+        border-top-right-radius: calc(var(--border-radius) / 2);
+        border-bottom-left-radius: calc(var(--border-radius) / 2);
+        border-bottom-right-radius: calc(var(--border-radius) / 2);
     
         .label-tab {
             background: #fff;
@@ -5288,13 +5287,13 @@ body {
             }
 
             &:first-child {
-                border-top-left-radius: calc(var(--boarder-radius) / 2);
-                border-bottom-left-radius: calc(var(--boarder-radius) / 2);
+                border-top-left-radius: calc(var(--border-radius) / 2);
+                border-bottom-left-radius: calc(var(--border-radius) / 2);
             }
     
             &:last-child {
-                border-top-right-radius: calc(var(--boarder-radius) / 2);
-                border-bottom-right-radius: calc(var(--boarder-radius) / 2);
+                border-top-right-radius: calc(var(--border-radius) / 2);
+                border-bottom-right-radius: calc(var(--border-radius) / 2);
                 border-right: 1px solid var(--border-color);
             }
     
@@ -6368,7 +6367,7 @@ body {
 
             .toggle-item {
                 border: 1px dashed #bfbfbf;
-                border-radius: calc(var(--boarder-radius) / 2);
+                border-radius: calc(var(--border-radius) / 2);
                 align-items: center;
                 background: #f6f9fc;
                 padding: 20px;
@@ -6606,7 +6605,7 @@ body {
             line-height: 28px;
             font-size: 16px;
             font-weight: 500;
-            border-radius: calc(var(--boarder-radius) / 2);
+            border-radius: calc(var(--border-radius) / 2);
 
             &.button-disabled, [disabled] {
                 background: #eff2f4;

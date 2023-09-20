@@ -9,7 +9,7 @@ import useAuthIdentity2FAState from '../../../hooks/useAuthIdentity2FAState';
 
 export default function Auth2FA() {
     const [step, setStep] = useState(null);
-    const [hidePane, setHidePanel] = useState(null);
+    const [paneHidden, setPaneHidden] = useState(null);
     const auth2FAState = useAuthIdentity2FAState();
 
     const [providerTypes, setProviderTypes] = useState<
@@ -28,9 +28,17 @@ export default function Auth2FA() {
         return navigate(getStateRouteUrl('organizations'));
     }, [navigate]);
 
+    const hidePane = useCallback(() => {
+        setPaneHidden(true);
+    }, []);
+
+    const showPane = useCallback(() => {
+        setPaneHidden(false);
+    }, []);
+
     const auth2FA = useCallback(
         (type: string, auth = false) => {
-            setHidePanel(true);
+            hidePane();
 
             openModal((modal) => (
                 <Modal2FASetup
@@ -38,12 +46,12 @@ export default function Auth2FA() {
                     type={type}
                     modal={modal}
                     onReady={goDashboard}
-                    onCancel={() => setHidePanel(false)}
+                    onCancel={showPane}
                     auth2FAState={auth2FAState}
                 />
             ));
         },
-        [auth2FAState, goDashboard, openModal],
+        [auth2FAState, goDashboard, openModal, hidePane, showPane],
     );
 
     useEffect(() => {
@@ -79,7 +87,7 @@ export default function Auth2FA() {
     return (
         <div className="block block-sign_up block-sign_up-fixed">
             <div className="block-wrapper">
-                {step == 'setup' && !hidePane && (
+                {step == 'setup' && !paneHidden && (
                     <div className="sign_up-pane">
                         <div className="sign_up-pane-body">
                             <div className="sign_up-pane-heading text-strong">Tweefactorauthenticatie instellen</div>
@@ -127,7 +135,7 @@ export default function Auth2FA() {
                     </div>
                 )}
 
-                {step == 'auth' && !hidePane && (
+                {step == 'auth' && !paneHidden && (
                     <div className="sign_up-pane">
                         <div className="sign_up-pane-body">
                             <div className="sign_up-pane-heading text-strong">Tweefactorauthenticatie</div>
