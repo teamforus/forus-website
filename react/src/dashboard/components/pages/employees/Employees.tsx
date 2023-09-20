@@ -246,7 +246,7 @@ export default function Employees() {
                 <div className="card-section">
                     <div className="card-block card-block-table">
                         <div className="table-wrapper">
-                            <table className="table">
+                            <table className="table table-highlight">
                                 <thead>
                                     <tr>
                                         <th>{t('organization_employees.labels.email')}</th>

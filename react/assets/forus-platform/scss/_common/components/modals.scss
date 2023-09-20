@@ -42,7 +42,7 @@
         background: #f6f9fc;
         width: 1200px;
         max-width: 100%;
-        border-radius: calc(var(--boarder-radius) / 2);
+        border-radius: calc(var(--border-radius) / 2);
         display: inline-block;
         min-height: 100px;
         margin: 0 auto;
@@ -331,7 +331,7 @@
                 font: 500 13px/16px var(--base-font);
                 color: #292B39;
                 border: 1px solid var(--border-color);
-                border-radius: var(--boarder-radius);
+                border-radius: var(--border-radius);
 
                 em {
                     font-size: 22px;
@@ -365,7 +365,7 @@
         width: 1200px;
         max-width: 100%;
         background: #f7f9fc;
-        border-radius: var(--boarder-radius);
+        border-radius: var(--border-radius);
         min-height: 100px;
         overflow: hidden;
         margin: 0 auto;
@@ -616,7 +616,7 @@
                         font: 500 14px var(--base-font);
                         color: #282b39;
                         border: 1px solid #d4d9dd;
-                        border-radius: calc(var(--boarder-radius) / 2);
+                        border-radius: calc(var(--border-radius) / 2);
                         position: relative;
                         transition: .4s;
                         background: transparent;

@@ -223,6 +223,7 @@
                     display: block;
                     width: 70px;
                     border-radius: var(--border-radius);
+                    border: 1px solid var(--border-color);
                 }
 
                 .td-boolean {
@@ -261,7 +262,7 @@
                 &.td-grow {
                     width: 100%;
                 }
-                
+
                 &.td-paddless {
                     padding: 0;
                 }
@@ -334,6 +335,14 @@
                 vertical-align: top;
             }
         }
+
+        &.table-highlight {
+            tr:hover {
+                td {
+                    background-color: #f6f8f9;
+                }
+            }
+        }
     }
 
     &.table-wrapper-scroll {
@@ -353,7 +362,7 @@
         float: left;
         color: #282b39;
         font: 500 13px/36px var(--base-font);
-        
+
         &.table-pagination-counter-sm {
             font: 500 13px/30px var(--base-font);
         }

@@ -25,15 +25,18 @@ export default function SelectControlOptions<T>({
     const input = useRef(null);
 
     return (
-        <div className={'select-control ' + (className ? className : '')}>
-            <div
-                className={['select-control-input', showOptions ? 'options' : ''].filter((item) => item).join(' ')}
-                aria-haspopup="listbox"
-                aria-expanded={showOptions}
-                aria-labelledby={controlId}>
+        <div
+            className={'select-control ' + (className ? className : '')}
+            role="button"
+            aria-haspopup="listbox"
+            aria-expanded={showOptions}
+            aria-labelledby={controlId}
+            aria-controls={`${controlId}_options`}>
+            <div className={['select-control-input', showOptions ? 'options' : ''].filter((item) => item).join(' ')}>
                 {/* Placeholder */}
                 <label
                     htmlFor={controlId}
+                    role="presentation"
                     className="select-control-search form-control"
                     onClick={searchOption}
                     style={{ display: showOptions && allowSearch ? 'none' : 'block' }}
@@ -75,6 +78,8 @@ export default function SelectControlOptions<T>({
                 {showOptions && (
                     <ClickOutside
                         className="select-control-options"
+                        id={`${controlId}_options`}
+                        role="listbox"
                         onScroll={onOptionsScroll}
                         onClick={null}
                         onClickOutside={(e) => {
