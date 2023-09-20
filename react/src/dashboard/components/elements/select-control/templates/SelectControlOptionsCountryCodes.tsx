@@ -25,12 +25,14 @@ export default function SelectControlOptionsCountryCodes<T>({
     const input = useRef(null);
 
     return (
-        <div className={'select-control select-control-country-codes ' + (className ? className : '')}>
-            <div
-                className={['select-control-input', showOptions ? 'options' : ''].filter((item) => item).join(' ')}
-                aria-haspopup="listbox"
-                aria-expanded={showOptions}
-                aria-labelledby={controlId}>
+        <div
+            className={'select-control select-control-country-codes ' + (className ? className : '')}
+            role="button"
+            aria-haspopup="listbox"
+            aria-expanded={showOptions}
+            aria-labelledby={controlId}
+            aria-controls={`${controlId}_options`}>
+            <div className={['select-control-input', showOptions ? 'options' : ''].filter((item) => item).join(' ')}>
                 {/* Placeholder */}
                 <label
                     htmlFor={controlId}
@@ -75,6 +77,8 @@ export default function SelectControlOptionsCountryCodes<T>({
                         </div>
                         <ClickOutside
                             className="select-control-options"
+                            id={`${controlId}_options`}
+                            role="listbox"
                             onScroll={onOptionsScroll}
                             onClick={null}
                             onClickOutside={(e) => {

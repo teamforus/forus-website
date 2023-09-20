@@ -29,7 +29,13 @@ export default function SelectControlOptionsOrganization<T>({
     const input = useRef(null);
 
     return (
-        <div className={'select-control select-control-organizations ' + (className ? className : '')}>
+        <div
+            className={'select-control select-control-organizations ' + (className ? className : '')}
+            role="button"
+            aria-haspopup="listbox"
+            aria-expanded={showOptions}
+            aria-labelledby={controlId}
+            aria-controls={`${controlId}_options`}>
             <div className={['select-control-input', showOptions ? 'options' : ''].filter((item) => item).join(' ')}>
                 {/* Placeholder */}
                 <div
@@ -93,7 +99,9 @@ export default function SelectControlOptionsOrganization<T>({
                             e.stopPropagation();
                             setShowOptions(false);
                         }}
-                        className="select-control-options-group">
+                        className="select-control-options-group"
+                        id={`${controlId}_options`}
+                        role="listbox">
                         <div className="select-control-options" onScroll={onOptionsScroll}>
                             {optionsFiltered.slice(0, visibleCount)?.map((option) => (
                                 <div

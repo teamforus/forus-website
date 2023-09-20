@@ -12,6 +12,8 @@ export default function ClickOutside(props: {
     style?: object;
     onKeyDown?: () => void;
     children: ReactNode;
+    id?: string;
+    role?: string;
 }) {
     const ref = useRef(null);
     const [body] = useState(document.querySelector('body'));
@@ -45,6 +47,8 @@ export default function ClickOutside(props: {
 
     return (
         <div
+            id={props.id}
+            role={props.role}
             className={props.className}
             onClick={props.onClick}
             onContextMenu={props.onContextMenu}
