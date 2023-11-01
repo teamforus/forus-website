@@ -44,7 +44,7 @@ const MainProvider = ({ children }: { children: React.ReactElement }) => {
                 .list({
                     dependency: 'permissions,logo',
                     order_by: 'is_validator',
-                    order_by_dir: 'desc',
+                    order_dir: 'desc',
                     per_page: 500,
                 })
                 .then((res) => {
