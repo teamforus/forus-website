@@ -11,8 +11,7 @@ export default interface FundRequest {
         has_person_bsn_api?: boolean;
         criteria: Array<{
             id: number;
-            record_type_key: string;
-            operator: '>' | '<' | '=';
+            operator: '>' | '>=' | '<' | '<=' | '=';
             value?: string;
             show_attachment: boolean;
             title?: string;
@@ -23,7 +22,11 @@ export default interface FundRequest {
                 organization_id: number;
                 organization_validator_id: number;
             }>;
-            record_type_name?: string;
+            record_type?: {
+                key: string;
+                name: string;
+                options: Array<{ value: string; name: string }>;
+            };
             is_valid?: boolean;
         }>;
     };

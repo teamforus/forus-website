@@ -17,7 +17,6 @@ import ModalNotification from '../../modals/ModalNotification';
 import FundRequestRecord from '../../../props/models/FundRequestRecord';
 import { ModalState } from '../../../modules/modals/context/ModalContext';
 import useAuthIdentity from '../../../hooks/useAuthIdentity';
-import useAuthIdentityEmployee from '../../../hooks/useAuthIdentityEmployee';
 import { PaginationData, ResponseError } from '../../../props/ApiResponses';
 import ModalFundRequestClarify from '../../modals/ModalFundRequestClarify';
 import ModalFundRequestRecordDecline from '../../modals/ModalFundRequestRecordDecline';
@@ -66,9 +65,7 @@ export default function FundRequest() {
     const employeeService = useEmployeeService();
     const activeOrganization = useActiveOrganization();
     const fundRequestService = useFundRequestValidatorService();
-
     const authIdentity = useAuthIdentity();
-    const authEmployee = useAuthIdentityEmployee();
 
     const isValidatorsSupervisor = useMemo(
         () => activeOrganization?.permissions.includes('manage_validators'),
@@ -128,8 +125,9 @@ export default function FundRequest() {
 
             const isSponsorEmployee = activeOrganization.id === fundRequest.fund.organization_id;
             const hasAssignableRecords = assignableRecords.length > 0;
+
             const hasAssignableEmployees =
-                allowed_employees.filter((employee) => employee.id !== authEmployee?.id).length > 0;
+                allowed_employees.filter((employee) => employee.identity_address !== authIdentity?.address).length > 0;
 
             const isAssigned = assignedPendingRecords.length > 0 || assignedDisregardedRecords.length > 0;
             const hasPartnerBSN = recordTypes.includes('partner_bsn');
@@ -167,15 +165,23 @@ export default function FundRequest() {
                 isPending && isValidatorsSupervisor && hasPendingInternallyAssignedRecords;
 
             fundRequest.fund.criteria = fundRequest.fund.criteria.map((criterion) => {
-                const operator = { '>': 'moet meer dan', '<': 'moet minder dan' }[criterion.operator] || 'moet';
-                const value = `${criterion.record_type_key === 'net_worth' ? '€' : ''}${criterion.value}`;
+                const operators = {
+                    '>': 'moet meer dan',
+                    '>=': 'more or equal',
+                    '<': 'moet minder dan',
+                    '<=': 'less or equal',
+                    '*': 'elke waarde',
+                };
 
-                return { ...criterion, description: `${criterion.record_type_name} ${operator} ${value} zijn.` };
+                const operator = operators[criterion.operator] || 'moet';
+                const value = `${criterion.record_type.key === 'net_worth' ? '€' : ''}${criterion.value}`;
+
+                return { ...criterion, description: `${criterion.record_type.name} ${operator} ${value} zijn.` };
             });
 
             return { ...fundRequest };
         },
-        [activeOrganization, authEmployee, authIdentity, isValidatorsSupervisor],
+        [activeOrganization, authIdentity, isValidatorsSupervisor],
     );
 
     const fetchEmployees = useCallback(() => {
@@ -860,9 +866,21 @@ export default function FundRequest() {
                                                 </td>
                                             )}
                                             <td>{record.record_type.name}</td>
-                                            <td className={record.value !== null ? 'text-muted' : ''}>
-                                                {record?.value || 'Niet beschikbaar'}
-                                            </td>
+
+                                            {record?.record_type.type != 'select' && (
+                                                <td className={record.value !== null ? 'text-muted' : ''}>
+                                                    {record?.value || 'Niet beschikbaar'}
+                                                </td>
+                                            )}
+
+                                            {record?.record_type.type == 'select' && (
+                                                <td className={record.value !== null ? 'text-muted' : ''}>
+                                                    {record?.record_type.options?.find(
+                                                        (option) => option.value == record?.value,
+                                                    )?.name || 'Niet beschikbaar'}
+                                                </td>
+                                            )}
+
                                             <td>{record.created_at_locale}</td>
                                             <td>
                                                 <div

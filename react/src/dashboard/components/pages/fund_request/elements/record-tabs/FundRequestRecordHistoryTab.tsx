@@ -1,15 +1,15 @@
 import FundRequestRecord from '../../../../../props/models/FundRequestRecord';
 import { useTranslation } from 'react-i18next';
-import React from 'react';
+import React, { Fragment } from 'react';
 
-export default function FundRequestRecordHistoryTab({ fundRequestRecord }: { fundRequestRecord: FundRequestRecord }) {
+export default function FundRequestRecordHistoryTab({ record }: { record: FundRequestRecord }) {
     const { t } = useTranslation();
 
     return (
         <div className="card">
             <div className="card-header">
                 <div className="card-title pull-left">
-                    {t('validation_request_details.labels.history', { count: fundRequestRecord.history.length })}
+                    {t('validation_request_details.labels.history', { count: record.history.length })}
                 </div>
             </div>
             <div className="card-section">
@@ -25,10 +25,29 @@ export default function FundRequestRecordHistoryTab({ fundRequestRecord }: { fun
                                         {t('validation_request_details.labels.date_changed')}
                                     </th>
                                 </tr>
-                                {fundRequestRecord.history?.map((log) => (
+                                {record.history?.map((log) => (
                                     <tr key={log.id} className="light">
-                                        <td className="text-strong">{log.new_value}</td>
-                                        <td className="text-muted">{log.old_value}</td>
+                                        {record?.record_type.type != 'select' && (
+                                            <Fragment>
+                                                <td className="text-strong">{log.new_value}</td>
+                                                <td className="text-muted">{log.old_value}</td>
+                                            </Fragment>
+                                        )}
+
+                                        {record?.record_type.type == 'select' && (
+                                            <Fragment>
+                                                <td className="text-strong">
+                                                    {record?.record_type.options?.find(
+                                                        (option) => option.value == log.new_value,
+                                                    )?.name || 'Niet beschikbaar'}
+                                                </td>
+                                                <td className="text-muted">
+                                                    {record?.record_type.options?.find(
+                                                        (option) => option.value == log.old_value,
+                                                    )?.name || 'Niet beschikbaar'}
+                                                </td>
+                                            </Fragment>
+                                        )}
                                         <td className="text-strong">{log.employee_email}</td>
                                         <td className="text-right">
                                             <strong className="text-primary">{log.created_at_locale}</strong>
@@ -41,7 +60,7 @@ export default function FundRequestRecordHistoryTab({ fundRequestRecord }: { fun
                 </div>
             </div>
 
-            {fundRequestRecord.history.length == 0 && (
+            {record.history.length == 0 && (
                 <div className="card-section">
                     <div className="card-subtitle text-center">Geen historie.</div>
                 </div>
