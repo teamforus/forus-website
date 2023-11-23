@@ -7,7 +7,7 @@ packages/react-art/npm/lib
 # Build products
 dist
 .eslintrc.js
-.prettierrc
+.prettierrc.js
 webpack.config.js
 custom.d.ts
 react/env.js

@@ -10,6 +10,8 @@ import { useFundRequestValidatorService } from '../../services/FundRequestValida
 import Organization from '../../props/models/Organization';
 import FundRequestRecord from '../../props/models/FundRequestRecord';
 import FormHint from '../elements/forms/errors/FormHint';
+import SelectControlOptions from '../elements/select-control/templates/SelectControlOptions';
+import SelectControl from '../elements/select-control/SelectControl';
 
 export default function ModalFundRequestRecordEdit({
     modal,
@@ -34,6 +36,7 @@ export default function ModalFundRequestRecordEdit({
     );
 
     const [recordNumeric] = useState(fundRequestRecord.record_type.type == 'number');
+    const [recordSelect] = useState(fundRequestRecord.record_type.type == 'select');
     const [initialValue] = useState(recordNumeric ? parseFloat(fundRequestRecord.value) : fundRequestRecord.value);
 
     const form = useFormBuilder({ value: initialValue }, (values) => {
@@ -68,7 +71,7 @@ export default function ModalFundRequestRecordEdit({
             <form className="modal-window form" onSubmit={form.submit}>
                 <a className="mdi mdi-close modal-close" onClick={modal.close} role="button" />
                 <div className="modal-header">Eigenschap aanpassen</div>
-                <div className="modal-body">
+                <div className="modal-body modal-body-visible">
                     <div className="modal-section form">
                         <div className="row">
                             <div className="col col-lg-8 col-lg-offset-2 col-lg-12">
@@ -77,7 +80,7 @@ export default function ModalFundRequestRecordEdit({
                                         {fundRequestRecord.record_type.name}
                                     </label>
 
-                                    {recordNumeric ? (
+                                    {recordNumeric && (
                                         <input
                                             className="form-control"
                                             value={form.values.value}
@@ -85,7 +88,20 @@ export default function ModalFundRequestRecordEdit({
                                             onChange={(e) => form.update({ value: e.target.value })}
                                             step={1}
                                         />
-                                    ) : (
+                                    )}
+
+                                    {recordSelect && (
+                                        <SelectControl
+                                            value={form.values.value}
+                                            propKey={'value'}
+                                            onChange={(value: string | number) => form.update({ value })}
+                                            options={criterion.record_type.options}
+                                            allowSearch={false}
+                                            optionsComponent={SelectControlOptions}
+                                        />
+                                    )}
+
+                                    {!recordNumeric && !recordSelect && (
                                         <input
                                             className="form-control"
                                             value={form.values.value}
