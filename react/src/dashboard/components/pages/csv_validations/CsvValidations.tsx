@@ -8,7 +8,7 @@ export default function CsvValidations() {
     // /csv-validation/funds
     useEffect(() => {
         if (appConfigs) {
-            document.location = appConfigs.fronts.url_sponsor + '/csv-validation/funds';
+            document.location = appConfigs.fronts.url_sponsor + 'csv-validation/funds';
         }
     }, [appConfigs]);
     return <></>;
