@@ -56,7 +56,7 @@ export default function FundRequestRecordTabs({ fundRequestRecord }: { fundReque
             )}
 
             {shownType == 'history' && fundRequestRecord.history.length > 0 && (
-                <FundRequestRecordHistoryTab fundRequestRecord={fundRequestRecord} />
+                <FundRequestRecordHistoryTab record={fundRequestRecord} />
             )}
 
             {shownType == 'files' && fundRequestRecord.files.length > 0 && (
