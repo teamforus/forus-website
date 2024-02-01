@@ -5,7 +5,7 @@ import TurnDownService from 'turndown';
 import * as turnDownPluginGfm from 'turndown-plugin-gfm';
 import { ResponseSimple } from '../props/ApiResponses';
 
-export default class MarkdownService<T = { data: Identity }> {
+export class MarkdownService<T = { data: Identity }> {
     /**
      * Url prefix
      *
@@ -60,7 +60,5 @@ export default class MarkdownService<T = { data: Identity }> {
 }
 
 export function useMarkdownService(): MarkdownService {
-    const [service] = useState(new MarkdownService());
-
-    return service;
+    return useState(new MarkdownService())[0];
 }

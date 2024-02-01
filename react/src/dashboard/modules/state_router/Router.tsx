@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { generatePath, matchRoutes, useLocation, useNavigate } from 'react-router-dom';
 import { CurrentRoute, RouteState } from './RouterProps';
 import router from '../../router/routes';
@@ -37,9 +37,12 @@ export const getStateRouteUrl = (name: string, params = {}): string | null => {
 export const useNavigateState = () => {
     const navigate = useNavigate();
 
-    return (name: string, params = {}) => {
-        navigate(getStateRouteUrl(name, params));
-    };
+    return useCallback(
+        (name: string, params = {}) => {
+            navigate(getStateRouteUrl(name, params));
+        },
+        [navigate],
+    );
 };
 
 export const useStateRoutes = (): { routes: Array<RouteState>; route: CurrentRoute } => {

@@ -90,8 +90,7 @@ img {
     font-size: .8em;
 }
 
-.text-md,
-.text-medium {
+.text-md {
     font-size: .9em;
 }
 
@@ -227,6 +226,10 @@ img {
 .flex-center {
     justify-content: center;
     justify-items: center;
+}
+
+.flex-align-items-center {
+    align-items: center;
 }
 
 .flex-self-start {

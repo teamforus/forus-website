@@ -134,16 +134,13 @@ h1, h2, h3, h4, h5, h6 {
                     display: none;
                 }
 
-                &:last-child {
-                    padding-right: 0;
-                }
-
                 &.navbar-item-wrapper_social_icons {
                     display: none;
                 }
 
                 &.navbar-item-wrapper_sign-out {
                     padding-left: 100px;
+                    padding-right: 0;
 
                     a {
                         display: none;
@@ -322,72 +319,12 @@ h1, h2, h3, h4, h5, h6 {
         }
     }
 
-    &.block-products-list {
-        .product-item {
-            box-shadow: none;
-            border: solid 1px #e4e4e4;
-        }
-    }
-
-    &.block-showcase {
-        .showcase-layout {
-            .showcase-aside {
-                .showcase-aside-block {
-                    box-shadow: none;
-                    padding: 0;
-                }
-            }
-        }
-
-        &.block-showcase-fullscreen {
-            .showcase-layout {
-                .showcase-aside {
-                    .showcase-aside-block {
-                        padding: 20px;
-                    }
-                }
-            }
-        }
-
-        @media screen and (max-width: 1000px) {
-            .showcase-wrapper {
-                .showcase-layout {
-                    .showcase-aside {
-                        .showcase-aside-block {
-                            padding: 20px;
-                        }
-                    }
-                }
-            }
-        }
-    }
-
     &.block-profile {
         .profile-aside {
             .profile-menu {
                 .profile-menu-item {
                     box-shadow: none;
                     border: solid 1px #e4e4e4;
-                }
-            }
-        }
-    }
-
-    &.block-organizations {
-        .organization-item {
-            .organization-pane {
-                box-shadow: none;
-                border: 1px solid #e4e4e4;
-
-                &.active {
-                    border: 1px solid #e4e4e4;
-                }
-            }
-
-            .organization-offices {
-                .block-offices {
-                    box-shadow: none;
-                    border: 1px solid #e4e4e4;
                 }
             }
         }
@@ -469,13 +406,6 @@ h1, h2, h3, h4, h5, h6 {
             max-width: 1280px;
             margin: 0 auto;
         }
-    }
-}
-
-.form {
-    .form-control:not([type="radio"]):not([type="checkbox"]) { 
-        background-color: #ffffff;
-        border: 1px solid #e4e4e4;
     }
 }
 
@@ -592,17 +522,6 @@ h1, h2, h3, h4, h5, h6 {
 
             .schedule-value {
                 color: #fff;
-            }
-        }
-
-        .footer-subscribe {
-            .button {
-                margin: 0;
-                border-radius: var(--border-radius);
-
-                .mdi {
-                    float: none;
-                }
             }
         }
     }

@@ -11,7 +11,8 @@ $primaryColorLight: #e60204;
     --tc-nav-hov: #ececec;
     --tc-nav: #b3b3b3;
     --logo-padding: 20px 0px;
-    --logo-height: 50px;
+    --logo-height: 90px;
+
     // navbar (auth)
     --tc-auth-menu: #fff;
     --tc-auth-btn: #282b39;
@@ -68,7 +69,7 @@ $primaryColorLight: #e60204;
     --product-image-padding: 0px;
 
     // placeholder text color
-    --placeholder_text_color: #515152;
+    --form-control-placeholder-color: #515152;
 
     --border-color: #dce0e0;
 
@@ -84,7 +85,12 @@ $primaryColorLight: #e60204;
     --color-search-icon-dark: #{darken($primaryColor, 10%)};
     --color-search-icon-light: #{lighten($primaryColor, 25%)};
 
-    // Login button
+    // Label sets
+    --label-set-hover-background: #{rgba($primaryColor, .7)};
 
+    //- Showcase
+    --showcase-fullscreen-bottom-offset: 155px;
+
+    // Login button
     --login-button-background: #fff;
 }

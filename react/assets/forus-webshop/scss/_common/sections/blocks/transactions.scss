@@ -64,6 +64,11 @@
                         font: 700 16px var(--base-font);
                         color: #282b39;
                         margin-bottom: 5px;
+
+                        a {
+                            color: #004D93;
+                            font: 700 16px var(--base-font);
+                        }
                     }
 
                     .transactions-item-date {

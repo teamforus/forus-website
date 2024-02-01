@@ -76,9 +76,9 @@ export default function HeaderNotifications({ organization }: { organization: Or
                         setShowNotifications(!showNotifications);
                     }}>
                     {parseInt(notifications?.meta?.total_unseen?.toString()) > 0 ? (
-                        <em className="mdi mdi-bell" />
+                        <div className="mdi mdi-bell" />
                     ) : (
-                        <em className="mdi mdi-bell-outline" />
+                        <div className="mdi mdi-bell-outline" />
                     )}
                 </div>
             </div>

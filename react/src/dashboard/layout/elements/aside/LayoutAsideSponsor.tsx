@@ -1,7 +1,6 @@
 import React from 'react';
 import LayoutAsideNavItem from './LayoutAsideNavItem';
 import { hasPermission } from '../../../helpers/utils';
-import { AppConfigProp } from '../../../services/ConfigService';
 import Organization from '../../../props/models/Organization';
 
 export default function LayoutAsideSponsor({ activeOrganization }: { activeOrganization: Organization }) {

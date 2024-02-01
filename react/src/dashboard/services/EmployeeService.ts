@@ -52,7 +52,7 @@ export class EmployeeService<T = Employee> {
      * Delete by id
      */
     public delete(organizationId: number, id: number): Promise<null> {
-        return this.apiRequest._delete(`${this.prefix}/${organizationId}/employees/${id}`) as Promise<null>;
+        return this.apiRequest.delete(`${this.prefix}/${organizationId}/employees/${id}`) as Promise<null>;
     }
 
     public export(organizationId: number, data: object = {}): Promise<ResponseSimple<null>> {
@@ -65,7 +65,5 @@ export class EmployeeService<T = Employee> {
     }
 }
 export function useEmployeeService(): EmployeeService {
-    const [service] = useState(new EmployeeService());
-
-    return service;
+    return useState(new EmployeeService())[0];
 }

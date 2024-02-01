@@ -29,7 +29,7 @@
     right      : 6px;
     top        : 3px;
     bottom     : 3px;
-    cursor: pointer; 
+    cursor: pointer;
     background-color: #eee;
     opacity: .5;
     transition: all .4s;
@@ -133,7 +133,7 @@
             }
 
             &-header {
-                &:nth-child(odd), 
+                &:nth-child(odd),
                 &:nth-child(even) {
                     background: #fff;
                     border-bottom: 1px solid #e9ecee;
@@ -170,6 +170,10 @@ datepicker[input-visible=true] {
 .react-datepicker {
     border: 1px solid var(--border-color);
 
+    .react-datepicker__triangle {
+        display: none;
+    }
+
     .react-datepicker__month-container {
         .react-datepicker__header {
             background-color: #fff;
@@ -198,6 +202,10 @@ datepicker[input-visible=true] {
 
                 &.react-datepicker__day--selected {
                     color: #fff;
+                }
+
+                &.react-datepicker__day--disabled {
+                    color: rgba(0,0,0,.2);
                 }
 
                 // &.react-datepicker__day--today {}

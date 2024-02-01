@@ -6,7 +6,7 @@ export type ModalButton = {
     type?: string;
     icon?: string;
     iconEnd?: boolean;
-    onClick: (e) => void;
+    onClick: (e: React.MouseEvent | React.FormEvent) => void;
     className?: string;
 };
 
@@ -15,15 +15,18 @@ export function ModalButton({
     button,
     type,
     text,
+    disabled = false,
 }: {
     submit?: boolean;
     button: ModalButton;
     type: string;
     text: string;
+    disabled?: boolean;
 }) {
     return (
         <button
             type={submit ? 'submit' : 'button'}
+            disabled={disabled}
             className={classList([`button`, `button-${button.type || type}`, button.className || null])}
             onClick={button.onClick}>
             {button.icon && !button.iconEnd && <em className={`mdi mdi-${button.icon} icon-start`} />}

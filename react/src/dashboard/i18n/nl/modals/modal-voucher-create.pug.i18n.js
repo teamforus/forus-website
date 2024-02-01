@@ -29,7 +29,7 @@ module.exports = {
         need_providers: "Mislukt, dit fonds heeft geen goedgekeurde aanbieders met aanbiedingen.",
         no_products: "U moet eerst aanbieders goedkeuren die aanbiedingen hebben geplaatst.",
     },
-    info: "Een tegoed eenmaal aangemaakt kan niet verwijderd worden.",
+    info: "Controleer de gegevens. Na het aanmaken van het tegoed kan het niet worden verwijderd.",
     buttons: {
         cancel: "Annuleren",
         submit: "Bevestig",

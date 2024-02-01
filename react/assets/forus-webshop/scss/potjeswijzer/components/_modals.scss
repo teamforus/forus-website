@@ -1,10 +1,9 @@
 .modal .modal-content {
-    .description{
+    .description {
         padding: 10px 0;
         font: 400 22px/34px var(--base-font);
-        color: var(--placeholder_text_color);
-    
-        .popup-title-styled{
+
+        .popup-title-styled {
             color: #157c68;
             font-weight: 600;
             white-space: nowrap;
@@ -12,13 +11,12 @@
     }
 
     .subdescription {
-        color: var(--placeholder_text_color);
-
-        .popup-title-styled{
+        .popup-title-styled {
             color: #157c68;
         }
     }
 }
+
 .block {
     &.block-auth-type {
         .auth_type-item {

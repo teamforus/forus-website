@@ -31,17 +31,15 @@ export default function ModalAddNote({
         setProgress(0);
 
         return storeNote(form.values)
-            .then(
-                (res) => {
-                    onCreated(res?.data?.data);
-                    modal.close();
-                },
-                (res: ResponseError) => {
-                    form.setErrors(res?.data?.errors);
-                    form.setIsLocked(false);
-                    pushDanger('Error!', res?.data?.message);
-                },
-            )
+            .then((res) => {
+                onCreated(res?.data?.data);
+                modal.close();
+            })
+            .catch((err: ResponseError) => {
+                form.setErrors(err?.data?.errors);
+                form.setIsLocked(false);
+                pushDanger('Mislukt!', err?.data?.message);
+            })
             .finally(() => setProgress(100));
     });
 

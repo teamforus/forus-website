@@ -1,20 +1,20 @@
 /*==========  Style Sheet - Placeholders  ==========*/
 ::-webkit-input-placeholder {
-    color: var(--placeholder_text_color);
-    font: 400 15px var(--base-font);
+    font: var(--form-control-placeholder-font);
+    color: var(--form-control-placeholder-color);
 }
 
 ::-moz-placeholder {
-    color: var(--placeholder_text_color);
-    font: 400 15px var(--base-font);
+    font: var(--form-control-placeholder-font);
+    color: var(--form-control-placeholder-color);
 }
 
 :-moz-placeholder {
-    color: var(--placeholder_text_color);
-    font: 400 15px var(--base-font);
+    font: var(--form-control-placeholder-font);
+    color: var(--form-control-placeholder-color);
 }
 
 :-ms-input-placeholder {
-    color: var(--placeholder_text_color);
-    font: 400 15px var(--base-font);
+    font: var(--form-control-placeholder-font);
+    color: var(--form-control-placeholder-color);
 }

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { NavLink } from 'react-router-dom';
 
 interface EmptyButtonType {
@@ -15,8 +15,8 @@ export default function EmptyCard({
     title,
     description,
     textAlign,
-    button,
-    buttons,
+    button = null,
+    buttons = [],
 }: {
     title?: string;
     description?: string;
@@ -24,12 +24,21 @@ export default function EmptyCard({
     button?: EmptyButtonType;
     buttons?: Array<EmptyButtonType>;
 }) {
+    const descriptionLines = useMemo(() => {
+        return description?.split('\n') || [];
+    }, [description]);
+
     return (
         <div className="card">
             <div className="card-section">
                 <div className={`block block-empty text-${textAlign || 'center'}`}>
                     {title && <div className="empty-title">{title}</div>}
-                    {description && <div className="empty-details">{description}</div>}
+
+                    {descriptionLines.map((value, index) => (
+                        <div key={index} className="empty-details">
+                            {value}
+                        </div>
+                    ))}
 
                     {button && (
                         <div className={'empty-actions'}>

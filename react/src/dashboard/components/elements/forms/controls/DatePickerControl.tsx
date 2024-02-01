@@ -6,13 +6,23 @@ import ReactDatePicker from 'react-datepicker';
 export default function DatePickerControl({
     value,
     onChange,
+    disabled,
     placeholder,
     minYear = 1900,
+    dateFormat = 'yyyy-MM-dd',
+    dateMin = null,
+    dateMax = null,
+    dateInitial = null,
 }: {
     value: Date | null;
+    disabled?: boolean;
     onChange: (value: Date) => void;
     placeholder?: string;
     minYear?: number;
+    dateFormat?: string;
+    dateMin?: Date;
+    dateMax?: Date;
+    dateInitial?: Date;
 }) {
     const years = range(minYear, getYear(new Date()) + 1, 1);
     const months = [
@@ -31,6 +41,7 @@ export default function DatePickerControl({
     ];
     return (
         <ReactDatePicker
+            disabled={disabled}
             renderCustomHeader={({
                 date,
                 changeYear,
@@ -47,6 +58,7 @@ export default function DatePickerControl({
                     }}>
                     <div className="flex">
                         <button
+                            type={'button'}
                             onClick={decreaseMonth}
                             disabled={prevMonthButtonDisabled}
                             style={{
@@ -99,6 +111,7 @@ export default function DatePickerControl({
                     </div>
                     <div className="flex">
                         <button
+                            type={'button'}
                             onClick={increaseMonth}
                             disabled={nextMonthButtonDisabled}
                             style={{
@@ -118,8 +131,11 @@ export default function DatePickerControl({
             selected={value}
             onChange={onChange}
             className={'form-control'}
-            dateFormat={'yyyy-MM-dd'}
+            dateFormat={dateFormat}
             placeholderText={placeholder}
+            minDate={dateMin}
+            maxDate={dateMax}
+            startDate={dateInitial}
         />
     );
 }

@@ -1,13 +1,22 @@
 &.block-accessibility {
-    max-width: 800px;
-    .block-text {
-        margin-bottom: 40px;
-        font: 400 16px/22px var(--base-font);
+    width: 100%;
+    padding: 32px;
+    background: #fff;
+    box-shadow: var(--box-shadow);
+    margin-bottom: 40px;
+    border-radius: var(--border-radius);
 
-        a {
-            color: blue;
-            font: 400 16px/22px var(--base-font);
-        }
+    .block-accessibility-header {
+        font: 400 18px/27px var(--base-font);
+        color: #595959;
+        padding-bottom: 25px;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .block-text {
+        padding: 20px 0;
+        font: 400 16px/22px var(--base-font);
+        border-bottom: 1px solid var(--border-color);
 
         ul {
             list-style-type: square;
@@ -15,11 +24,24 @@
         }
 
         .title {
-            font: 600 18px/27px var(--base-font);
+            font: 700 20px/32px var(--base-font);
+            margin: 0 0 10px;
         }
 
         .description {
-            font: 400 16px/22px var(--base-font);
+            font: 400 16px/28px var(--base-font);
+
+            a {
+                font: inherit;
+                font-weight: 600;
+                color: #315efd;
+                text-decoration: underline;
+            }
+        }
+
+        &:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
         }
     }
 }

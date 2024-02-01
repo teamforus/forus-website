@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { ModalState } from '../../modules/modals/context/ModalContext';
 import { classList } from '../../helpers/utils';
 import { ModalButton } from './elements/ModalButton';
+import useAssetUrl from '../../hooks/useAssetUrl';
 
 export default function ModalNotification({
     modal,
@@ -18,12 +19,15 @@ export default function ModalNotification({
     icon?: string;
     title: string;
     className?: string;
-    description: string | Array<string>;
+    description?: string | Array<string>;
     buttonClose?: ModalButton;
     buttonCancel?: ModalButton;
     buttonSubmit?: ModalButton;
     buttons?: Array<ModalButton>;
 }) {
+    const assetUrl = useAssetUrl();
+    const getIcon = useCallback((icon) => assetUrl('./assets/img/modal/' + icon + '.png'), [assetUrl]);
+
     return (
         <div
             className={classList([
@@ -41,19 +45,19 @@ export default function ModalNotification({
                         <div className="text-center">
                             {icon && (
                                 <div className="modal-icon-rounded">
-                                    <img src={icon} alt="Icon" />
+                                    <img src={getIcon(icon)} alt="Icon" />
                                 </div>
                             )}
 
                             <div className="modal-heading">{title}</div>
 
-                            {Array.isArray(description)
-                                ? description
-                                : [description].map((value, index) => (
-                                      <p key={index} className="modal-text">
-                                          {value}
-                                      </p>
-                                  ))}
+                            {description && (
+                                <div className="modal-text">
+                                    {(Array.isArray(description) ? description : [description]).map((value, index) => (
+                                        <div key={index}>{value}</div>
+                                    ))}
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>

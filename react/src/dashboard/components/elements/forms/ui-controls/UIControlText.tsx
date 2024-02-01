@@ -9,6 +9,7 @@ export default function UIControlText({
     disabled = false,
     onChange = null,
     onChangeValue = null,
+    inputRef = null,
 }: {
     id?: string;
     name?: string;
@@ -18,13 +19,14 @@ export default function UIControlText({
     disabled?: boolean;
     onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
     onChangeValue?: (value: string) => void;
+    inputRef?: React.RefObject<HTMLInputElement>;
 }) {
-    const inputRef = useRef<HTMLInputElement>(null);
+    const innerInputRef = useRef<HTMLInputElement>(null);
 
     return (
         <div className={`ui-control ui-control-text ${className}`}>
             <input
-                ref={inputRef}
+                ref={inputRef || innerInputRef}
                 className="form-control"
                 type="text"
                 id={id}
@@ -37,7 +39,7 @@ export default function UIControlText({
                 disabled={disabled}
                 value={value}
             />
-            <div className="ui-control-clear" onClick={() => (inputRef.current.value = '')}>
+            <div className="ui-control-clear" onClick={() => ((inputRef || innerInputRef).current.value = '')}>
                 <div className="mdi mdi-close-circle" />
             </div>
         </div>

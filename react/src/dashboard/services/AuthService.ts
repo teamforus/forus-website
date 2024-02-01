@@ -2,7 +2,7 @@ import ApiRequestService from './ApiRequestService';
 import Identity from '../props/models/Identity';
 import { useState } from 'react';
 
-export default class AuthService<T = { data: Identity }> {
+export class AuthService<T = { data: Identity }> {
     /**
      * @param apiRequest
      */
@@ -14,7 +14,5 @@ export default class AuthService<T = { data: Identity }> {
 }
 
 export function useAuthService(): AuthService {
-    const [service] = useState(new AuthService());
-
-    return service;
+    return useState(new AuthService())[0];
 }

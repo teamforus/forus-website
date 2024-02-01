@@ -1,7 +1,7 @@
 import React from 'react';
 import { ModalState } from '../../modules/modals/context/ModalContext';
 import { classList } from '../../helpers/utils';
-import Translate from '../../i18n/elements/Translate';
+import TranslateHtml from '../../i18n/elements/TranslateHtml';
 import { useTranslation } from 'react-i18next';
 import useFormBuilder from '../../hooks/useFormBuilder';
 import FormError from '../elements/forms/errors/FormError';
@@ -63,7 +63,7 @@ export default function ModalAuthPincode({ modal }: { modal: ModalState }) {
                                 <div className="step-item">
                                     <div className="step-item-title">Stap 1</div>
                                     <div className="step-item-subtitle">
-                                        <Translate i18n={'open_in_me.app_instruction.step_1'} />
+                                        <TranslateHtml i18n={'open_in_me.app_instruction.step_1'} />
                                     </div>
                                     <img src={assetUrl('/assets/img/screen1.png')} alt="" />
                                 </div>
@@ -71,7 +71,7 @@ export default function ModalAuthPincode({ modal }: { modal: ModalState }) {
                                     <div className="step-item-title">Stap 2</div>
 
                                     <div className="step-item-subtitle">
-                                        <Translate i18n={'open_in_me.app_instruction.step_2'} />
+                                        <TranslateHtml i18n={'open_in_me.app_instruction.step_2'} />
                                     </div>
                                     <img src={assetUrl('/assets/img/screen2.png')} alt="" />
                                 </div>

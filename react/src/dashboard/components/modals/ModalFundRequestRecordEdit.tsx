@@ -36,23 +36,26 @@ export default function ModalFundRequestRecordEdit({
     const [recordNumeric] = useState(fundRequestRecord.record_type.type == 'number');
     const [initialValue] = useState(recordNumeric ? parseFloat(fundRequestRecord.value) : fundRequestRecord.value);
 
-    const form = useFormBuilder({ value: initialValue }, (values) => {
-        setProgress(0);
+    const form = useFormBuilder(
+        {
+            value: initialValue,
+        },
+        async (values) => {
+            setProgress(0);
 
-        return fundRequestService
-            .updateRecord(organization.id, fundRequestRecord.fund_request_id, fundRequestRecord.id, values)
-            .then(
-                () => {
+            return fundRequestService
+                .updateRecord(organization.id, fundRequestRecord.fund_request_id, fundRequestRecord.id, values)
+                .then(() => {
                     modal.close();
                     onEdit();
-                },
-                (res) => {
+                })
+                .catch((err: ResponseError) => {
                     form.setIsLocked(false);
-                    form.setErrors(res.data.errors);
-                },
-            )
-            .finally(() => setProgress(100));
-    });
+                    form.setErrors(err.data.errors);
+                })
+                .finally(() => setProgress(100));
+        },
+    );
 
     return (
         <div

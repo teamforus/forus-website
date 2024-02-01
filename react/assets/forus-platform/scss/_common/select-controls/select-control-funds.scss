@@ -1,0 +1,42 @@
+&.select-control-funds {
+    .select-control-input {
+
+        .select-control-search,
+        .select-control-options {
+            .select-control-search-placeholder,
+            .select-control-option {
+                display: grid;
+                grid-template-columns: 20px 1fr;
+                gap: 7.5px;
+
+                .select-control-search-placeholder-media,
+                .select-control-option-media {
+                    margin: 0 0;
+
+                    img {
+                        display: block;
+                        width: 100%;
+                        border: 1px solid var(--border-color);
+                        border-radius: 50%;
+                    }
+                }
+            }
+        }
+
+        .select-control-options {
+            .select-control-option {
+                padding-left: 10px;
+            }
+        }
+
+        .select-control-search {
+            padding-left: 10px;
+
+            .select-control-search-placeholder {
+                .select-control-search-placeholder-media {
+                    margin: 3px 0;
+                }
+            }
+        }
+    }
+}

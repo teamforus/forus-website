@@ -46,8 +46,11 @@
             height: auto;
             margin: 0;
             overflow: visible;
-            position: static;
             width: auto;
+
+            @media screen and (max-width: 767px) {
+                position: static;
+            }
         }
     }
 }

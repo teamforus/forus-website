@@ -1,0 +1,19 @@
+.block.block-warning {
+    display: grid;
+    background-color: #fffceb;
+    padding: 15px;
+    grid-template-columns: 15px 1fr;
+    gap: 15px;
+
+    .block-warning-icon {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        font-size: 16px;
+    }
+
+    .block-warning-content {
+        display: grid;
+        font: 400 13px/18px var(--base-font);
+    }
+}

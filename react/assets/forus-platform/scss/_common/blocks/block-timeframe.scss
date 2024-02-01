@@ -2,7 +2,7 @@
     display: flex;
     flex-direction: row;
     border: 1px solid #d4d9dd;
-    border-radius: calc(var(--border-radius) / 2);
+    border-radius: calc(var(--border-radius));
     box-shadow: 0px 0px 5px rgba(25, 39, 52, 0.15);
 
     .timeframe-item {
@@ -42,14 +42,14 @@
         }
 
         &:first-child {
-            border-top-left-radius: calc(var(--border-radius) / 2);
-            border-bottom-left-radius: calc(var(--border-radius) / 2);
+            border-top-left-radius: calc(var(--border-radius));
+            border-bottom-left-radius: calc(var(--border-radius));
             flex-grow: 0;
         }
 
         &:last-child {
-            border-top-right-radius: calc(var(--border-radius) / 2);
-            border-bottom-right-radius: calc(var(--border-radius) / 2);
+            border-top-right-radius: calc(var(--border-radius));
+            border-bottom-right-radius: calc(var(--border-radius));
             border-right: none;
             flex-grow: 0;
         }

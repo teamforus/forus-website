@@ -1,0 +1,23 @@
+&.block-voucher-records-editor {
+    .block-voucher-record-list {
+        border-radius: 5px;
+        border: 1px dashed var(--border-color);
+        padding: 15px;
+        margin-bottom: 20px;
+
+        .voucher-record-item {
+            display: flex;
+            flex-direction: row;
+
+            .voucher-record-item-input {
+                display: flex;
+                flex-grow: 1;
+            }
+
+            .voucher-record-item-actions {
+                display: flex;
+                padding-left: 10px;
+            }
+        }
+    }
+}

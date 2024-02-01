@@ -1,7 +1,8 @@
-import ApiResponse from '../props/ApiResponses';
+import ApiResponse, { ApiResponseSingle } from '../props/ApiResponses';
 import { useState } from 'react';
 import ApiRequestService from './ApiRequestService';
 import Fund from '../props/models/Fund';
+import Product from '../props/models/Product';
 
 export class FundService<T = Fund> {
     /**
@@ -26,10 +27,21 @@ export class FundService<T = Fund> {
     public delete(company_id: number, data: object = {}): Promise<null> {
         return this.apiRequest.get<null>(`${this.prefix + company_id}/funds`, data);
     }
+
+    public getProviderProduct(
+        organization_id: number,
+        fund_id: number,
+        provider_id: number,
+        product_id: number,
+        query: object = {},
+    ): Promise<ApiResponseSingle<Product>> {
+        return this.apiRequest.get(
+            `${this.prefix}${organization_id}/funds/${fund_id}/providers/${provider_id}/products/${product_id}`,
+            query,
+        );
+    }
 }
 
 export function useFundService(): FundService {
-    const [service] = useState(new FundService());
-
-    return service;
+    return useState(new FundService())[0];
 }

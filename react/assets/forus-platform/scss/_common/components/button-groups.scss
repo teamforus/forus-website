@@ -6,4 +6,12 @@
     .button {
         display: flex;
     }
+
+    .button-text-divider {
+        display: flex;
+        align-self: center;
+        font: 400 12px/16px var(--base-font);
+        color: #414141;
+        margin: 0 2px;
+    }
 }

@@ -64,6 +64,7 @@ function RouterSelector({ children, envData }: { envData: EnvDataProp; children:
  */
 export default function Dashboard({ envData }: { envData: EnvDataProp }): React.ReactElement {
     ApiRequestService.setHost(envData.config.api_url);
+    ApiRequestService.setEnvData(envData);
 
     return (
         <PushNotificationsProvider>

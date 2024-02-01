@@ -44,11 +44,25 @@
                     font: 500 2.5em var(--hf);
                     margin: 0 0 10px;
                     color: var(--tc);
+
+                    &:last-child {
+                        margin: 0 0 0;
+                    }
                 }
 
                 .fund-description {
                     font: 400 16px/1.5em var(--base-font);
                     margin: 0 0 25px;
+
+                    .block-markdown {
+                        p:last-child {
+                            margin-bottom: 0;
+                        }
+                    }
+
+                    &:last-child {
+                        margin: 0 0 0;
+                    }
                 }
 
                 .organization-name {

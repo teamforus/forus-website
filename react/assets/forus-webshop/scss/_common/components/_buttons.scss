@@ -1,18 +1,19 @@
 .button {
     font: 700 16px/1.5em var(--base-font);
     padding: 12px 25px;
-    color: #646f79;
+    color: var(--btn-color);
     cursor: pointer;
     border: 1px solid transparent;
-    transition: color 0.4s, background 0.4s, box-shadow 0.4s, border 0.4s;
-    border-radius: var(--border-radius);
+    transition: color 0.4s, background-color 0.4s, box-shadow 0.4s, border 0.4s;
+    border-radius: var(--btn-border-radius);
     display: inline-block;
     text-align: center;
     margin-right: 15px;
+    box-shadow: none;
 
     .mdi {
         font-size: 1.4em;
-        line-height: inherit;
+        height: 1em;
         margin-right: 10px;
         margin-left: -10px;
         float: left;
@@ -30,64 +31,8 @@
         margin: 0 auto;
     }
 
-    &.button-default {
-        background: #ffffff;
-        text-transform: var(--text_format);
-        color: var(--color-default);
-        //border: 1px solid var(--border-color);
-        box-shadow: none;
-
-        .mdi {
-            color: var(--color-default-light);
-        }
-
-        &:hover, &:focus {
-            color: #fff;
-            background: var(--color-default-light);
-            border-color: var(--color-default-light);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-
-            .mdi {
-                color: #fff;
-            }
-        }
-    }
-
-    &.button-two-spans {
-        display: flex !important;
-        padding: 7px !important;
-        align-items: center !important;
-
-        .icon-me {
-            mask: url("../img/icon-me.svg");
-            background: var(--color-default);
-            display: inline-block;
-            mask-size: cover;
-            height: 30px;
-            width: 30px;
-            margin: 0 7px 0px 0px;
-            border: 1px;
-        }
-
-        .first-line-button {
-            line-height: 10px;
-            font-size: 16px;
-            height: 100%;
-            text-align: right;
-            flex: 1;
-        }
-
-        .second-line-button {
-            display: none;
-        }
-
-        &:hover {
-            .icon-me {
-                mask: url("../img/icon-me.svg");
-                background: #157c68;
-                mask-size: cover;
-            }
-        }
+    &:hover {
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
     }
 
     &.button-primary {
@@ -96,11 +41,11 @@
         border: 1px solid var(--color-primary);
         text-transform: var(--text_format);
 
-        &:hover, &:focus {
+        &:hover,
+        &:focus {
             color: #fff;
             background: var(--color-primary-light);
             background-color: var(--color-primary-light);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
 
             img {
                 filter: brightness(5);
@@ -113,13 +58,11 @@
         color: #fff;
         background: #282b39;
         border: 1px solid #282b39;
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
 
         &:hover {
             color: #fff;
             background: #646f79;
             border-color: #646f79;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
 
             img {
                 filter: brightness(5);
@@ -131,7 +74,7 @@
         display: inline-block;
         color: #303030;
         background: #fff;
-        border: 1px solid #d4d9dd;
+        border: 1px solid #282b39;
 
         &:hover {
             color: #fff;
@@ -142,34 +85,6 @@
             img {
                 filter: brightness(5);
             }
-        }
-    }
-
-    &.button-muted {
-        color: #9ea7b5;
-        background: #f0f2f4;
-        border-color: #f0f2f4;
-
-        &:hover {
-            color: #9ea7b5;
-            background: #f0f2f4;
-            border-color: #f0f2f4;
-        }
-
-        &:focus,
-        &:active {
-            outline: none;
-            border-color: darken($color: rgba(158, 167, 182, 0.15), $amount: 100);
-        }
-    }
-
-    &.button-danger {
-        color: #fff;
-        background: #D93740;
-
-        &:hover {
-            color: #CEC7C7;
-            background: #DD0000;
         }
     }
 
@@ -184,41 +99,19 @@
         }
     }
 
-    &.button-sm {
-        font: 700 14px/20px var(--base-font);
-        padding: 10px 15px;
-        border-radius: calc(var(--border-radius) / 2);
-
-        .mdi {
-            margin-right: 4px;
-        }
-    }
-
-    &.button-xs {
-        font: 700 12px/20px var(--base-font);
-        padding: 5px 10px;
-        border-radius: calc(var(--border-radius) / 2);
-
-        .mdi {
-            font-size: 1.2em;
-            margin-right: 5px;
-            margin-left: -5px;
-    
-            &.icon-right {
-                margin-right: -5px;
-                margin-left: 5px;
-            }
-        }
-    }
-
     &.button-text {
         background: none;
         border: none;
 
+        &:hover {
+            box-shadow: none;
+            color: #646f79;
+        }
+
         &:last-child {
             padding-right: 0;
         }
-        
+
         &.button-text-padless {
             padding-left: 0;
             padding-right: 0;
@@ -231,12 +124,62 @@
         &[disabled],
         &.disabled,
         &.button-disabled {
-            background: transparent;
-            border-color: transparent;
-            color: #cecece;
+            background: transparent !important;
+            border-color: transparent !important;
+            color: #cecece !important;
 
             .mdi {
                 color: #cecece;
+            }
+        }
+    }
+
+    &.button-sm {
+        font: 700 14px/20px var(--base-font);
+        padding: 10px 15px;
+        border-radius: calc(var(--border-radius) / 2);
+
+        .mdi {
+            margin-right: 5px;
+            margin-left: -5px;
+
+            &.icon-right {
+                float: right;
+                margin-right: -7px;
+                margin-left: 7px;
+            }
+        }
+
+        .mdi {
+            &.icon-right {
+                margin-right: -5px;
+                margin-left: 5px;
+            }
+        }
+
+        &.button-text {
+            .mdi {
+                &.icon-right {
+                    margin-right: -2px;
+                    margin-left: 2px;
+                }
+            }
+        }
+    }
+
+    &.button-xs {
+        font: 700 12px/20px var(--base-font);
+        padding: 5px 10px;
+        border-radius: calc(var(--border-radius) / 2);
+
+        .mdi {
+            font-size: 1.2em;
+            margin-right: 5px;
+            margin-left: -5px;
+
+            &.icon-right {
+                margin-right: -5px;
+                margin-left: 5px;
             }
         }
     }
@@ -253,11 +196,6 @@
         width: 100%;
     }
 
-    &.button-wide {
-        padding-left: 50px;
-        padding-right: 50px;
-    }
-
     &:last-child,
     &:last-of-type {
         margin-right: 0;
@@ -266,19 +204,23 @@
     &[disabled],
     &.disabled,
     &.button-disabled {
-        background: #eff2f4;
-        border-color: #eff2f4;
-        color: #3B3B3B;
-        box-shadow: none;
-        pointer-events: none;
-        cursor: default;
+        color: var(--btn-disabled-color) !important;
+        background: var(--btn-disabled-background) !important;
+        border-color: var(--btn-disabled-background) !important;
+        box-shadow: none !important;
+        pointer-events: none !important;
+        cursor: default !important;
+
+        .mdi {
+            color: inherit !important;
+        }
 
         &:hover {
-            box-shadow: none;
+            box-shadow: none !important;
         }
 
         &:focus {
-            color: #3B3B3B;
+            color: #cdced2 !important;
         }
     }
 
@@ -309,33 +251,4 @@
 
 .button-profile {
     padding-left: 0px !important;
-}
-
-@media screen and (max-width: 1000px) {
-    .button {
-        &.button-primary {
-            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
-        }
-    }
-}
-
-.block {
-    &.block-show-more {
-        text-align: center;
-        margin: 0 0 30px;
-
-        &:last-child {
-            margin-bottom: 0;
-        }
-    }
-
-    @media screen and (max-width: 1000px) {
-        &.block-show-more {
-            .button {
-                width: 100%;
-                padding-left: 20px;
-                padding-right: 20px;
-            }
-        }
-    }
 }

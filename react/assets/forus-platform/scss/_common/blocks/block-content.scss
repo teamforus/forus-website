@@ -1,0 +1,55 @@
+&.block-content {
+    color: #282b39;
+    font: 400 13px/18px var(--base-font);
+
+    h1, h2, h3, h4, h5, h6 {
+        margin: 0 0 0;
+        font-weight: 600;
+    }
+
+    h1, h2, h3, h4, h5, h6, p, img, ol, ul {
+        margin-bottom: 15px;
+        font-family: inherit;
+
+        &:last-child:not(:first-child) {
+            margin-bottom: 0;
+        }
+    }
+
+    h4 {
+        font-size: 14px;
+    }
+
+    img {
+        width: 100%;
+        display: block;
+    }
+
+    p {
+        font: inherit;
+    }
+
+    ul, ol {
+        margin-top: 0;
+        padding-left: 15px;
+        font: inherit;
+
+        li {
+            font: inherit;
+            font-size: 14px;
+            line-height: 20px;
+        }
+    }
+
+    ol {
+        padding-left: 15px;
+    }
+
+    hr {
+        border: none;
+        background: var(--border-color-light);
+        height: 1px;
+        width: 100%;
+        margin: 0 0 15px;
+    }
+}

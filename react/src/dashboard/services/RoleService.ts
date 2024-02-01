@@ -25,7 +25,5 @@ export class RoleService<T = Role> {
 }
 
 export function useRoleService(): RoleService {
-    const [service] = useState(new RoleService());
-
-    return service;
+    return useState(new RoleService())[0];
 }

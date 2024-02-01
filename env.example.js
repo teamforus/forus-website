@@ -45,6 +45,20 @@ fronts['dashboard.provider'] = {
     client_type: 'provider',
     name: 'Provider dashboard',
     useHashRouter: use_hash_router,
+    config: {
+        api_url: api_url,
+        chat_id: chat_id,
+        support_id: support_id,
+        google_maps_api_key: google_maps_api_key,
+
+        help_link: help_link,
+        me_app_link: me_app_link,
+        ios_ipad_link: ios_ipad_link,
+        ios_iphone_link: ios_iphone_link,
+        android_link: android_link,
+
+        sessions: sessions,
+    },
 };
 
 fronts['dashboard.validator'] = {

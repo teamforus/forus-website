@@ -21,13 +21,17 @@ export class FileService<T = Employee> {
     /**
      * Fetch list
      */
-    downloadFile = (name: string, data: Blob | ArrayBuffer, contentType = 'text/csv;charset=utf-8;') => {
+    public downloadFile = (
+        name: string,
+        data: Blob | ArrayBuffer | string,
+        contentType = 'text/csv;charset=utf-8;',
+    ) => {
         const blob = data instanceof Blob ? data : new Blob([data], { type: contentType });
 
         saveAs(blob, name);
     };
 
-    base64ToBlob = (b64Data: string, contentType = '', sliceSize = 512) => {
+    public base64ToBlob = (b64Data: string, contentType = '', sliceSize = 512) => {
         const byteCharacters = atob(b64Data);
         const byteArrays = [];
 
@@ -45,15 +49,15 @@ export class FileService<T = Employee> {
         return new Blob(byteArrays, { type: contentType });
     };
 
-    download(file: File): Promise<ResponseSimple<null>> {
-        return this.apiRequest.get(`${this.prefix}/${file.uid}/download`, {}, {}, { responseType: 'arraybuffer' });
+    public download(file: File): Promise<ResponseSimple<Blob>> {
+        return this.apiRequest.get(`${this.prefix}/${file.uid}/download`, {}, {}, { responseType: 'blob' });
     }
 
-    downloadUrl(file: File) {
+    public downloadUrl(file: File) {
         return this.apiRequest.endpointToUrl(`${this.prefix}/${file.uid}/download`);
     }
 
-    store(file) {
+    public store(file) {
         const formData = new FormData();
 
         formData.append('file', file);
@@ -63,7 +67,7 @@ export class FileService<T = Employee> {
         });
     }
 
-    storeValidate(file) {
+    public storeValidate(file: Blob) {
         const formData = new FormData();
 
         formData.append('file', file);
@@ -73,16 +77,45 @@ export class FileService<T = Employee> {
         });
     }
 
-    storeAll(files) {
+    public storeAll(files: Array<Blob>) {
         return Promise.all(files.map(this.store));
     }
 
-    storeValidateAll(files) {
+    public storeValidateAll(files: Array<Blob>) {
         return Promise.all(files.map(this.storeValidate));
+    }
+
+    // Demo
+    public storeWithProgress(file: File | Blob, type: string, onProgress: (e: { progress: number }) => void) {
+        const append = [
+            ['file', file],
+            ['type', type],
+        ];
+
+        return this.storeData(append, { onProgress });
+    }
+
+    public storeData(
+        append = [],
+        config?: {
+            onProgress?: (e: { progress: number }) => void;
+            onXhr?: (xhr: XMLHttpRequest) => void;
+            onAbort?: (e) => void;
+        },
+    ) {
+        const formData = new FormData();
+
+        append.forEach((item) => formData.append(item[0], item[1]));
+
+        return this.apiRequest.post(this.prefix, formData, {}, (cfg) => ({
+            ...cfg,
+            headers: { ...cfg?.['headers'], ...{ 'Content-Type': undefined } },
+            onProgress: config?.onProgress,
+            onXhr: config?.onXhr,
+            onAbort: config?.onAbort,
+        }));
     }
 }
 export function useFileService(): FileService {
-    const [service] = useState(new FileService());
-
-    return service;
+    return useState(new FileService())[0];
 }

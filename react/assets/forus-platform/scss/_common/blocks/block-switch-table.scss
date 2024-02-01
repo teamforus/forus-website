@@ -1,0 +1,42 @@
+&.block-switch-table {
+    max-height: 300px;
+    overflow: auto;
+    @include webkit_scrollbar();
+
+    .table-wrapper {
+        tr {
+            td {
+                .switch-key-icon {
+                    margin-right: 5px;
+                }
+
+                .switch-input {
+                    display: grid;
+                    gap: 15px;
+                    grid-template-columns: 140px auto;
+
+                    .switch-input-label {
+                        opacity: 1;
+                        transition: opacity 0.4s;
+                        text-align: right;
+                        cursor: pointer;
+
+                        &.switch-input-label-blink {
+                            opacity: 0;
+                        }
+                    }
+                }
+                
+                &:last-child:not(:first-child) {
+                    display: flex;
+                    justify-content: flex-end;
+                }
+            }
+
+            &.switch-row-disabled {
+                cursor: default;
+                pointer-events: none;
+            }
+        }
+    }
+}

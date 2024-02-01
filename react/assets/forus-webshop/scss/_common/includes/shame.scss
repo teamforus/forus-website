@@ -10,6 +10,10 @@ html {
     display: none !important;
 }
 
+.show-sm-flex {
+    display: none !important;
+}
+
 .f-w {
     width: 100% !important;
 }
@@ -225,6 +229,10 @@ ui-view {
 
     .show-sm {
         display: block !important;
+    }
+
+    .show-sm-flex {
+        display: flex !important;
     }
 
     .sm-pull-left {

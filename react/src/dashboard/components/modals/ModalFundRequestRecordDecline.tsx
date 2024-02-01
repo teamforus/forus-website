@@ -28,27 +28,25 @@ export default function ModalFundRequestRecordDecline({
     const setProgress = useSetProgress();
     const fundRequestService = useFundRequestValidatorService();
 
-    const form = useFormBuilder({ note: '' }, () => {
+    const form = useFormBuilder({ note: '' }, async () => {
         setProgress(0);
 
         return fundRequestService
             .declineRecord(organization.id, fundRequestRecord.fund_request_id, fundRequestRecord.id, form.values.note)
-            .then(
-                () => {
-                    modal.close();
-                    onSubmitted();
-                },
-                (res: ResponseError) => {
-                    form.setIsLocked(false);
+            .then(() => {
+                modal.close();
+                onSubmitted();
+            })
+            .catch((err: ResponseError) => {
+                form.setIsLocked(false);
 
-                    if (res.status === 422) {
-                        return form.setErrors(res.data.errors);
-                    }
+                if (err.status === 422) {
+                    return form.setErrors(err.data.errors);
+                }
 
-                    modal.close();
-                    onSubmitted(res);
-                },
-            )
+                modal.close();
+                onSubmitted(err);
+            })
             .finally(() => setProgress(100));
     });
 
