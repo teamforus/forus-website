@@ -62,6 +62,7 @@ export default interface Product {
     price_max_locale: string;
     lowest_price?: string;
     lowest_price_locale?: string;
+    reservation_fields: boolean;
     reservation_phone: 'global' | 'no' | 'optional' | 'required';
     reservation_address: 'global' | 'no' | 'optional' | 'required';
     reservation_birth_date: 'global' | 'no' | 'optional' | 'required';

@@ -38,7 +38,7 @@ export default function ProviderOverview() {
 
         Promise.all([
             providerFundService.listFunds(activeOrganization.id).then((res) => {
-                setFundsTotal(res.data.data.length);
+                setFundsTotal(res.data.data.filter(isActive).length);
             }),
             productService.list(activeOrganization.id, { per_page: 1 }).then((res) => {
                 setProductsTotal(res.data.meta.total);

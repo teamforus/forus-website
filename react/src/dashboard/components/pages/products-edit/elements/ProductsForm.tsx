@@ -1,4 +1,4 @@
-import React, { FormEvent, Fragment, useCallback, useEffect, useState } from 'react';
+import React, { FormEvent, Fragment, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import PhotoSelector from '../../../elements/photo-selector/PhotoSelector';
 import useFormBuilder from '../../../../hooks/useFormBuilder';
@@ -28,6 +28,7 @@ import { useOrganizationService } from '../../../../services/OrganizationService
 import { ApiResponseSingle, ResponseError } from '../../../../props/ApiResponses';
 import CheckboxControl from '../../../elements/forms/controls/CheckboxControl';
 import { dateFormat, dateParse } from '../../../../helpers/dates';
+import { hasPermission } from '../../../../helpers/utils';
 
 export default function ProductsForm({
     organization,
@@ -58,49 +59,76 @@ export default function ProductsForm({
     const openModal = useOpenModal();
     const appConfigs = useAppConfigs();
 
-    const [reservationPolicies] = useState<
-        Array<{
-            value: 'global' | 'accept' | 'review';
-            label: string;
-        }>
-    >([
-        // Use global settings
-        { value: 'global', label: 'Gebruik standaard instelling' },
-        // Auto accept
-        { value: 'accept', label: 'Automatisch accepteren' },
-        // Review all reservations
-        { value: 'review', label: 'Handmatig controleren' },
-    ]);
+    const [reservationPoliciesText] = useState({
+        accept: 'Automatisch accepteren',
+        review: 'Handmatig controleren',
+    });
 
-    const [reservationFieldOptions] = useState<
-        Array<{
-            value: 'global' | 'no' | 'optional' | 'required';
-            label: string;
-        }>
-    >([
-        { value: 'global', label: 'Gebruik standaard instelling' },
+    const [reservationExtraPaymentText] = useState({
+        no: 'Nee',
+        yes: 'Ja',
+    });
+
+    const [reservationFieldText] = useState({
+        no: 'Nee',
+        optional: 'Optioneel',
+        required: 'Verplicht',
+    });
+
+    const [reservationFieldOptions] = useState(() => [
         { value: 'no', label: 'Nee' },
         { value: 'optional', label: 'Optioneel' },
         { value: 'required', label: 'Verplicht' },
     ]);
 
-    const [extraPaymentsOptions] = useState<
-        Array<{
-            value: 'global' | 'no' | 'yes';
-            label: string;
-        }>
-    >([
-        { value: 'global', label: 'Gebruik standaard instelling' },
-        { value: 'no', label: 'Nee' },
-        { value: 'yes', label: 'Ja' },
-    ]);
+    const reservationPolicies = useMemo(() => {
+        const defaultValue = reservationPoliciesText[organization.reservations_auto_accept ? 'accept' : 'review'];
 
-    const [priceTypes] = useState<
-        Array<{
-            value: 'regular' | 'discount_fixed' | 'discount_percentage' | 'free';
-            label: string;
-        }>
-    >([
+        return [
+            { value: 'global', label: `Gebruik standaard instelling (${defaultValue})` },
+            { value: 'accept', label: 'Automatisch accepteren' },
+            { value: 'review', label: 'Handmatig controleren' },
+        ];
+    }, [organization?.reservations_auto_accept, reservationPoliciesText]);
+
+    const extraPaymentsOptions = useMemo(() => {
+        const defaultValue = reservationExtraPaymentText[organization.reservation_allow_extra_payments ? 'yes' : 'no'];
+
+        return [
+            { value: 'global', label: `Gebruik standaard instelling (${defaultValue})` },
+            { value: 'no', label: 'Nee' },
+            { value: 'yes', label: 'Ja' },
+        ];
+    }, [organization?.reservation_allow_extra_payments, reservationExtraPaymentText]);
+
+    const reservationPhoneOptions = useMemo(() => {
+        const defaultValue = reservationFieldText[organization.reservation_phone];
+
+        return [
+            { value: 'global', label: `Gebruik standaard instelling (${defaultValue})` },
+            ...reservationFieldOptions,
+        ];
+    }, [organization?.reservation_phone, reservationFieldText, reservationFieldOptions]);
+
+    const reservationAddressOptions = useMemo(() => {
+        const defaultValue = reservationFieldText[organization.reservation_address];
+
+        return [
+            { value: 'global', label: `Gebruik standaard instelling (${defaultValue})` },
+            ...reservationFieldOptions,
+        ];
+    }, [organization?.reservation_address, reservationFieldText, reservationFieldOptions]);
+
+    const reservationBirthDateOptions = useMemo(() => {
+        const defaultValue = reservationFieldText[organization.reservation_birth_date];
+
+        return [
+            { value: 'global', label: `Gebruik standaard instelling (${defaultValue})` },
+            ...reservationFieldOptions,
+        ];
+    }, [organization?.reservation_birth_date, reservationFieldText, reservationFieldOptions]);
+
+    const [priceTypes] = useState([
         { value: 'regular', label: 'Normaal' },
         { value: 'discount_fixed', label: 'Korting €' },
         { value: 'discount_percentage', label: 'Korting %' },
@@ -340,6 +368,7 @@ export default function ProductsForm({
                     buttonSubmit={{
                         onClick: () => {
                             setAlreadyConfirmed(true);
+                            modal.close();
                             resolve(true);
                         },
                     }}
@@ -439,11 +468,12 @@ export default function ProductsForm({
                       description_html: '',
                       alternative_text: '',
                       reservation_enabled: false,
+                      reservation_fields: false,
                       product_category_id: null,
                       reservation_phone: 'global',
                       reservation_address: 'global',
                       reservation_birth_date: 'global',
-                      reservation_extra_payments: organization.allow_extra_payments_by_sponsor ? 'global' : null,
+                      reservation_extra_payments: 'global',
                       reservation_policy: 'global',
                   },
         );
@@ -828,11 +858,7 @@ export default function ProductsForm({
                                         />
                                         <FormError error={form.errors.reservation_enabled} />
                                     </div>
-                                    <Tooltip
-                                        text={
-                                            'Deze instelling zorgt ervoor dat de klant het aanbod via de webshop kan reseveren.'
-                                        }
-                                    />
+                                    <Tooltip text={t('product_edit.tooltips.reservation_enabled')} />
                                 </div>
                             </div>
                         </div>
@@ -852,9 +878,7 @@ export default function ProductsForm({
                                                         propKey={'value'}
                                                         allowSearch={false}
                                                         value={form.values.reservation_policy}
-                                                        onChange={(
-                                                            reservation_policy: 'global' | 'accept' | 'review',
-                                                        ) => {
+                                                        onChange={(reservation_policy: string) => {
                                                             form.update({ reservation_policy });
                                                         }}
                                                         options={reservationPolicies}
@@ -890,72 +914,90 @@ export default function ProductsForm({
                                             <FormError error={form.errors.reservation_policy} />
                                         </div>
                                     </div>
-                                    <div className="form-group form-group-inline">
-                                        <label className="form-label" htmlFor="reservation_phone">
-                                            Telefoonnummer klant
-                                        </label>
-                                        <SelectControl
-                                            className="form-control"
-                                            propKey={'value'}
-                                            propValue={'label'}
-                                            value={form.values.reservation_phone}
-                                            onChange={(
-                                                reservation_phone: 'global' | 'no' | 'optional' | 'required',
-                                            ) => {
-                                                form.update({ reservation_phone });
-                                            }}
-                                            options={reservationFieldOptions}
-                                            optionsComponent={SelectControlOptions}
-                                        />
-                                        <FormError error={form.errors.reservation_phone} />
-                                    </div>
-                                    <div className="form-group form-group-inline">
-                                        <label className="form-label" htmlFor="reservation_address">
-                                            Adres klant
-                                        </label>
 
-                                        <SelectControl
-                                            className="form-control"
-                                            propKey={'value'}
-                                            propValue={'label'}
-                                            value={form.values.reservation_address}
-                                            onChange={(
-                                                reservation_address: 'global' | 'no' | 'optional' | 'required',
-                                            ) => {
-                                                form.update({ reservation_address });
-                                            }}
-                                            options={reservationFieldOptions}
-                                            optionsComponent={SelectControlOptions}
-                                        />
-                                        <FormError error={form.errors.reservation_address} />
-                                    </div>
-                                    <div className="form-group form-group-inline">
-                                        <label className="form-label" htmlFor="reservation_birth_date">
-                                            Geboortedatum klant
+                                    <div className="form-group form-group-inline tooltipped">
+                                        <label htmlFor="" className="form-label">
+                                            Klantgegevens
                                         </label>
-
-                                        <SelectControl
-                                            className="form-control"
-                                            propKey={'value'}
-                                            propValue={'label'}
-                                            value={form.values.reservation_birth_date}
-                                            onChange={(
-                                                reservation_birth_date: 'global' | 'no' | 'optional' | 'required',
-                                            ) => {
-                                                form.update({ reservation_birth_date });
-                                            }}
-                                            options={reservationFieldOptions}
-                                            optionsComponent={SelectControlOptions}
-                                        />
-                                        <FormError error={form.errors.reservation_birth_date} />
+                                        <div className="form-offset">
+                                            <CheckboxControl
+                                                disabled={!isEditable}
+                                                id="reservation_fields"
+                                                title="De klant vragen om aanvullende informatie op te geven"
+                                                checked={form.values.reservation_fields}
+                                                onChange={(e) => form.update({ reservation_fields: e.target.checked })}
+                                            />
+                                            <FormError error={form.errors.reservation_fields} />
+                                        </div>
+                                        <Tooltip text={t('product_edit.tooltips.reservation_fields')} />
                                     </div>
+
+                                    {form.values.reservation_fields && (
+                                        <Fragment>
+                                            <div className="form-group form-group-inline tooltipped">
+                                                <label className="form-label" htmlFor="reservation_phone">
+                                                    Telefoonnummer klant
+                                                </label>
+                                                <SelectControl
+                                                    className="form-control"
+                                                    propKey={'value'}
+                                                    propValue={'label'}
+                                                    value={form.values.reservation_phone}
+                                                    onChange={(reservation_phone: string) => {
+                                                        form.update({ reservation_phone });
+                                                    }}
+                                                    options={reservationPhoneOptions}
+                                                    optionsComponent={SelectControlOptions}
+                                                />
+                                                <FormError error={form.errors.reservation_phone} />
+                                            </div>
+
+                                            <div className="form-group form-group-inline">
+                                                <label className="form-label" htmlFor="reservation_address">
+                                                    Adres klant
+                                                </label>
+
+                                                <SelectControl
+                                                    className="form-control"
+                                                    propKey={'value'}
+                                                    propValue={'label'}
+                                                    value={form.values.reservation_address}
+                                                    onChange={(reservation_address: string) => {
+                                                        form.update({ reservation_address });
+                                                    }}
+                                                    options={reservationAddressOptions}
+                                                    optionsComponent={SelectControlOptions}
+                                                />
+                                                <FormError error={form.errors.reservation_address} />
+                                            </div>
+
+                                            <div className="form-group form-group-inline">
+                                                <label className="form-label" htmlFor="reservation_birth_date">
+                                                    Geboortedatum klant
+                                                </label>
+
+                                                <SelectControl
+                                                    className="form-control"
+                                                    propKey={'value'}
+                                                    propValue={'label'}
+                                                    value={form.values.reservation_birth_date}
+                                                    onChange={(reservation_birth_date: string) => {
+                                                        form.update({ reservation_birth_date });
+                                                    }}
+                                                    options={reservationBirthDateOptions}
+                                                    optionsComponent={SelectControlOptions}
+                                                />
+                                                <FormError error={form.errors.reservation_birth_date} />
+                                            </div>
+                                        </Fragment>
+                                    )}
                                 </div>
                             )}
                         </div>
                     </div>
                 )}
 
-                {organization.allow_extra_payments_by_sponsor && (
+                {organization.can_receive_extra_payments && hasPermission(organization, 'manage_payment_methods') && (
                     <div className="card-section card-section-primary">
                         <div className="row">
                             <div className="col-lg-9">
@@ -972,7 +1014,7 @@ export default function ProductsForm({
                                         propValue={'label'}
                                         disabled={!isEditable}
                                         value={form.values.reservation_extra_payments}
-                                        onChange={(reservation_extra_payments: 'global' | 'no' | 'yes') => {
+                                        onChange={(reservation_extra_payments: string) => {
                                             form.update({ reservation_extra_payments });
                                         }}
                                         options={extraPaymentsOptions}

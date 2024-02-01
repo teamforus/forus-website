@@ -86,21 +86,6 @@ export class ProductReservationService<T = Reservation> {
         return Papa.unparse([headers, values]);
     };
 
-    public acceptAllowed = (reservation: Reservation) => {
-        return (
-            reservation &&
-            reservation.state === 'pending' &&
-            !reservation.expired &&
-            !reservation.product.deleted &&
-            (!reservation.extra_payment || reservation.extra_payment.state == 'paid') &&
-            (!reservation.extra_payment || !reservation.extra_payment.is_fully_refunded)
-        );
-    };
-
-    public rejectAllowed = (reservation: Reservation) => {
-        return reservation && !reservation.expired && reservation.state === 'pending';
-    };
-
     public stateClass = (reservation: Reservation) => {
         return (
             {

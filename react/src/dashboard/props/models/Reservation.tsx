@@ -37,6 +37,8 @@ export default interface Reservation {
     expire_at?: string;
     expire_at_locale?: string;
     user_note?: string;
+    acceptable?: boolean;
+    rejectable?: boolean;
     custom_fields?: Array<{
         label: string;
         value: string;

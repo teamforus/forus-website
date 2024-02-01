@@ -29,7 +29,7 @@
     right      : 6px;
     top        : 3px;
     bottom     : 3px;
-    cursor: pointer;
+    cursor: pointer; 
     background-color: #eee;
     opacity: .5;
     transition: all .4s;
@@ -133,7 +133,7 @@
             }
 
             &-header {
-                &:nth-child(odd),
+                &:nth-child(odd), 
                 &:nth-child(even) {
                     background: #fff;
                     border-bottom: 1px solid #e9ecee;

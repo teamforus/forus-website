@@ -29,7 +29,7 @@ import SelectControlOptions from '../../elements/select-control/templates/Select
 import DatePickerControl from '../../elements/forms/controls/DatePickerControl';
 import CardHeaderFilter from '../../elements/tables/elements/CardHeaderFilter';
 import StateNavLink from '../../../modules/state_router/StateNavLink';
-import TranslateHtml from '../../../i18n/elements/TranslateHtml';
+import TranslateHtml from '../../elements/translate-html/TranslateHtml';
 import { hasPermission } from '../../../helpers/utils';
 import useTransactionBulkExportService from '../../../services/exports/useTransactionBulkExportService';
 import { dateFormat, dateParse } from '../../../helpers/dates';

@@ -1,4 +1,5 @@
 import FundProvider from './FundProvider';
+import Fund from './Fund';
 
 export default interface FundProviderUnsubscribe {
     id: number;
@@ -9,6 +10,7 @@ export default interface FundProviderUnsubscribe {
     is_expired: boolean;
     can_cancel: boolean;
     fund_provider: FundProvider;
+    fund: Fund;
     unsubscribe_at: string;
     unsubscribe_at_locale: string;
     unsubscribe_days_left: number;

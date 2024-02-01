@@ -330,6 +330,7 @@
 
                     .td-entity-main-content {
                         display: grid;
+                        align-items: center;
                     }
                 }
 
@@ -371,18 +372,18 @@
                 }
 
                 .td-collapsable {
-                    display: grid;
-                    grid-template-columns: 15px auto 1fr;
-
-                    .collapsable-icon,
-                    .collapsable-content {
-                        display: grid;
-                        align-items: center;
-                    }
+                    display: flex;
+                    flex-direction: row;
+                    gap: 10px;
 
                     .collapsable-icon {
+                        flex: 0 0 15px;
+                        width: 15px;
                         font-size: 20px;
                         margin-left: -7.5px;
+                        display: flex;
+                        flex-direction: column;
+                        justify-content: center;
 
                         .mdi {
                             color: var(--text-color);
@@ -396,9 +397,19 @@
                         }
                     }
 
+                    .collapsable-media {
+                        display: flex;
+                        flex: 0 0 auto;
+                        flex-direction: column;
+                        justify-content: center;
+                    }
+
                     .collapsable-content {
-                        grid-template-columns: repeat(10, auto) 1fr;
-                        gap: 10px;
+                        flex: 1 1 auto;
+                        flex-direction: column;
+                        justify-content: center;
+                        @include ellipsis();
+                        display: flex;
                     }
                 }
 

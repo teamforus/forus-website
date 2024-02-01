@@ -60,4 +60,5 @@ export default interface Organization {
     offices_count: number;
     can_view_provider_extra_payments?: boolean;
     allow_extra_payments_by_sponsor?: boolean;
+    can_receive_extra_payments?: boolean;
 }

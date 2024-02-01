@@ -194,7 +194,7 @@ export default function ProviderFundsTable({
             </div>
             {!loading && providerFunds.data.length > 0 && (
                 <div className="card-section">
-                    <div className="card-block card-block-table card-block-table-fund form">
+                    <div className="card-block card-block-table form">
                         <div className="table-wrapper">
                             <table className="table">
                                 <tbody>
@@ -235,19 +235,33 @@ export default function ProviderFundsTable({
                                                     />
                                                 </td>
                                             )}
-                                            <td className="nowrap">
-                                                <div className="fund-img">
-                                                    <img
-                                                        src={
-                                                            providerFund.fund?.logo?.sizes?.thumbnail ||
-                                                            assetUrl(
-                                                                '/assets/img/placeholders/organization-thumbnail.png',
-                                                            )
-                                                        }
-                                                        alt=""
-                                                    />
+                                            <td>
+                                                <div className="td-collapsable">
+                                                    <div className="collapsable-media">
+                                                        <img
+                                                            className="td-media td-media-sm"
+                                                            src={
+                                                                providerFund.fund.logo?.sizes?.thumbnail ||
+                                                                assetUrl('/assets/img/placeholders/fund-thumbnail.png')
+                                                            }
+                                                            alt=""
+                                                        />
+                                                    </div>
+                                                    <div className="collapsable-content">
+                                                        <div
+                                                            className="text-primary text-medium"
+                                                            title={providerFund.fund.name}>
+                                                            {strLimit(providerFund.fund.name, 32)}
+                                                        </div>
+                                                        <a
+                                                            href={providerFund.fund.implementation.url_webshop}
+                                                            target="_blank"
+                                                            className="text-strong text-md text-muted-dark text-inherit"
+                                                            rel="noreferrer">
+                                                            {strLimit(providerFund.fund.implementation.name, 32)}
+                                                        </a>
+                                                    </div>
                                                 </div>
-                                                <div className="fund-title">{providerFund.fund?.name}</div>
                                             </td>
                                             <td title={providerFund.fund?.organization?.name}>
                                                 {strLimit(providerFund.fund?.organization?.name, 25)}

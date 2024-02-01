@@ -35,9 +35,6 @@ export default function ReservationsView() {
 
     const [transaction, setTransaction] = useState<Transaction>(null);
     const [reservation, setReservation] = useState<Reservation>(null);
-
-    const [allowAcceptReservation, setAllowAcceptReservation] = useState(false);
-    const [allowRejectReservation, setAllowRejectReservation] = useState(false);
     const [stateClass, setStateClass] = useState('label-default');
 
     const showRejectInfoExtraPaid = useShowRejectInfoExtraPaid();
@@ -152,8 +149,6 @@ export default function ReservationsView() {
     }, [fetchTransaction, reservation?.voucher_transaction?.address]);
 
     useEffect(() => {
-        setAllowAcceptReservation(productReservationService.acceptAllowed(reservation));
-        setAllowRejectReservation(productReservationService.rejectAllowed(reservation));
         setStateClass(productReservationService.stateClass(reservation));
     }, [productReservationService, reservation]);
 
@@ -211,7 +206,7 @@ export default function ReservationsView() {
                         <div className="flex flex-self-start">
                             <div className="flex-row">
                                 <div className="button-group">
-                                    {allowAcceptReservation && (
+                                    {reservation.acceptable && (
                                         <div
                                             className="button button-primary button-sm"
                                             onClick={() => acceptReservation(reservation)}>
@@ -220,7 +215,7 @@ export default function ReservationsView() {
                                         </div>
                                     )}
 
-                                    {allowRejectReservation && (
+                                    {reservation.rejectable && (
                                         <div
                                             className="button button-danger button-sm"
                                             onClick={() => rejectReservation(reservation)}>

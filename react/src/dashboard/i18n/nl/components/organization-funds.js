@@ -24,6 +24,7 @@ module.exports = {
             name: "Naam",
             remaining: "Resterend bedrag",
             requester_count: "Aanvragers",
+            implementation: "Implementatie",
             status: "Status",
             actions: "Actie",
         },
@@ -32,6 +33,7 @@ module.exports = {
             budget_left: "Resterend",
             budget_left_min: "0",
             budget_left_max: "Alles",
+            implementation: "Implementatie",
             state: "Status",
         },
     }

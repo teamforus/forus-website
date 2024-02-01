@@ -64,13 +64,21 @@
     @import 'blocks/block-bi-info.scss';
     @import 'blocks/block-pincode.scss';
     @import 'blocks/block-voucher-records-editor.scss';
-    @import 'blocks/block-features-overview.scss';
-    @import 'blocks/block-features-demo-banner.scss';
     @import 'blocks/block-content.scss';
-    @import 'blocks/block-features.scss';
-    @import 'blocks/block-feature.scss';
-    @import 'blocks/block-feature-faq.scss';
+    
+    // Marketplace feature blocks
+    @import 'blocks/marketplace-features/block-features-overview.scss';
+    @import 'blocks/marketplace-features/block-features-demo-banner.scss';
+    @import 'blocks/marketplace-features/block-feature-icons.scss';
+    @import 'blocks/marketplace-features/block-feature-steps.scss';
+    @import 'blocks/marketplace-features/block-feature-list.scss';
+    @import 'blocks/marketplace-features/block-feature-text-image-columns.scss';
+    @import 'blocks/marketplace-features/block-features.scss';
+    @import 'blocks/marketplace-features/block-feature.scss';
+    @import 'blocks/marketplace-features/block-feature-faq.scss';
+
     @import 'blocks/block-payment-connection.scss';
+    @import 'blocks/block-pre-checks-blocks-editor';
 }
 
 // Select controls
@@ -89,6 +97,7 @@
     @import 'modals/modal-photo-upload.scss';
     @import 'modals/modal-physical-cards.scss';
     @import 'modals/modal-voucher-transaction.scss';
+    @import 'modals/modal-pin-code.scss';
 }
 
 html, body {
@@ -1437,28 +1446,6 @@ body {
         }
     }
 
-    &.card-block-table-fund {
-        .fund-img {
-            float: left;
-            display: block;
-            width: 24px;
-            height: 24px;
-            border: 1px solid #e7e7e7;
-            border-radius: 24px;
-            overflow: hidden;
-            margin-right: 15px;
-
-            img {
-                width: 100%;
-                display: block;
-            }
-        }
-
-        .fund-title {
-            color: #004195;
-        }
-    }
-
     &.card-block-fund {
         padding-top: 15px;
 
@@ -2060,6 +2047,72 @@ body {
                             }
                         }
                     }   
+                }
+            }
+        }
+    }
+
+    &.card-block-requests {
+        box-shadow: 0px 2px 5px rgba(25, 39, 52, 0.11);
+        border-radius: 4px;
+        margin: 20px 0;
+        color: #646F79;
+        background-color: #fff;
+        border: 1px solid #D4D9DD;
+
+        .card-section {
+            padding: 10px 15px;
+        }
+
+        .card-heading {
+            flex: 1;
+            margin: 0;
+            align-self: center;
+            font: 600 13px/13px var(--base-font);
+            letter-spacing: -0.2px;
+            color: #404040;
+            cursor: pointer;
+        }
+
+        .button {
+            font: 600 12px/12px var(--base-font);
+            color: #134478;
+        }
+
+        .mdi {
+            color: #134478;
+            margin-right: 6px;
+        }
+
+        &.card-block-requests-danger {
+            color: #404040;
+            background-color: #FFF5F0;
+            border: 1px solid #E63B3B;
+
+            .mdi {
+                color: #E63B3B;
+            }
+
+            .button {
+                .mdi {
+                    margin-left: 3px;
+                    color: #134478;
+                }
+            }
+        }
+
+        &.card-block-requests-warning {
+            background-color: #FCFAF6;
+            border: 1px solid #F8E39A;
+            color: #404040;
+
+            .mdi {
+                color: #FFB05A;
+            }
+
+            .button {
+                .mdi {
+                    color: #FFB05A;
                 }
             }
         }

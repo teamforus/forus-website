@@ -1,19 +1,32 @@
 &.block-content {
     color: #282b39;
-    font: 400 13px/18px var(--base-font);
+    font: 400 14px/22px var(--base-font);
 
     h1, h2, h3, h4, h5, h6 {
         margin: 0 0 0;
         font-weight: 600;
     }
 
-    h1, h2, h3, h4, h5, h6, p, img, ol, ul {
-        margin-bottom: 15px;
+    h1, h2, h3, h4, h5, h6{
+        margin-bottom: 12px;
         font-family: inherit;
 
         &:last-child:not(:first-child) {
             margin-bottom: 0;
         }
+    }
+
+    p, ol, ul {
+        margin-bottom: 32px;
+        font-family: inherit;
+
+        &:last-child:not(:first-child) {
+            margin-bottom: 0;
+        }
+    }
+
+    h3 {
+        font-size: 16px;
     }
 
     h4 {
@@ -23,6 +36,11 @@
     img {
         width: 100%;
         display: block;
+        margin-bottom: 32px;
+
+        &:last-child:not(:first-child) {
+            margin-bottom: 0;
+        }
     }
 
     p {
@@ -37,8 +55,13 @@
         li {
             font: inherit;
             font-size: 14px;
-            line-height: 20px;
+            line-height: 22px;
         }
+    }
+
+    ul {
+        list-style: disc;
+        margin-left: 5px;
     }
 
     ol {
@@ -50,6 +73,6 @@
         background: var(--border-color-light);
         height: 1px;
         width: 100%;
-        margin: 0 0 15px;
+        margin: 0 0 32px;
     }
 }

@@ -10,7 +10,7 @@ import FormError from '../../elements/forms/errors/FormError';
 import useEnvData from '../../../hooks/useEnvData';
 import useAssetUrl from '../../../hooks/useAssetUrl';
 import { useTranslation } from 'react-i18next';
-import TranslateHtml from '../../../i18n/elements/TranslateHtml';
+import TranslateHtml from '../../elements/translate-html/TranslateHtml';
 import { ResponseError } from '../../../props/ApiResponses';
 
 export default function SignIn() {

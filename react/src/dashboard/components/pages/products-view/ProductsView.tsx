@@ -7,7 +7,7 @@ import StateNavLink from '../../../modules/state_router/StateNavLink';
 import LoadingCard from '../../elements/loading-card/LoadingCard';
 import { useTranslation } from 'react-i18next';
 import useAssetUrl from '../../../hooks/useAssetUrl';
-import TranslateHtml from '../../../i18n/elements/TranslateHtml';
+import TranslateHtml from '../../elements/translate-html/TranslateHtml';
 import { PaginationData } from '../../../props/ApiResponses';
 import useFilter from '../../../hooks/useFilter';
 import Paginator from '../../../modules/paginator/components/Paginator';

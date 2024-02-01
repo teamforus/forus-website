@@ -25,7 +25,7 @@ import useOrganization from '../../../hooks/useOrganizations';
 import { authContext } from '../../../contexts/AuthContext';
 import SignUpProgress from './elements/SignUpProgress';
 import StateNavLink from '../../../modules/state_router/StateNavLink';
-import TranslateHtml from '../../../i18n/elements/TranslateHtml';
+import TranslateHtml from '../../elements/translate-html/TranslateHtml';
 import useEnvData from '../../../hooks/useEnvData';
 import PhoneControl from '../../elements/forms/controls/PhoneControl';
 import useShareService from '../../../services/ShareService';

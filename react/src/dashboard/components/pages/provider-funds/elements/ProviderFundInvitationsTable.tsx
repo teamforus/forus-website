@@ -165,7 +165,7 @@ export default function ProviderFundInvitationsTable({
             </div>
             {!loading && invitations.data.length > 0 && (
                 <div className="card-section">
-                    <div className="card-block card-block-table card-block-table-fund form">
+                    <div className="card-block card-block-table form">
                         <div className="table-wrapper">
                             <table className="table">
                                 <tbody>
@@ -205,20 +205,33 @@ export default function ProviderFundInvitationsTable({
                                                     />
                                                 </td>
                                             )}
-
                                             <td>
-                                                <div className="fund-img">
-                                                    <img
-                                                        src={
-                                                            invitation.fund?.logo?.sizes?.thumbnail ||
-                                                            assetUrl(
-                                                                '/assets/img/placeholders/organization-thumbnail.png',
-                                                            )
-                                                        }
-                                                        alt=""
-                                                    />
+                                                <div className="td-collapsable">
+                                                    <div className="collapsable-media">
+                                                        <img
+                                                            className="td-media td-media-sm"
+                                                            src={
+                                                                invitation.fund?.logo?.sizes?.thumbnail ||
+                                                                assetUrl('/assets/img/placeholders/fund-thumbnail.png')
+                                                            }
+                                                            alt=""
+                                                        />
+                                                    </div>
+                                                    <div className="collapsable-content">
+                                                        <div
+                                                            className="text-primary text-medium"
+                                                            title={invitation.fund.name}>
+                                                            {strLimit(invitation.fund.name, 32)}
+                                                        </div>
+                                                        <a
+                                                            href={invitation.fund.implementation.url_webshop}
+                                                            target="_blank"
+                                                            className="text-strong text-md text-muted-dark text-inherit"
+                                                            rel="noreferrer">
+                                                            {strLimit(invitation.fund.implementation.name, 32)}
+                                                        </a>
+                                                    </div>
                                                 </div>
-                                                <div className="fund-title">{invitation.fund?.name}</div>
                                             </td>
 
                                             <td title={invitation.fund?.organization?.name}>

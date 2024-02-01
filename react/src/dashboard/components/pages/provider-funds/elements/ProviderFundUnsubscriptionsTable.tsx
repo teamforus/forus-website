@@ -241,7 +241,7 @@ export default function ProviderFundUnsubscriptionsTable({
             </div>
             {!loading && fundUnsubscriptions.data.length > 0 && (
                 <div className="card-section">
-                    <div className="card-block card-block-table card-block-table-fund form">
+                    <div className="card-block card-block-table form">
                         <div className="table-wrapper">
                             <table className="table">
                                 <tbody>
@@ -279,21 +279,31 @@ export default function ProviderFundUnsubscriptionsTable({
                                                 </td>
                                             )}
 
-                                            <td className="nowrap">
-                                                <div className="fund-img">
-                                                    <img
-                                                        src={
-                                                            unsubscription.fund_provider?.fund?.logo?.sizes
-                                                                ?.thumbnail ||
-                                                            assetUrl(
-                                                                '/assets/img/placeholders/organization-thumbnail.png',
-                                                            )
-                                                        }
-                                                        alt=""
-                                                    />
-                                                </div>
-                                                <div className="fund-title">
-                                                    {unsubscription.fund_provider.fund.name}
+                                            <td>
+                                                <div className="td-collapsable">
+                                                    <div className="collapsable-media">
+                                                        <img
+                                                            src={
+                                                                unsubscription.fund_provider?.fund?.logo?.sizes
+                                                                    ?.thumbnail ||
+                                                                assetUrl('/assets/img/placeholders/fund-thumbnail.png')
+                                                            }
+                                                            className="td-media td-media-sm"
+                                                            alt=""
+                                                        />
+                                                    </div>
+                                                    <div className="collapsable-content">
+                                                        <div className="text-primary text-medium">
+                                                            {unsubscription.fund_provider.fund.name}
+                                                        </div>
+                                                        <a
+                                                            target="_blank"
+                                                            rel="noreferrer"
+                                                            href={unsubscription.fund.implementation.url_webshop}
+                                                            className="text-strong text-md text-muted-dark text-inherit">
+                                                            {strLimit(unsubscription.fund.implementation.name, 40)}
+                                                        </a>
+                                                    </div>
                                                 </div>
                                             </td>
                                             <td title={unsubscription.fund_provider.fund.organization.name}>

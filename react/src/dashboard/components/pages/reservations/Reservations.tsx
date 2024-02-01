@@ -38,11 +38,6 @@ import useShowReservationRejectInfoExtraPaid from '../../../services/helpers/res
 import useConfirmReservationArchive from '../../../services/helpers/reservations/useConfirmReservationArchive';
 import useConfirmReservationUnarchive from '../../../services/helpers/reservations/useConfirmReservationUnarchive';
 
-type ReservationLocal = Partial<Reservation> & {
-    allowAcceptReservation: boolean;
-    allowRejectReservation: boolean;
-};
-
 export default function Reservations() {
     const { t } = useTranslation();
     const activeOrganization = useActiveOrganization();
@@ -69,7 +64,7 @@ export default function Reservations() {
     const confirmReservationUnarchive = useConfirmReservationUnarchive();
     const showReservationRejectInfoExtraPaid = useShowReservationRejectInfoExtraPaid();
 
-    const [reservations, setReservations] = useState<PaginationData<ReservationLocal>>(null);
+    const [reservations, setReservations] = useState<PaginationData<Reservation>>(null);
 
     const [activeReservations, setActiveReservations] = useState<PaginationData<Reservation>>(null);
     const [archivedReservations, setArchivedReservations] = useState<PaginationData<Reservation>>(null);
@@ -77,9 +72,24 @@ export default function Reservations() {
     const [shownReservationsType, setShownReservationType] = useState('active');
     const [acceptedByDefault, setAcceptByDefault] = useState(activeOrganization.reservations_auto_accept);
 
+    const showExtraPayments = useMemo(() => {
+        const hasExtraPaymentsOnPage =
+            reservations?.data.filter((reservation) => {
+                return reservation.extra_payment !== null;
+            }).length > 0;
+
+        return activeOrganization.can_view_provider_extra_payments || hasExtraPaymentsOnPage;
+    }, [activeOrganization, reservations]);
+
     const reservationEnabled = useMemo(() => {
         return activeOrganization.reservations_budget_enabled || activeOrganization.reservations_subsidy_enabled;
     }, [activeOrganization]);
+
+    const [extraPaymentStates] = useState([
+        { key: 'canceled_payment_expired', name: 'Geannuleerd door verlopen bijbetaling' }, // Canceled payment expired
+        { key: 'canceled_payment_canceled', name: 'Geannuleerd door ingetrokken bijbetaling' }, // Canceled payment canceled
+        { key: 'canceled_payment_failed', name: 'Geannuleerd door mislukte bijbetaling' }, // Canceled payment failed
+    ]);
 
     const [states] = useState([
         { key: null, name: 'Alle' }, // All
@@ -89,9 +99,7 @@ export default function Reservations() {
         { key: 'rejected', name: 'Geweigerd' }, // Rejected
         { key: 'canceled', name: 'Geannuleerd door aanbieder' }, // Canceled by provider
         { key: 'canceled_by_client', name: 'Geannuleerd door aanvrager' }, // Canceled by client
-        { key: 'canceled_payment_expired', name: 'Geannuleerd door verlopen bijbetaling' }, // Canceled payment expired
-        { key: 'canceled_payment_canceled', name: 'Geannuleerd door ingetrokken bijbetaling' }, // Canceled payment canceled
-        { key: 'canceled_payment_failed', name: 'Geannuleerd door mislukte bijbetaling' }, // Canceled payment failed
+        ...(activeOrganization.can_view_provider_extra_payments ? extraPaymentStates : []), // Extra payment states
     ]);
 
     const filter = useFilter({
@@ -102,20 +110,6 @@ export default function Reservations() {
         fund_id: null,
         product_id: null,
     });
-
-    const mapReservations = useCallback(
-        (reservations: PaginationData<Reservation>) => {
-            return {
-                ...reservations,
-                data: reservations.data.map((reservation) => ({
-                    ...reservation,
-                    allowAcceptReservation: productReservationService.acceptAllowed(reservation),
-                    allowRejectReservation: productReservationService.rejectAllowed(reservation),
-                })),
-            };
-        },
-        [productReservationService],
-    );
 
     const fetchReservations = useCallback(
         (query, archived = false) => {
@@ -139,7 +133,7 @@ export default function Reservations() {
     }, [fetchReservations, filter.activeValues, setProgress]);
 
     const acceptReservation = useCallback(
-        (reservation: ReservationLocal) => {
+        (reservation: Reservation) => {
             confirmReservationApproval(reservation as Reservation, () => {
                 productReservationService.accept(activeOrganization.id, reservation.id).then(
                     () => {
@@ -161,12 +155,12 @@ export default function Reservations() {
     );
 
     const rejectReservation = useCallback(
-        (reservation: ReservationLocal) => {
+        (reservation: Reservation) => {
             if (reservation.extra_payment?.is_paid && !reservation.extra_payment?.is_fully_refunded) {
                 return showReservationRejectInfoExtraPaid();
             }
 
-            confirmReservationRejection(reservation as Reservation, () => {
+            confirmReservationRejection(reservation, () => {
                 productReservationService.reject(activeOrganization.id, reservation.id).then(
                     () => {
                         pushSuccess('Opgeslagen!');
@@ -281,7 +275,7 @@ export default function Reservations() {
     }, [activeOrganization.id, filter.values, productReservationsExportService]);
 
     const archiveReservation = useCallback(
-        (reservation: ReservationLocal) => {
+        (reservation: Reservation) => {
             confirmReservationArchive(reservation as Reservation, () => {
                 productReservationService.archive(activeOrganization.id, reservation.id).then(
                     () => {
@@ -303,7 +297,7 @@ export default function Reservations() {
     );
 
     const unarchiveReservation = useCallback(
-        (reservation: ReservationLocal) => {
+        (reservation: Reservation) => {
             confirmReservationUnarchive(reservation as Reservation, () => {
                 productReservationService.unarchive(activeOrganization.id, reservation.id).then(
                     () => {
@@ -335,8 +329,8 @@ export default function Reservations() {
             return;
         }
 
-        setReservations(mapReservations(shownReservationsType == 'active' ? activeReservations : archivedReservations));
-    }, [activeReservations, archivedReservations, mapReservations, shownReservationsType]);
+        setReservations(shownReservationsType == 'active' ? activeReservations : archivedReservations);
+    }, [activeReservations, archivedReservations, shownReservationsType]);
 
     // Fetch filter models
     useEffect(() => {
@@ -513,7 +507,7 @@ export default function Reservations() {
                                     <ThSortable label={t('reservations.labels.number')} />
                                     <ThSortable label={t('reservations.labels.product')} />
                                     <ThSortable label={t('reservations.labels.price')} />
-                                    <ThSortable label={t('reservations.labels.amount_extra')} />
+                                    {showExtraPayments && <ThSortable label={t('reservations.labels.amount_extra')} />}
                                     <ThSortable label={t('reservations.labels.customer')} />
                                     <ThSortable label={t('reservations.labels.reserved_at')} />
                                     <ThSortable label={t('reservations.labels.status')} />
@@ -551,7 +545,11 @@ export default function Reservations() {
                                             </StateNavLink>
                                         </td>
                                         <td>{reservation.amount_locale}</td>
-                                        <td>{reservation.amount_extra ? reservation.amount_extra_locale : '-'}</td>
+
+                                        {showExtraPayments && (
+                                            <td>{reservation.amount_extra ? reservation.amount_extra_locale : '-'}</td>
+                                        )}
+
                                         <td>
                                             {(reservation.first_name || reservation.last_name) && (
                                                 <strong>{reservation.first_name + ' ' + reservation.last_name}</strong>
@@ -583,7 +581,7 @@ export default function Reservations() {
                                         </td>
                                         <td>
                                             <div className="flex-group flex flex-end">
-                                                {reservation.allowAcceptReservation && (
+                                                {reservation.acceptable && (
                                                     <button
                                                         className="button button-sm button-primary-light button-icon"
                                                         onClick={() => acceptReservation(reservation)}>
@@ -591,7 +589,7 @@ export default function Reservations() {
                                                     </button>
                                                 )}
 
-                                                {reservation.allowRejectReservation && (
+                                                {reservation.rejectable && (
                                                     <button
                                                         className="button button-sm button-danger button-icon"
                                                         onClick={() => rejectReservation(reservation)}>

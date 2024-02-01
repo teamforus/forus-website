@@ -1,0 +1,102 @@
+&.block-pre-checks-blocks-editor {
+    display: flex;
+    flex-direction: column;
+
+    .pre-check-item {
+        display: flex;
+        flex-direction: column;
+        margin: 0 0 10px;
+        background: #FFFFFF;
+        border: 1px solid var(--border-color);
+        box-shadow: 0px 0px 5px rgba(25, 39, 52, 0.22);
+        border-radius: calc(var(--border-radius) / 2);
+        position: relative;
+
+        .pre-check-item-header {
+            display: flex;
+            flex-direction: row;
+            padding: 10px 10px 10px 20px;
+
+            .pre-check-item-header-title {
+                flex-grow: 1;
+                font: 700 14px/30px var(--base-font);
+                margin: 0 0;
+                transition: line-height .4s;
+                @include ellipsis();
+            }
+            
+            .pre-check-item-header-drag {
+                font-size: 20px;
+                line-height: 30px;
+                padding-right: 5px;
+                margin-left: -10px;
+                cursor: grab;
+                color: #9da1a3;
+                transition: color .4s;
+
+                &:hover {
+                    color: var(--text-color);
+                }
+            }
+
+            .pre-check-item-header-actions {
+                display: flex;
+                padding-left: 20px;
+            }
+
+            &:not(:last-child) {
+                border-bottom: 1px solid var(--border-color);
+            }
+        }
+
+        .pre-check-item-body {
+            display: block;
+
+            .pre-check-item-body-content, .pre-check-item-body-records {
+                padding: 20px;
+            }
+
+            .pre-check-item-body-records {
+                border-top: 1px solid var(--border-color);
+    
+                .block-records-title {
+                    font: 700 14px/24px var(--base-font);
+                    margin-bottom: 10px;
+                }
+    
+                .pre-check-item-body-records-items {
+                    .pre-check-item-body-records-empty {
+                        height: 200px;
+                        border: 1px dashed #8fa2a5;
+                        display: flex;
+                        flex-direction: column;
+                        justify-content: center;
+                        align-items: center;
+                        border-radius: var(--border-radius);
+                        gap: 10px;
+
+                        .pre-check-item-body-records-empty-img {
+                            img {
+                                width: 50px;
+                                display: block;
+                            }
+                        }
+    
+                        .pre-check-item-body-records-empty-title {
+                            font: 500 14px/21px var(--base-font);
+                            color: #646F79;
+                        }
+                    }
+                }
+            }
+        }
+
+        &:last-child {
+            margin-bottom: 0;
+        }
+    }
+
+    .pre-check-actions {
+        padding-top: 10px;
+    }
+}

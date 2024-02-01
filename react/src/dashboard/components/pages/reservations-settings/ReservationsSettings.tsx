@@ -1,4 +1,4 @@
-import React, { Fragment, useMemo, useState } from 'react';
+import React, { Fragment, useState } from 'react';
 import useActiveOrganization from '../../../hooks/useActiveOrganization';
 import { useTranslation } from 'react-i18next';
 import LoadingCard from '../../elements/loading-card/LoadingCard';
@@ -42,13 +42,6 @@ export default function ReservationsSettings() {
         { value: false, label: 'Nee' },
         { value: true, label: 'Ja' },
     ]);
-
-    const allowExtraPayments = useMemo(() => {
-        return (
-            activeOrganization.allow_extra_payments_by_sponsor &&
-            hasPermission(activeOrganization, 'manage_payment_methods')
-        );
-    }, [activeOrganization]);
 
     const form = useFormBuilder(
         {
@@ -182,32 +175,34 @@ export default function ReservationsSettings() {
                             </div>
                         </div>
                     </div>
-                    {allowExtraPayments && (
-                        <div className="card-section card-section-primary card-section-settings">
-                            <div className="row">
-                                <div className="col-xs-12 col-lg-8">
-                                    <div className="form-group form-group-inline">
-                                        <label className="form-label" htmlFor="reservation_birth_date">
-                                            {t('reservation_settings.labels.extra_payments')}
-                                        </label>
-                                        <div className="form-offset">
-                                            <SelectControl
-                                                value={form.values.reservation_allow_extra_payments}
-                                                propKey={'value'}
-                                                propValue={'label'}
-                                                onChange={(value: boolean) =>
-                                                    form.update({ reservation_allow_extra_payments: value })
-                                                }
-                                                options={extraPaymentsOptions}
-                                                optionsComponent={SelectControlOptions}
-                                            />
-                                            <FormError error={form.errors.reservation_allow_extra_payments} />
+
+                    {activeOrganization.can_receive_extra_payments &&
+                        hasPermission(activeOrganization, 'manage_payment_methods') && (
+                            <div className="card-section card-section-primary card-section-settings">
+                                <div className="row">
+                                    <div className="col-xs-12 col-lg-8">
+                                        <div className="form-group form-group-inline">
+                                            <label className="form-label" htmlFor="reservation_birth_date">
+                                                {t('reservation_settings.labels.extra_payments')}
+                                            </label>
+                                            <div className="form-offset">
+                                                <SelectControl
+                                                    value={form.values.reservation_allow_extra_payments}
+                                                    propKey={'value'}
+                                                    propValue={'label'}
+                                                    onChange={(value: boolean) =>
+                                                        form.update({ reservation_allow_extra_payments: value })
+                                                    }
+                                                    options={extraPaymentsOptions}
+                                                    optionsComponent={SelectControlOptions}
+                                                />
+                                                <FormError error={form.errors.reservation_allow_extra_payments} />
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    )}
+                        )}
 
                     <div className="card-section card-section-primary">
                         <div className="button-group flex-center">
