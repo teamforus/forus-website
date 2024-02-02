@@ -853,10 +853,9 @@ export default function FundRequestsView() {
                                                             className={`mdi mdi-menu-${
                                                                 record.shown ? 'up' : 'down'
                                                             } td-menu-icon`}
-                                                            onClick={() =>
-                                                                fundRequestRecord(record, { shown: !record?.shown })
-                                                            }
-                                                            data-ng-click="record.shown = !record.shown"
+                                                            onClick={() => {
+                                                                fundRequestRecord(record, { shown: !record?.shown });
+                                                            }}
                                                         />
                                                     )}
                                                 </td>

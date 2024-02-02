@@ -8,10 +8,14 @@ import useSetProgress from '../../../hooks/useSetProgress';
 import LoadingCard from '../../elements/loading-card/LoadingCard';
 import useEnvData from '../../../hooks/useEnvData';
 import { useEmployeeService } from '../../../services/EmployeeService';
+import StateNavLink from '../../../modules/state_router/StateNavLink';
+import useAppConfigs from '../../../hooks/useAppConfigs';
+import { hasPermission } from '../../../helpers/utils';
 
 export default function ProviderOverview() {
     const envData = useEnvData();
     const setProgress = useSetProgress();
+    const appConfigs = useAppConfigs();
     const activeOrganization = useActiveOrganization();
 
     const productService = useProductService();
@@ -72,74 +76,100 @@ export default function ProviderOverview() {
         <div className="provider-overview" data-dusk="providerOverview">
             <div className="block block-charts">
                 <div className="chart-row">
-                    <div className="card" data-ng-if="$ctrl.organization | hasPerm:['manage_products']">
-                        <div className="card-section">
-                            <div className="chart-control chart-control-provider_overview">
-                                <div className="chart-label">Aanbod</div>
-                                <div className="chart-value chart-value">
-                                    <div className="chart-value_value">{productsTotal}</div>
-                                    <div className="chart-value_label"> Producten of diensten</div>
-                                </div>
-                                <div className="chart-action">
-                                    <a
-                                        className="button button-primary"
-                                        data-ui-sref="products-create($ctrl.routeData)"
-                                        data-ng-if="$ctrl.productsTotal < $ctrl.maxProductCount"
-                                        id="add_product">
-                                        <em className="mdi mdi-plus-circle icon-start"> </em>Toevoegen
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="card" data-ng-if="$ctrl.organization | hasPerm:['manage_provider_funds']">
-                        <div className="card-section">
-                            <div className="chart-control chart-control-provider_overview">
-                                <div className="chart-label">Fondsen</div>
-                                <div className="chart-value chart-value">
-                                    <div className="chart-value_value">{fundsTotal}</div>
-                                    <div className="chart-value_label">Actieve fondsen</div>
-                                </div>
-                                <div className="chart-action">
-                                    <a className="button button-primary" data-ng-click="$ctrl.applyFund()">
-                                        <em className="mdi mdi-plus-circle icon-start"> </em>Aanmelden
-                                    </a>
+                    {hasPermission(activeOrganization, ['manage_products']) && (
+                        <div className="card">
+                            <div className="card-section">
+                                <div className="chart-control chart-control-provider_overview">
+                                    <div className="chart-label">Aanbod</div>
+                                    <div className="chart-value chart-value">
+                                        <div className="chart-value_value">{productsTotal}</div>
+                                        <div className="chart-value_label"> Producten of diensten</div>
+                                    </div>
+                                    {productsTotal < appConfigs.products_hard_limit && (
+                                        <div className="chart-action">
+                                            <StateNavLink
+                                                name={'products-create'}
+                                                params={{ organizationId: activeOrganization.id }}
+                                                className="button button-primary"
+                                                id="add_product">
+                                                <em className="mdi mdi-plus-circle icon-start" />
+                                                Toevoegen
+                                            </StateNavLink>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div className="card" data-ng-if="$ctrl.organization | hasPerm:['view_finances']">
-                        <div className="card-section">
-                            <div className="chart-control chart-control-provider_overview">
-                                <div className="chart-label">Transacties</div>
-                                <div className="chart-value chart-value">
-                                    <div className="chart-value_value">{transactionsTotal}</div>
-                                    <div className="chart-value_label">Totaal aan inkomsten</div>
-                                </div>
-                                <div className="chart-action">
-                                    <a className="button button-primary" data-ui-sref="transactions($ctrl.routeData)">
-                                        <em className="mdi mdi-eye-outline icon-start"> </em>Bekijken
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="card" data-ng-if="$ctrl.organization | hasPerm:['manage_employees']">
-                        <div className="card-section">
-                            <div className="chart-control chart-control-provider_overview">
-                                <div className="chart-label">Medewerkers</div>
-                                <div className="chart-value chart-value">
-                                    <div className="chart-value_value">{employeesTotal}</div>
-                                    <div className="chart-value_label">Aangesloten medewerkers</div>
-                                </div>
-                                <div className="chart-action">
-                                    <a className="button button-primary" data-ui-sref="employees($ctrl.routeData)">
-                                        <em className="mdi mdi-eye-outline icon-start"> </em>Bekijken
-                                    </a>
+                    )}
+
+                    {hasPermission(activeOrganization, ['manage_provider_funds']) && (
+                        <div className="card">
+                            <div className="card-section">
+                                <div className="chart-control chart-control-provider_overview">
+                                    <div className="chart-label">Fondsen</div>
+                                    <div className="chart-value chart-value">
+                                        <div className="chart-value_value">{fundsTotal}</div>
+                                        <div className="chart-value_label">Actieve fondsen</div>
+                                    </div>
+                                    <div className="chart-action">
+                                        <StateNavLink
+                                            name={'provider-funds'}
+                                            params={{ organizationId: activeOrganization.id }}
+                                            className="button button-primary">
+                                            <em className="mdi mdi-eye-outline icon-start" />
+                                            Bekijken
+                                        </StateNavLink>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    )}
+
+                    {hasPermission(activeOrganization, ['view_finances']) && (
+                        <div className="card">
+                            <div className="card-section">
+                                <div className="chart-control chart-control-provider_overview">
+                                    <div className="chart-label">Transacties</div>
+                                    <div className="chart-value chart-value">
+                                        <div className="chart-value_value">{transactionsTotal}</div>
+                                        <div className="chart-value_label">Totaal aan inkomsten</div>
+                                    </div>
+                                    <div className="chart-action">
+                                        <StateNavLink
+                                            name={'transactions'}
+                                            params={{ organizationId: activeOrganization.id }}
+                                            className="button button-primary">
+                                            <em className="mdi mdi-eye-outline icon-start" />
+                                            Bekijken
+                                        </StateNavLink>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {hasPermission(activeOrganization, ['manage_employees']) && (
+                        <div className="card">
+                            <div className="card-section">
+                                <div className="chart-control chart-control-provider_overview">
+                                    <div className="chart-label">Medewerkers</div>
+                                    <div className="chart-value chart-value">
+                                        <div className="chart-value_value">{employeesTotal}</div>
+                                        <div className="chart-value_label">Aangesloten medewerkers</div>
+                                    </div>
+                                    <div className="chart-action">
+                                        <StateNavLink
+                                            name={'employees'}
+                                            params={{ organizationId: activeOrganization.id }}
+                                            className="button button-primary">
+                                            <em className="mdi mdi-eye-outline icon-start" />
+                                            Bekijken
+                                        </StateNavLink>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>
