@@ -219,8 +219,20 @@ export default function Transactions() {
                         modal={modal}
                         title={title}
                         description={description_text}
-                        buttonCancel={{ text: cancelButton, onClick: () => resolve(false) }}
-                        buttonSubmit={{ text: confirmButton, onClick: () => resolve(true) }}
+                        buttonCancel={{
+                            text: cancelButton,
+                            onClick: () => {
+                                modal.close();
+                                resolve(false);
+                            },
+                        }}
+                        buttonSubmit={{
+                            text: confirmButton,
+                            onClick: () => {
+                                modal.close();
+                                resolve(true);
+                            },
+                        }}
                     />
                 ));
             });

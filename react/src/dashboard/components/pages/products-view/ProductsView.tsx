@@ -60,6 +60,8 @@ export default function ProductsView() {
                     description={t('products.confirm_delete.description')}
                     buttonSubmit={{
                         onClick: () => {
+                            modal.close();
+
                             productService.destroy(activeOrganization.id, product.id).then(() => {
                                 navigateState('products', { organizationId: activeOrganization.id });
                             });
@@ -143,8 +145,10 @@ export default function ProductsView() {
     };
 
     useEffect(() => {
-        fetchProduct().then();
-    }, [fetchProduct]);
+        fetchProduct()
+            .then()
+            .catch(() => navigateState('products', { organizationId: activeOrganization.id }));
+    }, [activeOrganization.id, fetchProduct, navigateState]);
 
     useEffect(() => {
         fetchFunds();
@@ -405,6 +409,9 @@ export default function ProductsView() {
                     }
                     button={{
                         text: 'Bekijk beschikbare fondsen',
+                        type: 'primary',
+                        icon: 'plus',
+                        iconPosition: 'start',
                         onClick: () => navigateState('provider-funds', { organizationId: activeOrganization.id }),
                     }}
                 />

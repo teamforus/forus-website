@@ -58,7 +58,10 @@ export default function Offices() {
                     title={t('offices.confirm_delete.title')}
                     description={t('offices.confirm_delete.description')}
                     buttonSubmit={{
-                        onClick: () => officeService.destroy(office.organization_id, office.id).then(fetchOffices),
+                        onClick: () => {
+                            modal.close();
+                            officeService.destroy(office.organization_id, office.id).then(fetchOffices);
+                        },
                     }}
                     buttonCancel={{
                         onClick: () => modal.close(),

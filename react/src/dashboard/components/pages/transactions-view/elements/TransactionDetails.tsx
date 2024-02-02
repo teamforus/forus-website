@@ -277,7 +277,7 @@ export default function TransactionDetails({
                                             <span className={transaction.iban_final ? '' : 'text-muted-dark'}>
                                                 {transaction.iban_from}
                                             </span>
-                                            {transaction.iban_final && (
+                                            {!transaction.iban_final && (
                                                 <Tooltip
                                                     text={t(
                                                         'financial_dashboard_transaction.tooltips.pending_iban_from',
@@ -287,6 +287,7 @@ export default function TransactionDetails({
                                         </div>
                                     </div>
                                 )}
+
                                 {transaction.iban_to && (
                                     <div className="keyvalue-item">
                                         <div className="keyvalue-key">IBAN (naar)</div>
@@ -346,6 +347,7 @@ export default function TransactionDetails({
                                 )}
                             </div>
                         </div>
+
                         {transaction.cancelable && transaction.reservation && (
                             <div className="flex flex-column flex-end">
                                 <button

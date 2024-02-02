@@ -25,10 +25,13 @@ import useOrganization from '../../../hooks/useOrganizations';
 import { authContext } from '../../../contexts/AuthContext';
 import AppLinks from '../../elements/app-links/AppLinks';
 import SignUpProgress from './elements/SignUpProgress';
+import useEnvData from '../../../hooks/useEnvData';
 
 export default function SignUpValidator() {
     const { t } = useTranslation();
     const assetUrl = useAssetUrl();
+    const envData = useEnvData();
+
     const { setToken, token: authToken } = useContext(authContext);
 
     const navigate = useNavigate();
@@ -77,13 +80,15 @@ export default function SignUpValidator() {
             };
 
             return identityService.validateEmail(values).then((res) => {
+                const source = `${envData.client_key}_${envData.client_type}`;
+
                 if (!res.data.email.used) {
                     identityService.make(values).then(
                         () => setAuthEmailSent(true),
                         (res) => resolveErrors(res),
                     );
                 } else {
-                    identityService.makeAuthEmailToken(values.email, 'newSignup').then(
+                    identityService.makeAuthEmailToken(values.email, source, 'newSignup').then(
                         () => setAuthEmailRestoreSent(true),
                         (res) => resolveErrors(res),
                     );

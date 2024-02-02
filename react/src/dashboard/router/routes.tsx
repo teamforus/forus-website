@@ -153,6 +153,7 @@ router.state('products', <Products />, {
 
 router.state('products-show', <ProductsView />, {
     path: `/organizations/:organizationId/products/:id`,
+    fallbackState: 'products',
 });
 
 router.state('products-create', <ProductsCreate />, {

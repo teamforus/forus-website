@@ -335,6 +335,7 @@ body {
                             cursor: default;
                             display: flex;
                             flex-direction: row;
+                            word-break: break-word;
 
                             .notifications-menu-item-icon {
                                 margin-right: 10px;

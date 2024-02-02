@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { mainContext } from '../../../../contexts/MainContext';
 import { useTranslation } from 'react-i18next';
 import PhotoSelector from '../../../elements/photo-selector/PhotoSelector';
@@ -11,8 +11,8 @@ import SelectControl from '../../../elements/select-control/SelectControl';
 import SelectControlOptions from '../../../elements/select-control/templates/SelectControlOptions';
 import BusinessType from '../../../../props/models/BusinessType';
 import { useBusinessTypeService } from '../../../../services/BusinessTypeService';
-import { NavLink, useParams } from 'react-router-dom';
-import { getStateRouteUrl, useNavigateState } from '../../../../modules/state_router/Router';
+import { useParams } from 'react-router-dom';
+import { useNavigateState } from '../../../../modules/state_router/Router';
 import { useMediaService } from '../../../../services/MediaService';
 import LoadingCard from '../../../elements/loading-card/LoadingCard';
 import useAuthIdentity from '../../../../hooks/useAuthIdentity';
@@ -22,6 +22,8 @@ import useSetProgress from '../../../../hooks/useSetProgress';
 import MarkdownEditor from '../../../elements/forms/markdown-editor/MarkdownEditor';
 import useUpdateActiveOrganization from '../../../../hooks/useUpdateActiveOrganization';
 import { ResponseError } from '../../../../props/ApiResponses';
+import useEnvData from '../../../../hooks/useEnvData';
+import StateNavLink from '../../../../modules/state_router/StateNavLink';
 
 export default function OrganizationForm() {
     const { organizationId } = useParams();
@@ -33,6 +35,9 @@ export default function OrganizationForm() {
     const pushDanger = usePushDanger();
     const pushSuccess = usePushSuccess();
     const setProgress = useSetProgress();
+
+    const envData = useEnvData();
+    const isProvider = useMemo(() => envData.client_type === 'provider', [envData?.client_type]);
 
     const [mediaFile, setMediaFile] = useState<Blob>(null);
     const mediaService = useMediaService();
@@ -394,18 +399,18 @@ export default function OrganizationForm() {
 
             <div className="card-section card-section-primary">
                 <div className="text-center">
-                    {/*{organization && (
-                        <NavLink
-                            to={getStateRouteUrl('organization-offices', { organizationId: organization?.id })}
-                            type="button"
+                    {organization ? (
+                        <StateNavLink
+                            name={isProvider ? 'offices' : 'organizations'}
+                            params={{ organizationId: organization.id }}
                             className="button button-default">
                             {t('organization_edit.buttons.cancel')}
-                        </NavLink>
-                    )}*/}
-
-                    <NavLink to={getStateRouteUrl('organizations')} type="button" className="button button-default">
-                        {t('organization_edit.buttons.cancel')}
-                    </NavLink>
+                        </StateNavLink>
+                    ) : (
+                        <StateNavLink name={'organizations'} className="button button-default">
+                            {t('organization_edit.buttons.cancel')}
+                        </StateNavLink>
+                    )}
 
                     <button type="submit" className="button button-primary">
                         {t('organization_edit.buttons.create')}

@@ -92,7 +92,7 @@ export default function SignUpProvider() {
     const [offices, setOffices] = useState<Array<OfficeLocal>>(null);
     const [employees, setEmployees] = useState<Array<Employee>>(null);
     const [organization, setOrganization] = useState(null);
-    const [hasApp, setHasApp] = useState(null);
+    const [hasApp, setHasApp] = useState(true);
     const [authEmailSent, setAuthEmailSent] = useState(null);
     const [authEmailRestoreSent, setAuthEmailRestoreSent] = useState(null);
     const [tmpAuthToken, setTmpAuthToken] = useState(null);
@@ -138,29 +138,31 @@ export default function SignUpProvider() {
         ...fundUrlFilters,
     });
 
-    const formSignUp = useFormBuilder(
+    const signUpForm = useFormBuilder(
         {
             email: '',
-            target: 'newSignup',
+            target: ['newSignup', organization_id, fund_id, tag].join('-'),
             confirm: true,
         },
         (values) => {
             const resolveErrors = (err: ResponseError) => {
-                formSignUp.setIsLocked(false);
-                formSignUp.setErrors(err.data.errors);
+                signUpForm.setIsLocked(false);
+                signUpForm.setErrors(err.data.errors);
             };
 
             return identityService.validateEmail(values).then((res) => {
+                const source = `${envData.client_key}_${envData.client_type}`;
+
                 if (!res.data.email.used) {
-                    identityService.make(values).then(
-                        () => setAuthEmailSent(true),
-                        (res) => resolveErrors(res),
-                    );
+                    identityService
+                        .make(values)
+                        .then(() => setAuthEmailSent(true))
+                        .catch((err) => resolveErrors(err));
                 } else {
-                    identityService.makeAuthEmailToken(values.email, 'newSignup').then(
-                        () => setAuthEmailRestoreSent(true),
-                        (res) => resolveErrors(res),
-                    );
+                    identityService
+                        .makeAuthEmailToken(values.email, source, values.target)
+                        .then(() => setAuthEmailRestoreSent(true))
+                        .catch((err) => resolveErrors(err));
                 }
             }, resolveErrors);
         },
@@ -546,37 +548,11 @@ export default function SignUpProvider() {
             });
     });
 
-    const signUpForm = useFormBuilder(
-        {
-            email: '',
-            target: ['newSignup', organization_id, fund_id, tag].join('-'),
-            confirm: true,
-        },
-        (values) => {
-            const resolveErrors = (err: ResponseError) => {
-                signUpForm.setIsLocked(false);
-                signUpForm.setErrors(err.data.errors);
-            };
-
-            return identityService.validateEmail(values).then((res) => {
-                if (!res.data.email.used) {
-                    identityService
-                        .make(values)
-                        .then(() => setAuthEmailSent(true))
-                        .catch((err) => resolveErrors(err));
-                } else {
-                    identityService
-                        .makeAuthEmailToken(values.email, values.target)
-                        .then(() => setAuthEmailRestoreSent(true))
-                        .catch((err) => resolveErrors(err));
-                }
-            }, resolveErrors);
-        },
-    );
-
     const resetShareForms = useCallback(() => {
         phoneForm.reset();
         emailForm.reset();
+        setShareSmsSent(false);
+        setShareEmailSent(false);
         setAppDownloadSkip(false);
     }, [emailForm, phoneForm]);
 
@@ -679,7 +655,7 @@ export default function SignUpProvider() {
         const stepsTotal = STEPS?.length + INFO_STEPS;
 
         if (step == 'STEP_CREATE_PROFILE') {
-            setHasApp(JSON.parse(progressStorage.get('hasApp', 'false')));
+            setHasApp(JSON.parse(progressStorage.get('hasApp', 'true')));
         }
 
         if (STEPS.indexOf(step) >= STEPS.indexOf('STEP_ORGANIZATION_ADD') && progressStorage.has('organizationForm')) {
@@ -1215,12 +1191,12 @@ export default function SignUpProvider() {
                                     <div className="sign_up-pane-auth">
                                         <div className="sign_up-pane-auth-content">
                                             <div className="sign_up-pane-text">
-                                                {t('sign_up_provider.qr_code.description')}
+                                                <TranslateHtml i18n={'sign_up_provider.qr_code.description'} />
                                             </div>
                                             <br />
                                             <div className="sign_up-pane-text">
                                                 <small>
-                                                    {'sign_up_provider.download.no_link_received_email'}{' '}
+                                                    {t('sign_up_provider.download.no_link_received_email')}{' '}
                                                     <a href="https://www.forus.io/DL" target="_blank" rel="noreferrer">
                                                         www.forus.io/DL
                                                     </a>
@@ -1325,6 +1301,7 @@ export default function SignUpProvider() {
                                     </div>
                                 </div>
                             )}
+
                             {(authEmailSent || authEmailRestoreSent) && (
                                 <div className="sign_up-pane-body text-center">
                                     <div className="sign_up-pane-media">
@@ -1343,13 +1320,16 @@ export default function SignUpProvider() {
                                     </div>
                                 </div>
                             )}
+
                             {(shareSmsSent || shareEmailSent || appDownloadSkip) && (
                                 <div className="sign_up-pane-footer">
                                     <div className="row">
                                         <div className="col col-lg-6 text-left">
                                             <div
                                                 className="button button-text button-text-padless"
-                                                onClick={() => resetShareForms()}>
+                                                onClick={() => {
+                                                    resetShareForms();
+                                                }}>
                                                 <em className="mdi mdi-chevron-left icon-lefts" />
                                                 {t('sign_up_provider.buttons.back')}
                                             </div>

@@ -67,23 +67,3 @@ export default function EmptyCard({
         </div>
     );
 }
-
-/*
-.block.block-empty(ng-class="{center: 'text-center', right: 'text-right'}[$dir.align || 'center']")
-    .empty-title(ng-if="$dir.text" ng-bind="$dir.title")
-    .empty-details(ng-if="$dir.text" ng-bind="$dir.text")
-
-    .empty-actions(ng-if="$dir.button")
-        a(ng-if="$dir.button" href="{{ $dir.button.href }}").button.button-primary
-            em.mdi.mdi-plus-circle.icon-start 
-            span(ng-bind="$dir.button.text")
-
-    .empty-actions(ng-if="$dir.buttonText && ($dir.buttonSref || $dir.buttonCallback)"): button.button(
-        ng-click="$dir.buttonHandler($event)"
-        ng-class="'button-' + $dir.buttonType"
-        dusk="btnEmptyBlock")
-
-        em.mdi(ng-if="$dir.buttonIcon && !$dir.buttonIconEnd" ng-class="'mdi-' + $dir.buttonIcon").icon-start
-        ng-bind(ng-bind="$dir.buttonText")
-        em.mdi(ng-if="$dir.buttonIcon && $dir.buttonIconEnd" ng-class="'mdi-' + $dir.buttonIcon").icon-end
-*/

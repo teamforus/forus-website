@@ -19,7 +19,7 @@ export default function HeaderNotifications({ organization }: { organization: Or
     const fetchNotifications = useCallback(
         (mark_read = false, seenIds = []) => {
             notificationService
-                .list({ organization_id: organization?.id, per_page: 100, mark_read: mark_read ? 1 : 0 })
+                .list({ organization_id: organization?.id, seen: 0, per_page: 100, mark_read: mark_read ? 1 : 0 })
                 .then((res) => {
                     res.data.data = res.data.data.map((item) => ({
                         ...item,
@@ -74,6 +74,11 @@ export default function HeaderNotifications({ organization }: { organization: Or
                     onClick={(e) => {
                         e.stopPropagation();
                         setShowNotifications(!showNotifications);
+
+                        if (!showNotifications) {
+                            setNotifications(null);
+                            fetchNotifications(false);
+                        }
                     }}>
                     {parseInt(notifications?.meta?.total_unseen?.toString()) > 0 ? (
                         <div className="mdi mdi-bell" />
@@ -120,7 +125,7 @@ export default function HeaderNotifications({ organization }: { organization: Or
                                     </div>
                                 </div>
                             ))}
-                            {notifications?.data.length == 0 && (
+                            {(!notifications || notifications?.data.length == 0) && (
                                 <div className="notifications-menu-empty">Geen nieuwe notificaties</div>
                             )}
                         </div>

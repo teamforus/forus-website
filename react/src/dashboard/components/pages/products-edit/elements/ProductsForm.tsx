@@ -192,9 +192,10 @@ export default function ProductsForm({
             productService
                 .read(organization.id, id)
                 .then((res) => setProduct(res.data.data))
+                .catch(() => navigateState('products', { organizationId: organization.id }))
                 .finally(() => setProgress(100));
         },
-        [productService, organization, setProgress],
+        [setProgress, productService, organization.id, navigateState],
     );
 
     const fetchSourceProduct = useCallback(

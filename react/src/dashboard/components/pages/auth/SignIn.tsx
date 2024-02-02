@@ -25,8 +25,10 @@ export default function SignIn() {
     const identityService = useIdentityService();
 
     const signInForm = useFormBuilder({ email: '' }, async (values) => {
+        const source = `${envData.client_key}_${envData.client_type}`;
+
         return identityService
-            .makeAuthEmailToken(values.email?.toString(), envData.client_key + '_' + envData.client_type)
+            .makeAuthEmailToken(values.email?.toString(), source)
             .then(() => signInForm.setState('success'))
             .catch((err: ResponseError) => {
                 return signInForm.setErrors(err.data.errors ? err.data.errors : { email: [err.data.message] });
