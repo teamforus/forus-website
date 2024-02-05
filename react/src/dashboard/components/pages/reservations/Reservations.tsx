@@ -97,6 +97,7 @@ export default function Reservations() {
         { key: 'pending', name: 'In afwachting' }, // Pending
         { key: 'accepted', name: 'Geaccepteerd' }, // Accepted
         { key: 'rejected', name: 'Geweigerd' }, // Rejected
+        { key: 'expired', name: 'Verlopen' }, // Expired
         { key: 'canceled', name: 'Geannuleerd door aanbieder' }, // Canceled by provider
         { key: 'canceled_by_client', name: 'Geannuleerd door aanvrager' }, // Canceled by client
         ...(activeOrganization.can_view_provider_extra_payments ? extraPaymentStates : []), // Extra payment states
