@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useIdentity2FAService } from '../../../services/Identity2FAService';
 import Identity2FAState from '../../../props/models/Identity2FAState';
 import useOpenModal from '../../../hooks/useOpenModal';
@@ -22,6 +22,14 @@ export default function Security2FA() {
     const { updateIdentity } = useContext(authContext);
     const identity2FAService = useIdentity2FAService();
     const [auth2FAState, setAuth2FAState] = useState<Identity2FAState>(null);
+
+    const activeProvidersByKey = useMemo(() => {
+        return (
+            auth2FAState?.active_providers?.reduce((acc, item) => {
+                return { ...acc, [item.provider_type.type]: item };
+            }, {}) || {}
+        );
+    }, [auth2FAState]);
 
     const [auth2FARememberIpOptions] = useState([
         { value: 0, name: 'Altijd bevestiging vereisen met 2FA' },
@@ -118,40 +126,37 @@ export default function Security2FA() {
                         {provider_type.type == 'phone' && <div className="mdi mdi-cellphone-message" />}
                     </div>
 
-                    <div className="auth-2fa-item-title">{provider_type.title}</div>
+                    <div className="auth-2fa-item-details">
+                        <div className="auth-2fa-item-title">
+                            {provider_type.title}
+                            <div className="auth-2fa-item-label">
+                                {!Object.keys(activeProvidersByKey).includes(provider_type.type) && (
+                                    <div className="label label-default">Uitgeschakeld</div>
+                                )}
 
-                    <div className="auth-2fa-item-label">
-                        <div className="label-group">
-                            {!auth2FAState.active_providers
-                                .map((auth_2fa) => auth_2fa.provider_type.type)
-                                .includes(provider_type.type) && (
-                                <div className="label label-default">Uitgeschakeld</div>
-                            )}
-
-                            {auth2FAState.active_providers
-                                .map((auth_2fa) => auth_2fa.provider_type.type)
-                                .includes(provider_type.type) && (
-                                <div className="label label-success">Ingeschakeld</div>
-                            )}
+                                {Object.keys(activeProvidersByKey).includes(provider_type.type) && (
+                                    <div className="label label-success">Ingeschakeld</div>
+                                )}
+                            </div>
                         </div>
-                    </div>
 
-                    <div className="auth-2fa-item-space" />
+                        {provider_type.type == 'phone' && activeProvidersByKey[provider_type.type] && (
+                            <div className="auth-2fa-item-description">
+                                {activeProvidersByKey[provider_type.type]?.phone}
+                            </div>
+                        )}
+                    </div>
 
                     <div className="auth-2fa-item-actions">
                         <div className="button-group">
-                            {!auth2FAState.active_providers
-                                .map((auth_2fa) => auth_2fa.provider_type.type)
-                                .includes(provider_type.type) && (
+                            {!Object.keys(activeProvidersByKey).includes(provider_type.type) && (
                                 <div className="button button-primary" onClick={() => setupAuth2FA(provider_type.type)}>
                                     <em className="mdi mdi-shield-check-outline icon-start" />
                                     Inschakelen
                                 </div>
                             )}
 
-                            {auth2FAState.active_providers
-                                .map((auth_2fa) => auth_2fa.provider_type.type)
-                                .includes(provider_type.type) && (
+                            {Object.keys(activeProvidersByKey).includes(provider_type.type) && (
                                 <div
                                     className="button button-default"
                                     onClick={() => deactivateAuth2FA(provider_type.type)}>
@@ -163,6 +168,7 @@ export default function Security2FA() {
                     </div>
                 </div>
             ))}
+
             <div className="card">
                 <form className="form form-compact" onSubmit={form.submit}>
                     <div className="card-header">
