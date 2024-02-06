@@ -44,6 +44,7 @@ fronts['dashboard.provider'] = {
     client_key: 'general',
     client_type: 'provider',
     name: 'Provider dashboard',
+    // webRoot: 'dashboard.provider',
     useHashRouter: use_hash_router,
     config: {
         api_url: api_url,
