@@ -39,6 +39,7 @@ import PreferencesEmails from '../components/pages/identity-preferences/Preferen
 import PreferencesNotifications from '../components/pages/identity-preferences/PreferencesNotifications';
 import Security2FA from '../components/pages/identity-security/Security2FA';
 import SecuritySessions from '../components/pages/identity-security/SecuritySessions';
+import OrganizationsNoPermissions from '../components/pages/organizations-no-permissions/OrganizationsNoPermissions';
 
 const router = new RouterBuilder();
 
@@ -113,6 +114,10 @@ router.state('offices-edit', <OfficesEdit />, {
 
 router.state('organization-security', <OrganizationsSecurity />, {
     path: `/organizations/:organizationId/security`,
+});
+
+router.state('organization-no-permissions', <OrganizationsNoPermissions />, {
+    path: `/organizations/:organizationId/no-permissions`,
 });
 
 router.state('provider-overview', <ProviderOverview />, {

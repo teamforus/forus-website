@@ -45,6 +45,7 @@ import SignUpOfficeEdit from './elements/SignUpOfficeEdit';
 import SignUpAvailableFunds from './elements/SignUpAvailableFunds';
 import useFilter from '../../../hooks/useFilter';
 import useDemoTransactionService from '../../../services/DemoTransactionService';
+import { uniq } from 'lodash';
 
 type OfficeLocal = Office & { edit?: boolean };
 
@@ -114,7 +115,7 @@ export default function SignUpProvider() {
             'STEP_INFO_GENERAL',
             'STEP_INFO_ME_APP',
             authToken ? null : 'STEP_CREATE_PROFILE',
-            'STEP_SELECT_ORGANIZATION',
+            organizations?.length > 0 ? 'STEP_SELECT_ORGANIZATION' : 'STEP_ORGANIZATION_ADD',
             'STEP_OFFICES',
             'STEP_EMPLOYEES',
             'STEP_FUND_APPLY',
@@ -122,7 +123,11 @@ export default function SignUpProvider() {
             loggedWithApp && !isMobile ? 'STEP_DEMO_TRANSACTION' : null,
             loggedWithApp && !isMobile ? 'STEP_SIGNUP_FINISHED' : null,
         ].filter((step) => step);
-    }, [authToken, isMobile, loggedWithApp]);
+    }, [authToken, isMobile, loggedWithApp, organizations?.length]);
+
+    const STEPS_AVAILABLE = useMemo(() => {
+        return uniq([...STEPS, 'STEP_SELECT_ORGANIZATION', 'STEP_ORGANIZATION_ADD']);
+    }, [STEPS]);
 
     const [step, setStep] = useState(STEPS[0]);
 
@@ -436,12 +441,12 @@ export default function SignUpProvider() {
                 return movingForward ? goToStep(STEPS[targetStepIndex + 1]) : goToStep(STEPS[targetStepIndex - 1]);
             }
 
-            if (STEPS.includes(targetStep)) {
+            if (STEPS_AVAILABLE.includes(targetStep)) {
                 setStep(targetStep);
                 progressStorage.set('step', targetStep);
             }
         },
-        [isMobile, progressStorage, STEPS, step],
+        [isMobile, progressStorage, STEPS, STEPS_AVAILABLE, step],
     );
 
     const fetchBusinessTypes = useCallback(() => {
@@ -470,10 +475,6 @@ export default function SignUpProvider() {
         goToStep('STEP_ORGANIZATION_ADD');
     }, [goToStep]);
 
-    const cancelAddOrganization = useCallback(() => {
-        goToStep('STEP_SELECT_ORGANIZATION');
-    }, [goToStep]);
-
     const next = useCallback(
         function () {
             if (step == 'STEP_ORGANIZATION_ADD') {
@@ -496,6 +497,14 @@ export default function SignUpProvider() {
     const finish = useCallback(() => {
         navigate(getStateRouteUrl('organizations-view', { organizationId: organization.id }));
     }, [navigate, organization?.id]);
+
+    const cancelAddOrganization = useCallback(() => {
+        if (STEPS.includes('STEP_ORGANIZATION_ADD')) {
+            return back();
+        }
+
+        return goToStep('STEP_SELECT_ORGANIZATION');
+    }, [back, STEPS, goToStep]);
 
     const selectPhoto = useCallback((file: File | Blob) => {
         setOrgMediaFile(file);
@@ -704,12 +713,12 @@ export default function SignUpProvider() {
 
         const step = progressStorage.get('step');
 
-        if (!STEPS.includes(step)) {
+        if (!STEPS_AVAILABLE.includes(step)) {
             return goToStep('STEP_INFO_GENERAL');
         }
 
         goToStep(step);
-    }, [STEPS, authToken, goToStep, organizations, progressStorage]);
+    }, [STEPS_AVAILABLE, authToken, goToStep, organizations, progressStorage]);
 
     useEffect(() => {
         return () => progressStorage.clear();
@@ -1149,8 +1158,7 @@ export default function SignUpProvider() {
                             {!authEmailSent && !authEmailRestoreSent && shareSmsSent && (
                                 <div className="sign_up-pane-body">
                                     <div className="sign_up-pane-heading">
-                                        U heeft een SMS ontvangen op
-                                        {phoneNumberFormat(phoneForm.values.phone)}
+                                        {`U heeft een SMS ontvangen op ${phoneNumberFormat(phoneForm.values.phone)}`}
                                     </div>
                                     <div className="sign_up-pane-auth">
                                         <div className="sign_up-pane-auth-content">
@@ -1616,9 +1624,9 @@ export default function SignUpProvider() {
                                                             <SelectControl
                                                                 value={formOrganization.values.business_type_id}
                                                                 propKey={'id'}
-                                                                onChange={(business_type_id?: number) =>
-                                                                    formOrganization.update({ business_type_id })
-                                                                }
+                                                                onChange={(business_type_id?: number) => {
+                                                                    formOrganization.update({ business_type_id });
+                                                                }}
                                                                 options={businessTypes}
                                                                 placeholder={'Selecteer organisatie type...'}
                                                                 optionsComponent={SelectControlOptions}
