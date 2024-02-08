@@ -1,15 +1,7 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import 'react-image-crop/dist/ReactCrop.css';
-import useAppConfigs from '../../../hooks/useAppConfigs';
+import WIP from '../../pages_system/WIP';
 
 export default function CsvValidations() {
-    const appConfigs = useAppConfigs();
-
-    // /csv-validation/funds
-    useEffect(() => {
-        if (appConfigs) {
-            document.location = appConfigs.fronts.url_sponsor + 'csv-validation/funds';
-        }
-    }, [appConfigs]);
-    return <></>;
+    return <WIP title={'CSV Validations'} />;
 }
