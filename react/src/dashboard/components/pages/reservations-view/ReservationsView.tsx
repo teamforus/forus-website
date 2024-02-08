@@ -384,7 +384,7 @@ export default function ReservationsView() {
                 />
             )}
 
-            {reservation.extra_payment && reservation.extra_payment.refunds.length && (
+            {reservation.extra_payment && reservation.extra_payment.refunds.length > 0 && (
                 <ReservationExtraPaymentRefunds refunds={reservation.extra_payment.refunds} />
             )}
         </Fragment>

@@ -1,7 +1,7 @@
 import React, { Fragment, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import MollieConnection from '../../../../props/models/MollieConnection';
-import KeyValueItem from './KeyValueItem';
+import KeyValueItem from '../../../elements/key-value/KeyValueItem';
 import SelectMollieProfile from './SelectMollieProfile';
 import FormError from '../../../elements/forms/errors/FormError';
 import useFormBuilder from '../../../../hooks/useFormBuilder';
@@ -130,25 +130,21 @@ export default function MollieConnectionProfileDetails({
 
                     <div className="card-section">
                         <div className="card-block card-block-keyvalue">
-                            <KeyValueItem
-                                label={t('mollie_connection.labels.name')}
-                                value={mollieConnection.profile_active.name}
-                            />
+                            <KeyValueItem label={t('mollie_connection.labels.name')}>
+                                {mollieConnection.profile_active.name}
+                            </KeyValueItem>
 
-                            <KeyValueItem
-                                label={t('mollie_connection.labels.phone')}
-                                value={mollieConnection.profile_active.phone}
-                            />
+                            <KeyValueItem label={t('mollie_connection.labels.phone')}>
+                                {mollieConnection.profile_active.phone}
+                            </KeyValueItem>
 
-                            <KeyValueItem
-                                label={t('mollie_connection.labels.email')}
-                                value={mollieConnection.profile_active.email}
-                            />
+                            <KeyValueItem label={t('mollie_connection.labels.email')}>
+                                {mollieConnection.profile_active.email}
+                            </KeyValueItem>
 
-                            <KeyValueItem
-                                value={mollieConnection.profile_active.website}
-                                label={t('mollie_connection.labels.website')}
-                            />
+                            <KeyValueItem label={t('mollie_connection.labels.website')}>
+                                {mollieConnection.profile_active.website}
+                            </KeyValueItem>
                         </div>
                     </div>
                 </div>

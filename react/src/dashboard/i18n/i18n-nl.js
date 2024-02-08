@@ -82,6 +82,7 @@ module.exports = {
             recreate_bi_connection: require('./nl/modals/danger-zone/recreate-bi-connection'),
             remove_reservation_field: require('./nl/modals/danger-zone/remove-reservation-field'),
             remove_mollie_connection: require('./nl/modals/danger-zone/remove-mollie-connection'),
+            confirm_extra_payment_refund: require('./nl/modals/danger-zone/confirm-extra-payment-refund'),
         },
     },
     // PAGES
