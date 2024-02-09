@@ -29,6 +29,7 @@ export default interface Reservation {
     identity_physical_card?: string;
     archivable?: boolean;
     archived?: boolean;
+    canceled?: boolean;
     voucher_transaction: Transaction;
     accepted_at?: string;
     accepted_at_locale?: string;

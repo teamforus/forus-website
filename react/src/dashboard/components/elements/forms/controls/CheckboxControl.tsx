@@ -12,6 +12,7 @@ interface CheckboxProps {
     onChange: (e: React.ChangeEvent<HTMLInputElement>, checked?: boolean) => void;
     className?: string;
     customElement?: React.ReactElement;
+    children?: string | React.ReactNode | Array<React.ReactNode>;
 }
 
 export default function CheckboxControl({
@@ -23,7 +24,7 @@ export default function CheckboxControl({
     tooltip,
     onChange,
     className,
-    customElement,
+    children,
 }: CheckboxProps) {
     const formId = useMemo(() => (id ? id : `checkbox_control_${uniqueId()}`), [id]);
 
@@ -40,8 +41,8 @@ export default function CheckboxControl({
                 <span className="checkbox-box">
                     <em className="mdi mdi-check" />
                 </span>
-                {customElement && customElement}
-                {!customElement && title}
+                {children}
+                {!children && title}
                 {tooltip && <Tooltip text={tooltip} />}
             </span>
         </label>

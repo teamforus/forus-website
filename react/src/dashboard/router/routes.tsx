@@ -39,6 +39,8 @@ import PreferencesNotifications from '../components/pages/identity-preferences/P
 import Security2FA from '../components/pages/identity-security/Security2FA';
 import SecuritySessions from '../components/pages/identity-security/SecuritySessions';
 import OrganizationsNoPermissions from '../components/pages/organizations-no-permissions/OrganizationsNoPermissions';
+import PaymentMethods from '../components/pages/payment-methods/PaymentMethods';
+import MolliePrivacy from '../components/pages/mollie-privacy/MolliePrivacy';
 import CsvValidationsRedirect from '../components/pages/csv_validations/CsvValidationsRedirect';
 import WIP from '../components/pages_system/WIP';
 
@@ -228,8 +230,12 @@ router.state('reservations-settings', <ReservationsSettings />, {
     path: `/organizations/:organizationId/reservations/settings`,
 });
 
-router.state('payment-methods', <WIP />, {
+router.state('payment-methods', <PaymentMethods />, {
     path: `/organizations/:organizationId/payment-methods`,
+});
+
+router.state('mollie-privacy', <MolliePrivacy />, {
+    path: `/organizations/:organizationId/mollie-privacy`,
 });
 
 router.state('products', <Products />, {
