@@ -44,6 +44,10 @@ export interface ResponseError<T = { message: string; errors: ResponseErrorData 
     data: T;
 }
 
+export interface ResponseErrorThrottled<T = { meta: { title: string; message: string } }> extends BaseResponse {
+    data: T;
+}
+
 export interface ResponseSimple<T> extends BaseResponse {
     data: T;
 }

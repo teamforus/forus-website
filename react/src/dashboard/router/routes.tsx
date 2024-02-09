@@ -31,7 +31,6 @@ import ReservationsView from '../components/pages/reservations-view/Reservations
 import ProviderFunds from '../components/pages/provider-funds/ProviderFunds';
 import NotFound from '../components/pages_system/NotFound';
 import FundRequestsView from '../components/pages/fund_requests-view/FundRequestsView';
-import WIP from '../components/pages_system/WIP';
 import OrganizationsSecurity from '../components/pages/organizations-security/OrganizationsSecurity';
 import OrganizationsView from '../components/pages/organizations-view/OrganizationsView';
 import OrganizationsNotifications from '../components/pages/organizations-notifications/OrganizationsNotifications';
@@ -40,6 +39,8 @@ import PreferencesNotifications from '../components/pages/identity-preferences/P
 import Security2FA from '../components/pages/identity-security/Security2FA';
 import SecuritySessions from '../components/pages/identity-security/SecuritySessions';
 import OrganizationsNoPermissions from '../components/pages/organizations-no-permissions/OrganizationsNoPermissions';
+import PaymentMethods from '../components/pages/payment-methods/PaymentMethods';
+import MolliePrivacy from '../components/pages/mollie-privacy/MolliePrivacy';
 
 const router = new RouterBuilder();
 
@@ -148,8 +149,12 @@ router.state('reservations-settings', <ReservationsSettings />, {
     path: `/organizations/:organizationId/reservations/settings`,
 });
 
-router.state('payment-methods', <WIP />, {
+router.state('payment-methods', <PaymentMethods />, {
     path: `/organizations/:organizationId/payment-methods`,
+});
+
+router.state('mollie-privacy', <MolliePrivacy />, {
+    path: `/organizations/:organizationId/mollie-privacy`,
 });
 
 router.state('products', <Products />, {
