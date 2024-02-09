@@ -2,44 +2,36 @@ import React, { Fragment, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import MollieConnection from '../../../../props/models/MollieConnection';
 import KeyValueItem from '../../../elements/key-value/KeyValueItem';
-import SelectMollieProfile from './SelectMollieProfile';
+import MollieConnectionProfileSelector from './MollieConnectionProfileSelector';
 import FormError from '../../../elements/forms/errors/FormError';
 import useFormBuilder from '../../../../hooks/useFormBuilder';
-import { ApiResponseSingle, ResponseError } from '../../../../props/ApiResponses';
+import { ResponseError, ResponseErrorThrottled } from '../../../../props/ApiResponses';
 import MollieConnectionProfile from '../../../../props/models/MollieConnectionProfile';
-import useActiveOrganization from '../../../../hooks/useActiveOrganization';
 import useMollieConnectionService from '../../../../services/MollieConnectionService';
 import useSetProgress from '../../../../hooks/useSetProgress';
 import usePushSuccess from '../../../../hooks/usePushSuccess';
-import usePushDanger from '../../../../hooks/usePushDanger';
+import Organization from '../../../../props/models/Organization';
 
 export default function MollieConnectionProfileDetails({
-    mollieConnection,
     onChange,
+    organization,
+    onResponseError,
+    mollieConnection,
 }: {
-    mollieConnection: MollieConnection;
     onChange: (value: MollieConnection) => void;
+    organization: Organization;
+    onResponseError?: (err: ResponseError & ResponseErrorThrottled) => void;
+    mollieConnection: MollieConnection;
 }) {
-    const activeOrganization = useActiveOrganization();
     const { t } = useTranslation();
     const mollieConnectionService = useMollieConnectionService();
     const setProgress = useSetProgress();
     const pushSuccess = usePushSuccess();
-    const pushDanger = usePushDanger();
 
     const [currentProfile, setCurrentProfile] = useState<MollieConnectionProfile>(null);
-    const [currentProfileId, setCurrentProfileId] = useState(null);
+    const [currentProfileId, setCurrentProfileId] = useState<number>(null);
 
-    const showError = useCallback(
-        (res, fallbackMessage = 'Onbekende foutmelding!') => {
-            res.status === 429
-                ? pushDanger(res.data.meta.title, res.data.meta.message)
-                : pushDanger('Mislukt!', res.data?.message || fallbackMessage);
-        },
-        [pushDanger],
-    );
-
-    const profileForm = useFormBuilder(
+    const form = useFormBuilder(
         {
             name: '',
             email: '',
@@ -48,53 +40,47 @@ export default function MollieConnectionProfileDetails({
         },
         (values) => {
             setProgress(0);
-            let promise: Promise<ApiResponseSingle<MollieConnection>>;
 
-            if (mollieConnection.profile_pending) {
-                promise = mollieConnectionService.updateProfile(
-                    activeOrganization.id,
-                    mollieConnection.profile_pending.id,
-                    values,
-                );
-            } else {
-                promise = mollieConnectionService.storeProfile(activeOrganization.id, values);
-            }
+            const promise = mollieConnection.profile_pending
+                ? mollieConnectionService.updateProfile(organization.id, mollieConnection.profile_pending.id, values)
+                : mollieConnectionService.storeProfile(organization.id, values);
 
             promise
                 .then((res) => {
                     pushSuccess('Opgeslagen!');
                     onChange(res.data.data);
                 })
-                .catch((err: ResponseError) => {
-                    profileForm.setIsLocked(false);
-                    showError(err);
-                    profileForm.setErrors(
+                .catch((err: ResponseError & ResponseErrorThrottled) => {
+                    form.setIsLocked(false);
+                    form.setErrors(
                         [429, 503].includes(err.status) ? { throttle: [err.data.message] } : err.data.errors,
                     );
+
+                    onResponseError?.(err);
                 })
                 .finally(() => setProgress(100));
         },
     );
 
-    const { update: updateProfileForm } = profileForm;
+    const { update: updateProfileForm } = form;
 
-    const updateCurrentProfile = useCallback(() => {
-        setProgress(0);
+    const updateCurrentProfile = useCallback(
+        (profileId: number) => {
+            setProgress(0);
 
-        mollieConnectionService
-            .update(activeOrganization.id, {
-                mollie_connection_profile_id: currentProfileId,
-            })
-            .then((res) => onChange(res.data.data))
-            .catch((err: ResponseError) => showError(err))
-            .finally(() => {
-                setProgress(100);
-            });
-    }, [setProgress, mollieConnectionService, activeOrganization.id, currentProfileId, onChange, showError]);
+            mollieConnectionService
+                .update(organization.id, { mollie_connection_profile_id: profileId })
+                .then((res) => onChange(res.data.data))
+                .catch((err: ResponseError & ResponseErrorThrottled) => onResponseError?.(err))
+                .finally(() => setProgress(100));
+        },
+        [setProgress, mollieConnectionService, organization.id, onChange, onResponseError],
+    );
 
     useEffect(() => {
         if (mollieConnection) {
             const profile = mollieConnection.profiles.find((profile) => profile.current);
+
             setCurrentProfile(profile);
             setCurrentProfileId(profile?.id);
 
@@ -117,12 +103,12 @@ export default function MollieConnectionProfileDetails({
                             </div>
 
                             {mollieConnection.profiles.length && (
-                                <SelectMollieProfile
+                                <MollieConnectionProfileSelector
                                     profiles={mollieConnection.profiles}
                                     currentProfile={currentProfile}
                                     currentProfileId={currentProfileId}
                                     onSelect={(currentProfileId) => setCurrentProfileId(currentProfileId)}
-                                    onChange={() => updateCurrentProfile()}
+                                    onChange={() => updateCurrentProfile(currentProfileId)}
                                 />
                             )}
                         </div>
@@ -150,7 +136,7 @@ export default function MollieConnectionProfileDetails({
                 </div>
             ) : (
                 <div className="card">
-                    <form className="form" onSubmit={profileForm.submit}>
+                    <form className="form" onSubmit={form.submit}>
                         <div className="card-header">
                             <div className="flex">
                                 <div className="flex flex-grow">
@@ -159,13 +145,13 @@ export default function MollieConnectionProfileDetails({
                                     </div>
                                 </div>
 
-                                {mollieConnection.profiles.length && (
-                                    <SelectMollieProfile
+                                {mollieConnection.profiles.length > 0 && (
+                                    <MollieConnectionProfileSelector
                                         profiles={mollieConnection.profiles}
                                         currentProfile={currentProfile}
                                         currentProfileId={currentProfileId}
                                         onSelect={(currentProfileId) => setCurrentProfileId(currentProfileId)}
-                                        onChange={() => updateCurrentProfile()}
+                                        onChange={() => updateCurrentProfile(currentProfileId)}
                                     />
                                 )}
                             </div>
@@ -188,36 +174,36 @@ export default function MollieConnectionProfileDetails({
                                             </label>
                                             <input
                                                 className="form-control"
-                                                onChange={(e) => profileForm.update({ name: e.target.value })}
-                                                value={profileForm.values.name || ''}
+                                                onChange={(e) => form.update({ name: e.target.value })}
+                                                value={form.values.name || ''}
                                                 type="text"
                                                 placeholder={t('mollie_connection.labels.profile_name')}
                                             />
-                                            <FormError error={profileForm.errors.name} />
+                                            <FormError error={form.errors.name} />
                                         </div>
 
                                         <div className="form-group form-group-inline">
                                             <label className="form-label">{t('mollie_connection.labels.email')}</label>
                                             <input
                                                 className="form-control"
-                                                onChange={(e) => profileForm.update({ email: e.target.value })}
-                                                value={profileForm.values.email || ''}
+                                                onChange={(e) => form.update({ email: e.target.value })}
+                                                value={form.values.email || ''}
                                                 type="text"
                                                 placeholder={t('mollie_connection.labels.email')}
                                             />
-                                            <FormError error={profileForm.errors.email} />
+                                            <FormError error={form.errors.email} />
                                         </div>
 
                                         <div className="form-group form-group-inline">
                                             <label className="form-label">{t('mollie_connection.labels.phone')}</label>
                                             <input
                                                 className="form-control"
-                                                onChange={(e) => profileForm.update({ phone: e.target.value })}
-                                                value={profileForm.values.phone || ''}
+                                                onChange={(e) => form.update({ phone: e.target.value })}
+                                                value={form.values.phone || ''}
                                                 type="text"
                                                 placeholder={t('mollie_connection.labels.phone')}
                                             />
-                                            <FormError error={profileForm.errors.phone} />
+                                            <FormError error={form.errors.phone} />
                                         </div>
 
                                         <div className="form-group form-group-inline">
@@ -226,12 +212,12 @@ export default function MollieConnectionProfileDetails({
                                             </label>
                                             <input
                                                 className="form-control"
-                                                onChange={(e) => profileForm.update({ website: e.target.value })}
-                                                value={profileForm.values.website || ''}
+                                                onChange={(e) => form.update({ website: e.target.value })}
+                                                value={form.values.website || ''}
                                                 type="text"
                                                 placeholder={t('mollie_connection.labels.website')}
                                             />
-                                            <FormError error={profileForm.errors.website} />
+                                            <FormError error={form.errors.website} />
                                         </div>
                                     </div>
                                 </div>

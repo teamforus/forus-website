@@ -114,13 +114,11 @@ export default function ModalEmployeeEdit({
                                             tooltip={role.description}
                                             checked={form.values.roles[role.id] || false}
                                             onChange={(e) => onChangeRole(e.target.checked, role)}
-                                            className={'checkbox-narrow'}
-                                            customElement={
-                                                <span className="permission-name">
-                                                    <span className="ellipsis">{role.name}</span>
-                                                </span>
-                                            }
-                                        />
+                                            className={'checkbox-narrow'}>
+                                            <span className="permission-name">
+                                                <span className="ellipsis">{role.name}</span>
+                                            </span>
+                                        </CheckboxControl>
                                     </div>
                                 ))}
                             </div>

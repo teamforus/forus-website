@@ -1,18 +1,17 @@
-import React, { useCallback, useState } from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import MollieConnection from '../../../../props/models/MollieConnection';
 import FormError from '../../../elements/forms/errors/FormError';
 import useFormBuilder from '../../../../hooks/useFormBuilder';
-import { ResponseError } from '../../../../props/ApiResponses';
-import useActiveOrganization from '../../../../hooks/useActiveOrganization';
+import { ResponseError, ResponseErrorThrottled } from '../../../../props/ApiResponses';
 import useMollieConnectionService from '../../../../services/MollieConnectionService';
 import useSetProgress from '../../../../hooks/useSetProgress';
-import usePushDanger from '../../../../hooks/usePushDanger';
 import SelectControl from '../../../elements/select-control/SelectControl';
 import SelectControlOptions from '../../../elements/select-control/templates/SelectControlOptions';
 import { getCountries } from 'libphonenumber-js';
 import countries from 'i18n-iso-countries';
 import countriesEn from 'i18n-iso-countries/langs/en.json';
+import Organization from '../../../../props/models/Organization';
 
 countries.registerLocale(countriesEn);
 
@@ -24,28 +23,21 @@ const getCountryOptions = () => {
 };
 
 export default function MollieConnectionForm({
+    organization,
     mollieConnection,
-    formVisibility,
+    onCancel,
+    onResponseError,
 }: {
+    organization: Organization;
     mollieConnection: MollieConnection;
-    formVisibility: (value: boolean) => void;
+    onCancel: () => void;
+    onResponseError?: (err: ResponseError & ResponseErrorThrottled) => void;
 }) {
-    const activeOrganization = useActiveOrganization();
     const { t } = useTranslation();
     const mollieConnectionService = useMollieConnectionService();
     const setProgress = useSetProgress();
-    const pushDanger = usePushDanger();
 
     const [countryOptions] = useState(getCountryOptions);
-
-    const showError = useCallback(
-        (res, fallbackMessage = 'Onbekende foutmelding!') => {
-            res.status === 429
-                ? pushDanger(res.data.meta.title, res.data.meta.message)
-                : pushDanger('Mislukt!', res.data?.message || fallbackMessage);
-        },
-        [pushDanger],
-    );
 
     const form = useFormBuilder(
         {
@@ -69,14 +61,15 @@ export default function MollieConnectionForm({
             setProgress(0);
 
             mollieConnectionService
-                .store(activeOrganization.id, values)
+                .store(organization.id, values)
                 .then((res) => (document.location.href = res.data.url))
-                .catch((err: ResponseError) => {
+                .catch((err: ResponseError & ResponseErrorThrottled) => {
                     form.setIsLocked(false);
-                    showError(err);
                     form.setErrors(
                         [429, 503].includes(err.status) ? { throttle: [err.data.message] } : err.data.errors,
                     );
+
+                    onResponseError?.(err);
                 })
                 .finally(() => setProgress(100));
         },
@@ -161,7 +154,9 @@ export default function MollieConnectionForm({
                             </div>
 
                             <div className="form-group form-group-inline">
-                                <label className="form-label">{t('mollie_connection.labels.organization_name')}</label>
+                                <label className="form-label form-label-required">
+                                    {t('mollie_connection.labels.organization_name')}
+                                </label>
                                 <input
                                     className="form-control"
                                     onChange={(e) => form.update({ name: e.target.value })}
@@ -173,7 +168,9 @@ export default function MollieConnectionForm({
                             </div>
 
                             <div className="form-group form-group-inline">
-                                <label className="form-label">{t('mollie_connection.labels.first_name')}</label>
+                                <label className="form-label form-label-required">
+                                    {t('mollie_connection.labels.first_name')}
+                                </label>
                                 <input
                                     className="form-control"
                                     onChange={(e) => form.update({ first_name: e.target.value })}
@@ -185,7 +182,9 @@ export default function MollieConnectionForm({
                             </div>
 
                             <div className="form-group form-group-inline">
-                                <label className="form-label">{t('mollie_connection.labels.last_name')}</label>
+                                <label className="form-label form-label-required">
+                                    {t('mollie_connection.labels.last_name')}
+                                </label>
                                 <input
                                     className="form-control"
                                     onChange={(e) => form.update({ last_name: e.target.value })}
@@ -197,7 +196,9 @@ export default function MollieConnectionForm({
                             </div>
 
                             <div className="form-group form-group-inline">
-                                <label className="form-label">{t('mollie_connection.labels.email')}</label>
+                                <label className="form-label form-label-required">
+                                    {t('mollie_connection.labels.email')}
+                                </label>
                                 <input
                                     className="form-control"
                                     onChange={(e) => form.update({ email: e.target.value })}
@@ -223,7 +224,9 @@ export default function MollieConnectionForm({
                                 </div>
 
                                 <div className="form-group form-group-inline">
-                                    <label className="form-label">{t('mollie_connection.labels.profile_name')}</label>
+                                    <label className="form-label form-label-required">
+                                        {t('mollie_connection.labels.profile_name')}
+                                    </label>
                                     <input
                                         className="form-control"
                                         onChange={(e) => form.update({ profile_name: e.target.value })}
@@ -235,7 +238,9 @@ export default function MollieConnectionForm({
                                 </div>
 
                                 <div className="form-group form-group-inline">
-                                    <label className="form-label">{t('mollie_connection.labels.phone')}</label>
+                                    <label className="form-label form-label-required">
+                                        {t('mollie_connection.labels.phone')}
+                                    </label>
                                     <input
                                         className="form-control"
                                         onChange={(e) => form.update({ phone: e.target.value })}
@@ -247,7 +252,9 @@ export default function MollieConnectionForm({
                                 </div>
 
                                 <div className="form-group form-group-inline">
-                                    <label className="form-label">{t('mollie_connection.labels.website')}</label>
+                                    <label className="form-label form-label-required">
+                                        {t('mollie_connection.labels.website')}
+                                    </label>
                                     <input
                                         className="form-control"
                                         onChange={(e) => form.update({ website: e.target.value })}
@@ -273,7 +280,7 @@ export default function MollieConnectionForm({
 
                 <div className="card-section">
                     <div className="button-group flex-center">
-                        <button className="button button-default" type="button" onClick={() => formVisibility(false)}>
+                        <button className="button button-default" type="button" onClick={() => onCancel()}>
                             {t('mollie_connection.buttons.cancel')}
                         </button>
 

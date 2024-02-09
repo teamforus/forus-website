@@ -43,9 +43,7 @@ export default function ReservationExtraPaymentDetails({
                 pushSuccess('Opgeslagen!');
             })
             .catch((err: ResponseError) => pushDanger(err.data.message))
-            .finally(() => {
-                setProgress(100);
-            });
+            .finally(() => setProgress(100));
     }, [setProgress, productReservationService, organization.id, reservation.id, onUpdate, pushSuccess, pushDanger]);
 
     const refundExtraPayment = useCallback(
@@ -100,6 +98,7 @@ export default function ReservationExtraPaymentDetails({
                     <div className="flex flex-grow">
                         <div className="card-title">Transactie details van de bijbetaling</div>
                     </div>
+
                     {isProvider && (
                         <div className="button-group">
                             {!reservation.canceled && (

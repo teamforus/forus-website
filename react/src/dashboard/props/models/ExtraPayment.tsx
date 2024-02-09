@@ -9,6 +9,6 @@ export default interface ExtraPayment {
     is_pending?: boolean;
     amount_locale?: string;
     paid_at_locale?: string;
-    method?: string;
+    method?: 'ideal';
     refunds?: Array<ExtraPaymentRefund>;
 }

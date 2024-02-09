@@ -1,6 +1,5 @@
 import React, { Fragment } from 'react';
 import useActiveOrganization from '../../../hooks/useActiveOrganization';
-
 import StateNavLink from '../../../modules/state_router/StateNavLink';
 
 export default function MolliePrivacy() {

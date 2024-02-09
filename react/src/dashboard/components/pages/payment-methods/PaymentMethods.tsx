@@ -4,49 +4,44 @@ import { useTranslation } from 'react-i18next';
 import LoadingCard from '../../elements/loading-card/LoadingCard';
 import useSetProgress from '../../../hooks/useSetProgress';
 import useMollieConnectionService from '../../../services/MollieConnectionService';
-import { ResponseError } from '../../../props/ApiResponses';
+import { ResponseError, ResponseErrorThrottled } from '../../../props/ApiResponses';
 import useOpenModal from '../../../hooks/useOpenModal';
 import ModalDangerZone from '../../modals/ModalDangerZone';
 import usePushSuccess from '../../../hooks/usePushSuccess';
 import usePushDanger from '../../../hooks/usePushDanger';
 import MollieConnection from '../../../props/models/MollieConnection';
-
 import StateNavLink from '../../../modules/state_router/StateNavLink';
 import { hasPermission } from '../../../helpers/utils';
-
 import IconPayment from '../../../../../assets/forus-platform/resources/platform-general/assets/img/svg/mollie-payment-method-icon.svg';
 import IconPaymentActive from '../../../../../assets/forus-platform/resources/platform-general/assets/img/svg/mollie-payment-method-icon-active.svg';
 import IconConnectionPending from '../../../../../assets/forus-platform/resources/platform-general/assets/img/svg/mollie-connection-icon.svg';
 import IconConnectionActive from '../../../../../assets/forus-platform/resources/platform-general/assets/img/svg/mollie-connection-icon-active.svg';
-
 import MollieConnectionDetails from './elements/MollieConnectionDetails';
 import MollieConnectionProfileDetails from './elements/MollieConnectionProfileDetails';
 import MollieConnectionForm from './elements/MollieConnectionForm';
+import CheckboxControl from '../../elements/forms/controls/CheckboxControl';
 
 export default function PaymentMethods() {
-    const activeOrganization = useActiveOrganization();
     const { t } = useTranslation();
+    const activeOrganization = useActiveOrganization();
     const mollieConnectionService = useMollieConnectionService();
-    const setProgress = useSetProgress();
+
     const openModal = useOpenModal();
-    const pushSuccess = usePushSuccess();
     const pushDanger = usePushDanger();
+    const pushSuccess = usePushSuccess();
+    const setProgress = useSetProgress();
 
     const [loaded, setLoaded] = useState(false);
-    const [mollieConnection, setMollieConnection] = useState<MollieConnection>(null);
-    const [showForm, setShowForm] = useState(false);
-    const [fetchingMollieAccount, setFetchingMollieAccount] = useState(false);
     const [privacy, setPrivacy] = useState(false);
+    const [showForm, setShowForm] = useState(false);
+    const [mollieConnection, setMollieConnection] = useState<MollieConnection>(null);
+    const [fetchingMollieAccount, setFetchingMollieAccount] = useState(false);
 
-    const showSignUpForm = useCallback(() => {
-        setShowForm(true);
-    }, []);
-
-    const showError = useCallback(
-        (res, fallbackMessage = 'Onbekende foutmelding!') => {
-            res.status === 429
-                ? pushDanger(res.data.meta.title, res.data.meta.message)
-                : pushDanger('Mislukt!', res.data?.message || fallbackMessage);
+    const onResponseError = useCallback(
+        (err: ResponseError & ResponseErrorThrottled, fallbackMessage = 'Onbekende foutmelding!') => {
+            err.status === 429
+                ? pushDanger(err.data.meta.title, err.data.meta.message)
+                : pushDanger('Mislukt!', err.data?.message || fallbackMessage);
         },
         [pushDanger],
     );
@@ -57,11 +52,9 @@ export default function PaymentMethods() {
         mollieConnectionService
             .connect(activeOrganization.id)
             .then((res) => (document.location.href = res.data.url))
-            .catch((err: ResponseError) => showError(err))
-            .finally(() => {
-                setProgress(100);
-            });
-    }, [setProgress, mollieConnectionService, activeOrganization.id, showError]);
+            .catch((err: ResponseError & ResponseErrorThrottled) => onResponseError(err))
+            .finally(() => setProgress(100));
+    }, [setProgress, mollieConnectionService, activeOrganization.id, onResponseError]);
 
     const fetchMollieAccount = useCallback(() => {
         if (fetchingMollieAccount) {
@@ -74,12 +67,25 @@ export default function PaymentMethods() {
         mollieConnectionService
             .fetch(activeOrganization.id)
             .then((res) => setMollieConnection(res.data.data))
-            .catch((err: ResponseError) => showError(err))
+            .catch((err: ResponseError & ResponseErrorThrottled) => onResponseError(err))
             .finally(() => {
                 setProgress(100);
                 setFetchingMollieAccount(false);
             });
-    }, [fetchingMollieAccount, setProgress, mollieConnectionService, activeOrganization.id, showError]);
+    }, [fetchingMollieAccount, setProgress, mollieConnectionService, activeOrganization.id, onResponseError]);
+
+    const fetchMollieConnection = useCallback(() => {
+        setProgress(0);
+
+        mollieConnectionService
+            .getActive(activeOrganization.id)
+            .then((res) => setMollieConnection('id' in res.data.data ? res.data.data : null))
+            .catch((err: ResponseError & ResponseErrorThrottled) => onResponseError(err))
+            .finally(() => {
+                setProgress(100);
+                setLoaded(true);
+            });
+    }, [setProgress, mollieConnectionService, activeOrganization.id, onResponseError]);
 
     const deleteConnection = useCallback(
         function () {
@@ -97,33 +103,25 @@ export default function PaymentMethods() {
                             mollieConnectionService.delete(activeOrganization.id).then(() => {
                                 pushSuccess('Gelukt!', 'Medewerker verwijderd.');
                                 modal.close();
-                                document.location.reload();
-                            }, showError);
+                                fetchMollieConnection();
+                            }, onResponseError);
                         },
+                        disableOnClick: true,
                         text: t('modals.danger_zone.remove_mollie_connection.buttons.confirm'),
                     }}
                 />
             ));
         },
-        [openModal, t, mollieConnectionService, activeOrganization.id, showError, pushSuccess],
+        [
+            openModal,
+            t,
+            mollieConnectionService,
+            activeOrganization.id,
+            onResponseError,
+            pushSuccess,
+            fetchMollieConnection,
+        ],
     );
-
-    const fetchMollieConnection = useCallback(() => {
-        setProgress(0);
-
-        mollieConnectionService
-            .getActive(activeOrganization.id)
-            .then((res) => {
-                if ('id' in res.data.data) {
-                    setMollieConnection(res.data.data);
-                }
-            })
-            .catch((err: ResponseError) => showError(err))
-            .finally(() => {
-                setProgress(100);
-                setLoaded(true);
-            });
-    }, [setProgress, mollieConnectionService, activeOrganization.id, showError]);
 
     useEffect(() => {
         fetchMollieConnection();
@@ -153,27 +151,19 @@ export default function PaymentMethods() {
                                         en een gedeelte zelf. Beide transacties worden naar u overgemaakt.
                                     </div>
 
-                                    <label htmlFor="privacy" className="checkbox checkbox-narrow">
-                                        <input
-                                            type="checkbox"
-                                            id="privacy"
-                                            checked={privacy}
-                                            onChange={(e) => setPrivacy(e.target.checked)}
-                                        />
-                                        <span className="checkbox-label">
-                                            <span className="checkbox-box">
-                                                <span className="mdi mdi-check" />
-                                            </span>
-                                            Ik heb de&nbsp;
-                                            <StateNavLink
-                                                name={'mollie-privacy'}
-                                                params={{ organizationId: activeOrganization.id }}
-                                                target="_blank">
-                                                Algemene Voorwaarden
-                                            </StateNavLink>
-                                            &nbsp;gelezen en ga akkoord
-                                        </span>
-                                    </label>
+                                    <CheckboxControl
+                                        className={'checkbox-narrow'}
+                                        checked={privacy}
+                                        onChange={(e) => setPrivacy(e.target.checked)}>
+                                        Ik heb de&nbsp;
+                                        <StateNavLink
+                                            name={'mollie-privacy'}
+                                            params={{ organizationId: activeOrganization.id }}
+                                            target="_blank">
+                                            Algemene Voorwaarden
+                                        </StateNavLink>
+                                        &nbsp;gelezen en ga akkoord
+                                    </CheckboxControl>
                                 </div>
                             </div>
                         </div>
@@ -185,7 +175,7 @@ export default function PaymentMethods() {
                                 <div className="button-group">
                                     <button
                                         className="button button-primary"
-                                        onClick={showSignUpForm}
+                                        onClick={() => setShowForm(true)}
                                         type="button"
                                         disabled={!privacy}>
                                         <em className="mdi mdi-store icon-start"></em>
@@ -206,6 +196,15 @@ export default function PaymentMethods() {
                         </div>
                     </div>
                 </div>
+            )}
+
+            {!mollieConnection && showForm && (
+                <MollieConnectionForm
+                    organization={activeOrganization}
+                    mollieConnection={mollieConnection}
+                    onResponseError={onResponseError}
+                    onCancel={() => setShowForm(false)}
+                />
             )}
 
             {mollieConnection && (
@@ -262,7 +261,7 @@ export default function PaymentMethods() {
                                                     <button
                                                         className="button button-default button-sm"
                                                         disabled={fetchingMollieAccount}
-                                                        onClick={() => fetchMollieAccount()}>
+                                                        onClick={fetchMollieAccount}>
                                                         <em className="mdi mdi-autorenew icon-start"></em>
                                                         {t('mollie_connection.buttons.fetch')}
                                                     </button>
@@ -271,7 +270,7 @@ export default function PaymentMethods() {
                                                         <button
                                                             className="button button-danger button-sm"
                                                             disabled={fetchingMollieAccount}
-                                                            onClick={() => deleteConnection()}>
+                                                            onClick={deleteConnection}>
                                                             <em className="mdi mdi-close icon-start"></em>
                                                             {t('mollie_connection.buttons.delete')}
                                                         </button>
@@ -294,17 +293,12 @@ export default function PaymentMethods() {
                     <MollieConnectionDetails mollieConnection={mollieConnection} />
 
                     <MollieConnectionProfileDetails
+                        organization={activeOrganization}
+                        onResponseError={onResponseError}
                         mollieConnection={mollieConnection}
                         onChange={(connection) => setMollieConnection(connection)}
                     />
                 </Fragment>
-            )}
-
-            {showForm && (
-                <MollieConnectionForm
-                    mollieConnection={mollieConnection}
-                    formVisibility={(show) => setShowForm(show)}
-                />
             )}
         </Fragment>
     );

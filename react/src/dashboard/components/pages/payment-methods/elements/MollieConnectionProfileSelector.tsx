@@ -4,7 +4,7 @@ import SelectControlOptions from '../../../elements/select-control/templates/Sel
 import MollieConnectionProfile from '../../../../props/models/MollieConnectionProfile';
 import { useTranslation } from 'react-i18next';
 
-export default function SelectMollieProfile({
+export default function MollieConnectionProfileSelector({
     profiles,
     currentProfile,
     currentProfileId,
@@ -25,8 +25,9 @@ export default function SelectMollieProfile({
                 <div className="form">
                     <div className="form-group">
                         <SelectControl
-                            className="form-control"
+                            className="form-control inline-filter-control"
                             propKey={'id'}
+                            placeholder={t('mollie_connection.labels.current_profile')}
                             options={profiles}
                             value={currentProfileId}
                             onChange={(currentProfileId: number) => onSelect(currentProfileId)}
