@@ -97,20 +97,53 @@
 
     @media screen and (max-width: 1000px) {
         .restriction-hero {
-            flex-direction: column;
+            flex-direction: row;
 
             .restriction-hero-media {
-                padding: 0;
-                justify-content: center;
-                flex-direction: row;
-                margin: 0 0 10px;
+                img {
+                    width: 40px;
+                }
             }
 
             .restriction-hero-details {
-                text-align: center;
+                text-align: left;
+
+                .restriction-hero-title {
+                    font: 700 14px/20px var(--base-font);
+                }
+
+                .restriction-hero-description {
+                    font: 400 12px/16px var(--base-font);
+                }
 
                 .button-group {
+                    margin-left: -60px;
                     justify-content: center;
+
+                    .button {
+                        flex-grow: 1;
+                        justify-content: center;
+                        font: 600 11px/11px var(--base-font);
+                    }
+                }
+            }
+        }
+
+        .restriction-reasons {
+            .restriction-details {
+                .restriction-title {
+                    font: 700 14px/20px var(--base-font);
+                    margin: 0 0 10px;
+                }
+
+                .restriction-description {
+                    font: 400 12px/16px var(--base-font);
+                }
+            }
+
+            .restriction-item {
+                .restriction-item-name {
+                    font: 600 13px/18px var(--base-font);
                 }
             }
         }

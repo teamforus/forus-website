@@ -1,12 +1,17 @@
 &.block-offices {
+    border: var(--showcase-item-border);
+    box-shadow: var(--showcase-item-shadow);
+    background: var(--showcase-item-background);
+    border-radius: var(--showcase-item-border-radius);
+
     .office-item {
         margin-bottom: 15px;
         display: block;
+        border-bottom: var(--showcase-item-border);
         
         .office-pane {
-            background: #ffffff;
-            box-shadow: 2px 2px 15px rgba($color: #000000, $alpha: 0.05);
             display: flex;
+            background: #ffffff;
             flex-direction: column;
 
             .office-pane-block {
@@ -79,6 +84,8 @@
         }
 
         &:last-child {
+            border-bottom: none;
+
             .office-pane {
                 border-bottom-left-radius: var(--border-radius);
                 border-bottom-right-radius: var(--border-radius);

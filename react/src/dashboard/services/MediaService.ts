@@ -58,12 +58,10 @@ export class MediaService<T = Media> {
     }
 
     public delete(uid: string): Promise<null> {
-        return this.apiRequest._delete(`${this.prefix}/${uid}`);
+        return this.apiRequest.delete(`${this.prefix}/${uid}`);
     }
 }
 
 export function useMediaService(): MediaService {
-    const [service] = useState(new MediaService());
-
-    return service;
+    return useState(new MediaService())[0];
 }

@@ -24,27 +24,25 @@ export default function ModalFundRequestDisregardUndo({
     const setProgress = useSetProgress();
     const fundRequestService = useFundRequestValidatorService();
 
-    const form = useFormBuilder({}, (values) => {
+    const form = useFormBuilder({}, async (values) => {
         setProgress(0);
 
         return fundRequestService
             .disregardUndo(organization.id, fundRequest.id, values)
-            .then(
-                () => {
-                    modal.close();
-                    onSubmitted();
-                },
-                (res: ResponseError) => {
-                    form.setIsLocked(false);
+            .then(() => {
+                modal.close();
+                onSubmitted();
+            })
+            .catch((err: ResponseError) => {
+                form.setIsLocked(false);
 
-                    if (res.status === 422) {
-                        return form.setErrors(res.data.errors);
-                    }
+                if (err.status === 422) {
+                    return form.setErrors(err.data.errors);
+                }
 
-                    modal.close();
-                    onSubmitted(res);
-                },
-            )
+                modal.close();
+                onSubmitted(err);
+            })
             .finally(() => setProgress(100));
     });
 

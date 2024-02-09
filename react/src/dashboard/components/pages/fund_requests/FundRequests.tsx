@@ -1,5 +1,5 @@
-import React, { Fragment, useCallback, useEffect, useState } from 'react';
-import useFilters from '../../../hooks/useFilters';
+import React, { useCallback, useEffect, useState } from 'react';
+import useFilter from '../../../hooks/useFilter';
 import { useFundRequestValidatorService } from '../../../services/FundRequestValidatorService';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { getStateRouteUrl } from '../../../modules/state_router/Router';
@@ -14,7 +14,7 @@ import SelectControl from '../../elements/select-control/SelectControl';
 import SelectControlOptions from '../../elements/select-control/templates/SelectControlOptions';
 import { useEmployeeService } from '../../../services/EmployeeService';
 import CardHeaderFilter from '../../elements/tables/elements/CardHeaderFilter';
-import { format, parse } from 'date-fns';
+import { format } from 'date-fns';
 import LoadingCard from '../../elements/loading-card/LoadingCard';
 import 'react-datepicker/dist/react-datepicker.css';
 import DatePickerControl from '../../elements/forms/controls/DatePickerControl';
@@ -28,6 +28,7 @@ import useOpenModal from '../../../hooks/useOpenModal';
 import useActiveOrganization from '../../../hooks/useActiveOrganization';
 import usePushDanger from '../../../hooks/usePushDanger';
 import useSetProgress from '../../../hooks/useSetProgress';
+import { dateFormat, dateParse } from '../../../helpers/dates';
 
 export default function FundRequests() {
     const envData = useEnvData();
@@ -76,7 +77,7 @@ export default function FundRequests() {
         { key: 0, name: 'Niet toegewezen' },
     ]);
 
-    const filter = useFilters({
+    const filter = useFilter({
         q: '',
         page: 1,
         per_page: 10,
@@ -94,24 +95,22 @@ export default function FundRequests() {
 
         fundRequestService
             .index(activeOrganization.id, filter.activeValues)
-            .then(
-                (res) => {
-                    res.data.data = res.data.data.map((request) => {
-                        const assigned_employees = request.records
-                            .filter((record) => record.employee?.organization_id == activeOrganization.id)
-                            .map((record) => record.employee?.email)
-                            .reduce((list, email) => (list.includes(email) ? list : [...list, email]), []);
+            .then((res) => {
+                res.data.data = res.data.data.map((request) => {
+                    const assigned_employees = request.records
+                        .filter((record) => record.employee?.organization_id == activeOrganization.id)
+                        .map((record) => record.employee?.email)
+                        .reduce((list, email) => (list.includes(email) ? list : [...list, email]), []);
 
-                        return {
-                            ...request,
-                            assigned_employees: assigned_employees,
-                        };
-                    });
+                    return {
+                        ...request,
+                        assigned_employees: assigned_employees,
+                    };
+                });
 
-                    setFundRequests(res.data);
-                },
-                (res) => pushDanger('Error!', res.data.message),
-            )
+                setFundRequests(res.data);
+            })
+            .catch((res) => pushDanger('Mislukt!', res.data.message))
             .finally(() => setProgress(100));
     }, [setProgress, pushDanger, activeOrganization.id, filter.activeValues, fundRequestService]);
 
@@ -122,7 +121,7 @@ export default function FundRequests() {
             .list(activeOrganization.id, { per_page: 100, permission: 'validate_records' })
             .then(
                 (res) => setEmployees({ data: [allEmployeesOption, ...res.data.data], meta: res.data.meta }),
-                (res) => pushDanger('Error!', res.data.message),
+                (res) => pushDanger('Mislukt!', res.data.message),
             )
             .finally(() => setProgress(100));
     }, [setProgress, pushDanger, activeOrganization.id, employeeService, allEmployeesOption]);
@@ -148,7 +147,7 @@ export default function FundRequests() {
                     });
                 },
                 (res: ResponseError) => {
-                    pushDanger('Error!', res.data.message);
+                    pushDanger('Mislukt!', res.data.message);
                 },
             );
         },
@@ -175,10 +174,6 @@ export default function FundRequests() {
         },
         [activeOrganization],
     );
-
-    const [dateFormat] = useState('yyyy-MM-dd');
-    const parseDate = useCallback((value: string) => parse(value, dateFormat, new Date()), [dateFormat]);
-    const formatDate = useCallback((date: Date) => format(date, dateFormat), [dateFormat]);
 
     useEffect(() => {
         if (!appConfigs.organizations?.funds?.fund_requests) {
@@ -232,82 +227,76 @@ export default function FundRequests() {
                             )}
 
                             <CardHeaderFilter filter={filter}>
-                                <Fragment>
-                                    <FilterItemToggle show={true} label={t('validation_requests.labels.search')}>
-                                        <input
-                                            type="text"
-                                            value={filter.values?.q}
-                                            onChange={(e) => filter.update({ q: e.target.value })}
-                                            placeholder={t('validation_requests.labels.search')}
-                                            className="form-control"
-                                        />
-                                    </FilterItemToggle>
-                                    <FilterItemToggle label={t('validation_requests.labels.status')}>
+                                <FilterItemToggle show={true} label={t('validation_requests.labels.search')}>
+                                    <input
+                                        type="text"
+                                        value={filter.values?.q}
+                                        onChange={(e) => filter.update({ q: e.target.value })}
+                                        placeholder={t('validation_requests.labels.search')}
+                                        className="form-control"
+                                    />
+                                </FilterItemToggle>
+                                <FilterItemToggle label={t('validation_requests.labels.status')}>
+                                    <SelectControl
+                                        className={'form-control'}
+                                        options={states}
+                                        propKey={'key'}
+                                        allowSearch={false}
+                                        optionsComponent={SelectControlOptions}
+                                        onChange={(state: string) => filter.update({ state })}
+                                    />
+                                </FilterItemToggle>
+                                <FilterItemToggle label={t('validation_requests.labels.assignee_state')}>
+                                    <SelectControl
+                                        className={'form-control'}
+                                        options={assignedOptions}
+                                        propKey={'key'}
+                                        allowSearch={false}
+                                        optionsComponent={SelectControlOptions}
+                                        onChange={(assigned: number | null) => filter.update({ assigned })}
+                                    />
+                                </FilterItemToggle>
+                                <FilterItemToggle label={t('validation_requests.labels.assigned_to')}>
+                                    {employees && (
                                         <SelectControl
                                             className={'form-control'}
-                                            options={states}
-                                            propKey={'key'}
+                                            options={employees.data}
+                                            propKey={'id'}
+                                            propValue={'email'}
                                             allowSearch={false}
                                             optionsComponent={SelectControlOptions}
-                                            onChange={(state: string) => filter.update({ state })}
+                                            onChange={(employee_id: number | null) => filter.update({ employee_id })}
                                         />
-                                    </FilterItemToggle>
-                                    <FilterItemToggle label={t('validation_requests.labels.assignee_state')}>
-                                        <SelectControl
-                                            className={'form-control'}
-                                            options={assignedOptions}
-                                            propKey={'key'}
-                                            allowSearch={false}
-                                            optionsComponent={SelectControlOptions}
-                                            onChange={(assigned: number | null) => filter.update({ assigned })}
-                                        />
-                                    </FilterItemToggle>
-                                    <FilterItemToggle label={t('validation_requests.labels.assigned_to')}>
-                                        {employees && (
-                                            <SelectControl
-                                                className={'form-control'}
-                                                options={employees.data}
-                                                propKey={'id'}
-                                                propValue={'email'}
-                                                allowSearch={false}
-                                                optionsComponent={SelectControlOptions}
-                                                onChange={(employee_id: number | null) =>
-                                                    filter.update({ employee_id })
-                                                }
-                                            />
-                                        )}
-                                    </FilterItemToggle>
-                                    <FilterItemToggle label={t('validation_requests.labels.from')}>
-                                        <DatePickerControl
-                                            placeholder={'yyyy-MM-dd'}
-                                            value={
-                                                filter.values.from ? parseDate(filter.values.from?.toString()) : null
-                                            }
-                                            onChange={(date) => filter.update({ from: formatDate(date) })}
-                                        />
-                                    </FilterItemToggle>
+                                    )}
+                                </FilterItemToggle>
+                                <FilterItemToggle label={t('validation_requests.labels.from')}>
+                                    <DatePickerControl
+                                        placeholder={'yyyy-MM-dd'}
+                                        value={dateParse(filter.values.from?.toString())}
+                                        onChange={(date) => filter.update({ from: dateFormat(date) })}
+                                    />
+                                </FilterItemToggle>
 
-                                    <FilterItemToggle label={t('validation_requests.labels.to')}>
-                                        <DatePickerControl
-                                            placeholder={'yyyy-MM-dd'}
-                                            value={filter.values.to ? parseDate(filter.values.to?.toString()) : null}
-                                            onChange={(date: Date) => filter.update({ to: formatDate(date) })}
-                                        />
-                                    </FilterItemToggle>
-                                    <div className="form-actions">
-                                        {fundRequests && (
-                                            <button
-                                                className="button button-primary button-wide"
-                                                disabled={fundRequests.meta.total == 0}
-                                                onClick={() => exportRequests()}>
-                                                <em className="mdi mdi-download icon-start" />
-                                                {t('components.dropdown.export', {
-                                                    total: fundRequests.meta.total,
-                                                })}
-                                            </button>
-                                        )}
-                                    </div>
-                                </Fragment>
+                                <FilterItemToggle label={t('validation_requests.labels.to')}>
+                                    <DatePickerControl
+                                        placeholder={'yyyy-MM-dd'}
+                                        value={dateParse(filter.values.to)}
+                                        onChange={(date: Date) => filter.update({ to: dateFormat(date) })}
+                                    />
+                                </FilterItemToggle>
+                                <div className="form-actions">
+                                    {fundRequests && (
+                                        <button
+                                            className="button button-primary button-wide"
+                                            disabled={fundRequests.meta.total == 0}
+                                            onClick={() => exportRequests()}>
+                                            <em className="mdi mdi-download icon-start" />
+                                            {t('components.dropdown.export', {
+                                                total: fundRequests.meta.total,
+                                            })}
+                                        </button>
+                                    )}
+                                </div>
                             </CardHeaderFilter>
                         </div>
                     </div>
@@ -318,7 +307,7 @@ export default function FundRequests() {
                 <div className="card-section">
                     <div className="card-block card-block-table">
                         <div className="table-wrapper">
-                            <table className="table table-highlight">
+                            <table className="table">
                                 <thead>
                                     <tr>
                                         <ThSortable

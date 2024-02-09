@@ -1,29 +1,10 @@
 .button {
+    font: 700 16px/1.5em var(--base-font);
+
     &:hover {
         box-shadow: none;
     }
-    font: 700 16px/1.5em var(--base-font);
-    border-radius: 0;
-    &.button-default {
-        background-color: var(--color-primary);
-        border: 1px solid transparent;
-        color: var(--tc-var);
 
-        .mdi {
-            color: var(--tc-var);
-        }
-
-        &:hover {
-            background-color: #fff;
-            border: 1px solid var(--color-primary);
-            color:  var(--tc);
-            text-decoration: underline;
-            box-shadow: none;
-            .mdi {
-                color: var(--tc);
-            }
-        }
-    }
     &.button-primary {
         color: var(--tc-var);
         background: var(--color-default);

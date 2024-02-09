@@ -84,10 +84,6 @@
         width: 100%;
         margin: 0 0 20px;
         font: inherit;
-
-        thead {
-            display: none;
-        }
     
         tr {
             text-align: left;
@@ -103,11 +99,6 @@
                 &>a {
                     font: inherit;
                 }
-            }
-    
-            td {
-                color: #444a4f;
-                font: inherit;
     
                 &:first-child {
                     padding-left: 25px;
@@ -118,18 +109,21 @@
                 }
             }
 
-            &:first-child {
-                th, td {
-                    color: #646f79;
-                    padding-top: 10px;
-                    padding-bottom: 10px;
-                    font: 700 12px/20px var(--base-font);
+            th {
+                color: #646f79;
+                padding-top: 10px;
+                padding-bottom: 10px;
+                font: 700 12px/20px var(--base-font);
 
-                    * {
-                        color: inherit;
-                        font: inherit;
-                    }
+                * {
+                    color: inherit;
+                    font: inherit;
                 }
+            }
+    
+            td {
+                color: #444a4f;
+                font: inherit;
             }
     
             &:last-child {

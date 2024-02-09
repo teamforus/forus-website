@@ -75,6 +75,7 @@
                     }
 
                     .product-property-value {
+                        margin: 0;
                         color: #282b39;
                         font: 600 16px/18px var(--base-font);
 
@@ -122,6 +123,11 @@
                 min-width: 175px;
                 display: flex;
                 flex-direction: column;
+
+                .button {
+                    display: inline-flex;
+                    justify-content: center;
+                }
 
                 .fund-item-section-label {
                     display: flex;
@@ -298,6 +304,10 @@
                             margin-bottom: 0;
                         }
                     }
+                }
+
+                .organization-name {
+                    word-wrap: break-word;
                 }
             }
         }

@@ -8,20 +8,15 @@
         background: #FFFFFF;
         border: 1px solid var(--border-color);
         box-shadow: 0px 0px 5px rgba(25, 39, 52, 0.22);
-        border-radius: calc(var(--border-radius) / 2);
-        padding: 20px 25px;
+        border-radius: calc(var(--border-radius));
         position: relative;
         flex-direction: column;
 
         .criterion-title {
             font: 600 16px/36px var(--base-font);
-            margin: 0 0 10px;
+            margin: 0 0 0;
             transition: line-height .4s;
             @include ellipsis();
-
-            &.criterion-title-large {
-                margin: 0 0 0;
-            }
         }
 
         .criterion-subtitle {
@@ -30,15 +25,29 @@
             @include ellipsis();
         }
 
-        .criterion-actions {
-            position: absolute;
-            right: 20px;
-            top: 20px;
+        .criterion-head {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            padding: 10px 10px 10px 20px;
+            border-bottom: 1px solid var(--border-color);
+            
+            .criterion-actions {
+                display: flex;
+                justify-content: flex-end;
+            }
+
+            &:last-child {
+                border-bottom: none;
+            }
+        }
+
+        .criterion-body {
+            padding: 20px 25px;
         }
 
         .criterion-section {
-            padding: 20px 0;
-            border-bottom: 1px solid var(--border-color);
+            padding: 0;
+            margin: 0 0 15px;
 
             .checkbox {
                 margin-bottom: -5px;
@@ -111,7 +120,7 @@
 
             .criterion-organizations {
                 box-shadow: 0px 0px 5px rgba(25, 39, 52, 0.22);
-                border-radius: calc(var(--border-radius) / 2);
+                border-radius: calc(var(--border-radius));
                 border: 1px solid var(--border-color);
                 display: flex;
                 flex-direction: column;

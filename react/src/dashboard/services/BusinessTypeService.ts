@@ -32,7 +32,5 @@ export class BusinessTypeService<T = BusinessType> {
 }
 
 export function useBusinessTypeService(): BusinessTypeService {
-    const [service] = useState(new BusinessTypeService());
-
-    return service;
+    return useState(new BusinessTypeService())[0];
 }

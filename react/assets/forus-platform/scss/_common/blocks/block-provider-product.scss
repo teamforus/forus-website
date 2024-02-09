@@ -3,7 +3,7 @@
     flex-direction: column;
     margin: 0 0 20px;
     background: #fff;
-    border-radius: calc(var(--border-radius) / 2);
+    border-radius: calc(var(--border-radius));
     box-shadow: var(--box-shadow);
 
     .product-overview {
@@ -12,7 +12,7 @@
         flex-direction: row;
         
         .product-media {
-            border-top-left-radius: calc(var(--border-radius) / 2);
+            border-top-left-radius: calc(var(--border-radius));
             overflow: hidden;
 
             .product-media-img {

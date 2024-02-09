@@ -22,6 +22,7 @@
 @media screen and (max-width: 991px) {
 	.sm-text-left { text-align: left !important; }
 }
+
 .e-fb {
     justify-content: space-between;
     flex-direction: column;
@@ -168,4 +169,18 @@ input[type="checkbox"]:checked {
 		height: 400px;
 		align-self: center;
 	}
+}
+
+.show-sm {
+    display: none !important;
+}
+
+@media screen and (max-width: 1000px) {
+    .hide-sm {
+        display: none !important;
+    }
+
+    .show-sm {
+        display: block !important;
+    }
 }

@@ -1,0 +1,104 @@
+&.block-payment-connection {
+    display: grid;
+    grid-template-columns: 1fr auto;
+
+    .button-group {
+        .button-text {
+            padding-left: 5px;
+
+            &:not([disabled]) {
+                .mdi {
+                    color: #8FA2A5;
+                }
+            }
+        }
+    }
+
+    .block-compact-datalist {
+        padding: 10px 0 0;
+    }
+
+    .connection-content {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 20px;
+
+        .connection-content-icon {
+            svg {
+                border-radius: var(--border-radius);
+                border: 1px solid #d4d9dd;
+            }
+        }
+
+        .connection-content-details {
+            .block-markdown,
+            .connection-content-info,
+            .connection-content-title,
+            .connection-content-description {
+                margin: 0 0 5px;
+
+                &:last-child {
+                    margin-bottom: 0;
+                }
+            }
+
+            .connection-content-title {
+                font: 600 16px/24px var(--base-font);
+                display: flex;
+                gap: 10px;
+
+                .label {
+                    height: fit-content;
+                    align-self: center;
+                }
+            }
+
+            .connection-content-info {
+                font: 500 12px/20px var(--base-font);
+                display: inline-flex;
+                gap: 4px;
+                transition: color 0.4s;
+
+                .mdi {
+                    color: var(--color-primary);
+                    font-size: 14px;
+                    line-height: 20px;
+                    transition: color 0.4s;
+                }
+
+                &:hover {
+                    color: #646f79;
+
+                    .mdi {
+                        color: #426993;
+                    }
+                }
+            }
+
+            .checkbox {
+                .checkbox-label {
+                    color: #414141;
+                    font: 400 12px/20px var(--base-font);
+
+                    a {
+                        color: #134478;
+                        font: 600 12px/20px var(--base-font);
+                    }
+                }
+            }
+
+            .connection-content-description {
+                font: 400 13px/18px var(--base-font);
+                margin: 0 0 10px;
+
+                &:last-child {
+                    margin-bottom: 0;
+                }
+            }
+        }
+    }
+
+    .connection-actions {
+        display: flex;
+    }
+}

@@ -133,7 +133,7 @@ export default function SelectControlOptionsOrganization<T>({
 
                         <div className="select-control-options-actions">
                             <NavLink
-                                to={getStateRouteUrl('organization-edit', {
+                                to={getStateRouteUrl('organizations-edit', {
                                     organizationId: (modelValue?.raw as Organization)?.id,
                                 })}
                                 onClick={() => setShowOptions(false)}

@@ -2,30 +2,31 @@
 
 /*==========  Style Sheet - Vars  ==========*/
 $fonts: "https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,700",
-"https://fonts.googleapis.com/css?family=Source+Serif+Pro:400,400i,600,700";
-$primaryColor: #176B55;
-$primaryColorLight: #2F7F6B;
+    "https://fonts.googleapis.com/css?family=Source+Serif+Pro:400,400i,600,700";
+$primaryColor: #176b55;
+$primaryColorLight: #2f7f6b;
 
-@font-face { 
-    font-family: Oranda; 
-    src: local("Oranda BT Roman"), 
-    url("https://media.forus.io/assets/fonts/oranda_bt.bde3d05f.woff2") format("woff2"), 
-    url("https://media.forus.io/assets/fonts/oranda_bt.05235f9a.woff") format("woff");
-    font-style: normal; 
-    font-weight: 400; 
-    font-display: swap; 
+@font-face {
+    font-family: Oranda;
+    src:
+        local("Oranda BT Roman"),
+        url("https://media.forus.io/assets/fonts/oranda_bt.bde3d05f.woff2") format("woff2"),
+        url("https://media.forus.io/assets/fonts/oranda_bt.05235f9a.woff") format("woff");
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
 }
 
 :root {
     // navbar
     --bg-nav: #fff;
     --tc-nav: #212121;
-    --tc-nav-hov: #176B55;
+    --tc-nav-hov: #176b55;
     --logo-padding: 20px 0px;
     --logo-height: 45px;
 
     // navbar (auth)
-    --tc-auth-menu: #176B55;
+    --tc-auth-menu: #176b55;
     --tc-auth-btn: #ffffff;
     --btn-auth-bg: transparent;
     --btn-auth-border: #0000;
@@ -73,9 +74,9 @@ $primaryColorLight: #2F7F6B;
     --product-image-padding: 10px 0 0 10px;
 
     // placeholder text color
-    --placeholder_text_color: #515152;
+    --form-control-placeholder-color: #515152;
 
-    --border-color: #E5E5E5;
+    --border-color: #e5e5e5;
 
     --border-radius: 3px;
     --box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
@@ -83,12 +84,27 @@ $primaryColorLight: #2F7F6B;
     --color-primary: #{$primaryColor};
     --color-primary-light: #{$primaryColorLight};
 
-    --color-default: #176B55;
+    --color-default: #176b55;
     --color-default-light: #23a783;
 
     --color-search-icon-medium: #{$primaryColor};
     --color-search-icon-dark: #{darken($primaryColor, 10%)};
     --color-search-icon-light: #{lighten($primaryColor, 25%)};
+
+    //- Showcase
+    --showcase-aside-shadow: none;
+    --showcase-aside-border: none;
+    --showcase-aside-padding: 0px;
+
+    --showcase-item-shadow: none;
+    --showcase-item-background: #fff;
+    --showcase-item-border: 1px solid var(--border-color);
+    --showcase-item-border-radius: var(--border-radius);
+
+    --showcase-fullscreen-bottom-offset: 50px;
+
+    // Label sets
+    --label-set-hover-background: #{rgba($primaryColor, .8)};
 
     // Login button
     --login-button-background: #fff;

@@ -37,7 +37,7 @@ export default class IdentityService<T = Identity> {
     }
 
     public deleteToken() {
-        return this.apiRequest._delete<ResponseSimple<null>>(`${this.prefix}/delete`);
+        return this.apiRequest.delete<ResponseSimple<null>>(`${this.prefix}/delete`);
     }
 
     public makeAuthToken() {
@@ -96,7 +96,5 @@ export default class IdentityService<T = Identity> {
 }
 
 export function useIdentityService(): IdentityService {
-    const [service] = useState(new IdentityService());
-
-    return service;
+    return useState(new IdentityService())[0];
 }

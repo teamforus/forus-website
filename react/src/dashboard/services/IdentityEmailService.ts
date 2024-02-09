@@ -3,7 +3,7 @@ import { useState } from 'react';
 import IdentityEmail from '../props/models/IdentityEmail';
 import { ApiResponse, ApiResponseSingle } from '../props/ApiResponses';
 
-export default class IdentityEmailService<T = IdentityEmail> {
+export class IdentityEmailService<T = IdentityEmail> {
     /**
      * @param apiRequest
      */
@@ -29,7 +29,7 @@ export default class IdentityEmailService<T = IdentityEmail> {
     }
 
     public delete(id: number): Promise<ApiResponseSingle<null>> {
-        return this.apiRequest._delete('/identity/emails/' + id);
+        return this.apiRequest.delete('/identity/emails/' + id);
     }
 
     public resendVerification(id: number): Promise<ApiResponseSingle<T>> {
@@ -42,7 +42,5 @@ export default class IdentityEmailService<T = IdentityEmail> {
 }
 
 export function useIdentityEmailsService(): IdentityEmailService {
-    const [service] = useState(new IdentityEmailService());
-
-    return service;
+    return useState(new IdentityEmailService())[0];
 }

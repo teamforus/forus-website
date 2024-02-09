@@ -12,12 +12,6 @@ html, body {
     color: var(--tc);
 }
 
-body {
-    @media screen and (max-width: 1000px) {
-        padding-bottom: 60px;
-    }
-}
-
 h1, h2, h3, h4, h5, h6, p, b, i, li, td{
     font-family: var(--hf);
     font-weight: 300;

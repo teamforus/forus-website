@@ -1,6 +1,7 @@
 import Media from './Media';
 import Tag from './Tag';
 import BusinessType from './BusinessType';
+import ReservationField from './ReservationField';
 
 export default interface Organization {
     id: number;
@@ -13,9 +14,11 @@ export default interface Organization {
     website_public: boolean;
     description?: string;
     description_html?: string;
-    reservation_phone: 'required' | 'optional' | 'global' | 'no';
-    reservation_address: 'required' | 'optional' | 'global' | 'no';
-    reservation_birth_date: 'required' | 'optional' | 'global' | 'no';
+    reservation_phone: 'required' | 'optional' | 'no';
+    reservation_address: 'required' | 'optional' | 'no';
+    reservation_birth_date: 'required' | 'optional' | 'no';
+    reservation_allow_extra_payments: boolean;
+    reservation_fields: Array<ReservationField>;
     email?: string;
     phone?: string;
     website?: string;
@@ -43,6 +46,7 @@ export default interface Organization {
     allow_bi_connection: boolean;
     auth_2fa_policy: 'optional' | 'required' | 'restrict_features';
     auth_2fa_remember_ip?: boolean;
+    allow_pre_checks?: boolean;
     allow_2fa_restrictions?: boolean;
     allow_reservation_custom_fields: boolean;
     auth_2fa_funds_policy: 'optional' | 'required' | 'restrict_features';
@@ -55,4 +59,7 @@ export default interface Organization {
     business_type: BusinessType;
     permissions?: Array<string>;
     offices_count: number;
+    can_view_provider_extra_payments?: boolean;
+    allow_extra_payments_by_sponsor?: boolean;
+    can_receive_extra_payments?: boolean;
 }

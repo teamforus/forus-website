@@ -1,3 +1,8 @@
+*:focus {
+    outline-width: var(--outline-width);
+    outline-offset: var(--outline-offset);
+}
+
 img {
     border: none;
 }
@@ -52,6 +57,10 @@ img {
     float: left !important;
 }
 
+.nowrap {
+    white-space: nowrap !important;
+}
+
 .text-right {
     text-align: right !important;
 }
@@ -69,7 +78,7 @@ img {
 }
 
 .text-muted {
-    color: #a1a1a1 !important;
+    color: var(--tc-muted) !important;
 }
 
 .text-muted-dim {

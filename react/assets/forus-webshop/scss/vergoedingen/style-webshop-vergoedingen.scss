@@ -1,9 +1,9 @@
-@import './vars';
-@import '../_common/webshop'; 
-@import '../includes/fonts';
+@import "./vars";
+@import "../_common/webshop";
 
 // INCLUDES
-@import 'includes/shame.scss';
+@import "includes/fonts";
+@import "includes/shame.scss";
 
 #main-content {
     padding-top: 80px;
@@ -15,8 +15,9 @@
 
 // BLOCKS
 .block {
-    @import 'sections/blocks/block-sign_up.scss';
-    @import 'sections/blocks/block-organization-info.scss';
-    @import 'sections/blocks/block-cms-funds.scss';
-    @import 'sections/blocks/block-navbar-search-results.scss';
+    @import "sections/blocks/block-sign_up.scss";
+    @import "sections/blocks/block-organization-info.scss";
+    @import "sections/blocks/block-cms-funds.scss";
+    @import "sections/blocks/block-navbar-search-results.scss";
+    @import "sections/blocks/block-mobile-menu.scss";
 }

@@ -5,7 +5,7 @@
             background-size: 50% 50%;
             background-color: #E4E4E4;
 
-            @media screen and (min-width: 1200px) { 
+            /* @media screen and (min-width: 1200px) { 
                 .subnav-inner {
                     .navbar-logo {
                         img {
@@ -13,7 +13,7 @@
                         }
                     }
                 }
-            }
+            } */
         }
 
         .block-auth {
@@ -23,25 +23,9 @@
                 &.button-primary {
                     border: none;
                 }
-            }
-        }
 
-        .button {
-            &.button-default {
-                color: #282B39;
-
-                svg {
-                    path {
-                        fill: #282B39;
-                    }
-                }
-
-                &:hover {
-                    svg {
-                        path {
-                            fill: #282B39;  
-                        }
-                    }
+                &.button-start {
+                    margin: 0;
                 }
             }
         }

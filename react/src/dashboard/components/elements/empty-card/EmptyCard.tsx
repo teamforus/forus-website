@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { NavLink } from 'react-router-dom';
 
 interface EmptyButtonType {
@@ -15,8 +15,8 @@ export default function EmptyCard({
     title,
     description,
     textAlign,
-    button,
-    buttons,
+    button = null,
+    buttons = [],
 }: {
     title?: string;
     description?: string;
@@ -24,12 +24,21 @@ export default function EmptyCard({
     button?: EmptyButtonType;
     buttons?: Array<EmptyButtonType>;
 }) {
+    const descriptionLines = useMemo(() => {
+        return description?.split('\n') || [];
+    }, [description]);
+
     return (
         <div className="card">
             <div className="card-section">
                 <div className={`block block-empty text-${textAlign || 'center'}`}>
                     {title && <div className="empty-title">{title}</div>}
-                    {description && <div className="empty-details">{description}</div>}
+
+                    {descriptionLines.map((value, index) => (
+                        <div key={index} className="empty-details">
+                            {value}
+                        </div>
+                    ))}
 
                     {button && (
                         <div className={'empty-actions'}>
@@ -58,23 +67,3 @@ export default function EmptyCard({
         </div>
     );
 }
-
-/*
-.block.block-empty(ng-class="{center: 'text-center', right: 'text-right'}[$dir.align || 'center']")
-    .empty-title(ng-if="$dir.text" ng-bind="$dir.title")
-    .empty-details(ng-if="$dir.text" ng-bind="$dir.text")
-
-    .empty-actions(ng-if="$dir.button")
-        a(ng-if="$dir.button" href="{{ $dir.button.href }}").button.button-primary
-            em.mdi.mdi-plus-circle.icon-start 
-            span(ng-bind="$dir.button.text")
-
-    .empty-actions(ng-if="$dir.buttonText && ($dir.buttonSref || $dir.buttonCallback)"): button.button(
-        ng-click="$dir.buttonHandler($event)"
-        ng-class="'button-' + $dir.buttonType"
-        dusk="btnEmptyBlock")
-
-        em.mdi(ng-if="$dir.buttonIcon && !$dir.buttonIconEnd" ng-class="'mdi-' + $dir.buttonIcon").icon-start
-        ng-bind(ng-bind="$dir.buttonText")
-        em.mdi(ng-if="$dir.buttonIcon && $dir.buttonIconEnd" ng-class="'mdi-' + $dir.buttonIcon").icon-end
-*/

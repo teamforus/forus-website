@@ -45,15 +45,13 @@ export default function ModalEmployeeEdit({
                 : employeeService.store(organization.id, data);
 
             return promise
-                .then(
-                    () => {
-                        onSubmit();
-                        modal.close();
-                    },
-                    (res: ResponseError) => {
-                        form.setErrors(res.status == 429 ? { email: [res.data.message] } : res.data.errors);
-                    },
-                )
+                .then(() => {
+                    onSubmit();
+                    modal.close();
+                })
+                .catch((err: ResponseError) => {
+                    form.setErrors(err.status == 429 ? { email: [err.data.message] } : err.data.errors);
+                })
                 .finally(() => form.setIsLocked(false));
         },
     );
@@ -116,13 +114,11 @@ export default function ModalEmployeeEdit({
                                             tooltip={role.description}
                                             checked={form.values.roles[role.id] || false}
                                             onChange={(e) => onChangeRole(e.target.checked, role)}
-                                            className={'checkbox-narrow'}
-                                            customElement={
-                                                <span className="permission-name">
-                                                    <span className="ellipsis">{role.name}</span>
-                                                </span>
-                                            }
-                                        />
+                                            className={'checkbox-narrow'}>
+                                            <span className="permission-name">
+                                                <span className="ellipsis">{role.name}</span>
+                                            </span>
+                                        </CheckboxControl>
                                     </div>
                                 ))}
                             </div>

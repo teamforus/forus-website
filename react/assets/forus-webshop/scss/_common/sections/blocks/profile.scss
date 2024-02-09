@@ -168,7 +168,7 @@
                 }
 
                 .profile-content-title {
-                    font: 600 24px/28px var(--hf);
+                    font: 700 22px/32px var(--hf);
                     color: var(--tc);
                     width: 100%;
                     margin: 0;
@@ -197,6 +197,10 @@
                         .label-tab {
                             font-weight: 700;
                         }
+                    }
+
+                    &.profile-content-title-sm {
+                        font: 700 18px/27px var(--hf);
                     }
                 }
                 

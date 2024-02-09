@@ -5,7 +5,7 @@ import { NavLink } from 'react-router-dom';
 import { classList, hasPermission } from '../../../helpers/utils';
 import { getStateRouteUrl } from '../../../modules/state_router/Router';
 import { t } from 'i18next';
-import useFilters from '../../../hooks/useFilters';
+import useFilter from '../../../hooks/useFilter';
 import { strLimit } from '../../../helpers/string';
 import Employee from '../../../props/models/Employee';
 import Paginator from '../../../modules/paginator/components/Paginator';
@@ -37,7 +37,7 @@ export default function Employees() {
     const [employees, setEmployees] = useState<PaginationData<Employee>>(null);
     const [adminEmployees, setAdminEmployees] = useState([]);
 
-    const filter = useFilters({
+    const filter = useFilter({
         q: '',
         per_page: 15,
     });
@@ -116,7 +116,7 @@ export default function Employees() {
                     });
                 },
                 (res: ResponseError) => {
-                    pushDanger('Error!', res.data.message);
+                    pushDanger('Mislukt!', res.data.message);
                 },
             );
         },
@@ -246,7 +246,7 @@ export default function Employees() {
                 <div className="card-section">
                     <div className="card-block card-block-table">
                         <div className="table-wrapper">
-                            <table className="table table-highlight">
+                            <table className="table">
                                 <thead>
                                     <tr>
                                         <th>{t('organization_employees.labels.email')}</th>

@@ -1,4 +1,5 @@
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
+import { uniqueId } from 'lodash';
 
 export default function UIControlCheckbox({
     id = '',
@@ -22,6 +23,7 @@ export default function UIControlCheckbox({
     onChangeValue?: (checked: boolean) => void;
 }) {
     const inputRef = useRef<HTMLInputElement>(null);
+    const [innerId] = useState(id || uniqueId('ui_control_checkbox_'));
 
     const toggleCheckbox = useCallback((e) => {
         if (e?.key == 'Enter') {
@@ -36,7 +38,7 @@ export default function UIControlCheckbox({
                 hidden={true}
                 tabIndex={-1}
                 type="checkbox"
-                id={id}
+                id={innerId}
                 ref={inputRef}
                 name={name}
                 value={value}
@@ -49,7 +51,7 @@ export default function UIControlCheckbox({
             />
             <label
                 className="ui-checkbox-label"
-                htmlFor={id}
+                htmlFor={innerId}
                 role="checkbox"
                 tabIndex={0}
                 aria-checked={inputRef?.current?.checked}

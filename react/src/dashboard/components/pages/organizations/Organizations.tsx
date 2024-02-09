@@ -31,7 +31,7 @@ export default function Organizations() {
                 .map((route) => route.name);
 
             if (routes.length == 0) {
-                return navigate(getStateRouteUrl('no-permission'));
+                return navigate(getStateRouteUrl('organization-no-permissions', { organizationId }));
             }
 
             navigate(getStateRouteUrl(routes[0], { organizationId }));

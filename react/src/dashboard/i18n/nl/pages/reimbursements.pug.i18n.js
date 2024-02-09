@@ -31,6 +31,7 @@ module.exports = {
         employee: "Medewerker",
         paid_on: "Uitbetaald op",
         transaction: "Transactie",
+        implementation: "Implementatie",
     },
 
     buttons: {
