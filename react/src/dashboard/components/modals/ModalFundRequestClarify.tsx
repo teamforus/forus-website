@@ -28,7 +28,7 @@ export default function ModalFundRequestClarify({
     const setProgress = useSetProgress();
     const fundRequestService = useFundRequestValidatorService();
 
-    const form = useFormBuilder({ question: '' }, () => {
+    const form = useFormBuilder({ question: '' }, async () => {
         setProgress(0);
 
         return fundRequestService
@@ -38,22 +38,20 @@ export default function ModalFundRequestClarify({
                 fundRequestRecord.id,
                 form.values.question,
             )
-            .then(
-                () => {
-                    modal.close();
-                    onSubmitted();
-                },
-                (res: ResponseError) => {
-                    form.setIsLocked(false);
+            .then(() => {
+                modal.close();
+                onSubmitted();
+            })
+            .catch((err: ResponseError) => {
+                form.setIsLocked(false);
 
-                    if (res.status === 422) {
-                        return form.setErrors(res.data.errors);
-                    }
+                if (err.status === 422) {
+                    return form.setErrors(err.data.errors);
+                }
 
-                    modal.close();
-                    onSubmitted(res);
-                },
-            )
+                modal.close();
+                onSubmitted(err);
+            })
             .finally(() => setProgress(100));
     });
 

@@ -1,16 +1,22 @@
 import events from '../helpers/events';
+import EnvDataProp from '../../props/EnvData';
 
 export default class ApiRequestService<T = null> {
     protected static host = '';
+    protected static envData: EnvDataProp = null;
 
-    static setHost(host: string) {
+    public static setEnvData(envData: EnvDataProp) {
+        ApiRequestService.envData = envData;
+    }
+
+    public static setHost(host: string) {
         ApiRequestService.host = host;
     }
 
     /**
      * Get API url
      */
-    static getHost() {
+    public static getHost() {
         let host = ApiRequestService.host;
 
         while (host[host.length - 1] === '/') {
@@ -27,9 +33,8 @@ export default class ApiRequestService<T = null> {
         return {
             Accept: 'application/json',
             'Accept-Language': localStorage.locale || 'nl',
-            'Client-Version': 1,
-            'Client-Key': 'general',
-            'Client-Type': 'validator',
+            'Client-Key': ApiRequestService.envData?.client_key,
+            'Client-Type': ApiRequestService.envData?.client_type,
             'Content-Type': 'application/json',
             ...(localStorage.active_account ? { Authorization: 'Bearer ' + localStorage.active_account } : {}),
         };
@@ -43,7 +48,7 @@ export default class ApiRequestService<T = null> {
      * @param headers
      * @param callback
      */
-    get<G = T>(
+    public get<G = T>(
         endpoint: string,
         data: object = {},
         headers: object = {},
@@ -60,7 +65,7 @@ export default class ApiRequestService<T = null> {
      * @param headers
      * @param callback
      */
-    post<P = T>(
+    public post<P = T>(
         endpoint: string,
         data: object = {},
         headers: object = {},
@@ -77,7 +82,7 @@ export default class ApiRequestService<T = null> {
      * @param headers
      * @param callback
      */
-    patch<P = T>(
+    public patch<P = T>(
         endpoint: string,
         data: object = {},
         headers: object = {},
@@ -95,7 +100,7 @@ export default class ApiRequestService<T = null> {
      * @param headers
      * @param callback
      */
-    put<P = T>(
+    public put<P = T>(
         endpoint: string,
         data: object = {},
         headers: object = {},
@@ -112,7 +117,7 @@ export default class ApiRequestService<T = null> {
      * @param headers
      * @param callback
      */
-    _delete<D = T>(
+    public delete<D = T>(
         endpoint: string,
         data: object = {},
         headers: object = {},
@@ -130,7 +135,7 @@ export default class ApiRequestService<T = null> {
      * @param headers
      * @param callback
      */
-    ajax<A>(
+    public ajax<A>(
         method: string,
         endpoint: string,
         data: object = {},
@@ -163,12 +168,41 @@ export default class ApiRequestService<T = null> {
             }
 
             const config = typeof callback === 'function' ? callback(params) : { ...params, ...callback };
+            const xhr = new XMLHttpRequest();
 
-            fetch(this.endpointToUrl(endpoint, getQueryString), config).then(async (res: Response) => {
+            xhr.open(method, this.endpointToUrl(endpoint, getQueryString), true);
+
+            Object.keys(config.headers).forEach((key: string) => {
+                xhr.setRequestHeader(key, config.headers[key]);
+            });
+
+            if (config?.onProgress) {
+                xhr.upload.onprogress = function (event) {
+                    if (event.lengthComputable) {
+                        config?.onProgress({ progress: (event.loaded / event.total) * 100 });
+                    }
+                };
+            }
+
+            if (config?.onXhr) {
+                xhr.onabort = config?.onAbort;
+            }
+
+            if (config?.responseType) {
+                xhr.responseType = config?.responseType;
+            }
+
+            if (config?.onXhr) {
+                config.onXhr(xhr);
+            }
+
+            xhr.onload = async () => {
+                const isText = !xhr.responseType || xhr.responseType == 'text';
+
                 const resData = {
-                    data: await this.parseJson(res),
-                    status: res.status,
-                    response: res,
+                    data: isText ? this.parseJson(xhr.responseText) : xhr.response,
+                    status: xhr.status,
+                    response: xhr,
                 };
 
                 if (resData.status === 200 || resData.status === 201 || resData.status === 204) {
@@ -180,7 +214,15 @@ export default class ApiRequestService<T = null> {
 
                     reject(resData);
                 }
-            });
+            };
+
+            xhr.onerror = () => reject({ data: null, status: xhr.status, response: xhr });
+
+            if (method === 'GET') {
+                xhr.send();
+            } else {
+                xhr.send(config.body);
+            }
         });
     }
 
@@ -188,9 +230,9 @@ export default class ApiRequestService<T = null> {
      * @param res
      * @private
      */
-    private async parseJson(res: Response): Promise<unknown> {
+    private parseJson(res: string): unknown {
         try {
-            return JSON.parse(await res.clone().text());
+            return JSON.parse(res);
         } catch (e) {
             return null;
         }
@@ -211,7 +253,7 @@ export default class ApiRequestService<T = null> {
                     queryParams.push(prop + '[]=' + encodeURIComponent(element?.toString())),
                 );
             } else {
-                if (data[prop] !== null) {
+                if (data[prop] !== null && data[prop] !== undefined) {
                     queryParams.push(prop + '=' + encodeURIComponent(data[prop]));
                 }
             }
@@ -224,7 +266,7 @@ export default class ApiRequestService<T = null> {
      * @param endpoint
      * @param getParamsString
      */
-    endpointToUrl(endpoint: string, getParamsString = '') {
+    public endpointToUrl(endpoint: string, getParamsString = '') {
         return ApiRequestService.getHost() + (endpoint || '') + getParamsString;
     }
 }

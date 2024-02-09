@@ -1,0 +1,186 @@
+&.modal-pin-code {
+    .modal-window {
+        width: 820px;
+        overflow: auto;
+
+        .modal-title {
+            font: 700 16px/24px var(--base-font);
+            margin: 0 0;
+        }
+
+        .modal-body {
+            background-color: #fff;
+            overflow: auto;
+            @include webkit_scrollbar();
+        }
+
+        .app-instructions {
+            .app-instructions-container {
+                display: grid;
+                background-color: #fbfbfb;
+                grid-template-columns: 1fr 128px 1fr;
+                padding: 20px 50px;
+
+                .app-instructions-step {
+                    text-align: center;
+
+                    .step-item-img {
+                        margin: 0 0 15px;
+
+                        img {
+                            width: 100px;
+                            display: block;
+                            margin: 0 auto;
+                        }
+                    }
+
+                    .step-title {
+                        font: 700 16px/24px var(--base-font);
+                        margin: 0 0 5px;
+                    }
+
+                    .step-description {
+                        font: 400 14px/21px var(--base-font);
+
+                        a {
+                            font: inherit;
+                            color: #004d93;
+                        }
+                    }
+                }
+
+                .app-instructions-separator {
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+
+                    img {
+                        display: block;
+                    }
+                }
+            }
+
+            .app-instructions-devider {
+                position: relative;
+                margin: 0 0 20px;
+
+                .divider-line {
+                    position: absolute;
+                    width: 100%;
+                    top: 0;
+                    border-top: 1px solid var(--border-color);
+                }
+
+                .divider-arrow {
+                    position: relative;
+                    margin-left: auto;
+                    margin-right: auto;
+                    width: 0px;
+                    height: 0px;
+                    border-left: 50px solid rgba(0, 0, 0, 0);
+                    border-right: 50px solid rgba(0, 0, 0, 0);
+                    border-top: 20px solid var(--border-color);
+
+                    &:before {
+                        content: "";
+                        position: absolute;
+                        left: -49px;
+                        top: -21px;
+                        width: 0;
+                        height: 0;
+                        border-left: 49px solid rgba(0, 0, 0, 0);
+                        border-right: 49px solid rgba(0, 0, 0, 0);
+                        border-top: 20px solid #fbfbfb;
+                    }
+                }
+            }
+
+            .app-instructions-form {
+                text-align: center;
+                padding: 0 20px 20px;
+
+                .app-instructions-icon {
+                    margin: 0 0 15px;
+
+                    img {
+                        width: 100px;
+                        display: block;
+                        margin: auto;
+                    }
+                }
+
+                .app-instructions-title {
+                    font: 700 16px/24px var(--base-font);
+                    margin: 0 0 5px;
+                }
+
+                .app-instructions-subtitle {
+                    font: 400 14px/21px var(--base-font);
+                    margin: 0 0 15px;
+                }
+            }
+        }
+    }
+
+    @media screen and (max-width: 1000px) {
+        .modal-window {
+            height: 100%;
+            flex-direction: column;
+            display: flex;
+
+            .modal-close {
+                top: 15px;
+            }
+
+            .modal-body {
+                flex: 1 0 auto;
+
+                .app-instructions {
+                    .app-instructions-container {
+                        padding: 20px 0;
+                        grid-template-columns: 1fr 10px 1fr;
+
+                        .app-instructions-step {
+                            padding: 0 20px;
+
+                            .step-item-img {
+                                margin: 0 0 15px;
+
+                                img {
+                                    width: 68px;
+                                }
+                            }
+
+                            .step-description {
+                                font: 400 13px/18px var(--base-font);
+                            }
+                        }
+                    }
+                }
+
+                .app-instructions-form {
+                    .app-instructions-icon {
+                        img {
+                            width: 68px;
+                        }
+                    }
+
+                    .app-instructions-title {
+                        font: 700 16px/24px var(--base-font);
+                    }
+
+                    .app-instructions-subtitle {
+                        font: 400 13px/18px var(--base-font);
+                    }
+
+                    .block.block-pincode {
+                        .pincode-number {
+                            width: 42px;
+                            height: 42px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

@@ -448,7 +448,7 @@
                 padding-bottom: 8px;
                 margin: 0;
                 text-align: right;
-                padding-right: 15px;
+                padding-right: 10px;
                 float: left;
                 color: black;
 
@@ -483,7 +483,13 @@
                 float: left;
             }
 
-            &.form-group-inline-lg {
+            &>.form-title {
+                padding-left: 0;
+                width: calc(100% - 200px);
+                float: left;
+            }
+
+            &.form-group-inline-xl {
                 &>.form-label {
                     width: 250px;
                 }
@@ -496,6 +502,22 @@
                 &>.form-error {
                     margin-left: 250px;
                     width: calc(100% - 250px);
+                }
+            }
+
+            &.form-group-inline-lg {
+                &>.form-label {
+                    width: 145px;
+                }
+
+                &>.form-offset,
+                &>.form-control {
+                    width: calc(100% - 145px);
+                }
+
+                &>.form-error {
+                    margin-left: 145px;
+                    width: calc(100% - 145px);
                 }
             }
 
@@ -771,6 +793,7 @@
         width: 100%;
         flex-direction: row;
         position: relative;
+        z-index: 1;
 
         .form-control:not([type="radio"]):not([type="checkbox"]).phone-control-input {
             padding: var(--input-padding);
@@ -921,7 +944,7 @@
             margin: -6px 0;
         }
 
-        &[disabled] {
+        &[disabled], &.disabled, &.checkbox-disabled {
             position: relative;
             opacity: .4;
             filter: grayscale(1);
@@ -1016,6 +1039,32 @@
                 border-radius: 3px;
                 word-wrap: break-word;
                 white-space: pre-wrap;
+            }
+        }
+    }
+
+    .form-title {
+        font: 600 14px/20px var(--base-font);
+        color: #151B26;
+        padding: 8px;
+    }
+
+    @media screen and (max-width: 600px) {
+        .form-group {
+            &.form-group-inline {
+                .form-label {
+                    width: auto !important;
+                    padding: 3px 0 !important;
+
+                    &.form-label-required {
+                        padding-left: 5px !important;
+                    }
+                }
+
+                .form-offset,
+                .form-control {
+                    width: 100% !important;
+                }
             }
         }
     }

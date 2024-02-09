@@ -15,7 +15,7 @@ export default function ThSortable({
     className,
 }: {
     label: string;
-    value: string;
+    value?: string;
     filter?: FilterScope<FilterModel>;
     disabled?: boolean;
     className?: string;
@@ -39,8 +39,9 @@ export default function ThSortable({
 
     return (
         <th className={className || ''}>
-            {disabled && label}
-            {!disabled && (
+            {disabled || !value ? (
+                label
+            ) : (
                 <div
                     className={`th-sort ${value ? 'th-sort-enabled' : ''} ${
                         value == filter?.values.order_by ? 'th-sort-active' : ''

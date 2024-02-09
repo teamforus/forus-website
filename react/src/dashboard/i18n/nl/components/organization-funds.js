@@ -11,7 +11,8 @@ module.exports = {
             restore: "Herstellen",
             criteria: "Voorwaarden",
             statistics: "Statistieken",
-            top_up_history: "Bekijk aanvullingen"
+            top_up_history: "Bekijk aanvullingen",
+            security: "Beveiliging",
         },
         states: {
             active: "Actief",
@@ -20,27 +21,20 @@ module.exports = {
             archived: "Gearchiveerd",
         },
         labels: {
-            remaining: "Resterend:"
+            name: "Naam",
+            remaining: "Resterend bedrag",
+            requester_count: "Aanvragers",
+            implementation: "Implementatie",
+            status: "Status",
+            actions: "Actie",
         },
-        top_up_table: {
-            filters: {
-                search: "Zoeken",
-                code: "Gebruikte code",
-                iban: "IBAN",
-                amount: "Bedrag",
-                amount_min: "0",
-                amount_max: "Alles",
-                from: "Aangemaakt vanaf",
-                to: "Aangemaakt tot en met"
-            },
-            columns: {
-                fund: "Fonds",
-                code: "Gebruikte code",
-                iban: "IBAN",
-                top_up_id: "Aanvulling ID",
-                amount: "Bedrag",
-                date: "Tijd & Datum",
-            }
-        }
+        filters: {
+            search: "Zoeken",
+            budget_left: "Resterend",
+            budget_left_min: "0",
+            budget_left_max: "Alles",
+            implementation: "Implementatie",
+            state: "Status",
+        },
     }
 };

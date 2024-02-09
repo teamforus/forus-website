@@ -1,26 +1,4 @@
 .button {
-    border-radius: 5px;
-
-    &.button-default {
-        background-color: var(--login-button-background);
-        border-color: var(--color-default);
-        color: #666;
-
-        .mdi {
-            color: #666;
-        }
-
-        &:hover {
-            background-color: var(--color-default-light);
-            border-color: var(--color-default-light);
-            color: #666;
-
-            .mdi {
-                color: #666;
-            }
-        }
-    }
-
     &.button-primary {
         color: #666;
         background: var(--color-primary);

@@ -2,9 +2,9 @@ import FilterModel from '../../../types/FilterModel';
 import FormValuesModel from '../../../types/FormValuesModel';
 import { useTranslation } from 'react-i18next';
 import { useCallback, useEffect, useState } from 'react';
-import { ApiResponse, ApiResponseSingle, PaginationData } from '../../../props/ApiResponses';
+import { ApiResponse, ApiResponseSingle, PaginationData, ResponseError } from '../../../props/ApiResponses';
 import Paginator from '../../../modules/paginator/components/Paginator';
-import useFilters from '../../../hooks/useFilters';
+import useFilter from '../../../hooks/useFilter';
 import React from 'react';
 import usePushDanger from '../../../hooks/usePushDanger';
 import useOpenModal from '../../../hooks/useOpenModal';
@@ -35,7 +35,7 @@ export default function BlockCardNote({
     const pushSuccess = usePushSuccess();
     const setProgress = useSetProgress();
 
-    const filters = useFilters({
+    const filter = useFilter({
         q: '',
         per_page: 10,
     });
@@ -43,10 +43,10 @@ export default function BlockCardNote({
     useEffect(() => {
         setProgress(0);
 
-        fetchNotes(filters.activeValues)
+        fetchNotes(filter.activeValues)
             .then((res) => setNotes(res.data))
             .finally(() => setProgress(100));
-    }, [fetchNotes, filters.activeValues, setProgress]);
+    }, [fetchNotes, filter.activeValues, setProgress]);
 
     const onDeleteNote = useCallback(
         (note) => {
@@ -65,15 +65,11 @@ export default function BlockCardNote({
                             setProgress(0);
 
                             deleteNote(note)
-                                .then(
-                                    () => {
-                                        filters.update({ ...filters.activeValues });
-                                        pushSuccess('Gelukt!', 'Notitie verwijderd.');
-                                    },
-                                    (res) => {
-                                        pushDanger('Foutmelding!', res.data.message);
-                                    },
-                                )
+                                .then(() => {
+                                    filter.touch();
+                                    pushSuccess('Gelukt!', 'Notitie verwijderd.');
+                                })
+                                .catch((res: ResponseError) => pushDanger('Foutmelding!', res.data.message))
                                 .finally(() => setProgress(100));
                         },
                         text: t('modals.danger_zone.remove_note.buttons.confirm'),
@@ -81,7 +77,7 @@ export default function BlockCardNote({
                 />
             ));
         },
-        [deleteNote, filters, openModal, pushDanger, pushSuccess, setProgress, t],
+        [deleteNote, filter, openModal, pushDanger, pushSuccess, setProgress, t],
     );
 
     const onAddNote = useCallback(() => {
@@ -91,12 +87,12 @@ export default function BlockCardNote({
                 storeNote={storeNote}
                 description={'De notitie is alleen zichtbaar voor medewerkers met dezelfde rechten.'}
                 onCreated={() => {
-                    filters.update({ ...filters.activeValues });
+                    filter.touch();
                     pushSuccess('Gelukt!', 'Note created.');
                 }}
             />
         ));
-    }, [filters, openModal, pushSuccess, storeNote]);
+    }, [filter, openModal, pushSuccess, storeNote]);
 
     if (!notes) {
         return <LoadingCard />;
@@ -173,7 +169,7 @@ export default function BlockCardNote({
 
             {notes?.meta.last_page > 1 && (
                 <div className="card-section">
-                    <Paginator meta={notes.meta} filters={filters.values} updateFilters={filters.update} />
+                    <Paginator meta={notes.meta} filters={filter.values} updateFilters={filter.update} />
                 </div>
             )}
 

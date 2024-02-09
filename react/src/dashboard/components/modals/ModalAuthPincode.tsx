@@ -1,7 +1,6 @@
 import React from 'react';
 import { ModalState } from '../../modules/modals/context/ModalContext';
 import { classList } from '../../helpers/utils';
-import Translate from '../../i18n/elements/Translate';
 import { useTranslation } from 'react-i18next';
 import useFormBuilder from '../../hooks/useFormBuilder';
 import FormError from '../elements/forms/errors/FormError';
@@ -52,58 +51,86 @@ export default function ModalAuthPincode({ modal }: { modal: ModalState }) {
     });
 
     return (
-        <div className={classList(['modal', 'modal-auth', 'modal-animated', modal.loading ? 'modal-loading' : null])}>
-            <div className="modal-backdrop" onClick={modal.close} />
-            <div className="modal-window">
-                <div className="modal-close mdi mdi-close" onClick={modal.close} />
-                <div className="modal-body">
-                    <div className="modal-section">
-                        <div className="block block-app-instruction">
-                            <div className="step-items">
-                                <div className="step-item">
-                                    <div className="step-item-title">Stap 1</div>
-                                    <div className="step-item-subtitle">
-                                        <Translate i18n={'open_in_me.app_instruction.step_1'} />
-                                    </div>
-                                    <img src={assetUrl('/assets/img/screen1.png')} alt="" />
-                                </div>
-                                <div className="step-item">
-                                    <div className="step-item-title">Stap 2</div>
+        <div
+            className={classList(['modal', 'modal-pin-code', 'modal-animated', modal.loading ? 'modal-loading' : null])}
+            aria-describedby="pinCodeDialogSubtitle"
+            aria-labelledby="pinCodeDialogTitle"
+            role="dialog">
+            <div className="modal-backdrop" onClick={modal.close} aria-label="Sluiten" role="button" />
 
-                                    <div className="step-item-subtitle">
-                                        <Translate i18n={'open_in_me.app_instruction.step_2'} />
-                                    </div>
-                                    <img src={assetUrl('/assets/img/screen2.png')} alt="" />
+            <form className="modal-window form" onSubmit={form.submit}>
+                <div className="modal-close mdi mdi-close" onClick={modal.close} aria-label="Sluiten" role="button" />
+
+                <div className="modal-header">
+                    <h2 className="modal-title">Log in op de app</h2>
+                </div>
+                <div className="modal-body">
+                    <div className="app-instructions">
+                        <div className="app-instructions-container">
+                            <div className="app-instructions-step">
+                                <div className="step-item-img">
+                                    <img
+                                        src={assetUrl('/assets/img/icon-auth/download-me-app.svg')}
+                                        alt="Me-app aanmeldscherm schermafbeelding"
+                                    />
+                                </div>
+                                <h2 className="step-title">Stap 1</h2>
+                                <div className="step-description">
+                                    Open <strong>me app</strong>
                                 </div>
                             </div>
-
-                            <div className="divider-img">
-                                <img src={assetUrl('/assets/img/Base7.png')} alt="" />
+                            <div className="app-instructions-separator">
+                                <img src={assetUrl('/assets/img/icon-auth/icon-app-step-separator.svg')} alt={''} />
+                            </div>
+                            <div className="app-instructions-step">
+                                <div className="step-item-img">
+                                    <img
+                                        src={assetUrl('/assets/img/icon-auth/pair-me-app.svg')}
+                                        alt="Me-app aanmeldscherm schermafbeelding, kies koppelen"
+                                    />
+                                </div>
+                                <h2 className="step-title">Stap 2</h2>
+                                <div className="step-description">
+                                    Kies “<strong>Koppelen</strong>”
+                                </div>
                             </div>
                         </div>
-                        <div className="modal-title">{t('open_in_me.app_header.title')}</div>
-                        <div className="modal-subtitle">{t('open_in_me.app_header.subtitle')}</div>
-
-                        <form className="form f-w with-instructions" onSubmit={form.submit}>
+                        <div className="app-instructions-devider">
+                            <div className="divider-line" />
+                            <div className="divider-arrow" />
+                        </div>
+                        <div className="app-instructions-form">
+                            <div className="app-instructions-icon">
+                                <img src={assetUrl('/assets/img/icon-auth/me-app-fill-pin-code.svg')} alt={''} />
+                            </div>
+                            <h2 className="app-instructions-title" id="pinCodeDialogTitle">
+                                {`Stap 3: ${t('open_in_me.app_header.title')}`}
+                            </h2>
+                            <div className="app-instructions-subtitle" id="pinCodeDialogSubtitle">
+                                {t('open_in_me.app_header.subtitle')}
+                            </div>
                             <div className="form-group">
                                 <PincodeControl
                                     value={form.values.pin_code.toString()}
                                     onChange={(pin_code) => form.update({ pin_code })}
                                 />
-                                <div className="text-center">
-                                    <FormError error={form.errors.auth_code} />
-                                </div>
+                                <FormError error={form.errors.auth_code} />
                             </div>
-
-                            <div className="form-group text-center">
-                                <button className="button button-primary" type="submit" disabled={form.isLocked}>
-                                    {t('open_in_me.authorize.submit')}
-                                </button>
-                            </div>
-                        </form>
+                        </div>
                     </div>
                 </div>
-            </div>
+                <div className="modal-footer text-center">
+                    <button className="button button-default" type="button" onClick={modal.close}>
+                        {t('modal.buttons.cancel')}
+                    </button>
+                    <button
+                        className="button button-primary"
+                        type="submit"
+                        disabled={form.isLocked || !form.values.pin_code}>
+                        {t('open_in_me.authorize.submit')}
+                    </button>
+                </div>
+            </form>
         </div>
     );
 }

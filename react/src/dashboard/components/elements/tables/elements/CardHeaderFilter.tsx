@@ -4,11 +4,11 @@ import FilterScope from '../../../../types/FilterScope';
 import FilterModel from '../../../../types/FilterModel';
 
 export default function CardHeaderFilter({
-    children,
     filter,
+    children,
 }: {
-    children: React.ReactElement;
     filter: FilterScope<FilterModel>;
+    children: React.ReactElement | Array<React.ReactElement>;
 }) {
     return (
         <div className="form inline-filters-dropdown pull-right">

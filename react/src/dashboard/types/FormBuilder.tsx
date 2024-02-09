@@ -1,6 +1,7 @@
 import FormSetter from './FormSetter';
 import { Dispatch, FormEvent, SetStateAction } from 'react';
 import FormValuesModel from './FormValuesModel';
+import { ResponseErrorData } from '../props/ApiResponses';
 
 export default interface FormBuilder<T = FormValuesModel> {
     values: T | null;
@@ -12,7 +13,7 @@ export default interface FormBuilder<T = FormValuesModel> {
     setIsLoading: Dispatch<SetStateAction<boolean>>;
     state: 'pending' | 'error' | 'success' | string;
     setState: (state: 'pending' | 'error' | 'success' | string) => void;
-    errors: { [key: string]: Array<string> };
-    setErrors: Dispatch<SetStateAction<{ [key: string]: Array<string> }>>;
+    errors: ResponseErrorData;
+    setErrors: Dispatch<SetStateAction<{ [key: string]: string | Array<string> }>>;
     reset: () => void;
 }

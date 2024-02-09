@@ -56,26 +56,22 @@ export default function ModalMarkdownCustomLink({
 
                 mediaService
                     .store('cms_media', e.target.files[0], ['public'])
-                    .then(
-                        (res) => {
-                            setErrors(errors);
-                            const media = res.data.data;
+                    .then((res) => {
+                        setErrors(errors);
+                        const media = res.data.data;
 
-                            form.update({
-                                uid: media.uid,
-                                url: media.sizes.public,
-                            });
-                        },
-                        (res: ResponseError) => {
-                            setErrors(res.data.errors);
-                        },
-                    )
+                        form.update({
+                            uid: media.uid,
+                            url: media.sizes.public,
+                        });
+                    })
+                    .catch((res: ResponseError) => setErrors(res.data.errors))
                     .finally(() => setProgress(100));
             });
 
             input.current.click();
         },
-        [errors, form, mediaService],
+        [errors, form, mediaService, setProgress],
     );
 
     return (

@@ -7,17 +7,14 @@
 // COMMON
 @import 'includes/common';
 
-// DEV PAGES
-@import 'includes/dev-pages';
-
 // SHAME
 @import 'includes/shame';
 
 // LAYOUTS
-@import 'layout/_footer.scss',
-'layout/_grid.scss',
-'layout/_header.scss',
-'layout/_navigation.scss';
+@import 'layout/_footer.scss';
+@import 'layout/_grid.scss';
+@import 'layout/_header.scss';
+@import 'layout/_navigation.scss';
 
 // COMPONENTS
 @import 'components/_breadcrumbs.scss';
@@ -50,33 +47,35 @@
 @import 'sections/vouchers.scss';
 
 // BLOCKS
-@import 'sections/blocks/block-fund.scss',
-'sections/blocks/cards.scss',
-'sections/blocks/fund_criteria.scss',
-'sections/blocks/funds.scss',
-'sections/blocks/map.scss',
-'sections/blocks/phone-number.scss',
-'sections/blocks/product.scss',
-'sections/blocks/products.scss',
-'sections/blocks/profile.scss',
-'sections/blocks/record_categories.scss',
-'sections/blocks/records_create.scss',
-'sections/blocks/records.scss',
-'sections/blocks/shops_map.scss',
-'sections/blocks/transactions.scss',
-'sections/blocks/validations.scss',
-'sections/blocks/validators.scss',
-'sections/blocks/voucher-product.scss',
-'sections/blocks/voucher.scss',
-'sections/blocks/vouchers.scss',
-'sections/blocks/fund-add-records.scss',
-'sections/blocks/block-preferences.scss',
-'sections/blocks/block-file-uploader.scss',
-'sections/blocks/block-auth-widget.scss',
-'sections/blocks/block-push-notifications.scss',
-'sections/blocks/block-page-loading-bar.scss',
-'sections/blocks/block-user-emails.scss',
-'sections/blocks/block-sitemap.scss';
+@import 'sections/blocks/block-fund.scss';
+@import 'sections/blocks/cards.scss';
+@import 'sections/blocks/fund_criteria.scss';
+@import 'sections/blocks/funds.scss';
+@import 'sections/blocks/map.scss';
+@import 'sections/blocks/phone-number.scss';
+@import 'sections/blocks/product.scss';
+@import 'sections/blocks/products.scss';
+@import 'sections/blocks/profile.scss';
+@import 'sections/blocks/record_categories.scss';
+@import 'sections/blocks/records_create.scss';
+@import 'sections/blocks/records.scss';
+@import 'sections/blocks/shops_map.scss';
+@import 'sections/blocks/transactions.scss';
+@import 'sections/blocks/validations.scss';
+@import 'sections/blocks/validators.scss';
+@import 'sections/blocks/voucher-product.scss';
+@import 'sections/blocks/voucher.scss';
+@import 'sections/blocks/vouchers.scss';
+@import 'sections/blocks/fund-add-records.scss';
+@import 'sections/blocks/block-preferences.scss';
+@import 'sections/blocks/block-file-uploader.scss';
+@import 'sections/blocks/block-auth-widget.scss';
+@import 'sections/blocks/block-push-notifications.scss';
+@import 'sections/blocks/block-page-loading-bar.scss';
+@import 'sections/blocks/block-user-emails.scss';
+@import 'sections/blocks/block-sitemap.scss';
+@import 'sections/blocks/block-show-more.scss';
+@import 'sections/blocks/block-warning.scss';
 
 .block {
     @import 'sections/blocks/block-markdown.scss';
@@ -92,7 +91,7 @@
     @import 'sections/blocks/block-schedule-list.scss';
     @import 'sections/blocks/block-accessibility.scss';
     @import 'sections/blocks/block-steps.scss';
-    @import 'sections/blocks/block-sticky-footer.scss';
+    @import 'sections/blocks/block-mobile-menu.scss';
     @import 'sections/blocks/block-funds-list.scss';
 
     @import 'sections/blocks/block-map-office-card.scss';
@@ -114,6 +113,7 @@
     @import 'sections/blocks/block-reimbursements.scss';
     @import 'sections/blocks/block-reimbursement.scss';
     @import 'sections/blocks/block-reservations.scss';
+    @import 'sections/blocks/block-reservation.scss';
     @import 'sections/blocks/block-map_card.scss';
     @import 'sections/blocks/block-cms-funds.scss';
     @import 'sections/blocks/block-announcement.scss';
@@ -126,6 +126,11 @@
     @import 'sections/blocks/block-app_download.scss';
     @import 'sections/blocks/block-info-box.scss';
     @import 'sections/blocks/block-pincode.scss';
+    @import 'sections/blocks/block-fund-request.scss';
+    @import 'sections/blocks/block-fund-requests.scss';
+    @import 'sections/blocks/block-pre-check-banner.scss';
+    @import 'sections/blocks/block-fund-pre-check.scss';
+    @import 'sections/blocks/block-fund-pre-check-result.scss';
 }
 
 .modal {

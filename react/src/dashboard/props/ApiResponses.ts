@@ -11,7 +11,7 @@ export type ApiPaginationMetaProp = {
         label: string;
         url: string;
     };
-    [key: string]: string | number | unknown;
+    [key: string]: string | number | boolean | object | Array<unknown>;
 };
 
 interface BaseResponse {
@@ -36,7 +36,15 @@ export interface ResponseProp<T> extends BaseResponse {
     data: { data: T | Array<T> };
 }
 
-export interface ResponseError<T = { message: string; errors: { [key: string]: Array<string> } }> extends BaseResponse {
+export interface ResponseErrorData {
+    [key: string]: Array<string>;
+}
+
+export interface ResponseError<T = { message: string; errors: ResponseErrorData }> extends BaseResponse {
+    data: T;
+}
+
+export interface ResponseErrorThrottled<T = { meta: { title: string; message: string } }> extends BaseResponse {
     data: T;
 }
 

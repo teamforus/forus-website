@@ -1,9 +1,9 @@
-@import './vars';
-@import '../_common/webshop';
+@import "./vars";
+@import "../_common/webshop";
 
 // SHAME
-@import 'includes/shame';
+@import "includes/shame";
 
 .block {
-    @import 'sections/blocks/block-provider.scss';
+    @import "sections/blocks/block-provider.scss";
 }

@@ -181,7 +181,5 @@ export class ConfigService<T = AppConfigProp> {
 }
 
 export function useConfigService(): ConfigService {
-    const [service] = useState(new ConfigService());
-
-    return service;
+    return useState(new ConfigService())[0];
 }

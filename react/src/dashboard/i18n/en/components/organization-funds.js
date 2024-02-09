@@ -16,27 +16,11 @@ module.exports = {
             closed: "Closed",
         },
         labels: {
-            remaining: "Remaining:"
+            name: "Name:",
+            remaining: "Remaining:",
+            requester_count: "Requesters count:",
+            status: "Status:",
+            actions: "Actions:",
         },
-        top_up_table: {
-            filters: {
-                search: "Search",
-                code: "Used code",
-                iban: "IBAN",
-                amount: "Amount",
-                amount_min: "0",
-                amount_max: "All",
-                from: "Created from",
-                to: "Created to"
-            },
-            columns: {
-                fund: "Fund",
-                code: "Used code",
-                iban: "IBAN",
-                top_up_id: "Fund top-up ID",
-                amount: "Amount",
-                date: "Date",
-            }
-        }
     }
 };

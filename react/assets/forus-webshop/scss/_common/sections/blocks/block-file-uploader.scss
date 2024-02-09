@@ -182,6 +182,70 @@
         }
     }
 
+    &.block-file-uploader-compact {
+        max-width: 100%;
+        display: flex;
+        flex-direction: column-reverse;
+        align-items: flex-start;
+
+        .droparea-icon {
+            display: none;
+        }
+
+        .droparea-title {
+            display: none;
+        }
+
+        .droparea-hidden-input {
+            display: none;
+        }
+
+        .uploader-droparea {
+            display: flex;
+            align-items: center;
+            padding: 0;
+            background: none;
+            border: none;
+            margin: 0 0 0;
+
+            .droparea-button {
+                margin: 0 0 0;
+            }
+
+            .droparea-max-limit {
+                color: #353535;
+                font-size: 11px;
+                font-weight: 400;
+                line-height: 11px;
+                margin-left: 12px;
+
+                &::before {
+                    content: '*';
+                    color: #ed133c;
+                    padding-right: 3px;
+                }
+            }
+        }
+
+        .uploader-files {
+            max-width: 100%;
+            margin-bottom: 10px;
+
+            .file-item {
+                background: #ffffff;
+                margin-bottom: 5px;
+
+                .file-item-container {
+                    padding: 5px 10px;
+                }
+
+                &:last-child {
+                    margin-bottom: 0;
+                }
+            }
+        }
+    }
+
     @media (max-width: 991px) {
         .uploader-droparea {
             border: none;

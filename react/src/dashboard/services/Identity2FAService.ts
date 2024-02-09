@@ -4,7 +4,7 @@ import Identity2FAState from '../props/models/Identity2FAState';
 import { ApiResponseSingle } from '../props/ApiResponses';
 import Identity2FA from '../props/models/Identity2FA';
 
-export default class Identity2FAService<T = Identity2FAState> {
+export class Identity2FAService<T = Identity2FAState> {
     /**
      * @param apiRequest
      */
@@ -47,7 +47,5 @@ export default class Identity2FAService<T = Identity2FAState> {
 }
 
 export function useIdentity2FAService(): Identity2FAService {
-    const [service] = useState(new Identity2FAService());
-
-    return service;
+    return useState(new Identity2FAService())[0];
 }

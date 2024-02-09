@@ -1,0 +1,32 @@
+&.block-feature-icons {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    text-align: center;
+    padding: 0 32px;
+    margin-bottom: 32px;
+    grid-gap: 32px 48px;
+
+    .block-feature-icons-item {
+        h4 {
+            font-size: 16px;
+            line-height: 24px;
+            margin-bottom: 12px;
+        }
+
+        .block-feature-icon {
+            margin-bottom: 24px;
+
+            svg,
+            img {
+                display: block;
+                margin: 0 auto;
+                max-width: 100%;
+            }
+        }
+    }
+
+    @media screen and (max-width: 750px) {
+        grid-template-columns: repeat(1, 1fr);
+        padding: 0;
+    }
+}

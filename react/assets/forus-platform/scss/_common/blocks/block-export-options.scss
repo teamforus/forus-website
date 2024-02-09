@@ -5,11 +5,11 @@
         flex-direction: column;
 
         .export-section-label {
-            font: 600 11px/13px var(--base-font);
             margin-bottom: 10px;
 
             .form-label {
                 margin: 0;
+                font: 600 13px/24px var(--base-font);
             }
         }
 
@@ -20,6 +20,7 @@
 
             &>table {
                 width: 100%;
+                border-collapse: collapse;
             }
 
             .export-option {
@@ -32,7 +33,7 @@
                     display: flex;
                     background: #fff;
                     border: 1px solid #d4d9dd;
-                    border-radius: calc(var(--border-radius) / 2);
+                    border-radius: calc(var(--border-radius));
                     padding: 10px 10px;
                     font: 600 13px/16px var(--base-font);
                     position: relative;
@@ -88,6 +89,39 @@
                 &:last-child {
                     margin-right: 0;
                 }
+            }
+        }
+
+        &.export-section-collapsable {
+            padding-top: 15px;
+            border-top: 1px solid var(--border-color);
+            margin-bottom: 0;
+
+            .export-section-label {
+                align-items: center;
+                margin-bottom: 15px;
+
+                .export-section-label-icon {
+                    font-size: 24px;
+                    line-height: 24px;
+                    height: 24px;
+                    margin-left: -5px;
+                }
+
+                .form-label {
+                    cursor: pointer;
+                    height: 24px;
+                    color: var(--text-color);
+                }
+            }
+
+            .export-options {
+                margin-bottom: 15px;
+            }
+
+            &.export-section-extra-fields {
+                border-bottom: 1px solid var(--border-color);
+                margin-bottom: 15px;
             }
         }
 

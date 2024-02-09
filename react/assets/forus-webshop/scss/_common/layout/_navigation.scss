@@ -130,14 +130,16 @@
 
                 .auth-user-menu-item {
                     display: block;
-                    padding: 5px 15px;
-                    font: 700 13px/26px var(--base-font);
+                    padding: 8px 15px;
                     transition: 0.4s;
                     cursor: pointer;
                     border: none;
-                    background: none;
                     width: 100%;
                     text-align: left;
+                    font: var(--dropdown-item-font);
+                    font-weight: 600;
+                    color: var(--dropdown-item-color);
+                    background: var(--dropdown-item-background);
 
                     img {
                         display: block;
@@ -156,8 +158,8 @@
                     }
 
                     &:hover {
-                        color: var(--color-primary);
-                        background: #f6f8f9;
+                        color: var(--dropdown-item-hover-color);
+                        background: var(--dropdown-item-hover-background);
                     }
                 }
 
@@ -201,7 +203,7 @@
                 margin: 0 auto;
             }
 
-            &.button-default {
+            &.button-primary-outline {
                 background-color: var(--btn-auth-bg);
                 border: solid 1px var(--btn-auth-border);
                 color: var(--tc-auth-btn);
@@ -272,7 +274,7 @@
                 .auth-user {
                     .auth-user-avatar {
                         border-color: var(--color-default);
-                        border-radius: var(--border-radius);
+                        border-radius: var(--btn-border-radius);
                         background: var(--btn-start-bg);
 
                         &:after {
@@ -331,7 +333,7 @@
             img {
                 display: block;
                 margin: 0 auto;
-                height: 40px;
+                height: 30px;
 
                 &.hover {
                     display: none;
@@ -492,6 +494,7 @@
                         display: flex; 
                         margin-right: 20px;
                         position: relative;
+                        align-items: center;
                         
                         &:hover {
                             text-decoration: none;
@@ -644,6 +647,7 @@
                     .auth-out {
                         margin-right: 0px;
                     }
+
                     .auth-code {
                         margin-right: 15px;
                     }
@@ -731,7 +735,7 @@
             }
 
             .button {
-                font: 400 14px/1.5em var(--base-font);
+                font: 600 14px/1.5em var(--base-font);
                 margin-right: 0;
             }
 
@@ -740,11 +744,20 @@
                 border-radius: 0;
                 justify-content: flex-start;
 
-                .navbar-search-button {
+                .navbar-search-button, .navbar-menu-button {
+                    box-shadow: none !important;
+
                     .mdi {
                         display: block;
                         float: none;
                         margin: 0;
+                        font-size: 16px;
+                    }
+                }
+
+                .navbar-menu-button {
+                    &.active {
+                        color: var(--color-primary);
                     }
                 }
             }
@@ -763,7 +776,7 @@
                 display: flex !important;
                 border: none;
                 display: block;
-                padding: 15px;
+                padding: 5px 15px 15px;
                 width: 100%;
                 justify-content: space-between;
                 
@@ -897,10 +910,16 @@
 
     @media screen and (max-width: 768px) {
         &.block-navbar {
-            .button {
+            .button.navbar-menu-button, 
+            .button.navbar-search-button {
                 padding: 10px 0px;
-                min-width: 80px;
-                font: 400 12px/1.5em var(--base-font);
+                min-width: 60px;
+                font: 600 9px/14px var(--base-font);
+            }
+
+            .button.button-xs {
+                padding-top: 6px;
+                padding-bottom: 6px;
             }
         }
     }

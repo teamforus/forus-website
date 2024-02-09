@@ -1,0 +1,124 @@
+$footer_base_font: 'Open Sans', arial, sans-serif;
+
+&.block-mobile-menu {
+    --item-height: 44px;
+    --item-line-height: 18px;
+    position: fixed;
+    top: 50px;
+    bottom: 0;
+    z-index: 10;
+    width: 100%;
+    transition: transform 0.2s;
+    background: #fff;
+    box-shadow: 0px -1px 0px 0px #E5E5E5 inset;
+    overflow: auto;
+
+    .mobile-menu-group {
+        border-bottom: 1px solid var(--border-color);
+
+        .mobile-menu-group-header {
+            display: flex;
+            padding: 16px 20px 16px 15px;
+            background:  #FBFBFB;
+            border-top: 1px solid transparent;
+            border-bottom: 1px solid var(--border-color);
+            color: #222222;
+            font: 700 14px/20px var(--base-font);
+
+            .mdi {
+                font-size: 20px;
+                margin-right: 5px;
+                color: #979797;
+            }
+        }
+
+        .mobile-menu-items {
+            width: 100%;
+            overflow: scroll;
+    
+            .mobile-menu-item {
+                font: 600 14px/var(--item-line-height) var(--base-font);
+                border-bottom: 1px solid var(--border-color);
+                padding: calc(calc(var(--item-height) - var(--item-line-height)) / 2) 15px;
+                display: flex;
+    
+                .mobile-menu-item-icon {
+                    font-size: 22px;
+                    line-height: var(--item-line-height);
+                    height: var(--item-line-height);
+                    margin-right: 10px;
+                }
+
+                .button {
+                    font: 600 11px/11px var(--base-font);
+                    width: 100%;
+                    padding: 9px;
+                    display: flex;
+                    justify-content: center;
+                    background-color: var(--btn-start-bg);
+                    color: var(--tc-start-btn);
+                    border: solid 1px var(--btn-start-border);
+
+                    svg {
+                        width: 10px;
+                        height: 10px;
+                        margin-right: 5px;
+                    }
+
+                    &.button-start {
+                        background-color: var(--btn-auth-bg);
+                        border: solid 1px var(--btn-auth-border);
+                        color: var(--tc-auth-btn);
+        
+                        .mdi {
+                            color: var(--tc-auth-btn);
+                        }
+        
+                        &:hover {
+                            border: solid 1px var(--btn-auth-border);
+        
+                            .mdi {
+                                color: var(--tc-auth-btn);
+                            }
+                        }
+                    }
+                }
+    
+                &.active {
+                    color: var(--color-primary);
+
+                    .mdi {
+                        color: var(--color-primary);
+                    }
+
+                    &:after {
+                        position: absolute;
+                        right: 20px;
+                        content: "\F012C";
+                        font: normal normal normal 24px/1 "Material Design Icons";
+                        font-size: 18px;
+                        color: #282B39;
+                    }
+                }
+    
+                &:hover {
+                    color: var(--color-primary);
+                }
+
+                &:last-child {
+                    border-bottom-color: transparent;
+                }
+            }
+        }
+
+        &.mobile-menu-group-main {
+            .mobile-menu-items {
+                .mobile-menu-item:not(.active) {
+                    .mobile-menu-item-icon {
+                        color: #CDCED2;
+                    }
+                }
+            }
+        }
+    }
+}

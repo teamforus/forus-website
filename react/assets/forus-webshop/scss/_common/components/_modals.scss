@@ -5,7 +5,7 @@
 .modal {
     @include fill_parent();
     position: fixed;
-    z-index: 10;
+    z-index: 20;
     display: flex;
     align-items: center;
     border-radius: var(--border-radius);
@@ -400,10 +400,6 @@
 
             .block-pincode {
                 margin-bottom: 10px;
-            }
-
-            &.button {
-                display: inline-block;
             }
         }
 

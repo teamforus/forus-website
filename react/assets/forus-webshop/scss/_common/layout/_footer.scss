@@ -155,9 +155,14 @@
             margin-bottom: 25px;
         }
 
-        .block.block-markdown h3 {
-            margin: 0.9em 0 0.9em 0;
-            color: var(--footer_color);
+        .block.block-markdown {
+            h1, h2, h3, h4 {
+                color: var(--footer_color);
+            }
+
+            h3 {
+                margin: 0.9em 0 0.9em 0;
+            }
         }
 
         .footer-social-medias {
@@ -257,19 +262,6 @@
 
             &:last-child {
                 margin-bottom: 0;
-            }
-        }
-
-        .footer-subscribe {
-            position: relative;
-
-            .button {
-                position: absolute;
-                right: 0;
-                top: 0;
-                height: 60px;
-                border-bottom-left-radius: 0;
-                border-top-left-radius: 0;
             }
         }
 
@@ -390,18 +382,6 @@
 
                 .footer-nav-item {
                     font: 400 13px/20px var(--base-font);
-                }
-            }
-
-            .footer-subscribe {
-                .button {
-                    height: 50px;
-                    padding-left: 20px;
-                    padding-right: 20px;
-
-                    .mdi {
-                        font-size: 24px;
-                    }
                 }
             }
         }

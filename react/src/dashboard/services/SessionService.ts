@@ -37,7 +37,5 @@ export class SessionService<T = Session> {
 }
 
 export function useSessionService(): SessionService {
-    const [service] = useState(new SessionService());
-
-    return service;
+    return useState(new SessionService())[0];
 }

@@ -22,7 +22,5 @@ export class AnnouncementService<T = Announcement> {
 }
 
 export function useAnnouncementService(): AnnouncementService {
-    const [service] = useState(new AnnouncementService());
-
-    return service;
+    return useState(new AnnouncementService())[0];
 }

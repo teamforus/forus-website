@@ -1,19 +1,10 @@
 &.block-provider {
     width: 100%;
     margin: 0 0 30px;
+    background-color: #fff;
 
     .provider-breadcrumbs {
         background-color: #fff;
-        padding: 15px 0;
-        border-bottom: 1px solid #dbdcdb;
-        
-        .block-breadcrumbs {
-            margin: 0 0;
-
-            .breadcrumb-item {
-                font-size: 14px;
-            }
-        }
     }
 
     .provider-map {
@@ -103,6 +94,19 @@
 
     @media screen and (max-width: 1000px) {
         .provider-content {
+            .provider-details {
+                width: 100%;
+
+                .provider-description {
+                    overflow: hidden;
+    
+                    .provider-title {
+                        width: calc(100% - 70px);
+                        word-wrap: break-word;
+                    }
+                }
+            }
+
             .block-pane:first-child {
                 margin-top: -15px;
             }

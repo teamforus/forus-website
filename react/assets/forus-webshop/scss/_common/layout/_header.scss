@@ -163,4 +163,10 @@
             }
         }
     }
+
+    .section-title {
+        @media screen and (max-width: 1000px) {
+            font: 500 1.6em var(--hf);
+        }
+    }
 }

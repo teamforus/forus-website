@@ -17,6 +17,7 @@ module.exports = {
         yes: "Ja",
         no: "Nee",
         date_type: 'Pas toe op',
+        implementation: "Implementatie",
     },
     buttons: {
         add_new: "Aanmaken",

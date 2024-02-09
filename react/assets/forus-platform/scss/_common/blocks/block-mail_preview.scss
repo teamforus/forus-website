@@ -11,7 +11,7 @@ $mailFont: Verdana, Arial, sans-serif;
         background-repeat: no-repeat;
         background-position: 100% 0;
         border: 1px solid var(--border-color-light);
-        border-radius: calc(var(--border-radius) / 2);
+        border-radius: calc(var(--border-radius));
     }
 
     .mail_preview-inner {

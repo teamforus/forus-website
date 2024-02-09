@@ -3,7 +3,7 @@ import { ModalState } from '../../modules/modals/context/ModalContext';
 import { classList } from '../../helpers/utils';
 import useFormBuilder from '../../hooks/useFormBuilder';
 import FormError from '../elements/forms/errors/FormError';
-import { ApiResponseSingle } from '../../props/ApiResponses';
+import { ApiResponseSingle, ResponseError } from '../../props/ApiResponses';
 import useSetProgress from '../../hooks/useSetProgress';
 import FundRequest from '../../props/models/FundRequest';
 import { useFundRequestValidatorService } from '../../services/FundRequestValidatorService';
@@ -27,36 +27,28 @@ export default function ModalFundRequestRecordCreate({
     const fundRequestService = useFundRequestValidatorService();
     const [verificationRequested, setVerificationRequested] = useState(null);
 
-    const form = useFormBuilder(
-        {
-            value: '',
-            record_type_key: 'partner_bsn',
-        },
-        (values) => {
-            if (!verificationRequested) {
+    const form = useFormBuilder({ value: '', record_type_key: 'partner_bsn' }, async (values) => {
+        if (!verificationRequested) {
+            form.setIsLocked(false);
+            setVerificationRequested(true);
+            return;
+        }
+
+        setProgress(0);
+
+        return fundRequestService
+            .appendRecord(organization.id, fundRequest.id, values)
+            .then((res) => {
+                modal.close();
+                onCreated(res);
+            })
+            .catch((err: ResponseError) => {
                 form.setIsLocked(false);
-                setVerificationRequested(true);
-                return;
-            }
-
-            setProgress(0);
-
-            return fundRequestService
-                .appendRecord(organization.id, fundRequest.id, values)
-                .then(
-                    (res) => {
-                        modal.close();
-                        onCreated(res);
-                    },
-                    (res) => {
-                        form.setIsLocked(false);
-                        form.setErrors(res.data.errors);
-                        setVerificationRequested(false);
-                    },
-                )
-                .finally(() => setProgress(100));
-        },
-    );
+                form.setErrors(err.data.errors);
+                setVerificationRequested(false);
+            })
+            .finally(() => setProgress(100));
+    });
 
     return (
         <div

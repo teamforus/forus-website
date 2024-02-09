@@ -1,66 +1,70 @@
-.block {
-    &.block-breadcrumbs {
-        position: relative;
-        padding: 20px 0px;
-        margin: 0 0;
-        @include ellipsis();
-        
-        .breadcrumb-item {
+.block.block-breadcrumbs {
+    position: relative;
+    padding: var(--breadcrumb-padding) 0px;
+    margin: 0 0;
+    @include ellipsis();
+    
+    .breadcrumb-item {
+        display: inline-block;
+        font: 600 var(--breadcrumb-size) var(--base-font);
+        color: var(--breadcrumb-color);
+        transition: .4s;
+        text-decoration: underline;
+
+        &:after {
+            content: '/';
             display: inline-block;
-            font: 600 16px var(--base-font);
-            color: var(--color-primary);
-            transition: .4s;
+            user-select: none;
+            pointer-events: none;
+            cursor: default;
+            padding: 0 10px;
+            color: #aaa;
+            font-weight: 400;
+            text-decoration: none;
+            position: relative;
+            z-index: 0;
+        }
+
+        &:last-child {
+            &:after {
+                content: none;
+            }
+        }
+
+        &:hover {
+            text-decoration: none;
+        }
+
+        &.active {
+            cursor: default;
+            color: var(--breadcrumb-color-active);
+            text-decoration: none;
+        }
+
+        &.breadcrumb-item-back {
+            color: var(--color-primary-light);
+            margin-right: 30px;
 
             &:after {
-                content: '/';
-                user-select: none;
-                padding: 0 10px;
-                color: #aaa;
-                font-weight: 400;
-            }
-
-            &:last-child {
-                &:after {
-                    content: none;
-                }
-            }
-
-            &:hover {
-                color: #0f1f8f;
-            }
-
-            &.active {
-                color: #515152;
-                cursor: default;
-            }
-
-            &.breadcrumb-item-back {
-                color: var(--color-primary-light);
-                margin-right: 30px;
-
-                &:after {
-                    content: none;
-                }
+                content: none;
             }
         }
     }
 
     @media screen and (max-width: 1700px) {
-        &.block-breadcrumbs {
-            .breadcrumb-item {
-                font: 600 14px var(--base-font);
-            }
+        padding: calc(var(--breadcrumb-padding) * .75) 0px;
+
+        .breadcrumb-item {
+            font: 600 calc(var(--breadcrumb-size) - 2px) var(--base-font);
         }
     }
 
     @media screen and (max-width: 1000px) {
-        &.block-breadcrumbs {
-            padding: 10px 0;
-            margin: 0 0 5px;
+        padding: 10px 0;
+        margin: 0 0 5px;
 
-            .breadcrumb-item {
-                font-size: 13px;
-            }
+        .breadcrumb-item {
+            font-size: 13px;
         }
     }
 }

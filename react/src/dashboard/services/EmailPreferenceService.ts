@@ -26,7 +26,5 @@ export class EmailPreferenceService<T = NotificationPreference> {
 }
 
 export function useEmailPreferenceService(): EmailPreferenceService {
-    const [service] = useState(new EmailPreferenceService());
-
-    return service;
+    return useState(new EmailPreferenceService())[0];
 }

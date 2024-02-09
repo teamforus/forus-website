@@ -33,7 +33,7 @@ module.exports = {
         start_date: "Begindatum",
         end_date: "Einddatum",
         actions: "Acties",
-        status: "Status"
+        status: "Status",
     },
     empty_block: {
         available: "Er zijn geen beschikbare fondsen waar u zich voor kunt aanmelden.",
@@ -48,11 +48,13 @@ module.exports = {
         labels: {
             search: 'Zoeken',
             organizations: 'Organisaties',
+            implementations: 'Alle implementaties',
             tags: 'Labels'
         },
         options: {
             all_organizations: 'Alle organisaties',
-            all_labels: 'Alle labels'
+            all_implementations: 'Alle implementaties',
+            all_labels: 'Alle labels',
         }
     },
     available: {

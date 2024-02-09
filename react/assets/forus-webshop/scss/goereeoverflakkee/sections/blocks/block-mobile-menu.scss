@@ -1,0 +1,15 @@
+&.block-mobile-menu {
+    .mobile-menu-group {
+        .mobile-menu-items {
+            .mobile-menu-item {
+                &.active {
+                    color: #08749B;
+
+                    .mdi {
+                        color: #08749B;
+                    }
+                }
+            }
+        }
+    }
+}
