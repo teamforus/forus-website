@@ -59,7 +59,14 @@ export class TransactionService<T = Transaction> {
         return Papa.unparse([headers, values]);
     }
 
-    public export(type: string, organization_id: number, filters = {}) {
+    public export(
+        type: string,
+        organization_id: number,
+        filters = {},
+    ): Promise<{
+        data: ArrayBuffer;
+        response: XMLHttpRequest;
+    }> {
         const cfg = { responseType: 'arraybuffer', cache: false };
 
         return this.apiRequest.get(`${this.prefix}/${organization_id}/${type}/transactions/export`, filters, {}, cfg);
