@@ -540,9 +540,7 @@ export default function SignUpProvider() {
         setProgress(0);
 
         shareService
-            .sendEmail({
-                email: values.email,
-            })
+            .sendEmail({ email: values.email })
             .then(() => setShareEmailSent(true))
             .catch((err: ResponseError) => {
                 emailForm.setErrors(err.data.errors);
@@ -599,7 +597,7 @@ export default function SignUpProvider() {
 
     useEffect(() => {
         if (step === 'STEP_CREATE_PROFILE') {
-            if ((!tmpAuthToken || !tmpAccessToken) && hasApp && appDownloadSkip) {
+            if ((!tmpAuthToken || !tmpAccessToken) && hasApp && (appDownloadSkip || shareEmailSent || shareSmsSent)) {
                 requestAuthQrToken();
             }
         } else {
@@ -608,7 +606,7 @@ export default function SignUpProvider() {
                 setTmpAccessToken(null);
             }
         }
-    }, [hasApp, appDownloadSkip, requestAuthQrToken, tmpAccessToken, tmpAuthToken, step]);
+    }, [hasApp, appDownloadSkip, requestAuthQrToken, tmpAccessToken, tmpAuthToken, step, shareEmailSent, shareSmsSent]);
 
     useEffect(() => {
         if (!demoToken) {

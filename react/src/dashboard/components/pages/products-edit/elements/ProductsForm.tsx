@@ -1007,8 +1007,6 @@ export default function ProductsForm({
                                         {t('product_edit.labels.extra_payments')}
                                     </label>
 
-                                    <pre>{JSON.stringify(form.values, null, '    ')}</pre>
-
                                     <SelectControl
                                         className="form-control"
                                         propKey={'value'}
