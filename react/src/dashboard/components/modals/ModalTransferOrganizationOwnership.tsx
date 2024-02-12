@@ -42,12 +42,10 @@ export default function ModalTransferOrganizationOwnership({
 
             organizationService
                 .transferOwnership(organization.id, values)
-                .then(
-                    () => onSuccess(),
-                    (res: ResponseError) => {
-                        form.setErrors(res.status == 429 ? { email: [res.data.message] } : res.data.errors);
-                    },
-                )
+                .then(() => onSuccess())
+                .catch((err: ResponseError) => {
+                    form.setErrors(err.status == 429 ? { email: [err.data.message] } : err.data.errors);
+                })
                 .finally(() => form.setIsLocked(false));
         },
     );
@@ -81,7 +79,7 @@ export default function ModalTransferOrganizationOwnership({
                                         propValue={'email'}
                                         options={adminEmployees}
                                         allowSearch={true}
-                                        onChange={(value) => {
+                                        onChange={(value?: number) => {
                                             form.update({ employee_id: value });
                                         }}
                                         optionsComponent={SelectControlOptions}

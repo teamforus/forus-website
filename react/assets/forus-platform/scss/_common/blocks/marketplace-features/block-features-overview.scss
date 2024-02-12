@@ -1,0 +1,155 @@
+&.block-features-overview {
+    display: flex;
+    flex-direction: row;
+
+    .overview-details {
+        display: flex;
+        flex: 0 0 50%;
+        flex-direction: column;
+        padding: 45px 90px 45px 60px;
+        justify-content: center;
+
+        .overview-details-title {
+            color: #151b26;
+            font: 600 32px/44px var(--base-font);
+            margin: 0 0 8px;
+        }
+
+        .overview-details-description {
+            color: #282b39;
+            font: 400 13px/20px var(--base-font);
+
+            p {
+                font: inherit;
+            }
+
+            .overview-details-contacts {
+                font-weight: 600;
+
+                span {
+                    color: #004195;
+                    padding-left: 5px;
+                }
+            }
+        }
+    }
+
+    .overview-list {
+        display: flex;
+        flex: 0 0 50%;
+        min-height: 400px;
+        background-image: url(../img/features/features-watermark.svg);
+        background-repeat: no-repeat;
+        background-size: contain;
+        background-position: 50% 50%;
+        align-items: center;
+        justify-content: center;
+
+        .overview-list-wrapper {
+            display: inline-flex;
+            align-items: flex-start;
+            gap: 10px;
+
+            .overview-list-col {
+                display: flex;
+                flex-direction: column;
+                align-items: flex-end;
+                gap: 10px;
+
+                .overview-list-item {
+                    background: #ffffff;
+                    padding: 12px;
+                    border-radius: var(--border-radius);
+                    box-shadow: 0 12px 28px 0 rgba(25, 39, 52, 0.14);
+
+                    .overview-list-item-icon {
+                        display: flex;
+                        margin-bottom: 10px;
+
+                        svg,
+                        img {
+                            width: 32px;
+                            height: 32px;
+                        }
+                    }
+
+                    .overview-list-item-title {
+                        color: #151b26;
+                        font: 600 13px/20px var(--base-font);
+                    }
+
+                    .overview-list-item-description {
+                        color: #282b39;
+                        font: 400 11px/16px var(--base-font);
+                    }
+                }
+
+                &:first-child {
+                    .overview-list-item {
+                        &:first-child {
+                            width: 160px;
+                        }
+
+                        &:last-child {
+                            width: 190px;
+                            background: #ec3561;
+
+                            .overview-list-item-title,
+                            .overview-list-item-description {
+                                color: #fff;
+                            }
+                        }
+                    }
+                }
+
+                &:last-child {
+                    align-items: flex-start;
+
+                    .overview-list-item {
+                        &:first-child {
+                            width: 160px;
+                            background: #009fda;
+
+                            .overview-list-item-title,
+                            .overview-list-item-description {
+                                color: #fff;
+                            }
+                        }
+
+                        &:last-child {
+                            width: 175px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    @media screen and (max-width: 1400px) {
+        .overview-details {
+            .overview-details-title {
+                font: 600 24px/34px var(--base-font);
+            }
+        }
+    }
+
+    @media screen and (max-width: 1000px) {
+        .overview-details {
+            padding: 20px 25px;
+        }
+    }
+
+    @media screen and (max-width: 650px) {
+        flex-direction: column;
+
+        .overview-details {
+            flex: 0 1 auto;
+        }
+
+        .overview-list {
+            flex: 0 1 auto;
+            min-height: 0;
+            padding: 0 0 10px;
+        }
+    }
+}

@@ -5,7 +5,7 @@
         background: #fff;
         margin-bottom: 10px;
         padding: 10px;
-        border-radius: calc(var(--border-radius) / 2);
+        border-radius: calc(var(--border-radius));
         border: 1px solid rgba(var(--border-color), $alpha: .5);
 
         .variables-list {

@@ -1,0 +1,10 @@
+&.block-breadcrumbs {
+    .breadcrumb-item {
+        color: var(--htc);
+        font-weight: 500;
+
+        &.active {
+            color: #2D3748;
+        }
+    }
+}

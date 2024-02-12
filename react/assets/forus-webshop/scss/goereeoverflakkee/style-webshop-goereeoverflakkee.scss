@@ -1,0 +1,30 @@
+@import "./vars";
+@import "../_common/webshop";
+
+// LAYOUTS
+@import "layout/_navigation.scss";
+@import "layout/_header.scss";
+
+// INCLUDES
+@import "includes/buttons.scss";
+@import "includes/form.scss";
+
+// SECTIONS
+@import "sections/flow.scss";
+@import "sections/faq.scss";
+
+.block {
+    @import "sections/blocks/block-map.scss";
+    @import "sections/blocks/block-markdown.scss";
+    @import "sections/blocks/block-products.scss";
+    @import "sections/blocks/block-cms-funds.scss";
+    @import "sections/blocks/block-copyrights.scss";
+    @import "sections/blocks/block-footer.scss";
+    @import "sections/blocks/block-navbar-search.scss";
+    @import "sections/blocks/block-products-list.scss";
+    @import "sections/blocks/block-profile.scss";
+    @import "sections/blocks/block-product.scss";
+    @import "sections/blocks/block-pane.scss";
+    @import "sections/blocks/block-organizations.scss";
+    @import "sections/blocks/block-mobile-menu.scss";
+}

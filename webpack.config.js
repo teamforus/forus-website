@@ -249,7 +249,7 @@ module.exports = (env, argv) => {
         ],
 
         optimization: {
-            minimize: true,
+            minimize: mode !== 'development',
             minimizer: [new TerserPlugin({ extractComments: false })],
         },
 

@@ -2,7 +2,7 @@ import React, { Fragment, useCallback, useContext, useEffect, useState } from 'r
 import { PaginationData } from '../../../props/ApiResponses';
 import LoadingCard from '../../elements/loading-card/LoadingCard';
 import EmptyCard from '../../elements/empty-card/EmptyCard';
-import useFilters from '../../../hooks/useFilters';
+import useFilter from '../../../hooks/useFilter';
 import { useOrganizationService } from '../../../services/OrganizationService';
 import { mainContext } from '../../../contexts/MainContext';
 import Paginator from '../../../modules/paginator/components/Paginator';
@@ -27,7 +27,7 @@ export default function ExternalFunds() {
     const activeOrganization = useActiveOrganization();
 
     const [funds, setFunds] = useState<PaginationData<ExternalFund>>(null);
-    const filters = useFilters({});
+    const filter = useFilter({});
     const organizationService = useOrganizationService();
     const { t } = useTranslation();
 
@@ -35,10 +35,10 @@ export default function ExternalFunds() {
         setProgress(0);
 
         organizationService
-            .listExternalFunds(activeOrganization.id, filters.activeValues)
+            .listExternalFunds(activeOrganization.id, filter.activeValues)
             .then((res) => setFunds(res.data))
             .finally(() => setProgress(100));
-    }, [setProgress, organizationService, activeOrganization.id, filters.activeValues]);
+    }, [setProgress, organizationService, activeOrganization.id, filter.activeValues]);
 
     const askConfirmation = useCallback(
         (onConfirm) => {
@@ -72,15 +72,11 @@ export default function ExternalFunds() {
                 .externalFundUpdate(activeOrganization.id, fund.id, {
                     criteria: fund.criteria,
                 })
-                .then(
-                    () => {
-                        fetchFunds();
-                        pushSuccess('Opgeslagen!');
-                    },
-                    () => {
-                        pushDanger('Error!');
-                    },
-                )
+                .then(() => {
+                    fetchFunds();
+                    pushSuccess('Opgeslagen!');
+                })
+                .catch(() => pushDanger('Mislukt!'))
                 .finally(() => setProgress(100));
         },
         [activeOrganization.id, fetchFunds, organizationService, pushDanger, pushSuccess, setProgress],
@@ -134,7 +130,7 @@ export default function ExternalFunds() {
                         setActiveOrganization(Object.assign(organization, res.data.data));
                     },
                     (res) => {
-                        pushDanger('Error!', res.data.message);
+                        pushDanger('Mislukt!', res.data.message);
                     },
                 )
                 .then(() => setProgress(100));
@@ -254,7 +250,7 @@ export default function ExternalFunds() {
             {funds.meta.last_page > 1 && (
                 <div className="card">
                     <div className="card-section">
-                        <Paginator meta={funds.meta} filters={filters.activeValues} updateFilters={filters.update} />
+                        <Paginator meta={funds.meta} filters={filter.activeValues} updateFilters={filter.update} />
                     </div>
                 </div>
             )}

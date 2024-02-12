@@ -4,16 +4,24 @@ import { getStateRouteUrl } from './Router';
 
 export default function StateNavLink({
     name,
-    params,
+    params = {},
     children,
     className,
+    disabled = false,
+    target,
 }: HTMLAttributes<HTMLAnchorElement> & {
     name: string;
-    params: object;
-    children: ReactElement | Array<ReactElement> | string;
+    params?: object;
+    children: ReactElement | Array<ReactElement | string> | string;
+    disabled?: boolean;
+    target?: string;
 }) {
+    if (disabled) {
+        return <div className={className}>{children}</div>;
+    }
+
     return (
-        <NavLink className={() => className} to={getStateRouteUrl(name, params)}>
+        <NavLink target={target} className={() => className} to={getStateRouteUrl(name, params)}>
             {children}
         </NavLink>
     );

@@ -1,4 +1,4 @@
-module.export = {
+module.exports = {
     "header": {
         "title": "Systeemberichten per webshop",
         "tooltip": "Het platform verstuurt automatische berichten naar gebruikers. Dit gebeurt via e-mailberichten, pushberichten via de app en webberichten in webshop/beheeromgeving."
@@ -67,18 +67,6 @@ module.export = {
         "notifications_identities.requester_provider_approved_products": {
             "title": "Aanbieder goedgekeurd voor aanbiedingen",
             "description": "Deelnemers ontvangen dit bericht wanneer het aanbod van een aanbieder is goedgekeurd voor een fonds."
-        },
-        "notifications_identities.requester_product_revoked": {
-            "title": "Aanbieder geweigerd voor aanbiedingen",
-            "description": "Deelnemers ontvangen dit bericht wanneer het aanbod van een aanbieder wordt verwijderd uit een fonds."
-        },
-        "notifications_identities.requester_product_approved": {
-            "title": "Aanbieder goedgekeurd voor een specifieke aanbieding",
-            "description": "Deelnemers ontvangen dit bericht wanneer een aanbieding van een aanbieder is goedgekeurd voor een fonds."
-        },
-        "notifications_identities.requester_product_added": {
-            "title": "Aanbieding toegevoegd aan de webshop",
-            "description": "Deelnemers ontvangen dit bericht wanneer een aanbieding van een aanbieder wordt toegevoegd aan een fonds."
         },
         "notifications_identities.requester_fund_ended": {
             "title": "Fonds is afgelopen",

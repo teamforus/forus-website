@@ -4,6 +4,7 @@ import ApiRequestService from './ApiRequestService';
 import Organization from '../props/models/Organization';
 import { hasPermission } from '../helpers/utils';
 import ExternalFund from '../props/models/ExternalFund';
+import Product from '../props/models/Product';
 
 export class OrganizationService<T = Organization> {
     /**
@@ -82,8 +83,8 @@ export class OrganizationService<T = Organization> {
         >;
     }
 
-    public updateAcceptReservations(id: number, auto_accept: boolean) {
-        return this.apiRequest.patch(`${this.prefix}/${id}/accept-reservations`, {
+    public updateAcceptReservations(id: number, auto_accept: boolean): Promise<ApiResponseSingle<T>> {
+        return this.apiRequest.patch(`${this.prefix}/${id}/update-accept-reservations`, {
             reservations_auto_accept: auto_accept,
         });
     }
@@ -118,7 +119,7 @@ export class OrganizationService<T = Organization> {
     }
 
     public removeExternalValidator(id: number, validator_organization_id: number, data = {}) {
-        return this.apiRequest._delete(`${this.prefix}/${id}/validators`, {
+        return this.apiRequest.delete(`${this.prefix}/${id}/validators`, {
             ...data,
             organization_id: validator_organization_id,
         });
@@ -183,11 +184,11 @@ export class OrganizationService<T = Organization> {
         provider_organization_id: number,
         product_id: number,
         data = {},
-    ): Promise<ApiResponse<T>> {
+    ): Promise<ApiResponseSingle<Product>> {
         return this.apiRequest.patch(
             `${this.prefix}/${id}/sponsor/providers/${provider_organization_id}/products/${product_id}`,
             data,
-        ) as Promise<ApiResponse<T>>;
+        );
     }
 
     public sponsorProductDelete(
@@ -195,12 +196,16 @@ export class OrganizationService<T = Organization> {
         provider_organization_id: number,
         product_id: number,
     ): Promise<ApiResponse<T>> {
-        return this.apiRequest._delete(
+        return this.apiRequest.delete(
             `${this.prefix}/${id}/sponsor/providers/${provider_organization_id}/products/${product_id}`,
         ) as Promise<ApiResponse<T>>;
     }
 
-    public sponsorStoreProduct(id: number, provider_organization_id: number, data = {}) {
+    public sponsorStoreProduct(
+        id: number,
+        provider_organization_id: number,
+        data = {},
+    ): Promise<ApiResponseSingle<Product>> {
         return this.apiRequest.post(
             `${this.prefix}/${id}/sponsor/providers/${provider_organization_id}/products`,
             data,
@@ -210,55 +215,20 @@ export class OrganizationService<T = Organization> {
     public getRoutePermissionsMap(type = 'sponsor') {
         return {
             sponsor: [
-                {
-                    permissions: ['manage_funds', 'view_finances', 'view_funds'],
-                    name: 'organization-funds',
-                },
-                {
-                    permissions: ['manage_vouchers'],
-                    name: 'vouchers',
-                },
-                {
-                    permissions: ['view_finances'],
-                    name: 'transactions',
-                },
-                {
-                    permissions: ['validate_records'],
-                    name: 'csv-validation',
-                },
+                { permissions: ['manage_funds', 'view_finances', 'view_funds'], name: 'organization-funds' },
+                { permissions: ['manage_vouchers'], name: 'vouchers' },
+                { permissions: ['view_finances'], name: 'transactions' },
+                { permissions: ['validate_records'], name: 'csv-validation' },
             ],
             provider: [
-                {
-                    permissions: ['manage_employees'],
-                    name: 'provider-overview',
-                },
-                {
-                    permissions: ['manage_offices'],
-                    name: 'offices',
-                },
-                {
-                    permissions: ['manage_products'],
-                    name: 'products',
-                },
-                {
-                    permissions: ['view_finances'],
-                    name: 'transactions',
-                },
-                {
-                    permissions: ['validate_records'],
-                    name: 'csv-validation',
-                },
-                {
-                    permissions: ['scan_vouchers'],
-                    name: 'reservations',
-                },
+                { permissions: ['manage_employees'], name: 'provider-overview' },
+                { permissions: ['manage_offices'], name: 'offices' },
+                { permissions: ['manage_products'], name: 'products' },
+                { permissions: ['view_finances'], name: 'transactions' },
+                { permissions: ['validate_records'], name: 'csv-validation' },
+                { permissions: ['scan_vouchers'], name: 'reservations' },
             ],
-            validator: [
-                {
-                    permissions: ['validate_records', 'manage_validators'],
-                    name: 'fund-requests',
-                },
-            ],
+            validator: [{ permissions: ['validate_records', 'manage_validators'], name: 'fund-requests' }],
         }[type];
     }
 
@@ -270,7 +240,5 @@ export class OrganizationService<T = Organization> {
 }
 
 export function useOrganizationService(): OrganizationService {
-    const [service] = useState(new OrganizationService());
-
-    return service;
+    return useState(new OrganizationService())[0];
 }

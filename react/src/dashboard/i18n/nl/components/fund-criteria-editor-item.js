@@ -4,8 +4,11 @@ module.exports = {
             edit: "Aanpassen",
             apply: "Bevestigen",
             cancel: "Annuleren",
-            allow_attachments: "Bijlage uploaden",
             add_external_validator: "Voeg beoordelaar toe",
-        }
+        },
+
+        allow_attachments: "Bijlage uploaden",
+        validation: "Validatie",
+        optional: "Optioneel",
     }
 };

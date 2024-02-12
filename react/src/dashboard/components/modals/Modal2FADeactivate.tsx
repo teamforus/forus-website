@@ -52,7 +52,7 @@ export default function Modal2FADeactivate({
                 .send(auth2FA.uuid)
                 .then(
                     () => (notify ? pushSuccess('Gelukt!', 'We hebben de code opnieuw verstuurd.') : false),
-                    (res) => pushDanger('Error!', res?.data?.message),
+                    (res) => pushDanger('Mislukt!', res?.data?.message),
                 )
                 .then(() => setSendingCode(false));
         },
@@ -71,16 +71,14 @@ export default function Modal2FADeactivate({
                 key: auth2FA.provider_type.key,
                 code: confirmationCode,
             })
-            .then(
-                () => {
-                    setStep('success');
-                    setErrorCode(null);
-                },
-                (res) => {
-                    pushDanger(res.data?.message || 'Unknown error.');
-                    setErrorCode(res?.data?.errors?.code || null);
-                },
-            )
+            .then(() => {
+                setStep('success');
+                setErrorCode(null);
+            })
+            .catch((res) => {
+                pushDanger(res.data?.message || 'Unknown error.');
+                setErrorCode(res?.data?.errors?.code || null);
+            })
             .finally(() => window.setTimeout(() => setDeactivating(false), 1000));
     }, [auth2FA.provider_type.key, auth2FA.uuid, confirmationCode, deactivating, identity2FAService, pushDanger]);
 

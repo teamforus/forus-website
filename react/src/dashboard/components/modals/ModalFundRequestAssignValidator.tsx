@@ -39,21 +39,19 @@ export default function ModalFundRequestAssignValidator({
         }),
     );
 
-    const form = useFormBuilder({ employee_id: listEmployees[0]?.id }, (values) => {
+    const form = useFormBuilder({ employee_id: listEmployees[0]?.id }, async (values) => {
         setProgress(0);
 
         return fundRequestService
             .assignBySupervisor(organization.id, fundRequest.id, values)
-            .then(
-                () => {
-                    modal.close();
-                    onSubmitted();
-                },
-                (res) => {
-                    form.setIsLocked(false);
-                    form.setErrors(res.data.errors);
-                },
-            )
+            .then(() => {
+                modal.close();
+                onSubmitted();
+            })
+            .catch((err: ResponseError) => {
+                form.setIsLocked(false);
+                form.setErrors(err.data.errors);
+            })
             .finally(() => setProgress(100));
     });
 

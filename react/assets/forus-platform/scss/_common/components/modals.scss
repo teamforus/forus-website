@@ -42,7 +42,7 @@
         background: #f6f9fc;
         width: 1200px;
         max-width: 100%;
-        border-radius: calc(var(--border-radius) / 2);
+        border-radius: calc(var(--border-radius));
         display: inline-block;
         min-height: 100px;
         margin: 0 auto;
@@ -352,6 +352,39 @@
             }
         }
 
+        .modal-fields-groups {
+            .modal-fields-group {
+                border-bottom: 1px solid var(--border-color);
+                padding: 15px 0;
+    
+                .modal-fields-group-title {
+                    display: flex;
+                    color: #282B39;
+                    font: 600 13px/24px var(--base-font);
+                    align-items: center;
+    
+                    .mdi {
+                        font-size: 24px;
+                        color: #646F79;
+                        height: 24px;
+                        margin-left: -5px;
+                    }
+                }
+    
+                .modal-fields-list {
+                    padding-top: 15px;
+                }
+
+                &:first-child {
+                    padding-top: 0;
+                }
+
+                &:last-child {
+                    margin-bottom: 20px;
+                }
+            }
+        }
+
         &:last-child {
             border-bottom: none;
             border-bottom-left-radius: inherit;
@@ -616,7 +649,7 @@
                         font: 500 14px var(--base-font);
                         color: #282b39;
                         border: 1px solid #d4d9dd;
-                        border-radius: calc(var(--border-radius) / 2);
+                        border-radius: calc(var(--border-radius));
                         position: relative;
                         transition: .4s;
                         background: transparent;
@@ -731,6 +764,16 @@
         }
     }
 
+    &.modal-reservation-create {
+        .modal-window {
+            width: 740px;
+        }
+
+        .modal-footer {
+            padding: 20px 30px;
+        }
+    }
+
     &.modal-notification {
         .modal-content {
             .modal-section {
@@ -759,6 +802,8 @@
 
     &.modal-fund-offers {
         .modal-window {
+            width: 1400px;
+
             .modal-section {
                 .table {
                     td {
@@ -786,18 +831,6 @@
                     }
                 }
             }
-        }
-    }
-
-    &.modal-business-update {
-        .modal-description {
-            font: 500 16px var(--base-font);
-            margin-top: 20px;
-            text-align: center;
-        }
-
-        .modal-body {
-            overflow: initial;
         }
     }
 
@@ -986,6 +1019,111 @@
 
             .phone-control {
                 margin-bottom: 10px;
+            }
+        }
+    }
+
+    &.modal-voucher-create {
+        .modal-window {
+            width: 760px;
+
+            .modal-body {
+                .modal-section {
+                    padding: 25px 80px;
+                }
+            }
+        }
+    }
+
+    &.modal-feature-contact {
+        .modal-close {
+            top: 15px;
+            color: #646F79;
+        }
+        
+        .modal-header {
+            padding: 15px 20px
+        }
+        
+        .modal-section {
+            .icon-wrapper {
+                display: flex;
+                justify-content: center;
+                margin-bottom: 15px;
+
+                .icon {
+                    border-radius: 5px;
+                    border: 1px solid #D4D9DD;
+                    background: #FFF;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    height: 48px;
+                    width: 50px;
+
+                    .mdi {
+                        font-size: 22px;
+                        line-height: 22px;
+                        color: #004195;
+                    }
+                }
+            }
+
+            .title {
+                font: 600 16px/24px var(--base-font);
+                color: #2B303A;
+                margin-bottom: 5px;
+            }
+
+            .description {
+                font: 400 13px/18px var(--base-font);
+                color: #414141;
+                margin-bottom: 24px;
+            }
+
+            .contact-row {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 8px;
+
+                .contact-item {
+                    flex-basis: 0;
+                    flex-grow: 1;
+                    max-width: 100%;
+                    border-radius: 5px;
+                    border: 1px dashed #D4D9DD;
+                    background: #FFF;
+                    padding: 20px;
+
+                    .icon {
+                        margin-bottom: 10px;
+
+                        .mdi {
+                            font-size: 18px;
+                            line-height: 18px;
+                            color: #134478;
+                        }
+                    }
+
+                    .title {
+                        font: 600 14px/1 var(--base-font);
+                        color: #282B39;
+                        margin-bottom: 5px;
+                    }
+
+                    .description {
+                        font: 400 14px/20px var(--base-font);
+                        color: #282B39;
+                        margin-bottom: 0;
+                    }
+                }
+            }
+        }
+
+        .modal-footer {
+            .button {
+                line-height: 1;
+                padding: 8px 12px;
             }
         }
     }

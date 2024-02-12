@@ -4,7 +4,7 @@ import { hasPermission } from '../../../helpers/utils';
 import Organization from '../../../props/models/Organization';
 import useAppConfigs from '../../../hooks/useAppConfigs';
 
-export default function LayoutAsideValidator({ activeOrganization }: { activeOrganization: Organization }) {
+export default function LayoutAsideValidator({ organization }: { organization: Organization }) {
     const appConfigs = useAppConfigs();
 
     return (
@@ -14,7 +14,7 @@ export default function LayoutAsideValidator({ activeOrganization }: { activeOrg
                 name={'Aanvragen'}
                 icon={'clock'}
                 route={'fund-requests'}
-                routeParams={{ organizationId: activeOrganization?.id }}
+                routeParams={{ organizationId: organization?.id }}
                 show={appConfigs && appConfigs?.organizations?.funds?.fund_requests}
                 id={'fund_requests'}
             />
@@ -22,23 +22,24 @@ export default function LayoutAsideValidator({ activeOrganization }: { activeOrg
                 name={'Fondsen'}
                 icon={'fund_validations'}
                 route={'external-funds'}
-                routeParams={{ organizationId: activeOrganization?.id }}
-                show={hasPermission(activeOrganization, 'manage_organization')}
+                routeParams={{ organizationId: organization?.id }}
+                show={hasPermission(organization, 'manage_organization')}
                 id={'external_funds'}
             />
             <LayoutAsideNavItem
                 name={'Medewerkers'}
                 icon={'list'}
                 route={'employees'}
-                routeParams={{ organizationId: activeOrganization?.id }}
-                show={hasPermission(activeOrganization, 'manage_employees')}
+                routeParams={{ organizationId: organization?.id }}
+                show={hasPermission(organization, 'manage_employees')}
                 id={'employees'}
+                dusk={'employeesPage'}
             />
             <LayoutAsideNavItem
                 name={'Aanvragers'}
                 icon={'file_csv'}
-                route={'csv-validation'}
-                routeParams={{ organizationId: activeOrganization?.id }}
+                route={'csv-validation-redirect'}
+                routeParams={{ organizationId: organization?.id }}
                 show={true}
                 target={'_blank'}
                 id={'requesters'}
@@ -47,10 +48,10 @@ export default function LayoutAsideValidator({ activeOrganization }: { activeOrg
                 name={'Beveiliging'}
                 icon={'organization-security'}
                 route={'organization-security'}
-                routeParams={{ organizationId: activeOrganization?.id }}
+                routeParams={{ organizationId: organization?.id }}
                 show={
-                    activeOrganization.allow_2fa_restrictions &&
-                    hasPermission(activeOrganization, 'manage_organization')
+                    organization.allow_2fa_restrictions &&
+                    hasPermission(organization, 'manage_organization')
                 }
                 id={'requesters'}
             />

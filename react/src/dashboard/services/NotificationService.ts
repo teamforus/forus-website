@@ -3,7 +3,7 @@ import { useState } from 'react';
 import ApiResponse from '../props/ApiResponses';
 import Notification from '../props/models/Notification';
 
-export default class NotificationService<T = Notification> {
+export class NotificationService<T = Notification> {
     /**
      * @param apiRequest
      */
@@ -17,14 +17,10 @@ export default class NotificationService<T = Notification> {
     public prefix = '/platform/notifications';
 
     public list(data = {}) {
-        return this.apiRequest.get<ApiResponse<T>>(`${this.prefix}`, data, {
-            'Client-Type': 'sponsor',
-        });
+        return this.apiRequest.get<ApiResponse<T>>(`${this.prefix}`, data);
     }
 }
 
 export function useNotificationService(): NotificationService {
-    const [service] = useState(new NotificationService());
-
-    return service;
+    return useState(new NotificationService())[0];
 }

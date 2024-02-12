@@ -10,7 +10,8 @@ import FormError from '../../elements/forms/errors/FormError';
 import useEnvData from '../../../hooks/useEnvData';
 import useAssetUrl from '../../../hooks/useAssetUrl';
 import { useTranslation } from 'react-i18next';
-import Translate from '../../../i18n/elements/Translate';
+import TranslateHtml from '../../elements/translate-html/TranslateHtml';
+import { ResponseError } from '../../../props/ApiResponses';
 
 export default function SignIn() {
     const [timer, setTimer] = useState(null);
@@ -23,13 +24,15 @@ export default function SignIn() {
     const assetUrl = useAssetUrl();
     const identityService = useIdentityService();
 
-    const signInForm = useFormBuilder({ email: '' }, (values) => {
+    const signInForm = useFormBuilder({ email: '' }, async (values) => {
+        const source = `${envData.client_key}_${envData.client_type}`;
+
         return identityService
-            .makeAuthEmailToken(values.email?.toString(), envData.client_key + '_' + envData.client_type)
-            .then(
-                () => signInForm.setState('success'),
-                (res) => signInForm.setErrors(res.data.errors ? res.data.errors : { email: [res.data.message] }),
-            )
+            .makeAuthEmailToken(values.email?.toString(), source)
+            .then(() => signInForm.setState('success'))
+            .catch((err: ResponseError) => {
+                return signInForm.setErrors(err.data.errors ? err.data.errors : { email: [err.data.message] });
+            })
             .finally(() => signInForm.setIsLocked(false));
     });
 
@@ -157,7 +160,7 @@ export default function SignIn() {
                             </div>
                             <div className="block-login-email_sent-title">{t('popup_auth.labels.join')}</div>
                             <div className="block-login-email_sent-text">
-                                <Translate
+                                <TranslateHtml
                                     i18n={'popup_auth.notifications.link'}
                                     values={{ email: signInForm.values.email }}
                                 />

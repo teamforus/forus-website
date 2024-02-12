@@ -5,7 +5,7 @@ import { NavLink } from 'react-router-dom';
 import { classList, hasPermission } from '../../../helpers/utils';
 import { getStateRouteUrl } from '../../../modules/state_router/Router';
 import { t } from 'i18next';
-import useFilters from '../../../hooks/useFilters';
+import useFilter from '../../../hooks/useFilter';
 import { strLimit } from '../../../helpers/string';
 import Employee from '../../../props/models/Employee';
 import Paginator from '../../../modules/paginator/components/Paginator';
@@ -37,7 +37,7 @@ export default function Employees() {
     const [employees, setEmployees] = useState<PaginationData<Employee>>(null);
     const [adminEmployees, setAdminEmployees] = useState([]);
 
-    const filter = useFilters({
+    const filter = useFilter({
         q: '',
         per_page: 15,
     });
@@ -107,16 +107,22 @@ export default function Employees() {
             employeeService.export(activeOrganization.id, { ...filter.activeValues, export_type: exportType }).then(
                 (res) => {
                     const dateTime = format(new Date(), 'yyyy-MM-dd HH:mm:ss');
+                    const headers = res.response.getAllResponseHeaders();
+                    const headersList = headers.trim().split(/[\r\n]+/);
 
-                    res.response.arrayBuffer().then((fileData) => {
-                        const fileType = res.response.headers.get('Content-Type') + ';charset=utf-8;';
-                        const fileName = `${envData.client_type}_${activeOrganization.name}_employees_${dateTime}.${exportType}`;
+                    const headerMap = headersList?.reduce((headerMap: object, line: string) => {
+                        const parts = line.split(': ');
+                        const header = parts.shift();
 
-                        fileService.downloadFile(fileName, fileData, fileType);
-                    });
+                        return { ...headerMap, [header]: parts.join(': ') };
+                    }, {});
+
+                    const fileName = `${envData.client_type}_${activeOrganization.name}_employees_${dateTime}.${exportType}`;
+
+                    fileService.downloadFile(fileName, res.data, headerMap['content-type']);
                 },
                 (res: ResponseError) => {
-                    pushDanger('Error!', res.data.message);
+                    pushDanger('Mislukt!', res.data.message);
                 },
             );
         },
@@ -220,6 +226,7 @@ export default function Employees() {
                             <button
                                 type="button"
                                 className={'button button-primary button-sm '}
+                                data-dusk={'addEmployee'}
                                 onClick={() => editEmployee()}>
                                 <em className="mdi mdi-plus-circle icon-start" />
                                 {t('organization_employees.buttons.add')}
@@ -246,7 +253,7 @@ export default function Employees() {
                 <div className="card-section">
                     <div className="card-block card-block-table">
                         <div className="table-wrapper">
-                            <table className="table table-highlight">
+                            <table className="table">
                                 <thead>
                                     <tr>
                                         <th>{t('organization_employees.labels.email')}</th>
@@ -257,7 +264,7 @@ export default function Employees() {
                                 </thead>
                                 <tbody>
                                     {employees?.data.map((employee: Employee) => (
-                                        <tr key={employee.id}>
+                                        <tr key={employee.id} data-dusk={`employeeRow${employee.id}`}>
                                             <td
                                                 id={'employee_email'}
                                                 data-dusk={'employeeEmail'}

@@ -5,7 +5,7 @@ module.exports = {
         action: "Activiteit",
         author: 'Door (Medewerker)',
         note: "Notitie",
-        search: "Zoek medewerker",
+        search: "Zoeken",
         entities: "Onderwerpen",
     },
     buttons: {

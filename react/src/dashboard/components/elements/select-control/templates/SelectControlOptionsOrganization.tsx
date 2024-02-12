@@ -31,6 +31,7 @@ export default function SelectControlOptionsOrganization<T>({
     return (
         <div
             className={'select-control select-control-organizations ' + (className ? className : '')}
+            data-dusk="headerOrganizationSwitcher"
             role="button"
             aria-haspopup="listbox"
             aria-expanded={showOptions}
@@ -105,6 +106,7 @@ export default function SelectControlOptionsOrganization<T>({
                         <div className="select-control-options" onScroll={onOptionsScroll}>
                             {optionsFiltered.slice(0, visibleCount)?.map((option) => (
                                 <div
+                                    data-dusk={`headerOrganizationItem${(option.raw as Organization)?.id}`}
                                     className={`select-control-option ${option.id == modelValue.id ? 'selected' : ''}`}
                                     key={option.id}
                                     onClick={(e) => {
@@ -133,7 +135,7 @@ export default function SelectControlOptionsOrganization<T>({
 
                         <div className="select-control-options-actions">
                             <NavLink
-                                to={getStateRouteUrl('organization-edit', {
+                                to={getStateRouteUrl('organizations-edit', {
                                     organizationId: (modelValue?.raw as Organization)?.id,
                                 })}
                                 onClick={() => setShowOptions(false)}

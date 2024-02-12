@@ -112,7 +112,7 @@ export default function Modal2FASetup({
                 },
                 (res) => {
                     setPhoneNumberError(res?.data?.errors?.phone);
-                    pushDanger('Error!', res.data?.message || 'Unknown error.');
+                    pushDanger('Mislukt!', res.data?.message || 'Unknown error.');
                 },
             );
     }, [blockResend, goToStep, identity2FAService, phoneNumber, pushDanger]);
@@ -151,16 +151,14 @@ export default function Modal2FASetup({
                 key: provider.key,
                 code: confirmationCode,
             })
-            .then(
-                () => {
-                    setActivateAuthErrors(null);
-                    goToStep('success');
-                },
-                (res) => {
-                    setActivateAuthErrors(res.data?.errors?.code);
-                    pushDanger(res.data?.message || 'Unknown error.');
-                },
-            )
+            .then(() => {
+                setActivateAuthErrors(null);
+                goToStep('success');
+            })
+            .catch((res) => {
+                setActivateAuthErrors(res.data?.errors?.code);
+                pushDanger(res.data?.message || 'Unknown error.');
+            })
             .finally(() => unlock());
     }, [auth2FA, confirmationCode, goToStep, identity2FAService, lock, provider, pushDanger, unlock]);
 
@@ -171,16 +169,14 @@ export default function Modal2FASetup({
 
         identity2FAService
             .authenticate(auth2FA.uuid, { code: confirmationCode })
-            .then(
-                () => {
-                    setVerifyAuthErrors(null);
-                    goToStep('success');
-                },
-                (res) => {
-                    setVerifyAuthErrors(res.data?.errors?.code);
-                    pushDanger(res.data?.message || 'Unknown error.');
-                },
-            )
+            .then(() => {
+                setVerifyAuthErrors(null);
+                goToStep('success');
+            })
+            .catch((res) => {
+                setVerifyAuthErrors(res.data?.errors?.code);
+                pushDanger(res.data?.message || 'Unknown error.');
+            })
             .finally(() => unlock());
     }, [auth2FA, confirmationCode, goToStep, identity2FAService, lock, pushDanger, unlock]);
 
@@ -197,7 +193,7 @@ export default function Modal2FASetup({
                 .send(auth2FA.uuid)
                 .then(
                     () => (notify ? pushSuccess('Gelukt!', 'We hebben de code opnieuw verstuurd.') : false),
-                    (res) => pushDanger('Error!', res?.data?.message),
+                    (res) => pushDanger('Mislukt!', res?.data?.message),
                 )
                 .then(() => setSendingCode(false));
         },

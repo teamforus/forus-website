@@ -45,15 +45,13 @@ export default function ModalEmployeeEdit({
                 : employeeService.store(organization.id, data);
 
             return promise
-                .then(
-                    () => {
-                        onSubmit();
-                        modal.close();
-                    },
-                    (res: ResponseError) => {
-                        form.setErrors(res.status == 429 ? { email: [res.data.message] } : res.data.errors);
-                    },
-                )
+                .then(() => {
+                    onSubmit();
+                    modal.close();
+                })
+                .catch((err: ResponseError) => {
+                    form.setErrors(err.status == 429 ? { email: [err.data.message] } : err.data.errors);
+                })
                 .finally(() => form.setIsLocked(false));
         },
     );
@@ -80,7 +78,7 @@ export default function ModalEmployeeEdit({
                 className,
             ])}>
             <div className="modal-backdrop" onClick={modal.close} />
-            <form className="modal-window form" onSubmit={form.submit}>
+            <form className="modal-window form" onSubmit={form.submit} data-dusk={'formEmployeeEdit'}>
                 <div className="modal-close mdi mdi-close" onClick={modal.close} />
                 <div className="modal-header">{employee ? 'Medewerker aanpassen' : 'Medewerker toevoegen'}</div>
 
@@ -116,13 +114,11 @@ export default function ModalEmployeeEdit({
                                             tooltip={role.description}
                                             checked={form.values.roles[role.id] || false}
                                             onChange={(e) => onChangeRole(e.target.checked, role)}
-                                            className={'checkbox-narrow'}
-                                            customElement={
-                                                <span className="permission-name">
-                                                    <span className="ellipsis">{role.name}</span>
-                                                </span>
-                                            }
-                                        />
+                                            className={'checkbox-narrow'}>
+                                            <span className="permission-name">
+                                                <span className="ellipsis">{role.name}</span>
+                                            </span>
+                                        </CheckboxControl>
                                     </div>
                                 ))}
                             </div>
@@ -133,7 +129,13 @@ export default function ModalEmployeeEdit({
 
                 <div className="modal-footer text-center">
                     <ModalButton type="default" button={{ onClick: modal.close, ...cancelButton }} text={'Sluiten'} />
-                    <ModalButton type="primary" button={{ onClick: form.submit }} text={'Bevestig'} submit={true} />
+                    <ModalButton
+                        type="primary"
+                        button={{ onClick: form.submit }}
+                        text={'Bevestig'}
+                        submit={true}
+                        dusk={'formEmployeeSubmit'}
+                    />
                 </div>
             </form>
         </div>

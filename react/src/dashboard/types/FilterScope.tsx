@@ -8,4 +8,5 @@ export default interface FilterScope<T> {
     activeValues: T;
     update: FilterSetter<Partial<T>>;
     resetFilters: () => void;
+    touch: () => void;
 }

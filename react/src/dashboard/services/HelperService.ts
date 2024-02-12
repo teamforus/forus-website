@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-export default class HelperService {
+export class HelperService {
     public recursiveLeach(request: CallableFunction, concurrency = 1, page = 1, last_page = null, data = []) {
         return new Promise((resolve, reject) => {
             const requests = [];
@@ -60,7 +60,5 @@ export default class HelperService {
 }
 
 export function useHelperService(): HelperService {
-    const [service] = useState(new HelperService());
-
-    return service;
+    return useState(new HelperService())[0];
 }

@@ -29,8 +29,6 @@ module.exports = {
         qr_code: "QR-Code",
         yes: "Ja",
         no: "Nee",
-        source_employee: "Medewerker",
-        source_user: "Gebruiker",
         active: 'Actief',
         deactivated: 'Gedeactiveerd',
         pending: 'Inactief',
@@ -43,6 +41,7 @@ module.exports = {
         date_type: 'Pas toe op',
         provider_name: "Aanbieder naam",
         product_name: "Aanbod naam",
+        implementation: "Implementatie",
     },
     events: {
         created_budget: 'Aangemaakt',
