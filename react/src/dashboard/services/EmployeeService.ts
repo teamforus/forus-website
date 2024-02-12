@@ -1,4 +1,4 @@
-import ApiResponse, { ResponseSimple, ApiResponseSingle } from '../props/ApiResponses';
+import ApiResponse, { ApiResponseSingle } from '../props/ApiResponses';
 import { useState } from 'react';
 import Employee from '../props/models/Employee';
 import ApiRequestService from './ApiRequestService';
@@ -55,7 +55,13 @@ export class EmployeeService<T = Employee> {
         return this.apiRequest.delete(`${this.prefix}/${organizationId}/employees/${id}`) as Promise<null>;
     }
 
-    public export(organizationId: number, data: object = {}): Promise<ResponseSimple<null>> {
+    public export(
+        organizationId: number,
+        data: object = {},
+    ): Promise<{
+        data: ArrayBuffer;
+        response: XMLHttpRequest;
+    }> {
         return this.apiRequest.get(
             `${this.prefix}/${organizationId}/employees/export`,
             data,
