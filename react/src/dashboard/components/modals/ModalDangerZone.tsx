@@ -30,6 +30,7 @@ export default function ModalDangerZone({
 
     return (
         <div
+            data-dusk="modalDangerZone"
             className={classList([
                 'modal',
                 'modal-md',
@@ -93,12 +94,15 @@ export default function ModalDangerZone({
                 </div>
 
                 <div className="modal-footer text-center">
-                    {buttonCancel && <ModalButton button={buttonCancel} text="Annuleren" type="default" />}
+                    {buttonCancel && (
+                        <ModalButton button={buttonCancel} dusk="btnDangerZoneCancel" text="Annuleren" type="default" />
+                    )}
 
                     {buttonSubmit && (
                         <ModalButton
                             disabled={confirmation && !confirmed}
                             button={buttonSubmit}
+                            dusk="btnDangerZoneSubmit"
                             text="Bevestigen"
                             type="danger"
                         />

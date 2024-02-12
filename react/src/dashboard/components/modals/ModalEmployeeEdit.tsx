@@ -78,7 +78,7 @@ export default function ModalEmployeeEdit({
                 className,
             ])}>
             <div className="modal-backdrop" onClick={modal.close} />
-            <form className="modal-window form" onSubmit={form.submit}>
+            <form className="modal-window form" onSubmit={form.submit} data-dusk={'formEmployeeEdit'}>
                 <div className="modal-close mdi mdi-close" onClick={modal.close} />
                 <div className="modal-header">{employee ? 'Medewerker aanpassen' : 'Medewerker toevoegen'}</div>
 
@@ -129,7 +129,13 @@ export default function ModalEmployeeEdit({
 
                 <div className="modal-footer text-center">
                     <ModalButton type="default" button={{ onClick: modal.close, ...cancelButton }} text={'Sluiten'} />
-                    <ModalButton type="primary" button={{ onClick: form.submit }} text={'Bevestig'} submit={true} />
+                    <ModalButton
+                        type="primary"
+                        button={{ onClick: form.submit }}
+                        text={'Bevestig'}
+                        submit={true}
+                        dusk={'formEmployeeSubmit'}
+                    />
                 </div>
             </form>
         </div>

@@ -220,6 +220,7 @@ export default function Employees() {
                             <button
                                 type="button"
                                 className={'button button-primary button-sm '}
+                                data-dusk={'addEmployee'}
                                 onClick={() => editEmployee()}>
                                 <em className="mdi mdi-plus-circle icon-start" />
                                 {t('organization_employees.buttons.add')}
@@ -257,7 +258,7 @@ export default function Employees() {
                                 </thead>
                                 <tbody>
                                     {employees?.data.map((employee: Employee) => (
-                                        <tr key={employee.id}>
+                                        <tr key={employee.id} data-dusk={`employeeRow${employee.id}`}>
                                             <td
                                                 id={'employee_email'}
                                                 data-dusk={'employeeEmail'}

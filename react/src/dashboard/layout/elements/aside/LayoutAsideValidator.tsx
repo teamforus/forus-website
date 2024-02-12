@@ -33,6 +33,7 @@ export default function LayoutAsideValidator({ organization }: { organization: O
                 routeParams={{ organizationId: organization?.id }}
                 show={hasPermission(organization, 'manage_employees')}
                 id={'employees'}
+                dusk={'employeesPage'}
             />
             <LayoutAsideNavItem
                 name={'Aanvragers'}

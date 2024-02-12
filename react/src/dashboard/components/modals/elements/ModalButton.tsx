@@ -16,18 +16,21 @@ export function ModalButton({
     button,
     type,
     text,
+    dusk = null,
     disabled = false,
 }: {
     submit?: boolean;
     button: ModalButton;
     type: string;
     text: string;
+    dusk?: string;
     disabled?: boolean;
 }) {
     const [disabledByClick, setDisabledByClick] = useState(false);
 
     return (
         <button
+            data-dusk={dusk}
             type={submit ? 'submit' : 'button'}
             disabled={disabled || disabledByClick}
             className={classList([`button`, `button-${button.type || type}`, button.className || null])}
