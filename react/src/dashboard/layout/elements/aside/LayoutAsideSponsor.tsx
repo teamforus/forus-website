@@ -14,6 +14,7 @@ export default function LayoutAsideSponsor({ activeOrganization }: { activeOrgan
                 routeParams={{ organizationId: activeOrganization?.id }}
                 show={hasPermission(activeOrganization, 'manage_employees')}
                 id={'employees'}
+                dusk={'employeesPage'}
             />
             <LayoutAsideNavItem
                 name={'Aanvragers'}

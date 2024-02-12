@@ -15,16 +15,19 @@ export function ModalButton({
     button,
     type,
     text,
+    dusk = null,
     disabled = false,
 }: {
     submit?: boolean;
     button: ModalButton;
     type: string;
     text: string;
+    dusk?: string;
     disabled?: boolean;
 }) {
     return (
         <button
+            data-dusk={dusk}
             type={submit ? 'submit' : 'button'}
             disabled={disabled}
             className={classList([`button`, `button-${button.type || type}`, button.className || null])}
