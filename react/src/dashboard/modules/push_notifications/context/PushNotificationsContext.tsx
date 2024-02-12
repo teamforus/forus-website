@@ -59,7 +59,7 @@ const PushNotificationsProvider = ({ children }: { children: React.ReactElement 
         (notification: PushNotification) => {
             setNotifications((notifications) => {
                 notification.id = uniqueId();
-                notification.timeout = notification.timeout ? notification.timeout : 8000;
+                notification.timeout = notification.timeout ? notification.timeout : 5000;
 
                 notification.timerPop = window.setTimeout(() => popNotification(notification.id), notification.timeout);
                 notification.timerShow = window.setTimeout(() => setVisibility(notification.id, true), 200);

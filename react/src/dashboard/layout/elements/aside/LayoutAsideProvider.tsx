@@ -54,6 +54,7 @@ export default function LayoutAsideProvider({ organization }: { organization: Or
                 routeParams={{ organizationId: organization?.id }}
                 show={hasPermission(organization, 'scan_vouchers')}
                 id={'reservations'}
+                dusk={'reservationsPage'}
             />
             <LayoutAsideNavItem
                 name={'Medewerkers'}
@@ -62,6 +63,7 @@ export default function LayoutAsideProvider({ organization }: { organization: Or
                 routeParams={{ organizationId: organization?.id }}
                 show={hasPermission(organization, 'manage_employees')}
                 id={'employees'}
+                dusk={'employeesPage'}
             />
             <LayoutAsideNavItem
                 name={'Bijbetaal methodes'}

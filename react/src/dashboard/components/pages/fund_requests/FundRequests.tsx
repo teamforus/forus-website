@@ -189,7 +189,7 @@ export default function FundRequests() {
     }
 
     return (
-        <div className="card">
+        <div className="card" data-dusk="fundRequestsPageContent">
             <div className="card-header">
                 <div className="flex-row">
                     <div className="flex flex-grow">

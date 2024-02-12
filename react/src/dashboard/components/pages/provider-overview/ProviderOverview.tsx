@@ -74,7 +74,7 @@ export default function ProviderOverview() {
 
     return (
         <div className="provider-overview" data-dusk="providerOverview">
-            <div className="block block-charts">
+            <div className="block block-charts" data-dusk="fundsTitle">
                 <div className="chart-row">
                     {hasPermission(activeOrganization, ['manage_products']) && (
                         <div className="card">
