@@ -12,15 +12,15 @@ export const LayoutAside = () => {
     return (
         <aside className="app app-sidebar">
             {activeOrganization && envData.client_type == 'sponsor' && (
-                <LayoutAsideSponsor activeOrganization={activeOrganization} />
+                <LayoutAsideSponsor organization={activeOrganization} />
             )}
 
             {activeOrganization && envData.client_type == 'provider' && (
-                <LayoutAsideProvider activeOrganization={activeOrganization} />
+                <LayoutAsideProvider organization={activeOrganization} />
             )}
 
             {activeOrganization && envData.client_type == 'validator' && (
-                <LayoutAsideValidator activeOrganization={activeOrganization} />
+                <LayoutAsideValidator organization={activeOrganization} />
             )}
         </aside>
     );

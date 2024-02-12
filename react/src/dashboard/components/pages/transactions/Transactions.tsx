@@ -309,8 +309,20 @@ export default function Transactions() {
             fetchTransactionBulks(bulkFilter.activeValues).then((res) => setTransactionBulks(res.data));
         } else {
             fetchTransactions(filter.activeValues).then((res) => setTransactions(res.data));
+
+            if (isSponsor) {
+                updateHasPendingBulking();
+            }
         }
-    }, [fetchTransactionBulks, fetchTransactions, bulkFilter.activeValues, filter.activeValues, viewType.key]);
+    }, [
+        isSponsor,
+        fetchTransactionBulks,
+        fetchTransactions,
+        bulkFilter.activeValues,
+        filter.activeValues,
+        viewType.key,
+        updateHasPendingBulking,
+    ]);
 
     useEffect(() => {
         fetchFunds({}).then((funds) => setFunds([{ id: null, name: 'Selecteer fond' }, ...funds]));
@@ -358,7 +370,7 @@ export default function Transactions() {
                                                         className={`label-tab label-tab-sm ${
                                                             viewType.key === viewTypeItem.key ? 'active' : ''
                                                         }`}>
-                                                        {viewType.label}
+                                                        {viewTypeItem.label}
                                                     </div>
                                                 ))}
                                             </div>
@@ -844,29 +856,36 @@ export default function Transactions() {
                     </div>
                 </div>
             )}
-            {isSponsor && pendingBulkingMeta.total && hasPermission(activeOrganization, 'manage_transaction_bulks') && (
-                <div className="card-section" hidden={viewType.key !== 'transactions'}>
-                    <div className="flex flex-vertical">
-                        <div className="card-text">
-                            {t('transactions.labels.bulk_total_amount', {
-                                total: pendingBulkingMeta.total,
-                                total_amount: pendingBulkingMeta.total_amount_locale,
-                            })}
+
+            {isSponsor &&
+                pendingBulkingMeta?.total > 0 &&
+                hasPermission(activeOrganization, 'manage_transaction_bulks') && (
+                    <div className="card-section" hidden={viewType.key !== 'transactions'}>
+                        <div className="flex flex-vertical">
+                            <div className="card-text">
+                                <TranslateHtml
+                                    i18n={'transactions.labels.bulk_total_amount'}
+                                    values={{
+                                        total: pendingBulkingMeta.total,
+                                        total_amount: pendingBulkingMeta.total_amount_locale,
+                                    }}
+                                />
+                            </div>
+                            <button
+                                className="button button-primary"
+                                onClick={() => bulkPendingNow()}
+                                disabled={buildingBulks}>
+                                {buildingBulks ? (
+                                    <em className="mdi mdi-spin mdi-loading icon-start" />
+                                ) : (
+                                    <em className="mdi mdi-cube-send icon-start" />
+                                )}
+                                Maak nu een bulktransactie
+                            </button>
                         </div>
-                        <button
-                            className="button button-primary"
-                            onClick={() => bulkPendingNow()}
-                            disabled={buildingBulks}>
-                            {buildingBulks ? (
-                                <em className="mdi mdi-spin mdi-loading icon-start" />
-                            ) : (
-                                <em className="mdi mdi-cube-send icon-start" />
-                            )}
-                            Maak nu een bulktransactie
-                        </button>
                     </div>
-                </div>
-            )}
+                )}
+
             {viewType.key == 'transactions' && transactions.meta.last_page > 1 && (
                 <div className="card-section">
                     <Paginator meta={transactions.meta} filters={filter.values} updateFilters={filter.update} />

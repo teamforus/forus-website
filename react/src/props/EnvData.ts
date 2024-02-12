@@ -14,6 +14,7 @@ export default interface EnvDataProp {
         ios_iphone_link?: string;
         android_link?: string;
         single_record_validation?: boolean;
+        features_hide?: boolean;
         [key: string]: string | number | boolean;
     };
 }
