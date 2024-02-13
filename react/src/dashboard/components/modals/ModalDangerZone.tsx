@@ -101,7 +101,7 @@ export default function ModalDangerZone({
                     {buttonSubmit && (
                         <ModalButton
                             disabled={confirmation && !confirmed}
-                            button={buttonSubmit}
+                            button={{ ...buttonSubmit, disableOnClick: true }}
                             dusk="btnDangerZoneSubmit"
                             text="Bevestigen"
                             type="danger"

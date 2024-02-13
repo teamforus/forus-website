@@ -106,7 +106,6 @@ export default function PaymentMethods() {
                                 fetchMollieConnection();
                             }, onResponseError);
                         },
-                        disableOnClick: true,
                         text: t('modals.danger_zone.remove_mollie_connection.buttons.confirm'),
                     }}
                 />
