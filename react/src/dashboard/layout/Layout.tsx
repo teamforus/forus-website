@@ -20,7 +20,7 @@ export const Layout = ({ children }: { children: React.ReactElement }) => {
     const activeOrganization = useActiveOrganization();
 
     const isReady = useMemo(() => {
-        return !route.state.protected || (authIdentity && activeOrganization);
+        return !route.state?.protected || (authIdentity && activeOrganization);
     }, [authIdentity, activeOrganization, route.state]);
 
     return (
@@ -28,7 +28,7 @@ export const Layout = ({ children }: { children: React.ReactElement }) => {
             <div
                 className={classList([
                     'app',
-                    route.state?.name == 'sign-in' ? 'landing-root' : '',
+                    route?.state?.name == 'sign-in' ? 'landing-root' : '',
                     [LayoutType.landingClearNew].includes(layout) ? 'signup-layout signup-layout-new' : '',
                 ])}
                 style={{
