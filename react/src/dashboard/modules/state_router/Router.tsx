@@ -3,7 +3,7 @@ import { generatePath, matchRoutes, useLocation, useNavigate } from 'react-route
 import { CurrentRoute, RouteState } from './RouterProps';
 import router from '../../router/routes';
 
-const useCurrentRoute = (routes): CurrentRoute => {
+const useCurrentRoute = (routes: Array<RouteState>): CurrentRoute => {
     const location = useLocation();
     const matchRoute = matchRoutes(
         routes.map((route) => ({
@@ -14,7 +14,7 @@ const useCurrentRoute = (routes): CurrentRoute => {
     );
 
     const match = matchRoute?.find((match) => match);
-    const state = getRoutes().find((route) => route.state.path == match.route.path);
+    const state = getRoutes().find((route) => route.state.path == match?.route?.path);
 
     return { ...match, state: state?.state };
 };
