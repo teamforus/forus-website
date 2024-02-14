@@ -26,9 +26,7 @@ export class FileService<T = Employee> {
         data: Blob | ArrayBuffer | string,
         contentType = 'text/csv;charset=utf-8;',
     ) => {
-        const blob = data instanceof Blob ? data : new Blob([data], { type: contentType });
-
-        saveAs(blob, name);
+        saveAs(data instanceof Blob ? data : new Blob([data], { type: contentType }), name);
     };
 
     public base64ToBlob = (b64Data: string, contentType = '', sliceSize = 512) => {
@@ -49,8 +47,12 @@ export class FileService<T = Employee> {
         return new Blob(byteArrays, { type: contentType });
     };
 
-    public download(file: File): Promise<ResponseSimple<Blob>> {
-        return this.apiRequest.get(`${this.prefix}/${file.uid}/download`, {}, {}, { responseType: 'blob' });
+    public download(file: File): Promise<ResponseSimple<ArrayBuffer>> {
+        return this.apiRequest.get(`${this.prefix}/${file.uid}/download`, {}, { responseType: 'arraybuffer' });
+    }
+
+    public downloadBlob(file: File): Promise<ResponseSimple<Blob>> {
+        return this.apiRequest.get(`${this.prefix}/${file.uid}/download`, {}, { responseType: 'blob' });
     }
 
     public downloadUrl(file: File) {
@@ -62,9 +64,7 @@ export class FileService<T = Employee> {
 
         formData.append('file', file);
 
-        return this.apiRequest.post(this.prefix, formData, {
-            'Content-Type': undefined,
-        });
+        return this.apiRequest.post(this.prefix, formData, { headers: { 'Content-Type': undefined } });
     }
 
     public storeValidate(file: Blob) {
@@ -72,9 +72,7 @@ export class FileService<T = Employee> {
 
         formData.append('file', file);
 
-        return this.apiRequest.post(`${this.prefix}/validate`, formData, {
-            'Content-Type': undefined,
-        });
+        return this.apiRequest.post(`${this.prefix}/validate`, formData, { headers: { 'Content-Type': undefined } });
     }
 
     public storeAll(files: Array<Blob>) {
@@ -107,9 +105,9 @@ export class FileService<T = Employee> {
 
         append.forEach((item) => formData.append(item[0], item[1]));
 
-        return this.apiRequest.post(this.prefix, formData, {}, (cfg) => ({
+        return this.apiRequest.post(this.prefix, formData, (cfg) => ({
             ...cfg,
-            headers: { ...cfg?.['headers'], ...{ 'Content-Type': undefined } },
+            headers: { ...cfg?.headers, 'Content-Type': undefined },
             onProgress: config?.onProgress,
             onXhr: config?.onXhr,
             onAbort: config?.onAbort,

@@ -1,4 +1,4 @@
-import ApiResponse, { ApiResponseSingle } from '../props/ApiResponses';
+import ApiResponse, { ApiResponseSingle, ResponseSimple } from '../props/ApiResponses';
 import { useState } from 'react';
 import ApiRequestService from './ApiRequestService';
 import TransactionBulk from '../props/models/TransactionBulk';
@@ -57,16 +57,10 @@ export class TransactionBulkService<T = TransactionBulk> {
     }
 
     // export bulk details
-    public export(organization_id: number, filters = {}) {
-        return this.apiRequest.get(
-            `${this.prefix}/${organization_id}/sponsor/transaction-bulks/export`,
-            filters,
-            {},
-            {
-                responseType: 'arraybuffer',
-                cache: false,
-            },
-        );
+    public export(organization_id: number, filters = {}): Promise<ResponseSimple<ArrayBuffer>> {
+        return this.apiRequest.get(`${this.prefix}/${organization_id}/sponsor/transaction-bulks/export`, filters, {
+            responseType: 'arraybuffer',
+        });
     }
 
     // get export fields
@@ -79,8 +73,7 @@ export class TransactionBulkService<T = TransactionBulk> {
         return this.apiRequest.get(
             `${this.prefix}/${organization_id}/sponsor/transaction-bulks/${bulk_id}/export-sepa`,
             filters,
-            {},
-            { responseType: 'arraybuffer', cache: false },
+            { responseType: 'arraybuffer' },
         );
     }
 }

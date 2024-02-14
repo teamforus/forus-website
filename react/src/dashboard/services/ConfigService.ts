@@ -176,7 +176,7 @@ export class ConfigService<T = AppConfigProp> {
     public prefix = '/platform';
 
     public get(type: string): Promise<ResponseProp<T>> {
-        return this.apiRequest.get(`${this.prefix}/config/${type}`) as Promise<ResponseProp<T>>;
+        return this.apiRequest.get(`${this.prefix}/config/${type}`);
     }
 }
 

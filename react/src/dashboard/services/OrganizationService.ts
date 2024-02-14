@@ -77,10 +77,8 @@ export class OrganizationService<T = Organization> {
         };
     }
 
-    public updateReservationFields(id: number, data = {}) {
-        return this.apiRequest.patch(`${this.prefix}/${id}/update-reservation-fields`, data) as Promise<
-            ApiResponseSingle<T>
-        >;
+    public updateReservationFields(id: number, data = {}): Promise<ApiResponseSingle<T>> {
+        return this.apiRequest.patch(`${this.prefix}/${id}/update-reservation-fields`, data);
     }
 
     public updateAcceptReservations(id: number, auto_accept: boolean): Promise<ApiResponseSingle<T>> {
@@ -104,7 +102,7 @@ export class OrganizationService<T = Organization> {
             ...data,
             is_employee: 0,
             is_validator: 1,
-        }) as Promise<ApiResponse<T>>;
+        });
     }
 
     public readListValidators(id: number, data: object = {}) {
@@ -126,11 +124,11 @@ export class OrganizationService<T = Organization> {
     }
 
     public listProviders(id: number, data = {}): Promise<ApiResponse<T>> {
-        return this.apiRequest.get(`${this.prefix}/${id}/providers`, data) as Promise<ApiResponse<T>>;
+        return this.apiRequest.get(`${this.prefix}/${id}/providers`, data);
     }
 
     public listProvidersExport(id: number, data = {}): Promise<ApiResponse<T>> {
-        return this.apiRequest.get(`${this.prefix}/${id}/providers/export`, data) as Promise<ApiResponse<T>>;
+        return this.apiRequest.get(`${this.prefix}/${id}/providers/export`, data);
     }
 
     public listExternalFunds(id: number, data: object = {}): Promise<ApiResponse<ExternalFund>> {
@@ -138,45 +136,37 @@ export class OrganizationService<T = Organization> {
     }
 
     public externalFundUpdate(id: number, fund_id: number, data = {}): Promise<ApiResponse<T>> {
-        return this.apiRequest.patch(`${this.prefix}/${id}/external-funds/${fund_id}`, data) as Promise<ApiResponse<T>>;
+        return this.apiRequest.patch(`${this.prefix}/${id}/external-funds/${fund_id}`, data);
     }
 
     public providerOrganizations(id: number, data = {}): Promise<ApiResponse<T>> {
-        return this.apiRequest.get(`${this.prefix}/${id}/sponsor/providers`, data) as Promise<ApiResponse<T>>;
+        return this.apiRequest.get(`${this.prefix}/${id}/sponsor/providers`, data);
     }
 
     public providerOrganization(id: number, provider_organization_id: number, data = {}): Promise<ApiResponse<T>> {
-        return this.apiRequest.get(
-            `${this.prefix}/${id}/sponsor/providers/${provider_organization_id}`,
-            data,
-        ) as Promise<ApiResponse<T>>;
+        return this.apiRequest.get(`${this.prefix}/${id}/sponsor/providers/${provider_organization_id}`, data);
     }
 
     public providerOrganizationsExport(id: number, data = {}): Promise<ApiResponse<T>> {
-        return this.apiRequest.get(`${this.prefix}/${id}/sponsor/providers/export`, data) as Promise<ApiResponse<T>>;
+        return this.apiRequest.get(`${this.prefix}/${id}/sponsor/providers/export`, data);
     }
 
     public financeProviders(id: number, data = {}): Promise<ApiResponse<T>> {
-        return this.apiRequest.get(`${this.prefix}/${id}/sponsor/providers/finances`, data) as Promise<ApiResponse<T>>;
+        return this.apiRequest.get(`${this.prefix}/${id}/sponsor/providers/finances`, data);
     }
 
     public financeProvidersExport(id: number, data = {}): Promise<ApiResponse<T>> {
-        return this.apiRequest.get(`${this.prefix}/${id}/sponsor/providers/finances-export`, data) as Promise<
-            ApiResponse<T>
-        >;
+        return this.apiRequest.get(`${this.prefix}/${id}/sponsor/providers/finances-export`, data);
     }
 
     public sponsorProducts(id: number, provider_organization_id: number, data = {}): Promise<ApiResponse<T>> {
-        return this.apiRequest.get(
-            `${this.prefix}/${id}/sponsor/providers/${provider_organization_id}/products`,
-            data,
-        ) as Promise<ApiResponse<T>>;
+        return this.apiRequest.get(`${this.prefix}/${id}/sponsor/providers/${provider_organization_id}/products`, data);
     }
 
     public sponsorProduct(id: number, provider_organization_id: number, product_id: number): Promise<ApiResponse<T>> {
         return this.apiRequest.get(
             `${this.prefix}/${id}/sponsor/providers/${provider_organization_id}/products/${product_id}`,
-        ) as Promise<ApiResponse<T>>;
+        );
     }
 
     public sponsorProductUpdate(
@@ -198,7 +188,7 @@ export class OrganizationService<T = Organization> {
     ): Promise<ApiResponse<T>> {
         return this.apiRequest.delete(
             `${this.prefix}/${id}/sponsor/providers/${provider_organization_id}/products/${product_id}`,
-        ) as Promise<ApiResponse<T>>;
+        );
     }
 
     public sponsorStoreProduct(

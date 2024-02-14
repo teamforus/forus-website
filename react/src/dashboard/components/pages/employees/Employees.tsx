@@ -107,19 +107,9 @@ export default function Employees() {
             employeeService.export(activeOrganization.id, { ...filter.activeValues, export_type: exportType }).then(
                 (res) => {
                     const dateTime = format(new Date(), 'yyyy-MM-dd HH:mm:ss');
-                    const headers = res.response.getAllResponseHeaders();
-                    const headersList = headers.trim().split(/[\r\n]+/);
-
-                    const headerMap = headersList?.reduce((headerMap: object, line: string) => {
-                        const parts = line.split(': ');
-                        const header = parts.shift();
-
-                        return { ...headerMap, [header]: parts.join(': ') };
-                    }, {});
-
                     const fileName = `${envData.client_type}_${activeOrganization.name}_employees_${dateTime}.${exportType}`;
 
-                    fileService.downloadFile(fileName, res.data, headerMap['content-type']);
+                    fileService.downloadFile(fileName, res.data, res.headers['content-type']);
                 },
                 (res: ResponseError) => {
                     pushDanger('Mislukt!', res.data.message);

@@ -1,4 +1,4 @@
-import ApiResponse, { ApiResponseSingle } from '../props/ApiResponses';
+import ApiResponse, { ApiResponseSingle, ResponseSimple } from '../props/ApiResponses';
 import { useState } from 'react';
 import ApiRequestService from './ApiRequestService';
 import Transaction from '../props/models/Transaction';
@@ -59,17 +59,10 @@ export class TransactionService<T = Transaction> {
         return Papa.unparse([headers, values]);
     }
 
-    public export(
-        type: string,
-        organization_id: number,
-        filters = {},
-    ): Promise<{
-        data: ArrayBuffer;
-        response: XMLHttpRequest;
-    }> {
-        const cfg = { responseType: 'arraybuffer', cache: false };
-
-        return this.apiRequest.get(`${this.prefix}/${organization_id}/${type}/transactions/export`, filters, {}, cfg);
+    public export(type: string, organization_id: number, filters = {}): Promise<ResponseSimple<ArrayBuffer>> {
+        return this.apiRequest.get(`${this.prefix}/${organization_id}/${type}/transactions/export`, filters, {
+            responseType: 'arraybuffer',
+        });
     }
 
     public exportFields(type: string, organization_id: number): Promise<ApiResponseSingle<Array<ExportFieldProp>>> {

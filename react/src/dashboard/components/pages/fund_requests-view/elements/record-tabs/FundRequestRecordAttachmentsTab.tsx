@@ -26,11 +26,10 @@ export default function FundRequestRecordAttachmentsTab({
             e?.preventDefault();
             e?.stopPropagation();
 
-            fileService.download(file).then((res) => {
-                res.response.arrayBuffer().then((fileData) => {
-                    fileService.downloadFile(file.original_name, fileData);
-                });
-            }, console.error);
+            fileService
+                .download(file)
+                .then((res) => fileService.downloadFile(file.original_name, res.data, res.headers['content-type']))
+                .catch(console.error);
         },
         [fileService],
     );
@@ -41,7 +40,7 @@ export default function FundRequestRecordAttachmentsTab({
             e?.stopPropagation();
 
             if (file.ext == 'pdf') {
-                fileService.download(file).then(
+                fileService.downloadBlob(file).then(
                     (res) => openModal((modal) => <ModalPdfPreview modal={modal} rawPdfFile={res.data} />),
                     (res) => pushDanger('Mislukt!', res.data?.message),
                 );
