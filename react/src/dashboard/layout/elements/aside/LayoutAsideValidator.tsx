@@ -15,7 +15,11 @@ export default function LayoutAsideValidator({ organization }: { organization: O
                 icon={'clock'}
                 route={'fund-requests'}
                 routeParams={{ organizationId: organization?.id }}
-                show={appConfigs && appConfigs?.organizations?.funds?.fund_requests}
+                show={
+                    appConfigs &&
+                    appConfigs?.organizations?.funds?.fund_requests &&
+                    hasPermission(organization, ['validate_records', 'manage_validators'], false)
+                }
                 id={'fund_requests'}
             />
             <LayoutAsideNavItem
@@ -49,10 +53,7 @@ export default function LayoutAsideValidator({ organization }: { organization: O
                 icon={'organization-security'}
                 route={'organization-security'}
                 routeParams={{ organizationId: organization?.id }}
-                show={
-                    organization.allow_2fa_restrictions &&
-                    hasPermission(organization, 'manage_organization')
-                }
+                show={organization.allow_2fa_restrictions && hasPermission(organization, 'manage_organization')}
                 id={'requesters'}
             />
         </div>

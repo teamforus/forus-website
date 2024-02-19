@@ -138,13 +138,10 @@ export default function FundRequests() {
             fundRequestService.export(activeOrganization.id, { ...filter.activeValues, export_type: exportType }).then(
                 (res) => {
                     const dateTime = format(new Date(), 'yyyy-MM-dd HH:mm:ss');
+                    const fileType = res.headers['content-type'] + ';charset=utf-8;';
+                    const fileName = `${envData.client_type}_${activeOrganization.name}_fund-requests_${dateTime}.${exportType}`;
 
-                    res.response.arrayBuffer().then((fileData) => {
-                        const fileType = res.response.headers.get('Content-Type') + ';charset=utf-8;';
-                        const fileName = `${envData.client_type}_${activeOrganization.name}_fund-requests_${dateTime}.${exportType}`;
-
-                        fileService.downloadFile(fileName, fileData, fileType);
-                    });
+                    fileService.downloadFile(fileName, res.data, fileType);
                 },
                 (res: ResponseError) => {
                     pushDanger('Mislukt!', res.data.message);

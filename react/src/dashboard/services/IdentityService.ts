@@ -60,7 +60,7 @@ export default class IdentityService<T = Identity> {
         return this.apiRequest.get<ResponseSimple<{ message: 'pending' | 'active' | 'invalid' }>>(
             `${this.prefix}/proxy/check-token`,
             {},
-            { 'Access-Token': access_token },
+            { headers: { 'Access-Token': access_token } },
         );
     }
 

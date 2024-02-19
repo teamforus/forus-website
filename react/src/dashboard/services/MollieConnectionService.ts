@@ -67,10 +67,7 @@ export class MollieConnectionService<T = MollieConnection> {
      * Update profile by id
      */
     public updateProfile(organizationId: number, id: number, data: object): Promise<ApiResponseSingle<T>> {
-        return this.apiRequest.patch(
-            `${this.prefix}/${organizationId}/mollie-connection/profiles/${id}`,
-            data,
-        ) as Promise<ApiResponseSingle<T>>;
+        return this.apiRequest.patch(`${this.prefix}/${organizationId}/mollie-connection/profiles/${id}`, data);
     }
 }
 export default function useMollieConnectionService(): MollieConnectionService {

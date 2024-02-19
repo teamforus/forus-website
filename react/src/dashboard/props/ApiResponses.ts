@@ -14,9 +14,14 @@ export type ApiPaginationMetaProp = {
     [key: string]: string | number | boolean | object | Array<unknown>;
 };
 
+export type ApiResponseHeaders = {
+    [key: string]: string;
+};
+
 interface BaseResponse {
     status: number;
-    response: Response;
+    headers: ApiResponseHeaders;
+    response: XMLHttpRequest;
 }
 
 export interface PaginationData<T> {
@@ -51,5 +56,16 @@ export interface ResponseErrorThrottled<T = { meta: { title: string; message: st
 export interface ResponseSimple<T> extends BaseResponse {
     data: T;
 }
+
+export type RequestConfigData = {
+    responseType?: XMLHttpRequestResponseType;
+    onProgress?: (e: { progress: number }) => void;
+    headers?: { [key: string]: string };
+    onXhr?: (xhr: XMLHttpRequest) => void;
+    body?: string | FormData;
+    onAbort?: ((this: XMLHttpRequest, ev: ProgressEvent) => unknown) | null;
+};
+
+export type RequestConfig = ((config: RequestConfigData) => RequestConfigData) | RequestConfigData;
 
 export default ApiResponse;
