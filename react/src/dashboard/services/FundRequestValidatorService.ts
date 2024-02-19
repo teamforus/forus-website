@@ -24,13 +24,10 @@ export class FundRequestValidatorService<T = FundRequest> {
         return this.apiRequest.get(`${this.prefix}/${organizationId}/fund-requests`, data);
     }
 
-    public export(organizationId: number, data = {}): Promise<ResponseSimple<null>> {
-        return this.apiRequest.get(
-            `${this.prefix}/${organizationId}/fund-requests/export`,
-            data,
-            {},
-            { responseType: 'arraybuffer' },
-        );
+    public export(organizationId: number, data: object = {}): Promise<ResponseSimple<ArrayBuffer>> {
+        return this.apiRequest.get(`${this.prefix}/${organizationId}/fund-requests/export`, data, {
+            responseType: 'arraybuffer',
+        });
     }
 
     public read(organizationId: number, id: number): Promise<ApiResponseSingle<T>> {

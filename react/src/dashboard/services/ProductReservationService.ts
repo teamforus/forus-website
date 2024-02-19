@@ -2,7 +2,7 @@ import { useState } from 'react';
 import ApiRequestService from './ApiRequestService';
 import Papa from 'papaparse';
 import Reservation from '../props/models/Reservation';
-import { ApiResponse, ApiResponseSingle } from '../props/ApiResponses';
+import { ApiResponse, ApiResponseSingle, ResponseSimple } from '../props/ApiResponses';
 import { ExportFieldProp } from '../components/modals/ModalExportDataSelect';
 
 export class ProductReservationService<T = Reservation> {
@@ -50,15 +50,10 @@ export class ProductReservationService<T = Reservation> {
         return this.apiRequest.get(`${this.prefix}/${organization_id}/product-reservations/export-fields`);
     }
 
-    public export = (organization_id: number, data: object = {}) => {
-        const callback = (_cfg: object) => {
-            _cfg['responseType'] = 'arraybuffer';
-            _cfg['cache'] = false;
-
-            return _cfg;
-        };
-
-        return this.apiRequest.get(`${this.prefix}/${organization_id}/product-reservations/export`, data, {}, callback);
+    public export = (organization_id: number, data: object = {}): Promise<ResponseSimple<ArrayBuffer>> => {
+        return this.apiRequest.get(`${this.prefix}/${organization_id}/product-reservations/export`, data, {
+            responseType: 'arraybuffer',
+        });
     };
 
     public archive(organization_id: number, id: number) {

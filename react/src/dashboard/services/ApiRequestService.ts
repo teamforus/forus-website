@@ -1,5 +1,6 @@
 import events from '../helpers/events';
 import EnvDataProp from '../../props/EnvData';
+import { RequestConfig } from '../props/ApiResponses';
 
 export default class ApiRequestService<T = null> {
     protected static host = '';
@@ -45,16 +46,10 @@ export default class ApiRequestService<T = null> {
      *
      * @param endpoint
      * @param data
-     * @param headers
-     * @param callback
+     * @param config
      */
-    public get<G = T>(
-        endpoint: string,
-        data: object = {},
-        headers: object = {},
-        callback: ((config: object) => object) | object = {},
-    ): Promise<G> {
-        return this.ajax<G>('GET', endpoint, data, headers, callback);
+    public get<G = T>(endpoint: string, data: object = {}, config: RequestConfig = {}): Promise<G> {
+        return this.ajax<G>('GET', endpoint, data, config);
     }
 
     /**
@@ -62,16 +57,10 @@ export default class ApiRequestService<T = null> {
      *
      * @param endpoint
      * @param data
-     * @param headers
-     * @param callback
+     * @param config
      */
-    public post<P = T>(
-        endpoint: string,
-        data: object = {},
-        headers: object = {},
-        callback: ((config: object) => object) | object = {},
-    ): Promise<P> {
-        return this.ajax<P>('POST', endpoint, data, headers, callback);
+    public post<P = T>(endpoint: string, data: object = {}, config: RequestConfig = {}): Promise<P> {
+        return this.ajax<P>('POST', endpoint, data, config);
     }
 
     /**
@@ -79,16 +68,10 @@ export default class ApiRequestService<T = null> {
      *
      * @param endpoint
      * @param data
-     * @param headers
-     * @param callback
+     * @param config
      */
-    public patch<P = T>(
-        endpoint: string,
-        data: object = {},
-        headers: object = {},
-        callback: ((config: object) => object) | object = {},
-    ): Promise<P> {
-        return this.ajax<P>('PATCH', endpoint, data, headers, callback);
+    public patch<P = T>(endpoint: string, data: object = {}, config: RequestConfig = {}): Promise<P> {
+        return this.ajax<P>('PATCH', endpoint, data, config);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -97,16 +80,10 @@ export default class ApiRequestService<T = null> {
      *
      * @param endpoint
      * @param data
-     * @param headers
-     * @param callback
+     * @param config
      */
-    public put<P = T>(
-        endpoint: string,
-        data: object = {},
-        headers: object = {},
-        callback: ((config: object) => object) | object = {},
-    ): Promise<P> {
-        return this.ajax<P>('PUT', endpoint, data, headers, callback);
+    public put<P = T>(endpoint: string, data: object = {}, config: RequestConfig = {}): Promise<P> {
+        return this.ajax<P>('PUT', endpoint, data, config);
     }
 
     /**
@@ -114,16 +91,10 @@ export default class ApiRequestService<T = null> {
      *
      * @param endpoint
      * @param data
-     * @param headers
-     * @param callback
+     * @param config
      */
-    public delete<D = T>(
-        endpoint: string,
-        data: object = {},
-        headers: object = {},
-        callback: ((config: object) => object) | object = {},
-    ): Promise<D> {
-        return this.ajax<D>('DELETE', endpoint, data, headers, callback);
+    public delete<D = T>(endpoint: string, data: object = {}, config: RequestConfig = {}): Promise<D> {
+        return this.ajax<D>('DELETE', endpoint, data, config);
     }
 
     /**
@@ -132,23 +103,23 @@ export default class ApiRequestService<T = null> {
      * @param method
      * @param endpoint
      * @param data
-     * @param headers
-     * @param callback
+     * @param config
      */
-    public ajax<A>(
-        method: string,
-        endpoint: string,
-        data: object = {},
-        headers: object = {},
-        callback: ((config: object) => object) | object = {},
-    ): Promise<A> {
+    public ajax<A>(method: string, endpoint: string, data: object = {}, config: RequestConfig = {}): Promise<A> {
         return new Promise((resolve, reject) => {
             let getQueryString = '';
-            let params = { method, headers: { ...this.makeHeaders(), ...headers } };
 
-            Object.keys(params.headers).forEach((key: string) => {
-                if (params.headers[key] === undefined) {
-                    delete params.headers[key];
+            const xhr = new XMLHttpRequest();
+            const headers = this.makeHeaders();
+
+            const cfg =
+                typeof config === 'function'
+                    ? config({ headers })
+                    : { ...config, headers: { ...headers, ...(config?.headers || {}) } };
+
+            Object.keys(cfg.headers).forEach((key: string) => {
+                if (cfg.headers[key] === undefined) {
+                    delete cfg.headers[key];
                 }
             });
 
@@ -160,48 +131,55 @@ export default class ApiRequestService<T = null> {
                 getQueryString = this.dataToGetQueryString(data);
             } else {
                 if (data instanceof FormData) {
-                    delete params.headers['Content-Type'];
-                    params = { ...params, ...{ body: data } };
+                    delete cfg.headers['Content-Type'];
+                    cfg.body = data;
                 } else {
-                    params = { ...params, ...{ body: JSON.stringify(data) } };
+                    cfg.body = JSON.stringify(data);
                 }
             }
 
-            const config = typeof callback === 'function' ? callback(params) : { ...params, ...callback };
-            const xhr = new XMLHttpRequest();
-
             xhr.open(method, this.endpointToUrl(endpoint, getQueryString), true);
 
-            Object.keys(config.headers).forEach((key: string) => {
-                xhr.setRequestHeader(key, config.headers[key]);
+            Object.keys(cfg.headers).forEach((key: string) => {
+                xhr.setRequestHeader(key, cfg.headers[key]);
             });
 
-            if (config?.onProgress) {
+            if (cfg?.onProgress) {
                 xhr.upload.onprogress = function (event) {
                     if (event.lengthComputable) {
-                        config?.onProgress({ progress: (event.loaded / event.total) * 100 });
+                        cfg?.onProgress({ progress: (event.loaded / event.total) * 100 });
                     }
                 };
             }
 
-            if (config?.onXhr) {
-                xhr.onabort = config?.onAbort;
+            if (cfg?.onAbort) {
+                xhr.onabort = cfg?.onAbort;
             }
 
-            if (config?.responseType) {
-                xhr.responseType = config?.responseType;
+            if (cfg?.responseType) {
+                xhr.responseType = cfg?.responseType;
             }
 
-            if (config?.onXhr) {
-                config.onXhr(xhr);
+            if (cfg?.onXhr) {
+                cfg.onXhr(xhr);
             }
 
             xhr.onload = async () => {
                 const isText = !xhr.responseType || xhr.responseType == 'text';
+                const headers = xhr.getAllResponseHeaders();
+                const headersList = headers.trim().split(/[\r\n]+/);
+
+                const headerMap = headersList?.reduce((headerMap: object, line: string) => {
+                    const parts = line.split(': ');
+                    const header = parts.shift();
+
+                    return { ...headerMap, [header]: parts.join(': ') };
+                }, {});
 
                 const resData = {
                     data: isText ? this.parseJson(xhr.responseText) : xhr.response,
                     status: xhr.status,
+                    headers: headerMap,
                     response: xhr,
                 };
 
@@ -221,7 +199,7 @@ export default class ApiRequestService<T = null> {
             if (method === 'GET') {
                 xhr.send();
             } else {
-                xhr.send(config.body);
+                xhr.send(cfg.body);
             }
         });
     }

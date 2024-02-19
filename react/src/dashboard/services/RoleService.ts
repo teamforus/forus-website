@@ -20,7 +20,7 @@ export class RoleService<T = Role> {
      * Fetch list
      */
     public list(data: object = {}): Promise<ApiResponse<T>> {
-        return this.apiRequest.get(`${this.prefix}`, data) as Promise<ApiResponse<T>>;
+        return this.apiRequest.get(`${this.prefix}`, data);
     }
 }
 

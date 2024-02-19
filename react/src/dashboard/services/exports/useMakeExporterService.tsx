@@ -5,6 +5,7 @@ import { useFileService } from '../FileService';
 import usePushSuccess from '../../hooks/usePushSuccess';
 import useSetProgress from '../../hooks/useSetProgress';
 import useEnvData from '../../hooks/useEnvData';
+import { ResponseSimple } from '../../props/ApiResponses';
 
 export default function useMakeExporterService() {
     const fileService = useFileService();
@@ -40,17 +41,7 @@ export default function useMakeExporterService() {
     );
 
     const saveExportedData = useCallback(
-        (data, organization_id, res) => {
-            const headers = res.response.getAllResponseHeaders();
-            const headersList = headers.trim().split(/[\r\n]+/);
-
-            const headerMap = headersList?.reduce((headerMap: object, line: string) => {
-                const parts = line.split(': ');
-                const header = parts.shift();
-
-                return { ...headerMap, [header]: parts.join(': ') };
-            }, {});
-
+        (data: { data_format: string; fields: string }, organization_id: number, res: ResponseSimple<ArrayBuffer>) => {
             pushSuccess('Gelukt!', 'The downloading should start shortly.');
 
             const fileName = [
@@ -59,7 +50,7 @@ export default function useMakeExporterService() {
                 format(new Date(), 'yyyy-MM-dd HH:mm:ss') + '.' + data.data_format,
             ].join('_');
 
-            fileService.downloadFile(fileName, res.data, headerMap['content-type']);
+            fileService.downloadFile(fileName, res.data, res.headers['content-type']);
             setProgress(100);
         },
         [envData.client_type, fileService, pushSuccess, setProgress],
