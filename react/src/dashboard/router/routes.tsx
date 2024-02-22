@@ -43,6 +43,7 @@ import PaymentMethods from '../components/pages/payment-methods/PaymentMethods';
 import MolliePrivacy from '../components/pages/mollie-privacy/MolliePrivacy';
 import CsvValidationsRedirect from '../components/pages/csv_validations/CsvValidationsRedirect';
 import WIP from '../components/pages_system/WIP';
+import TransactionBulksView from '../components/pages/transaction-bulks-view/TransactionBulksView';
 
 const router = new RouterBuilder();
 
@@ -210,7 +211,7 @@ router.state('transactions', <Transactions />, {
     path: `/organizations/:organizationId/transactions`,
 });
 
-router.state('transaction-bulk', <WIP />, {
+router.state('transaction-bulk', <TransactionBulksView />, {
     path: `/organizations/:organizationId/transaction-bulks/:id`,
 });
 

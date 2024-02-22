@@ -33,6 +33,7 @@ import TranslateHtml from '../../elements/translate-html/TranslateHtml';
 import { hasPermission } from '../../../helpers/utils';
 import useTransactionBulkExportService from '../../../services/exports/useTransactionBulkExportService';
 import { dateFormat, dateParse } from '../../../helpers/dates';
+import ModalVoucherTransactionsUpload from '../../modals/ModalVoucherTransactionsUpload';
 
 export default function Transactions() {
     const { t } = useTranslation();
@@ -203,13 +204,16 @@ export default function Transactions() {
     }, [fetchTransactions, filter.activeValues]);
 
     const uploadTransactions = useCallback(() => {
-        /*openModal((modal) => (
-            /*'voucherTransactionsUpload', {
-            organization: $ctrl.organization,
-            onCreated: () => $ctrl.onPageChange(),
-        }*/
-        // return <></>
-    }, []);
+        openModal((modal) => (
+            <ModalVoucherTransactionsUpload
+                modal={modal}
+                organization={activeOrganization}
+                onCreated={() => {
+                    fetchTransactions(filter.activeValues).then((res) => setTransactions(res.data));
+                }}
+            />
+        ));
+    }, [activeOrganization, fetchTransactions, filter.activeValues, openModal]);
 
     const confirmDangerAction = useCallback(
         (title, description_text, cancelButton = 'Annuleren', confirmButton = 'Bevestigen') => {
