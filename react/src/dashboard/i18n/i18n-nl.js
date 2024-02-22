@@ -792,7 +792,7 @@ module.exports = {
             stock_amount: "Nog te koop",
             stock_unlimited: "Onbeperkt aanbod",
             category: "Categorie",
-            expire: "Vervaldatum van aanbod",
+            expire: "Vervaldatum van aanbod (t/m)",
             available_offers: "Resterend aanbod",
             unlimited: "Onbeperkt",
             alternative_text: "Alt-tekst",
