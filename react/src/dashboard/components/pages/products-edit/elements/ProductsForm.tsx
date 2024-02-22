@@ -832,7 +832,7 @@ export default function ProductsForm({
                                         </div>
                                         <Tooltip
                                             text={
-                                                'De uiterlijke datum tot waneer uw aanbieding loopt. Aanbieding wordt na deze datum verwijderd uit de webshop en kan niet meer worden opgehaald.'
+                                                'De uiterlijke datum tot en met wanneer uw aanbieding loopt. Aanbieding wordt na deze datum verwijderd uit de webshop en kan niet meer worden opgehaald.'
                                             }
                                         />
                                     </div>
