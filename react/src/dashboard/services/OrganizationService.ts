@@ -5,6 +5,7 @@ import Organization from '../props/models/Organization';
 import { hasPermission } from '../helpers/utils';
 import ExternalFund from '../props/models/ExternalFund';
 import Product from '../props/models/Product';
+import OrganizationFeatureStatuses from "../props/models/OrganizationFeatureStatuses";
 
 export class OrganizationService<T = Organization> {
     /**
@@ -200,6 +201,10 @@ export class OrganizationService<T = Organization> {
             `${this.prefix}/${id}/sponsor/providers/${provider_organization_id}/products`,
             data,
         );
+    }
+
+    public getFeatures(id: number): Promise<ApiResponseSingle<OrganizationFeatureStatuses>> {
+        return this.apiRequest.get(`${this.prefix}/${id}/features`);
     }
 
     public getRoutePermissionsMap(type = 'sponsor') {

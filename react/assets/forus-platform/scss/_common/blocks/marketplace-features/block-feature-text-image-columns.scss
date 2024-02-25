@@ -68,6 +68,12 @@
         }
     }
 
+    &.block-feature-text-image-columns-light {
+        .block-feature-text-image-columns-description {
+            background: #315EFD;
+        }
+    }
+
     &:last-child {
         margin-bottom: 0;
     }
