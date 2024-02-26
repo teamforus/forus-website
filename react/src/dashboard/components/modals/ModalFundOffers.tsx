@@ -12,6 +12,7 @@ import useFilter from '../../hooks/useFilter';
 import Paginator from '../../modules/paginator/components/Paginator';
 import { currencyFormat, strLimit } from '../../helpers/string';
 import StateNavLink from '../../modules/state_router/StateNavLink';
+import usePaginatorService from '../../modules/paginator/services/usePaginatorService';
 
 type LocalProduct = Product & {
     allowed: boolean;
@@ -35,13 +36,15 @@ export default function ModalFundOffers({
 }) {
     const { t } = useTranslation();
     const productService = useProductService();
+    const paginatorService = usePaginatorService();
     const providerFundService = useProviderFundService();
 
     const [offers, setOffers] = useState<PaginationData<Product>>(null);
+    const [paginatorKey] = useState('modal_fund_offers');
     const [enabledProducts, setEnabledProducts] = useState<number[]>([]);
 
     const filter = useFilter({
-        per_page: 10,
+        per_page: paginatorService.getPerPage(paginatorKey),
     });
 
     const mapOffersAllowedProperty = useCallback(
@@ -159,6 +162,7 @@ export default function ModalFundOffers({
                                     </tbody>
                                 </table>
                             </div>
+
                             {!offers && (
                                 <div className={'card'}>
                                     <div className="card-section">
@@ -172,13 +176,14 @@ export default function ModalFundOffers({
                     </div>
                 </div>
                 <div className="modal-footer">
-                    <button className="button button-default button-close" onClick={modal.close}>
-                        {t('modal_funds_add.buttons.close')}
-                    </button>
-                    {offers?.meta.last_page > 1 && (
-                        <div className="pagination-offers">
-                            <Paginator meta={offers.meta} filters={filter.values} updateFilters={filter.update} />
-                        </div>
+                    {offers?.meta && (
+                        <Paginator
+                            className={'flex-grow'}
+                            meta={offers.meta}
+                            filters={filter.values}
+                            updateFilters={filter.update}
+                            perPageKey={paginatorKey}
+                        />
                     )}
                 </div>
             </div>

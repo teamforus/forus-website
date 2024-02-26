@@ -8,18 +8,20 @@ import useFilter from '../../../hooks/useFilter';
 import EmptyCard from '../../elements/empty-card/EmptyCard';
 import useSetProgress from '../../../hooks/useSetProgress';
 import useActiveOrganization from '../../../hooks/useActiveOrganization';
+import usePaginatorService from '../../../modules/paginator/services/usePaginatorService';
 
 export default function OrganizationsNotifications() {
     const setProgress = useSetProgress();
+    const paginatorService = usePaginatorService();
     const activeOrganization = useActiveOrganization();
     const notificationsService = useNotificationService();
 
+    const [paginatorKey] = useState('organizations_notifications');
     const [notifications, setNotifications] = useState<PaginationData<Notification>>(null);
     const [timeoutThreshold] = useState(2500);
 
     const filter = useFilter({
-        per_page: 10,
-        organization_id: activeOrganization?.id,
+        per_page: paginatorService.getPerPage(paginatorKey),
     });
 
     const fetchNotifications = useCallback(
@@ -27,14 +29,18 @@ export default function OrganizationsNotifications() {
             setProgress(0);
 
             notificationsService
-                .list({ ...filter.activeValues, mark_read: mark_read ? 1 : 0 })
+                .list({
+                    ...filter.activeValues,
+                    organization_id: activeOrganization?.id,
+                    mark_read: mark_read ? 1 : 0,
+                })
                 .then((res) => {
                     res.data.data = res.data.data.map((item) => ({ ...item, seen: item.seen || mark_read }));
                     setNotifications(res.data);
                 })
                 .finally(() => setProgress(100));
         },
-        [notificationsService, filter?.activeValues, setProgress],
+        [notificationsService, filter?.activeValues, setProgress, activeOrganization],
     );
 
     useEffect(() => {
@@ -97,9 +103,16 @@ export default function OrganizationsNotifications() {
                 </div>
             </div>
 
-            <div className="card-section">
-                <Paginator meta={notifications.meta} filters={filter.values} updateFilters={filter.update} />
-            </div>
+            {notifications.meta && (
+                <div className="card-section">
+                    <Paginator
+                        meta={notifications.meta}
+                        filters={filter.values}
+                        updateFilters={filter.update}
+                        perPageKey={paginatorKey}
+                    />
+                </div>
+            )}
         </div>
     );
 }
