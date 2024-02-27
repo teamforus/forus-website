@@ -524,9 +524,21 @@
     @include cf();
 
     .table-pagination-counter {
+        display: flex;
         float: left;
         color: #282b39;
         font: 500 13px/36px var(--base-font);
+
+        .table-pagination-counter-info {
+            display: flex;
+        }
+
+        .form-control {
+            &.select-control {
+                width: 70px;
+                margin-right: 10px;
+            }
+        }
 
         &.table-pagination-counter-sm {
             font: 500 13px/30px var(--base-font);

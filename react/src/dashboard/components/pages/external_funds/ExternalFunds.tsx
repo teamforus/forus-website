@@ -15,8 +15,10 @@ import usePushSuccess from '../../../hooks/usePushSuccess';
 import usePushDanger from '../../../hooks/usePushDanger';
 import useActiveOrganization from '../../../hooks/useActiveOrganization';
 import useThumbnailUrl from '../../../hooks/useThumbnailUrl';
+import usePaginatorService from '../../../modules/paginator/services/usePaginatorService';
 
 export default function ExternalFunds() {
+    const { t } = useTranslation();
     const { setActiveOrganization } = useContext(mainContext);
 
     const thumbnailUrl = useThumbnailUrl();
@@ -27,9 +29,15 @@ export default function ExternalFunds() {
     const activeOrganization = useActiveOrganization();
 
     const [funds, setFunds] = useState<PaginationData<ExternalFund>>(null);
-    const filter = useFilter({});
+
+    const paginatorService = usePaginatorService();
     const organizationService = useOrganizationService();
-    const { t } = useTranslation();
+    const [paginatorKey] = useState('external_funds');
+
+    const filter = useFilter({
+        page: 1,
+        per_page: paginatorService.getPerPage(paginatorKey),
+    });
 
     const fetchFunds = useCallback(() => {
         setProgress(0);
@@ -247,10 +255,15 @@ export default function ExternalFunds() {
                 </div>
             ))}
 
-            {funds.meta.last_page > 1 && (
+            {funds.meta && (
                 <div className="card">
                     <div className="card-section">
-                        <Paginator meta={funds.meta} filters={filter.activeValues} updateFilters={filter.update} />
+                        <Paginator
+                            meta={funds.meta}
+                            filters={filter.activeValues}
+                            updateFilters={filter.update}
+                            perPageKey={paginatorKey}
+                        />
                     </div>
                 </div>
             )}

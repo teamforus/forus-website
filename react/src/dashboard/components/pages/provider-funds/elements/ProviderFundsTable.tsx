@@ -17,13 +17,14 @@ import ModalDangerZone from '../../../modals/ModalDangerZone';
 import ModalFundOffers from '../../../modals/ModalFundOffers';
 import ModalFundUnsubscribe from '../../../modals/ModalFundUnsubscribe';
 import useTableToggles from '../../../../hooks/useTableToggles';
+import usePaginatorService from '../../../../modules/paginator/services/usePaginatorService';
 
 export default function ProviderFundsTable({
     type,
     organization,
     onChange,
 }: {
-    type: string;
+    type: 'active' | 'pending_rejected' | 'archived';
     organization: Organization;
     onChange: () => void;
 }) {
@@ -37,14 +38,16 @@ export default function ProviderFundsTable({
     const pushSuccess = usePushSuccess();
     const openModal = useOpenModal();
 
+    const paginatorService = usePaginatorService();
     const providerFundService = useProviderFundService();
+
+    const [paginatorKey] = useState(`provider_funds_${type}`);
+    const [providerFunds, setProviderFunds] = useState<PaginationData<FundProvider>>(null);
 
     const filter = useFilter({
         q: '',
-        per_page: 10,
+        per_page: paginatorService.getPerPage(paginatorKey),
     });
-
-    const [providerFunds, setProviderFunds] = useState<PaginationData<FundProvider>>(null);
 
     const { selected, setSelected, toggleAll, toggle } = useTableToggles();
 
@@ -367,17 +370,22 @@ export default function ProviderFundsTable({
                 </div>
             )}
 
-            {providerFunds?.meta?.last_page > 1 && (
-                <div className="card-section">
-                    <Paginator meta={providerFunds.meta} filters={filter.activeValues} updateFilters={filter.update} />
-                </div>
-            )}
-
             {!loading && providerFunds?.meta?.total == 0 && (
                 <div className="card-section">
                     <div className="block block-empty text-center">
                         <div className="empty-title">{t(`provider_funds.empty_block.${type}`)}</div>
                     </div>
+                </div>
+            )}
+
+            {providerFunds?.meta && (
+                <div className="card-section">
+                    <Paginator
+                        meta={providerFunds.meta}
+                        filters={filter.activeValues}
+                        updateFilters={filter.update}
+                        perPageKey={paginatorKey}
+                    />
                 </div>
             )}
         </div>
