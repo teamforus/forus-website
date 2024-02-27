@@ -43,6 +43,8 @@ import PaymentMethods from '../components/pages/payment-methods/PaymentMethods';
 import MolliePrivacy from '../components/pages/mollie-privacy/MolliePrivacy';
 import CsvValidationsRedirect from '../components/pages/csv_validations/CsvValidationsRedirect';
 import WIP from '../components/pages_system/WIP';
+import ExtraPayments from '../components/pages/extra-payments/ExtraPayments';
+import ExtraPaymentsView from '../components/pages/extra-payments-view/ExtraPaymentsView';
 
 const router = new RouterBuilder();
 
@@ -150,8 +152,13 @@ router.state('reimbursements', <WIP title={'Reimbursements'} />, {
     fallbackState: 'organizations',
 });
 
-router.state('extra-payments', <WIP title={'Extra payments'} />, {
+router.state('extra-payments', <ExtraPayments />, {
     path: `/organizations/:organizationId/extra-payments`,
+    fallbackState: 'organizations',
+});
+
+router.state('extra-payments-show', <ExtraPaymentsView />, {
+    path: `/organizations/:organizationId/extra-payments/:id`,
     fallbackState: 'organizations',
 });
 
