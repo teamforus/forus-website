@@ -29,8 +29,10 @@ import useActiveOrganization from '../../../hooks/useActiveOrganization';
 import usePushDanger from '../../../hooks/usePushDanger';
 import useSetProgress from '../../../hooks/useSetProgress';
 import { dateFormat, dateParse } from '../../../helpers/dates';
+import usePaginatorService from '../../../modules/paginator/services/usePaginatorService';
 
 export default function FundRequests() {
+    const { t } = useTranslation();
     const envData = useEnvData();
     const openModal = useOpenModal();
     const appConfigs = useAppConfigs();
@@ -40,15 +42,16 @@ export default function FundRequests() {
     const setProgress = useSetProgress();
     const navigate = useNavigate();
 
-    const { t } = useTranslation();
-
     const [employees, setEmployees] = useState(null);
     const [fundRequests, setFundRequests] =
         useState<PaginationData<FundRequest & { assigned_employees?: Array<Employee> }>>(null);
 
     const fileService = useFileService();
     const employeeService = useEmployeeService();
+    const paginatorService = usePaginatorService();
     const fundRequestService = useFundRequestValidatorService();
+
+    const [paginatorKey] = useState('fund_requests');
 
     const [allEmployeesOption] = useState({
         id: null,
@@ -80,7 +83,7 @@ export default function FundRequests() {
     const filter = useFilter({
         q: '',
         page: 1,
-        per_page: 10,
+        per_page: paginatorService.getPerPage(paginatorKey),
         state: states[0].key,
         employee_id: null,
         assigned: null,
@@ -431,19 +434,22 @@ export default function FundRequests() {
                 </div>
             )}
 
-            {fundRequests?.meta.total > 0 && (
-                <div className="card-section" hidden={fundRequests?.meta.last_page <= 1}>
-                    {fundRequests?.meta && (
-                        <Paginator meta={fundRequests.meta} filters={filter.values} updateFilters={filter.update} />
-                    )}
-                </div>
-            )}
-
             {fundRequests?.meta.total == 0 && (
                 <div className="card-section">
                     <div className="block block-empty text-center">
                         <div className="empty-title">{t('validation_requests.labels.empty_table')}</div>
                     </div>
+                </div>
+            )}
+
+            {fundRequests?.meta && (
+                <div className="card-section">
+                    <Paginator
+                        meta={fundRequests.meta}
+                        filters={filter.values}
+                        updateFilters={filter.update}
+                        perPageKey={paginatorKey}
+                    />
                 </div>
             )}
         </div>
