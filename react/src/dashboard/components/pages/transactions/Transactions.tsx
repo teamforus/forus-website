@@ -33,6 +33,7 @@ import TranslateHtml from '../../elements/translate-html/TranslateHtml';
 import { hasPermission } from '../../../helpers/utils';
 import useTransactionBulkExportService from '../../../services/exports/useTransactionBulkExportService';
 import { dateFormat, dateParse } from '../../../helpers/dates';
+import usePaginatorService from '../../../modules/paginator/services/usePaginatorService';
 
 export default function Transactions() {
     const { t } = useTranslation();
@@ -43,6 +44,7 @@ export default function Transactions() {
     const pushSuccess = usePushSuccess();
     const setProgress = useSetProgress();
     const navigateState = useNavigateState();
+    const paginatorService = usePaginatorService();
     const activeOrganization = useActiveOrganization();
 
     const transactionService = useTransactionService();
@@ -98,6 +100,8 @@ export default function Transactions() {
     ]);
 
     const [viewType, setViewType] = useState(viewTypes[0]);
+    const [paginatorTransactionsKey] = useState('transactions');
+    const [paginatorTransactionBulkKey] = useState('transaction_bulks');
 
     const filter = useFilter(
         {
@@ -111,7 +115,7 @@ export default function Transactions() {
             amount_max: null,
             transfer_in_min: null,
             transfer_in_max: null,
-            per_page: 20,
+            per_page: paginatorService.getPerPage(paginatorTransactionsKey),
             order_by: 'created_at',
             order_dir: 'desc',
         },
@@ -127,7 +131,7 @@ export default function Transactions() {
             quantity_min: null,
             quantity_max: null,
             state: bulkStates[0].key,
-            per_page: 20,
+            per_page: paginatorService.getPerPage(paginatorTransactionBulkKey),
             order_by: 'created_at',
             order_dir: 'desc',
         },
@@ -886,17 +890,22 @@ export default function Transactions() {
                     </div>
                 )}
 
-            {viewType.key == 'transactions' && transactions.meta.last_page > 1 && (
-                <div className="card-section">
-                    <Paginator meta={transactions.meta} filters={filter.values} updateFilters={filter.update} />
-                </div>
-            )}
-
             {viewType.key == 'transactions' && transactions.meta.total == 0 && (
                 <div className="card-section">
                     <div className="block block-empty text-center">
                         <div className="empty-title">Geen transacties gevonden</div>
                     </div>
+                </div>
+            )}
+
+            {viewType.key == 'transactions' && transactions?.meta && (
+                <div className="card-section">
+                    <Paginator
+                        meta={transactions.meta}
+                        filters={filter.values}
+                        updateFilters={filter.update}
+                        perPageKey={paginatorTransactionsKey}
+                    />
                 </div>
             )}
 
@@ -984,16 +993,6 @@ export default function Transactions() {
                 </div>
             )}
 
-            {transactionBulks && viewType.key == 'bulks' && transactionBulks.meta.last_page > 1 && (
-                <div className="card-section">
-                    <Paginator
-                        meta={transactionBulks.meta}
-                        filters={bulkFilter.values}
-                        updateFilters={bulkFilter.update}
-                    />
-                </div>
-            )}
-
             {viewType.key === 'bulks' && transactionBulks.meta.total == 0 && (
                 <EmptyCard
                     title={'Geen bulktransacties gevonden'}
@@ -1006,6 +1005,17 @@ export default function Transactions() {
                         to: getStateRouteUrl('transactions-create', { organizationId: activeOrganization.id }),
                     }}
                 />
+            )}
+
+            {transactionBulks && viewType.key == 'bulks' && transactionBulks?.meta && (
+                <div className="card-section">
+                    <Paginator
+                        meta={transactionBulks.meta}
+                        filters={bulkFilter.values}
+                        updateFilters={bulkFilter.update}
+                        perPageKey={paginatorTransactionBulkKey}
+                    />
+                </div>
             )}
         </div>
     );

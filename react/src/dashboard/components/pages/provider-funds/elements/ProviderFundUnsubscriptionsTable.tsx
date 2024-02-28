@@ -20,6 +20,7 @@ import { dateFormat, dateParse } from '../../../../helpers/dates';
 import { strLimit } from '../../../../helpers/string';
 import ClickOutside from '../../../elements/click-outside/ClickOutside';
 import useTableToggles from '../../../../hooks/useTableToggles';
+import usePaginatorService from '../../../../modules/paginator/services/usePaginatorService';
 
 type FundProviderUnsubscribeLocal = FundProviderUnsubscribe & {
     showTooltip?: boolean;
@@ -42,7 +43,10 @@ export default function ProviderFundUnsubscriptionsTable({
     const pushSuccess = usePushSuccess();
     const openModal = useOpenModal();
 
+    const paginatorService = usePaginatorService();
     const fundUnsubscribeService = useFundUnsubscribeService();
+
+    const [paginatorKey] = useState('provider_funds_unsubscriptions');
 
     const [states] = useState([
         { key: null, label: 'Alle' },
@@ -54,7 +58,7 @@ export default function ProviderFundUnsubscriptionsTable({
     const filter = useFilter({
         q: '',
         state: null,
-        per_page: 10,
+        per_page: paginatorService.getPerPage(paginatorKey),
         from: '',
         to: '',
     });
@@ -398,21 +402,22 @@ export default function ProviderFundUnsubscriptionsTable({
                 </div>
             )}
 
-            {fundUnsubscriptions?.meta?.last_page > 1 && (
-                <div className="card-section">
-                    <Paginator
-                        meta={fundUnsubscriptions.meta}
-                        filters={filter.activeValues}
-                        updateFilters={filter.update}
-                    />
-                </div>
-            )}
-
             {!loading && fundUnsubscriptions?.meta?.total == 0 && (
                 <div className="card-section">
                     <div className="block block-empty text-center">
                         <div className="empty-title">{t(`provider_funds.empty_block.unsubscriptions`)}</div>
                     </div>
+                </div>
+            )}
+
+            {fundUnsubscriptions?.meta && (
+                <div className="card-section">
+                    <Paginator
+                        meta={fundUnsubscriptions.meta}
+                        filters={filter.activeValues}
+                        updateFilters={filter.update}
+                        perPageKey={paginatorKey}
+                    />
                 </div>
             )}
         </div>
