@@ -23,6 +23,7 @@ import usePushDanger from '../../../hooks/usePushDanger';
 import useOpenModal from '../../../hooks/useOpenModal';
 import useActiveOrganization from '../../../hooks/useActiveOrganization';
 import useEnvData from '../../../hooks/useEnvData';
+import usePaginatorService from '../../../modules/paginator/services/usePaginatorService';
 
 export default function Employees() {
     const envData = useEnvData();
@@ -32,18 +33,20 @@ export default function Employees() {
     const authIdentity = useAuthIdentity();
     const activeOrganization = useActiveOrganization();
 
+    const fileService = useFileService();
+    const employeeService = useEmployeeService();
+    const paginatorService = usePaginatorService();
+
     const { setActiveOrganization } = useContext(mainContext);
 
     const [employees, setEmployees] = useState<PaginationData<Employee>>(null);
+    const [paginatorKey] = useState('employees');
     const [adminEmployees, setAdminEmployees] = useState([]);
 
     const filter = useFilter({
         q: '',
-        per_page: 15,
+        per_page: paginatorService.getPerPage(paginatorKey),
     });
-
-    const fileService = useFileService();
-    const employeeService = useEmployeeService();
 
     const fetchEmployees = useCallback(() => {
         employeeService.list(activeOrganization.id, filter.activeValues).then(
@@ -346,19 +349,22 @@ export default function Employees() {
                 </div>
             )}
 
-            {employees?.meta.total > 0 && (
-                <div className="card-section" hidden={employees?.meta.last_page <= 1}>
-                    {employees?.meta && (
-                        <Paginator meta={employees.meta} filters={filter.values} updateFilters={filter.update} />
-                    )}
-                </div>
-            )}
-
             {employees?.meta.total == 0 && (
                 <div className="card-section">
                     <div className="block block-empty text-center">
                         <div className="empty-title">Geen medewerkers gevonden</div>
                     </div>
+                </div>
+            )}
+
+            {employees?.meta && (
+                <div className="card-section">
+                    <Paginator
+                        meta={employees.meta}
+                        filters={filter.values}
+                        updateFilters={filter.update}
+                        perPageKey={paginatorKey}
+                    />
                 </div>
             )}
         </div>

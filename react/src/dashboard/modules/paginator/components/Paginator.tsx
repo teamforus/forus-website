@@ -3,20 +3,28 @@ import FilterModel from '../../../types/FilterModel';
 import FilterSetter from '../../../types/FilterSetter';
 import { ApiPaginationMetaProp } from '../../../props/ApiResponses';
 import { useTranslation } from 'react-i18next';
+import usePaginatorService from '../services/usePaginatorService';
+import SelectControl from '../../../components/elements/select-control/SelectControl';
+import SelectControlOptions from '../../../components/elements/select-control/templates/SelectControlOptions';
 
 export default function Paginator({
     meta,
     filters,
     countButtons = 5,
     updateFilters,
+    perPageKey,
+    className = '',
 }: {
     meta: ApiPaginationMetaProp;
     filters: FilterModel;
     updateFilters: FilterSetter;
     countButtons?: number;
+    perPageKey?: string;
+    className?: string;
 }) {
-    const [pages, setPages] = useState([]);
     const { t } = useTranslation();
+    const [pages, setPages] = useState([]);
+    const { perPageOptions, setPerPage } = usePaginatorService();
 
     const getPages = useCallback((meta, countButtons = 5) => {
         let fromPage = Math.max(1, meta.current_page - Math.round(countButtons / 2 - 1));
@@ -33,25 +41,63 @@ export default function Paginator({
         return pages;
     }, []);
 
-    const setPage = useCallback((page) => updateFilters({ ...filters, page }), [filters, updateFilters]);
+    const setPage = useCallback(
+        (page) => {
+            updateFilters({ ...filters, page });
+        },
+        [filters, updateFilters],
+    );
+
+    const onChangePerPage = useCallback(
+        (per_page: number) => {
+            setPerPage(perPageKey, per_page);
+            updateFilters({ page: 1, per_page });
+        },
+        [perPageKey, setPerPage, updateFilters],
+    );
 
     useEffect(() => {
         setPages(getPages(meta, countButtons));
 
         if (meta.last_page < meta.current_page) {
-            updateFilters({ page: 1 });
+            updateFilters({ page: 1, per_page: meta.per_page });
         }
     }, [meta, countButtons, getPages, updateFilters]);
 
+    useEffect(() => {
+        if (perPageKey && !perPageOptions.map((option) => option.key).includes(filters.per_page)) {
+            onChangePerPage(perPageOptions[0].key);
+        }
+    }, [filters.per_page, onChangePerPage, perPageKey, perPageOptions]);
+
     return (
-        <div className="table-pagination">
-            <div className="table-pagination-counter">
-                {meta.from !== meta.to ? meta.from + '-' + meta.to : meta.from}
-                &nbsp;
-                {t('paginator.labels.from')}
-                &nbsp;
-                {meta.total}
-            </div>
+        <div className={`table-pagination form ${className}`}>
+            {meta.from && meta.to && (
+                <div className="form">
+                    <div className="table-pagination-counter">
+                        {perPageKey && (
+                            <SelectControl
+                                className={'form-control'}
+                                options={perPageOptions}
+                                optionsComponent={SelectControlOptions}
+                                propKey={'key'}
+                                allowSearch={false}
+                                value={meta.per_page}
+                                onChange={onChangePerPage}
+                            />
+                        )}
+
+                        <div className="table-pagination-counter-info">
+                            <span className="text-strong">{`${meta.from}-${meta.to} `}</span>
+                            &nbsp;
+                            {t('paginator.labels.from')}
+                            &nbsp;
+                            <span className="text-strong">{meta.total}</span>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             <div className="table-pagination-navigation">
                 <div
                     onClick={() => setPage(1)}
