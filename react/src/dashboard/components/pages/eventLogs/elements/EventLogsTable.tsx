@@ -39,6 +39,7 @@ export default function EventLogsTable({
     const [logs, setLogs] = useState<PaginationData<EventLog>>(null);
     const [loggables, setLoggables] = useState([]);
     const [noteTooltip, setNoteTooltip] = useState(null);
+    const [paginatorKey] = useState('event_logs');
     const permissionsMap = useMemo(() => appConfigs.event_permissions, [appConfigs?.event_permissions]);
     const baseLoggables = useMemo(
         () => [
@@ -254,7 +255,12 @@ export default function EventLogsTable({
 
             {logs.meta.last_page > 1 && (
                 <div className="card-section">
-                    <Paginator meta={logs.meta} filters={filter.values} updateFilters={filter.update} />
+                    <Paginator
+                        meta={logs.meta}
+                        filters={filter.values}
+                        updateFilters={filter.update}
+                        perPageKey={paginatorKey}
+                    />
                 </div>
             )}
 
