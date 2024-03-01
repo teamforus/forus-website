@@ -17,6 +17,7 @@ import SelectControlOptions from '../../elements/select-control/templates/Select
 import CardHeaderFilter from '../../elements/tables/elements/CardHeaderFilter';
 import Fund from '../../../props/models/Fund';
 import { useFundService } from '../../../services/FundService';
+import usePaginatorService from '../../../modules/paginator/services/usePaginatorService';
 
 export default function ExtraPayments() {
     const { t } = useTranslation();
@@ -24,18 +25,20 @@ export default function ExtraPayments() {
     const activeOrganization = useActiveOrganization();
     const extraPaymentService = useExtraPaymentService();
     const setProgress = useSetProgress();
+    const paginatorService = usePaginatorService();
+
+    const [loading, setLoading] = useState(false);
+    const [funds, setFunds] = useState(null);
+    const [paginatorKey] = useState('extra_payments');
+    const [extraPayments, setExtraPayments] = useState<PaginationData<ExtraPayment>>(null);
 
     const filter = useFilter({
         q: '',
         fund_id: null,
-        per_page: 20,
+        per_page: paginatorService.getPerPage(paginatorKey),
         order_by: 'paid_at',
         order_dir: 'desc',
     });
-
-    const [loading, setLoading] = useState(false);
-    const [funds, setFunds] = useState(null);
-    const [extraPayments, setExtraPayments] = useState<PaginationData<ExtraPayment>>(null);
 
     const fetchExtraPayments = useCallback(() => {
         setProgress(0);
@@ -255,7 +258,12 @@ export default function ExtraPayments() {
 
             {!loading && extraPayments?.meta.last_page > 1 && (
                 <div className="card-section">
-                    <Paginator meta={extraPayments.meta} filters={filter.values} updateFilters={filter.update} />
+                    <Paginator
+                        meta={extraPayments.meta}
+                        filters={filter.values}
+                        updateFilters={filter.update}
+                        perPageKey={paginatorKey}
+                    />
                 </div>
             )}
 
