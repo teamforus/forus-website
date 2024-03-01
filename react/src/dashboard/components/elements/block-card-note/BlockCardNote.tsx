@@ -15,6 +15,7 @@ import Note from '../../../props/models/Note';
 import LoadingCard from '../loading-card/LoadingCard';
 import ModalAddNote from '../../modals/ModalAddNote';
 import useSetProgress from '../../../hooks/useSetProgress';
+import usePaginatorService from '../../../modules/paginator/services/usePaginatorService';
 
 export default function BlockCardNote({
     isAssigned,
@@ -35,9 +36,13 @@ export default function BlockCardNote({
     const pushSuccess = usePushSuccess();
     const setProgress = useSetProgress();
 
+    const paginatorService = usePaginatorService();
+
+    const [paginatorKey] = useState('fund_request_notes');
+
     const filter = useFilter({
         q: '',
-        per_page: 10,
+        per_page: paginatorService.getPerPage(paginatorKey),
     });
 
     useEffect(() => {
@@ -167,17 +172,22 @@ export default function BlockCardNote({
                 </div>
             )}
 
-            {notes?.meta.last_page > 1 && (
-                <div className="card-section">
-                    <Paginator meta={notes.meta} filters={filter.values} updateFilters={filter.update} />
-                </div>
-            )}
-
             {notes.meta.total == 0 && (
                 <div className="card-section">
                     <div className="block block-empty text-center">
                         <div className="empty-title">Geen notites</div>
                     </div>
+                </div>
+            )}
+
+            {notes?.meta && (
+                <div className="card-section">
+                    <Paginator
+                        meta={notes.meta}
+                        filters={filter.values}
+                        updateFilters={filter.update}
+                        perPageKey={paginatorKey}
+                    />
                 </div>
             )}
         </div>
