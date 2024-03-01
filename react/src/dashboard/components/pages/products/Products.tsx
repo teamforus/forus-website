@@ -16,28 +16,33 @@ import useOpenModal from '../../../hooks/useOpenModal';
 import StateNavLink from '../../../modules/state_router/StateNavLink';
 import Paginator from '../../../modules/paginator/components/Paginator';
 import ModalNotification from '../../modals/ModalNotification';
+import usePaginatorService from '../../../modules/paginator/services/usePaginatorService';
 
 export default function Products() {
     const activeOrganization = useActiveOrganization();
     const { t } = useTranslation();
     const assetUrl = useAssetUrl();
+
     const productService = useProductService();
+    const paginatorService = usePaginatorService();
+
     const setProgress = useSetProgress();
     const appConfigs = useAppConfigs();
     const openModal = useOpenModal();
     const navigateState = useNavigateState();
 
-    const filter = useFilter({
-        q: '',
-        source: 'provider',
-        per_page: 10,
-    });
-
     const [loading, setLoading] = useState(false);
     const [products, setProducts] = useState<PaginationData<Product>>(null);
 
+    const [paginatorKey] = useState('products');
     const maxProductCount = useMemo(() => appConfigs?.products_hard_limit, [appConfigs]);
     const maxProductSoftLimit = useMemo(() => appConfigs?.products_soft_limit, [appConfigs]);
+
+    const filter = useFilter({
+        q: '',
+        source: 'provider',
+        per_page: paginatorService.getPerPage(paginatorKey),
+    });
 
     const addProduct = useCallback(
         function () {
@@ -336,7 +341,8 @@ export default function Products() {
                     </div>
                 </div>
             )}
-            {!loading && filter.values.source == 'provider' && products.meta.total == 0 && (
+
+            {!loading && filter.values.source == 'provider' && products.meta.total == 0 && !filter.activeValues.q && (
                 <div className="card-section text-center">
                     <div className="card-subtitle">Er zijn momenteel geen aanbiedingen.</div>
                     <br />
@@ -349,6 +355,13 @@ export default function Products() {
                     </StateNavLink>
                 </div>
             )}
+
+            {!loading && filter.values.source == 'provider' && products.meta.total == 0 && filter.activeValues.q && (
+                <div className="card-section text-center">
+                    <div className="card-subtitle">Er zijn geen aanbiedingen gevonden voor de zoekopdracht.</div>
+                </div>
+            )}
+
             {!loading && filter.values.source == 'sponsor' && products.meta.total == 0 && (
                 <div className="card-section">
                     <div className="card-subtitle text-center">Er zijn momenteel geen aanbiedingen.</div>
@@ -361,9 +374,14 @@ export default function Products() {
                 </div>
             )}
 
-            {!loading && products?.meta.last_page > 1 && (
+            {!loading && products?.meta && (
                 <div className="card-section">
-                    <Paginator meta={products.meta} filters={filter.values} updateFilters={filter.update} />
+                    <Paginator
+                        meta={products.meta}
+                        filters={filter.values}
+                        updateFilters={filter.update}
+                        perPageKey={paginatorKey}
+                    />
                 </div>
             )}
         </div>

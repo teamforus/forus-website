@@ -11,7 +11,6 @@ import TranslateHtml from '../../elements/translate-html/TranslateHtml';
 import { PaginationData } from '../../../props/ApiResponses';
 import useFilter from '../../../hooks/useFilter';
 import Paginator from '../../../modules/paginator/components/Paginator';
-import EmptyCard from '../../elements/empty-card/EmptyCard';
 import { useNavigateState } from '../../../modules/state_router/Router';
 import FundProviderChat from '../../../props/models/FundProviderChat';
 import useOpenModal from '../../../hooks/useOpenModal';
@@ -22,6 +21,7 @@ import usePushDanger from '../../../hooks/usePushDanger';
 import ProductFund from '../../../props/models/ProductFund';
 import ToggleControl from '../../elements/forms/controls/ToggleControl';
 import ModalFundProviderChatProvider from '../../modals/ModalFundProviderChatProvider';
+import usePaginatorService from '../../../modules/paginator/services/usePaginatorService';
 
 type ProductFundLocal = ProductFund & {
     chat?: FundProviderChat;
@@ -33,7 +33,9 @@ export default function ProductsView() {
     const { t } = useTranslation();
     const activeOrganization = useActiveOrganization();
     const assetUrl = useAssetUrl();
+
     const productService = useProductService();
+    const paginatorService = usePaginatorService();
     const productChatService = useProductChatService();
 
     const navigateState = useNavigateState();
@@ -42,12 +44,14 @@ export default function ProductsView() {
     const [product, setProduct] = useState<Product>(null);
     const [funds, setFunds] = useState<PaginationData<ProductFundLocal>>(null);
     const [fundToggles, setFundToggles] = useState({});
+    const [paginatorKey] = useState('product_funds');
 
     const pushDanger = usePushDanger();
     const pushSuccess = usePushSuccess();
 
     const filter = useFilter({
         q: '',
+        per_page: paginatorService.getPerPage(paginatorKey),
     });
 
     const deleteProduct = useCallback(
@@ -263,29 +267,29 @@ export default function ProductsView() {
                 </div>
             </div>
 
-            {funds?.meta.total > 0 && (
-                <div className="card">
-                    <div className="card-header">
-                        <div className="flex-row">
-                            <div className="flex-col flex-grow">
-                                <div className="card-title">Fondsen</div>
-                            </div>
-                            <div className="flex-col flex-grow block block-inline-filters">
-                                <div className="form">
-                                    <div className="form-group">
-                                        <input
-                                            className="form-control"
-                                            type="text"
-                                            placeholder="Zoeken"
-                                            value={filter.values.q}
-                                            onChange={(e) => filter.update({ q: e.target.value })}
-                                        />
-                                    </div>
+            <div className="card">
+                <div className="card-header">
+                    <div className="flex-row">
+                        <div className="flex-col flex-grow">
+                            <div className="card-title">Fondsen</div>
+                        </div>
+                        <div className="flex-col flex-grow block block-inline-filters">
+                            <div className="form">
+                                <div className="form-group">
+                                    <input
+                                        className="form-control"
+                                        type="text"
+                                        placeholder="Zoeken"
+                                        value={filter.values.q}
+                                        onChange={(e) => filter.update({ q: e.target.value })}
+                                    />
                                 </div>
                             </div>
                         </div>
                     </div>
+                </div>
 
+                {funds?.meta.total > 0 ? (
                     <div className="card-section">
                         <div className="card-block card-block-table">
                             <div className="table-wrapper">
@@ -393,29 +397,39 @@ export default function ProductsView() {
                             </div>
                         </div>
                     </div>
-
-                    {funds?.meta?.last_page > 1 && (
-                        <div className="card-section">
-                            <Paginator meta={funds.meta} filters={filter.values} updateFilters={filter.update} />
+                ) : (
+                    <div className="card-section">
+                        <div className={`block block-empty text-center}`}>
+                            <div className="empty-details">
+                                Uw aanbod kan nog niet op een website worden geplaatst omdat u zich eerst voor een fonds
+                                moet aanmelden. Meld u aan voor één of meerdere fondsen.
+                            </div>
+                            <div className="empty-actions">
+                                <div className="button-group">
+                                    <StateNavLink
+                                        name={'provider-funds'}
+                                        params={{ organizationId: activeOrganization.id }}
+                                        className="button button-primary">
+                                        <em className="mdi mdi-plus icon-start" />
+                                        Bekijk beschikbare fondsen
+                                    </StateNavLink>
+                                </div>
+                            </div>
                         </div>
-                    )}
-                </div>
-            )}
+                    </div>
+                )}
 
-            {funds?.meta.total === 0 && (
-                <EmptyCard
-                    description={
-                        'Uw aanbod kan nog niet op een website worden geplaatst omdat u zich eerst voor een fonds moet aanmelden. Meld u aan voor één of meerdere fondsen.'
-                    }
-                    button={{
-                        text: 'Bekijk beschikbare fondsen',
-                        type: 'primary',
-                        icon: 'plus',
-                        iconPosition: 'start',
-                        onClick: () => navigateState('provider-funds', { organizationId: activeOrganization.id }),
-                    }}
-                />
-            )}
+                {funds?.meta && (
+                    <div className="card-section">
+                        <Paginator
+                            meta={funds.meta}
+                            filters={filter.values}
+                            updateFilters={filter.update}
+                            perPageKey={paginatorKey}
+                        />
+                    </div>
+                )}
+            </div>
         </Fragment>
     );
 }

@@ -13,8 +13,9 @@ import FundProviderInvitation from '../../../../props/models/FundProviderInvitat
 import useFundProviderInvitationsService from '../../../../services/useFundProviderInvitationsService';
 import { strLimit } from '../../../../helpers/string';
 import useTableToggles from '../../../../hooks/useTableToggles';
+import usePaginatorService from '../../../../modules/paginator/services/usePaginatorService';
 
-type FundProviderInvitationLocale = FundProviderInvitation & {
+type FundProviderInvitationLocal = FundProviderInvitation & {
     status_class?: string;
     status_text?: string;
 };
@@ -37,17 +38,19 @@ export default function ProviderFundInvitationsTable({
     const pushDanger = usePushDanger();
     const pushSuccess = usePushSuccess();
 
+    const paginatorService = usePaginatorService();
     const fundProviderInvitationsService = useFundProviderInvitationsService();
+
+    const [invitations, setInvitations] = useState<PaginationData<FundProviderInvitationLocal>>(null);
+    const [paginatorKey] = useState(`provider_fund_${type}`);
 
     const filter = useFilter({
         q: '',
-        state: null,
-        per_page: 10,
         from: '',
         to: '',
+        state: null,
+        per_page: paginatorService.getPerPage(paginatorKey),
     });
-
-    const [invitations, setInvitations] = useState<PaginationData<FundProviderInvitationLocale>>(null);
 
     const { selected, setSelected, toggleAll, toggle } = useTableToggles();
     const selectedMeta = useMemo(() => {
@@ -282,17 +285,22 @@ export default function ProviderFundInvitationsTable({
                 </div>
             )}
 
-            {invitations?.meta?.last_page > 1 && (
-                <div className="card-section">
-                    <Paginator meta={invitations.meta} filters={filter.activeValues} updateFilters={filter.update} />
-                </div>
-            )}
-
             {!loading && invitations?.meta?.total == 0 && (
                 <div className="card-section">
                     <div className="block block-empty text-center">
                         <div className="empty-title">{t(`provider_funds.empty_block.${type}`)}</div>
                     </div>
+                </div>
+            )}
+
+            {invitations?.meta && (
+                <div className="card-section">
+                    <Paginator
+                        meta={invitations.meta}
+                        filters={filter.activeValues}
+                        updateFilters={filter.update}
+                        perPageKey={paginatorKey}
+                    />
                 </div>
             )}
         </div>
