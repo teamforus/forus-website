@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import useActiveOrganization from '../../../hooks/useActiveOrganization';
 import { useTranslation } from 'react-i18next';
+import useFilter from '../../../hooks/useFilter';
 import LoadingCard from '../../elements/loading-card/LoadingCard';
 import { NavLink } from 'react-router-dom';
 import { getStateRouteUrl } from '../../../modules/state_router/Router';
@@ -13,6 +14,7 @@ import useOfficeService from '../../../services/OfficeService';
 import OfficeSchedule from '../../../props/models/OfficeSchedule';
 import ModalNotification from '../../modals/ModalNotification';
 import useSetProgress from '../../../hooks/useSetProgress';
+import StateNavLink from '../../../modules/state_router/StateNavLink';
 
 interface OfficeLocal extends Office {
     scheduleByDay: { [key: string]: OfficeSchedule };
@@ -30,6 +32,11 @@ export default function Offices() {
 
     const [weekDays] = useState(officeService.scheduleWeekDays());
     const [offices, setOffices] = useState<Array<OfficeLocal>>(null);
+    const [showCollapsible, setShowCollapsible] = useState({});
+
+    const filter = useFilter({
+        q: '',
+    }, ['q']);
 
     const fetchOffices = useCallback(() => {
         setProgress(0);
@@ -49,6 +56,13 @@ export default function Offices() {
             })
             .finally(() => setProgress(100));
     }, [officeService, activeOrganization.id, setProgress]);
+
+    const toggleCollapsable = useCallback((office_id: number) => {
+        setShowCollapsible((set) => ({
+            ...set,
+            [office_id]: !set[office_id]
+        }));
+    }, []);
 
     const deleteOffice = useCallback(
         (office: Office) => {
@@ -124,6 +138,7 @@ export default function Offices() {
                         </div>
                     )}
                 </div>
+
                 <div className="card-section card-section-primary">
                     <div className="card-block card-block-keyvalue card-block-keyvalue-horizontal">
                         <div className="keyvalue-item">
@@ -149,112 +164,138 @@ export default function Offices() {
             </div>
 
             {offices && (
-                <div className="card-heading">
-                    {t('offices.labels.offices')} ({offices?.length})
-                    {hasPermission(activeOrganization, 'manage_offices') && (
-                        <NavLink
-                            className="link"
-                            id="create_office"
-                            to={getStateRouteUrl('offices-create', { organizationId: activeOrganization.id })}>
-                            <em className="mdi mdi-plus-circle" />
-                            {t('offices.buttons.add')}
-                        </NavLink>
-                    )}
-                </div>
-            )}
-
-            {offices?.map((office) => (
-                <div className="card" key={office.id}>
-                    <div className="card-section">
-                        <div className="card-section-actions">
-                            <NavLink
-                                className="button button-default"
-                                to={getStateRouteUrl('offices-edit', {
-                                    id: office.id,
-                                    organizationId: office.organization_id,
-                                })}>
-                                <em className="mdi mdi-pen icon-start" />
-                                {t('offices.buttons.adjust')}
-                            </NavLink>
-                            {offices.length > 1 && (
-                                <a className="button button-default" onClick={() => deleteOffice(office)}>
-                                    <em className="mdi mdi-delete icon-start" />
-                                    {t('offices.buttons.delete')}
-                                </a>
-                            )}
-                            {office.lat && office.lon && (
-                                <a
-                                    className="button button-primary"
-                                    href={`https://www.google.com/maps/place/${office.lat},${office.lon}`}
-                                    rel="noreferrer"
-                                    target="_blank">
-                                    <em className="mdi mdi-map-marker icon-start" />
-                                    {t('offices.buttons.map')}
-                                </a>
-                            )}
-                        </div>
-
-                        <div className="card-block card-block-provider">
-                            <div className="provider-img">
-                                <img
-                                    src={
-                                        office.photo?.sizes.thumbnail ||
-                                        assetUrl('/assets/img/placeholders/office-thumbnail.png')
-                                    }
-                                    alt={''}
-                                />
+                <div className="card">
+                    <div className="card-header">
+                        <div className='flex-row'>
+                            <div className='flex-col flex-grow'>
+                                <div className='card-title'>{t('offices.labels.offices')}</div>
                             </div>
-                            <div className="provider-details">
-                                <NavLink
-                                    className="provider-title"
-                                    to={getStateRouteUrl('offices-edit', {
-                                        id: office.id,
-                                        organizationId: office.organization_id,
-                                    })}>
-                                    {office.address}
-                                </NavLink>
-                                <div className="card-block card-block-listing card-block-listing-inline card-block-listing-variant">
-                                    <div className="card-block-listing-label">{t('offices.labels.phone')}</div>
-                                    {office.phone ? (
-                                        <span className="text-primary-light">{office.phone}</span>
-                                    ) : (
-                                        <span className="text-muted">{t('offices.labels.none')}</span>
-                                    )}
+
+                            <div className="flex">
+                                <div className="block block-inline-filters">
+                                    <StateNavLink
+                                        name={'offices-create'}
+                                        params={{ organizationId: activeOrganization.id }}
+                                        className="button button-primary">
+                                        <em className="mdi mdi-plus-circle icon-start"/>
+                                        Voeg een nieuwe vestiging toe
+                                    </StateNavLink>
+
+                                    <div className="form">
+                                        <div className="form-group">
+                                            <input
+                                                type="text"
+                                                className="form-control"
+                                                placeholder="Zoeken"
+                                                value={filter.values.q}
+                                                onChange={(e) => filter.update({ q: e.target.value })}
+                                            />
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    {office.schedule.length != 0 && (
-                        <div className="card-section card-section-primary">
-                            <div className="row">
-                                <div className="col col-xs-12">
-                                    <small>{t('offices.labels.hours')}</small>
-                                </div>
-                                <div className="col col-xs-12">
-                                    {Object.keys(weekDays)?.map((weekDayKey) => (
-                                        <div
-                                            style={{
-                                                display:
-                                                    !office.scheduleByDay[weekDayKey]?.start_time &&
-                                                    !office.scheduleByDay[weekDayKey]?.end_time
-                                                        ? 'none'
-                                                        : undefined,
-                                            }}
-                                            className="card-block card-block-listing card-block-listing-inline card-block-listing-variant card-block-listing-no-pad"
-                                            key={weekDayKey}>
-                                            <div className="card-block-listing-label">{weekDays[weekDayKey]}</div>
-                                            {office.scheduleByDay[weekDayKey]?.start_time || 'Geen data'}
-                                            {' - '}
-                                            {office.scheduleByDay[weekDayKey]?.end_time || 'Geen data'}
-                                        </div>
+                    <div className="card-section">
+                        <div className="card-block card-block-table">
+                            <div className="table-wrapper">
+                                <table className="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Adres</th>
+                                            <th>Vestigingsnaam</th>
+                                            <th>Telefonnummer</th>
+                                            <th>Vestigingsnummer</th>
+                                            <th>VestigingID</th>
+                                            <th className="text-right nowrap th-narrow">Actie</th>
+                                        </tr>
+                                    </thead>
+
+                                    {offices?.map((office) => (
+                                        <tbody key={office.id}>
+                                            <tr>
+                                                <td onClick={() => {toggleCollapsable(office.id)}}>
+                                                    <div className="td-collapsable">
+                                                        <div className="collapsable-icon">
+                                                            <div className={`mdi icon-collapse ${showCollapsible[office.id] ? 'mdi-menu-down' : 'mdi-menu-right'}`}>
+                                                            </div>
+                                                        </div>
+                                                        {office.address}
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div>{office.branch_name}</div>
+
+                                                    {!office.branch_name && (
+                                                        <div className="text-muted">Geen naam...</div>
+                                                    )}
+                                                </td>
+                                                <td>{office.phone}</td>
+                                                <td>
+                                                    <div>{office.branch_number}</div>
+
+                                                    {!office.branch_number && (
+                                                        <div className="text-muted">Geen...</div>
+                                                    )}
+                                                </td>
+                                                <td>
+                                                    <div>{office.branch_id}</div>
+
+                                                    {!office.branch_id && (
+                                                        <div className="text-muted">Geen...</div>
+                                                    )}
+                                                </td>
+                                                <td className="text-right">
+                                                    <div className="button-group">
+                                                        <StateNavLink
+                                                            name='offices-edit'
+                                                            params={{ organizationId: activeOrganization.id, id: office.id }}
+                                                            className="button button-default button-icon">
+                                                            <em className="mdi mdi-pencil-outline icon-start" />
+                                                        </StateNavLink>
+
+                                                        <a className="button button-default button-icon"
+                                                            onClick={() => deleteOffice(office)}>
+                                                            <em className="mdi mdi-delete icon-start" />
+                                                        </a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+
+                                            {showCollapsible[office.id] && (                                                        
+                                                <tr className="dim">
+                                                    <td className="paddless" colSpan={6}>
+                                                        <div className="card-title">Openingstijden</div>
+
+                                                        {Object.keys(weekDays)?.map((weekDayKey) => (
+                                                            <div
+                                                                style={{
+                                                                    display:
+                                                                        !office.scheduleByDay[weekDayKey]?.start_time &&
+                                                                        !office.scheduleByDay[weekDayKey]?.end_time
+                                                                            ? 'none'
+                                                                            : undefined,
+                                                                }}
+                                                                className="card-block card-block-listing card-block-listing-inline card-block-listing-variant card-block-listing-no-pad"
+                                                                key={weekDayKey}>
+                                                                <div className="card-block-listing-label">{weekDays[weekDayKey]}</div>
+                                                                {office.scheduleByDay[weekDayKey]?.start_time || 'Geen data'}
+                                                                {' - '}
+                                                                {office.scheduleByDay[weekDayKey]?.end_time || 'Geen data'}
+                                                            </div>
+                                                        ))}
+                                                    </td>
+                                                </tr>
+                                            )}
+                                        </tbody>
                                     ))}
-                                </div>
+                                </table>
                             </div>
                         </div>
-                    )}
-                </div>
-            ))}
+                    </div>
+                </div>    
+            )}
 
             {!offices?.length && (
                 <EmptyCard

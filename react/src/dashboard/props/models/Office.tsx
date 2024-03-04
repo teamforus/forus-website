@@ -13,6 +13,9 @@ export default interface Office {
     postcode_number: string;
     postcode_addition: string;
     photo?: Media;
+    branch_number?: string;
+    branch_name?: string;
+    branch_id?: string;
     organization: {
         id: number;
         name: string;

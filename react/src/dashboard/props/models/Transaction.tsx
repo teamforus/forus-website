@@ -49,4 +49,7 @@ export default interface Transaction {
     target?: 'provider' | 'iban' | 'top_up';
     transaction_cost?: string;
     transaction_cost_locale?: string;
+    branch_number?: string;
+    branch_name?: string;
+    branch_id?: string;
 }

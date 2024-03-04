@@ -622,7 +622,15 @@ module.exports = {
             phone: "Telefoonnummer",
             mail: "E-mail",
             hours: "Openingstijden",
-            business_type: "Organisatie type"
+            business_type: "Organisatie type",
+            branch_number: "Vestigingsnummer",
+            branch_name: "Vestigingsnaam",
+            branch_id: "VestigingID"
+        },
+        info: {
+            branch_number: "Lorem ipsum dolor sit amet consectetur. Sit sit tellus tellus imperdiet. Est a fusce quam interdum justo volutpat.",
+            branch_name: "Lorem ipsum dolor sit amet consectetur. Sit sit tellus tellus imperdiet. Est a fusce quam interdum justo volutpat.",
+            branch_id: "Lorem ipsum dolor sit amet consectetur. Sit sit tellus tellus imperdiet. Est a fusce quam interdum justo volutpat."
         },
         buttons: {
             add_office: "Voeg een nieuwe vestiging toe",
@@ -1365,6 +1373,8 @@ module.exports = {
     organization_employees: {
         labels: {
             email: "E-mailadres",
+            branch_name_id: "Vestigingnaam & ID",
+            branch_number: "Vestigingsnummer",
             roles: "Rollen",
             actions: "Actie",
             auth_2fa: "2FA",

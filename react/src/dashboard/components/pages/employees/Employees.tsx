@@ -247,6 +247,8 @@ export default function Employees() {
                                 <thead>
                                     <tr>
                                         <th>{t('organization_employees.labels.email')}</th>
+                                        <th>{t('organization_employees.labels.branch_name_id')}</th>
+                                        <th>{t('organization_employees.labels.branch_number')}</th>
                                         <th>{t('organization_employees.labels.roles')}</th>
                                         <th>{t('organization_employees.labels.auth_2fa')}</th>
                                         <th className={'text-right'}>{t('organization_employees.labels.actions')}</th>
@@ -258,8 +260,36 @@ export default function Employees() {
                                             <td
                                                 id={'employee_email'}
                                                 data-dusk={'employeeEmail'}
-                                                className={'text-primary-light'}>
+                                                className={'text-primary'}>
                                                 {employee.email || strLimit(employee.identity_address, 32)}
+                                            </td>
+                                            <td
+                                                id={'employee_branch_name'}
+                                                data-dusk={'employeeBranchName'}>
+
+                                                {employee?.branch_name && (
+                                                    <div className='text-primary'>
+                                                        {strLimit(employee.branch_name, 32)}
+                                                    </div>
+                                                )}
+
+                                                {employee?.branch_id && (
+                                                    <div>
+                                                        ID <strong>{strLimit(employee.branch_id, 32)}</strong>
+                                                    </div>
+                                                )}
+
+                                                {!employee.branch_id && !employee.branch_name && (
+                                                    <div className={'text-muted'}>Geen...</div>
+                                                )}
+                                            </td>
+                                            <td
+                                                id={'employee_branch_number'}
+                                                data-dusk={'employeeBranchNumber'}>
+
+                                                <div className={employee?.branch_number ? '' : 'text-muted'}>
+                                                    {strLimit(employee.branch_number, 32) || 'Geen...'}
+                                                </div>
                                             </td>
                                             {activeOrganization.identity_address != employee.identity_address && (
                                                 <td

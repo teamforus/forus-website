@@ -39,6 +39,10 @@ export class OrganizationService<T = Organization> {
         return this.apiRequest.patch<ApiResponseSingle<T>>(`${this.prefix}/${id}/roles`, data);
     }
 
+    public updateBankFields(id: number, data = {}) {
+        return this.apiRequest.patch<ApiResponseSingle<T>>(`${this.prefix}/${id}/bank-fields`, data);
+    }
+
     public use(id?: number): void {
         localStorage.setItem('active_organization', id?.toString());
     }

@@ -3832,6 +3832,37 @@ body {
             margin-right: 5px;
             color: var(--color-primary);
         }
+
+        &.block-info-list {
+            border-style: solid;
+            padding: 12px;
+            color: #151B26;
+
+            .block-info-list-title {
+                display: flex;
+                font: 500 12px/19px var(--base-font);
+                margin: 0 0 5px 0;
+            }
+
+            .block-info-icon {
+                margin: 0 5px 0px 0;
+            }
+
+            .block-info-list-items {
+                margin: 0 0 0 25px;
+                list-style-type: disc;
+                list-style-position: inside;
+
+                .block-info-list-item {
+                    font: 500 12px/24px var(--base-font);
+
+                    .block-info-list-item-value {
+                        margin: 0 0 0 5px;
+                        color: #646F79;
+                    }
+                }
+            }
+        }
     }
 
     &.block-auth-type {

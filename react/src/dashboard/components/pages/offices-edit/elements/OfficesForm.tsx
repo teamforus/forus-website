@@ -31,6 +31,10 @@ export default function OfficesForm({ organization, id }: { organization: Organi
     const [office, setOffice] = useState<Office>(null);
     const [mediaFile, setMediaFile] = useState<Blob>(null);
 
+    const [showBranchNameTooltip, setShowBranchNameTooltip] = useState<boolean>(false);
+    const [showBranchIdTooltip, setShowBranchIdTooltip] = useState<boolean>(false);
+    const [showBranchNumberTooltip, setShowBranchNumberTooltip] = useState<boolean>(false);
+
     const fetchOffice = useCallback(
         (id) => {
             setProgress(0);
@@ -64,6 +68,9 @@ export default function OfficesForm({ organization, id }: { organization: Organi
     const form = useFormBuilder<{
         address?: string;
         phone?: string;
+        branch_number?: string;
+        branch_name?: string;
+        branch_id?: string;
         schedule?: Array<OfficeSchedule>;
     }>(null, (values) => {
         uploadMedia().then((media_uid: string) => {
@@ -124,7 +131,7 @@ export default function OfficesForm({ organization, id }: { organization: Organi
 
             <div className="card-section card-section-primary">
                 <div className="row">
-                    <div className="col col-xs-12 col-md-9">
+                    <div className="col col-xs-12 col-md-12">
                         <div className="form-group form-group-inline">
                             <label className="form-label">&nbsp;</label>
                             <div className="form-offset">
@@ -140,7 +147,7 @@ export default function OfficesForm({ organization, id }: { organization: Organi
             </div>
             <div className="card-section card-section-primary">
                 <div className="row">
-                    <div className="col col-xs-12 col-md-9">
+                    <div className="col col-xs-12 col-md-12">
                         <div className="form-group form-group-inline">
                             <label className="form-label form-label-required">{t('offices_edit.labels.address')}</label>
                             <input
@@ -167,6 +174,115 @@ export default function OfficesForm({ organization, id }: { organization: Organi
                     </div>
                 </div>
             </div>
+
+            <div className="card-section card-section-primary">
+                <div className="row">
+                    <div className="col col-xs-12 col-md-12">
+                        <div className="form-group form-group-inline">
+                            <label className="form-label">{t('offices_edit.labels.branch_number')}</label>
+                            <div className="form-group-info">
+                                <div className="form-group-info-control">
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        placeholder={t('offices_edit.labels.branch_number')}
+                                        value={form.values?.branch_number || ''}
+                                        onChange={(e) => form.update({ branch_number: e.target.value })}
+                                    />
+
+                                    <div className="form-group-info-button">
+                                        <div
+                                            className={`button button-default button-icon pull-left ${showBranchNumberTooltip ? 'active' : ''}`} 
+                                            onClick={() => { setShowBranchNumberTooltip(!showBranchNumberTooltip) }}>
+                                            <em className="mdi mdi-information"></em>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <FormError error={form.errors?.branch_number} />
+                        </div>
+
+                        {showBranchNumberTooltip && (
+                            <div className="form-group form-group-inline">
+                                <label className="form-label"></label>
+                                <div className="form-offset block block-info">
+                                    <em className="mdi mdi-information block-info-icon" />
+                                    {t('offices_edit.info.branch_number')}
+                                </div>
+                            </div>
+                        )}
+
+                        <div className="form-group form-group-inline">
+                            <label className="form-label">{t('offices_edit.labels.branch_name')}</label>
+                            <div className="form-group-info">
+                                <div className="form-group-info-control">
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        placeholder={t('offices_edit.labels.branch_name')}
+                                        value={form.values?.branch_name || ''}
+                                        onChange={(e) => form.update({ branch_name: e.target.value })}
+                                    />
+
+                                    <div className="form-group-info-button">
+                                        <div
+                                            className={`button button-default button-icon pull-left ${showBranchNameTooltip ? 'active' : ''}`} 
+                                            onClick={() => { setShowBranchNameTooltip(!showBranchNameTooltip) } }>
+                                            <em className="mdi mdi-information"></em>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <FormError error={form.errors?.branch_name} />
+                        </div>
+
+                        {showBranchNameTooltip && (
+                            <div className="form-group form-group-inline">
+                                <label className="form-label"></label>
+                                <div className="form-offset block block-info">
+                                    <em className="mdi mdi-information block-info-icon" />
+                                    {t('offices_edit.info.branch_name')}
+                                </div>
+                            </div>
+                        )}
+
+                        <div className="form-group form-group-inline">
+                            <label className="form-label">{t('offices_edit.labels.branch_id')}</label>
+                            <div className="form-group-info">
+                                <div className="form-group-info-control">
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        placeholder={t('offices_edit.labels.branch_id')}
+                                        value={form.values?.branch_id || ''}
+                                        onChange={(e) => form.update({ branch_id: e.target.value })}
+                                    />
+
+                                    <div className="form-group-info-button">
+                                        <div
+                                            className={`button button-default button-icon pull-left ${showBranchIdTooltip ? 'active' : ''}`} 
+                                            onClick={() => { setShowBranchIdTooltip(!showBranchIdTooltip) } }>
+                                            <em className="mdi mdi-information"></em>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <FormError error={form.errors?.branch_id} />
+                        </div>
+
+                        {showBranchIdTooltip && (
+                            <div className="form-group form-group-inline">
+                                <label className="form-label"></label>
+                                <div className="form-offset block block-info">
+                                    <em className="mdi mdi-information block-info-icon" />
+                                    {t('offices_edit.info.branch_id')}
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            </div>
+
             <div className="card-section card-section-primary">
                 <div className="row">
                     <div className="col col-xs-12 col-md-12">

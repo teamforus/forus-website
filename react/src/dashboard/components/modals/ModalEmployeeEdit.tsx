@@ -63,6 +63,15 @@ export default function ModalEmployeeEdit({
         [form],
     );
 
+    let branches = organization.branches.filter((branch) => branch.branch_full_name);
+    branches.unshift({ 
+        id: 0, 
+        branch_full_name: 'Selecteer vestiging',
+        branch_name: '',
+        branch_number: '',
+        branch_id: '',
+    });
+
     useEffect(() => {
         roleService.list().then((res) => setRoles(res.data.data));
     }, [roleService]);
@@ -99,6 +108,28 @@ export default function ModalEmployeeEdit({
                                     onChange={(e) => form.update({ email: e.target.value })}
                                 />
                                 <FormError error={form.errors['email']} />
+                            </div>
+                        )}
+
+                        {!employee && (
+                            <div className="form-group">
+                                <label htmlFor="" className="form-label form-label-required">
+                                    Selecteer vestiging
+                                </label>
+
+                                <select
+                                    className="form-control"
+                                    value={form.values.office_id}
+                                    onChange={(e) => {
+                                        form.update({ office_id: parseInt(e.target.value) });
+                                    }}>
+                                    { branches.map((branch) => (
+                                        <option key={branch.id} value={branch.id}>
+                                            {branch.branch_full_name}
+                                        </option>
+                                    ))}
+                                </select>
+                                <FormError error={form.errors['office_id']} />
                             </div>
                         )}
 
