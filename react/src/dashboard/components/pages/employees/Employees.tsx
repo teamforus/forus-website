@@ -2,7 +2,7 @@ import React, { Fragment, useCallback, useContext, useEffect, useState } from 'r
 import { mainContext } from '../../../contexts/MainContext';
 import { useEmployeeService } from '../../../services/EmployeeService';
 import { NavLink } from 'react-router-dom';
-import { classList, hasPermission } from '../../../helpers/utils';
+import { hasPermission } from '../../../helpers/utils';
 import { getStateRouteUrl } from '../../../modules/state_router/Router';
 import { t } from 'i18next';
 import useFilter from '../../../hooks/useFilter';
@@ -161,14 +161,14 @@ export default function Employees() {
                     }}
                     buttonSubmit={{
                         onClick: () => {
-                            employeeService.delete(activeOrganization.id, employee.id).then(
-                                () => {
+                            employeeService
+                                .delete(activeOrganization.id, employee.id)
+                                .then(() => {
                                     filter.update({});
                                     pushSuccess('Gelukt!', 'Medewerker verwijderd.');
                                     modal.close();
-                                },
-                                (res) => pushDanger(res.data.message),
-                            );
+                                })
+                                .catch((res: ResponseError) => pushDanger(res.data.message));
                         },
                         text: t('modals.danger_zone.remove_organization_employees.buttons.confirm'),
                     }}
@@ -249,7 +249,6 @@ export default function Employees() {
                                         <th>{t('organization_employees.labels.email')}</th>
                                         <th>{t('organization_employees.labels.branch_name_id')}</th>
                                         <th>{t('organization_employees.labels.branch_number')}</th>
-                                        <th>{t('organization_employees.labels.roles')}</th>
                                         <th>{t('organization_employees.labels.auth_2fa')}</th>
                                         <th className={'text-right'}>{t('organization_employees.labels.actions')}</th>
                                     </tr>
@@ -257,56 +256,42 @@ export default function Employees() {
                                 <tbody>
                                     {employees?.data.map((employee: Employee) => (
                                         <tr key={employee.id} data-dusk={`employeeRow${employee.id}`}>
-                                            <td
-                                                id={'employee_email'}
-                                                data-dusk={'employeeEmail'}
-                                                className={'text-primary'}>
-                                                {employee.email || strLimit(employee.identity_address, 32)}
+                                            <td id={'employee_email'} data-dusk={'employeeEmail'}>
+                                                <div className={'text-primary'}>
+                                                    {employee.email || strLimit(employee.identity_address, 32)}
+                                                </div>
+                                                {activeOrganization.identity_address != employee.identity_address ? (
+                                                    <div className={'text-muted'}>
+                                                        {strLimit(rolesList(employee) || 'Geen...', 32)}
+                                                    </div>
+                                                ) : (
+                                                    <div className="text-muted">
+                                                        {t('organization_employees.labels.owner')}
+                                                    </div>
+                                                )}
                                             </td>
-                                            <td
-                                                id={'employee_branch_name'}
-                                                data-dusk={'employeeBranchName'}>
-
-                                                {employee?.branch_name && (
-                                                    <div className='text-primary'>
-                                                        {strLimit(employee.branch_name, 32)}
+                                            <td>
+                                                {employee?.branch?.name && (
+                                                    <div className="text-primary">
+                                                        {strLimit(employee.branch?.name, 32)}
                                                     </div>
                                                 )}
 
-                                                {employee?.branch_id && (
+                                                {employee?.branch?.id && (
                                                     <div>
-                                                        ID <strong>{strLimit(employee.branch_id, 32)}</strong>
+                                                        ID <strong>{strLimit(employee.branch?.id, 32)}</strong>
                                                     </div>
                                                 )}
 
-                                                {!employee.branch_id && !employee.branch_name && (
+                                                {!employee.branch?.id && !employee.branch?.name && (
                                                     <div className={'text-muted'}>Geen...</div>
                                                 )}
                                             </td>
-                                            <td
-                                                id={'employee_branch_number'}
-                                                data-dusk={'employeeBranchNumber'}>
-
-                                                <div className={employee?.branch_number ? '' : 'text-muted'}>
-                                                    {strLimit(employee.branch_number, 32) || 'Geen...'}
+                                            <td>
+                                                <div className={employee?.branch?.number ? '' : 'text-muted'}>
+                                                    {strLimit(employee.branch?.number?.toString(), 32) || 'Geen...'}
                                                 </div>
                                             </td>
-                                            {activeOrganization.identity_address != employee.identity_address && (
-                                                <td
-                                                    className={classList([
-                                                        'nowrap',
-                                                        employee.roles.length > 0 ? '' : 'text-muted',
-                                                    ])}>
-                                                    {rolesList(employee)}
-                                                </td>
-                                            )}
-                                            {activeOrganization.identity_address == employee.identity_address && (
-                                                <td className={classList(['nowrap'])}>
-                                                    <div className="text-primary">
-                                                        {t('organization_employees.labels.owner')}
-                                                    </div>
-                                                </td>
-                                            )}
                                             <td>
                                                 {employee.is_2fa_configured && (
                                                     <div className="td-state-2fa">

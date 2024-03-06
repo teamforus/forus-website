@@ -15,6 +15,9 @@ import OfficeSchedule from '../../../props/models/OfficeSchedule';
 import ModalNotification from '../../modals/ModalNotification';
 import useSetProgress from '../../../hooks/useSetProgress';
 import StateNavLink from '../../../modules/state_router/StateNavLink';
+import usePushSuccess from '../../../hooks/usePushSuccess';
+import usePushDanger from '../../../hooks/usePushDanger';
+import { ResponseError } from '../../../props/ApiResponses';
 
 interface OfficeLocal extends Office {
     scheduleByDay: { [key: string]: OfficeSchedule };
@@ -29,6 +32,8 @@ export default function Offices() {
 
     const officeService = useOfficeService();
     const setProgress = useSetProgress();
+    const pushSuccess = usePushSuccess();
+    const pushDanger = usePushDanger();
 
     const [weekDays] = useState(officeService.scheduleWeekDays());
     const [offices, setOffices] = useState<Array<OfficeLocal>>(null);
@@ -36,7 +41,7 @@ export default function Offices() {
 
     const filter = useFilter({
         q: '',
-    }, ['q']);
+    });
 
     const fetchOffices = useCallback(() => {
         setProgress(0);
@@ -60,7 +65,7 @@ export default function Offices() {
     const toggleCollapsable = useCallback((office_id: number) => {
         setShowCollapsible((set) => ({
             ...set,
-            [office_id]: !set[office_id]
+            [office_id]: !set[office_id],
         }));
     }, []);
 
@@ -74,7 +79,13 @@ export default function Offices() {
                     buttonSubmit={{
                         onClick: () => {
                             modal.close();
-                            officeService.destroy(office.organization_id, office.id).then(fetchOffices);
+                            officeService
+                                .destroy(office.organization_id, office.id)
+                                .then(() => {
+                                    fetchOffices();
+                                    pushSuccess('Vestiging is verwijderd.');
+                                })
+                                .catch((err: ResponseError) => pushDanger(err.data.message));
                         },
                     }}
                     buttonCancel={{
@@ -83,7 +94,7 @@ export default function Offices() {
                 />
             ));
         },
-        [t, fetchOffices, officeService, openModal],
+        [openModal, t, officeService, fetchOffices, pushSuccess, pushDanger],
     );
 
     useEffect(() => {
@@ -166,9 +177,9 @@ export default function Offices() {
             {offices && (
                 <div className="card">
                     <div className="card-header">
-                        <div className='flex-row'>
-                            <div className='flex-col flex-grow'>
-                                <div className='card-title'>{t('offices.labels.offices')}</div>
+                        <div className="flex-row">
+                            <div className="flex-col flex-grow">
+                                <div className="card-title">{t('offices.labels.offices')}</div>
                             </div>
 
                             <div className="flex">
@@ -177,7 +188,7 @@ export default function Offices() {
                                         name={'offices-create'}
                                         params={{ organizationId: activeOrganization.id }}
                                         className="button button-primary">
-                                        <em className="mdi mdi-plus-circle icon-start"/>
+                                        <em className="mdi mdi-plus-circle icon-start" />
                                         Voeg een nieuwe vestiging toe
                                     </StateNavLink>
 
@@ -215,58 +226,68 @@ export default function Offices() {
                                     {offices?.map((office) => (
                                         <tbody key={office.id}>
                                             <tr>
-                                                <td onClick={() => {toggleCollapsable(office.id)}}>
+                                                <td onClick={() => toggleCollapsable(office.id)}>
                                                     <div className="td-collapsable">
                                                         <div className="collapsable-icon">
-                                                            <div className={`mdi icon-collapse ${showCollapsible[office.id] ? 'mdi-menu-down' : 'mdi-menu-right'}`}>
-                                                            </div>
+                                                            <div
+                                                                className={`mdi icon-collapse ${
+                                                                    showCollapsible[office.id]
+                                                                        ? 'mdi-menu-down'
+                                                                        : 'mdi-menu-right'
+                                                                }`}></div>
                                                         </div>
                                                         {office.address}
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <div>{office.branch_name}</div>
-
-                                                    {!office.branch_name && (
+                                                    {office.branch_name ? (
+                                                        <div>{office.branch_name}</div>
+                                                    ) : (
                                                         <div className="text-muted">Geen naam...</div>
                                                     )}
                                                 </td>
                                                 <td>{office.phone}</td>
                                                 <td>
-                                                    <div>{office.branch_number}</div>
-
-                                                    {!office.branch_number && (
+                                                    {office.branch_number ? (
+                                                        <div>{office.branch_number}</div>
+                                                    ) : (
                                                         <div className="text-muted">Geen...</div>
                                                     )}
                                                 </td>
                                                 <td>
-                                                    <div>{office.branch_id}</div>
-
-                                                    {!office.branch_id && (
+                                                    {office.branch_id ? (
+                                                        <div>{office.branch_id}</div>
+                                                    ) : (
                                                         <div className="text-muted">Geen...</div>
                                                     )}
                                                 </td>
                                                 <td className="text-right">
                                                     <div className="button-group">
                                                         <StateNavLink
-                                                            name='offices-edit'
-                                                            params={{ organizationId: activeOrganization.id, id: office.id }}
+                                                            name="offices-edit"
+                                                            params={{
+                                                                organizationId: activeOrganization.id,
+                                                                id: office.id,
+                                                            }}
                                                             className="button button-default button-icon">
                                                             <em className="mdi mdi-pencil-outline icon-start" />
                                                         </StateNavLink>
 
-                                                        <a className="button button-default button-icon"
+                                                        <button
+                                                            type={'button'}
+                                                            disabled={office.employees_count > 0}
+                                                            className="button button-default button-icon"
                                                             onClick={() => deleteOffice(office)}>
                                                             <em className="mdi mdi-delete icon-start" />
-                                                        </a>
+                                                        </button>
                                                     </div>
                                                 </td>
                                             </tr>
 
-                                            {showCollapsible[office.id] && (                                                        
+                                            {showCollapsible[office.id] && (
                                                 <tr className="dim">
                                                     <td className="paddless" colSpan={6}>
-                                                        <div className="card-title">Openingstijden</div>
+                                                        <div className="card-heading">Openingstijden</div>
 
                                                         {Object.keys(weekDays)?.map((weekDayKey) => (
                                                             <div
@@ -279,10 +300,14 @@ export default function Offices() {
                                                                 }}
                                                                 className="card-block card-block-listing card-block-listing-inline card-block-listing-variant card-block-listing-no-pad"
                                                                 key={weekDayKey}>
-                                                                <div className="card-block-listing-label">{weekDays[weekDayKey]}</div>
-                                                                {office.scheduleByDay[weekDayKey]?.start_time || 'Geen data'}
+                                                                <div className="card-block-listing-label">
+                                                                    {weekDays[weekDayKey]}
+                                                                </div>
+                                                                {office.scheduleByDay[weekDayKey]?.start_time ||
+                                                                    'Geen data'}
                                                                 {' - '}
-                                                                {office.scheduleByDay[weekDayKey]?.end_time || 'Geen data'}
+                                                                {office.scheduleByDay[weekDayKey]?.end_time ||
+                                                                    'Geen data'}
                                                             </div>
                                                         ))}
                                                     </td>
@@ -294,7 +319,7 @@ export default function Offices() {
                             </div>
                         </div>
                     </div>
-                </div>    
+                </div>
             )}
 
             {!offices?.length && (

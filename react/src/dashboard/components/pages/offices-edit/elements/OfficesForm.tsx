@@ -68,7 +68,7 @@ export default function OfficesForm({ organization, id }: { organization: Organi
     const form = useFormBuilder<{
         address?: string;
         phone?: string;
-        branch_number?: string;
+        branch_number?: number;
         branch_name?: string;
         branch_id?: string;
         schedule?: Array<OfficeSchedule>;
@@ -183,18 +183,20 @@ export default function OfficesForm({ organization, id }: { organization: Organi
                             <div className="form-group-info">
                                 <div className="form-group-info-control">
                                     <input
-                                        type="text"
+                                        type="number"
                                         className="form-control"
                                         placeholder={t('offices_edit.labels.branch_number')}
                                         value={form.values?.branch_number || ''}
-                                        onChange={(e) => form.update({ branch_number: e.target.value })}
+                                        onChange={(e) => form.update({ branch_number: parseInt(e.target.value) })}
                                     />
 
                                     <div className="form-group-info-button">
                                         <div
-                                            className={`button button-default button-icon pull-left ${showBranchNumberTooltip ? 'active' : ''}`} 
-                                            onClick={() => { setShowBranchNumberTooltip(!showBranchNumberTooltip) }}>
-                                            <em className="mdi mdi-information"></em>
+                                            className={`button button-default button-icon pull-left ${
+                                                showBranchNumberTooltip ? 'active' : ''
+                                            }`}
+                                            onClick={() => setShowBranchNumberTooltip(!showBranchNumberTooltip)}>
+                                            <em className="mdi mdi-information" />
                                         </div>
                                     </div>
                                 </div>
@@ -219,6 +221,8 @@ export default function OfficesForm({ organization, id }: { organization: Organi
                                     <input
                                         type="text"
                                         className="form-control"
+                                        minLength={3}
+                                        maxLength={100}
                                         placeholder={t('offices_edit.labels.branch_name')}
                                         value={form.values?.branch_name || ''}
                                         onChange={(e) => form.update({ branch_name: e.target.value })}
@@ -226,9 +230,11 @@ export default function OfficesForm({ organization, id }: { organization: Organi
 
                                     <div className="form-group-info-button">
                                         <div
-                                            className={`button button-default button-icon pull-left ${showBranchNameTooltip ? 'active' : ''}`} 
-                                            onClick={() => { setShowBranchNameTooltip(!showBranchNameTooltip) } }>
-                                            <em className="mdi mdi-information"></em>
+                                            className={`button button-default button-icon pull-left ${
+                                                showBranchNameTooltip ? 'active' : ''
+                                            }`}
+                                            onClick={() => setShowBranchNameTooltip(!showBranchNameTooltip)}>
+                                            <em className="mdi mdi-information" />
                                         </div>
                                     </div>
                                 </div>
@@ -253,6 +259,8 @@ export default function OfficesForm({ organization, id }: { organization: Organi
                                     <input
                                         type="text"
                                         className="form-control"
+                                        minLength={3}
+                                        maxLength={20}
                                         placeholder={t('offices_edit.labels.branch_id')}
                                         value={form.values?.branch_id || ''}
                                         onChange={(e) => form.update({ branch_id: e.target.value })}
@@ -260,9 +268,11 @@ export default function OfficesForm({ organization, id }: { organization: Organi
 
                                     <div className="form-group-info-button">
                                         <div
-                                            className={`button button-default button-icon pull-left ${showBranchIdTooltip ? 'active' : ''}`} 
-                                            onClick={() => { setShowBranchIdTooltip(!showBranchIdTooltip) } }>
-                                            <em className="mdi mdi-information"></em>
+                                            className={`button button-default button-icon pull-left ${
+                                                showBranchIdTooltip ? 'active' : ''
+                                            }`}
+                                            onClick={() => setShowBranchIdTooltip(!showBranchIdTooltip)}>
+                                            <em className="mdi mdi-information" />
                                         </div>
                                     </div>
                                 </div>

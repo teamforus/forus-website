@@ -24,13 +24,6 @@ export default interface Organization {
     website?: string;
     iban?: string;
     btw?: string;
-    branches?: Array<{
-        id: number;
-        branch_full_name: string;
-        branch_name: string;
-        branch_number: string;
-        branch_id: string;
-    }>;
     bi_connection_auth_type: 'header' | 'disabled' | 'parameter';
     bi_connection_token: string;
     bi_connection_url: string;
@@ -69,11 +62,13 @@ export default interface Organization {
     can_view_provider_extra_payments?: boolean;
     allow_extra_payments_by_sponsor?: boolean;
     can_receive_extra_payments?: boolean;
-    bank_transaction_id?: boolean;
-    bank_transaction_date?: boolean;
-    bank_branch_number?: boolean;
-    bank_branch_id?: boolean;
-    bank_branch_name?: boolean;
-    bank_fund_name?: boolean;
-    bank_note?: boolean;
+    bank_statement_details?: {
+        bank_transaction_id?: boolean;
+        bank_transaction_date?: boolean;
+        bank_branch_number?: boolean;
+        bank_branch_id?: boolean;
+        bank_branch_name?: boolean;
+        bank_fund_name?: boolean;
+        bank_note?: boolean;
+    };
 }

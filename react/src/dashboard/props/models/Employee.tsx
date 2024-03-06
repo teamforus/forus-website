@@ -11,10 +11,12 @@ export default interface Employee {
         name: string;
     };
     office_id?: number;
-    branch_full_name?: string;
-    branch_name?: string;
-    branch_id?: string;
-    branch_number?: string;
     roles: Array<Role>;
     permissions: Array<string>;
+    branch: {
+        id: string;
+        name: string;
+        number: number;
+        full_name: string;
+    };
 }

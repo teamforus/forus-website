@@ -415,6 +415,10 @@
         &:last-child {
             margin-bottom: -10px;
         }
+
+        &.form-hint-margin-less {
+            margin-bottom: 0;
+        }
     }
 
     .form-actions {

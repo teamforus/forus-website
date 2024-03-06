@@ -782,9 +782,7 @@ export default function Transactions() {
                                             {isProvider && (
                                                 <td>
                                                     {transaction?.branch_name && (
-                                                        <div className='text-primary'>
-                                                            {transaction?.branch_name}
-                                                        </div>
+                                                        <div className="text-primary">{transaction?.branch_name}</div>
                                                     )}
 
                                                     {transaction?.branch_id && (
@@ -801,7 +799,8 @@ export default function Transactions() {
                                             {isProvider && (
                                                 <td>
                                                     <div className={transaction?.branch_number ? '' : 'text-muted'}>
-                                                        {strLimit(transaction.branch_number, 32) || 'Geen...'}
+                                                        {strLimit(transaction.branch_number?.toString(), 32) ||
+                                                            'Geen...'}
                                                     </div>
                                                 </td>
                                             )}

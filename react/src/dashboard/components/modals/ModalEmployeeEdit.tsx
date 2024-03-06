@@ -11,6 +11,9 @@ import { ModalButton } from './elements/ModalButton';
 import CheckboxControl from '../elements/forms/controls/CheckboxControl';
 import Role from '../../props/models/Role';
 import { ResponseError } from '../../props/ApiResponses';
+import SelectControl from '../elements/select-control/SelectControl';
+import SelectControlOptions from '../elements/select-control/templates/SelectControlOptions';
+import useOfficeService from '../../services/OfficeService';
 
 export default function ModalEmployeeEdit({
     modal,
@@ -30,10 +33,12 @@ export default function ModalEmployeeEdit({
     const [roles, setRoles] = useState([]);
     const roleService = useRoleService();
     const employeeService = useEmployeeService();
+    const officeService = useOfficeService();
 
     const form = useFormBuilder(
         {
             email: employee?.email || '',
+            office_id: employee?.office_id || null,
             roles: employee?.roles.reduce((list, role) => ({ ...list, [role.id]: 1 }), {}) || {},
         },
         (values) => {
@@ -63,14 +68,23 @@ export default function ModalEmployeeEdit({
         [form],
     );
 
-    let branches = organization.branches.filter((branch) => branch.branch_full_name);
-    branches.unshift({ 
-        id: 0, 
-        branch_full_name: 'Selecteer vestiging',
-        branch_name: '',
-        branch_number: '',
-        branch_id: '',
-    });
+    const [offices, setOffices] = useState(null);
+
+    const fetchOffices = useCallback(() => {
+        officeService.list(organization.id).then((res) =>
+            setOffices([
+                {
+                    id: null,
+                    name: 'Selecteer vestiging',
+                },
+                ...res.data.data.map((office) => ({ id: office.id, name: office.branch_name || office.address })),
+            ]),
+        );
+    }, [officeService, organization.id]);
+
+    useEffect(() => {
+        fetchOffices();
+    }, [fetchOffices]);
 
     useEffect(() => {
         roleService.list().then((res) => setRoles(res.data.data));
@@ -111,24 +125,19 @@ export default function ModalEmployeeEdit({
                             </div>
                         )}
 
-                        {!employee && (
+                        {offices && (
                             <div className="form-group">
                                 <label htmlFor="" className="form-label form-label-required">
                                     Selecteer vestiging
                                 </label>
-
-                                <select
-                                    className="form-control"
+                                <SelectControl
                                     value={form.values.office_id}
-                                    onChange={(e) => {
-                                        form.update({ office_id: parseInt(e.target.value) });
-                                    }}>
-                                    { branches.map((branch) => (
-                                        <option key={branch.id} value={branch.id}>
-                                            {branch.branch_full_name}
-                                        </option>
-                                    ))}
-                                </select>
+                                    propKey={'id'}
+                                    propValue={'name'}
+                                    onChange={(office_id: number) => form.update({ office_id })}
+                                    options={offices}
+                                    optionsComponent={SelectControlOptions}
+                                />
                                 <FormError error={form.errors['office_id']} />
                             </div>
                         )}
