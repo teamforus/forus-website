@@ -28,8 +28,9 @@ export default function ExtraPayments() {
     const paginatorService = usePaginatorService();
 
     const [loading, setLoading] = useState(false);
-    const [funds, setFunds] = useState(null);
     const [paginatorKey] = useState('extra_payments');
+
+    const [funds, setFunds] = useState(null);
     const [extraPayments, setExtraPayments] = useState<PaginationData<ExtraPayment>>(null);
 
     const filter = useFilter({
@@ -256,7 +257,15 @@ export default function ExtraPayments() {
                 </div>
             )}
 
-            {!loading && extraPayments?.meta.last_page > 1 && (
+            {!loading && extraPayments.meta.total === 0 && (
+                <div className="card-section">
+                    <div className="block block-empty text-center">
+                        <div className="empty-title">Geen extra payments gevonden</div>
+                    </div>
+                </div>
+            )}
+
+            {!loading && extraPayments?.meta && (
                 <div className="card-section">
                     <Paginator
                         meta={extraPayments.meta}
@@ -264,14 +273,6 @@ export default function ExtraPayments() {
                         updateFilters={filter.update}
                         perPageKey={paginatorKey}
                     />
-                </div>
-            )}
-
-            {!loading && extraPayments.meta.total === 0 && (
-                <div className="card-section">
-                    <div className="block block-empty text-center">
-                        <div className="empty-title">Geen extra payments gevonden</div>
-                    </div>
                 </div>
             )}
         </div>
