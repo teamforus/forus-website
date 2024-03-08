@@ -6,81 +6,45 @@ import useSetProgress from '../../../hooks/useSetProgress';
 import useEnvData from '../../../hooks/useEnvData';
 import LoadingCard from '../../elements/loading-card/LoadingCard';
 import StateNavLink from '../../../modules/state_router/StateNavLink';
-import { useParams, useSearchParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import KeyValueItem from '../../elements/key-value/KeyValueItem';
 import Tooltip from '../../elements/tooltip/Tooltip';
-import ThSortable from '../../elements/tables/ThSortable';
-import { currencyFormat, strLimit } from '../../../helpers/string';
-import Paginator from '../../../modules/paginator/components/Paginator';
 import TransactionBulk from '../../../props/models/TransactionBulk';
-import useFilter from '../../../hooks/useFilter';
 import ModalDangerZone from '../../modals/ModalDangerZone';
 import useOpenModal from '../../../hooks/useOpenModal';
 import usePushDanger from '../../../hooks/usePushDanger';
 import usePushSuccess from '../../../hooks/usePushSuccess';
 import { hasPermission } from '../../../helpers/utils';
-import Transaction from '../../../props/models/Transaction';
-import { PaginationData } from '../../../props/ApiResponses';
-import useTransactionService from '../../../services/TransactionService';
-import useTransactionExportService from '../../../services/exports/useTransactionExportService';
 import { BooleanParam, StringParam, useQueryParams } from 'use-query-params';
 import useMakeExporterService from '../../../services/exports/useMakeExporterService';
+import TransactionBulkTransactionsTable from './elements/TransactionBulkTransactionsTable';
+import Bank from '../../../props/models/Bank';
+import { ResponseError } from '../../../props/ApiResponses';
 
 export default function TransactionBulksView() {
     const { t } = useTranslation();
+    const envData = useEnvData();
+    const activeOrganization = useActiveOrganization();
+
     const openModal = useOpenModal();
     const pushDanger = usePushDanger();
     const pushSuccess = usePushSuccess();
-    const envData = useEnvData();
     const setProgress = useSetProgress();
-    const activeOrganization = useActiveOrganization();
+
     const transactionBulkService = useTransactionBulkService();
-    const transactionService = useTransactionService();
-    const transactionsExportService = useTransactionExportService();
-    const [, setSearchParams] = useSearchParams();
-    const { saveExportedData } = useMakeExporterService();
+    const exporterService = useMakeExporterService();
 
     const bulkId = parseInt(useParams().id);
+
     const [transactionBulk, setTransactionBulk] = useState<TransactionBulk>(null);
-    const [transactions, setTransactions] = useState<PaginationData<Transaction>>(null);
     const [resettingBulk, setResettingBulk] = useState(false);
     const [submittingBulk, setSubmittingBulk] = useState(false);
 
     const isSponsor = useMemo(() => envData.client_type == 'sponsor', [envData.client_type]);
 
-    const [{ success, error }] = useQueryParams({
+    const [{ success, error }, setParams] = useQueryParams({
         success: BooleanParam,
         error: StringParam,
-    });
-
-    useEffect(() => {
-        if (success === true) {
-            pushSuccess('Succes!', 'De bulk is bevestigd!');
-        }
-
-        if (error) {
-            pushDanger(
-                'Error!',
-                {
-                    canceled: 'Geannuleerd.',
-                    unknown: 'Er is iets misgegaan!',
-                }[error] || error,
-            );
-        }
-
-        if (success === true || error) {
-            setSearchParams((params) => {
-                params.delete('success');
-                params.delete('error');
-                return params;
-            });
-        }
-    }, [error, pushDanger, pushSuccess, setSearchParams, success]);
-
-    const filter = useFilter({
-        per_page: 20,
-        order_by: 'created_at',
-        order_dir: 'desc',
     });
 
     const fetchTransactionBulk = useCallback(() => {
@@ -92,29 +56,13 @@ export default function TransactionBulksView() {
             .finally(() => setProgress(100));
     }, [activeOrganization.id, setProgress, transactionBulkService, bulkId]);
 
-    const fetchTransactions = useCallback(
-        (id) => {
-            setProgress(0);
-
-            transactionService
-                .list(envData.client_type, activeOrganization.id, {
-                    ...filter.activeValues,
-                    voucher_transaction_bulk_id: id,
-                })
-                .then((res) => setTransactions(res.data))
-                .catch((res) => pushDanger('Mislukt!', res.data?.message))
-                .finally(() => setProgress(100));
-        },
-        [setProgress, transactionService, envData.client_type, activeOrganization.id, filter.activeValues, pushDanger],
-    );
-
-    const canManage = useMemo(
+    const canManageBulks = useMemo(
         () => hasPermission(activeOrganization, 'manage_transaction_bulks'),
         [activeOrganization],
     );
 
     const confirmDangerAction = useCallback(
-        (title, description, onSubmit?: () => void, onCancel?: () => void) => {
+        (title: string, description: string, onSubmit?: () => void, onCancel?: () => void) => {
             openModal((modal) => (
                 <ModalDangerZone
                     modal={modal}
@@ -123,18 +71,14 @@ export default function TransactionBulksView() {
                     buttonSubmit={{
                         text: 'Bevestigen',
                         onClick: () => {
-                            if (typeof onSubmit == 'function') {
-                                onSubmit();
-                            }
+                            onSubmit?.();
                             modal.close();
                         },
                     }}
                     buttonCancel={{
                         text: 'Annuleren',
                         onClick: () => {
-                            if (typeof onCancel == 'function') {
-                                onCancel();
-                            }
+                            onCancel?.();
                             modal.close();
                         },
                     }}
@@ -145,7 +89,7 @@ export default function TransactionBulksView() {
     );
 
     const confirmReset = useCallback(
-        (bank, onConfirm) => {
+        (bank: Bank, onConfirm: () => void) => {
             if (bank.key === 'bunq') {
                 // Reset Bunq bulk confirmation
                 return confirmDangerAction(
@@ -179,7 +123,7 @@ export default function TransactionBulksView() {
     );
 
     const confirmSubmitToBNG = useCallback(
-        (onConfirm) => {
+        (onConfirm: () => void) => {
             confirmDangerAction(
                 'Betalingsverkeer via de BNG',
                 [
@@ -193,18 +137,14 @@ export default function TransactionBulksView() {
     );
 
     const confirmExport = useCallback(
-        (onConfirm) => {
-            confirmDangerAction(
-                'Exporteer SEPA bestand',
-                ['Weet u zeker dat u het bestand wilt exporteren?'].join(' '),
-                onConfirm,
-            );
+        (onConfirm: () => void) => {
+            confirmDangerAction('Exporteer SEPA bestand', 'Weet u zeker dat u het bestand wilt exporteren?', onConfirm);
         },
         [confirmDangerAction],
     );
 
     const confirmSetPaidExport = useCallback(
-        (onConfirm) => {
+        (onConfirm: () => void) => {
             confirmDangerAction(
                 'Markeer bulk lijst als betaald',
                 [
@@ -219,8 +159,8 @@ export default function TransactionBulksView() {
     );
 
     const onError = useCallback(
-        (err) => {
-            pushDanger('Mislukt!', err && err?.data?.message ? err.data.message : 'Er ging iets mis!');
+        (err: ResponseError = null) => {
+            pushDanger('Mislukt!', err?.data?.message || 'Er ging iets mis!');
         },
         [pushDanger],
     );
@@ -234,20 +174,16 @@ export default function TransactionBulksView() {
 
             transactionBulkService
                 .reset(activeOrganization.id, transactionBulk.id)
-                .then(
-                    (res) => {
-                        if (bank.key === 'bunq') {
-                            pushSuccess(`Succes!`, `Accepteer de transacties via uw bank.`);
-                        }
+                .then((res) => {
+                    if (bank.key === 'bunq') {
+                        pushSuccess(`Succes!`, `Accepteer de transacties via uw bank.`);
+                    }
 
-                        if (bank.key === 'bng') {
-                            document.location = res.data.data.auth_url;
-                        }
-                    },
-                    (res) => {
-                        onError(res);
-                    },
-                )
+                    if (bank.key === 'bng') {
+                        document.location = res.data.data.auth_url;
+                    }
+                })
+                .catch((res) => onError(res))
                 .finally(() => {
                     setResettingBulk(false);
                     setProgress(100);
@@ -270,18 +206,14 @@ export default function TransactionBulksView() {
 
             transactionBulkService
                 .submit(activeOrganization.id, transactionBulk.id)
-                .then(
-                    (res) => {
-                        if (res.data.data.auth_url) {
-                            return (document.location = res.data.data.auth_url); // todo ask
-                        }
+                .then((res) => {
+                    if (!res.data?.data?.auth_url) {
+                        onError();
+                    }
 
-                        onError(res);
-                    },
-                    (res) => {
-                        onError(res);
-                    },
-                )
+                    document.location = res.data.data.auth_url;
+                })
+                .catch((res: ResponseError) => onError(res))
                 .finally(() => {
                     setSubmittingBulk(false);
                     setProgress(100);
@@ -289,37 +221,31 @@ export default function TransactionBulksView() {
         });
     }, [activeOrganization.id, confirmSubmitToBNG, onError, setProgress, transactionBulk?.id, transactionBulkService]);
 
-    const exportTransactions = useCallback(() => {
-        transactionsExportService.exportData(activeOrganization.id, {
-            ...filter.activeValues,
-            voucher_transaction_bulk_id: transactionBulk.id,
-            per_page: null,
-        });
-    }, [activeOrganization.id, filter.activeValues, transactionBulk?.id, transactionsExportService]);
-
     const exportSepa = useCallback(() => {
         confirmExport(() => {
             setProgress(0);
 
             transactionBulkService
                 .exportSepa(activeOrganization.id, transactionBulk.id)
-                .then((res) =>
-                    saveExportedData(
+                .then((res) => {
+                    exporterService.saveExportedData(
                         { data_format: 'xml', fields: '' },
                         activeOrganization.id,
                         res,
                         transactionBulk.id,
-                    ),
-                )
+                    );
+                    fetchTransactionBulk();
+                })
                 .finally(() => setProgress(100));
         });
     }, [
-        activeOrganization.id,
         confirmExport,
         setProgress,
-        transactionBulk?.id,
         transactionBulkService,
-        saveExportedData,
+        activeOrganization.id,
+        transactionBulk?.id,
+        exporterService,
+        fetchTransactionBulk,
     ]);
 
     const acceptManually = useCallback(() => {
@@ -328,15 +254,11 @@ export default function TransactionBulksView() {
 
             transactionBulkService
                 .acceptManually(activeOrganization.id, transactionBulk.id)
-                .then(
-                    () => {
-                        pushSuccess(`Succes!`, `De bulk lijst is handmatig geaccepteerd.`);
-                        fetchTransactionBulk();
-                    },
-                    (res) => {
-                        pushDanger('Mislukt!', res && res?.data?.message ? res.data.message : 'Er ging iets mis!');
-                    },
-                )
+                .then(() => {
+                    pushSuccess(`Succes!`, `De bulk lijst is handmatig geaccepteerd.`);
+                    fetchTransactionBulk();
+                })
+                .catch((res) => pushDanger('Mislukt!', res?.data?.message || 'Er ging iets mis!'))
                 .finally(() => setProgress(100));
         });
     }, [
@@ -351,14 +273,22 @@ export default function TransactionBulksView() {
     ]);
 
     useEffect(() => {
-        fetchTransactionBulk();
-    }, [fetchTransactionBulk]);
+        if (success === true) {
+            pushSuccess('Succes!', 'De bulk is bevestigd!');
+        }
+
+        if (error) {
+            pushDanger('Error!', { canceled: 'Geannuleerd.', unknown: 'Er is iets misgegaan!' }[error] || error);
+        }
+
+        if (success === true || error) {
+            setParams({ success: null, error: null });
+        }
+    }, [error, pushDanger, pushSuccess, setParams, success]);
 
     useEffect(() => {
-        if (transactionBulk?.id) {
-            fetchTransactions(transactionBulk.id);
-        }
-    }, [fetchTransactions, transactionBulk?.id]);
+        fetchTransactionBulk();
+    }, [fetchTransactionBulk]);
 
     if (!transactionBulk) {
         return <LoadingCard />;
@@ -374,7 +304,7 @@ export default function TransactionBulksView() {
                     {t('page_state_titles.transactions')}
                 </StateNavLink>
 
-                <div className="breadcrumb-item active">{'#' + transactionBulk.id}</div>
+                <div className="breadcrumb-item active">{`#${transactionBulk.id}`}</div>
             </div>
 
             <div className="card">
@@ -384,7 +314,7 @@ export default function TransactionBulksView() {
                             <div className="card-title">{t('financial_dashboard_transaction.labels.details')}</div>
                         </div>
 
-                        {canManage && (
+                        {canManageBulks && (
                             <div className="flex">
                                 <div className="button-group">
                                     {transactionBulk.bank.key === 'bng' && (
@@ -393,7 +323,7 @@ export default function TransactionBulksView() {
                                                 <a
                                                     className="button button-default button-sm"
                                                     href={transactionBulk.auth_url}>
-                                                    <div className="mdi mdi-link icon-start" />
+                                                    <em className="mdi mdi-link icon-start" />
                                                     Autoriseer
                                                 </a>
                                             )}
@@ -435,20 +365,21 @@ export default function TransactionBulksView() {
                                         </Fragment>
                                     )}
 
-                                    {(transactionBulk.bank.key === 'bng' && transactionBulk.state == 'pending') ||
-                                        (transactionBulk.bank.key === 'bunq' && transactionBulk.state == 'rejected' && (
-                                            <button
-                                                className="button button-danger button-sm"
-                                                onClick={() => resetPaymentRequest()}
-                                                disabled={submittingBulk || resettingBulk}>
-                                                {resettingBulk ? (
-                                                    <em className="mdi mdi-reload mdi-spin icon-start" />
-                                                ) : (
-                                                    <em className="mdi mdi-reload icon-start" />
-                                                )}
-                                                Verstuur bulktransactie opnieuw
-                                            </button>
-                                        ))}
+                                    {((transactionBulk.bank.key === 'bng' && transactionBulk.state == 'pending') ||
+                                        (transactionBulk.bank.key === 'bunq' &&
+                                            transactionBulk.state == 'rejected')) && (
+                                        <button
+                                            className="button button-danger button-sm"
+                                            onClick={() => resetPaymentRequest()}
+                                            disabled={submittingBulk || resettingBulk}>
+                                            {resettingBulk ? (
+                                                <em className="mdi mdi-reload mdi-spin icon-start" />
+                                            ) : (
+                                                <em className="mdi mdi-reload icon-start" />
+                                            )}
+                                            Verstuur bulktransactie opnieuw
+                                        </button>
+                                    )}
                                 </div>
                             </div>
                         )}
@@ -459,7 +390,7 @@ export default function TransactionBulksView() {
                         <div className="flex">
                             <div className="card-block card-block-keyvalue">
                                 <KeyValueItem label="Transactiewaarde">
-                                    {currencyFormat(transactionBulk.voucher_transactions_amount)}
+                                    {transactionBulk.voucher_transactions_amount_locale}
                                 </KeyValueItem>
 
                                 <KeyValueItem label={t('financial_dashboard_transaction.labels.id')}>
@@ -487,7 +418,7 @@ export default function TransactionBulksView() {
                                         )}
 
                                         <KeyValueItem label={t('financial_dashboard_transaction.labels.bunq')}>
-                                            {currencyFormat(transactionBulk.voucher_transactions_cost)}
+                                            {transactionBulk.voucher_transactions_cost_locale}
                                         </KeyValueItem>
                                     </Fragment>
                                 )}
@@ -525,7 +456,7 @@ export default function TransactionBulksView() {
                                     </Fragment>
                                 </KeyValueItem>
 
-                                {canManage &&
+                                {canManageBulks &&
                                     transactionBulk.bank.key === 'bng' &&
                                     transactionBulk.state == 'accepted' &&
                                     activeOrganization.allow_manual_bulk_processing && (
@@ -539,160 +470,8 @@ export default function TransactionBulksView() {
                 </div>
             </div>
 
-            {transactions && (
-                <div className="card">
-                    <div className="card-header">
-                        <div className="flex-row">
-                            <div className="flex flex-grow">
-                                <div className="card-title">
-                                    <span>{t('transactions.header.title')}</span>
-                                    <span className="span-count">{transactions.meta.total}</span>
-                                </div>
-                            </div>
-                            <div className="flex">
-                                <button
-                                    className="button button-primary button-sm"
-                                    onClick={() => exportTransactions()}>
-                                    <em className="mdi mdi-download icon-start" />
-                                    <span className="ng-scope">Exporteren</span>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="card-section">
-                        <div className="card-block card-block-table">
-                            <div className="table-wrapper">
-                                <table className="table">
-                                    <tbody>
-                                        <tr>
-                                            <ThSortable
-                                                filter={filter}
-                                                label={t('transactions.labels.id')}
-                                                value="id"
-                                            />
-
-                                            <ThSortable
-                                                filter={filter}
-                                                label={t('transactions.labels.uid')}
-                                                value="uid"
-                                            />
-
-                                            <ThSortable
-                                                filter={filter}
-                                                label={t('transactions.labels.price')}
-                                                value="amount"
-                                            />
-
-                                            <ThSortable
-                                                filter={filter}
-                                                label={t('transactions.labels.date')}
-                                                value="created_at"
-                                            />
-
-                                            <ThSortable
-                                                filter={filter}
-                                                label={t('transactions.labels.fund')}
-                                                value="fund_name"
-                                            />
-
-                                            <ThSortable
-                                                filter={filter}
-                                                label={t('transactions.labels.provider')}
-                                                value="provider_name"
-                                            />
-
-                                            <ThSortable
-                                                filter={filter}
-                                                label={t('transactions.labels.product_name')}
-                                                value="product_name"
-                                            />
-
-                                            <ThSortable
-                                                filter={filter}
-                                                label={t('transactions.labels.status')}
-                                                value="status"
-                                            />
-
-                                            <ThSortable
-                                                className={'th-narrow text-right'}
-                                                filter={filter}
-                                                label={t('transactions.labels.action')}
-                                            />
-                                        </tr>
-
-                                        {transactions?.data.map((transaction) => (
-                                            <tr key={transaction.id}>
-                                                <td>{transaction.id}</td>
-
-                                                <td title={transaction.uid || '-'}>
-                                                    {strLimit(transaction.uid || '-', 25)}
-                                                </td>
-
-                                                <td>
-                                                    <StateNavLink
-                                                        name={'transaction'}
-                                                        params={{
-                                                            organizationId: activeOrganization.id,
-                                                            address: transaction.address,
-                                                        }}
-                                                        className="text-primary-light">
-                                                        {transaction.amount_locale}
-                                                    </StateNavLink>
-                                                </td>
-
-                                                <td>
-                                                    <strong className="text-primary">
-                                                        {transaction.created_at_locale.split(' - ')[0]}
-                                                    </strong>
-                                                    <br />
-                                                    <strong className="text-strong text-md text-muted-dark">
-                                                        {transaction.created_at_locale.split(' - ')[1]}
-                                                    </strong>
-                                                </td>
-
-                                                <td>{strLimit(transaction.fund.name, 25)}</td>
-
-                                                <td className={transaction.organization ? '' : 'text-muted'}>
-                                                    {strLimit(transaction.organization?.name || '-', 25) || '-'}
-                                                </td>
-
-                                                <td>{strLimit(transaction.product?.name || '-', 25) || '-'}</td>
-
-                                                <td>
-                                                    <div
-                                                        className={
-                                                            transaction.state == 'success'
-                                                                ? 'label label-success'
-                                                                : 'label label-default'
-                                                        }>
-                                                        {transaction.state_locale}
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <StateNavLink
-                                                        name={'transaction'}
-                                                        params={{
-                                                            organizationId: activeOrganization.id,
-                                                            address: transaction.address,
-                                                        }}
-                                                        className="button button-sm button-primary button-icon pull-right">
-                                                        <em className="mdi mdi-eye-outline icon-start" />
-                                                    </StateNavLink>
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-
-                    {transactions?.meta.last_page > 1 && (
-                        <div className="card-section">
-                            <Paginator meta={transactions.meta} filters={filter.values} updateFilters={filter.update} />
-                        </div>
-                    )}
-                </div>
+            {transactionBulk && (
+                <TransactionBulkTransactionsTable organization={activeOrganization} transactionBulk={transactionBulk} />
             )}
         </Fragment>
     );

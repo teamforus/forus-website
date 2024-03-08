@@ -1,5 +1,5 @@
 export default interface Bank {
     id: number;
-    key: string;
+    key: 'bunq' | 'bng';
     name: string;
 }

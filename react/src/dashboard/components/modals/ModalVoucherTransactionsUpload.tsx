@@ -63,7 +63,7 @@ export default function ModalVoucherTransactionsUpload({
     }, [changed, modal, onCreated]);
 
     const makeDefaultNote = useCallback(
-        function (row: object): string {
+        (row: object): string => {
             return t('transactions.csv.default_note', {
                 ...row,
                 upload_date: dateFormat(new Date()),
@@ -74,16 +74,14 @@ export default function ModalVoucherTransactionsUpload({
     );
 
     const validateCsvData = useCallback(
-        function (data) {
-            const error =
-                data.length > maxLinesPerFile
-                    ? [
-                          `Het bestand mag niet meer dan ${maxLinesPerFile} transacties bevatten.`,
-                          `het huidige bestand bevat meer dan ${data.length} transacties.`,
-                      ].join(' ')
-                    : null;
+        (data) => {
+            const error = data.length > maxLinesPerFile;
+            const errorMessage = [
+                `Het bestand mag niet meer dan ${maxLinesPerFile} transacties bevatten.`,
+                `het huidige bestand bevat meer dan ${data.length} transacties.`,
+            ].join(' ');
 
-            setError(error);
+            setError(error ? errorMessage : null);
 
             return !error;
         },
@@ -103,10 +101,8 @@ export default function ModalVoucherTransactionsUpload({
 
                     // clean empty rows, trim fields and add default note
                     const data = body
-                        .filter((row) => {
-                            return row.filter((col) => !isEmpty(col)).length > 0;
-                        })
-                        .map((val) => {
+                        .filter((row) => row.filter((col) => !isEmpty(col)).length > 0)
+                        .map((val: Array<string>) => {
                             const row = {};
 
                             header.forEach((hVal, hKey) => {
@@ -251,10 +247,7 @@ export default function ModalVoucherTransactionsUpload({
 
                             const errors = transformErrors(
                                 [...data.keys()].reduce(
-                                    (errors, index) => ({
-                                        ...errors,
-                                        [`transactions.${index}.amount`]: message,
-                                    }),
+                                    (errors, index) => ({ ...errors, [`transactions.${index}.amount`]: message }),
                                     {},
                                 ),
                             );
@@ -296,39 +289,30 @@ export default function ModalVoucherTransactionsUpload({
 
                 startValidationUploadingData(transactions).then(
                     () => {
+                        const from = Math.min(transactions.length, dataChunkSize);
+                        const to = transactions.length;
+
                         setLoading(true);
                         setProgressBar(0);
-                        setProgressStatus(
-                            `Processing transactions from 1 to ${Math.min(transactions.length, dataChunkSize)} from ${
-                                transactions.length
-                            }`,
-                        );
+                        setProgressStatus(`Processing transactions from 1 to ${from} from ${to}`);
 
                         startUploadingData(transactions, (stats) => {
                             const progress = ((stats.chunk * dataChunkSize) / transactions.length) * 100;
-                            const processedFrom = Math.min(stats.chunk * dataChunkSize + 1, transactions.length);
-                            const processedTo = Math.min((stats.chunk + 1) * dataChunkSize, transactions.length);
+                            const total = transactions.length;
+                            const from = Math.min(stats.chunk * dataChunkSize + 1, total);
+                            const to = Math.min((stats.chunk + 1) * dataChunkSize, total);
 
                             setProgressBar(progress);
-                            setProgressStatus(
-                                `Processing transactions from ${processedFrom} to ${processedTo} from ${transactions.length}`,
-                            );
+                            setProgressStatus(`Processing transactions from ${from} to ${to} from ${total}`);
                         })
-                            .then((stats) => {
-                                resolve({ ...stats, validation: false, transactions });
-                            })
-                            .finally(() => {
-                                setLoading(false);
-                            });
+                            .then((stats) => resolve({ ...stats, validation: false, transactions }))
+                            .finally(() => setLoading(false));
                     },
                     (errors) => {
                         const errorsList =
                             typeof errors === 'string'
                                 ? [...transactions.keys()].reduce(
-                                      (list, index) => ({
-                                          ...list,
-                                          [`transactions.${index}.amount`]: errors,
-                                      }),
+                                      (list, index) => ({ ...list, [`transactions.${index}.amount`]: errors }),
                                       {},
                                   )
                                 : errors;
@@ -409,8 +393,8 @@ export default function ModalVoucherTransactionsUpload({
 
     const reset = useCallback(function () {
         setData(null);
-        setCsvFile(null);
         setError(null);
+        setCsvFile(null);
     }, []);
 
     return (

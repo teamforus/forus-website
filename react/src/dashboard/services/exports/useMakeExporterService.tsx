@@ -45,14 +45,14 @@ export default function useMakeExporterService() {
             data: { data_format: string; fields: string },
             organization_id: number,
             res: ResponseSimple<ArrayBuffer>,
-            id = null,
+            suffix = null,
         ) => {
             pushSuccess('Gelukt!', 'The downloading should start shortly.');
 
             const fileName = [
                 envData.client_type,
                 organization_id,
-                id,
+                suffix,
                 format(new Date(), 'yyyy-MM-dd HH:mm:ss') + '.' + data.data_format,
             ]
                 .filter((item) => item)

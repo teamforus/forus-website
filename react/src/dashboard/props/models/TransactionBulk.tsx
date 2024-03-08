@@ -11,9 +11,10 @@ export default interface TransactionBulk {
     bank?: Bank;
     execution_date?: string;
     execution_date_locale?: string;
-    voucher_transactions_cost?: number;
+    voucher_transactions_cost?: string;
+    voucher_transactions_cost_locale?: string;
     voucher_transactions_count?: number;
-    voucher_transactions_amount?: number;
+    voucher_transactions_amount?: string;
     voucher_transactions_amount_locale?: string;
     created_at: string;
     created_at_locale: string;
