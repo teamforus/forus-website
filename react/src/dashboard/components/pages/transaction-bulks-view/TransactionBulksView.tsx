@@ -42,7 +42,7 @@ export default function TransactionBulksView() {
 
     const isSponsor = useMemo(() => envData.client_type == 'sponsor', [envData.client_type]);
 
-    const [{ success, error }, setParams] = useQueryParams({
+    const [{ success, error }, setQueryParams] = useQueryParams({
         success: BooleanParam,
         error: StringParam,
     });
@@ -282,9 +282,9 @@ export default function TransactionBulksView() {
         }
 
         if (success === true || error) {
-            setParams({ success: null, error: null });
+            setQueryParams({ success: null, error: null });
         }
-    }, [error, pushDanger, pushSuccess, setParams, success]);
+    }, [error, pushDanger, pushSuccess, setQueryParams, success]);
 
     useEffect(() => {
         fetchTransactionBulk();
