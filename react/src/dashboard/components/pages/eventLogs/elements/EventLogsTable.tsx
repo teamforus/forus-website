@@ -12,20 +12,22 @@ import EventLog from '../../../../props/models/EventLog';
 import { hasPermission } from '../../../../helpers/utils';
 import useAppConfigs from '../../../../hooks/useAppConfigs';
 import Organization from '../../../../props/models/Organization';
-import FilterScope from '../../../../types/FilterScope';
-import FilterModel from '../../../../types/FilterModel';
 import ClickOutside from '../../../elements/click-outside/ClickOutside';
 import { strLimit } from '../../../../helpers/string';
+import useFilter from '../../../../hooks/useFilter';
+import usePaginatorService from '../../../../modules/paginator/services/usePaginatorService';
 
 export default function EventLogsTable({
-    filter,
     organization,
+    loggable,
+    perPageKey = 'event_logs',
     title,
     hideFilterForm,
     hideEntity,
 }: {
-    filter: FilterScope<FilterModel & { loggable: Array<string> }>;
     organization: Organization;
+    loggable: Array<string>;
+    perPageKey?: string;
     title?: string;
     hideFilterForm?: boolean;
     hideEntity?: boolean;
@@ -36,36 +38,42 @@ export default function EventLogsTable({
     const appConfigs = useAppConfigs();
 
     const eventLogService = useEventLogService();
+    const paginatorService = usePaginatorService();
+
     const [logs, setLogs] = useState<PaginationData<EventLog>>(null);
-    const [loggables, setLoggables] = useState([]);
     const [noteTooltip, setNoteTooltip] = useState(null);
-    const [paginatorKey] = useState('event_logs');
     const permissionsMap = useMemo(() => appConfigs.event_permissions, [appConfigs?.event_permissions]);
-    const baseLoggables = useMemo(
-        () => [
+
+    const loggables = useMemo(() => {
+        return [
             { key: 'fund', title: 'Fonds' },
             { key: 'employees', title: 'Medewerker' },
             { key: 'bank_connection', title: 'Bank integratie' },
             { key: 'voucher', title: 'Vouchers' },
-        ],
-        [],
-    );
+        ].filter((item) => hasPermission(organization, permissionsMap[item.key]));
+    }, [organization, permissionsMap]);
 
-    const showNoteTooltip = useCallback((e, log) => {
+    const filter = useFilter({
+        q: '',
+        loggable: loggable,
+        per_page: paginatorService.getPerPage(perPageKey),
+        order_by: 'created_at',
+        order_dir: 'desc',
+    });
+
+    const showNoteTooltip = useCallback((e: React.MouseEvent, log: EventLog) => {
         e.stopPropagation();
         setNoteTooltip(log.id);
     }, []);
 
-    const hideNoteTooltip = useCallback((e) => {
+    const hideNoteTooltip = useCallback((e: React.MouseEvent) => {
         e.stopPropagation();
         e.preventDefault();
         setNoteTooltip(null);
     }, []);
 
-    const { resetFilters: resetFilters } = filter;
-
     const selectLoggable = useCallback(
-        (key, selected) => {
+        (key: string, selected: boolean) => {
             const values = filter.activeValues.loggable;
             const index = values.indexOf(key);
 
@@ -90,17 +98,9 @@ export default function EventLogsTable({
     );
 
     useEffect(() => {
-        setLoggables(
-            baseLoggables.filter((item) => {
-                return hasPermission(organization, permissionsMap[item.key]);
-            }),
-        );
-    }, [organization, baseLoggables, permissionsMap]);
-
-    useEffect(() => {
         fetchLogs(filter.activeValues).then((res) => {
             const logs = {
-                meta: res.data.meta,
+                ...res.data,
                 data: res.data.data.map((item) => ({
                     ...item,
                     note_substr: item.note ? strLimit(item.note, 40) : null,
@@ -129,7 +129,7 @@ export default function EventLogsTable({
                         <div className="flex">
                             <div className="block block-inline-filters">
                                 {filter.show && (
-                                    <div className="button button-text" onClick={() => resetFilters()}>
+                                    <div className="button button-text" onClick={() => filter.resetFilters()}>
                                         <em className="mdi mdi-close icon-start" />
                                         Wis filters
                                     </div>
@@ -253,22 +253,22 @@ export default function EventLogsTable({
                 </div>
             )}
 
-            {logs.meta.last_page > 1 && (
-                <div className="card-section">
-                    <Paginator
-                        meta={logs.meta}
-                        filters={filter.values}
-                        updateFilters={filter.update}
-                        perPageKey={paginatorKey}
-                    />
-                </div>
-            )}
-
             {logs.meta.total == 0 && (
                 <div className="card-section">
                     <div className="block block-empty text-center">
                         <div className="empty-title">Geen logboeken gevonden</div>
                     </div>
+                </div>
+            )}
+
+            {logs.meta && (
+                <div className="card-section">
+                    <Paginator
+                        meta={logs.meta}
+                        filters={filter.values}
+                        updateFilters={filter.update}
+                        perPageKey={perPageKey}
+                    />
                 </div>
             )}
         </div>
