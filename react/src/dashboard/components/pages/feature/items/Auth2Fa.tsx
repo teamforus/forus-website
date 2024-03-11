@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react';
-import OrganizationFeature from '../../../../props/models/OrganizationFeature';
+import OrganizationFeature from '../../../../services/types/OrganizationFeature';
 import Organization from '../../../../props/models/Organization';
 import useAssetUrl from '../../../../hooks/useAssetUrl';
 import AdditionalFeatureList from '../elements/AdditionalFeatureList';

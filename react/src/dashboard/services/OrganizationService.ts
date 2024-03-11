@@ -5,7 +5,7 @@ import Organization from '../props/models/Organization';
 import { hasPermission } from '../helpers/utils';
 import ExternalFund from '../props/models/ExternalFund';
 import Product from '../props/models/Product';
-import OrganizationFeatureStatuses from "../props/models/OrganizationFeatureStatuses";
+import OrganizationFeatureStatuses from './types/OrganizationFeatureStatuses';
 
 export class OrganizationService<T = Organization> {
     /**

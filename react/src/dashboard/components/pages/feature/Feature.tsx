@@ -1,9 +1,8 @@
-import React, { Fragment, useCallback, useEffect, useState } from 'react';
+import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
 import useActiveOrganization from '../../../hooks/useActiveOrganization';
 import { useOrganizationService } from '../../../services/OrganizationService';
 import { useFeatureService } from '../../../services/FeaturesService';
 import useAssetUrl from '../../../hooks/useAssetUrl';
-import OrganizationFeature from '../../../props/models/OrganizationFeature';
 import ModalFeatureContact from '../../modals/ModalFeatureContact';
 import useOpenModal from '../../../hooks/useOpenModal';
 import { snakeCase } from 'lodash';
@@ -25,15 +24,20 @@ import FundRequests from './items/FundRequests';
 
 export default function Feature() {
     const { key } = useParams();
-    const activeOrganization = useActiveOrganization();
-    const organizationService = useOrganizationService();
-    const featureService = useFeatureService();
     const assetUrl = useAssetUrl();
     const openModal = useOpenModal();
 
-    const [feature, setFeature] = useState<OrganizationFeature>(null);
-    const [additionalFeatures, setAdditionalFeatures] = useState<Array<OrganizationFeature>>([]);
-    const [featureStatuses, setFeatureStatuses] = useState({});
+    const featureService = useFeatureService();
+    const activeOrganization = useActiveOrganization();
+    const organizationService = useOrganizationService();
+
+    const [featureStatuses, setFeatureStatuses] = useState(null);
+    const [additionalFeatures, setAdditionalFeatures] = useState(null);
+
+    const feature = useMemo(
+        () => featureService.list().filter((feature) => feature.key === snakeCase(key))[0],
+        [featureService, key],
+    );
 
     const openContactModal = useCallback(() => {
         openModal((modal) => <ModalFeatureContact modal={modal} />);
@@ -46,18 +50,7 @@ export default function Feature() {
     }, [activeOrganization.id, organizationService]);
 
     useEffect(() => {
-        const item = featureService.list
-            .map((feature) => ({
-                ...feature,
-                enabled: featureStatuses[feature.key] || false,
-            }))
-            .filter((feature) => feature.key === snakeCase(key))[0];
-
-        setFeature(item);
-    }, [featureService, featureStatuses, key]);
-
-    useEffect(() => {
-        if (feature) {
+        if (feature && featureStatuses) {
             const items = featureService.getAdditionalFeatures(feature.key).map((feature) => ({
                 ...feature,
                 enabled: featureStatuses[feature.key] || false,
@@ -65,9 +58,9 @@ export default function Feature() {
 
             setAdditionalFeatures(items);
         }
-    }, [feature, featureService, featureStatuses, key]);
+    }, [feature, featureService, featureStatuses]);
 
-    if (!feature) {
+    if (!feature || !featureStatuses || !additionalFeatures) {
         return <LoadingCard />;
     }
 
@@ -76,9 +69,7 @@ export default function Feature() {
             <div className="block block-breadcrumbs">
                 <StateNavLink
                     name={'features'}
-                    params={{
-                        organizationId: activeOrganization.id,
-                    }}
+                    params={{ organizationId: activeOrganization.id }}
                     className="breadcrumb-item">
                     Marketplace
                 </StateNavLink>
@@ -94,7 +85,7 @@ export default function Feature() {
                         <div className="block-feature-info">
                             <div className="block-feature-title">
                                 <span>{feature.name}</span>
-                                {feature.enabled ? (
+                                {featureStatuses[feature.key] || false ? (
                                     <div className="block-feature-label active">Actief</div>
                                 ) : (
                                     <div className="block-feature-label inactive">Uitproberen</div>

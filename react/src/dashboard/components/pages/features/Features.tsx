@@ -1,42 +1,37 @@
-import React, { Fragment, useCallback, useEffect, useState } from 'react';
+import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import useActiveOrganization from '../../../hooks/useActiveOrganization';
 import { useOrganizationService } from '../../../services/OrganizationService';
 import { useFeatureService } from '../../../services/FeaturesService';
 import useFilter from '../../../hooks/useFilter';
 import useAssetUrl from '../../../hooks/useAssetUrl';
-import OrganizationFeature from '../../../props/models/OrganizationFeature';
+import OrganizationFeature from '../../../services/types/OrganizationFeature';
 import FeatureList from './elements/FeatureList';
 import useEnvData from '../../../hooks/useEnvData';
 import ModalFeatureContact from '../../modals/ModalFeatureContact';
 import useOpenModal from '../../../hooks/useOpenModal';
 
-interface FeaturePreview {
-    key: string;
-    name: string;
-    description: string;
-}
-
-interface ViewOption {
-    value: string;
-    name: string;
-}
-
 export default function Features() {
     const { t } = useTranslation();
-    const activeOrganization = useActiveOrganization();
-    const organizationService = useOrganizationService();
-    const featureService = useFeatureService();
+
     const assetUrl = useAssetUrl();
     const envData = useEnvData();
     const openModal = useOpenModal();
 
-    const [previewList] = useState<Array<Array<FeaturePreview>>>(featureService.previewList);
-    const [features, setFeatures] = useState<Array<OrganizationFeature>>([]);
-    const [featuresAfter, setFeaturesAfter] = useState<Array<OrganizationFeature>>([]);
+    const featureService = useFeatureService();
+    const activeOrganization = useActiveOrganization();
+    const organizationService = useOrganizationService();
+
+    const [features, setFeatures] = useState([]);
+    const [featuresAfter, setFeaturesAfter] = useState([]);
     const [featureStatuses, setFeatureStatuses] = useState({});
-    const [allFeatures, setAllFeatures] = useState<Array<OrganizationFeature>>([]);
-    const [activeOptions, setActiveOptions] = useState<Array<ViewOption>>([]);
+    const [activeOptions, setActiveOptions] = useState<Array<{ value: string; name: string }>>([]);
+    const allFeatures = useMemo(() => featureService.list(), [featureService]);
+
+    const previewList = useMemo(
+        () => [featureService.previewList().slice(0, 2), featureService.previewList().slice(2)],
+        [featureService],
+    );
 
     const filter = useFilter({
         q: '',
@@ -65,18 +60,9 @@ export default function Features() {
         const notActive = features.filter((feature) => !feature.enabled).length;
 
         setActiveOptions([
-            {
-                value: 'all',
-                name: 'Alle',
-            },
-            {
-                value: 'active',
-                name: `Actief (${active})`,
-            },
-            {
-                value: 'available',
-                name: `Niet Actief (${notActive})`,
-            },
+            { value: 'all', name: 'Alle' },
+            { value: 'active', name: `Actief (${active})` },
+            { value: 'available', name: `Niet Actief (${notActive})` },
         ]);
     }, []);
 
@@ -84,9 +70,13 @@ export default function Features() {
         (features: Array<OrganizationFeature>, value) => {
             const q = value.q.toLowerCase();
 
-            const filteredListBySearch = features.filter(
-                (item) => filterByName(item, q) || filterByDescription(item, q) || filterByLabel(item, q),
-            );
+            const filteredListBySearch = features
+                .filter((item) => filterByName(item, q) || filterByDescription(item, q) || filterByLabel(item, q))
+                .map((feature) => ({
+                    ...feature,
+                    enabled: featureStatuses[feature.key] || false,
+                }));
+
             setActiveCounts(filteredListBySearch);
 
             const list = filteredListBySearch.filter((item) => filterByState(item, value.state));
@@ -94,7 +84,7 @@ export default function Features() {
             setFeatures(list.slice(0, 4));
             setFeaturesAfter(list.slice(4));
         },
-        [filterByDescription, filterByLabel, filterByName, filterByState, setActiveCounts],
+        [featureStatuses, filterByDescription, filterByLabel, filterByName, filterByState, setActiveCounts],
     );
 
     const openContactModal = useCallback(() => {
@@ -106,15 +96,6 @@ export default function Features() {
             .getFeatures(activeOrganization.id)
             .then((res) => setFeatureStatuses(res.data.data.statuses));
     }, [activeOrganization.id, organizationService]);
-
-    useEffect(() => {
-        const items = featureService.list.map((feature) => ({
-            ...feature,
-            enabled: featureStatuses[feature.key] || false,
-        }));
-
-        setAllFeatures(items);
-    }, [featureService.list, featureStatuses]);
 
     useEffect(() => {
         filterFeatures(allFeatures, filter.activeValues);
