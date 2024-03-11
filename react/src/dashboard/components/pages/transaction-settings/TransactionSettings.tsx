@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useCallback, useEffect, useState } from 'react';
 import useActiveOrganization from '../../../hooks/useActiveOrganization';
 import usePushSuccess from '../../../hooks/usePushSuccess';
 import usePushDanger from '../../../hooks/usePushDanger';
@@ -15,20 +15,49 @@ export default function TransactionSettings() {
 
     const organizationService = useOrganizationService();
 
-    const statementExample = [
+    const statementExampleDefault = [
         '#12345678910 - 2024-12-01 - 321654871234 ',
         '- ABCDEFGHIJKLMNOPQRST - Example branch name ',
         '- Fund name - This is a note from employee',
     ].join('');
 
+    const [statementExample, setStatementExample] = useState<string>(statementExampleDefault);
     const [showExampleTooltip, setShowExampleTooltip] = useState<boolean>(false);
 
     const form = useFormBuilder(activeOrganization.bank_statement_details, (values) => {
         organizationService
             .updateBankFields(activeOrganization.id, values)
             .then(() => pushSuccess('Opgeslagen!'))
-            .catch(() => pushDanger('Mislukt!'));
+            .catch(() => pushDanger('Mislukt!'))
+            .finally(() => {
+                form.setIsLocked(false);
+            });
     });
+
+    const { update: updateForm } = form;
+
+    const makeStatementExample = useCallback(() => {
+        const values = form.values;
+
+        const transactionId = values.bank_transaction_id ? '#12345678910' : '';
+        const transactionDate = values.bank_transaction_date ? '2024-12-01' : '';
+        const reservationNumber = values.bank_reservation_number ? '#27633589' : '';
+        const branchNumber = values.bank_branch_number ? '321654871234' : '';
+        const branchId = values.bank_branch_id ? 'ABCDEFGHIJKLMNOPQRST' : '';
+        const branchName = values.bank_branch_name ? 'Example branch name' : '';
+        const fundName = values.bank_fund_name ? 'Fund name' : '';
+        const note = values.bank_note ? 'This is a note from employee' : '';
+
+        setStatementExample(
+            [transactionId, transactionDate, reservationNumber, branchNumber, branchId, branchName, fundName, note]
+                .filter((value) => value)
+                .join(' - '),
+        );
+    }, [form.values]);
+
+    useEffect(() => {
+        makeStatementExample();
+    }, [updateForm, makeStatementExample]);
 
     return (
         <Fragment>
@@ -55,6 +84,12 @@ export default function TransactionSettings() {
                                             title="Transactie Datum"
                                             checked={!!form.values?.bank_transaction_date}
                                             onChange={(e) => form.update({ bank_transaction_date: e.target.checked })}
+                                        />
+                                        <CheckboxControl
+                                            id="bank_reservation_number"
+                                            title="Reserveringsnummer"
+                                            checked={!!form.values?.bank_reservation_number}
+                                            onChange={(e) => form.update({ bank_reservation_number: e.target.checked })}
                                         />
                                         <CheckboxControl
                                             id="bank_branch_number"
@@ -131,52 +166,81 @@ export default function TransactionSettings() {
                                             <div className="block block-info block-info-list">
                                                 <div className="block-info-list-title">
                                                     <em className="mdi mdi-information block-info-icon" />
-                                                    Data used from example:
+                                                    Gegevens gebruikt in het voorbeeld:
                                                 </div>
 
                                                 <ul className="block-info-list-items">
-                                                    <li className="block-info-list-item">
-                                                        Transaction ID:
-                                                        <span className="block-info-list-item-value">
-                                                            #12345678910 • 10 karakters
-                                                        </span>
-                                                    </li>
-                                                    <li className="block-info-list-item">
-                                                        Transaction Date:
-                                                        <span className="block-info-list-item-value">
-                                                            2024-12-01 • 12 karakters
-                                                        </span>
-                                                    </li>
-                                                    <li className="block-info-list-item">
-                                                        Branch number:
-                                                        <span className="block-info-list-item-value">
-                                                            321654871234 • 12 karakters
-                                                        </span>
-                                                    </li>
-                                                    <li className="block-info-list-item">
-                                                        Branch unique ID:
-                                                        <span className="block-info-list-item-value">
-                                                            ABCDEFGHIJKLMNOPQRST • 3-20 karakters
-                                                        </span>
-                                                    </li>
-                                                    <li className="block-info-list-item">
-                                                        Branch name:
-                                                        <span className="block-info-list-item-value">
-                                                            Example branch name • 3-100 karakters
-                                                        </span>
-                                                    </li>
-                                                    <li className="block-info-list-item">
-                                                        Fund name:
-                                                        <span className="block-info-list-item-value">
-                                                            Fund name • 3-100 karakters
-                                                        </span>
-                                                    </li>
-                                                    <li className="block-info-list-item">
-                                                        Employee note:
-                                                        <span className="block-info-list-item-value">
-                                                            This is a note from employee • 255 karakters
-                                                        </span>
-                                                    </li>
+                                                    {form.values?.bank_transaction_id && (
+                                                        <li className="block-info-list-item">
+                                                            Transaction ID:
+                                                            <span className="block-info-list-item-value">
+                                                                #12345678910 • 10 karakters
+                                                            </span>
+                                                        </li>
+                                                    )}
+
+                                                    {form.values?.bank_transaction_date && (
+                                                        <li className="block-info-list-item">
+                                                            Transaction Date:
+                                                            <span className="block-info-list-item-value">
+                                                                2024-12-01 • 12 karakters
+                                                            </span>
+                                                        </li>
+                                                    )}
+
+                                                    {form.values?.bank_reservation_number && (
+                                                        <li className="block-info-list-item">
+                                                            Reserveringsnummer:
+                                                            <span className="block-info-list-item-value">
+                                                                #27633589 • 9 karakters
+                                                            </span>
+                                                        </li>
+                                                    )}
+
+                                                    {form.values?.bank_branch_number && (
+                                                        <li className="block-info-list-item">
+                                                            Branch number:
+                                                            <span className="block-info-list-item-value">
+                                                                321654871234 • 12 karakters
+                                                            </span>
+                                                        </li>
+                                                    )}
+
+                                                    {form.values?.bank_branch_id && (
+                                                        <li className="block-info-list-item">
+                                                            Branch unique ID:
+                                                            <span className="block-info-list-item-value">
+                                                                ABCDEFGHIJKLMNOPQRST • 3-20 karakters
+                                                            </span>
+                                                        </li>
+                                                    )}
+
+                                                    {form.values?.bank_branch_name && (
+                                                        <li className="block-info-list-item">
+                                                            Branch name:
+                                                            <span className="block-info-list-item-value">
+                                                                Example branch name • 3-100 karakters
+                                                            </span>
+                                                        </li>
+                                                    )}
+
+                                                    {form.values?.bank_fund_name && (
+                                                        <li className="block-info-list-item">
+                                                            Fund name:
+                                                            <span className="block-info-list-item-value">
+                                                                Fund name • 3-100 karakters
+                                                            </span>
+                                                        </li>
+                                                    )}
+
+                                                    {form.values?.bank_note && (
+                                                        <li className="block-info-list-item">
+                                                            Employee note:
+                                                            <span className="block-info-list-item-value">
+                                                                This is a note from employee • 255 karakters
+                                                            </span>
+                                                        </li>
+                                                    )}
                                                 </ul>
                                             </div>
                                         )}

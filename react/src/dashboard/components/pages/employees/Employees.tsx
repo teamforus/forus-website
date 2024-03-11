@@ -313,30 +313,29 @@ export default function Employees() {
                                             </td>
 
                                             <td className={'text-right'}>
-                                                {activeOrganization.identity_address != employee.identity_address && (
-                                                    <Fragment>
-                                                        <a
-                                                            className="text-primary-light"
-                                                            data-dusk={'btnEmployeeEdit'}
-                                                            onClick={() => editEmployee(employee)}>
-                                                            {t('organization_employees.buttons.adjust')}
-                                                        </a>
-                                                        {authIdentity.address !== employee.identity_address && (
-                                                            <Fragment>
-                                                                &nbsp;&nbsp;
-                                                                <a
-                                                                    className="text-danger"
-                                                                    data-dusk={'btnEmployeeDelete'}
-                                                                    onClick={() => deleteEmployee(employee)}>
-                                                                    {t('organization_employees.buttons.delete')}
-                                                                </a>
-                                                            </Fragment>
-                                                        )}
-                                                    </Fragment>
-                                                )}
+                                                <Fragment>
+                                                    <a
+                                                        className="text-primary-light"
+                                                        data-dusk={'btnEmployeeEdit'}
+                                                        onClick={() => editEmployee(employee)}>
+                                                        {t('organization_employees.buttons.adjust')}
+                                                    </a>
+                                                    {authIdentity.address !== employee.identity_address && (
+                                                        <Fragment>
+                                                            &nbsp;&nbsp;
+                                                            <a
+                                                                className="text-danger"
+                                                                data-dusk={'btnEmployeeDelete'}
+                                                                onClick={() => deleteEmployee(employee)}>
+                                                                {t('organization_employees.buttons.delete')}
+                                                            </a>
+                                                        </Fragment>
+                                                    )}
+                                                </Fragment>
 
                                                 {activeOrganization.identity_address == employee.identity_address && (
                                                     <Fragment>
+                                                        &nbsp;&nbsp;
                                                         {adminEmployees.length > 0 &&
                                                         authIdentity.address === activeOrganization.identity_address ? (
                                                             <a

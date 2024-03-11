@@ -628,9 +628,9 @@ module.exports = {
             branch_id: "VestigingID"
         },
         info: {
-            branch_number: "Lorem ipsum dolor sit amet consectetur. Sit sit tellus tellus imperdiet. Est a fusce quam interdum justo volutpat.",
-            branch_name: "Lorem ipsum dolor sit amet consectetur. Sit sit tellus tellus imperdiet. Est a fusce quam interdum justo volutpat.",
-            branch_id: "Lorem ipsum dolor sit amet consectetur. Sit sit tellus tellus imperdiet. Est a fusce quam interdum justo volutpat."
+            branch_number: "Een uniek 12-cijferig nummer dat door de Kamer van Koophandel aan elke vestiging wordt toegekend. Let op: Dit nummer verschilt van het KVK-nummer.",
+            branch_name: "Een naam die door een organisatie aan een vestiging wordt gegeven. Deze naam kan worden aangepast op de informatiepagina van de vestiging.",
+            branch_id: "Een unieke ID die door de organisatie aan een vestiging wordt toegewezen voor interne administratieve doeleinden. Deze kan worden aangepast op de informatiepagina van de vestiging."
         },
         buttons: {
             add_office: "Voeg een nieuwe vestiging toe",
@@ -655,12 +655,22 @@ module.exports = {
             phone: "Telefoonnummer",
             hours: "Openingstijden:",
             offices: "Vestigingen ",
-            business_type: "Organisatie type"
+            business_type: "Organisatie type",
+            branch_id: "VestigingID",
+            branch_number: "Vestigingsnummer",
         },
         confirm_delete: {
             title: "Weet u zeker dat u deze vestiging wilt verwijderen?",
             description: "Wanneer u de vestiging verwijderd kunt u dit niet ongedaan maken. Bedenk daarom goed of u deze actie wilt verrichten."
-        }
+        },
+        confirm_has_employees: {
+            title: "Verwijder medewerkers uit de vestiging",
+            description: "Voordat de vestiging wordt verwijderd, controleer of er geen toegewezen medewerker(s) zijn.",
+            buttons: {
+                cancel: "Sluiten",
+                confirm: "Medewerkers bekijken",
+            },
+        },
     },
 
     // ORGANIZATION PROVIDERS = provider-organizations.pug

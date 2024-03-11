@@ -125,7 +125,7 @@ export default function ModalEmployeeEdit({
                             </div>
                         )}
 
-                        {offices && (
+                        {offices && offices.length > 1 && (
                             <div className="form-group">
                                 <label htmlFor="" className="form-label form-label-required">
                                     Selecteer vestiging
@@ -142,28 +142,30 @@ export default function ModalEmployeeEdit({
                             </div>
                         )}
 
-                        <div className="form-group">
-                            <label className="form-label">Rollen</label>
+                        {(!employee || employee.identity_address !== organization.identity_address) && (
+                            <div className="form-group">
+                                <label className="form-label">Rollen</label>
 
-                            <div className="block block-permissions-list">
-                                {roles.map((role) => (
-                                    <div key={role.id} className="permission-item">
-                                        <CheckboxControl
-                                            id={'role_' + role.id}
-                                            title={role.name}
-                                            tooltip={role.description}
-                                            checked={form.values.roles[role.id] || false}
-                                            onChange={(e) => onChangeRole(e.target.checked, role)}
-                                            className={'checkbox-narrow'}>
-                                            <span className="permission-name">
-                                                <span className="ellipsis">{role.name}</span>
-                                            </span>
-                                        </CheckboxControl>
-                                    </div>
-                                ))}
+                                <div className="block block-permissions-list">
+                                    {roles.map((role) => (
+                                        <div key={role.id} className="permission-item">
+                                            <CheckboxControl
+                                                id={'role_' + role.id}
+                                                title={role.name}
+                                                tooltip={role.description}
+                                                checked={form.values.roles[role.id] || false}
+                                                onChange={(e) => onChangeRole(e.target.checked, role)}
+                                                className={'checkbox-narrow'}>
+                                                <span className="permission-name">
+                                                    <span className="ellipsis">{role.name}</span>
+                                                </span>
+                                            </CheckboxControl>
+                                        </div>
+                                    ))}
+                                </div>
+                                <FormError error={form.errors['roles']} />
                             </div>
-                            <FormError error={form.errors['roles']} />
-                        </div>
+                        )}
                     </div>
                 </div>
 

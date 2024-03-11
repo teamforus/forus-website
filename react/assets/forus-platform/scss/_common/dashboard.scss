@@ -1238,6 +1238,14 @@ body {
     &.card-padded {
         margin-bottom: 0px;
     }
+
+    &.card-office-settings {
+        .card-header {
+            .card-title {
+                font: 500 16px/28px var(--base-font);
+            }
+        }
+    }
 }
 
 .card-block {
@@ -1524,10 +1532,10 @@ body {
         .provider-img {
             float: left;
             display: block;
-            width: 70px;
-            height: 70px;
+            width: 50px;
+            height: 50px;
             border: 1px solid #e7e7e7;
-            border-radius: 70px;
+            border-radius: var(--border-radius);
             overflow: hidden;
             background-color: #f1f4f7;
 
@@ -1537,20 +1545,26 @@ body {
             }
         }
 
-        .provider-title {
-            display: block;
-            font: 500 16px/20px var(--base-font);
-            color: #151b26;
-            transition: 0.4s;
-            clear: both;
-            position: relative;
-            margin-bottom: 10px;
-            cursor: default;
-        }
-
         .provider-details {
             flex-grow: 1;
+            align-self: center;
             padding-left: 20px;
+
+            .provider-title {
+                display: block;
+                font: 500 16px/20px var(--base-font);
+                color: #151b26;
+                transition: 0.4s;
+                clear: both;
+                position: relative;
+                margin-bottom: 5px;
+                cursor: default;
+            }
+
+            .provider-branch-name {
+                font: 500 12px/16px var(--base-font);
+                color: #646f79;
+            }
         }
 
         a.provider-title:hover {
@@ -2143,6 +2157,22 @@ body {
                         box-shadow: none;
                     }
                 }
+            }
+        }
+    }
+
+    &.card-block-schedule {
+        .card-block-schedule-title {
+            font: 600 14px/24px var(--base-font);
+            margin-bottom: 15px;
+        }
+
+        .card-block-listing {
+            font: 600 12px/16px var(--base-font);
+
+            .card-block-listing-label {
+                font: 600 11px/14px var(--base-font);
+                gap: 5px;
             }
         }
     }
