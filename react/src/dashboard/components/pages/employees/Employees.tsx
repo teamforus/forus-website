@@ -178,6 +178,21 @@ export default function Employees() {
         [openModal, employeeService, activeOrganization.id, filter, pushSuccess, pushDanger],
     );
 
+    const canEditEmployee = useCallback(
+        (employee) => {
+            if (activeOrganization.identity_address !== employee.identity_address) {
+                return true;
+            }
+
+            return (
+                activeOrganization.identity_address === employee.identity_address &&
+                authIdentity.address === activeOrganization.identity_address &&
+                activeOrganization.offices_count > 0
+            );
+        },
+        [activeOrganization.identity_address, activeOrganization.offices_count, authIdentity.address],
+    );
+
     useEffect(() => fetchEmployees(), [fetchEmployees]);
     useEffect(() => fetchAdminEmployees(), [fetchAdminEmployees]);
 
@@ -314,12 +329,15 @@ export default function Employees() {
 
                                             <td className={'text-right'}>
                                                 <Fragment>
-                                                    <a
-                                                        className="text-primary-light"
-                                                        data-dusk={'btnEmployeeEdit'}
-                                                        onClick={() => editEmployee(employee)}>
-                                                        {t('organization_employees.buttons.adjust')}
-                                                    </a>
+                                                    {canEditEmployee(employee) && (
+                                                        <a
+                                                            className="text-primary-light"
+                                                            data-dusk={'btnEmployeeEdit'}
+                                                            onClick={() => editEmployee(employee)}>
+                                                            {t('organization_employees.buttons.adjust')}
+                                                        </a>
+                                                    )}
+
                                                     {authIdentity.address !== employee.identity_address && (
                                                         <Fragment>
                                                             &nbsp;&nbsp;

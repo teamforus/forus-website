@@ -304,7 +304,7 @@ export default function Offices() {
 
                         <div className="card-block card-block-listing card-block-listing-inline">
                             <div className="card-block-listing-label">{t('offices.labels.branch_number')}</div>
-                            {office.phone ? (
+                            {office.branch_number ? (
                                 <strong>{office.branch_number}</strong>
                             ) : (
                                 <span className="text-muted">{t('offices.labels.none')}</span>
@@ -313,7 +313,7 @@ export default function Offices() {
 
                         <div className="card-block card-block-listing card-block-listing-inline">
                             <div className="card-block-listing-label">{t('offices.labels.branch_id')}</div>
-                            {office.phone ? (
+                            {office.branch_id ? (
                                 <strong>{office.branch_id}</strong>
                             ) : (
                                 <span className="text-muted">{t('offices.labels.none')}</span>
