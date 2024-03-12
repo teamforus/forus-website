@@ -125,7 +125,7 @@ export default function ModalEmployeeEdit({
                             </div>
                         )}
 
-                        {offices && offices.length > 1 && (
+                        {offices?.length > 1 && (
                             <div className="form-group">
                                 <label htmlFor="" className="form-label form-label-required">
                                     Selecteer vestiging

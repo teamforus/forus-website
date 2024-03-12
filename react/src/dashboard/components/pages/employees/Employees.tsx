@@ -179,18 +179,13 @@ export default function Employees() {
     );
 
     const canEditEmployee = useCallback(
-        (employee) => {
-            if (activeOrganization.identity_address !== employee.identity_address) {
-                return true;
-            }
+        (employee: Employee) => {
+            const isOwner = authIdentity.address === activeOrganization.identity_address;
+            const isOwnerEmployee = activeOrganization.identity_address === employee.identity_address;
 
-            return (
-                activeOrganization.identity_address === employee.identity_address &&
-                authIdentity.address === activeOrganization.identity_address &&
-                activeOrganization.offices_count > 0
-            );
+            return !isOwnerEmployee || (isOwner && activeOrganization.offices_count > 0);
         },
-        [activeOrganization.identity_address, activeOrganization.offices_count, authIdentity.address],
+        [activeOrganization, authIdentity.address],
     );
 
     useEffect(() => fetchEmployees(), [fetchEmployees]);
