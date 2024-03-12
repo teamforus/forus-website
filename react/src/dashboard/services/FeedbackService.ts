@@ -1,9 +1,7 @@
-import { ApiResponseSingle } from '../props/ApiResponses';
 import { useState } from 'react';
 import ApiRequestService from './ApiRequestService';
-import Feedback from '../props/models/Feedback';
 
-export class FeedbackService<T = Feedback> {
+export class FeedbackService<T = null> {
     /**
      * @param apiRequest
      */
@@ -15,22 +13,15 @@ export class FeedbackService<T = Feedback> {
      * @param data
      */
     public prefix = '/platform/feedback';
-    
+
     /**
      * Store feedback
      */
-    public store = (data: object = {}): Promise<ApiResponseSingle<T>>  => {
+    public store = (data: object = {}): Promise<null> => {
         return this.apiRequest.post(`${this.prefix}`, data);
     };
-
-    public apiResourceToForm(apiResource: Feedback) {
-        return {
-            title: apiResource.title,
-            urgency: apiResource.urgency,
-        };
-    }
 }
 
-export default function useProductService(): FeedbackService<Feedback> {
+export default function useFeedbackService(): FeedbackService {
     return useState(new FeedbackService())[0];
 }

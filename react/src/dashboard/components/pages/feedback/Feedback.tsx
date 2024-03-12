@@ -16,21 +16,18 @@ export default function Feedback() {
     const envData = useEnvData();
 
     const assetUrl = useAssetUrl();
-    const feedbackService = useFeedbackService();
     const pushDanger = usePushDanger();
 
-    const urgencyOptions = [
+    const feedbackService = useFeedbackService();
+
+    const [state, setState] = useState<string>('form');
+
+    const [urgencyOptions] = useState([
         { value: null, label: 'Selecteer' },
         { value: 'low', label: 'Laag' },
         { value: 'medium', label: 'Gemiddeld' },
         { value: 'high', label: 'Hoog' },
-    ];
-
-    const [state, setState] = useState<string>('form');
-
-    const previewAddedData = () => {
-        setState('confirmation');
-    };
+    ]);
 
     const form = useFormBuilder(
         {
@@ -44,13 +41,9 @@ export default function Feedback() {
             feedbackService
                 .store({
                     ...values,
-                    ...{
-                        customer_email: values.use_customer_email ? values.customer_email : null,
-                    },
+                    customer_email: values.use_customer_email ? values.customer_email : null,
                 })
-                .then(() => {
-                    setState('success');
-                })
+                .then(() => setState('success'))
                 .catch((err: ResponseError) => {
                     if (err.status == 429) {
                         pushDanger(err?.data?.message);
@@ -63,9 +56,7 @@ export default function Feedback() {
                     setState('form');
                     form.setErrors(err?.data?.errors);
                 })
-                .finally(() => {
-                    form.setIsLocked(false);
-                });
+                .finally(() => form.setIsLocked(false));
         },
     );
 
@@ -73,7 +64,7 @@ export default function Feedback() {
         <>
             {state === 'form' && (
                 <div className="card">
-                    <form className="form" onSubmit={previewAddedData}>
+                    <form className="form" onSubmit={() => setState('confirmation')}>
                         {/* Description */}
                         <div className="card-section card-section-primary">
                             <div className="block block-information">
@@ -117,9 +108,7 @@ export default function Feedback() {
                                     propKey={'value'}
                                     allowSearch={false}
                                     value={form.values?.urgency}
-                                    onChange={(urgency: string) => {
-                                        form.update({ urgency });
-                                    }}
+                                    onChange={(urgency: string) => form.update({ urgency })}
                                     options={urgencyOptions}
                                     optionsComponent={SelectControlOptions}
                                 />
@@ -150,9 +139,7 @@ export default function Feedback() {
                                     id="use_email"
                                     title={t('components.feedback.labels.use_customer_email')}
                                     checked={form.values?.use_customer_email}
-                                    onChange={(e) => {
-                                        form.update({ use_customer_email: e.target.checked });
-                                    }}
+                                    onChange={(e) => form.update({ use_customer_email: e.target.checked })}
                                 />
                                 <FormError error={form.errors?.use_customer_email} />
                             </div>
@@ -247,10 +234,7 @@ export default function Feedback() {
                                 <button
                                     type="button"
                                     className="button button-default"
-                                    onClick={(e) => {
-                                        e.preventDefault();
-                                        setState('form');
-                                    }}>
+                                    onClick={() => setState('form')}>
                                     {t('components.feedback.buttons.back')}
                                 </button>
 
