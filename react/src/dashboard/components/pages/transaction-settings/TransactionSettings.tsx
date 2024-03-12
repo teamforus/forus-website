@@ -39,14 +39,14 @@ export default function TransactionSettings() {
     const makeStatementExample = useCallback(() => {
         const values = form.values;
 
-        const transactionId = values.bank_transaction_id ? '#12345678910' : '';
-        const transactionDate = values.bank_transaction_date ? '2024-12-01' : '';
-        const reservationNumber = values.bank_reservation_number ? '#27633589' : '';
-        const branchNumber = values.bank_branch_number ? '321654871234' : '';
-        const branchId = values.bank_branch_id ? 'ABCDEFGHIJKLMNOPQRST' : '';
-        const branchName = values.bank_branch_name ? 'Example branch name' : '';
-        const fundName = values.bank_fund_name ? 'Fund name' : '';
-        const note = values.bank_note ? 'This is a note from employee' : '';
+        const transactionId = values.bank_transaction_id ? '#12345' : '';
+        const transactionDate = values.bank_transaction_date ? '2024-01-01 00:00:00' : '';
+        const reservationNumber = values.bank_reservation_number ? '#54321' : '';
+        const branchNumber = values.bank_branch_number ? '112233445566' : '';
+        const branchId = values.bank_branch_id ? '6789' : '';
+        const branchName = values.bank_branch_name ? 'Voorbeeld van een vestigingsnaam' : '';
+        const fundName = values.bank_fund_name ? 'Fondsnaam' : '';
+        const note = values.bank_note ? 'Voorbeeld van een notitie van een medewerker' : '';
 
         setStatementExample(
             [transactionId, transactionDate, reservationNumber, branchNumber, branchId, branchName, fundName, note]
