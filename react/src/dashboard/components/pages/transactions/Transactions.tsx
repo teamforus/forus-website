@@ -394,6 +394,17 @@ export default function Transactions() {
                                     Wis filters
                                 </div>
                             )}
+
+                            {viewType.key == 'transactions' && (
+                                <StateNavLink
+                                    name={'transaction-settings'}
+                                    params={{ organizationId: activeOrganization.id }}
+                                    className="button button-primary button-sm">
+                                    <em className="mdi mdi-cog icon-start" />
+                                    Instellingen
+                                </StateNavLink>
+                            )}
+
                             {!filter.show && viewType.key == 'transactions' && (
                                 <div className="form">
                                     <div className="form-group">
@@ -697,6 +708,20 @@ export default function Transactions() {
                                         {isProvider && (
                                             <ThSortable
                                                 className={'nowrap'}
+                                                label={t('transactions.labels.branch_name')}
+                                                filter={filter}
+                                            />
+                                        )}
+                                        {isProvider && (
+                                            <ThSortable
+                                                className={'nowrap'}
+                                                label={t('transactions.labels.branch_number')}
+                                                filter={filter}
+                                            />
+                                        )}
+                                        {isProvider && (
+                                            <ThSortable
+                                                className={'nowrap'}
                                                 label={t('transactions.labels.amount_extra')}
                                                 filter={filter}
                                             />
@@ -768,6 +793,31 @@ export default function Transactions() {
                                                     {transaction?.reservation?.amount_extra > 0
                                                         ? 'iDeal + Tegoed'
                                                         : 'Tegoed'}
+                                                </td>
+                                            )}
+                                            {isProvider && (
+                                                <td>
+                                                    {transaction?.branch_name && (
+                                                        <div className="text-primary">{transaction?.branch_name}</div>
+                                                    )}
+
+                                                    {transaction?.branch_id && (
+                                                        <div>
+                                                            ID <strong>{transaction?.branch_id}</strong>
+                                                        </div>
+                                                    )}
+
+                                                    {!transaction.branch_id && !transaction.branch_name && (
+                                                        <div className={'text-muted'}>Geen...</div>
+                                                    )}
+                                                </td>
+                                            )}
+                                            {isProvider && (
+                                                <td>
+                                                    <div className={transaction?.branch_number ? '' : 'text-muted'}>
+                                                        {strLimit(transaction.branch_number?.toString(), 32) ||
+                                                            'Geen...'}
+                                                    </div>
                                                 </td>
                                             )}
                                             {isProvider && (
