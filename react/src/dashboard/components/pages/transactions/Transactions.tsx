@@ -452,6 +452,18 @@ export default function Transactions() {
                                         </div>
                                     </FilterItemToggle>
 
+                                    <FilterItemToggle label={t('transactions.labels.state')}>
+                                        <SelectControl
+                                            className="form-control"
+                                            propKey={'key'}
+                                            allowSearch={false}
+                                            value={filter.values.state}
+                                            options={states}
+                                            optionsComponent={SelectControlOptions}
+                                            onChange={(state: string) => filter.update({ state })}
+                                        />
+                                    </FilterItemToggle>
+
                                     <FilterItemToggle label={t('transactions.labels.fund')}>
                                         {funds && (
                                             <SelectControl
@@ -616,10 +628,10 @@ export default function Transactions() {
                                             className="form-control"
                                             propKey={'key'}
                                             allowSearch={false}
-                                            value={filter.values.state}
-                                            options={states}
+                                            value={bulkFilter.values.state}
+                                            options={bulkStates}
                                             optionsComponent={SelectControlOptions}
-                                            onChange={(state: string) => filter.update({ state })}
+                                            onChange={(state: string) => bulkFilter.update({ state })}
                                         />
                                     </FilterItemToggle>
 
