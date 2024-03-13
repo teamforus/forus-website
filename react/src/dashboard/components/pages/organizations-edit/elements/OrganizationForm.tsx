@@ -24,10 +24,11 @@ import useUpdateActiveOrganization from '../../../../hooks/useUpdateActiveOrgani
 import { ResponseError } from '../../../../props/ApiResponses';
 import useEnvData from '../../../../hooks/useEnvData';
 import StateNavLink from '../../../../modules/state_router/StateNavLink';
+import Media from '../../../../props/models/Media';
 
 export default function OrganizationForm() {
-    const { organizationId } = useParams();
     const { t } = useTranslation();
+    const { organizationId } = useParams();
     const { fetchOrganizations } = useContext(mainContext);
     const updateActiveOrganization = useUpdateActiveOrganization();
 
@@ -39,6 +40,7 @@ export default function OrganizationForm() {
     const envData = useEnvData();
     const isProvider = useMemo(() => envData.client_type === 'provider', [envData?.client_type]);
 
+    const [media, setMedia] = useState<Media>(null);
     const [mediaFile, setMediaFile] = useState<Blob>(null);
     const mediaService = useMediaService();
     const organizationService = useOrganizationService();
@@ -73,7 +75,7 @@ export default function OrganizationForm() {
     const uploadMedia = useCallback(() => {
         return new Promise((resolve, reject) => {
             if (!mediaFile) {
-                return resolve(organization?.logo?.uid);
+                return resolve(media?.uid);
             }
 
             setProgress(0);
@@ -81,13 +83,14 @@ export default function OrganizationForm() {
             return mediaService
                 .store('organization_logo', mediaFile)
                 .then((res) => {
+                    setMedia(res.data.data);
                     setMediaFile(null);
                     resolve(res.data.data.uid);
                 })
                 .catch(reject)
                 .finally(() => setProgress(100));
         });
-    }, [mediaFile, mediaService, setProgress, organization]);
+    }, [media, mediaFile, mediaService, setProgress]);
 
     const form = useFormBuilder<{
         iban?: string;
