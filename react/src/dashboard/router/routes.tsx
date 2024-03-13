@@ -24,6 +24,7 @@ import ProductsCreate from '../components/pages/products-edit/ProductsCreate';
 import ProductsEdit from '../components/pages/products-edit/ProductsEdit';
 import ProductsView from '../components/pages/products-view/ProductsView';
 import Transactions from '../components/pages/transactions/Transactions';
+import TransactionSettings from '../components/pages/transaction-settings/TransactionSettings';
 import TransactionsView from '../components/pages/transactions-view/TransactionsView';
 import Reservations from '../components/pages/reservations/Reservations';
 import ReservationsSettings from '../components/pages/reservations-settings/ReservationsSettings';
@@ -208,6 +209,10 @@ router.state('provider-funds', <ProviderFunds />, {
 
 router.state('transactions', <Transactions />, {
     path: `/organizations/:organizationId/transactions`,
+});
+
+router.state('transaction-settings', <TransactionSettings />, {
+    path: `/organizations/:organizationId/transaction-settings`,
 });
 
 router.state('transaction-bulk', <WIP />, {
