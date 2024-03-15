@@ -44,6 +44,7 @@ import PaymentMethods from '../components/pages/payment-methods/PaymentMethods';
 import MolliePrivacy from '../components/pages/mollie-privacy/MolliePrivacy';
 import CsvValidationsRedirect from '../components/pages/csv_validations/CsvValidationsRedirect';
 import WIP from '../components/pages_system/WIP';
+import EventLogs from '../components/pages/eventLogs/EventLogs';
 
 const router = new RouterBuilder();
 
@@ -166,7 +167,7 @@ router.state('implementation-notifications', <WIP title={'Implementation notific
     fallbackState: 'organizations',
 });
 
-router.state('organization-logs', <WIP title={'Organization logs'} />, {
+router.state('organization-logs', <EventLogs />, {
     path: `/organizations/:organizationId/logs`,
     fallbackState: 'organizations',
 });
