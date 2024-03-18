@@ -44,6 +44,8 @@ import PaymentMethods from '../components/pages/payment-methods/PaymentMethods';
 import MolliePrivacy from '../components/pages/mollie-privacy/MolliePrivacy';
 import CsvValidationsRedirect from '../components/pages/csv_validations/CsvValidationsRedirect';
 import WIP from '../components/pages_system/WIP';
+import Features from '../components/pages/features/Features';
+import Feature from '../components/pages/feature/Feature';
 import EventLogs from '../components/pages/eventLogs/EventLogs';
 
 const router = new RouterBuilder();
@@ -284,8 +286,12 @@ router.state('organization-notifications', <OrganizationsNotifications />, {
     path: `/organizations/:organizationId/notifications`,
 });
 
-router.state('features', <WIP title={'Features'} />, {
+router.state('features', <Features />, {
     path: `/organizations/:organizationId/features`,
+});
+
+router.state('feature', <Feature />, {
+    path: `/organizations/:organizationId/feature/:key`,
 });
 
 router.state('feedback', <WIP title={'Features'} />, {
