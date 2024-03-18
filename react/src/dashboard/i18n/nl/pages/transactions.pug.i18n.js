@@ -45,6 +45,8 @@ module.exports = {
         transfer_in_max: '14',
         method: "Betaalmethode(s)",
         amount_extra: "Extra betaling",
+        branch_name: "Vestigingsnaam",
+        branch_number: "Vestigingsnummer",
     },
     buttons: {
         previous: "Vorige",
