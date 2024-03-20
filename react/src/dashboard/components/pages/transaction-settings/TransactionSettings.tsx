@@ -164,14 +164,14 @@ export default function TransactionSettings() {
 
                                                 <ul className="block-info-list-items">
                                                     <li className="block-info-list-item">
-                                                        Transaction ID:
+                                                        Transactie ID:
                                                         <span className="block-info-list-item-value">
                                                             {testData.bank_transaction_id} • 10 karakters
                                                         </span>
                                                     </li>
 
                                                     <li className="block-info-list-item">
-                                                        Transaction Date:
+                                                        Transactiedatum:
                                                         <span className="block-info-list-item-value">
                                                             {testData.bank_transaction_date} • 12 karakters
                                                         </span>
@@ -185,35 +185,35 @@ export default function TransactionSettings() {
                                                     </li>
 
                                                     <li className="block-info-list-item">
-                                                        Branch number:
+                                                        Vestigingsnummer:
                                                         <span className="block-info-list-item-value">
                                                             {testData.bank_branch_number} • 12 karakters
                                                         </span>
                                                     </li>
 
                                                     <li className="block-info-list-item">
-                                                        Branch unique ID:
+                                                        Vestiging ID:
                                                         <span className="block-info-list-item-value">
                                                             {testData.bank_branch_id} • 3-20 karakters
                                                         </span>
                                                     </li>
 
                                                     <li className="block-info-list-item">
-                                                        Branch name:
+                                                        Vestigingsnaam:
                                                         <span className="block-info-list-item-value">
                                                             {testData.bank_branch_name} • 3-100 karakters
                                                         </span>
                                                     </li>
 
                                                     <li className="block-info-list-item">
-                                                        Fund name:
+                                                        Fondsnaam:
                                                         <span className="block-info-list-item-value">
                                                             {testData.bank_fund_name} • 3-100 karakters
                                                         </span>
                                                     </li>
 
                                                     <li className="block-info-list-item">
-                                                        Employee note:
+                                                        Notitie:
                                                         <span className="block-info-list-item-value">
                                                             {testData.bank_note} • 255 karakters
                                                         </span>
