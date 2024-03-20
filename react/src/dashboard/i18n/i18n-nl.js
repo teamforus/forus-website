@@ -629,8 +629,8 @@ module.exports = {
         },
         info: {
             branch_number: "Een uniek 12-cijferig nummer dat door de Kamer van Koophandel aan elke vestiging wordt toegekend. Let op: Dit nummer verschilt van het KVK-nummer.",
-            branch_name: "Een naam die door een organisatie aan een vestiging wordt gegeven. Deze naam kan worden aangepast op de informatiepagina van de vestiging.",
-            branch_id: "Een unieke ID die door de organisatie aan een vestiging wordt toegewezen voor interne administratieve doeleinden. Deze kan worden aangepast op de informatiepagina van de vestiging."
+            branch_name: "Een naam die door een organisatie aan een vestiging wordt gegeven.",
+            branch_id: "Een unieke ID die door de organisatie aan een vestiging wordt toegewezen voor interne administratieve doeleinden."
         },
         buttons: {
             add_office: "Voeg een nieuwe vestiging toe",
