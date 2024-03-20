@@ -24,6 +24,7 @@ import ProductsCreate from '../components/pages/products-edit/ProductsCreate';
 import ProductsEdit from '../components/pages/products-edit/ProductsEdit';
 import ProductsView from '../components/pages/products-view/ProductsView';
 import Transactions from '../components/pages/transactions/Transactions';
+import TransactionSettings from '../components/pages/transaction-settings/TransactionSettings';
 import TransactionsView from '../components/pages/transactions-view/TransactionsView';
 import Reservations from '../components/pages/reservations/Reservations';
 import ReservationsSettings from '../components/pages/reservations-settings/ReservationsSettings';
@@ -44,6 +45,11 @@ import PaymentMethods from '../components/pages/payment-methods/PaymentMethods';
 import MolliePrivacy from '../components/pages/mollie-privacy/MolliePrivacy';
 import CsvValidationsRedirect from '../components/pages/csv_validations/CsvValidationsRedirect';
 import WIP from '../components/pages_system/WIP';
+import ExtraPayments from '../components/pages/extra-payments/ExtraPayments';
+import ExtraPaymentsView from '../components/pages/extra-payments-view/ExtraPaymentsView';
+import Features from '../components/pages/features/Features';
+import Feature from '../components/pages/feature/Feature';
+import EventLogs from '../components/pages/eventLogs/EventLogs';
 
 const router = new RouterBuilder();
 
@@ -151,8 +157,13 @@ router.state('reimbursements', <WIP title={'Reimbursements'} />, {
     fallbackState: 'organizations',
 });
 
-router.state('extra-payments', <WIP title={'Extra payments'} />, {
+router.state('extra-payments', <ExtraPayments />, {
     path: `/organizations/:organizationId/extra-payments`,
+    fallbackState: 'organizations',
+});
+
+router.state('extra-payments-show', <ExtraPaymentsView />, {
+    path: `/organizations/:organizationId/extra-payments/:id`,
     fallbackState: 'organizations',
 });
 
@@ -166,7 +177,7 @@ router.state('implementation-notifications', <WIP title={'Implementation notific
     fallbackState: 'organizations',
 });
 
-router.state('organization-logs', <WIP title={'Organization logs'} />, {
+router.state('organization-logs', <EventLogs />, {
     path: `/organizations/:organizationId/logs`,
     fallbackState: 'organizations',
 });
@@ -209,6 +220,10 @@ router.state('provider-funds', <ProviderFunds />, {
 
 router.state('transactions', <Transactions />, {
     path: `/organizations/:organizationId/transactions`,
+});
+
+router.state('transaction-settings', <TransactionSettings />, {
+    path: `/organizations/:organizationId/transaction-settings`,
 });
 
 router.state('transaction-bulk', <WIP />, {
@@ -279,8 +294,12 @@ router.state('organization-notifications', <OrganizationsNotifications />, {
     path: `/organizations/:organizationId/notifications`,
 });
 
-router.state('features', <WIP title={'Features'} />, {
+router.state('features', <Features />, {
     path: `/organizations/:organizationId/features`,
+});
+
+router.state('feature', <Feature />, {
+    path: `/organizations/:organizationId/feature/:key`,
 });
 
 router.state('feedback', <Feedback />, {

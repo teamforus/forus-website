@@ -1,6 +1,6 @@
 import Media from './Media';
 import BusinessType from './BusinessType';
-import OfficeSchedule from "./OfficeSchedule";
+import OfficeSchedule from './OfficeSchedule';
 
 export default interface Office {
     id: number;
@@ -13,6 +13,11 @@ export default interface Office {
     postcode_number: string;
     postcode_addition: string;
     photo?: Media;
+    branch_number?: string;
+    branch_name?: string;
+    branch_full_name?: string;
+    branch_id?: string;
+    employees_count?: number;
     organization: {
         id: number;
         name: string;

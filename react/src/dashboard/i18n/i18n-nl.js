@@ -622,7 +622,15 @@ module.exports = {
             phone: "Telefoonnummer",
             mail: "E-mail",
             hours: "Openingstijden",
-            business_type: "Organisatie type"
+            business_type: "Organisatie type",
+            branch_number: "Vestigingsnummer",
+            branch_name: "Vestigingsnaam",
+            branch_id: "VestigingID"
+        },
+        info: {
+            branch_number: "Een uniek 12-cijferig nummer dat door de Kamer van Koophandel aan elke vestiging wordt toegekend. Let op: Dit nummer verschilt van het KVK-nummer.",
+            branch_name: "Een naam die door een organisatie aan een vestiging wordt gegeven.",
+            branch_id: "Een unieke ID die door de organisatie aan een vestiging wordt toegewezen voor interne administratieve doeleinden."
         },
         buttons: {
             add_office: "Voeg een nieuwe vestiging toe",
@@ -647,12 +655,22 @@ module.exports = {
             phone: "Telefoonnummer",
             hours: "Openingstijden:",
             offices: "Vestigingen ",
-            business_type: "Organisatie type"
+            business_type: "Organisatie type",
+            branch_id: "VestigingID",
+            branch_number: "Vestigingsnummer",
         },
         confirm_delete: {
             title: "Weet u zeker dat u deze vestiging wilt verwijderen?",
             description: "Wanneer u de vestiging verwijderd kunt u dit niet ongedaan maken. Bedenk daarom goed of u deze actie wilt verrichten."
-        }
+        },
+        confirm_has_employees: {
+            title: "Verwijder medewerkers uit de vestiging",
+            description: "Voordat de vestiging wordt verwijderd, controleer of er geen toegewezen medewerker(s) zijn.",
+            buttons: {
+                cancel: "Sluiten",
+                confirm: "Medewerkers bekijken",
+            },
+        },
     },
 
     // ORGANIZATION PROVIDERS = provider-organizations.pug
@@ -1365,6 +1383,8 @@ module.exports = {
     organization_employees: {
         labels: {
             email: "E-mailadres",
+            branch_name_id: "Vestigingnaam & ID",
+            branch_number: "Vestigingsnummer",
             roles: "Rollen",
             actions: "Actie",
             auth_2fa: "2FA",
