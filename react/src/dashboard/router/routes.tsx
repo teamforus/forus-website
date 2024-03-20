@@ -43,6 +43,9 @@ import OrganizationsNoPermissions from '../components/pages/organizations-no-per
 import PaymentMethods from '../components/pages/payment-methods/PaymentMethods';
 import MolliePrivacy from '../components/pages/mollie-privacy/MolliePrivacy';
 import CsvValidationsRedirect from '../components/pages/csv_validations/CsvValidationsRedirect';
+import Reimbursements from '../components/pages/reimbursements/Reimbursements';
+import ReimbursementsView from '../components/pages/reimbursements-view/ReimbursementsView';
+import ReimbursementCategoriesEdit from '../components/pages/reimbursement-categories-edit/ReimbursementCategoriesEdit';
 import WIP from '../components/pages_system/WIP';
 
 const router = new RouterBuilder();
@@ -146,8 +149,18 @@ router.state('product-vouchers', <WIP title={'Product vouchers'} />, {
     fallbackState: 'organizations',
 });
 
-router.state('reimbursements', <WIP title={'Reimbursements'} />, {
+router.state('reimbursements', <Reimbursements />, {
     path: `/organizations/:organizationId/reimbursements`,
+    fallbackState: 'organizations',
+});
+
+router.state('reimbursement-categories-edit', <ReimbursementCategoriesEdit />, {
+    path: `/organizations/:organizationId/reimbursement-categories-edit`,
+    fallbackState: 'organizations',
+});
+
+router.state('reimbursements-view', <ReimbursementsView />, {
+    path: `/organizations/:organizationId/reimbursements/:id`,
     fallbackState: 'organizations',
 });
 
