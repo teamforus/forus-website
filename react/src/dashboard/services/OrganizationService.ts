@@ -5,6 +5,7 @@ import Organization from '../props/models/Organization';
 import { hasPermission } from '../helpers/utils';
 import ExternalFund from '../props/models/ExternalFund';
 import Product from '../props/models/Product';
+import OrganizationFeatureStatuses from './types/OrganizationFeatureStatuses';
 import ProviderFinancial from './types/ProviderFinancial';
 
 export class OrganizationService<T = Organization> {
@@ -38,6 +39,10 @@ export class OrganizationService<T = Organization> {
 
     public updateRole(id: number, data = {}) {
         return this.apiRequest.patch<ApiResponseSingle<T>>(`${this.prefix}/${id}/roles`, data);
+    }
+
+    public updateBankFields(id: number, data = {}) {
+        return this.apiRequest.patch<ApiResponseSingle<T>>(`${this.prefix}/${id}/bank-fields`, data);
     }
 
     public use(id?: number): void {
@@ -203,6 +208,10 @@ export class OrganizationService<T = Organization> {
             `${this.prefix}/${id}/sponsor/providers/${provider_organization_id}/products`,
             data,
         );
+    }
+
+    public getFeatures(id: number): Promise<ApiResponseSingle<OrganizationFeatureStatuses>> {
+        return this.apiRequest.get(`${this.prefix}/${id}/features`);
     }
 
     public getRoutePermissionsMap(type = 'sponsor') {
