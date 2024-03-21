@@ -47,6 +47,11 @@ import Reimbursements from '../components/pages/reimbursements/Reimbursements';
 import ReimbursementsView from '../components/pages/reimbursements-view/ReimbursementsView';
 import ReimbursementCategoriesEdit from '../components/pages/reimbursement-categories-edit/ReimbursementCategoriesEdit';
 import WIP from '../components/pages_system/WIP';
+import ExtraPayments from '../components/pages/extra-payments/ExtraPayments';
+import ExtraPaymentsView from '../components/pages/extra-payments-view/ExtraPaymentsView';
+import Features from '../components/pages/features/Features';
+import Feature from '../components/pages/feature/Feature';
+import EventLogs from '../components/pages/eventLogs/EventLogs';
 
 const router = new RouterBuilder();
 
@@ -164,8 +169,13 @@ router.state('reimbursements-view', <ReimbursementsView />, {
     fallbackState: 'organizations',
 });
 
-router.state('extra-payments', <WIP title={'Extra payments'} />, {
+router.state('extra-payments', <ExtraPayments />, {
     path: `/organizations/:organizationId/extra-payments`,
+    fallbackState: 'organizations',
+});
+
+router.state('extra-payments-show', <ExtraPaymentsView />, {
+    path: `/organizations/:organizationId/extra-payments/:id`,
     fallbackState: 'organizations',
 });
 
@@ -179,7 +189,7 @@ router.state('implementation-notifications', <WIP title={'Implementation notific
     fallbackState: 'organizations',
 });
 
-router.state('organization-logs', <WIP title={'Organization logs'} />, {
+router.state('organization-logs', <EventLogs />, {
     path: `/organizations/:organizationId/logs`,
     fallbackState: 'organizations',
 });
@@ -296,8 +306,12 @@ router.state('organization-notifications', <OrganizationsNotifications />, {
     path: `/organizations/:organizationId/notifications`,
 });
 
-router.state('features', <WIP title={'Features'} />, {
+router.state('features', <Features />, {
     path: `/organizations/:organizationId/features`,
+});
+
+router.state('feature', <Feature />, {
+    path: `/organizations/:organizationId/feature/:key`,
 });
 
 router.state('feedback', <WIP title={'Features'} />, {
