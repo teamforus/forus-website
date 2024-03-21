@@ -20,11 +20,6 @@ import { StringParam, useQueryParams } from 'use-query-params';
 import { getStateRouteUrl } from '../../../modules/state_router/Router';
 
 export default function BankConnections() {
-    const [query] = useQueryParams({
-        success: StringParam,
-        error: StringParam,
-    });
-
     const openModal = useOpenModal();
     const assetUrl = useAssetUrl();
     const pushDanger = usePushDanger();
@@ -42,6 +37,11 @@ export default function BankConnections() {
     const [bankConnections, setBankConnections] = useState<PaginationData<BankConnection>>(null);
     const [submittingConnection, setSubmittingConnection] = useState<boolean>(false);
     const [paginatorKey] = useState('bank-connections');
+
+    const [query] = useQueryParams({
+        success: StringParam,
+        error: StringParam,
+    });
 
     const filter = useFilter({
         q: '',

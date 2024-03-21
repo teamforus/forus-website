@@ -774,6 +774,12 @@
         }
     }
 
+    &.modal-switch-bank-connection-account {
+        .modal-body {
+            overflow: visible;
+        }
+    }
+
     &.modal-notification {
         .modal-content {
             .modal-section {

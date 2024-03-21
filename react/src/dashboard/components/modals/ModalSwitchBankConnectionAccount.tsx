@@ -1,8 +1,7 @@
-import React, {useCallback} from 'react';
+import React, { useCallback } from 'react';
 import { ModalState } from '../../modules/modals/context/ModalContext';
 import { classList } from '../../helpers/utils';
 import useFormBuilder from '../../hooks/useFormBuilder';
-import useSetProgress from '../../hooks/useSetProgress';
 import usePushSuccess from '../../hooks/usePushSuccess';
 import { useBankConnectionService } from '../../services/BankConnectionService';
 import BankConnection from '../../props/models/BankConnection';
@@ -22,12 +21,10 @@ export default function ModalSwitchBankConnectionAccount({
     onClose: () => void;
 }) {
     const pushSuccess = usePushSuccess();
-    const setProgress = useSetProgress();
 
     const bankConnectionService = useBankConnectionService();
 
     const form = useFormBuilder({ bank_connection_account_id: bankConnection?.account_default?.id }, async () => {
-        setProgress(0);
         const { id, organization_id } = bankConnection;
 
         try {
@@ -52,18 +49,19 @@ export default function ModalSwitchBankConnectionAccount({
         <div
             className={classList([
                 'modal',
-                'modal-md',
+                'modal-sm',
                 'modal-animated',
+                'modal-switch-bank-connection-account',
                 modal.loading ? 'modal-loading' : null,
                 className,
             ])}>
             <div className="modal-backdrop" onClick={closeModal} />
             <div className="modal-window">
-                <a className="mdi mdi-close modal-close" onClick={closeModal} role="button" />
-                <div className="modal-header">Selecteer bankrekeningnummer</div>
-                <div className="modal-body form">
-                    <div className="modal-section">
-                        <form className="form" onSubmit={form.submit}>
+                <form className="form" onSubmit={form.submit}>
+                    <a className="mdi mdi-close modal-close" onClick={closeModal} role="button" />
+                    <div className="modal-header">Selecteer bankrekeningnummer</div>
+                    <div className="modal-body">
+                        <div className="modal-section">
                             <div className="form-group">
                                 <label className="form-label" htmlFor="bank_connection_account_id">
                                     IBAN
@@ -71,6 +69,7 @@ export default function ModalSwitchBankConnectionAccount({
 
                                 <SelectControl
                                     value={form.values.bank_connection_account_id}
+                                    propValue={'monetary_account_iban'}
                                     propKey={'id'}
                                     onChange={(bank_connection_account_id: number) =>
                                         form.update({ bank_connection_account_id })
@@ -80,20 +79,21 @@ export default function ModalSwitchBankConnectionAccount({
                                     optionsComponent={SelectControlOptions}
                                 />
 
-                                <FormError error={form.errors.bank_connection_account_id} />
+                                <FormError error={form.errors?.bank_connection_account_id} />
                             </div>
-                        </form>
+                        </div>
                     </div>
-                </div>
-                <div className="modal-footer text-center">
-                    <button type="submit" className="button button-primary">
-                        Bevestigen
-                    </button>
 
-                    <button type="button" className="button button-default" onClick={closeModal}>
-                        Annuleren
-                    </button>
-                </div>
+                    <div className="modal-footer text-center">
+                        <button type="submit" className="button button-primary">
+                            Bevestigen
+                        </button>
+
+                        <button type="button" className="button button-default" onClick={closeModal}>
+                            Annuleren
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     );
