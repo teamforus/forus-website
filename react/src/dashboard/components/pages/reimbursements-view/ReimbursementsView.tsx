@@ -20,10 +20,12 @@ import { ApiResponseSingle } from '../../../props/ApiResponses';
 import ModalReimbursementResolve from '../../modals/ModalReimbursementResolve';
 import ModalReimbursementDetailsEdit from '../../modals/ModalReimbursementDetailsEdit';
 import useFilePreview from '../../../services/helpers/useFilePreview';
+import { useFileService } from '../../../services/FileService';
 
 export default function ReimbursementsView() {
     const { t } = useTranslation();
     const { id } = useParams();
+
     const authIdentity = useAuthIdentity();
     const activeOrganization = useActiveOrganization();
 
@@ -33,6 +35,7 @@ export default function ReimbursementsView() {
     const openModal = useOpenModal();
 
     const reimbursementService = useReimbursementsService();
+    const fileService = useFileService();
     const filePreview = useFilePreview();
 
     const [reimbursement, setReimbursement] = useState<Reimbursement>(null);
@@ -110,9 +113,14 @@ export default function ReimbursementsView() {
         );
     }, [activeOrganization.id, handleOnReimbursementUpdated, reimbursement?.id, reimbursementService]);
 
-    const downloadFile = useCallback((file) => {
-        console.log('downloadFile file: ', file);
-    }, []);
+    const downloadFile = useCallback(
+        (file: File) => {
+            fileService.download(file).then((res) => {
+                fileService.downloadFile(file.original_name, res.data);
+            }, console.error);
+        },
+        [fileService],
+    );
 
     const hasFilePreview = useCallback((file) => {
         return ['pdf', 'png', 'jpeg', 'jpg'].includes(file.ext);

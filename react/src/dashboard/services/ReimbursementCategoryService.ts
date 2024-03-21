@@ -41,7 +41,7 @@ export class ReimbursementCategoryService<T = ReimbursementCategory> {
      * Store reimbursement category
      */
     public store(organizationId: number, data: object = {}): Promise<ApiResponseSingle<T>> {
-        return this.apiRequest.post(`${this.prefix}/${organizationId}/reimbursement-categories`, data);
+        return this.apiRequest.post(`${this.prefix + organizationId}/reimbursement-categories`, data);
     }
 
     public destroy(organizationId: number, id: number): Promise<ApiResponseSingle<T>> {

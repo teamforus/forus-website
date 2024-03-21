@@ -1,9 +1,15 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { ModalState } from '../../modules/modals/context/ModalContext';
 import { classList } from '../../helpers/utils';
 import ReimbursementCategories from '../elements/reimbursement-categories/ReimbursementCategories';
 import ModalReimbursementCategoryEdit from './ModalReimbursementCategoryEdit';
 import useOpenModal from '../../hooks/useOpenModal';
+import usePaginatorService from '../../modules/paginator/services/usePaginatorService';
+import { useReimbursementCategoryService } from '../../services/ReimbursementCategoryService';
+import { PaginationData } from '../../props/ApiResponses';
+import ReimbursementCategory from '../../props/models/ReimbursementCategory';
+import useActiveOrganization from '../../hooks/useActiveOrganization';
+import useFilter from '../../hooks/useFilter';
 
 export default function ModalReimbursementCategoriesEdit({
     modal,
@@ -13,10 +19,28 @@ export default function ModalReimbursementCategoriesEdit({
     className?: string;
 }) {
     const openModal = useOpenModal();
+    const activeOrganization = useActiveOrganization();
+
+    const paginatorService = usePaginatorService();
+    const reimbursementCategoryService = useReimbursementCategoryService();
+
+    const [reimbursementCategories, setReimbursementCategories] = useState<PaginationData<ReimbursementCategory>>(null);
+    const [paginatorKey] = useState('reimbursement_categories');
+
+    const filter = useFilter({
+        q: '',
+        per_page: paginatorService.getPerPage(paginatorKey),
+    });
+
+    const fetchReimbursementCategories = useCallback(() => {
+        reimbursementCategoryService.list(activeOrganization.id, filter.activeValues).then((res) => {
+            setReimbursementCategories(res.data);
+        });
+    }, [activeOrganization.id, filter.activeValues, reimbursementCategoryService]);
 
     const addCategory = useCallback(() => {
-        openModal((modal) => <ModalReimbursementCategoryEdit modal={modal} />);
-    }, [openModal]);
+        openModal((modal) => <ModalReimbursementCategoryEdit modal={modal} onSubmit={fetchReimbursementCategories} />);
+    }, [fetchReimbursementCategories, openModal]);
 
     return (
         <div
@@ -35,7 +59,7 @@ export default function ModalReimbursementCategoriesEdit({
                     <div className="modal-header">Bewerk aanbieder</div>
 
                     <div className="modal-body modal-body-visible">
-                        <ReimbursementCategories compact={true} />
+                        <ReimbursementCategories compact={true} categories={reimbursementCategories} />
                     </div>
 
                     <div className="modal-footer text-center">

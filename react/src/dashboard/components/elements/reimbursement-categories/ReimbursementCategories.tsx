@@ -14,7 +14,13 @@ import usePushSuccess from '../../../hooks/usePushSuccess';
 import usePushDanger from '../../../hooks/usePushDanger';
 import ModalReimbursementCategoryEdit from '../../modals/ModalReimbursementCategoryEdit';
 
-export default function ReimbursementCategories({ compact = false }: { compact?: boolean }) {
+export default function ReimbursementCategories({
+    compact = false,
+    categories = null,
+}: {
+    compact?: boolean;
+    categories?: PaginationData<ReimbursementCategory>;
+}) {
     const { t } = useTranslation();
     const openModal = useOpenModal();
     const activeOrganization = useActiveOrganization();
@@ -24,7 +30,8 @@ export default function ReimbursementCategories({ compact = false }: { compact?:
     const paginatorService = usePaginatorService();
     const reimbursementCategoryService = useReimbursementCategoryService();
 
-    const [reimbursementCategories, setReimbursementCategories] = useState<PaginationData<ReimbursementCategory>>(null);
+    const [reimbursementCategories, setReimbursementCategories] =
+        useState<PaginationData<ReimbursementCategory>>(categories);
     const [paginatorKey] = useState('reimbursement_categories');
 
     const filter = useFilter({
@@ -39,11 +46,18 @@ export default function ReimbursementCategories({ compact = false }: { compact?:
         [t],
     );
 
-    const fetchReimbursementCategories = useCallback(() => {
-        reimbursementCategoryService.list(activeOrganization.id, filter.activeValues).then((res) => {
-            setReimbursementCategories(res.data);
-        });
-    }, [activeOrganization.id, filter.activeValues, reimbursementCategoryService]);
+    const fetchReimbursementCategories = useCallback(
+        (forceFetch = false) => {
+            if (categories && !forceFetch) {
+                return setReimbursementCategories(categories);
+            }
+
+            reimbursementCategoryService.list(activeOrganization.id, filter.activeValues).then((res) => {
+                setReimbursementCategories(res.data);
+            });
+        },
+        [activeOrganization.id, categories, filter.activeValues, reimbursementCategoryService],
+    );
 
     const editReimbursementCategory = useCallback(
         (category: ReimbursementCategory = null) => {
@@ -77,7 +91,7 @@ export default function ReimbursementCategories({ compact = false }: { compact?:
                                 .then(() => {
                                     pushSuccess('Opgeslagen!');
                                     modal.close();
-                                    fetchReimbursementCategories();
+                                    fetchReimbursementCategories(true);
                                 })
                                 .catch((res) => pushDanger('Error!', res?.data?.message));
                         },

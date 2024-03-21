@@ -34,8 +34,10 @@ export default function ModalReimbursementCategoryEdit({
             name: category?.name,
         },
         async (values) => {
-            reimbursementCategoryService
-                .update(activeOrganization.id, category.id, values)
+            (category
+                ? reimbursementCategoryService.update(activeOrganization.id, category.id, values)
+                : reimbursementCategoryService.store(activeOrganization.id, values)
+            )
                 .then(() => {
                     pushSuccess('Gelukt!', 'Declaratie is bijgewerkt!');
                     modal.close();
@@ -71,7 +73,7 @@ export default function ModalReimbursementCategoryEdit({
                                 <label className="form-label">Categorie naam</label>
                                 <input
                                     className="form-control"
-                                    value={form.values.name}
+                                    defaultValue={form.values.name}
                                     placeholder="Categorie naam"
                                     onChange={(e) => form.update({ name: e.target.value })}
                                 />

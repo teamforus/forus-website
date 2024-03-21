@@ -120,7 +120,7 @@ export default function ModalReimbursementResolve({
                                     <textarea
                                         className="form-control r-n"
                                         rows={3}
-                                        value={form.values.note}
+                                        defaultValue={form.values.note}
                                         onChange={(e) => form.update({ note: e.target.value })}
                                         placeholder="Voeg een persoonlijke notitie toe"
                                     />
@@ -150,7 +150,7 @@ export default function ModalReimbursementResolve({
                                             <textarea
                                                 className="form-control r-n"
                                                 rows={3}
-                                                value={form.values.reason}
+                                                defaultValue={form.values.reason}
                                                 onChange={(e) => form.update({ reason: e.target.value })}
                                                 placeholder="Bericht naar deelnemer"
                                             />
@@ -175,7 +175,7 @@ export default function ModalReimbursementResolve({
                                     <textarea
                                         className="form-control r-n"
                                         rows={3}
-                                        value={form.values.note}
+                                        defaultValue={form.values.note}
                                         onChange={(e) => form.update({ note: e.target.value })}
                                         placeholder="Voeg een persoonlijke notitie toe"></textarea>
                                 </div>
