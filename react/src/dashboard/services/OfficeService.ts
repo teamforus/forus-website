@@ -122,6 +122,9 @@ export class OfficeService<T = Office> {
         return {
             address: values.address,
             phone: values.phone,
+            branch_id: values.branch_id,
+            branch_name: values.branch_name,
+            branch_number: values.branch_number,
             schedule: Object.values(scheduleByDay),
         };
     }

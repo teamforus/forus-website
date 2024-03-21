@@ -291,6 +291,22 @@
             }
         }
 
+        &.form-group-info-dashed {
+            .form-group-info-control {
+                .form-control {
+                    border-style: dashed;
+                    background-color: #fff;
+                }
+
+                .form-group-info-button {
+                    .button {
+                        border: 1px dashed var(--border-color);
+                        border-left: none;
+                    }
+                }
+            }
+        }
+
         &:last-child {
             margin-bottom: 0;
         }
@@ -398,6 +414,10 @@
 
         &:last-child {
             margin-bottom: -10px;
+        }
+
+        &.form-hint-margin-less {
+            margin-bottom: 0;
         }
     }
 
