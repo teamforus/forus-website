@@ -1,6 +1,6 @@
 import React, { Fragment, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { currencyFormat } from '../../../../helpers/string';
+import { currencyFormat, strLimit } from '../../../../helpers/string';
 import { FundFinancialLocal } from '../FinancialDashboardOverview';
 
 export default function BudgetFundsTableItem({ fund }: { fund: FundFinancialLocal }) {
@@ -11,18 +11,22 @@ export default function BudgetFundsTableItem({ fund }: { fund: FundFinancialLoca
     return (
         <tbody>
             <tr className={collapsed ? 'table-highlight' : 'table-separator'} onClick={() => setCollapsed(!collapsed)}>
-                <td className="text-center">
-                    <a className={`mdi mdi-menu-down td-menu-icon ${collapsed ? 'mdi-menu-down' : 'mdi-menu-right'}`} />
+                <td>
+                    <div className="flex">
+                        <a
+                            className={`mdi mdi-menu-down td-menu-icon ${
+                                collapsed ? 'mdi-menu-down' : 'mdi-menu-right'
+                            }`}
+                        />
+                        <strong className="nowrap">{strLimit(fund.name, 50)}</strong>
+                    </div>
                 </td>
-                <td className="text-left">
-                    <strong>{fund.name}</strong>
-                </td>
-                <td className="text-right">{fund.budget.vouchers_amount_locale}</td>
-                <td className="text-right">{fund.budget.active_vouchers_amount_locale}</td>
-                <td className="text-right">{fund.budget.inactive_vouchers_amount_locale}</td>
-                <td className="text-right">{fund.budget.deactivated_vouchers_amount_locale}</td>
-                <td className="text-right">{fund.budget.used_active_vouchers_locale}</td>
-                <td className="text-right">
+                <td>{fund.budget.vouchers_amount_locale}</td>
+                <td>{fund.budget.active_vouchers_amount_locale}</td>
+                <td>{fund.budget.inactive_vouchers_amount_locale}</td>
+                <td>{fund.budget.deactivated_vouchers_amount_locale}</td>
+                <td>{fund.budget.used_active_vouchers_locale}</td>
+                <td>
                     {currencyFormat(
                         parseFloat(fund.budget.vouchers_amount) - parseFloat(fund.budget.used_active_vouchers),
                     )}
@@ -32,73 +36,92 @@ export default function BudgetFundsTableItem({ fund }: { fund: FundFinancialLoca
             {collapsed && (
                 <Fragment>
                     <tr className="table-highlight-grey">
-                        <td className="text-center">
-                            <em className="mdi mdi-circle-small" />
-                        </td>
-                        <td className="text-left">
+                        <td>
                             <strong>{t('financial_dashboard_overview.labels.total_percentage')}</strong>
                         </td>
-                        <td className="text-right">{fund.budget.percentageTotal} %</td>
-                        <td className="text-right">{fund.budget.percentageActive} %</td>
-                        <td className="text-right">{fund.budget.percentageInactive} %</td>
-                        <td className="text-right">{fund.budget.percentageDeactivated} %</td>
-                        <td className="text-right">{fund.budget.percentageUsed} %</td>
-                        <td className="text-right">{fund.budget.percentageLeft} %</td>
+                        <td>{fund.budget.percentage_total} %</td>
+                        <td>{fund.budget.percentage_active} %</td>
+                        <td>{fund.budget.percentage_inactive} %</td>
+                        <td>{fund.budget.percentage_deactivated} %</td>
+                        <td>{fund.budget.percentage_used} %</td>
+                        <td>{fund.budget.percentage_left} %</td>
                     </tr>
 
                     <tr className="table-highlight-grey">
-                        <td className="text-center">
-                            <em className="mdi mdi-circle-small" />
-                        </td>
-                        <td className="text-left">
+                        <td>
                             <strong>{t('financial_dashboard_overview.labels.total_count')}</strong>
                         </td>
-                        <td className="text-right">{fund.budget.vouchers_count}</td>
-                        <td className="text-right">{fund.budget.active_vouchers_count}</td>
-                        <td className="text-right">{fund.budget.inactive_vouchers_count}</td>
-                        <td className="text-right">{fund.budget.deactivated_vouchers_count}</td>
-                        <td className="text-right">-</td>
-                        <td className="text-right">-</td>
+                        <td>{fund.budget.vouchers_count}</td>
+                        <td>{fund.budget.active_vouchers_count}</td>
+                        <td>{fund.budget.inactive_vouchers_count}</td>
+                        <td>{fund.budget.deactivated_vouchers_count}</td>
+                        <td>-</td>
+                        <td>-</td>
                     </tr>
 
-                    <tr className="table-highlight-grey table-separator">
-                        <td className="text-center">
-                            <em className="mdi mdi-circle-small">
-                                <br />
-                            </em>
-                            &nbsp;
-                        </td>
-                        <td className="text-left">
+                    <tr className="table-highlight-grey">
+                        <td>
                             <strong>Tegoeden</strong>
-                            <div>&nbsp;</div>
                         </td>
-                        <td className="text-right" colSpan={2}>
+                        <td colSpan={2}>
                             {fund.formulas.map((formula, index) => (
-                                <div key={index} className="col-lg-6 text-right">
+                                <div key={index}>
                                     <div>Per tegoed</div>
-                                    <div>{currencyFormat(parseFloat(formula.amount))}</div>
+                                    <div>
+                                        <strong>{currencyFormat(parseFloat(formula.amount))}</strong>
+                                    </div>
                                 </div>
                             ))}
                         </td>
-                        <td className="text-right">
+                        <td>
                             <div>Gem. per tegoed</div>
-                            <div>{fund.budget.averagePerVoucher}</div>
+                            <div>
+                                <strong>{fund.budget.average_per_voucher}</strong>
+                            </div>
                         </td>
                         <td />
                         <td colSpan={2} />
                     </tr>
 
+                    {(fund.budget.children_count > 0 || fund.product_vouchers.children_count > 0) && (
+                        <tr className="table-highlight-grey">
+                            <td>
+                                <strong>Eigenschappen</strong>
+                            </td>
+                            {fund.budget.children_count > 0 ? (
+                                <td colSpan={2}>
+                                    <div>Aantal kinderen</div>
+                                    <div>
+                                        <strong>{fund.budget.children_count}</strong>
+                                    </div>
+                                </td>
+                            ) : (
+                                <td colSpan={2} />
+                            )}
+
+                            {fund.product_vouchers.children_count > 0 ? (
+                                <td colSpan={2}>
+                                    <div>Aantal kinderen (product)</div>
+                                    <div>
+                                        <strong>{fund.product_vouchers.children_count}</strong>
+                                    </div>
+                                </td>
+                            ) : (
+                                <td colSpan={2} />
+                            )}
+
+                            <td colSpan={2} />
+                        </tr>
+                    )}
+
                     <tr className="table-highlight-grey">
-                        <td className="text-center">
-                            <em className="mdi mdi-circle-small" />
-                        </td>
-                        <td className="text-left">
+                        <td>
                             <strong>{t('financial_dashboard_overview.labels.product_vouchers')}</strong>
                         </td>
-                        <td className="text-right">{fund.product_vouchers.vouchers_amount_locale}</td>
-                        <td className="text-right">{fund.product_vouchers.active_vouchers_amount_locale}</td>
-                        <td className="text-right">{fund.product_vouchers.inactive_vouchers_amount_locale}</td>
-                        <td className="text-right">{fund.product_vouchers.deactivated_vouchers_amount_locale}</td>
+                        <td>{fund.product_vouchers.vouchers_amount_locale}</td>
+                        <td>{fund.product_vouchers.active_vouchers_amount_locale}</td>
+                        <td>{fund.product_vouchers.inactive_vouchers_amount_locale}</td>
+                        <td>{fund.product_vouchers.deactivated_vouchers_amount_locale}</td>
                         <td colSpan={2} />
                     </tr>
                 </Fragment>

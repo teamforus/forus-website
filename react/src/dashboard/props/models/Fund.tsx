@@ -58,4 +58,5 @@ export interface VoucherData {
     active_vouchers_count?: number;
     inactive_vouchers_count?: number;
     deactivated_vouchers_count?: number;
+    children_count?: number;
 }

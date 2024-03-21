@@ -43,34 +43,30 @@ export default function BudgetFundsTable({
                             <thead>
                                 <tr>
                                     <ThSortable
-                                        className="cell-chevron"
+                                        className="w-20"
                                         label={t('financial_dashboard_overview.labels.fund_name')}
                                     />
-                                    <ThSortable className="text-left w-20" label="" />
                                     <ThSortable
-                                        className="text-right w-10"
+                                        className="w-10"
                                         label={t('financial_dashboard_overview.labels.total')}
                                     />
                                     <ThSortable
-                                        className="text-right w-15"
+                                        className="w-15"
                                         label={t('financial_dashboard_overview.labels.active')}
                                     />
                                     <ThSortable
-                                        className="text-right w-15"
+                                        className="w-15"
                                         label={t('financial_dashboard_overview.labels.inactive')}
                                     />
                                     <ThSortable
-                                        className="text-right w-15"
+                                        className="w-15"
                                         label={t('financial_dashboard_overview.labels.deactivated')}
                                     />
                                     <ThSortable
-                                        className="text-right w-15"
+                                        className="w-15"
                                         label={t('financial_dashboard_overview.labels.used')}
                                     />
-                                    <ThSortable
-                                        className="text-right"
-                                        label={t('financial_dashboard_overview.labels.left')}
-                                    />
+                                    <ThSortable label={t('financial_dashboard_overview.labels.left')} />
                                 </tr>
                             </thead>
 
@@ -80,24 +76,13 @@ export default function BudgetFundsTable({
 
                             <tbody>
                                 <tr className="table-totals">
-                                    <td />
                                     <td>{t('financial_dashboard_overview.labels.total')}</td>
-                                    <td className="text-right">
-                                        {fundsFinancialOverview.budget_funds.vouchers_amount_locale}
-                                    </td>
-                                    <td className="text-right">
-                                        {fundsFinancialOverview.budget_funds.active_vouchers_amount_locale}
-                                    </td>
-                                    <td className="text-right">
-                                        {fundsFinancialOverview.budget_funds.inactive_vouchers_amount_locale}
-                                    </td>
-                                    <td className="text-right">
-                                        {fundsFinancialOverview.budget_funds.deactivated_vouchers_amount_locale}
-                                    </td>
-                                    <td className="text-right">
-                                        {fundsFinancialOverview.budget_funds.budget_used_active_vouchers_locale}
-                                    </td>
-                                    <td className="text-right">
+                                    <td>{fundsFinancialOverview.budget_funds.vouchers_amount_locale}</td>
+                                    <td>{fundsFinancialOverview.budget_funds.active_vouchers_amount_locale}</td>
+                                    <td>{fundsFinancialOverview.budget_funds.inactive_vouchers_amount_locale}</td>
+                                    <td>{fundsFinancialOverview.budget_funds.deactivated_vouchers_amount_locale}</td>
+                                    <td>{fundsFinancialOverview.budget_funds.budget_used_active_vouchers_locale}</td>
+                                    <td>
                                         {currencyFormat(
                                             parseFloat(fundsFinancialOverview.budget_funds.vouchers_amount) -
                                                 fundsFinancialOverview.budget_funds.budget_used_active_vouchers,

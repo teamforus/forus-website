@@ -17,13 +17,13 @@ import Fund from '../../../props/models/Fund';
 
 export type FundFinancialLocal = Fund & {
     budget: {
-        percentageTotal?: string;
-        percentageActive?: string;
-        percentageInactive?: string;
-        percentageDeactivated?: string;
-        percentageUsed?: string;
-        percentageLeft?: string;
-        averagePerVoucher?: string;
+        percentage_total?: string;
+        percentage_active?: string;
+        percentage_inactive?: string;
+        percentage_deactivated?: string;
+        percentage_used?: string;
+        percentage_left?: string;
+        average_per_voucher?: string;
     };
 };
 
@@ -82,6 +82,43 @@ export default function FinancialDashboardOverview() {
         [doExport, openModal],
     );
 
+    const mapBudgetFunds = useCallback(
+        (funds: Array<Fund>) => {
+            const list = funds.map((fund) => {
+                return {
+                    ...fund,
+                    budget: {
+                        ...fund.budget,
+                        percentage_total: '100.00',
+                        percentage_active: getPercentage(
+                            fund.budget.active_vouchers_amount,
+                            fund.budget.vouchers_amount,
+                        ),
+                        percentage_inactive: getPercentage(
+                            fund.budget.inactive_vouchers_amount,
+                            fund.budget.vouchers_amount,
+                        ),
+                        percentage_deactivated: getPercentage(
+                            fund.budget.deactivated_vouchers_amount,
+                            fund.budget.vouchers_amount,
+                        ),
+                        percentage_used: getPercentage(fund.budget.used_active_vouchers, fund.budget.vouchers_amount),
+                        percentage_left: getPercentage(
+                            parseFloat(fund.budget.vouchers_amount) - parseFloat(fund.budget.used_active_vouchers),
+                            fund.budget.vouchers_amount,
+                        ),
+                        average_per_voucher: currencyFormat(
+                            divide(fund.budget.vouchers_amount, fund.budget.vouchers_count),
+                        ),
+                    },
+                };
+            });
+
+            setBudgetFunds(list);
+        },
+        [divide, getPercentage],
+    );
+
     useEffect(() => {
         fundService
             .financialOverview(activeOrganization.id, { stats: 'all' })
@@ -94,49 +131,12 @@ export default function FinancialDashboardOverview() {
             .list(activeOrganization.id, { stats: 'all' })
             .then((res) => {
                 setFunds(res.data.data.filter((fund) => fund.state !== 'waiting'));
-
-                const list = res.data.data
-                    .filter((fund) => fund.state == 'active' && fund.type == 'budget')
-                    .map((fund) => {
-                        return {
-                            ...fund,
-                            budget: {
-                                ...fund.budget,
-                                percentageTotal: '100.00',
-                                percentageActive: getPercentage(
-                                    fund.budget.active_vouchers_amount,
-                                    fund.budget.vouchers_amount,
-                                ),
-                                percentageInactive: getPercentage(
-                                    fund.budget.inactive_vouchers_amount,
-                                    fund.budget.vouchers_amount,
-                                ),
-                                percentageDeactivated: getPercentage(
-                                    fund.budget.deactivated_vouchers_amount,
-                                    fund.budget.vouchers_amount,
-                                ),
-                                percentageUsed: getPercentage(
-                                    fund.budget.used_active_vouchers,
-                                    fund.budget.vouchers_amount,
-                                ),
-                                percentageLeft: getPercentage(
-                                    parseFloat(fund.budget.vouchers_amount) -
-                                        parseFloat(fund.budget.used_active_vouchers),
-                                    fund.budget.vouchers_amount,
-                                ),
-                                averagePerVoucher: currencyFormat(
-                                    divide(fund.budget.vouchers_amount, fund.budget.vouchers_count),
-                                ),
-                            },
-                        };
-                    });
-
-                setBudgetFunds(list);
+                mapBudgetFunds(res.data.data.filter((fund) => fund.state == 'active' && fund.type == 'budget'));
             })
             .catch((res: ResponseError) => pushDanger('Mislukt!', res.data.message));
-    }, [activeOrganization.id, divide, fundService, getPercentage, pushDanger]);
+    }, [activeOrganization.id, fundService, mapBudgetFunds, pushDanger]);
 
-    if (!funds) {
+    if (!funds || !fundsFinancialOverview) {
         return <LoadingCard />;
     }
 

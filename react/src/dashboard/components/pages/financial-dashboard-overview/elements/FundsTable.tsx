@@ -42,42 +42,28 @@ export default function FundsTable({
                             <tbody>
                                 <tr>
                                     <ThSortable label={t('financial_dashboard_overview.labels.fund_name')} />
-                                    <ThSortable
-                                        className="text-right"
-                                        label={t('financial_dashboard_overview.labels.total_budget')}
-                                    />
-                                    <ThSortable
-                                        className="text-right"
-                                        label={t('financial_dashboard_overview.labels.used_budget')}
-                                    />
-                                    <ThSortable
-                                        className="text-right"
-                                        label={t('financial_dashboard_overview.labels.current_budget')}
-                                    />
-                                    <ThSortable
-                                        className="text-right"
-                                        label={t('financial_dashboard_overview.labels.transaction_costs')}
-                                    />
+                                    <ThSortable label={t('financial_dashboard_overview.labels.total_budget')} />
+                                    <ThSortable label={t('financial_dashboard_overview.labels.used_budget')} />
+                                    <ThSortable label={t('financial_dashboard_overview.labels.current_budget')} />
+                                    <ThSortable label={t('financial_dashboard_overview.labels.transaction_costs')} />
                                 </tr>
 
                                 {funds.map((fund) => (
                                     <tr key={fund.id}>
                                         <td>{fund.name}</td>
-                                        <td className="text-right">{fund.budget.total_locale}</td>
-                                        <td className="text-right">{fund.budget.used_locale}</td>
-                                        <td className="text-right">{fund.budget.left_locale}</td>
-                                        <td className="text-right">{fund.budget.transaction_costs_locale}</td>
+                                        <td>{fund.budget.total_locale}</td>
+                                        <td>{fund.budget.used_locale}</td>
+                                        <td>{fund.budget.left_locale}</td>
+                                        <td>{fund.budget.transaction_costs_locale}</td>
                                     </tr>
                                 ))}
 
                                 <tr className="table-totals">
                                     <td>{t('financial_dashboard_overview.labels.total')}</td>
-                                    <td className="text-right">{fundsFinancialOverview.funds.budget_locale}</td>
-                                    <td className="text-right">{fundsFinancialOverview.funds.budget_used_locale}</td>
-                                    <td className="text-right">{fundsFinancialOverview.funds.budget_left_locale}</td>
-                                    <td className="text-right">
-                                        {fundsFinancialOverview.funds.transaction_costs_locale}
-                                    </td>
+                                    <td>{fundsFinancialOverview.funds.budget_locale}</td>
+                                    <td>{fundsFinancialOverview.funds.budget_used_locale}</td>
+                                    <td>{fundsFinancialOverview.funds.budget_left_locale}</td>
+                                    <td>{fundsFinancialOverview.funds.transaction_costs_locale}</td>
                                 </tr>
                             </tbody>
                         </table>
