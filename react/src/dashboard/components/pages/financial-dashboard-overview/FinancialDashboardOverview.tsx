@@ -38,7 +38,7 @@ export default function FinancialDashboardOverview() {
     const fileService = useFileService();
     const fundService = useFundService();
 
-    const [funds, setFunds] = useState(null);
+    const [funds, setFunds] = useState<Array<Fund>>(null);
     const [budgetFunds, setBudgetFunds] = useState<Array<FundFinancialLocal>>(null);
     const [fundsFinancialOverview, setFundsFinancialOverview] = useState(null);
 
@@ -119,7 +119,17 @@ export default function FinancialDashboardOverview() {
         [divide, getPercentage],
     );
 
-    useEffect(() => {
+    const fetchFunds = useCallback(() => {
+        fundService
+            .list(activeOrganization.id, { stats: 'all', per_page: 100 })
+            .then((res) => {
+                setFunds(res.data.data.filter((fund) => fund.state !== 'waiting'));
+                mapBudgetFunds(res.data.data.filter((fund) => fund.state == 'active' && fund.type == 'budget'));
+            })
+            .catch((res: ResponseError) => pushDanger('Mislukt!', res.data.message));
+    }, [activeOrganization.id, fundService, mapBudgetFunds, pushDanger]);
+
+    const fetchFinancialOverview = useCallback(() => {
         fundService
             .financialOverview(activeOrganization.id, { stats: 'all' })
             .then((res) => setFundsFinancialOverview(res.data))
@@ -127,14 +137,12 @@ export default function FinancialDashboardOverview() {
     }, [activeOrganization.id, fundService, pushDanger]);
 
     useEffect(() => {
-        fundService
-            .list(activeOrganization.id, { stats: 'all' })
-            .then((res) => {
-                setFunds(res.data.data.filter((fund) => fund.state !== 'waiting'));
-                mapBudgetFunds(res.data.data.filter((fund) => fund.state == 'active' && fund.type == 'budget'));
-            })
-            .catch((res: ResponseError) => pushDanger('Mislukt!', res.data.message));
-    }, [activeOrganization.id, fundService, mapBudgetFunds, pushDanger]);
+        fetchFunds();
+    }, [fetchFunds]);
+
+    useEffect(() => {
+        fetchFinancialOverview();
+    }, [fetchFinancialOverview]);
 
     if (!funds || !fundsFinancialOverview) {
         return <LoadingCard />;
