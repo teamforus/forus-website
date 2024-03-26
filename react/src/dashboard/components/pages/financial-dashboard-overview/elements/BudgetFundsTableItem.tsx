@@ -83,34 +83,17 @@ export default function BudgetFundsTableItem({ fund }: { fund: FundFinancialLoca
                         <td colSpan={2} />
                     </tr>
 
-                    {(fund.budget.children_count > 0 || fund.product_vouchers.children_count > 0) && (
+                    {fund.budget.children_count > 0 && (
                         <tr className="table-highlight-grey">
                             <td>
                                 <strong>Eigenschappen</strong>
                             </td>
-                            {fund.budget.children_count > 0 ? (
-                                <td colSpan={2}>
-                                    <div>Aantal kinderen</div>
-                                    <div>
-                                        <strong>{fund.budget.children_count}</strong>
-                                    </div>
-                                </td>
-                            ) : (
-                                <td colSpan={2} />
-                            )}
-
-                            {fund.product_vouchers.children_count > 0 ? (
-                                <td colSpan={2}>
-                                    <div>Aantal kinderen (product)</div>
-                                    <div>
-                                        <strong>{fund.product_vouchers.children_count}</strong>
-                                    </div>
-                                </td>
-                            ) : (
-                                <td colSpan={2} />
-                            )}
-
-                            <td colSpan={2} />
+                            <td colSpan={6}>
+                                <div>Aantal kinderen</div>
+                                <div>
+                                    <strong>{fund.budget.children_count}</strong>
+                                </div>
+                            </td>
                         </tr>
                     )}
 
