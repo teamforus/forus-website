@@ -30,6 +30,7 @@ import Reservations from '../components/pages/reservations/Reservations';
 import ReservationsSettings from '../components/pages/reservations-settings/ReservationsSettings';
 import ReservationsView from '../components/pages/reservations-view/ReservationsView';
 import ProviderFunds from '../components/pages/provider-funds/ProviderFunds';
+import Feedback from '../components/pages/feedback/Feedback';
 import NotFound from '../components/pages_system/NotFound';
 import FundRequestsView from '../components/pages/fund_requests-view/FundRequestsView';
 import OrganizationsSecurity from '../components/pages/organizations-security/OrganizationsSecurity';
@@ -301,7 +302,7 @@ router.state('feature', <Feature />, {
     path: `/organizations/:organizationId/feature/:key`,
 });
 
-router.state('feedback', <WIP title={'Features'} />, {
+router.state('feedback', <Feedback />, {
     path: `/organizations/:organizationId/feedback`,
 });
 
