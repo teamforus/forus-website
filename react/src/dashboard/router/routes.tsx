@@ -135,12 +135,10 @@ router.state('bank-connections', <WIP title={'Bank connections'} />, {
 
 router.state('financial-dashboard', <FinancialDashboard />, {
     path: `/organizations/:organizationId/financial-dashboard`,
-    fallbackState: 'organizations',
 });
 
 router.state('financial-dashboard-overview', <FinancialDashboardOverview />, {
     path: `/organizations/:organizationId/financial-dashboard-overview`,
-    fallbackState: 'organizations',
 });
 
 router.state('vouchers', <WIP title={'Vouchers'} />, {

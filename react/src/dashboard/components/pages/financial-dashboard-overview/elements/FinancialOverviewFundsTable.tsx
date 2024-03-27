@@ -4,17 +4,20 @@ import ThSortable from '../../../elements/tables/ThSortable';
 import Tooltip from '../../../elements/tooltip/Tooltip';
 import Fund from '../../../../props/models/Fund';
 import FinancialOverview from '../../../../services/types/FinancialOverview';
+import useExportFunds from '../hooks/useExportFunds';
+import Organization from '../../../../props/models/Organization';
 
-export default function FundsTable({
+export default function FinancialOverviewFundsTable({
     funds,
+    organization,
     fundsFinancialOverview,
-    exportFunds,
 }: {
     funds: Array<Fund>;
+    organization: Organization;
     fundsFinancialOverview: FinancialOverview;
-    exportFunds: (detailed: boolean) => void;
 }) {
     const { t } = useTranslation();
+    const exportFunds = useExportFunds(organization);
 
     return (
         <div className="card card-financial form">
@@ -45,7 +48,10 @@ export default function FundsTable({
                                     <ThSortable label={t('financial_dashboard_overview.labels.total_budget')} />
                                     <ThSortable label={t('financial_dashboard_overview.labels.used_budget')} />
                                     <ThSortable label={t('financial_dashboard_overview.labels.current_budget')} />
-                                    <ThSortable label={t('financial_dashboard_overview.labels.transaction_costs')} />
+                                    <ThSortable
+                                        className={'text-right'}
+                                        label={t('financial_dashboard_overview.labels.transaction_costs')}
+                                    />
                                 </tr>
 
                                 {funds.map((fund) => (
@@ -54,7 +60,7 @@ export default function FundsTable({
                                         <td>{fund.budget.total_locale}</td>
                                         <td>{fund.budget.used_locale}</td>
                                         <td>{fund.budget.left_locale}</td>
-                                        <td>{fund.budget.transaction_costs_locale}</td>
+                                        <td className={'text-right'}>{fund.budget.transaction_costs_locale}</td>
                                     </tr>
                                 ))}
 
@@ -63,7 +69,9 @@ export default function FundsTable({
                                     <td>{fundsFinancialOverview.funds.budget_locale}</td>
                                     <td>{fundsFinancialOverview.funds.budget_used_locale}</td>
                                     <td>{fundsFinancialOverview.funds.budget_left_locale}</td>
-                                    <td>{fundsFinancialOverview.funds.transaction_costs_locale}</td>
+                                    <td className={'text-right'}>
+                                        {fundsFinancialOverview.funds.transaction_costs_locale}
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>

@@ -1,22 +1,35 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import ThSortable from '../../../elements/tables/ThSortable';
 import { currencyFormat } from '../../../../helpers/string';
 import Tooltip from '../../../elements/tooltip/Tooltip';
-import BudgetFundsTableItem from './BudgetFundsTableItem';
+import FinancialOverviewFundsBudgetTableItem from './FinancialOverviewFundsBudgetTableItem';
 import FinancialOverview from '../../../../services/types/FinancialOverview';
-import { FundFinancialLocal } from '../FinancialDashboardOverview';
+import useExportFunds from '../hooks/useExportFunds';
+import Fund from '../../../../props/models/Fund';
+import Organization from '../../../../props/models/Organization';
 
-export default function BudgetFundsTable({
+export default function FinancialOverviewFundsBudgetTable({
     funds,
-    fundsFinancialOverview,
-    exportFunds,
+    organization,
+    financialOverview,
 }: {
-    funds: Array<FundFinancialLocal>;
-    fundsFinancialOverview: FinancialOverview;
-    exportFunds: (detailed: boolean) => void;
+    funds: Array<Fund>;
+    organization: Organization;
+    financialOverview: FinancialOverview;
 }) {
     const { t } = useTranslation();
+
+    const exportFunds = useExportFunds(organization);
+    const [budgetFunds, setBudgetFunds] = useState<Array<Fund>>(null);
+
+    useEffect(() => {
+        setBudgetFunds(funds.filter((fund) => fund.state == 'active' && fund.type == 'budget'));
+    }, [funds]);
+
+    if (!budgetFunds?.length) {
+        return null;
+    }
 
     return (
         <div className="card card-financial">
@@ -66,26 +79,29 @@ export default function BudgetFundsTable({
                                         className="w-15"
                                         label={t('financial_dashboard_overview.labels.used')}
                                     />
-                                    <ThSortable label={t('financial_dashboard_overview.labels.left')} />
+                                    <ThSortable
+                                        className={'text-right'}
+                                        label={t('financial_dashboard_overview.labels.left')}
+                                    />
                                 </tr>
                             </thead>
 
-                            {funds.map((fund) => (
-                                <BudgetFundsTableItem key={fund.id} fund={fund} />
+                            {budgetFunds.map((fund) => (
+                                <FinancialOverviewFundsBudgetTableItem key={fund.id} fund={fund} />
                             ))}
 
                             <tbody>
                                 <tr className="table-totals">
                                     <td>{t('financial_dashboard_overview.labels.total')}</td>
-                                    <td>{fundsFinancialOverview.budget_funds.vouchers_amount_locale}</td>
-                                    <td>{fundsFinancialOverview.budget_funds.active_vouchers_amount_locale}</td>
-                                    <td>{fundsFinancialOverview.budget_funds.inactive_vouchers_amount_locale}</td>
-                                    <td>{fundsFinancialOverview.budget_funds.deactivated_vouchers_amount_locale}</td>
-                                    <td>{fundsFinancialOverview.budget_funds.budget_used_active_vouchers_locale}</td>
-                                    <td>
+                                    <td>{financialOverview.budget_funds.vouchers_amount_locale}</td>
+                                    <td>{financialOverview.budget_funds.active_vouchers_amount_locale}</td>
+                                    <td>{financialOverview.budget_funds.inactive_vouchers_amount_locale}</td>
+                                    <td>{financialOverview.budget_funds.deactivated_vouchers_amount_locale}</td>
+                                    <td>{financialOverview.budget_funds.budget_used_active_vouchers_locale}</td>
+                                    <td className={'text-right'}>
                                         {currencyFormat(
-                                            parseFloat(fundsFinancialOverview.budget_funds.vouchers_amount) -
-                                                fundsFinancialOverview.budget_funds.budget_used_active_vouchers,
+                                            parseFloat(financialOverview.budget_funds.vouchers_amount) -
+                                                financialOverview.budget_funds.budget_used_active_vouchers,
                                         )}
                                     </td>
                                 </tr>
