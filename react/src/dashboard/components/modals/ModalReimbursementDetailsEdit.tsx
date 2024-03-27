@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { ModalState } from '../../modules/modals/context/ModalContext';
-import { classList } from '../../helpers/utils';
-import { ApiResponseSingle } from '../../props/ApiResponses';
+import { ApiResponseSingle, ResponseError } from '../../props/ApiResponses';
 import Reimbursement from '../../props/models/Reimbursement';
 import Organization from '../../props/models/Organization';
 import useFormBuilder from '../../hooks/useFormBuilder';
@@ -32,21 +31,25 @@ export default function ModalReimbursementDetailsEdit({
     onSubmit: (res: ApiResponseSingle<Reimbursement>) => void;
     className?: string;
 }) {
-    const setProgress = useSetProgress();
-    const pushSuccess = usePushSuccess();
-    const pushDanger = usePushDanger();
     const openModal = useOpenModal();
+    const pushDanger = usePushDanger();
+    const pushSuccess = usePushSuccess();
+    const setProgress = useSetProgress();
 
     const reimbursementService = useReimbursementsService();
     const reimbursementCategoryService = useReimbursementCategoryService();
-    const [reimbursementCategories, setReimbursementCategories] = useState<Array<Partial<ReimbursementCategory>>>(null);
+
+    const [showModal, setShowModal] = useState(true);
+    const [categories, setCategories] = useState<Array<Partial<ReimbursementCategory>>>(null);
 
     const form = useFormBuilder(
         {
             provider_name: reimbursement.provider_name || '',
             reimbursement_category_id: reimbursement.reimbursement_category?.id || null,
         },
-        async (values) => {
+        (values) => {
+            setProgress(0);
+
             reimbursementService
                 .update(organization.id, reimbursement.id, {
                     provider_name: values.provider_name,
@@ -54,13 +57,12 @@ export default function ModalReimbursementDetailsEdit({
                 })
                 .then((res) => {
                     pushSuccess('Gelukt!', 'Declaratie is bijgewerkt!');
-
                     onSubmit(res);
                     modal.close();
                 })
-                .catch((res) => {
-                    pushDanger('Mislukt!', res.data.message);
-                    form.errors = res.data.errors;
+                .catch((err: ResponseError) => {
+                    pushDanger('Mislukt!', err.data.message);
+                    form.setErrors(err.data.errors);
                     form.setIsLocked(false);
                 })
                 .finally(() => setProgress(100));
@@ -68,25 +70,19 @@ export default function ModalReimbursementDetailsEdit({
     );
 
     const fetchCategories = useCallback(() => {
+        setProgress(0);
+
         reimbursementCategoryService
-            .list(organization.id, {
-                per_page: 100,
-            })
-            .then((res) => {
-                const reimbursementCategories = res.data.data;
-                reimbursementCategories.unshift({
-                    id: null,
-                    name: 'Geen categorie',
-                });
-                setReimbursementCategories(reimbursementCategories);
-            });
-    }, [organization.id, reimbursementCategoryService]);
+            .list(organization.id, { per_page: 100 })
+            .then((res) => setCategories([{ id: null, name: 'Geen categorie' }, ...res.data.data]))
+            .catch((err: ResponseError) => pushDanger('Mislukt!', err.data.message))
+            .finally(() => setProgress(100));
+    }, [organization.id, pushDanger, reimbursementCategoryService, setProgress]);
 
     const manageCategories = useCallback(() => {
-        modal.loading = false;
-
-        openModal((modal) => <ModalReimbursementCategoriesEdit modal={modal} />);
-    }, [modal, openModal]);
+        setShowModal(false);
+        openModal((modal) => <ModalReimbursementCategoriesEdit modal={modal} onClose={() => setShowModal(true)} />);
+    }, [openModal]);
 
     useEffect(() => {
         fetchCategories();
@@ -94,13 +90,9 @@ export default function ModalReimbursementDetailsEdit({
 
     return (
         <div
-            className={classList([
-                'modal',
-                'modal-md',
-                'modal-animated',
-                modal.loading ? 'modal-loading' : null,
-                className,
-            ])}>
+            className={`modal modal-md modal-animated ${
+                modal.loading || !showModal ? 'modal-loading' : ''
+            } ${className}`}>
             <div className="modal-backdrop" onClick={modal.close} />
 
             <div className="modal-window">
@@ -130,14 +122,14 @@ export default function ModalReimbursementDetailsEdit({
                                         <div className="col col-xs-9">
                                             <SelectControl
                                                 className={'form-control'}
-                                                options={reimbursementCategories}
+                                                options={categories}
                                                 optionsComponent={SelectControlOptions}
                                                 propKey={'id'}
                                                 allowSearch={false}
                                                 value={form.values.reimbursement_category_id}
-                                                onChange={(reimbursement_category_id?: number) =>
-                                                    form.update({ reimbursement_category_id })
-                                                }
+                                                onChange={(reimbursement_category_id?: number) => {
+                                                    form.update({ reimbursement_category_id });
+                                                }}
                                             />
                                         </div>
 

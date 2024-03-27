@@ -15,54 +15,54 @@ export class ReimbursementService<T = Reimbursement> {
      *
      * @param data
      */
-    public prefix = '/platform/organizations/';
+    public prefix = '/platform/organizations';
 
     /**
      * Fetch list
      */
     public list(organizationId: number, data: object = {}): Promise<ApiResponse<T>> {
-        return this.apiRequest.get(`${this.prefix + organizationId}/reimbursements`, data);
+        return this.apiRequest.get(`${this.prefix}/${organizationId}/reimbursements`, data);
     }
 
     /**
      * Fetch list
      */
     public show(organizationId: number, id: number): Promise<ApiResponseSingle<T>> {
-        return this.apiRequest.get(`${this.prefix + organizationId}/reimbursements/${id}`);
+        return this.apiRequest.get(`${this.prefix}/${organizationId}/reimbursements/${id}`);
     }
 
     /**
      * Fetch by id
      */
     public update(organizationId: number, id: number, data: object): Promise<ApiResponseSingle<T>> {
-        return this.apiRequest.patch(`${this.prefix + organizationId}/reimbursements/${id}`, data);
+        return this.apiRequest.patch(`${this.prefix}/${organizationId}/reimbursements/${id}`, data);
     }
 
     public assign(organizationId: number, id: number, data: object = {}): Promise<ApiResponseSingle<T>> {
-        return this.apiRequest.post(`${this.prefix + organizationId}/reimbursements/${id}/assign`, data);
+        return this.apiRequest.post(`${this.prefix}/${organizationId}/reimbursements/${id}/assign`, data);
     }
 
     public resign(organizationId: number, id: number, data: object = {}): Promise<ApiResponseSingle<T>> {
-        return this.apiRequest.post(`${this.prefix + organizationId}/reimbursements/${id}/resign`, data);
+        return this.apiRequest.post(`${this.prefix}/${organizationId}/reimbursements/${id}/resign`, data);
     }
 
     public approve(organizationId: number, id: number, data: object = {}): Promise<ApiResponseSingle<T>> {
-        return this.apiRequest.post(`${this.prefix + organizationId}/reimbursements/${id}/approve`, data);
+        return this.apiRequest.post(`${this.prefix}/${organizationId}/reimbursements/${id}/approve`, data);
     }
 
     public decline(organizationId: number, id: number, data: object = {}): Promise<ApiResponseSingle<T>> {
-        return this.apiRequest.post(`${this.prefix + organizationId}/reimbursements/${id}/decline`, data);
+        return this.apiRequest.post(`${this.prefix}/${organizationId}/reimbursements/${id}/decline`, data);
     }
 
     public export(organizationId: number, data: object = {}): Promise<ResponseSimple<ArrayBuffer>> {
-        return this.apiRequest.get(`${this.prefix + organizationId}/reimbursements/export`, data, {
+        return this.apiRequest.get(`${this.prefix}/${organizationId}/reimbursements/export`, data, {
             responseType: 'arraybuffer',
         });
     }
 
     // get export fields
     public exportFields(organizationId: number): Promise<ApiResponseSingle<Array<ExportFieldProp>>> {
-        return this.apiRequest.get(`${this.prefix + organizationId}/reimbursements/export-fields`);
+        return this.apiRequest.get(`${this.prefix}/${organizationId}/reimbursements/export-fields`);
     }
 
     public getStateOptions(): Array<{ value: string; name: string }> {
@@ -98,15 +98,15 @@ export class ReimbursementService<T = Reimbursement> {
     }
 
     public notes(organizationId: number, id: number, data: object): Promise<ApiResponse<T>> {
-        return this.apiRequest.get(`${this.prefix + organizationId}/reimbursements/${id}/notes`, data);
+        return this.apiRequest.get(`${this.prefix}/${organizationId}/reimbursements/${id}/notes`, data);
     }
 
     public noteDestroy(organizationId: number, id: number, note_id: number): Promise<ApiResponseSingle<null>> {
-        return this.apiRequest.delete(`${this.prefix + organizationId}/reimbursements/${id}/notes/${note_id}`);
+        return this.apiRequest.delete(`${this.prefix}/${organizationId}/reimbursements/${id}/notes/${note_id}`);
     }
 
     public storeNote(organizationId: number, id: number, data: object): Promise<ApiResponseSingle<T>> {
-        return this.apiRequest.post(`${this.prefix + organizationId}/reimbursements/${id}/notes`, data);
+        return this.apiRequest.post(`${this.prefix}/${organizationId}/reimbursements/${id}/notes`, data);
     }
 }
 

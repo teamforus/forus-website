@@ -1,9 +1,9 @@
 import React, { Fragment } from 'react';
 import useActiveOrganization from '../../../hooks/useActiveOrganization';
 import StateNavLink from '../../../modules/state_router/StateNavLink';
-import ReimbursementCategories from '../../elements/reimbursement-categories/ReimbursementCategories';
+import BlockReimbursementCategories from '../../elements/block-reimbursement-categories/BlockReimbursementCategories';
 
-export default function ReimbursementsView() {
+export default function ReimbursementCategories() {
     const activeOrganization = useActiveOrganization();
 
     return (
@@ -19,7 +19,7 @@ export default function ReimbursementsView() {
                 <div className="breadcrumb-item active">Declaratie categorieën</div>
             </div>
 
-            <ReimbursementCategories />
+            <BlockReimbursementCategories />
         </Fragment>
     );
 }

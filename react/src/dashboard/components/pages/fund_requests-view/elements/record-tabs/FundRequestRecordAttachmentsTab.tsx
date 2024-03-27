@@ -7,14 +7,13 @@ import useFilePreview from '../../../../../services/helpers/useFilePreview';
 export default function FundRequestRecordAttachmentsTab({
     attachments,
 }: {
-    attachments: Array<{
-        file: File;
-        date: string;
-    }>;
+    attachments: Array<{ file: File; date: string }>;
 }) {
-    const fileService = useFileService();
     const filePreview = useFilePreview();
+
+    const fileService = useFileService();
     const fundRequestService = useFundRequestValidatorService();
+
     const hasFilePreview = useCallback((file) => fundRequestService.hasFilePreview(file), [fundRequestService]);
 
     const downloadFile = useCallback(

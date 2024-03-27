@@ -1,6 +1,5 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { ModalState } from '../../modules/modals/context/ModalContext';
-import { classList } from '../../helpers/utils';
 import ReimbursementCategory from '../../props/models/ReimbursementCategory';
 import useFormBuilder from '../../hooks/useFormBuilder';
 import { useReimbursementCategoryService } from '../../services/ReimbursementCategoryService';
@@ -15,16 +14,19 @@ export default function ModalReimbursementCategoryEdit({
     modal,
     category,
     onSubmit,
+    onCancel,
     className,
 }: {
     modal: ModalState;
     category?: ReimbursementCategory;
     onSubmit?: () => void;
+    onCancel?: () => void;
     className?: string;
 }) {
     const activeOrganization = useActiveOrganization();
-    const pushSuccess = usePushSuccess();
+
     const pushDanger = usePushDanger();
+    const pushSuccess = usePushSuccess();
     const setProgress = useSetProgress();
 
     const reimbursementCategoryService = useReimbursementCategoryService();
@@ -33,39 +35,40 @@ export default function ModalReimbursementCategoryEdit({
         {
             name: category?.name,
         },
-        async (values) => {
-            (category
+        (values) => {
+            setProgress(0);
+
+            const promise = category
                 ? reimbursementCategoryService.update(activeOrganization.id, category.id, values)
-                : reimbursementCategoryService.store(activeOrganization.id, values)
-            )
+                : reimbursementCategoryService.store(activeOrganization.id, values);
+
+            promise
                 .then(() => {
                     pushSuccess('Gelukt!', 'Declaratie is bijgewerkt!');
                     modal.close();
                     onSubmit ? onSubmit() : null;
                 })
-                .catch((res: ResponseError) => {
-                    pushDanger('Mislukt!', res.data?.message);
-                    form.setErrors(res.data?.errors);
+                .catch((err: ResponseError) => {
+                    pushDanger('Mislukt!', err.data?.message);
+                    form.setErrors(err.data?.errors);
                     form.setIsLocked(false);
                 })
                 .finally(() => setProgress(100));
         },
     );
 
+    const closeModal = useCallback(() => {
+        onCancel();
+        modal.close();
+    }, [modal, onCancel]);
+
     return (
-        <div
-            className={classList([
-                'modal',
-                'modal-md',
-                'modal-animated',
-                modal.loading ? 'modal-loading' : null,
-                className,
-            ])}>
-            <div className="modal-backdrop" onClick={modal.close} />
+        <div className={`modal modal-md modal-animated ${modal.loading ? 'modal-loading' : ''} ${className}`}>
+            <div className="modal-backdrop" onClick={closeModal} />
 
             <div className="modal-window">
                 <form className="modal-window form" onSubmit={form.submit}>
-                    <a className="mdi mdi-close modal-close" onClick={modal.close} role="button" />
+                    <a className="mdi mdi-close modal-close" onClick={closeModal} role="button" />
                     <div className="modal-header">Declaratie categorie toevoegen</div>
                     <div className="modal-body modal-body-visible">
                         <div className="modal-section form">
@@ -83,7 +86,7 @@ export default function ModalReimbursementCategoryEdit({
                     </div>
 
                     <div className="modal-footer text-center">
-                        <button className="button button-default" id="close" onClick={modal.close} type="button">
+                        <button className="button button-default" id="close" onClick={closeModal} type="button">
                             Sluiten
                         </button>
                         <button className="button button-primary" type="submit">

@@ -6,11 +6,11 @@ import { useFundService } from '../../../services/FundService';
 export default function FundSelector({
     fund,
     funds,
-    onFundSelect,
+    onSelectFund,
 }: {
     fund: Fund;
     funds: Array<Fund>;
-    onFundSelect: (fund: Fund) => void;
+    onSelectFund: (fund: Fund) => void;
 }) {
     const assetUrl = useAssetUrl();
 
@@ -24,16 +24,14 @@ export default function FundSelector({
             setActiveFund(fund);
 
             if (fund) {
-                onFundSelect ? onFundSelect(fund) : null;
+                onSelectFund?.(fund);
             }
         },
-        [fundService, onFundSelect],
+        [fundService, onSelectFund],
     );
 
     useEffect(() => {
-        const lastSelectedFund = fundService.getLastSelectedFund(funds);
-
-        if (fund && fund?.id !== lastSelectedFund?.id) {
+        if (fund?.id !== fundService.getLastSelectedFund(funds)?.id) {
             return selectFund(fund);
         }
 

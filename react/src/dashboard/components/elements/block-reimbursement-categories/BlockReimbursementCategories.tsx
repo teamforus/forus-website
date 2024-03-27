@@ -1,6 +1,6 @@
 import React, { Fragment, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { PaginationData } from '../../../props/ApiResponses';
+import { PaginationData, ResponseError } from '../../../props/ApiResponses';
 import ReimbursementCategory from '../../../props/models/ReimbursementCategory';
 import Paginator from '../../../modules/paginator/components/Paginator';
 import useFilter from '../../../hooks/useFilter';
@@ -8,30 +8,34 @@ import usePaginatorService from '../../../modules/paginator/services/usePaginato
 import EmptyCard from '../../elements/empty-card/EmptyCard';
 import useOpenModal from '../../../hooks/useOpenModal';
 import useActiveOrganization from '../../../hooks/useActiveOrganization';
-import ModalDangerZone from '../../modals/ModalDangerZone';
 import { useReimbursementCategoryService } from '../../../services/ReimbursementCategoryService';
 import usePushSuccess from '../../../hooks/usePushSuccess';
 import usePushDanger from '../../../hooks/usePushDanger';
 import ModalReimbursementCategoryEdit from '../../modals/ModalReimbursementCategoryEdit';
+import useConfirmReimbursementCategoryDelete from './hooks/useConfirmReimbursementCategoryDelete';
+import useSetProgress from '../../../hooks/useSetProgress';
 
-export default function ReimbursementCategories({
+export default function BlockReimbursementCategories({
     compact = false,
-    categories = null,
+    createCategoryRef = null,
 }: {
     compact?: boolean;
-    categories?: PaginationData<ReimbursementCategory>;
+    createCategoryRef?: React.MutableRefObject<() => Promise<boolean>>;
 }) {
     const { t } = useTranslation();
-    const openModal = useOpenModal();
     const activeOrganization = useActiveOrganization();
-    const pushSuccess = usePushSuccess();
+
+    const openModal = useOpenModal();
     const pushDanger = usePushDanger();
+    const pushSuccess = usePushSuccess();
+    const setProgress = useSetProgress();
 
     const paginatorService = usePaginatorService();
     const reimbursementCategoryService = useReimbursementCategoryService();
 
-    const [reimbursementCategories, setReimbursementCategories] =
-        useState<PaginationData<ReimbursementCategory>>(categories);
+    const confirmReimbursementCategoryDelete = useConfirmReimbursementCategoryDelete();
+
+    const [categories, setCategories] = useState<PaginationData<ReimbursementCategory>>(null);
     const [paginatorKey] = useState('reimbursement_categories');
 
     const filter = useFilter({
@@ -39,80 +43,66 @@ export default function ReimbursementCategories({
         per_page: paginatorService.getPerPage(paginatorKey),
     });
 
-    const translateDangerZone = useCallback(
-        (key: string) => {
-            return t(`modals.danger_zone.remove_reimbursement_category.${key}`);
-        },
-        [t],
-    );
+    const fetchReimbursementCategories = useCallback(() => {
+        setProgress(0);
 
-    const fetchReimbursementCategories = useCallback(
-        (forceFetch = false) => {
-            if (categories && !forceFetch) {
-                return setReimbursementCategories(categories);
-            }
-
-            reimbursementCategoryService.list(activeOrganization.id, filter.activeValues).then((res) => {
-                setReimbursementCategories(res.data);
-            });
-        },
-        [activeOrganization.id, categories, filter.activeValues, reimbursementCategoryService],
-    );
+        reimbursementCategoryService
+            .list(activeOrganization.id, filter.activeValues)
+            .then((res) => setCategories(res.data))
+            .catch((err: ResponseError) => pushDanger('Mislukt!', err?.data?.message))
+            .finally(() => setProgress(100));
+    }, [setProgress, activeOrganization.id, filter.activeValues, pushDanger, reimbursementCategoryService]);
 
     const editReimbursementCategory = useCallback(
-        (category: ReimbursementCategory = null) => {
-            openModal((modal) => (
-                <ModalReimbursementCategoryEdit
-                    modal={modal}
-                    category={category}
-                    onSubmit={() => fetchReimbursementCategories()}
-                />
-            ));
+        async (category: ReimbursementCategory = null): Promise<boolean> => {
+            return new Promise((resolve) => {
+                openModal((modal) => (
+                    <ModalReimbursementCategoryEdit
+                        modal={modal}
+                        category={category}
+                        onSubmit={() => {
+                            fetchReimbursementCategories();
+                            resolve(false);
+                        }}
+                        onCancel={() => resolve(false)}
+                    />
+                ));
+            });
         },
         [fetchReimbursementCategories, openModal],
     );
 
     const deleteReimbursementCategory = useCallback(
         (reimbursementCategory: ReimbursementCategory) => {
-            openModal((modal) => (
-                <ModalDangerZone
-                    modal={modal}
-                    title={translateDangerZone('title')}
-                    description={translateDangerZone('description')}
-                    buttonCancel={{
-                        text: translateDangerZone('buttons.cancel'),
-                        onClick: () => modal.close(),
-                    }}
-                    buttonSubmit={{
-                        text: translateDangerZone('buttons.confirm'),
-                        onClick: () => {
-                            reimbursementCategoryService
-                                .destroy(activeOrganization.id, reimbursementCategory.id)
-                                .then(() => {
-                                    pushSuccess('Opgeslagen!');
-                                    modal.close();
-                                    fetchReimbursementCategories(true);
-                                })
-                                .catch((res) => pushDanger('Error!', res?.data?.message));
-                        },
-                    }}
-                />
-            ));
+            confirmReimbursementCategoryDelete().then((confirmed) => {
+                if (!confirmed) {
+                    return;
+                }
+
+                reimbursementCategoryService
+                    .destroy(activeOrganization.id, reimbursementCategory.id)
+                    .then(() => pushSuccess('Opgeslagen!'))
+                    .catch((err: ResponseError) => pushDanger('Mislukt!', err?.data?.message));
+            });
         },
         [
             activeOrganization.id,
-            fetchReimbursementCategories,
-            openModal,
+            confirmReimbursementCategoryDelete,
+            reimbursementCategoryService,
             pushDanger,
             pushSuccess,
-            reimbursementCategoryService,
-            translateDangerZone,
         ],
     );
 
     useEffect(() => {
         fetchReimbursementCategories();
     }, [fetchReimbursementCategories]);
+
+    useEffect(() => {
+        if (createCategoryRef) {
+            createCategoryRef.current = editReimbursementCategory;
+        }
+    }, [editReimbursementCategory, createCategoryRef]);
 
     return (
         <Fragment>
@@ -122,7 +112,7 @@ export default function ReimbursementCategories({
                         <div className="flex">
                             <div className="flex flex-grow">
                                 <div className="card-title">
-                                    {'Declaratie categorieën (' + reimbursementCategories?.meta.total + ')'}
+                                    {'Declaratie categorieën (' + categories?.meta.total + ')'}
                                 </div>
                             </div>
 
@@ -141,7 +131,7 @@ export default function ReimbursementCategories({
                     </div>
                 )}
 
-                {reimbursementCategories?.data.length && (
+                {categories?.data.length && (
                     <div className="card-section card-section-primary">
                         <div className="card-block card-block-table">
                             <div className="table-wrapper">
@@ -156,7 +146,7 @@ export default function ReimbursementCategories({
                                     </thead>
 
                                     <tbody>
-                                        {reimbursementCategories?.data.map((reimbursementCategory) => (
+                                        {categories?.data.map((reimbursementCategory) => (
                                             <tr key={reimbursementCategory.id}>
                                                 <td>{reimbursementCategory.name}</td>
                                                 <td>{reimbursementCategory.organization.name}</td>
@@ -190,21 +180,21 @@ export default function ReimbursementCategories({
                     </div>
                 )}
 
-                {reimbursementCategories?.meta.total && (
+                {categories?.meta.total == 0 && (
+                    <EmptyCard description="Er zijn momenteel geen declaratie categorieën." />
+                )}
+
+                {categories?.meta.total && (
                     <div className={`card-section ${compact ? 'card-section-narrow' : ''}`}>
                         <div className="table-pagination">
                             <Paginator
-                                meta={reimbursementCategories.meta}
+                                meta={categories.meta}
                                 filters={filter.values}
                                 updateFilters={filter.update}
                                 perPageKey={paginatorKey}
                             />
                         </div>
                     </div>
-                )}
-
-                {reimbursementCategories?.meta.total == 0 && (
-                    <EmptyCard description="Er zijn momenteel geen declaratie categorieën." />
                 )}
             </div>
         </Fragment>

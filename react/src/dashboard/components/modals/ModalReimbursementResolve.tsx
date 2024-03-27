@@ -1,7 +1,6 @@
 import React, { Fragment, useState } from 'react';
 import { ModalState } from '../../modules/modals/context/ModalContext';
-import { classList } from '../../helpers/utils';
-import { ApiResponseSingle } from '../../props/ApiResponses';
+import { ApiResponseSingle, ResponseError } from '../../props/ApiResponses';
 import Reimbursement from '../../props/models/Reimbursement';
 import Organization from '../../props/models/Organization';
 import useFormBuilder from '../../hooks/useFormBuilder';
@@ -14,22 +13,22 @@ import Tooltip from '../elements/tooltip/Tooltip';
 
 export default function ModalReimbursementResolve({
     modal,
-    state,
+    approve,
     organization,
     reimbursement,
     onSubmit,
     className,
 }: {
     modal: ModalState;
-    state: string;
+    approve: boolean;
     organization: Organization;
     reimbursement: Reimbursement;
     onSubmit: (res: ApiResponseSingle<Reimbursement>) => void;
     className?: string;
 }) {
-    const setProgress = useSetProgress();
-    const pushSuccess = usePushSuccess();
     const pushDanger = usePushDanger();
+    const pushSuccess = usePushSuccess();
+    const setProgress = useSetProgress();
 
     const reimbursementService = useReimbursementsService();
 
@@ -39,60 +38,40 @@ export default function ModalReimbursementResolve({
         {
             note: null,
             reason: null,
-            state: state,
+            state: approve ? 'approved' : 'declined',
         },
         async (values) => {
             const { note, reason, state } = values;
 
-            values = {
+            const data = {
                 note: note ? note : null,
                 state: state,
                 reason: showReason && reason ? reason : null,
             };
 
-            const promise =
-                {
-                    declined: () => reimbursementService.decline(organization.id, reimbursement.id, values),
-                    approved: () => reimbursementService.approve(organization.id, reimbursement.id, values),
-                }[state] || null;
-
-            if (!promise) {
-                return;
-            }
+            const promise = approve
+                ? reimbursementService.approve(organization.id, reimbursement.id, data)
+                : reimbursementService.decline(organization.id, reimbursement.id, data);
 
             setProgress(0);
 
-            promise()
+            promise
                 .then((res) => {
-                    pushSuccess(
-                        'Gelukt!',
-                        {
-                            declined: 'Declaratie afgewezen!',
-                            approved: 'Declaratie goedgekeurd!',
-                        }[state] || null,
-                    );
-
+                    pushSuccess('Gelukt!', approve ? 'Declaratie goedgekeurd!' : 'Declaratie afgewezen!');
                     onSubmit(res);
                     modal.close();
                 })
-                .catch((res) => {
-                    pushDanger('Mislukt!', res.data?.message);
-                    form.errors = res.data?.errors;
+                .catch((err: ResponseError) => {
+                    form.setErrors(err.data?.errors);
                     form.setIsLocked(false);
+                    pushDanger('Mislukt!', err.data?.message);
                 })
                 .finally(() => setProgress(100));
         },
     );
 
     return (
-        <div
-            className={classList([
-                'modal',
-                'modal-md',
-                'modal-animated',
-                modal.loading ? 'modal-loading' : null,
-                className,
-            ])}>
+        <div className={`modal modal-md modal-animated ${modal.loading ? 'modal-loading' : ''} ${className}`}>
             <div className="modal-backdrop" onClick={modal.close} />
             <div className="modal-window">
                 <form className="form" onSubmit={form.submit}>

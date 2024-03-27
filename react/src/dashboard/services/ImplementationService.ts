@@ -14,13 +14,13 @@ export class ImplementationService<T = Implementation> {
      *
      * @param data
      */
-    public prefix = '/platform/organizations/';
+    public prefix = '/platform/organizations';
 
     /**
      * Fetch list
      */
     public list(organizationId: number, data: object = {}): Promise<ApiResponse<T>> {
-        return this.apiRequest.get(`${this.prefix + organizationId}/implementations`, data);
+        return this.apiRequest.get(`${this.prefix}/${organizationId}/implementations`, data);
     }
 }
 

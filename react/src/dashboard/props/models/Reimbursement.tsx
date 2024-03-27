@@ -12,7 +12,7 @@ export default interface Reimbursement {
     identity_bsn: string;
     fund: Fund;
     implementation_name: string;
-    amount: number;
+    amount: string;
     amount_locale: string;
     created_at_locale: string;
     lead_time_locale: string;
@@ -24,8 +24,10 @@ export default interface Reimbursement {
     deactivated: boolean;
     employee_id: number;
     resolved: boolean;
+    expire_at: string;
     expire_at_locale: string;
-    resolved_at_local: string;
+    resolved_at: string;
+    resolved_at_locale: string;
     iban: string;
     iban_name: string;
     files: Array<File>;

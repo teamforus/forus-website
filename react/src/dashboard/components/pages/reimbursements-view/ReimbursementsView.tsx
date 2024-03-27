@@ -16,7 +16,7 @@ import TransactionDetails from '../transactions-view/elements/TransactionDetails
 import { hasPermission } from '../../../helpers/utils';
 import BlockCardNote from '../../elements/block-card-note/BlockCardNote';
 import Note from '../../../props/models/Note';
-import { ApiResponseSingle } from '../../../props/ApiResponses';
+import { ApiResponseSingle, ResponseError } from '../../../props/ApiResponses';
 import ModalReimbursementResolve from '../../modals/ModalReimbursementResolve';
 import ModalReimbursementDetailsEdit from '../../modals/ModalReimbursementDetailsEdit';
 import useFilePreview from '../../../services/helpers/useFilePreview';
@@ -29,34 +29,32 @@ export default function ReimbursementsView() {
     const authIdentity = useAuthIdentity();
     const activeOrganization = useActiveOrganization();
 
-    const pushSuccess = usePushSuccess();
-    const pushDanger = usePushDanger();
-    const setProgress = useSetProgress();
     const openModal = useOpenModal();
-
-    const reimbursementService = useReimbursementsService();
-    const fileService = useFileService();
+    const pushDanger = usePushDanger();
+    const pushSuccess = usePushSuccess();
+    const setProgress = useSetProgress();
     const filePreview = useFilePreview();
 
+    const fileService = useFileService();
+    const reimbursementService = useReimbursementsService();
+
     const [reimbursement, setReimbursement] = useState<Reimbursement>(null);
+
     const [stateLabels] = useState({
         pending: 'label-default',
         approved: 'label-success',
         declined: 'label-danger',
     });
 
-    const fetchReimbursement = useCallback(
-        (id: number) => {
-            setProgress(0);
+    const fetchReimbursement = useCallback(() => {
+        setProgress(0);
 
-            reimbursementService
-                .show(activeOrganization.id, id)
-                .then((res) => setReimbursement(res.data.data))
-                .catch((res) => pushDanger('Mislukt!', res.data?.message))
-                .finally(() => setProgress(100));
-        },
-        [activeOrganization.id, pushDanger, setProgress, reimbursementService],
-    );
+        reimbursementService
+            .show(activeOrganization.id, parseInt(id))
+            .then((res) => setReimbursement(res.data.data))
+            .catch((err: ResponseError) => pushDanger('Mislukt!', err.data?.message))
+            .finally(() => setProgress(100));
+    }, [setProgress, reimbursementService, activeOrganization.id, id, pushDanger]);
 
     const handleOnReimbursementUpdated = useCallback(
         (promise: Promise<ApiResponseSingle<Reimbursement>>, successMessage: string = null) => {
@@ -67,8 +65,8 @@ export default function ReimbursementsView() {
                     setReimbursement(res.data.data);
                     pushSuccess('Success!', successMessage);
                 })
-                .catch((res) => {
-                    pushDanger(res.data?.title || 'Foutmelding!', res.data?.message || 'Onbekende foutmelding!');
+                .catch((err: ResponseError) => {
+                    pushDanger(err.data?.title || 'Foutmelding!', err.data?.message || 'Onbekende foutmelding!');
                 })
                 .finally(() => setProgress(100));
         },
@@ -82,29 +80,20 @@ export default function ReimbursementsView() {
         );
     }, [activeOrganization.id, handleOnReimbursementUpdated, reimbursement?.id, reimbursementService]);
 
-    const approve = useCallback(() => {
-        openModal((modal) => (
-            <ModalReimbursementResolve
-                modal={modal}
-                organization={activeOrganization}
-                reimbursement={reimbursement}
-                state={'approved'}
-                onSubmit={(res: ApiResponseSingle<Reimbursement>) => setReimbursement(res.data.data)}
-            />
-        ));
-    }, [activeOrganization, openModal, reimbursement]);
-
-    const decline = useCallback(() => {
-        openModal((modal) => (
-            <ModalReimbursementResolve
-                modal={modal}
-                organization={activeOrganization}
-                reimbursement={reimbursement}
-                state={'declined'}
-                onSubmit={(res: ApiResponseSingle<Reimbursement>) => setReimbursement(res.data.data)}
-            />
-        ));
-    }, [activeOrganization, openModal, reimbursement]);
+    const resolve = useCallback(
+        (approve: boolean) => {
+            openModal((modal) => (
+                <ModalReimbursementResolve
+                    modal={modal}
+                    organization={activeOrganization}
+                    reimbursement={reimbursement}
+                    approve={approve}
+                    onSubmit={(res: ApiResponseSingle<Reimbursement>) => setReimbursement(res.data.data)}
+                />
+            ));
+        },
+        [activeOrganization, openModal, reimbursement],
+    );
 
     const resign = useCallback(() => {
         handleOnReimbursementUpdated(
@@ -115,11 +104,15 @@ export default function ReimbursementsView() {
 
     const downloadFile = useCallback(
         (file: File) => {
-            fileService.download(file).then((res) => {
-                fileService.downloadFile(file.original_name, res.data);
-            }, console.error);
+            setProgress(0);
+
+            fileService
+                .download(file)
+                .then((res) => fileService.downloadFile(file.original_name, res.data))
+                .catch((err: ResponseError) => pushDanger('Mislukt!', err.data?.message))
+                .finally(() => setProgress(100));
         },
-        [fileService],
+        [fileService, pushDanger, setProgress],
     );
 
     const hasFilePreview = useCallback((file) => {
@@ -149,8 +142,8 @@ export default function ReimbursementsView() {
     }, [activeOrganization, openModal, reimbursement]);
 
     const setTransaction = useCallback(() => {
-        return;
-    }, []);
+        fetchReimbursement();
+    }, [fetchReimbursement]);
 
     const fetchNotes = useCallback(
         (query = {}) => {
@@ -174,8 +167,8 @@ export default function ReimbursementsView() {
     );
 
     useEffect(() => {
-        fetchReimbursement(parseInt(id));
-    }, [fetchReimbursement, id]);
+        fetchReimbursement();
+    }, [fetchReimbursement]);
 
     if (!reimbursement) {
         return <LoadingCard />;
@@ -282,7 +275,7 @@ export default function ReimbursementsView() {
                                                         <div
                                                             className="button button-primary button-sm"
                                                             data-dusk="reimbursementApprove"
-                                                            onClick={() => approve()}>
+                                                            onClick={() => resolve(true)}>
                                                             <em className="mdi mdi-check-circle icon-start" />
                                                             Accepteren
                                                         </div>
@@ -292,7 +285,7 @@ export default function ReimbursementsView() {
                                                         <div
                                                             className="button button-default button-sm"
                                                             data-dusk="reimbursementDecline"
-                                                            onClick={() => decline()}>
+                                                            onClick={() => resolve(false)}>
                                                             <em className="mdi mdi-close-circle icon-start" />
                                                             Weigeren
                                                         </div>
@@ -332,97 +325,95 @@ export default function ReimbursementsView() {
                                     <tbody>
                                         <tr>
                                             <td>
-                                                <strong className="text-strong text-md text-primary">
+                                                <div className="text-strong text-md text-primary">
                                                     {t('reimbursements.labels.email')}
-                                                </strong>
-                                                <br />
-                                                <strong
+                                                </div>
+                                                <div
                                                     className={
-                                                        reimbursement.identity_email ? 'text-black' : 'text-muted'
+                                                        reimbursement.identity_email
+                                                            ? 'text-medium text-black'
+                                                            : 'text-medium text-muted'
                                                     }>
                                                     {reimbursement.identity_email || 'Geen E-mail'}
-                                                </strong>
+                                                </div>
                                             </td>
 
                                             <td>
-                                                <strong className="text-strong text-md text-primary">
+                                                <div className="text-strong text-md text-primary">
                                                     {t('reimbursements.labels.bsn')}
-                                                </strong>
-                                                <br />
-
-                                                {activeOrganization.bsn_enabled && (
-                                                    <strong
-                                                        className={
-                                                            reimbursement.identity_bsn ? 'text-black' : 'text-muted'
-                                                        }>
+                                                </div>
+                                                {activeOrganization.bsn_enabled ? (
+                                                    <div
+                                                        className={`${
+                                                            reimbursement.identity_bsn
+                                                                ? 'text-medium text-black'
+                                                                : 'text-medium text-muted'
+                                                        }`}>
                                                         {reimbursement.identity_bsn || 'Geen BSN'}
-                                                    </strong>
-                                                )}
-
-                                                {!activeOrganization.bsn_enabled && (
-                                                    <strong className="text-muted">Not available</strong>
+                                                    </div>
+                                                ) : (
+                                                    <div className="text-medium text-muted">Not available</div>
                                                 )}
                                             </td>
 
                                             <td>
-                                                <strong className="text-strong text-md text-primary">
+                                                <div className="text-strong text-md text-primary">
                                                     {t('reimbursements.labels.fund')}
-                                                </strong>
-                                                <br />
-                                                <strong className="text-black">{reimbursement.fund.name}</strong>
+                                                </div>
+                                                <div className="text-medium text-black">{reimbursement.fund.name}</div>
                                             </td>
                                         </tr>
 
                                         <tr>
                                             <td>
-                                                <strong className="text-strong text-md text-primary">
+                                                <div className="text-strong text-md text-primary">
                                                     {t('reimbursements.labels.employee')}
-                                                </strong>
-                                                <br />
-                                                <strong
-                                                    className={reimbursement.employee_id ? 'text-black' : 'text-muted'}>
+                                                </div>
+                                                <div
+                                                    className={`text-medium ${
+                                                        reimbursement.employee_id ? 'text-black' : 'text-muted'
+                                                    }`}>
                                                     {reimbursement.employee?.email || 'Niet toegewezen'}
-                                                </strong>
+                                                </div>
                                             </td>
 
                                             <td>
-                                                <strong className="text-strong text-md text-primary">
+                                                <div className="text-strong text-md text-primary">
                                                     {t('reimbursements.labels.lead_time')}
-                                                </strong>
-                                                <br />
-                                                <strong className="text-black">{reimbursement.lead_time_locale}</strong>
+                                                </div>
+                                                <div className="text-medium text-black">
+                                                    {reimbursement.lead_time_locale}
+                                                </div>
                                             </td>
 
                                             {!reimbursement.resolved && (
                                                 <td>
                                                     {!reimbursement.expired && (
-                                                        <strong className="text-strong text-md text-primary">
+                                                        <div className="text-strong text-md text-primary">
                                                             {t('reimbursements.labels.expired_at')}
-                                                        </strong>
+                                                        </div>
                                                     )}
 
                                                     {reimbursement.expired && (
-                                                        <strong className="text-strong text-md text-primary">
+                                                        <div className="text-strong text-md text-primary">
                                                             {t('reimbursements.labels.expired_at')}
-                                                        </strong>
+                                                        </div>
                                                     )}
 
-                                                    <br />
-                                                    <strong className="text-black">
+                                                    <div className="text-medium text-black">
                                                         {reimbursement.expire_at_locale}
-                                                    </strong>
+                                                    </div>
                                                 </td>
                                             )}
 
                                             {reimbursement.resolved && (
                                                 <td>
-                                                    <strong className="text-strong text-md text-primary">
+                                                    <div className="text-strong text-md text-primary">
                                                         {t('reimbursements.labels.resolved_at')}
-                                                    </strong>
-                                                    <br />
-                                                    <strong className="text-black">
-                                                        {reimbursement.resolved_at_local}
-                                                    </strong>
+                                                    </div>
+                                                    <div className="text-medium text-black">
+                                                        {reimbursement.resolved_at_locale}
+                                                    </div>
                                                 </td>
                                             )}
                                         </tr>
@@ -604,7 +595,6 @@ export default function ReimbursementsView() {
                     transaction={reimbursement.voucher_transaction}
                     setTransaction={setTransaction}
                     showReservationPageButton={true}
-                    showAmount={true}
                 />
             )}
 
