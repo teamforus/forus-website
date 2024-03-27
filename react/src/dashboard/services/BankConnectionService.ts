@@ -27,11 +27,11 @@ export class BankConnectionService<T = BankConnection> {
         return this.apiRequest.post(`${this.prefix}/${organization_id}/bank-connections`, query);
     }
 
-    public show(organization_id: number, connection_id: number, query: object = {}): Promise<ApiResponse<T>> {
+    public show(organization_id: number, connection_id: number, query: object = {}): Promise<ApiResponseSingle<T>> {
         return this.apiRequest.get(`${this.prefix}/${organization_id}/bank-connections/${connection_id}`, query);
     }
 
-    public update(organization_id: number, connection_id: number, query: object = {}): Promise<ApiResponse<T>> {
+    public update(organization_id: number, connection_id: number, query: object = {}): Promise<ApiResponseSingle<T>> {
         return this.apiRequest.patch(`${this.prefix}/${organization_id}/bank-connections/${connection_id}`, query);
     }
 }

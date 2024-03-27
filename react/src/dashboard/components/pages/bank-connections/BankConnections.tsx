@@ -1,13 +1,12 @@
 import React, { Fragment, useCallback, useEffect, useState } from 'react';
 import useAssetUrl from '../../../hooks/useAssetUrl';
 import 'react-image-crop/dist/ReactCrop.css';
-import { PaginationData } from '../../../props/ApiResponses';
+import { PaginationData, ResponseError } from '../../../props/ApiResponses';
 import Bank from '../../../props/models/Bank';
 import usePushDanger from '../../../hooks/usePushDanger';
 import { useBankConnectionService } from '../../../services/BankConnectionService';
 import { useBankService } from '../../../services/BankService';
 import useActiveOrganization from '../../../hooks/useActiveOrganization';
-import ModalDangerZone from '../../modals/ModalDangerZone';
 import useOpenModal from '../../../hooks/useOpenModal';
 import Paginator from '../../../modules/paginator/components/Paginator';
 import useFilter from '../../../hooks/useFilter';
@@ -15,31 +14,35 @@ import usePaginatorService from '../../../modules/paginator/services/usePaginato
 import BankConnection from '../../../props/models/BankConnection';
 import ModalSwitchBankConnectionAccount from '../../modals/ModalSwitchBankConnectionAccount';
 import usePushSuccess from '../../../hooks/usePushSuccess';
-import { createSearchParams, useNavigate } from 'react-router-dom';
-import { StringParam, useQueryParams } from 'use-query-params';
-import { getStateRouteUrl } from '../../../modules/state_router/Router';
+import { BooleanParam, StringParam, useQueryParams } from 'use-query-params';
+import useConfirmBankConnectionDisable from './hooks/useConfirmBankConnectionDisable';
+import useConfirmBankNewConnection from './hooks/useConfirmBankNewConnection';
+import LoadingCard from '../../elements/loading-card/LoadingCard';
 
 export default function BankConnections() {
-    const openModal = useOpenModal();
-    const assetUrl = useAssetUrl();
-    const pushDanger = usePushDanger();
-    const pushSuccess = usePushSuccess();
-    const navigate = useNavigate();
     const activeOrganization = useActiveOrganization();
 
-    const bankConnectionService = useBankConnectionService();
+    const assetUrl = useAssetUrl();
+    const openModal = useOpenModal();
+    const pushDanger = usePushDanger();
+    const pushSuccess = usePushSuccess();
+
+    const confirmBankNewConnection = useConfirmBankNewConnection();
+    const confirmBankConnectionDisable = useConfirmBankConnectionDisable();
+
     const bankService = useBankService();
     const paginatorService = usePaginatorService();
+    const bankConnectionService = useBankConnectionService();
 
-    const [banks, setBanks] = useState<PaginationData<Bank>>(null);
     const [bank, setBank] = useState<Bank>(null);
+    const [banks, setBanks] = useState<PaginationData<Bank>>(null);
+    const [paginatorKey] = useState('bank-connections');
     const [bankConnection, setBankConnection] = useState<BankConnection>(null);
     const [bankConnections, setBankConnections] = useState<PaginationData<BankConnection>>(null);
     const [submittingConnection, setSubmittingConnection] = useState<boolean>(false);
-    const [paginatorKey] = useState('bank-connections');
 
-    const [query] = useQueryParams({
-        success: StringParam,
+    const [{ success, error }, setQueryParams] = useQueryParams({
+        success: BooleanParam,
         error: StringParam,
     });
 
@@ -50,180 +53,84 @@ export default function BankConnections() {
 
     const selectBank = useCallback(
         (bankName: string) => {
-            setBank(banks.data.filter((bank) => bank.key == bankName)[0] || undefined);
+            setBank(banks.data.filter((bank) => bank.key == bankName)[0] || null);
         },
         [banks],
     );
 
     const onRequestError = useCallback(
-        (res) => {
-            pushDanger('Error', res.data.message || 'Er is iets misgegaan, probeer het later opnieuw.');
+        (err: ResponseError) => {
+            pushDanger('Error', err.data.message || 'Er is iets misgegaan, probeer het later opnieuw.');
         },
         [pushDanger],
     );
 
-    const confirmDangerAction = useCallback(
-        (header, description_text, cancelButton = 'Annuleren', confirmButton = 'Bevestigen') => {
-            return new Promise((resolve) => {
-                openModal((modal) => (
-                    <ModalDangerZone
-                        modal={modal}
-                        title={header}
-                        description_text={description_text}
-                        buttonCancel={{
-                            text: cancelButton,
-                            onClick: () => {
-                                modal.close();
-                                resolve(false);
-                            },
-                        }}
-                        buttonSubmit={{
-                            text: confirmButton,
-                            onClick: () => {
-                                modal.close();
-                                resolve(true);
-                            },
-                        }}
-                    />
-                ));
-            });
-        },
-        [openModal],
-    );
-
-    const confirmConnectionDisabling = useCallback(() => {
-        return confirmDangerAction(
-            'Verbinding met uw bank stopzetten',
-            [
-                'U staat op het punt om de verbinding vanuit Forus met uw bank stop te zetten. Hierdoor stopt Forus met het uitlezen van de rekeninginformatie en het initiëren van transacties.',
-                'Weet u zeker dat u verder wilt gaan?',
-            ].join('\n'),
-        );
-    }, [confirmDangerAction]);
-
-    const clearFlags = useCallback(
-        (flags: ['success', 'error']) => {
-            const params = flags.reduce(
-                (params, flag) => {
-                    return { ...params, [flag]: null };
-                },
-                { ...query },
-            );
-
-            navigate(
-                getStateRouteUrl('bank-connections', { organizationId: activeOrganization.id }) +
-                    createSearchParams(params),
-            );
-        },
-        [activeOrganization.id, navigate, query],
-    );
-
-    const showStatePush = useCallback(
-        (success, error) => {
-            if (success === true) {
-                pushSuccess('De verbinding met bank is tot stand gebracht.');
-            }
-
-            if (error) {
-                pushDanger(
-                    'Verbinding mislukt',
-                    {
-                        invalid_grant: 'De autorisatiecode is ongeldig of verlopen.',
-                        access_denied: 'Het autorisatieverzoek is geweigerd.',
-                        not_pending: 'Verzoek voor verbinding is al behandeld.',
-                    }[error] || error,
-                );
-            }
-
-            if (success === true || error) {
-                clearFlags(['success', 'error']);
-            }
-        },
-        [clearFlags, pushDanger, pushSuccess],
-    );
+    const fetchBanks = useCallback(() => {
+        bankService
+            .list()
+            .then((res) => setBanks(res.data))
+            .catch(onRequestError);
+    }, [bankService, onRequestError]);
 
     const fetchBankConnections = useCallback(
-        async (query: object = {}): Promise<PaginationData<BankConnection>> => {
-            return bankConnectionService
+        (query: object = {}) => {
+            bankConnectionService
                 .list(activeOrganization.id, { ...query, ...filter.activeValues })
-                .then((res) => res.data);
+                .then((res) => setBankConnections(res.data))
+                .catch(onRequestError);
         },
-        [activeOrganization.id, bankConnectionService, filter.activeValues],
+        [activeOrganization.id, bankConnectionService, filter.activeValues, onRequestError],
     );
 
-    const fetchActiveBankConnection = useCallback(async () => {
-        const res = await fetchBankConnections({ state: 'active' });
-        return res.data[0] || null;
-    }, [fetchBankConnections]);
+    const fetchActiveBankConnection = useCallback(
+        async (updateBank = true): Promise<BankConnection | null> => {
+            return bankConnectionService
+                .list(activeOrganization.id, { state: 'active' })
+                .then((res) => {
+                    const connection = res.data.data?.[0];
 
-    const updateActiveBankConnection = useCallback(() => {
-        return new Promise((resolve) => {
-            fetchActiveBankConnection().then(
-                (bankConnection: BankConnection) => {
-                    setBankConnection(bankConnection);
-                    resolve(bankConnection);
-                },
-                () => resolve(false),
-            );
-        });
-    }, [fetchActiveBankConnection]);
+                    setBankConnection(connection);
+                    setBank((bank) => (updateBank ? connection?.bank || null : bank));
 
-    const confirmNewConnection = useCallback(() => {
-        return new Promise((resolve) => {
-            fetchActiveBankConnection().then((bankConnection) => {
-                if (bankConnection) {
-                    confirmDangerAction(
-                        'U heeft al een actieve verbinding met uw bank',
-                        [
-                            'U staat op het punt om opnieuw toestemming te geven en daarmee de verbinding opnieuw tot stand te brengen.',
-                            'Weet u zeker dat u verder wilt gaan?',
-                        ].join('\n'),
-                    ).then(resolve);
-                } else {
-                    resolve(true);
-                }
-            });
-        });
-    }, [confirmDangerAction, fetchActiveBankConnection]);
-
-    const replaceConnectionModel = useCallback(
-        (bankConnection) => {
-            for (let i = 0; i < bankConnections.data.length; i++) {
-                if (bankConnections.data[i].id == bankConnection.id) {
-                    bankConnections.data[i] = bankConnection;
-                }
-            }
+                    return connection;
+                })
+                .catch((err: ResponseError) => {
+                    onRequestError(err);
+                    return null;
+                });
         },
-        [bankConnections?.data],
+        [activeOrganization.id, bankConnectionService, onRequestError],
     );
+
+    const confirmNewConnection = useCallback(async () => {
+        return await fetchActiveBankConnection(false).then(async (connection) => {
+            return connection ? await confirmBankNewConnection() : true;
+        });
+    }, [fetchActiveBankConnection, confirmBankNewConnection]);
 
     const disableConnection = useCallback(
-        (connection_id) => {
-            confirmConnectionDisabling().then((confirmed) => {
-                if (confirmed) {
-                    bankConnectionService
-                        .update(activeOrganization.id, connection_id, { state: 'disabled' })
-                        .then((res) => {
-                            replaceConnectionModel(res.data.data);
-
-                            setBank(null);
-                            showStatePush(query.success, query.error);
-                            updateActiveBankConnection().then((connection: BankConnection) => {
-                                setBank(connection ? connection.bank : null);
-                            });
-                        }, onRequestError);
+        (connection_id: number) => {
+            confirmBankConnectionDisable().then((confirmed) => {
+                if (!confirmed) {
+                    return;
                 }
+
+                bankConnectionService
+                    .update(activeOrganization.id, connection_id, { state: 'disabled' })
+                    .then(() => {
+                        fetchBankConnections();
+                        fetchActiveBankConnection().then();
+                    })
+                    .catch(onRequestError);
             });
         },
         [
-            activeOrganization.id,
-            bankConnectionService,
-            confirmConnectionDisabling,
             onRequestError,
-            query,
-            replaceConnectionModel,
-            showStatePush,
-            updateActiveBankConnection,
+            confirmBankConnectionDisable,
+            bankConnectionService,
+            activeOrganization.id,
+            fetchBankConnections,
+            fetchActiveBankConnection,
         ],
     );
 
@@ -236,14 +143,13 @@ export default function BankConnections() {
             setSubmittingConnection(true);
 
             confirmNewConnection().then((confirmed) => {
-                const values = { bank_id: bank.id };
-
                 if (!confirmed) {
                     setSubmittingConnection(false);
                 }
 
-                bankConnectionService.store(activeOrganization.id, values).then(
-                    (res) => {
+                bankConnectionService
+                    .store(activeOrganization.id, { bank_id: bank.id })
+                    .then((res) => {
                         const { auth_url, state } = res.data.data;
 
                         if (state === 'pending' && auth_url) {
@@ -251,12 +157,11 @@ export default function BankConnections() {
                         }
 
                         pushDanger('Error!', 'Er is een onbekende fout opgetreden.');
-                    },
-                    (res) => {
+                    })
+                    .catch((res) => {
                         setSubmittingConnection(false);
                         onRequestError(res);
-                    },
-                );
+                    });
             });
         },
         [
@@ -271,44 +176,57 @@ export default function BankConnections() {
 
     const switchMonetaryAccount = useCallback(
         (bankConnection: BankConnection) => {
-            const onClose = () => {
-                updateActiveBankConnection().then(() => {
-                    fetchBankConnections({}).then((res) => setBankConnections(res), onRequestError);
-                });
-            };
-
             openModal((modal) => (
-                <ModalSwitchBankConnectionAccount modal={modal} bankConnection={bankConnection} onClose={onClose} />
+                <ModalSwitchBankConnectionAccount
+                    modal={modal}
+                    bankConnection={bankConnection}
+                    onChange={(connection) => setBankConnection(connection)}
+                />
             ));
         },
-        [fetchBankConnections, onRequestError, openModal, updateActiveBankConnection],
+        [openModal],
     );
-
-    const fetchBanks = useCallback(() => {
-        bankService.list().then((res) => {
-            setBanks(res.data);
-        });
-    }, [bankService]);
-
-    useEffect(() => {
-        fetchBankConnections({}).then((bank_connections) => {
-            setBankConnections(bank_connections);
-        }, onRequestError);
-    }, [fetchBankConnections, filter.values, onRequestError]);
 
     useEffect(() => {
         fetchBanks();
     }, [fetchBanks]);
 
     useEffect(() => {
-        updateActiveBankConnection().then((connection: BankConnection) => {
-            setBank(connection ? connection.bank : null);
-        });
-    }, [updateActiveBankConnection]);
+        fetchBankConnections();
+    }, [fetchBankConnections]);
+
+    useEffect(() => {
+        fetchActiveBankConnection().then();
+    }, [fetchActiveBankConnection]);
+
+    useEffect(() => {
+        if (success === true) {
+            pushSuccess('Succes!', 'De verbinding met bank is tot stand gebracht!');
+        }
+
+        if (error) {
+            pushDanger(
+                'Verbinding mislukt',
+                {
+                    invalid_grant: 'De autorisatiecode is ongeldig of verlopen.',
+                    access_denied: 'Het autorisatieverzoek is geweigerd.',
+                    not_pending: 'Verzoek voor verbinding is al behandeld.',
+                }[error] || error,
+            );
+        }
+
+        if (success === true || error) {
+            setQueryParams({ success: null, error: null });
+        }
+    }, [error, pushDanger, pushSuccess, setQueryParams, success]);
+
+    if (!banks || !bankConnections) {
+        return <LoadingCard />;
+    }
 
     return (
         <Fragment>
-            {banks?.meta.total === 0 && (
+            {banks.meta.total === 0 && (
                 <div className="card">
                     <div className="card-section">
                         <div className="block block-empty text-center">
@@ -373,33 +291,31 @@ export default function BankConnections() {
                 <div className="card">
                     <div className="card-section">
                         <div className="block block-empty text-center">
-                            <form className="form" onSubmit={() => makeBankConnection(bank)}>
-                                <div className="empty-icon">
-                                    <img
-                                        className="empty-icon-img"
-                                        src={assetUrl('/assets/img/bunq-logo.jpg')}
-                                        alt={''}
-                                    />
-                                </div>
-                                <div className="empty-title">Bank integratie</div>
-                                <div className="empty-details">
-                                    <div className="row">
-                                        <div className="col-lg-6 col-sm-8 col-offset-sm-2 col-offset-lg-3">
-                                            Gebruik de koppeling met uw bank om rekeninginformatie uit te lezen en
-                                            transacties klaar te zetten.
-                                        </div>
+                            <div className="empty-icon">
+                                <img className="empty-icon-img" src={assetUrl('/assets/img/bunq-logo.jpg')} alt={''} />
+                            </div>
+                            <div className="empty-title">Bank integratie</div>
+                            <div className="empty-details">
+                                <div className="row">
+                                    <div className="col-lg-6 col-sm-8 col-offset-sm-2 col-offset-lg-3">
+                                        Gebruik de koppeling met uw bank om rekeninginformatie uit te lezen en
+                                        transacties klaar te zetten.
                                     </div>
                                 </div>
-                                <div className="empty-actions">
-                                    <button className="button button-primary" type="submit">
-                                        {submittingConnection && (
-                                            <div className="mdi mdi-loading mdi-spin icon-start" />
-                                        )}
-                                        {!submittingConnection && <div className="mdi mdi-qrcode-scan icon-start" />}
-                                        Koppelen
-                                    </button>
-                                </div>
-                            </form>
+                            </div>
+                            <div className="empty-actions">
+                                <button
+                                    type="button"
+                                    className="button button-primary"
+                                    onSubmit={() => makeBankConnection(bank)}>
+                                    {submittingConnection ? (
+                                        <em className="mdi mdi-loading mdi-spin icon-start" />
+                                    ) : (
+                                        <em className="mdi mdi-qrcode-scan icon-start" />
+                                    )}
+                                    Koppelen
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -409,33 +325,35 @@ export default function BankConnections() {
                 <div className="card">
                     <div className="card-section">
                         <div className="block block-empty text-center">
-                            <form className="form" onSubmit={() => makeBankConnection(bank)}>
-                                <div className="empty-icon">
-                                    <img
-                                        className="empty-icon-img empty-icon-img-border"
-                                        src={assetUrl('/assets/img/bng-logo.jpg')}
-                                        alt={''}
-                                    />
-                                </div>
-                                <div className="empty-title">Bank integratie</div>
-                                <div className="empty-details">
-                                    <div className="row">
-                                        <div className="col-lg-6 col-sm-8 col-offset-sm-2 col-offset-lg-3">
-                                            Gebruik de koppeling met uw bank om rekeninginformatie uit te lezen en
-                                            transacties klaar te zetten.
-                                        </div>
+                            <div className="empty-icon">
+                                <img
+                                    className="empty-icon-img empty-icon-img-border"
+                                    src={assetUrl('/assets/img/bng-logo.jpg')}
+                                    alt={''}
+                                />
+                            </div>
+                            <div className="empty-title">Bank integratie</div>
+                            <div className="empty-details">
+                                <div className="row">
+                                    <div className="col-lg-6 col-sm-8 col-offset-sm-2 col-offset-lg-3">
+                                        Gebruik de koppeling met uw bank om rekeninginformatie uit te lezen en
+                                        transacties klaar te zetten.
                                     </div>
                                 </div>
-                                <div className="empty-actions">
-                                    <button className="button button-primary" type="submit">
-                                        {submittingConnection && (
-                                            <div className="mdi mdi-loading mdi-spin icon-start" />
-                                        )}
-                                        {!submittingConnection && <div className="mdi mdi-qrcode-scan icon-start" />}
-                                        Koppelen
-                                    </button>
-                                </div>
-                            </form>
+                            </div>
+                            <div className="empty-actions">
+                                <button
+                                    type="button"
+                                    className="button button-primary"
+                                    onClick={() => makeBankConnection(bank)}>
+                                    {submittingConnection ? (
+                                        <em className="mdi mdi-loading mdi-spin icon-start" />
+                                    ) : (
+                                        <em className="mdi mdi-link-variant icon-start" />
+                                    )}
+                                    Koppelen
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -495,7 +413,7 @@ export default function BankConnections() {
                 </div>
             )}
 
-            {bank && bankConnections?.meta?.total > 0 && (
+            {bank && bankConnections.meta?.total > 0 && (
                 <div className="card card-collapsed">
                     <div className="card-header">
                         <div className="card-title">Status verbindingen</div>

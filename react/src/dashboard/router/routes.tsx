@@ -129,7 +129,6 @@ router.state('sponsor-provider-organizations', <WIP title={'Provider organizatio
 
 router.state('bank-connections', <BankConnections />, {
     path: `/organizations/:organizationId/bank-connections`,
-    fallbackState: 'organizations',
 });
 
 router.state('financial-dashboard', <WIP title={'Financial dashboard'} />, {
