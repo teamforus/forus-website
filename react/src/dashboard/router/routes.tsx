@@ -44,6 +44,7 @@ import OrganizationsNoPermissions from '../components/pages/organizations-no-per
 import PaymentMethods from '../components/pages/payment-methods/PaymentMethods';
 import MolliePrivacy from '../components/pages/mollie-privacy/MolliePrivacy';
 import CsvValidationsRedirect from '../components/pages/csv_validations/CsvValidationsRedirect';
+import BankConnections from '../components/pages/bank-connections/BankConnections';
 import WIP from '../components/pages_system/WIP';
 import ExtraPayments from '../components/pages/extra-payments/ExtraPayments';
 import ExtraPaymentsView from '../components/pages/extra-payments-view/ExtraPaymentsView';
@@ -127,9 +128,8 @@ router.state('sponsor-provider-organizations', <WIP title={'Provider organizatio
     fallbackState: 'organizations',
 });
 
-router.state('bank-connections', <WIP title={'Bank connections'} />, {
+router.state('bank-connections', <BankConnections />, {
     path: `/organizations/:organizationId/bank-connections`,
-    fallbackState: 'organizations',
 });
 
 router.state('financial-dashboard', <WIP title={'Financial dashboard'} />, {
