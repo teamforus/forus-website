@@ -44,6 +44,8 @@ import OrganizationsNoPermissions from '../components/pages/organizations-no-per
 import PaymentMethods from '../components/pages/payment-methods/PaymentMethods';
 import MolliePrivacy from '../components/pages/mollie-privacy/MolliePrivacy';
 import CsvValidationsRedirect from '../components/pages/csv_validations/CsvValidationsRedirect';
+import Reimbursements from '../components/pages/reimbursements/Reimbursements';
+import ReimbursementsView from '../components/pages/reimbursements-view/ReimbursementsView';
 import BankConnections from '../components/pages/bank-connections/BankConnections';
 import WIP from '../components/pages_system/WIP';
 import ExtraPayments from '../components/pages/extra-payments/ExtraPayments';
@@ -51,6 +53,7 @@ import ExtraPaymentsView from '../components/pages/extra-payments-view/ExtraPaym
 import Features from '../components/pages/features/Features';
 import Feature from '../components/pages/feature/Feature';
 import EventLogs from '../components/pages/eventLogs/EventLogs';
+import ReimbursementCategories from '../components/pages/reimbursement-categories/ReimbursementCategories';
 
 const router = new RouterBuilder();
 
@@ -152,9 +155,17 @@ router.state('product-vouchers', <WIP title={'Product vouchers'} />, {
     fallbackState: 'organizations',
 });
 
-router.state('reimbursements', <WIP title={'Reimbursements'} />, {
+router.state('reimbursements', <Reimbursements />, {
     path: `/organizations/:organizationId/reimbursements`,
-    fallbackState: 'organizations',
+});
+
+router.state('reimbursements-view', <ReimbursementsView />, {
+    path: `/organizations/:organizationId/reimbursements/:id`,
+    fallbackState: 'reimbursements',
+});
+
+router.state('reimbursement-categories', <ReimbursementCategories />, {
+    path: `/organizations/:organizationId/reimbursement-categories`,
 });
 
 router.state('extra-payments', <ExtraPayments />, {
