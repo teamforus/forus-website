@@ -16,6 +16,7 @@ import Office from '../../../../props/models/Office';
 import Organization from '../../../../props/models/Organization';
 import OfficeSchedule from '../../../../props/models/OfficeSchedule';
 import { ResponseError } from '../../../../props/ApiResponses';
+import Media from '../../../../props/models/Media';
 
 export default function OfficesForm({ organization, id }: { organization: Organization; id?: number }) {
     const { t } = useTranslation();
@@ -29,6 +30,7 @@ export default function OfficesForm({ organization, id }: { organization: Organi
     const officeService = useOfficeService();
 
     const [office, setOffice] = useState<Office>(null);
+    const [media, setMedia] = useState<Media>(null);
     const [mediaFile, setMediaFile] = useState<Blob>(null);
 
     const [showBranchNameTooltip, setShowBranchNameTooltip] = useState<boolean>(false);
@@ -50,7 +52,7 @@ export default function OfficesForm({ organization, id }: { organization: Organi
     const uploadMedia = useCallback(() => {
         return new Promise((resolve, reject) => {
             if (!mediaFile) {
-                return resolve(office?.photo?.uid);
+                return resolve(media?.uid);
             }
 
             setProgress(0);
@@ -58,17 +60,18 @@ export default function OfficesForm({ organization, id }: { organization: Organi
             return mediaService
                 .store('office_photo', mediaFile)
                 .then((res) => {
+                    setMedia(res.data.data);
                     setMediaFile(null);
                     resolve(res.data.data.uid);
                 }, reject)
                 .finally(() => setProgress(100));
         });
-    }, [mediaFile, mediaService, setProgress, office]);
+    }, [media, mediaFile, mediaService, setProgress]);
 
     const form = useFormBuilder<{
         address?: string;
         phone?: string;
-        branch_number?: number;
+        branch_number?: string;
         branch_name?: string;
         branch_id?: string;
         schedule?: Array<OfficeSchedule>;
@@ -183,11 +186,10 @@ export default function OfficesForm({ organization, id }: { organization: Organi
                             <div className="form-group-info">
                                 <div className="form-group-info-control">
                                     <input
-                                        type="number"
                                         className="form-control"
                                         placeholder={t('offices_edit.labels.branch_number')}
                                         value={form.values?.branch_number || ''}
-                                        onChange={(e) => form.update({ branch_number: parseInt(e.target.value) })}
+                                        onChange={(e) => form.update({ branch_number: e.target.value })}
                                     />
 
                                     <div className="form-group-info-button">
