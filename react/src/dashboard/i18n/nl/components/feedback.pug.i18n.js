@@ -11,7 +11,7 @@ module.exports = {
         },
         buttons: {
             cancel: "Annuleren",
-            confirm: "Bevestig",
+            confirm: "Bevestigen",
             back: "Terug",
             send: "Verzenden",
         },

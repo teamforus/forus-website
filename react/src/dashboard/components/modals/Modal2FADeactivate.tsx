@@ -219,7 +219,7 @@ export default function Modal2FADeactivate({
                         <div className="modal-footer">
                             <div className="button-group">
                                 <button className="button button-primary" type="submit" onClick={done}>
-                                    Bevestig
+                                    Bevestigen
                                 </button>
                             </div>
                         </div>

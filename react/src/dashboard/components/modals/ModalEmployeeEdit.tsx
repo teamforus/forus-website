@@ -174,7 +174,7 @@ export default function ModalEmployeeEdit({
                     <ModalButton
                         type="primary"
                         button={{ onClick: form.submit }}
-                        text={'Bevestig'}
+                        text={'Bevestigen'}
                         submit={true}
                         dusk={'formEmployeeSubmit'}
                     />

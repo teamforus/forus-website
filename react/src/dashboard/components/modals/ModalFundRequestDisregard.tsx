@@ -115,7 +115,7 @@ export default function ModalFundRequestDisregard({
                         Sluiten
                     </button>
                     <button type="submit" className="button button-primary">
-                        Bevestig
+                        Bevestigen
                     </button>
                 </div>
             </form>

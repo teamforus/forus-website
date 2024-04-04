@@ -7,6 +7,6 @@ module.exports = {
     },
     buttons: {
         cancel: "Annuleren",
-        submit: "Bevestig",
+        submit: "Bevestigen",
     }
 };

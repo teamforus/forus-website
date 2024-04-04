@@ -375,7 +375,7 @@ export default function Modal2FASetup({
                                     Annuleer
                                 </button>
                                 <button className="button button-primary" type="submit" onClick={submitAuthenticator}>
-                                    Bevestig
+                                    Bevestigen
                                 </button>
                             </div>
                         </div>
@@ -421,7 +421,7 @@ export default function Modal2FASetup({
                                     Annuleer
                                 </button>
                                 <button className="button button-primary" type="submit">
-                                    Bevestig
+                                    Bevestigen
                                 </button>
                             </div>
                         </div>
@@ -605,7 +605,7 @@ export default function Modal2FASetup({
                         <div className="modal-footer">
                             <div className="button-group">
                                 <button className="button button-primary" onClick={done}>
-                                    Bevestig
+                                    Bevestigen
                                 </button>
                             </div>
                         </div>

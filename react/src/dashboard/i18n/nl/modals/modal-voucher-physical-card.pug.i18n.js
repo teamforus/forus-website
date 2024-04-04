@@ -20,6 +20,6 @@ module.exports = {
         title: 'De pas met pasnummer {{ code }} wordt ontkoppeld',
         description: 'De pas kan direct niet meer gebruikt worden. Om de pas opnieuw te activeren is het pasnummer vereist.',
         cancelButton: 'Annuleer',
-        confirmButton: 'Bevestig',
+        confirmButton: 'Bevestigen',
     }
 };
