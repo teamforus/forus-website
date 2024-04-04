@@ -23,4 +23,7 @@ module.exports = {
         search: "Zoeken",
         amount_extra: "Bijbetaald",
     },
+    buttons: {
+        clear_filter: "Wis filters",
+    },
 };
