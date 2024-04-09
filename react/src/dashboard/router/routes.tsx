@@ -54,6 +54,7 @@ import Features from '../components/pages/features/Features';
 import Feature from '../components/pages/feature/Feature';
 import EventLogs from '../components/pages/eventLogs/EventLogs';
 import ReimbursementCategories from '../components/pages/reimbursement-categories/ReimbursementCategories';
+import PreCheck from '../components/pages/pre-check/PreCheck';
 
 const router = new RouterBuilder();
 
@@ -116,7 +117,7 @@ router.state('organization-funds', <WIP />, {
     fallbackState: 'organizations',
 });
 
-router.state('pre-check', <WIP title={'Pre-check'} />, {
+router.state('pre-check', <PreCheck />, {
     path: `/organizations/:organizationId/pre-check`,
     fallbackState: 'organizations',
 });

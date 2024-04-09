@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import ApiResponse from '../props/ApiResponses';
+import ApiResponse, { ApiResponseSingle } from '../props/ApiResponses';
 import ApiRequestService from './ApiRequestService';
 import Implementation from '../props/models/Implementation';
 
@@ -21,6 +21,24 @@ export class ImplementationService<T = Implementation> {
      */
     public list(organizationId: number, data: object = {}): Promise<ApiResponse<T>> {
         return this.apiRequest.get(`${this.prefix}/${organizationId}/implementations`, data);
+    }
+
+    /**
+     * Read implementation
+     */
+    public read(organizationId: number, implementationId: number, data: object = {}): Promise<ApiResponseSingle<T>> {
+        return this.apiRequest.get(`${this.prefix}/${organizationId}/implementations/${implementationId}`, data);
+    }
+
+    public updatePreCheckBanner(
+        organizationId: number,
+        implementationId: number,
+        data: object,
+    ): Promise<ApiResponse<T>> {
+        return this.apiRequest.patch(
+            `${this.prefix}/${organizationId}/implementations/${implementationId}/pre-check-banner`,
+            data,
+        );
     }
 }
 
