@@ -12,7 +12,7 @@ module.exports = {
     },
     buttons: {
         cancel: "Annuleren",
-        submit: "Bevestig",
+        submit: "Bevestigen",
         generate_new_key: "Vernieuwen"
     }
 };

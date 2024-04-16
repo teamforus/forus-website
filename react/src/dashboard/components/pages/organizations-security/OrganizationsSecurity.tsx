@@ -288,7 +288,7 @@ export default function OrganizationsSecurity() {
                                     Annuleer
                                 </StateNavLink>
                                 <button className="button button-primary" type="submit">
-                                    Bevestig
+                                    Bevestigen
                                 </button>
                             </div>
                         </div>

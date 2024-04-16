@@ -217,7 +217,7 @@ export default function Security2FA() {
 
                     <div className="card-section card-section-primary text-center">
                         <button className="button button-primary" type="submit">
-                            Bevestig
+                            Bevestigen
                         </button>
                     </div>
                 </form>

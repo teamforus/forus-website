@@ -30,6 +30,6 @@ module.exports = {
     buttons: {
         cancel: "Annuleren",
         submit: "Betaal",
-        close: "Bevestig",
+        close: "Bevestigen",
     }
 };
