@@ -6,6 +6,6 @@ module.exports = {
     info: "Na het overdragen kan de nieuwe eigenaar u verwijderen als medewerker.",
     buttons: {
         cancel: "Annuleer",
-        submit: "Bevestig",
+        submit: "Bevestigen",
     },
 };

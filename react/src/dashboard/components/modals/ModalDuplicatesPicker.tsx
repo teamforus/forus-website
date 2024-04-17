@@ -26,7 +26,7 @@ export default function ModalDuplicatesPicker({
     button_cancel = 'Annuleren',
     button_none = 'Alles overslaan',
     button_all = 'Ja op alles',
-    button_confirm = 'Bevestig',
+    button_confirm = 'Bevestigen',
 }: {
     modal: ModalState;
     className?: string;

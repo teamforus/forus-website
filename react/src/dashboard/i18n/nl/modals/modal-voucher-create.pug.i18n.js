@@ -32,7 +32,7 @@ module.exports = {
     info: "Controleer de gegevens. Na het aanmaken van het tegoed kan het niet worden verwijderd.",
     buttons: {
         cancel: "Annuleren",
-        submit: "Bevestig",
+        submit: "Bevestigen",
         activate: "Activeren",
     }
 };
