@@ -1,4 +1,4 @@
-import React, { useContext, useMemo } from 'react';
+import React, { useContext, useMemo, useState } from 'react';
 import { LayoutHeader } from './elements/LayoutHeader';
 import { LayoutAside } from './elements/LayoutAside';
 import { classList } from '../helpers/utils';
@@ -10,7 +10,7 @@ import LoadingBar from '../modules/loading_bar/components/LoadingBar';
 import { LayoutType } from '../modules/state_router/RouterProps';
 import useAuthIdentity from '../hooks/useAuthIdentity';
 import useActiveOrganization from '../hooks/useActiveOrganization';
-import { LoadScript } from '@react-google-maps/api';
+import { Libraries, LoadScript } from '@react-google-maps/api';
 import useEnvData from '../hooks/useEnvData';
 
 export const Layout = ({ children }: { children: React.ReactElement }) => {
@@ -22,12 +22,14 @@ export const Layout = ({ children }: { children: React.ReactElement }) => {
     const authIdentity = useAuthIdentity();
     const activeOrganization = useActiveOrganization();
 
+    const [libraries] = useState(['places'] as Libraries);
+
     const isReady = useMemo(() => {
         return !route.state?.protected || (authIdentity && activeOrganization);
     }, [authIdentity, activeOrganization, route.state]);
 
     return (
-        <LoadScript googleMapsApiKey={envData?.config?.google_maps_api_key} libraries={['places']}>
+        <LoadScript googleMapsApiKey={envData?.config?.google_maps_api_key} libraries={libraries}>
             <div
                 className={classList([
                     'app',

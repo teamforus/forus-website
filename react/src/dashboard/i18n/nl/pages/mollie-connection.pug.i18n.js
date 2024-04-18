@@ -40,7 +40,7 @@ module.exports = {
     buttons: {
         fetch: "Haal gegevens op",
         cancel: "Annuleren",
-        submit: "Bevestig",
+        submit: "Bevestigen",
         delete: "Deactiveer",
         change_profile: "Save"
     },

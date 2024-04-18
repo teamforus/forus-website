@@ -64,4 +64,14 @@ export default interface Organization {
     can_view_provider_extra_payments?: boolean;
     allow_extra_payments_by_sponsor?: boolean;
     can_receive_extra_payments?: boolean;
+    bank_statement_details?: {
+        bank_transaction_id?: boolean;
+        bank_transaction_date?: boolean;
+        bank_reservation_number?: boolean;
+        bank_branch_number?: boolean;
+        bank_branch_id?: boolean;
+        bank_branch_name?: boolean;
+        bank_fund_name?: boolean;
+        bank_note?: boolean;
+    };
 }

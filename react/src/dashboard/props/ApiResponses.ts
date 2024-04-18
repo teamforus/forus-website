@@ -46,7 +46,7 @@ export interface ResponseErrorData {
 }
 
 export interface ResponseError<
-    T = { message: string; errors: ResponseErrorData; meta?: { title?: string; message?: string } },
+    T = { title?: string; message: string; errors: ResponseErrorData; meta?: { title?: string; message?: string } },
 > extends BaseResponse {
     data: T;
 }

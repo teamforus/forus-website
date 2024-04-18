@@ -467,7 +467,7 @@ module.exports = {
             explanation: "Plaats hier de informatie voor inwoners. Deze tekst staat op de uitleg pagina. De algemene tekst is zichtbaar als beide opties uit staan.",
             accessibility: "Plaats een link naar de toegankelijkheidsverklaring of vul een eigen tekst in. De algemene tekst is zichtbaar als beide opties uit staan.",
             terms_and_conditions: "Wanneer dit veld leeg gelaten wordt, worden de standaard blokken van de pagina weergegeven.",
-        
+
             footer_contact_details: "Vul hier de contactinformatie van uw organisatie in. De tekst staat in de footer op de homepagina.",
             footer_opening_times: "Vul hier de openingstijden van uw organisatie in. De tekst staat in de footer op de homepagina.",
         },
@@ -622,7 +622,15 @@ module.exports = {
             phone: "Telefoonnummer",
             mail: "E-mail",
             hours: "Openingstijden",
-            business_type: "Organisatie type"
+            business_type: "Organisatie type",
+            branch_number: "Vestigingsnummer",
+            branch_name: "Vestigingsnaam",
+            branch_id: "VestigingID"
+        },
+        info: {
+            branch_number: "Een uniek 12-cijferig nummer dat door de Kamer van Koophandel aan elke vestiging wordt toegekend. Let op: Dit nummer verschilt van het KVK-nummer.",
+            branch_name: "Een naam die door een organisatie aan een vestiging wordt gegeven.",
+            branch_id: "Een unieke ID die door de organisatie aan een vestiging wordt toegewezen voor interne administratieve doeleinden."
         },
         buttons: {
             add_office: "Voeg een nieuwe vestiging toe",
@@ -647,12 +655,22 @@ module.exports = {
             phone: "Telefoonnummer",
             hours: "Openingstijden:",
             offices: "Vestigingen ",
-            business_type: "Organisatie type"
+            business_type: "Organisatie type",
+            branch_id: "VestigingID",
+            branch_number: "Vestigingsnummer",
         },
         confirm_delete: {
             title: "Weet u zeker dat u deze vestiging wilt verwijderen?",
             description: "Wanneer u de vestiging verwijderd kunt u dit niet ongedaan maken. Bedenk daarom goed of u deze actie wilt verrichten."
-        }
+        },
+        confirm_has_employees: {
+            title: "Verwijder medewerkers uit de vestiging",
+            description: "Voordat de vestiging wordt verwijderd, controleer of er geen toegewezen medewerker(s) zijn.",
+            buttons: {
+                cancel: "Sluiten",
+                confirm: "Medewerkers bekijken",
+            },
+        },
     },
 
     // ORGANIZATION PROVIDERS = provider-organizations.pug
@@ -749,7 +767,7 @@ module.exports = {
         },
         buttons: {
             cancel: "Annuleren",
-            create: "Bevestig",
+            create: "Bevestigen",
             save_location: "Vestiging opslaan",
             add_location: "Voeg nog een vestiging toe",
             edit_location: "Wijzigen",
@@ -819,7 +837,7 @@ module.exports = {
         },
         buttons: {
             cancel: "Annuleren",
-            confirm: "Bevestig",
+            confirm: "Bevestigen",
             close: "Sluit"
         },
         errors: {
@@ -1063,7 +1081,7 @@ module.exports = {
             step_2: 'Ik heb al een profiel',
             step_3: 'Inloggen met Autorisatie code',
             no_app: 'Ik kan nu nog geen app gebruiken >',
-            create_profile: 'Bevestig',
+            create_profile: 'Bevestigen',
         },
         no_app: {
             enter_email: 'U heeft de Me-app nodig om betalingen te ontvangen.',
@@ -1101,7 +1119,7 @@ module.exports = {
             labels: {
                 employee_add_header: "Bevestig uitnodiging",
                 employee_add_message: "Wilt u medewerker met het e-mailadres <strong class='text-primary'>{{email}}</strong> uitnodigen? <br>Deze medewerker zal hier over een e-mail ontvangen.",
-                accept: "Bevestig",
+                accept: "Bevestigen",
                 cancel: "Annuleer"
             }
         },
@@ -1201,7 +1219,7 @@ module.exports = {
             step_2: 'Ik heb al een profiel',
             step_3: 'Inloggen met Autorisatie code',
             no_app: 'Ik kan nu nog geen app gebruiken >',
-            create_profile: 'Bevestig',
+            create_profile: 'Bevestigen',
         },
         no_app: {
             enter_email: 'Vul uw e-mail adres in om verder te gaan',
@@ -1328,7 +1346,7 @@ module.exports = {
             step_2: 'Ik heb al een profiel',
             step_3: 'Inloggen met Autorisatie code',
             no_app: 'Ik kan nu nog geen app gebruiken >',
-            create_profile: 'Bevestig',
+            create_profile: 'Bevestigen',
         },
         no_app: {
             enter_email: 'Vul uw e-mailadres in om verder te gaan',
@@ -1365,6 +1383,8 @@ module.exports = {
     organization_employees: {
         labels: {
             email: "E-mailadres",
+            branch_name_id: "Vestigingnaam & ID",
+            branch_number: "Vestigingsnummer",
             roles: "Rollen",
             actions: "Actie",
             auth_2fa: "2FA",
@@ -1520,7 +1540,7 @@ module.exports = {
             note: "Notite",
             actions: "Acties",
         },
-    
+
         buttons: {
             add_new: 'Nieuwe aanmaken',
         },

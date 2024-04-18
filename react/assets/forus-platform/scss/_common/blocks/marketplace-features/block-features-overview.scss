@@ -38,7 +38,7 @@
         display: flex;
         flex: 0 0 50%;
         min-height: 400px;
-        background-image: url(../img/features/features-watermark.svg);
+        background-image: assetUrl('img/features/features-watermark.svg');
         background-repeat: no-repeat;
         background-size: contain;
         background-position: 50% 50%;

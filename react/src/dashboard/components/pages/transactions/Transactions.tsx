@@ -33,6 +33,7 @@ import TranslateHtml from '../../elements/translate-html/TranslateHtml';
 import { hasPermission } from '../../../helpers/utils';
 import useTransactionBulkExportService from '../../../services/exports/useTransactionBulkExportService';
 import { dateFormat, dateParse } from '../../../helpers/dates';
+import usePaginatorService from '../../../modules/paginator/services/usePaginatorService';
 
 export default function Transactions() {
     const { t } = useTranslation();
@@ -43,6 +44,7 @@ export default function Transactions() {
     const pushSuccess = usePushSuccess();
     const setProgress = useSetProgress();
     const navigateState = useNavigateState();
+    const paginatorService = usePaginatorService();
     const activeOrganization = useActiveOrganization();
 
     const transactionService = useTransactionService();
@@ -98,6 +100,8 @@ export default function Transactions() {
     ]);
 
     const [viewType, setViewType] = useState(viewTypes[0]);
+    const [paginatorTransactionsKey] = useState('transactions');
+    const [paginatorTransactionBulkKey] = useState('transaction_bulks');
 
     const filter = useFilter(
         {
@@ -111,7 +115,7 @@ export default function Transactions() {
             amount_max: null,
             transfer_in_min: null,
             transfer_in_max: null,
-            per_page: 20,
+            per_page: paginatorService.getPerPage(paginatorTransactionsKey),
             order_by: 'created_at',
             order_dir: 'desc',
         },
@@ -127,7 +131,7 @@ export default function Transactions() {
             quantity_min: null,
             quantity_max: null,
             state: bulkStates[0].key,
-            per_page: 20,
+            per_page: paginatorService.getPerPage(paginatorTransactionBulkKey),
             order_by: 'created_at',
             order_dir: 'desc',
         },
@@ -390,6 +394,17 @@ export default function Transactions() {
                                     Wis filters
                                 </div>
                             )}
+
+                            {viewType.key == 'transactions' && (
+                                <StateNavLink
+                                    name={'transaction-settings'}
+                                    params={{ organizationId: activeOrganization.id }}
+                                    className="button button-primary button-sm">
+                                    <em className="mdi mdi-cog icon-start" />
+                                    Instellingen
+                                </StateNavLink>
+                            )}
+
                             {!filter.show && viewType.key == 'transactions' && (
                                 <div className="form">
                                     <div className="form-group">
@@ -446,6 +461,18 @@ export default function Transactions() {
                                                 />
                                             </div>
                                         </div>
+                                    </FilterItemToggle>
+
+                                    <FilterItemToggle label={t('transactions.labels.state')}>
+                                        <SelectControl
+                                            className="form-control"
+                                            propKey={'key'}
+                                            allowSearch={false}
+                                            value={filter.values.state}
+                                            options={states}
+                                            optionsComponent={SelectControlOptions}
+                                            onChange={(state: string) => filter.update({ state })}
+                                        />
                                     </FilterItemToggle>
 
                                     <FilterItemToggle label={t('transactions.labels.fund')}>
@@ -612,10 +639,10 @@ export default function Transactions() {
                                             className="form-control"
                                             propKey={'key'}
                                             allowSearch={false}
-                                            value={filter.values.state}
-                                            options={states}
+                                            value={bulkFilter.values.state}
+                                            options={bulkStates}
                                             optionsComponent={SelectControlOptions}
-                                            onChange={(state: string) => filter.update({ state })}
+                                            onChange={(state: string) => bulkFilter.update({ state })}
                                         />
                                     </FilterItemToggle>
 
@@ -675,6 +702,20 @@ export default function Transactions() {
                                             <ThSortable
                                                 className={'nowrap'}
                                                 label={t('transactions.labels.method')}
+                                                filter={filter}
+                                            />
+                                        )}
+                                        {isProvider && (
+                                            <ThSortable
+                                                className={'nowrap'}
+                                                label={t('transactions.labels.branch_name')}
+                                                filter={filter}
+                                            />
+                                        )}
+                                        {isProvider && (
+                                            <ThSortable
+                                                className={'nowrap'}
+                                                label={t('transactions.labels.branch_number')}
                                                 filter={filter}
                                             />
                                         )}
@@ -752,6 +793,31 @@ export default function Transactions() {
                                                     {transaction?.reservation?.amount_extra > 0
                                                         ? 'iDeal + Tegoed'
                                                         : 'Tegoed'}
+                                                </td>
+                                            )}
+                                            {isProvider && (
+                                                <td>
+                                                    {transaction?.branch_name && (
+                                                        <div className="text-primary">{transaction?.branch_name}</div>
+                                                    )}
+
+                                                    {transaction?.branch_id && (
+                                                        <div>
+                                                            ID <strong>{transaction?.branch_id}</strong>
+                                                        </div>
+                                                    )}
+
+                                                    {!transaction.branch_id && !transaction.branch_name && (
+                                                        <div className={'text-muted'}>Geen...</div>
+                                                    )}
+                                                </td>
+                                            )}
+                                            {isProvider && (
+                                                <td>
+                                                    <div className={transaction?.branch_number ? '' : 'text-muted'}>
+                                                        {strLimit(transaction.branch_number?.toString(), 32) ||
+                                                            'Geen...'}
+                                                    </div>
                                                 </td>
                                             )}
                                             {isProvider && (
@@ -886,17 +952,22 @@ export default function Transactions() {
                     </div>
                 )}
 
-            {viewType.key == 'transactions' && transactions.meta.last_page > 1 && (
-                <div className="card-section">
-                    <Paginator meta={transactions.meta} filters={filter.values} updateFilters={filter.update} />
-                </div>
-            )}
-
             {viewType.key == 'transactions' && transactions.meta.total == 0 && (
                 <div className="card-section">
                     <div className="block block-empty text-center">
                         <div className="empty-title">Geen transacties gevonden</div>
                     </div>
+                </div>
+            )}
+
+            {viewType.key == 'transactions' && transactions?.meta && (
+                <div className="card-section">
+                    <Paginator
+                        meta={transactions.meta}
+                        filters={filter.values}
+                        updateFilters={filter.update}
+                        perPageKey={paginatorTransactionsKey}
+                    />
                 </div>
             )}
 
@@ -984,16 +1055,6 @@ export default function Transactions() {
                 </div>
             )}
 
-            {transactionBulks && viewType.key == 'bulks' && transactionBulks.meta.last_page > 1 && (
-                <div className="card-section">
-                    <Paginator
-                        meta={transactionBulks.meta}
-                        filters={bulkFilter.values}
-                        updateFilters={bulkFilter.update}
-                    />
-                </div>
-            )}
-
             {viewType.key === 'bulks' && transactionBulks.meta.total == 0 && (
                 <EmptyCard
                     title={'Geen bulktransacties gevonden'}
@@ -1006,6 +1067,17 @@ export default function Transactions() {
                         to: getStateRouteUrl('transactions-create', { organizationId: activeOrganization.id }),
                     }}
                 />
+            )}
+
+            {transactionBulks && viewType.key == 'bulks' && transactionBulks?.meta && (
+                <div className="card-section">
+                    <Paginator
+                        meta={transactionBulks.meta}
+                        filters={bulkFilter.values}
+                        updateFilters={bulkFilter.update}
+                        perPageKey={paginatorTransactionBulkKey}
+                    />
+                </div>
             )}
         </div>
     );

@@ -98,7 +98,7 @@ export default function ModalFundRequestClarify({
                             Annuleer
                         </button>
                         <button type="submit" className="button button-primary">
-                            Bevestig
+                            Bevestigen
                         </button>
                     </div>
                 </form>

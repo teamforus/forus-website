@@ -21,6 +21,7 @@ import ModalNotification from '../../../modals/ModalNotification';
 import ThSortable from '../../../elements/tables/ThSortable';
 import useTableToggles from '../../../../hooks/useTableToggles';
 import Implementation from '../../../../props/models/Implementation';
+import usePaginatorService from '../../../../modules/paginator/services/usePaginatorService';
 
 export default function ProviderAvailableFundsTable({
     organization,
@@ -38,23 +39,25 @@ export default function ProviderAvailableFundsTable({
     const pushDanger = usePushDanger();
     const openModal = useOpenModal();
 
+    const paginatorService = usePaginatorService();
     const providerFundService = useProviderFundService();
+
+    const [tags, setTags] = useState<Array<Partial<Tag>>>(null);
+    const [funds, setFunds] = useState<PaginationData<Fund>>(null);
+    const [paginatorKey] = useState('provider_funds_available');
+    const [organizations, setOrganizations] = useState<Array<Partial<Organization>>>(null);
+    const [implementations, setImplementations] = useState<Array<Partial<Implementation>>>(null);
 
     const filter = useFilter({
         q: '',
         tag: null,
         page: 1,
-        per_page: 10,
+        per_page: paginatorService.getPerPage(paginatorKey),
         organization_id: null,
         implementation_id: null,
         order_by: 'organization_name',
         order_dir: 'asc',
     });
-
-    const [tags, setTags] = useState<Array<Partial<Tag>>>(null);
-    const [funds, setFunds] = useState<PaginationData<Fund>>(null);
-    const [organizations, setOrganizations] = useState<Array<Partial<Organization>>>(null);
-    const [implementations, setImplementations] = useState<Array<Partial<Implementation>>>(null);
 
     const { selected, setSelected, toggleAll, toggle } = useTableToggles();
     const selectedMeta = useMemo(() => {
@@ -392,17 +395,22 @@ export default function ProviderAvailableFundsTable({
                 </div>
             )}
 
-            {!loading && funds?.meta?.last_page > 1 && (
-                <div className="card-section">
-                    <Paginator meta={funds.meta} filters={filter.activeValues} updateFilters={filter.update} />
-                </div>
-            )}
-
             {!loading && funds?.meta?.total == 0 && (
                 <div className="card-section">
                     <div className="block block-empty text-center">
                         <div className="empty-title">{t(`provider_funds.empty_block.available`)}</div>
                     </div>
+                </div>
+            )}
+
+            {!loading && funds?.meta && (
+                <div className="card-section">
+                    <Paginator
+                        meta={funds.meta}
+                        filters={filter.activeValues}
+                        updateFilters={filter.update}
+                        perPageKey={paginatorKey}
+                    />
                 </div>
             )}
         </div>

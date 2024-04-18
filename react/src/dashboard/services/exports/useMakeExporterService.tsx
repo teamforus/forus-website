@@ -42,7 +42,7 @@ export default function useMakeExporterService() {
 
     const saveExportedData = useCallback(
         (data: { data_format: string; fields: string }, organization_id: number, res: ResponseSimple<ArrayBuffer>) => {
-            pushSuccess('Gelukt!', 'The downloading should start shortly.');
+            pushSuccess('Gelukt!', 'Het downloaden begint binnenkort.');
 
             const fileName = [
                 envData.client_type,

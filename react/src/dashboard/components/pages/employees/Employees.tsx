@@ -2,7 +2,7 @@ import React, { Fragment, useCallback, useContext, useEffect, useState } from 'r
 import { mainContext } from '../../../contexts/MainContext';
 import { useEmployeeService } from '../../../services/EmployeeService';
 import { NavLink } from 'react-router-dom';
-import { classList, hasPermission } from '../../../helpers/utils';
+import { hasPermission } from '../../../helpers/utils';
 import { getStateRouteUrl } from '../../../modules/state_router/Router';
 import { t } from 'i18next';
 import useFilter from '../../../hooks/useFilter';
@@ -23,6 +23,7 @@ import usePushDanger from '../../../hooks/usePushDanger';
 import useOpenModal from '../../../hooks/useOpenModal';
 import useActiveOrganization from '../../../hooks/useActiveOrganization';
 import useEnvData from '../../../hooks/useEnvData';
+import usePaginatorService from '../../../modules/paginator/services/usePaginatorService';
 
 export default function Employees() {
     const envData = useEnvData();
@@ -32,18 +33,20 @@ export default function Employees() {
     const authIdentity = useAuthIdentity();
     const activeOrganization = useActiveOrganization();
 
+    const fileService = useFileService();
+    const employeeService = useEmployeeService();
+    const paginatorService = usePaginatorService();
+
     const { setActiveOrganization } = useContext(mainContext);
 
     const [employees, setEmployees] = useState<PaginationData<Employee>>(null);
+    const [paginatorKey] = useState('employees');
     const [adminEmployees, setAdminEmployees] = useState([]);
 
     const filter = useFilter({
         q: '',
-        per_page: 15,
+        per_page: paginatorService.getPerPage(paginatorKey),
     });
-
-    const fileService = useFileService();
-    const employeeService = useEmployeeService();
 
     const fetchEmployees = useCallback(() => {
         employeeService.list(activeOrganization.id, filter.activeValues).then(
@@ -161,14 +164,14 @@ export default function Employees() {
                     }}
                     buttonSubmit={{
                         onClick: () => {
-                            employeeService.delete(activeOrganization.id, employee.id).then(
-                                () => {
+                            employeeService
+                                .delete(activeOrganization.id, employee.id)
+                                .then(() => {
                                     filter.update({});
                                     pushSuccess('Gelukt!', 'Medewerker verwijderd.');
                                     modal.close();
-                                },
-                                (res) => pushDanger(res.data.message),
-                            );
+                                })
+                                .catch((res: ResponseError) => pushDanger(res.data.message));
                         },
                         text: t('modals.danger_zone.remove_organization_employees.buttons.confirm'),
                     }}
@@ -176,6 +179,16 @@ export default function Employees() {
             ));
         },
         [openModal, employeeService, activeOrganization.id, filter, pushSuccess, pushDanger],
+    );
+
+    const canEditEmployee = useCallback(
+        (employee: Employee) => {
+            const isOwner = authIdentity.address === activeOrganization.identity_address;
+            const isOwnerEmployee = activeOrganization.identity_address === employee.identity_address;
+
+            return !isOwnerEmployee || (isOwner && activeOrganization.offices_count > 0);
+        },
+        [activeOrganization, authIdentity.address],
     );
 
     useEffect(() => fetchEmployees(), [fetchEmployees]);
@@ -247,7 +260,8 @@ export default function Employees() {
                                 <thead>
                                     <tr>
                                         <th>{t('organization_employees.labels.email')}</th>
-                                        <th>{t('organization_employees.labels.roles')}</th>
+                                        <th>{t('organization_employees.labels.branch_name_id')}</th>
+                                        <th>{t('organization_employees.labels.branch_number')}</th>
                                         <th>{t('organization_employees.labels.auth_2fa')}</th>
                                         <th className={'text-right'}>{t('organization_employees.labels.actions')}</th>
                                     </tr>
@@ -255,28 +269,42 @@ export default function Employees() {
                                 <tbody>
                                     {employees?.data.map((employee: Employee) => (
                                         <tr key={employee.id} data-dusk={`employeeRow${employee.id}`}>
-                                            <td
-                                                id={'employee_email'}
-                                                data-dusk={'employeeEmail'}
-                                                className={'text-primary-light'}>
-                                                {employee.email || strLimit(employee.identity_address, 32)}
-                                            </td>
-                                            {activeOrganization.identity_address != employee.identity_address && (
-                                                <td
-                                                    className={classList([
-                                                        'nowrap',
-                                                        employee.roles.length > 0 ? '' : 'text-muted',
-                                                    ])}>
-                                                    {rolesList(employee)}
-                                                </td>
-                                            )}
-                                            {activeOrganization.identity_address == employee.identity_address && (
-                                                <td className={classList(['nowrap'])}>
-                                                    <div className="text-primary">
+                                            <td id={'employee_email'} data-dusk={'employeeEmail'}>
+                                                <div className={'text-primary'}>
+                                                    {employee.email || strLimit(employee.identity_address, 32)}
+                                                </div>
+                                                {activeOrganization.identity_address != employee.identity_address ? (
+                                                    <div className={'text-muted'}>
+                                                        {strLimit(rolesList(employee) || 'Geen...', 32)}
+                                                    </div>
+                                                ) : (
+                                                    <div className="text-muted">
                                                         {t('organization_employees.labels.owner')}
                                                     </div>
-                                                </td>
-                                            )}
+                                                )}
+                                            </td>
+                                            <td>
+                                                {employee?.branch?.name && (
+                                                    <div className="text-primary">
+                                                        {strLimit(employee.branch?.name, 32)}
+                                                    </div>
+                                                )}
+
+                                                {employee?.branch?.id && (
+                                                    <div>
+                                                        ID <strong>{strLimit(employee.branch?.id, 32)}</strong>
+                                                    </div>
+                                                )}
+
+                                                {!employee.branch?.id && !employee.branch?.name && (
+                                                    <div className={'text-muted'}>Geen...</div>
+                                                )}
+                                            </td>
+                                            <td>
+                                                <div className={employee?.branch?.number ? '' : 'text-muted'}>
+                                                    {strLimit(employee.branch?.number?.toString(), 32) || 'Geen...'}
+                                                </div>
+                                            </td>
                                             <td>
                                                 {employee.is_2fa_configured && (
                                                     <div className="td-state-2fa">
@@ -298,30 +326,32 @@ export default function Employees() {
                                             </td>
 
                                             <td className={'text-right'}>
-                                                {activeOrganization.identity_address != employee.identity_address && (
-                                                    <Fragment>
+                                                <Fragment>
+                                                    {canEditEmployee(employee) && (
                                                         <a
                                                             className="text-primary-light"
                                                             data-dusk={'btnEmployeeEdit'}
                                                             onClick={() => editEmployee(employee)}>
                                                             {t('organization_employees.buttons.adjust')}
                                                         </a>
-                                                        {authIdentity.address !== employee.identity_address && (
-                                                            <Fragment>
-                                                                &nbsp;&nbsp;
-                                                                <a
-                                                                    className="text-danger"
-                                                                    data-dusk={'btnEmployeeDelete'}
-                                                                    onClick={() => deleteEmployee(employee)}>
-                                                                    {t('organization_employees.buttons.delete')}
-                                                                </a>
-                                                            </Fragment>
-                                                        )}
-                                                    </Fragment>
-                                                )}
+                                                    )}
+
+                                                    {authIdentity.address !== employee.identity_address && (
+                                                        <Fragment>
+                                                            &nbsp;&nbsp;
+                                                            <a
+                                                                className="text-danger"
+                                                                data-dusk={'btnEmployeeDelete'}
+                                                                onClick={() => deleteEmployee(employee)}>
+                                                                {t('organization_employees.buttons.delete')}
+                                                            </a>
+                                                        </Fragment>
+                                                    )}
+                                                </Fragment>
 
                                                 {activeOrganization.identity_address == employee.identity_address && (
                                                     <Fragment>
+                                                        &nbsp;&nbsp;
                                                         {adminEmployees.length > 0 &&
                                                         authIdentity.address === activeOrganization.identity_address ? (
                                                             <a
@@ -346,19 +376,22 @@ export default function Employees() {
                 </div>
             )}
 
-            {employees?.meta.total > 0 && (
-                <div className="card-section" hidden={employees?.meta.last_page <= 1}>
-                    {employees?.meta && (
-                        <Paginator meta={employees.meta} filters={filter.values} updateFilters={filter.update} />
-                    )}
-                </div>
-            )}
-
             {employees?.meta.total == 0 && (
                 <div className="card-section">
                     <div className="block block-empty text-center">
                         <div className="empty-title">Geen medewerkers gevonden</div>
                     </div>
+                </div>
+            )}
+
+            {employees?.meta && (
+                <div className="card-section">
+                    <Paginator
+                        meta={employees.meta}
+                        filters={filter.values}
+                        updateFilters={filter.update}
+                        perPageKey={paginatorKey}
+                    />
                 </div>
             )}
         </div>

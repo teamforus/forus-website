@@ -37,6 +37,7 @@ import useConfirmReservationRejection from '../../../services/helpers/reservatio
 import useShowReservationRejectInfoExtraPaid from '../../../services/helpers/reservations/useShowRejectInfoExtraPaid';
 import useConfirmReservationArchive from '../../../services/helpers/reservations/useConfirmReservationArchive';
 import useConfirmReservationUnarchive from '../../../services/helpers/reservations/useConfirmReservationUnarchive';
+import usePaginatorService from '../../../modules/paginator/services/usePaginatorService';
 
 export default function Reservations() {
     const { t } = useTranslation();
@@ -50,6 +51,7 @@ export default function Reservations() {
     const setProgress = useSetProgress();
 
     const productService = useProductService();
+    const paginatorService = usePaginatorService();
     const providerFundService = useProviderFundService();
     const organizationService = useOrganizationService();
     const productReservationService = useProductReservationService();
@@ -57,6 +59,7 @@ export default function Reservations() {
 
     const [funds, setFunds] = useState<Array<Partial<Fund>>>(null);
     const [products, setProducts] = useState<Array<Partial<Product>>>(null);
+    const [paginatorKey] = useState('reservations');
 
     const confirmReservationArchive = useConfirmReservationArchive();
     const confirmReservationApproval = useConfirmReservationApproval();
@@ -110,6 +113,7 @@ export default function Reservations() {
         to: null,
         fund_id: null,
         product_id: null,
+        per_page: paginatorService.getPerPage(paginatorKey),
     });
 
     const fetchReservations = useCallback(
@@ -662,9 +666,15 @@ export default function Reservations() {
                     </div>
                 </div>
             )}
-            {reservations?.meta?.last_page > 1 && (
+
+            {reservations?.meta && (
                 <div className="card-section">
-                    <Paginator meta={reservations.meta} filters={filter.values} updateFilters={filter.update} />
+                    <Paginator
+                        meta={reservations.meta}
+                        filters={filter.values}
+                        updateFilters={filter.update}
+                        perPageKey={paginatorKey}
+                    />
                 </div>
             )}
         </div>
