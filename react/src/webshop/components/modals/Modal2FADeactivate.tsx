@@ -238,7 +238,7 @@ export default function Modal2FADeactivate({
                     <div className="modal-footer">
                         <div className="button-group flex-grow flex-center">
                             <div className="button button-primary button-sm flex-center" onClick={done}>
-                                Bevestig
+                                Bevestigen
                             </div>
                         </div>
                     </div>

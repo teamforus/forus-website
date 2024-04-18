@@ -43,7 +43,7 @@ export default function ModalIdentityProxyExpired({ modal }: { modal: ModalState
                 </div>
                 <div className="modal-footer">
                     <button className="button button-sm button-primary" onClick={openLoginModal}>
-                        Bevestig
+                        Bevestigen
                     </button>
                 </div>
             </div>

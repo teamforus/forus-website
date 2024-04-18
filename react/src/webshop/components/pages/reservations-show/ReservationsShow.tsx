@@ -224,7 +224,7 @@ export default function ReservationsShow() {
                                 onClick={() => setShowReservationExtraAmount(!showReservationExtraAmount)}>
                                 <div className="card-header-wrapper">
                                     <em className="mdi mdi-menu-down card-header-arrow" />
-                                    <h2 className="card-heading card-heading-lg">Extra payment details</h2>
+                                    <h2 className="card-heading card-heading-lg">Bijbetalingsgegevens</h2>
                                 </div>
                             </div>
                             {showReservationExtraAmount && (
@@ -291,7 +291,7 @@ export default function ReservationsShow() {
                                 onClick={() => setShowReservationRefunds(!showReservationRefunds)}>
                                 <div className="card-header-wrapper">
                                     <em className="mdi mdi-menu-down card-header-arrow" />
-                                    <h2 className="card-heading card-heading-lg">Extra payment details</h2>
+                                    <h2 className="card-heading card-heading-lg">Details van terugbetaling</h2>
                                 </div>
                             </div>
                             {showReservationRefunds && (

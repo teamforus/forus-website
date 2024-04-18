@@ -84,7 +84,7 @@ export default function Home() {
             <main id="main-content">
                 <header
                     className={`section section-header section-header-landing section-header-${appConfigs.settings.banner_text_color}`}
-                    style={appConfigs.banner ? { backgroundImage: `url(${appConfigs.banner?.sizes?.large})` } : {}}>
+                    style={appConfigs.banner ? { backgroundImage: `url(${appConfigs?.banner?.sizes?.large})` } : {}}>
                     {appConfigs.settings.overlay_enabled && (
                         <div
                             className={`header-overlay ${
@@ -293,9 +293,9 @@ export default function Home() {
                 {appConfigs.pre_check_enabled && appConfigs.pre_check_banner_state == 'public' && (
                     <div className="wrapper">
                         <div className="block block-pre-check-banner">
-                            {appConfigs.pre_check_banner?.sizes.large && (
+                            {appConfigs.pre_check_banner?.sizes?.large && (
                                 <div className="pre-check-banner-media">
-                                    <img src={appConfigs.pre_check_banner?.sizes.large} alt="" />
+                                    <img src={appConfigs.pre_check_banner?.sizes?.large} alt="" />
                                 </div>
                             )}
                             <div className="pre-check-banner-content">

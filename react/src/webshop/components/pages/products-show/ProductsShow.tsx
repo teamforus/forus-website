@@ -77,10 +77,14 @@ export default function ProductsShow() {
     }, [product?.organization_id, providerService]);
 
     const fetchVouchers = useCallback(() => {
+        if (!authIdentity) {
+            return setVouchers([]);
+        }
+
         voucherService
             .list({ product_id: parseInt(id), type: 'regular', state: 'active' })
             .then((res) => setVouchers(res.data.data));
-    }, [voucherService, id]);
+    }, [authIdentity, voucherService, id]);
 
     useEffect(() => {
         fetchProduct();

@@ -567,7 +567,7 @@ export default function ModalProductReserve({
                                         className="button button-primary button-sm"
                                         data-dusk="btnSelectVoucher"
                                         onClick={() => selectVoucher(vouchersList[0])}>
-                                        Bevestig
+                                        Bevestigen
                                     </button>
                                 </div>
                             </div>

@@ -65,9 +65,9 @@ export default function FundCriteriaCustomOverview({ fundKey }: { fundKey: strin
                     <h2>Wat hoort niet bij het inkomen?</h2>Zorgtoeslag, kinderopvangtoeslag, huurtoeslag, en
                     doeluitkeringen of vergoedingen (bijvoorbeeld schadevergoedingen). <br />
                     <br />
-                    Wilt u weten op welke toeslagen of heffingskortingen u recht heeft? Kijk dan op de Kijk dan op de
-                    website van de Belastingdienst: <a href="http://www.belastingdienst.nl/">www.belastingdienst.nl</a>.
-                    Heeft u hulp hierbij nodig. De{' '}
+                    Wilt u weten op welke toeslagen of heffingskortingen u recht heeft? Kijk dan op de website van de
+                    Belastingdienst: <a href="http://www.belastingdienst.nl/">www.belastingdienst.nl</a>. Heeft u hulp
+                    hierbij nodig. De{' '}
                     <a href="https://www.nijmegen.nl/diensten/zorg-hulp-en-advies/sociaal-raadslieden-voor-juridische-hulp/">
                         sociaal raadslieden
                     </a>{' '}
@@ -132,9 +132,9 @@ export default function FundCriteriaCustomOverview({ fundKey }: { fundKey: strin
                     <h2>Wat hoort niet bij het inkomen?</h2>Zorgtoeslag, kinderopvangtoeslag, huurtoeslag, en
                     doeluitkeringen of vergoedingen (bijvoorbeeld schadevergoedingen). <br />
                     <br />
-                    Wilt u weten op welke toeslagen of heffingskortingen u recht heeft? Kijk dan op de Kijk dan op de
-                    website van de Belastingdienst: <a href="http://www.belastingdienst.nl/">www.belastingdienst.nl</a>.
-                    Heeft u hulp hierbij nodig. De{' '}
+                    Wilt u weten op welke toeslagen of heffingskortingen u recht heeft? Kijk dan op de website van de
+                    Belastingdienst: <a href="http://www.belastingdienst.nl/">www.belastingdienst.nl</a>. Heeft u hulp
+                    hierbij nodig. De{' '}
                     <a href="https://www.nijmegen.nl/diensten/zorg-hulp-en-advies/sociaal-raadslieden-voor-juridische-hulp/">
                         sociaal raadslieden
                     </a>{' '}

@@ -147,7 +147,7 @@ export default function ModalDeactivateVoucher({
                             Terug
                         </button>
                         <button className="button button-sm button-primary" type="button" onClick={() => form.submit()}>
-                            Bevestig
+                            Bevestigen
                         </button>
                     </div>
                 </form>

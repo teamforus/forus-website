@@ -1,4 +1,4 @@
-import React, { Fragment, useCallback, useMemo, useState } from 'react';
+import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
 import useAssetUrl from '../../../../../hooks/useAssetUrl';
 import { PreCheckCriteria, PreCheckTotalsFund } from '../../../../../services/types/PreCheckTotals';
 import { useNavigateState } from '../../../../../modules/state_router/Router';
@@ -63,11 +63,11 @@ export default function FundsListItemPreCheck({ fund }: { fund?: PreCheckTotalsF
                 <div className="fund-photo">
                     <img
                         src={
-                            /*media?.sizes?.thumbnail ||*/
-                            /*media?.sizes?.small ||*/
+                            fund?.logo?.sizes?.thumbnail ||
+                            fund?.logo?.sizes?.small ||
                             assetUrl('/assets/img/placeholders/fund-thumbnail.png')
                         }
-                        alt="Dit is de afbeelding van {{ fund.name }}"
+                        alt={`Dit is de afbeelding van ${fund?.name}`}
                     />
                 </div>
                 <div className="fund-details">
@@ -166,7 +166,7 @@ export default function FundsListItemPreCheck({ fund }: { fund?: PreCheckTotalsF
                                 type="button"
                                 disabled={!fund.allow_direct_requests}
                                 onClick={(e) => applyFund(e)}>
-                                {fund.allow_direct_requests ? 'Direct aanvragen' : 'Niet beschikbaar'}
+                                {fund.allow_direct_requests ? 'Activeren' : 'Niet beschikbaar'}
                                 <em className="mdi mdi-arrow-right icon-right" aria-hidden="true" />
                             </button>
                         </div>

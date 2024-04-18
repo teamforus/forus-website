@@ -15,6 +15,6 @@ module.exports = {
         type: 'Eigenschap type',
         text: 'Tekst',
         back: 'Terug',
-        confirm: 'Bevestig',
+        confirm: 'Bevestigen',
     },
 };
