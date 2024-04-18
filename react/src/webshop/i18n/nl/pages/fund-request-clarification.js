@@ -8,7 +8,7 @@ module.exports = {
     },
     placeholder: 'Uw bericht...',
     buttons: {
-        submit: 'Bevestig',
+        submit: 'Bevestigen',
         back: 'Terug',
     },
     not_pending: {

@@ -16,7 +16,7 @@ import useOpenModal from '../../../../../dashboard/hooks/useOpenModal';
 import ModalProductReserve from '../../../modals/modal-product-reserve/ModalProductReserve';
 import Tooltip from '../../../elements/tooltip/Tooltip';
 
-export default function ProductFundsCard({ product, vouchers }: { product: Product; vouchers: Array<Voucher> }) {
+export default function ProductFundsCard({ product, vouchers = [] }: { product: Product; vouchers: Array<Voucher> }) {
     const envData = useEnvData();
     const appConfigs = useAppConfigs();
 
@@ -56,7 +56,7 @@ export default function ProductFundsCard({ product, vouchers }: { product: Produ
     }, [product, funds, productService, vouchers, fundService, appConfigs]);
 
     const listFunds = useMemo(() => {
-        return productMeta?.funds.filter((fund) => !onlyAvailableFunds && fund.meta.isReservationAvailable);
+        return productMeta?.funds.filter((fund) => !onlyAvailableFunds || fund.meta.isReservationAvailable);
     }, [onlyAvailableFunds, productMeta?.funds]);
 
     const requestFund = useCallback(
@@ -245,7 +245,7 @@ export default function ProductFundsCard({ product, vouchers }: { product: Produ
                                         <div className="fund-item-section">
                                             <StateNavLink
                                                 name={'fund-activate'}
-                                                params={{ fund_id: fund.id }}
+                                                params={{ id: fund.id }}
                                                 className="button button-primary">
                                                 {fund.request_btn_text}
                                                 <em className="mdi mdi-arrow-right icon-right" aria-hidden="true" />
@@ -256,7 +256,7 @@ export default function ProductFundsCard({ product, vouchers }: { product: Produ
                                         <div className="fund-item-section">
                                             <StateNavLink
                                                 name={'fund-requests'}
-                                                params={{ fund_id: fund.id }}
+                                                params={{ id: fund.id }}
                                                 className="button button-primary-outline">
                                                 {translate('funds.buttons.is_pending')}
                                             </StateNavLink>

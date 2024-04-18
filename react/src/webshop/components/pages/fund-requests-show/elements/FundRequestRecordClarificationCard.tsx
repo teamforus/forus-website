@@ -143,7 +143,6 @@ export default function FundRequestRecordClarificationCard({
                                 compact={true}
                                 cropMedia={false}
                                 multiple={true}
-                                multipleSize={3}
                                 onFilesChange={({ files, fileItems }) => {
                                     updateForm({ files: files.map((file) => file?.uid) });
                                     setUploading(fileItems.filter((item) => item.uploading).length > 0);

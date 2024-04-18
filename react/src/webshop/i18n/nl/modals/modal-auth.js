@@ -33,7 +33,7 @@ module.exports = {
     buttons: {
         qrcode: 'Log in via de Me-app',
         mail: 'Log in via e-mail',
-        submit: 'Bevestig',
+        submit: 'Bevestigen',
         cancel: 'Annuleren',
         confirm: 'Volgende',
     },

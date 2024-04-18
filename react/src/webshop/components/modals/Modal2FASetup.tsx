@@ -404,7 +404,7 @@ export default function Modal2FASetup({
                             </button>
                             <div className="flex flex-grow hide-sm">&nbsp;</div>
                             <button className="button button-primary button-sm flex-center" type="submit">
-                                Bevestig
+                                Bevestigen
                             </button>
                         </div>
                     </div>
@@ -456,7 +456,7 @@ export default function Modal2FASetup({
                             </button>
                             <div className="flex flex-grow hide-sm">&nbsp;</div>
                             <button className="button button-primary button-sm flex-center" type="submit">
-                                Bevestig
+                                Bevestigen
                             </button>
                         </div>
                     </div>
@@ -651,7 +651,7 @@ export default function Modal2FASetup({
                     <div className="modal-footer">
                         <div className="button-group">
                             <button className="button button-primary button-sm" onClick={done}>
-                                Bevestig
+                                Bevestigen
                             </button>
                         </div>
                     </div>
@@ -680,7 +680,7 @@ export default function Modal2FASetup({
                     <div className="modal-footer">
                         <div className="button-group">
                             <button className="button button-primary button-sm flex-center" onClick={done}>
-                                Bevestig
+                                Bevestigen
                             </button>
                         </div>
                     </div>

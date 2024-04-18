@@ -1,4 +1,5 @@
 import Fund from '../../props/models/Fund';
+import Media from '../../../dashboard/props/models/Media';
 
 export type PreCheckCriteria = {
     id: number;
@@ -18,6 +19,7 @@ export type PreCheckTotalsFund = {
     external_link_text?: string;
     external_link_url?: string;
     is_external: boolean;
+    logo?: Media;
     parent?: Fund;
     children?: Array<Fund>;
     criteria?: Array<PreCheckCriteria>;

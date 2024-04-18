@@ -51,11 +51,11 @@ export default function FundRequestStepOverview({
                                     {criteria.operator != '=' && <span>is </span>}
                                 </span>
                                 <strong>
-                                    {!['select', 'bool'].includes(criteria.record_type.type) && (
+                                    {!['select', 'select_number', 'bool'].includes(criteria.record_type.type) && (
                                         <span>{criteria.input_value || 'Geen'}</span>
                                     )}
 
-                                    {['select'].includes(criteria.record_type.type) && (
+                                    {['select', 'select_number'].includes(criteria.record_type.type) && (
                                         <span>
                                             {criteria?.record_type_options?.[criteria?.input_value].name ||
                                                 'Niet geselecteerd'}{' '}

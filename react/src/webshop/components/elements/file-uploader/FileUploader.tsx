@@ -40,7 +40,7 @@ export default function FileUploader({
     files = null,
     compact = false,
     multiple = false,
-    multipleSize = null,
+    multipleSize = 15,
     cropMedia = true,
     readOnly = false,
     acceptedFiles = ['.xlsx', '.xls', '.docx', '.doc', '.pdf', '.png', '.jpg', '.jpeg'],

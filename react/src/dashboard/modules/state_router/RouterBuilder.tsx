@@ -18,7 +18,7 @@ export default class RouterBuilder {
 
         altPaths.forEach((path) => {
             this.states.push({
-                state: { name, layout: LayoutType.dashboard, protected: true, ...{ state, path } },
+                state: { name, layout: LayoutType.dashboard, protected: true, ...{ ...state, path } },
                 element: element,
             });
         });

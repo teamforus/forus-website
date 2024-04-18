@@ -5,6 +5,6 @@ module.exports = {
     },
     buttons: {
         adjust: 'Terug',
-        submit: 'Bevestig',
+        submit: 'Bevestigen',
     },
 };

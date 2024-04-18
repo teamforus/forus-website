@@ -292,19 +292,6 @@ export default function FundsPreCheck() {
                 </div>
 
                 {totals && (
-                    <div className="pre-check-amounts">
-                        <div className="pre-check-amount">
-                            <div className="pre-check-amount-title">Totaal bedrag</div>
-                            <div className="pre-check-amount-value">{totals?.amount_total_valid_locale}</div>
-                        </div>
-                        <div className="pre-check-amount">
-                            <div className="pre-check-amount-title">Totaal regelingen</div>
-                            <div className="pre-check-amount-value">{totals?.funds_valid?.length}</div>
-                        </div>
-                    </div>
-                )}
-
-                {totals && (
                     <div className="pre-check-actions">
                         <button
                             className="button button-download button-fill button-sm"
@@ -510,7 +497,7 @@ export default function FundsPreCheck() {
                                                             options={
                                                                 recordTypesByKey[preCheckRecord.record_type_key].options
                                                             }
-                                                            placeholder={`Uw ${preCheckRecord?.record_type?.name}`}
+                                                            placeholder={`Maak een keuze`}
                                                         />
                                                     )}
 
@@ -601,7 +588,7 @@ export default function FundsPreCheck() {
                                                             }}
                                                             name={preCheckRecord.record_type_key}
                                                             id={`pre_check_record_${preCheckRecord.record_type_key}`}
-                                                            placeholder={`Uw ${preCheckRecord.record_type.name}`}
+                                                            placeholder={preCheckRecord?.record_type?.name}
                                                         />
                                                     )}
 

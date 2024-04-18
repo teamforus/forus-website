@@ -70,11 +70,11 @@ module.exports = {
         },
         close: 'Sluiten',
         link_card: {
-            submit_code: 'Bevestig',
+            submit_code: 'Bevestigen',
         },
         request_new_card: {
             order_by_email: 'Per post bestellen',
-            confirm: 'Bevestig',
+            confirm: 'Bevestigen',
         },
     },
 };
