@@ -25,9 +25,9 @@ export default function UIControlCheckbox({
     const inputRef = useRef<HTMLInputElement>(null);
     const [innerId] = useState(id || uniqueId('ui_control_checkbox_'));
 
-    const toggleCheckbox = useCallback((e) => {
-        if (e?.key == 'Enter') {
-            e.target.checked = !e.target.checked;
+    const toggleCheckbox = useCallback((e: React.KeyboardEvent) => {
+        if (['Enter', 'Space'].includes(e?.key)) {
+            inputRef.current.click();
         }
     }, []);
 
@@ -55,7 +55,7 @@ export default function UIControlCheckbox({
                 role="checkbox"
                 tabIndex={0}
                 aria-checked={inputRef?.current?.checked}
-                onClick={toggleCheckbox}>
+                onKeyDown={toggleCheckbox}>
                 <div className="ui-checkbox-box">
                     <div className="mdi mdi-check" />
                 </div>

@@ -10,8 +10,8 @@ export default function DatePickerControl({
     placeholder,
     minYear = 1900,
     dateFormat = 'yyyy-MM-dd',
-    dateMin = null,
-    dateMax = null,
+    dateMin,
+    dateMax,
     dateInitial = null,
 }: {
     value: Date | null;
@@ -128,13 +128,14 @@ export default function DatePickerControl({
                     </div>
                 </div>
             )}
+            onKeyDown={(e) => e?.stopPropagation()}
             selected={value}
             onChange={onChange}
             className={'form-control'}
             dateFormat={dateFormat}
-            placeholderText={placeholder}
-            minDate={dateMin}
-            maxDate={dateMax}
+            placeholderText={placeholder || dateFormat}
+            minDate={dateMin || undefined}
+            maxDate={dateMax || undefined}
             startDate={dateInitial}
         />
     );

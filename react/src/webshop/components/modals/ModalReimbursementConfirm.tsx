@@ -1,0 +1,58 @@
+import React, { useCallback } from 'react';
+import { ModalState } from '../../../dashboard/modules/modals/context/ModalContext';
+import Reimbursement from '../../props/models/Reimbursement';
+import ReimbursementDetailsCard from '../pages/reimbursements/elements/ReimbursementDetailsCard';
+
+export default function ModalReimbursementConfirm({
+    modal,
+    onConfirm,
+    reimbursement,
+}: {
+    modal: ModalState;
+    onConfirm: () => void;
+    reimbursement: Partial<Reimbursement>;
+}) {
+    const confirm = useCallback(() => {
+        modal.close();
+        onConfirm?.();
+    }, [modal, onConfirm]);
+
+    return (
+        <div
+            className={`modal modal-reimbursement-confirm modal-animated ${modal.loading ? '' : 'modal-loaded'}`}
+            data-dusk="modalReimbursementConfirmation"
+            aria-describedby="pinCodeDialogSubtitle"
+            aria-labelledby="pinCodeDialogTitle"
+            role="dialog">
+            <div className="modal-backdrop" onClick={modal.close} aria-label="Sluiten" />
+            <div className="modal-window">
+                <div className="modal-close">
+                    <div className="mdi mdi-close" onClick={modal.close} aria-label="Sluiten" role="button" />
+                </div>
+                <div className="modal-header">
+                    <h2 className="modal-header-title">Declaratie indienen</h2>
+                </div>
+                <div className="modal-body">
+                    <div className="modal-section">
+                        <div className="modal-warning">Controleer de gegevens voordat u de declaratie verstuurd.</div>
+                        <ReimbursementDetailsCard reimbursement={reimbursement} compact={true} />
+                    </div>
+                </div>
+                <div className="modal-footer">
+                    <div
+                        className="button button-primary-outline button-sm"
+                        onClick={modal.close}
+                        data-dusk="modalReimbursementConfirmationCancel">
+                        Cancel
+                    </div>
+                    <div
+                        className="button button-primary button-sm"
+                        onClick={confirm}
+                        data-dusk="modalReimbursementConfirmationSubmit">
+                        Bevestigen
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+}

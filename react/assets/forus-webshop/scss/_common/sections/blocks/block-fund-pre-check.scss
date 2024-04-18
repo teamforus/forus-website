@@ -98,7 +98,11 @@
                     padding-bottom: 0;
 
                     .pre-check-progress-step-icon {
-                        background: url("../img/icon-pre-check-totals-inactive.svg") center no-repeat;
+                        @if ($buildReact) {
+                            background: url("./assets/img/icon-pre-check-totals-inactive.svg") center no-repeat;
+                        } @else {
+                            background: url("../img/icon-pre-check-totals-inactive.svg") center no-repeat;
+                        }
                     }
 
                     &:before {
@@ -107,7 +111,11 @@
 
                     &.active {
                         .pre-check-progress-step-icon {
-                            background: url("../img/icon-pre-check-totals-active.svg") center no-repeat;
+                            @if ($buildReact) {
+                                background: url("./assets/img/icon-pre-check-totals-active.svg") center no-repeat;
+                            } @else {
+                                background: url("../img/icon-pre-check-totals-active.svg") center no-repeat;
+                            }
                             color: #fff;
                             background-color: var(--color-primary);
                         }
@@ -143,6 +151,22 @@
 
             &:last-child {
                 margin-bottom: 0;
+            }
+        }
+
+        .pre-check-actions {
+            .button {
+                margin-bottom: 10px;
+
+                &.button-download {
+                    color: #fff;
+                    background: var(--color-primary);
+                    border: 1px solid var(--color-primary);
+                }
+
+                &:last-child {
+                    margin-bottom: 0;
+                }
             }
         }
     }
@@ -378,7 +402,7 @@
 
                     .pre-check-amount-title,
                     .pre-check-amount-value {
-                        font: 500 12px/20px var(--base-font)
+                        font: 500 12px/20px var(--base-font);
                     }
                 }
 
@@ -430,6 +454,50 @@
                     .button {
                         width: 100%;
                     }
+                }
+            }
+        }
+
+        .block-progress-pie {
+            .progress-pie-info {
+                gap: 8px;
+                display: flex;
+                flex-direction: column;
+                min-width: 0;
+
+                .progress-pie-info-details {
+                    flex-direction: column;
+                    // display: none;
+                    display: flex;
+                    gap: 2px;
+                    min-width: 0;
+
+                    .progress-pie-info-details-key,
+                    .progress-pie-info-details-value {
+                        word-wrap: break-word;
+                    }
+
+                    .progress-pie-info-details-key {
+                        font: 400 11px/14px var(--base-font);
+                    }
+
+                    .progress-pie-info-details-value {
+                        font: 600 11px/16px var(--base-font);
+                    }
+                }
+            }
+
+            .progress-pie-show-details {
+                display: block;
+                padding-top: 5px;
+                padding-left: 75px;
+                width: 100%;
+
+                .button {
+                    position: initial;
+                    transform: none;
+                    display: flex;
+                    white-space: nowrap;
                 }
             }
         }

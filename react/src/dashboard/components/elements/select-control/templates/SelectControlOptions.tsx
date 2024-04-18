@@ -5,6 +5,7 @@ import { SelectControlOptionsProp } from '../SelectControl';
 import SelectControlOptionItem from './elements/SelectControlOptionItem';
 
 export default function SelectControlOptions<T>({
+    id,
     query,
     setQuery,
     optionsFiltered,
@@ -26,6 +27,7 @@ export default function SelectControlOptions<T>({
 
     return (
         <div
+            id={id}
             className={'select-control ' + (className ? className : '')}
             role="button"
             aria-haspopup="listbox"

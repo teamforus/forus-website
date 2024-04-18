@@ -53,7 +53,7 @@ const IdentityMenuItem = ({ url, href, name, icon, dusk, active, onClick }: Iden
     }
 
     return (
-        <a href={href} className={`auth-user-menu-item ${active ? 'active' : ''}`} onClick={onClick}>
+        <a href={href} data-dusk={dusk} className={`auth-user-menu-item ${active ? 'active' : ''}`} onClick={onClick}>
             <div className="auth-user-menu-item-icon">{icon}</div>
             {name}
         </a>

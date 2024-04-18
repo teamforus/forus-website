@@ -1,7 +1,8 @@
 .card {
-    background: #ffffff;
-    border-radius: var(--border-radius);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    background: var(--showcase-item-background);
+    border-radius: var(--showcase-item-border-radius);
+    box-shadow: var(--showcase-item-shadow);
+    border: var(--showcase-item-border);
     margin-bottom: 20px;
     font: 400 14px var(--base-font);
 

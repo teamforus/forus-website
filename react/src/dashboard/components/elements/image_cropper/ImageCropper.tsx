@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import ReactCrop, { centerCrop, Crop, makeAspectCrop, PixelCrop } from 'react-image-crop';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import ReactCrop, { centerCrop, Crop, makeAspectCrop, PercentCrop, PixelCrop } from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
 import { createObjectURL, resizeCanvas } from './helpers/image';
 import { canvasPreview } from './helpers/canvasPreview';
@@ -21,8 +21,9 @@ export default function ImageCropper({
     presets = null,
     onChange = null,
     autoSelect = true,
-    minWidth = 1,
-    minHeight = 1,
+    minWidth = 40,
+    minHeight = 40,
+    initialWidth = 90,
 }: {
     file: File;
     aspect?: number;
@@ -31,79 +32,95 @@ export default function ImageCropper({
     autoSelect?: boolean;
     minWidth?: number;
     minHeight?: number;
+    initialWidth?: number;
 }) {
-    const imgRef = useRef<HTMLImageElement>(null);
+    const imgSrc = useMemo(() => window.URL.createObjectURL(file ? file : null), [file]);
+    const [img, setImg] = useState<HTMLImageElement>(null);
     const [crop, setCrop] = useState<Crop>();
-    const [imgSrc, setImgSrc] = useState<string>(null);
     const [previewsList, setPreviewsList] = useState([]);
 
-    const centerAspectCrop = useCallback((mediaWidth: number, mediaHeight: number, aspect: number) => {
-        return centerCrop(
-            makeAspectCrop({ unit: '%', width: 90 }, aspect, mediaWidth, mediaHeight),
-            mediaWidth,
-            mediaHeight,
-        );
-    }, []);
+    const centerAspectCrop = useCallback(
+        (mediaWidth: number, mediaHeight: number, aspect: number) => {
+            return centerCrop(
+                makeAspectCrop({ unit: '%', width: initialWidth }, aspect, mediaWidth, mediaHeight),
+                mediaWidth,
+                mediaHeight,
+            );
+        },
+        [initialWidth],
+    );
 
-    const makePreview = useCallback(function (pixelCrop: PixelCrop, item: ImageCropperPreviewConfig) {
-        return new Promise((resolve) => {
-            resizeCanvas(
-                canvasPreview(imgRef.current, document.createElement('canvas'), pixelCrop),
-                item.width,
-                item.height,
-                'cover',
-            ).toBlob((blob) => resolve({ ...item, blob, data: blob ? createObjectURL(blob) : null }));
-        });
-    }, []);
+    const makePreview = useCallback(
+        function (percentCrop: PercentCrop, item: ImageCropperPreviewConfig) {
+            const selectionRatio = percentCrop.width / percentCrop.height;
+
+            const pixelCrop = {
+                width: img.width * (percentCrop.width / 100),
+                height: img.height * (percentCrop.height / 100),
+                x: img.x * (percentCrop.width / 100),
+                y: img.x * (percentCrop.height / 100),
+                unit: 'px',
+            };
+
+            return new Promise((resolve) => {
+                resizeCanvas(
+                    canvasPreview(img, document.createElement('canvas'), pixelCrop as PixelCrop),
+                    item.width ? item.width : item.height ? item.height * selectionRatio : pixelCrop.width,
+                    item.height ? item.height : item.width ? item.width * selectionRatio : pixelCrop.height,
+                    'cover',
+                ).toBlob((blob) => resolve({ ...item, blob, data: blob ? createObjectURL(blob) : null }));
+            });
+        },
+        [img],
+    );
 
     const onComplete = useCallback(
-        (pixelCrop: PixelCrop) => {
-            Promise.all(presets.map((preview) => makePreview(pixelCrop, preview))).then(setPreviewsList);
+        (percentCrop: PercentCrop) => {
+            Promise.all(presets.map((preview) => makePreview(percentCrop, preview))).then(setPreviewsList);
         },
         [makePreview, presets],
     );
 
     const onImageLoad = useCallback(
-        (e: React.SyntheticEvent<HTMLImageElement>) => {
+        (img: HTMLImageElement) => {
             if (autoSelect) {
-                const { width, height } = e.currentTarget;
-                setCrop(centerAspectCrop(width, height, aspect || width / height));
+                setCrop(centerAspectCrop(img.width, img.height, aspect || img.width / img.height));
             }
         },
         [aspect, autoSelect, centerAspectCrop],
     );
 
     useEffect(() => {
-        if (!file) {
-            return setImgSrc(null);
-        }
-
-        const reader = new FileReader();
-        reader.addEventListener('load', () => setImgSrc(reader.result?.toString() || ''));
-        reader.readAsDataURL(file);
-    }, [file]);
+        onChange(previewsList);
+    }, [onChange, previewsList, crop]);
 
     useEffect(() => {
-        onChange(previewsList);
-    }, [onChange, previewsList]);
+        const image = new Image();
+        image.onload = () => setImg(image);
+        image.src = imgSrc;
+    }, [imgSrc]);
+
+    useEffect(() => {
+        if (img) {
+            onImageLoad(img);
+        }
+    }, [onImageLoad, img]);
 
     return (
-        imgSrc && (
+        file && (
             <ReactCrop
                 crop={crop}
                 aspect={aspect}
                 keepSelection={true}
                 minWidth={minWidth}
                 minHeight={minHeight}
-                onChange={(_, percentCrop) => setCrop(percentCrop)}
-                onComplete={onComplete}>
-                <img
-                    ref={imgRef}
-                    src={imgSrc}
-                    alt={''}
-                    style={{ maxWidth: '400px', display: 'block' }}
-                    onLoad={onImageLoad}
-                />
+                onChange={(_, percentageCrop) => {
+                    setCrop(percentageCrop);
+                }}
+                onComplete={(_, percentageCrop) => {
+                    onComplete(percentageCrop);
+                }}>
+                <img src={imgSrc} alt={''} style={{ display: 'block' }} />
             </ReactCrop>
         )
     );

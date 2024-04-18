@@ -39,7 +39,7 @@ const MainProvider = ({ children }: { children: React.ReactElement }) => {
     }, []);
 
     const fetchOrganizations = useCallback(async () => {
-        if (authIdentity) {
+        if (envData && authIdentity) {
             return organizationService
                 .list({
                     dependency: 'permissions,logo',
@@ -55,7 +55,7 @@ const MainProvider = ({ children }: { children: React.ReactElement }) => {
 
         setOrganizations(null);
         return null;
-    }, [authIdentity, organizationService]);
+    }, [authIdentity, envData?.client_type, organizationService]);
 
     useEffect(() => {
         if (!envData?.type) {

@@ -1,46 +1,4 @@
 &.block-products {
-    .product-item {
-        .product-item-inner {
-            .product-details {
-                .product-name {
-                    color: #2E82A4;
-                    font: 500 22px/32px var(--base-font);
-                }
-
-                .product-organization {
-                    color: #2D3748;
-                    font: 400 16px/24px var(--base-font);
-                    margin-bottom: 12px;
-                }
-
-                .product-price {
-                    color: #0B0E12;
-                    font: 500 22px/27px var(--base-font);
-                }
-            }
-        }
-    }
-
-    @media screen and (max-width: 1000px) {
-        .product-item {
-            .product-item-inner {
-                .product-details {
-                    .product-name {
-                        color: #0B0E12;
-                        font: 500 16px/22px var(--base-font);
-                    }
-    
-                    .product-organization {
-                        color: #2D3748;
-                        font: 500 14px/18px var(--base-font);
-                    }
-    
-                    .product-price {
-                        color: #08749B;
-                        font: 600 16px/21px var(--base-font);
-                    }
-                }
-            }
-        }
-    }
+    --products-title-color: #2E82A4;
+    --products-text-color: #2D3748;
 }

@@ -21,6 +21,21 @@ fronts['webshop.general'] = {
     client_type: 'webshop',
     name: 'General webshop',
     useHashRouter: use_hash_router,
+    config: {
+        api_url: api_url,
+        google_maps_api_key: google_maps_api_key,
+        sessions: true,
+        provider_sign_up_filters: {
+            foo: 'bar',
+        },
+        flags: {
+            fundsMenu: true,
+            show2FAMenu: true,
+            logoExtension: '.svg',
+            showStartButton: true,
+            genericSearch: true,
+        },
+    },
 };
 
 fronts['webshop.nijmegen'] = {
@@ -105,4 +120,6 @@ fronts['dashboard.validator'] = {
 module.exports = {
     fronts: fronts,
     enableOnly: [/*'dashboard.sponsor', 'dashboard.provider', */ 'dashboard.validator'],
+    httpsKey: null,
+    httpsCert: null,
 };

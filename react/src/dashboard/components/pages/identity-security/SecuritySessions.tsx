@@ -42,7 +42,7 @@ export default function SecuritySessions() {
         'app-me_ap': 'Me-app',
         'app-me_ap-android': 'Me-app',
         'app-me_ap-ios': 'Me-app',
-        'me_app-androd': 'Me-app',
+        'me_app-android': 'Me-app',
         'me_app-is': 'Me-app ',
     });
 
@@ -171,7 +171,7 @@ export default function SecuritySessions() {
                             <div className="session-details">
                                 <div className="session-title">
                                     {titles[session.client_type]}
-                                    <span className="text-primary"> • </span>
+                                    <span className="text-primary text-separator"> • </span>
                                     {session.last_request.device_string}
                                 </div>
                                 <div className="session-properties">

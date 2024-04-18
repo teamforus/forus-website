@@ -1,19 +1,26 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import useAppConfigs from '../../../hooks/useAppConfigs';
-import { GoogleMap as GoogleMapComponent, LoadScript, Marker } from '@react-google-maps/api';
-import useEnvData from '../../../hooks/useEnvData';
+import React, { ReactElement, useCallback, useEffect, useMemo, useState } from 'react';
+import { GoogleMap as GoogleMapComponent, InfoWindow, Marker } from '@react-google-maps/api';
+import { AppConfigProp } from '../../../services/ConfigService';
 
+// todo: figure out about the envData and appConfigs dependency
 export function GoogleMap({
+    appConfigs,
+    mapOptions = {},
     mapPointers = [],
     mapGestureHandling,
+    mapGestureHandlingMobile,
+    markerTemplate,
 }: {
+    appConfigs: AppConfigProp;
+    mapOptions?: object;
     mapPointers: Array<{ lat: string; lon: string }>;
-    mapGestureHandling?: string;
+    mapGestureHandling?: 'cooperative' | 'greedy' | 'none' | 'auto';
+    mapGestureHandlingMobile?: 'cooperative' | 'greedy' | 'none' | 'auto';
+    markerTemplate?: (item: { lat: string; lon: string }) => React.ReactElement | Array<ReactElement>;
 }) {
+    const [selectedMarker, setSelectedMarker] = React.useState(null);
     const [markers, setMarkers] = useState([]);
     const zoomLevel = 12;
-    const appConfigs = useAppConfigs();
-    const envData = useEnvData();
 
     const avg = useCallback((values: Array<number>) => {
         return values.reduce((avg, value) => value + avg, 0) / values.length;
@@ -36,8 +43,8 @@ export function GoogleMap({
         }
 
         return {
-            lat: appConfigs?.map?.lat,
-            lng: appConfigs?.map?.lon,
+            lat: appConfigs?.map?.lat || 0,
+            lng: appConfigs?.map?.lon || 0,
         };
     }, [appConfigs?.map?.lat, appConfigs?.map?.lon, avg, mapPointers]);
 
@@ -46,9 +53,14 @@ export function GoogleMap({
         { featureType: 'transit', elementType: 'labels.icon', stylers: [{ visibility: 'off' }] },
     ];
 
+    const [gestureHandling] = useState(
+        window.innerWidth >= 768 ? mapGestureHandling : mapGestureHandlingMobile || mapGestureHandling,
+    );
+
     useEffect(() => {
         setMarkers(
             mapPointers.map((pointer) => ({
+                ...pointer,
                 lat: typeof pointer.lat === 'string' ? parseFloat(pointer.lat) : pointer.lat,
                 lng: typeof pointer.lon === 'string' ? parseFloat(pointer.lon) : pointer.lon,
             })),
@@ -57,24 +69,37 @@ export function GoogleMap({
 
     return (
         <div className={'map'}>
-            <LoadScript googleMapsApiKey={envData.config.google_maps_api_key}>
-                <GoogleMapComponent
-                    mapContainerClassName={'map-canvas'}
-                    center={{ lat: markers[0]?.lat || 0, lng: markers[0]?.lng || 0 }}
-                    zoom={zoomLevel}
-                    options={{
-                        styles: mapStyles,
-                        center: center,
-                        scrollwheel: true,
-                        disableDefaultUI: false,
-                        zoom: zoomLevel,
-                        gestureHandling: mapGestureHandling || undefined,
-                    }}>
-                    {markers.map((marker, index) => (
-                        <Marker key={index} position={marker} />
-                    ))}
-                </GoogleMapComponent>
-            </LoadScript>
+            <GoogleMapComponent
+                mapContainerClassName={'map-canvas'}
+                center={center}
+                zoom={zoomLevel}
+                options={{
+                    styles: mapStyles,
+                    center: center,
+                    scrollwheel: true,
+                    disableDefaultUI: false,
+                    zoom: zoomLevel,
+                    gestureHandling: gestureHandling || undefined,
+                    scaleControl: true,
+                    mapTypeControl: true,
+                    fullscreenControl: true,
+                    mapTypeControlOptions: { mapTypeIds: ['roadmap', 'map_style'] },
+                    fullscreenControlOptions: { position: window.google.maps.ControlPosition.LEFT_BOTTOM },
+                    ...mapOptions,
+                }}>
+                {markers.map((marker, index) => (
+                    <Marker
+                        key={index}
+                        position={marker}
+                        onClick={() => (markerTemplate ? setSelectedMarker(marker) : null)}
+                    />
+                ))}
+                {markerTemplate && selectedMarker && (
+                    <InfoWindow position={selectedMarker} onCloseClick={() => setSelectedMarker(null)}>
+                        {markerTemplate(selectedMarker)}
+                    </InfoWindow>
+                )}
+            </GoogleMapComponent>
         </div>
     );
 }

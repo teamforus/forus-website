@@ -1,6 +1,7 @@
 export default interface EnvDataProp {
     client_key: string;
     client_type: 'sponsor' | 'provider' | 'validator' | 'webshop';
+    client_key_api?: string;
     name: string;
     type: 'webshop' | 'dashboard' | 'backend';
     webRoot?: string;

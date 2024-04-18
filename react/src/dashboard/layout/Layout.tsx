@@ -10,10 +10,13 @@ import LoadingBar from '../modules/loading_bar/components/LoadingBar';
 import { LayoutType } from '../modules/state_router/RouterProps';
 import useAuthIdentity from '../hooks/useAuthIdentity';
 import useActiveOrganization from '../hooks/useActiveOrganization';
+import { LoadScript } from '@react-google-maps/api';
+import useEnvData from '../hooks/useEnvData';
 
 export const Layout = ({ children }: { children: React.ReactElement }) => {
     const { modals } = useContext(modalsContext);
     const { route } = useStateRoutes();
+    const envData = useEnvData();
 
     const layout = route?.state?.layout;
     const authIdentity = useAuthIdentity();
@@ -24,7 +27,7 @@ export const Layout = ({ children }: { children: React.ReactElement }) => {
     }, [authIdentity, activeOrganization, route.state]);
 
     return (
-        <div className={''}>
+        <LoadScript googleMapsApiKey={envData?.config?.google_maps_api_key} libraries={['places']}>
             <div
                 className={classList([
                     'app',
@@ -54,6 +57,6 @@ export const Layout = ({ children }: { children: React.ReactElement }) => {
                 <Modals />
                 <PushNotifications />
             </div>
-        </div>
+        </LoadScript>
     );
 };

@@ -1,11 +1,10 @@
 import { useState } from 'react';
-import Employee from '../props/models/Employee';
 import ApiRequestService from './ApiRequestService';
 import { saveAs } from 'file-saver';
 import File from '../props/models/File';
-import { ResponseSimple } from '../props/ApiResponses';
+import { ApiResponseSingle, ResponseSimple } from '../props/ApiResponses';
 
-export class FileService<T = Employee> {
+export class FileService<T = File> {
     /**
      * @param apiRequest
      */
@@ -84,13 +83,16 @@ export class FileService<T = Employee> {
     }
 
     // Demo
-    public storeWithProgress(file: File | Blob, type: string, onProgress: (e: { progress: number }) => void) {
-        const append = [
-            ['file', file],
-            ['type', type],
-        ];
-
-        return this.storeData(append, { onProgress });
+    public storeWithProgress(data: {
+        file: File | Blob;
+        preview?: File | Blob;
+        type: string;
+        onProgress: (e: { progress: number }) => void;
+    }) {
+        return this.storeData(
+            [['file', data.file], ['type', data.type], ...(data.preview ? ['preview', data.preview] : [])],
+            { onProgress: data.onProgress },
+        );
     }
 
     public storeData(
@@ -100,7 +102,7 @@ export class FileService<T = Employee> {
             onXhr?: (xhr: XMLHttpRequest) => void;
             onAbort?: (e) => void;
         },
-    ) {
+    ): Promise<ApiResponseSingle<T>> {
         const formData = new FormData();
 
         append.forEach((item) => formData.append(item[0], item[1]));

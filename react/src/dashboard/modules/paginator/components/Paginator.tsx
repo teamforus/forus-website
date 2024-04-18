@@ -9,11 +9,15 @@ export default function Paginator({
     filters,
     countButtons = 5,
     updateFilters,
+    buttonClass = 'button-default',
+    buttonClassActive = 'button-primary',
 }: {
     meta: ApiPaginationMetaProp;
     filters: FilterModel;
     updateFilters: FilterSetter;
     countButtons?: number;
+    buttonClass?: string;
+    buttonClassActive?: string;
 }) {
     const [pages, setPages] = useState([]);
     const { t } = useTranslation();
@@ -55,20 +59,20 @@ export default function Paginator({
             <div className="table-pagination-navigation">
                 <div
                     onClick={() => setPage(1)}
-                    className={'button button-default' + (meta.current_page === 1 ? ' disabled' : '')}>
+                    className={`button ${buttonClass} ${meta.current_page === 1 ? ' disabled' : ''}`}>
                     {t('paginator.buttons.first')}
                 </div>
                 {pages.map((page, key) => (
                     <div
                         key={key}
                         onClick={() => setPage(page)}
-                        className={'button' + (page === meta.current_page ? ' button-primary' : ' button-default')}>
+                        className={`button ${page === meta.current_page ? buttonClassActive : buttonClass}`}>
                         {page}
                     </div>
                 ))}
                 <div
                     onClick={() => setPage(meta.last_page)}
-                    className={'button button-default' + (meta.current_page === meta.last_page ? ' disabled' : '')}>
+                    className={`button ${buttonClass} ${meta.current_page === meta.last_page ? ' disabled' : ''}`}>
                     {t('paginator.buttons.last')}
                 </div>
             </div>
