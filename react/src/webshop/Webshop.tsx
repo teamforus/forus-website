@@ -1,6 +1,6 @@
 import { ModalsProvider } from '../dashboard/modules/modals/context/ModalContext';
 import { AuthProvider } from './contexts/AuthContext';
-import React, { useContext, useEffect } from 'react';
+import React, { Fragment, useContext, useEffect } from 'react';
 import { Layout } from './layout/Layout';
 import { HashRouter, Route, Routes, BrowserRouter } from 'react-router-dom';
 import EnvDataProp from '../props/EnvData';
@@ -17,6 +17,8 @@ import StateHashPrefixRedirect from './modules/state_router/StateHashPrefixRedir
 import EnvDataWebshopProp from '../props/EnvDataWebshopProp';
 import { LoadScript } from '@react-google-maps/api';
 import { PrintableProvider } from '../dashboard/modules/printable/context/PrintableContext';
+import MatomoScript from './modules/matomo/MatomoScript';
+import SiteImproveAnalytics from './modules/site-improve-analytics/SiteImproveAnalytics';
 
 i18n.use(initReactI18next)
     .init({
@@ -90,25 +92,30 @@ export default function Webshop({ envData }: { envData: EnvDataWebshopProp }): R
     ApiRequestService.setEnvData(envData as unknown as EnvDataProp);
 
     return (
-        <LoadScript googleMapsApiKey={envData.config.google_maps_api_key} language={'nl'}>
-            <PushNotificationsProvider>
-                <RouterSelector envData={envData as unknown as EnvDataProp}>
-                    <LoadingBarProvider>
-                        <PrintableProvider>
-                            <ModalsProvider>
-                                <MainProvider>
-                                    <AuthProvider>
-                                        <QueryParamProvider adapter={ReactRouter6Adapter}>
-                                            <StateHashPrefixRedirect />
-                                            <RouterLayout envData={envData} />
-                                        </QueryParamProvider>
-                                    </AuthProvider>
-                                </MainProvider>
-                            </ModalsProvider>
-                        </PrintableProvider>
-                    </LoadingBarProvider>
-                </RouterSelector>
-            </PushNotificationsProvider>
-        </LoadScript>
+        <Fragment>
+            <LoadScript googleMapsApiKey={envData.config.google_maps_api_key} language={'nl'}>
+                <PushNotificationsProvider>
+                    <RouterSelector envData={envData as unknown as EnvDataProp}>
+                        <LoadingBarProvider>
+                            <PrintableProvider>
+                                <ModalsProvider>
+                                    <MainProvider>
+                                        <AuthProvider>
+                                            <QueryParamProvider adapter={ReactRouter6Adapter}>
+                                                <StateHashPrefixRedirect />
+                                                <RouterLayout envData={envData} />
+                                            </QueryParamProvider>
+                                        </AuthProvider>
+                                    </MainProvider>
+                                </ModalsProvider>
+                            </PrintableProvider>
+                        </LoadingBarProvider>
+                    </RouterSelector>
+                </PushNotificationsProvider>
+            </LoadScript>
+
+            <MatomoScript envData={envData} />
+            <SiteImproveAnalytics envData={envData} />
+        </Fragment>
     );
 }

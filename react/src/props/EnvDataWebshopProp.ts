@@ -7,8 +7,9 @@ export default interface EnvDataWebshopProp {
     useHashRouter?: boolean;
     config: {
         api_url: string;
-        site_improve_analytics_id?: string;
+        matomo_url?: string;
         matomo_site_id?: string;
+        site_improve_analytics_id?: string;
         sessions?: boolean;
         google_maps_api_key?: string;
         default_title?: string;
