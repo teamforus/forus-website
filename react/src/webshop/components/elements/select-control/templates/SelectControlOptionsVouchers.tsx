@@ -8,6 +8,7 @@ import SelectControlOptionItemVoucher from './elements/SelectControlOptionItemVo
 
 export default function SelectControlOptionsVouchers<T>({
     id,
+    dusk,
     query,
     setQuery,
     modelValue,
@@ -48,6 +49,7 @@ export default function SelectControlOptionsVouchers<T>({
                     className={`block block-vouchers block-vouchers-select ${
                         showOptions ? 'block-vouchers-select-open' : ''
                     }`}
+                    data-dusk={dusk || 'voucherSelector'}
                     onClick={searchOption}
                     style={{ display: showOptions && allowSearch ? 'none' : 'block' }}
                     title={placeholderValue || placeholder}>
@@ -118,6 +120,7 @@ export default function SelectControlOptionsVouchers<T>({
                 {showOptions && (
                     <ClickOutside
                         className="select-control-options"
+                        dataDusk={'voucherSelectorOptions'}
                         id={`${controlId}_options`}
                         role="listbox"
                         onScroll={onOptionsScroll}

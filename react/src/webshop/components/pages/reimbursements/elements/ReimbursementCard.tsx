@@ -63,7 +63,7 @@ export default function ReimbursementCard({
             name={'reimbursement'}
             params={{ id: reimbursement.id }}
             className="reimbursement-item"
-            dusk={`reimbursementsItem${reimbursement.id}`}>
+            dataDusk={`reimbursementsItem${reimbursement.id}`}>
             <div className={`reimbursement-image reimbursement-image-${reimbursement.state}`} role="img">
                 {!reimbursement?.files?.[0]?.preview ? (
                     <IconReimbursement />
@@ -80,7 +80,7 @@ export default function ReimbursementCard({
                             name={'reimbursement'}
                             params={{ id: reimbursement.id }}
                             className="reimbursement-name"
-                            dusk="reimbursementsItemTitle">
+                            dataDusk="reimbursementsItemTitle">
                             {reimbursement.title}
                         </StateNavLink>
                         <StateNavLink
@@ -88,7 +88,7 @@ export default function ReimbursementCard({
                             name={'reimbursement'}
                             params={{ id: reimbursement.id }}
                             className="reimbursement-organization"
-                            dusk="reimbursementsItemFundName">
+                            dataDusk="reimbursementsItemFundName">
                             {reimbursement.fund?.name}
                         </StateNavLink>
                         <div className="reimbursement-value" data-dusk="reimbursementsItemAmount">

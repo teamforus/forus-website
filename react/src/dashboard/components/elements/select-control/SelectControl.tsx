@@ -19,6 +19,7 @@ type SelectControlProps<T> = {
     disabled?: boolean;
     className?: string;
     scrollSize?: number;
+    dusk?: string;
     optionsComponent?: FunctionComponent<SelectControlOptionsProp<T>>;
 };
 
@@ -32,6 +33,7 @@ export interface OptionType<T> {
 
 export type SelectControlOptionsProp<T> = {
     id?: string;
+    dusk: string;
     query: string;
     setQuery: (query: string) => void;
     optionsFiltered: Array<OptionType<T>>;
@@ -67,6 +69,7 @@ export default function SelectControl<T>({
     className = null,
     scrollSize = 50,
     optionsComponent = SelectControlOptions,
+    dusk = null,
 }: SelectControlProps<T>) {
     const [query, setQuery] = useState('');
     const [modelValue, setModelValue] = useState(null);
@@ -224,6 +227,7 @@ export default function SelectControl<T>({
 
     return React.createElement(optionsComponent, {
         id,
+        dusk,
         optionsFiltered,
         selectOption,
         placeholder,

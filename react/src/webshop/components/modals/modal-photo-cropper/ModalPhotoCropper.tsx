@@ -277,7 +277,9 @@ export default function ModalPhotoCropper({
     }, [files, modal, prepareFile, pushDanger]);
 
     return (
-        <div className={`modal modal-animated modal-photo-cropper ${modal.loading ? '' : 'modal-loaded'}`}>
+        <div
+            className={`modal modal-animated modal-photo-cropper ${modal.loading ? '' : 'modal-loaded'}`}
+            data-dusk={'modalPhotoCropper'}>
             <div className="modal-backdrop" onClick={modal.close} />
             <div className="modal-window">
                 <div className="modal-close">

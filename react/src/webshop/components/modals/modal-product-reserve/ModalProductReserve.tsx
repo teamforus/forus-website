@@ -343,6 +343,7 @@ export default function ModalProductReserve({
     return (
         <div
             className={`modal modal-product-reserve modal-animated  ${modal.loading ? '' : 'modal-loaded'}`}
+            data-dusk={'modalProductReserve'}
             role="dialog">
             <div className="modal-backdrop" onClick={modal.close} aria-label="Sluiten" role="button" />
 

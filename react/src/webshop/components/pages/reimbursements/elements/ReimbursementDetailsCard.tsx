@@ -116,7 +116,7 @@ export default function ReimbursementDetailsCard({
                             name={'reimbursements-edit'}
                             params={{ id: reimbursement.id }}
                             className="button button-primary-outline button-sm flex flex-center"
-                            dusk="reimbursementOverviewEditButton">
+                            dataDusk="reimbursementOverviewEditButton">
                             <div className="mdi mdi-pencil icon-start" />
                             Wijzigen
                         </StateNavLink>

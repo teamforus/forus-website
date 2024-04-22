@@ -41,7 +41,7 @@ export default function ProfileMenu({ className }: { className?: string }) {
                 <StateNavLink
                     className="profile-menu-item"
                     name="reimbursements"
-                    dusk="menuBtnReimbursements"
+                    dataDusk="menuBtnReimbursements"
                     aria-current={navigateState?.name == 'reimbursements' ? 'page' : null}>
                     {translate('profile_menu.buttons.reimbursements')}
                     <em className="mdi mdi-arrow-right" aria-hidden="true" />

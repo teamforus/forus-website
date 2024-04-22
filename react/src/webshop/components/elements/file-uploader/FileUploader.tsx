@@ -267,6 +267,8 @@ export default function FileUploader({
             data-dusk="fileUploader">
             <input
                 type="file"
+                className={'droparea-hidden-input'}
+                name={'file_uploader_input_hidden'}
                 hidden={true}
                 multiple={multiple}
                 accept={(acceptedFiles || []).join(',')}

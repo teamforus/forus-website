@@ -4,7 +4,7 @@ import { getStateRouteUrl, useNavigateState } from './Router';
 
 export default function StateNavLink({
     name,
-    dusk = null,
+    dataDusk = null,
     params = {},
     query = {},
     state = {},
@@ -17,7 +17,7 @@ export default function StateNavLink({
     onClick = null,
 }: HTMLAttributes<HTMLAnchorElement> & {
     name: string;
-    dusk?: string;
+    dataDusk?: string;
     params?: object;
     query?: object;
     state?: object;
@@ -32,7 +32,7 @@ export default function StateNavLink({
 
     if (disabled) {
         return (
-            <div data-dusk={dusk} className={className}>
+            <div data-dusk={dataDusk} className={className}>
                 {children}
             </div>
         );
@@ -43,7 +43,7 @@ export default function StateNavLink({
             customElement,
             {
                 className,
-                'data-dusk': dusk,
+                'data-dusk': dataDusk,
                 style: { cursor: 'pointer' },
                 onClick: (e) => {
                     e.stopPropagation();
@@ -59,7 +59,7 @@ export default function StateNavLink({
     return (
         <NavLink
             target={target}
-            data-dusk={dusk}
+            data-dusk={dataDusk}
             onClick={onClick}
             className={({ isActive, isPending }) =>
                 ['state-nav-link', className, isPending ? 'pending' : '', isActive ? activeClass : ''].join(' ')

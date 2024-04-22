@@ -11,7 +11,7 @@ export default function EmptyBlock({
     hideLink,
     svgIcon,
     button,
-    dusk,
+    dataDusk,
 }: {
     title?: string;
     text?: string;
@@ -19,10 +19,10 @@ export default function EmptyBlock({
     hideLink?: boolean;
     svgIcon?: string;
     button?: ButtonType;
-    dusk?: string;
+    dataDusk?: string;
 }) {
     return (
-        <div className="block block-empty" data-dusk={dusk}>
+        <div className="block block-empty" data-dusk={dataDusk}>
             {svgIcon === 'reimbursements' && (
                 <div className="block-icon">
                     <IconReimbursements />

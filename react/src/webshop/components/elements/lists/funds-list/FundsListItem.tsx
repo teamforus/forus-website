@@ -89,7 +89,7 @@ export default function FundsListItem({
                 params={{ id: fund.id }}
                 state={{ searchParams: searchParams || null }}
                 className={'search-item search-item-fund'}
-                data-dusk="productItem">
+                dataDusk="productItem">
                 <FundsListItemSearch fund={fundModel} applyFund={applyFund} />
             </StateNavLink>
         );

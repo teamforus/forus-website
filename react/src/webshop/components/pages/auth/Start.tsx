@@ -210,7 +210,7 @@ export default function Start() {
                         name={'email'}
                         tabIndex={1}
                         autoFocus={true}
-                        dusk={'authEmailFormEmail'}
+                        dataDusk={'authEmailFormEmail'}
                     />
                     <FormError error={authForm.errors.email} />
                 </div>

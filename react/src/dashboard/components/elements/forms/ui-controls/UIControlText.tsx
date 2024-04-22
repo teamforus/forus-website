@@ -14,7 +14,7 @@ export default function UIControlText({
     inputRef = null,
     tabIndex = null,
     autoFocus = false,
-    dusk = null,
+    dataDusk = null,
     rows = 5,
 }: {
     id?: string;
@@ -30,7 +30,7 @@ export default function UIControlText({
     inputRef?: React.RefObject<HTMLInputElement>;
     tabIndex?: number;
     autoFocus?: boolean;
-    dusk?: string;
+    dataDusk?: string;
     rows?: number;
 }) {
     const innerInputRef = useRef<HTMLInputElement>(null);
@@ -57,7 +57,7 @@ export default function UIControlText({
                 tabIndex: tabIndex,
                 autoFocus: autoFocus,
                 rows: rows,
-                'data-dusk': dusk,
+                'data-dusk': dataDusk,
             })}
 
             {type !== 'textarea' && (

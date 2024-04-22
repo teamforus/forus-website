@@ -304,7 +304,7 @@ export const TopNavbar = ({ hideOnScroll = false, className = '' }: { hideOnScro
                                 id="fund-requests"
                                 onClick={() => goToState('fund-requests')}
                                 role="link"
-                                dusk="btnFundRequests"
+                                dataDusk="btnFundRequests"
                                 tabIndex={0}>
                                 <em className="mdi mdi-card-account-details-outline" />
                                 Aanvragen
@@ -344,7 +344,7 @@ export const TopNavbar = ({ hideOnScroll = false, className = '' }: { hideOnScro
                                 name={'identity-emails'}
                                 id="identity_emails"
                                 onClick={() => goToState('identity-emails')}
-                                dusk="btnUserEmails"
+                                dataDusk="btnUserEmails"
                                 role="link"
                                 tabIndex={0}>
                                 <em className="mdi mdi-at" />
@@ -555,7 +555,7 @@ export const TopNavbar = ({ hideOnScroll = false, className = '' }: { hideOnScro
                                             name={'vouchers'}
                                             className="button button-primary"
                                             id="vouchers"
-                                            dusk="userVouchers">
+                                            dataDusk="userVouchers">
                                             <em className="mdi mdi-ticket-confirmation" />
                                             {translate(
                                                 `topnavbar.buttons.${envData.client_key}.voucher`,

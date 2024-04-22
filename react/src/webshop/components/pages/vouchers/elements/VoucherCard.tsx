@@ -56,7 +56,7 @@ export default function VoucherCard({
             name={'voucher'}
             params={{ address: voucher.address }}
             className="voucher-item"
-            data-dusk="voucherItem">
+            dataDusk="voucherItem">
             <div className="voucher-image">
                 <img
                     src={voucherCard.thumbnail}

@@ -186,7 +186,7 @@ export default function ReimbursementsEdit() {
             openModal((modal) => (
                 <ModalReimbursementConfirm
                     modal={modal}
-                    onConfirm={() => form.submit()}
+                    onConfirm={() => submit(false)}
                     reimbursement={{
                         ...form.values,
                         files: files.map((file) => file),
@@ -252,7 +252,7 @@ export default function ReimbursementsEdit() {
                                     <StateNavLink
                                         name={'identity-emails'}
                                         className="button button-primary button-sm"
-                                        data-dusk="reimbursementNoEmailAddBtn">
+                                        dataDusk="reimbursementNoEmailAddBtn">
                                         E-mailadres toevoegen
                                     </StateNavLink>
                                     <div
@@ -272,7 +272,7 @@ export default function ReimbursementsEdit() {
                                 className="form form-compact form-compact-flat"
                                 onSubmit={(e) => {
                                     e?.preventDefault();
-                                    submit(true);
+                                    submit();
                                 }}>
                                 <div className="card-section">
                                     <FileUploader
@@ -316,7 +316,6 @@ export default function ReimbursementsEdit() {
                                                         propValue="address"
                                                         propKey="id"
                                                         allowSearch={false}
-                                                        data-dusk="voucherSelector"
                                                         value={form.values.voucher_id ?? ''}
                                                         onChange={(voucher_id?: number) => form.update({ voucher_id })}
                                                         options={vouchers}
@@ -443,13 +442,14 @@ export default function ReimbursementsEdit() {
                                                     type="button"
                                                     data-dusk="reimbursementFormSave"
                                                     disabled={form.isLocked}
-                                                    onClick={() => submit(false)}>
+                                                    onClick={() => submit()}>
                                                     Opslaan voor later
                                                 </button>
                                                 <button
                                                     className="button button-primary button-sm"
                                                     type="submit"
                                                     disabled={!submitAvailable}
+                                                    onClick={() => submit(true)}
                                                     data-dusk="reimbursementFormSubmit">
                                                     Indienen
                                                 </button>

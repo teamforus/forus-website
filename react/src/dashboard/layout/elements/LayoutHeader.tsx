@@ -217,7 +217,6 @@ export const LayoutHeader = () => {
                                         name="Beoordelaar"
                                         active={envData.client_type == 'validator'}
                                         href={appConfigs.fronts.url_validator}
-                                        dusk={'btnUserLogout'}
                                         icon={<IconValidator />}
                                     />
 
@@ -225,7 +224,6 @@ export const LayoutHeader = () => {
                                         name="Sponsor"
                                         active={envData.client_type == 'sponsor'}
                                         href={appConfigs.fronts.url_sponsor}
-                                        dusk={'btnUserLogout'}
                                         icon={<IconSponsor />}
                                     />
 
@@ -233,7 +231,6 @@ export const LayoutHeader = () => {
                                         name="Aanbieder"
                                         active={envData.client_type == 'provider'}
                                         href={appConfigs.fronts.url_provider}
-                                        dusk={'btnUserLogout'}
                                         icon={<IconProvider />}
                                     />
 

@@ -32,7 +32,7 @@ export default function ReservationCard({
             name={'reservation-show'}
             params={{ id: reservation.id }}
             className="reservation-item"
-            dusk={`reservationItem${reservation.id}`}>
+            dataDusk={`reservationItem${reservation.id}`}>
             <div className="reservation-item-body">
                 <div className="reservation-image">
                     <img
@@ -51,7 +51,7 @@ export default function ReservationCard({
                                 <StateNavLink
                                     name={'product'}
                                     params={{ id: reservation.product?.id }}
-                                    dusk="reservationProduct"
+                                    dataDusk="reservationProduct"
                                     role="link"
                                     tabIndex={0}
                                     customElement={'div'}>

@@ -6,6 +6,7 @@ import SelectControlOptionItem from './elements/SelectControlOptionItem';
 
 export default function SelectControlOptions<T>({
     id,
+    dusk,
     query,
     setQuery,
     optionsFiltered,
@@ -30,6 +31,7 @@ export default function SelectControlOptions<T>({
             id={id}
             className={'select-control ' + (className ? className : '')}
             role="button"
+            data-dusk={dusk}
             aria-haspopup="listbox"
             aria-expanded={showOptions}
             aria-labelledby={controlId}

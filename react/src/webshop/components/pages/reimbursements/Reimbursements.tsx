@@ -240,7 +240,7 @@ export default function Reimbursements() {
 
                         {reimbursements?.data?.length == 0 && (
                             <EmptyBlock
-                                dusk="reimbursementsEmptyBlock"
+                                dataDusk="reimbursementsEmptyBlock"
                                 title={translate('reimbursements.empty_block.title')}
                                 description={translate('reimbursements.empty_block.subtitle')}
                                 svgIcon={'reimbursements'}

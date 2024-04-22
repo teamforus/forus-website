@@ -17,11 +17,11 @@ export default function SelectControlOptionItemVoucher<T>({
         <div
             key={option.id}
             className="voucher-item voucher-item-select voucher-item-select"
+            data-dusk={`voucherSelectorOption${voucher?.id}`}
             onClick={(e) => {
                 e.stopPropagation();
                 selectOption(option);
             }}
-            data-dusk={`voucherSelectorOption${voucher?.id}`}
             role="option">
             <div className="voucher-image">
                 <img

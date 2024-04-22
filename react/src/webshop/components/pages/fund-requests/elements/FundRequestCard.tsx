@@ -15,7 +15,7 @@ export default function FundRequestCard({ fundRequest }: { fundRequest: FundRequ
     return (
         <StateNavLink
             className="fund-request-item"
-            dusk={`fundRequestsItem${fundRequest.id}`}
+            dataDusk={`fundRequestsItem${fundRequest.id}`}
             name={'fund-request-show'}
             params={{ id: fundRequest.id }}>
             <div className="fund-request-image">

@@ -56,7 +56,7 @@ export default function ProductsListItem({
             params={{ id: product.id }}
             state={{ searchParams: searchParams || null }}
             className={display === 'search' ? 'search-item search-item-product' : 'product-item'}
-            data-dusk="productItem">
+            dataDusk="productItem">
             {display === 'grid' && (
                 <ProductsListItemGrid price={price} toggleBookmark={toggleBookmark} product={product} />
             )}
