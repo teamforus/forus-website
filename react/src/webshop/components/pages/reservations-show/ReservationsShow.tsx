@@ -44,10 +44,7 @@ export default function ReservationsShow() {
 
         return productReservationService
             .read(parseInt(id))
-            .then((res) => {
-                res.data.data.extra_payment = { is_pending: true };
-                setReservation(res.data.data);
-            })
+            .then((res) => setReservation(res.data.data))
             .finally(() => setProgress(100));
     }, [id, productReservationService, setProgress]);
 
@@ -294,6 +291,7 @@ export default function ReservationsShow() {
                                     <h2 className="card-heading card-heading-lg">Details van terugbetaling</h2>
                                 </div>
                             </div>
+
                             {showReservationRefunds && (
                                 <div className="card-section">
                                     <div className="block block-card-table block-card-table-insert-top">

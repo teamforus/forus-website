@@ -225,10 +225,9 @@ export default function Search() {
                                 <SelectControl
                                     id="category_id"
                                     propKey="id"
+                                    allowSearch={true}
                                     value={filters.values.product_category_id}
-                                    onChange={(id: string | number) => {
-                                        filters.update({ product_category_id: `${id}` });
-                                    }}
+                                    onChange={(id?: string) => filters.update({ product_category_id: id })}
                                     options={productCategories}
                                     placeholder={productCategories?.[0]?.name}
                                 />
@@ -243,8 +242,9 @@ export default function Search() {
                                 <SelectControl
                                     id="fund_id"
                                     propKey="id"
+                                    allowSearch={true}
                                     value={filters.values.fund_id}
-                                    onChange={(id: string | number) => filters.update({ fund_id: `${id}` })}
+                                    onChange={(id?: string) => filters.update({ fund_id: id })}
                                     options={funds}
                                     placeholder={funds?.[0]?.name}
                                 />
@@ -259,8 +259,9 @@ export default function Search() {
                                 <SelectControl
                                     id="organizations_id"
                                     propKey="id"
+                                    allowSearch={true}
                                     value={filters.values.organization_id}
-                                    onChange={(id: string | number) => filters.update({ organization_id: `${id}` })}
+                                    onChange={(id?: string) => filters.update({ organization_id: id })}
                                     options={organizations}
                                     placeholder={organizations?.[0]?.name}
                                 />

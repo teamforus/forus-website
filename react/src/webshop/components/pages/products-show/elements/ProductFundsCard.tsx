@@ -187,12 +187,14 @@ export default function ProductFundsCard({ product, vouchers = [] }: { product: 
                                                 {translate('product.labels.price')}
                                             </div>
                                         )}
+
                                         {(product.price_type === 'discount_fixed' ||
                                             product.price_type === 'discount_percentage') && (
                                             <div className="fund-item-section-label">
                                                 {translate('product.labels.discount')}
                                             </div>
                                         )}
+
                                         {fund.type == 'subsidies' &&
                                             (product.price_type === 'free' ||
                                                 (product.price_type === 'regular' && fund.price == '0.00')) && (
@@ -200,21 +202,24 @@ export default function ProductFundsCard({ product, vouchers = [] }: { product: 
                                                     {translate('product.status.free')}
                                                 </div>
                                             )}
+
                                         {fund.type == 'subsidies' &&
                                             product.price_type === 'regular' &&
                                             fund.price != '0.00' && (
                                                 <div className="fund-item-section-value">{fund.price_locale}</div>
                                             )}
+
                                         {fund.type == 'budget' &&
                                             (product.price_type === 'regular' || product.price_type === 'free') && (
                                                 <div className="fund-item-section-value">{product.price_locale}</div>
                                             )}
-                                        {product.price_type === 'discount_fixed' ||
-                                            (product.price_type === 'discount_percentage' && (
-                                                <div className="fund-item-section-value">
-                                                    {product.price_discount_locale}
-                                                </div>
-                                            ))}
+
+                                        {(product.price_type === 'discount_fixed' ||
+                                            product.price_type === 'discount_percentage') && (
+                                            <div className="fund-item-section-value">
+                                                {product.price_discount_locale}
+                                            </div>
+                                        )}
                                     </div>
 
                                     {fund.meta.isReservationAvailable && (

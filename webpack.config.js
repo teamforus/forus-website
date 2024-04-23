@@ -74,14 +74,12 @@ module.exports = (env, argv) => {
                     from: `**/**.*`,
                     to: resolvePath(`${distPath}/${item.out}/assets`),
                     noErrorOnMissing: true,
-                    force: true,
                 },
                 {
                     context: `../assets/forus-${platform}/resources/${platform}-${item.client_key}/assets`,
                     from: `**/**.*`,
                     to: resolvePath(`${distPath}/${item.out}/assets`),
                     noErrorOnMissing: true,
-                    force: true,
                 },
                 {
                     from: resolvePath(`./node_modules/pdfjs-dist/build/pdf.worker.js`),
@@ -112,9 +110,6 @@ module.exports = (env, argv) => {
                     to: resolvePath(`${distPath}/${item.out}/assets/dist/css/materialdesignicons.min.css`),
                 },
             ],
-            options: {
-                concurrency: 100,
-            },
         });
     });
 

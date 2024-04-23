@@ -1,11 +1,11 @@
 import React, { Fragment } from 'react';
-import { TopNavbar } from '../../elements/top-navbar/TopNavbar';
 import StateNavLink from '../../../modules/state_router/StateNavLink';
 import CmsBlocks from '../../elements/cms-blocks/CmsBlocks';
 import useEnvData from '../../../hooks/useEnvData';
 import useCmsPage from './hooks/useCmsPage';
 import useTranslate from '../../../../dashboard/hooks/useTranslate';
 import TranslateHtml from '../../../../dashboard/components/elements/translate-html/TranslateHtml';
+import BlockShowcase from '../../elements/block-showcase/BlockShowcase';
 
 export default function Privacy() {
     const envData = useEnvData();
@@ -13,16 +13,11 @@ export default function Privacy() {
 
     const page = useCmsPage('privacy');
 
-    if (!page) {
-        return null;
-    }
-
     return (
-        <div className="block block-showcase">
-            <TopNavbar />
-
-            <section className="section section-details">
-                <div className="wrapper">
+        <BlockShowcase
+            wrapper={false}
+            breadcrumbs={
+                <div className={'wrapper'}>
                     <div className="block block-breadcrumbs">
                         <StateNavLink name="home" className="breadcrumb-item">
                             Home
@@ -31,7 +26,10 @@ export default function Privacy() {
                             Privacyverklaring
                         </div>
                     </div>
-
+                </div>
+            }>
+            {page && (
+                <div className="section">
                     <div
                         className={`flex flex-vertical ${
                             page.description_position == 'after' ? 'flex-vertical-reverse' : ''
@@ -150,7 +148,7 @@ export default function Privacy() {
                         )}
                     </div>
                 </div>
-            </section>
-        </div>
+            )}
+        </BlockShowcase>
     );
 }

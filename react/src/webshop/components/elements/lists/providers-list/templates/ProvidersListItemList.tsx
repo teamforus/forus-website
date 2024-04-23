@@ -72,10 +72,10 @@ export default function ProvidersListItemList({
                                         <div className="office-logo">
                                             <img
                                                 className="office-logo-img"
-                                                src={assetUrl(
+                                                src={
                                                     office?.photo?.sizes?.thumbnail ||
-                                                        '/assets/img/placeholders/office-thumbnail.png',
-                                                )}
+                                                    assetUrl('/assets/img/placeholders/office-thumbnail.png')
+                                                }
                                                 alt={`Vestiging ${office.organization?.name}`}
                                             />
                                         </div>

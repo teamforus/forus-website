@@ -165,7 +165,7 @@ export default function Funds() {
                     </div>
                 )
             }>
-            {envData && appConfigs && funds && (
+            {envData && appConfigs && funds && vouchers && (
                 <Fragment>
                     <div className="showcase-content-header">
                         <h1 className="showcase-filters-title">

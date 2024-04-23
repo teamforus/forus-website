@@ -36,8 +36,8 @@ export default function LayoutFooter() {
                     <div className="row">
                         <h2 className="sr-only">Site informatie</h2>
                         <div className="col col-md-4">
-                            {appConfigs?.description_contact_details_html && (
-                                <Markdown content={appConfigs?.description_contact_details_html || ''} />
+                            {appConfigs?.pages?.footer_contact_details?.description_html && (
+                                <Markdown content={appConfigs?.pages?.footer_contact_details?.description_html || ''} />
                             )}
                             {appConfigs.social_medias.length > 0 && (
                                 <div className="footer-social-medias">
@@ -59,13 +59,16 @@ export default function LayoutFooter() {
                             )}
                         </div>
 
-                        {appConfigs.description_opening_times_html && (
+                        {appConfigs?.pages?.footer_opening_times?.description_html && (
                             <div className="col col-md-4">
-                                <Markdown content={appConfigs.description_opening_times_html || ''} />
+                                <Markdown content={appConfigs?.pages?.footer_opening_times?.description_html || ''} />
                             </div>
                         )}
 
-                        <div className={`col ${appConfigs.description_opening_times_html ? 'col-md-3' : 'col-md-4'}`}>
+                        <div
+                            className={`col ${
+                                appConfigs?.pages?.footer_opening_times?.description_html ? 'col-md-3' : 'col-md-4'
+                            }`}>
                             {appConfigs.pages.provider && (
                                 <div className="block block-markdown">
                                     <h3>Links</h3>
@@ -83,17 +86,17 @@ export default function LayoutFooter() {
                         <div className="col col-md-3">
                             <div
                                 className={`flex flex-vertical ${
-                                    appConfigs.description_footer_app_info_position == 'after'
+                                    appConfigs?.pages?.footer_app_info?.description_position == 'after'
                                         ? 'flex-vertical-reverse'
                                         : ''
                                 }`}>
-                                {appConfigs.description_footer_app_info_html && (
+                                {appConfigs?.pages?.footer_app_info?.description_html && (
                                     <div className="block block-markdown">
-                                        {appConfigs.description_footer_app_info_html}
+                                        {appConfigs?.pages?.footer_app_info?.description_html}
                                     </div>
                                 )}
-                                {(!appConfigs.description_footer_app_info_html ||
-                                    appConfigs.description_footer_app_info_position !== 'replace') && (
+                                {(!appConfigs?.pages?.footer_app_info?.description_html ||
+                                    appConfigs?.pages?.footer_app_info?.description_position !== 'replace') && (
                                     <div>
                                         {appConfigs && (
                                             <div className="block block-markdown">

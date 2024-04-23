@@ -62,6 +62,8 @@ export default interface EnvDataWebshopProp {
                 name?: string;
                 href?: string;
                 target?: string;
+                state?: string;
+                stateParams?: string;
             }>;
 
             startPage?: {

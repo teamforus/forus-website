@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { TopNavbar } from '../../elements/top-navbar/TopNavbar';
 import { useFundService } from '../../../services/FundService';
 import { useParams } from 'react-router-dom';
 import Fund from '../../../props/models/Fund';
@@ -22,6 +21,7 @@ import { useProductService } from '../../../services/ProductService';
 import Markdown from '../../elements/markdown/Markdown';
 import BlockCard2FAWarning from '../../elements/block-card-2fa-warning/BlockCard2FAWarning';
 import useSetTitle from '../../../hooks/useSetTitle';
+import BlockShowcase from '../../elements/block-showcase/BlockShowcase';
 
 export default function FundsShow() {
     const { id } = useParams();
@@ -134,15 +134,9 @@ export default function FundsShow() {
         }
     }, [envData, fund, fund?.name, fund?.organization?.name, setTitle, translate]);
 
-    if (!fund) {
-        return;
-    }
-
     return (
-        <div className="block block-showcase">
-            <TopNavbar />
-
-            <main id="main-content">
+        <BlockShowcase className="block block-showcase">
+            {fund && (
                 <section className="section section-fund">
                     <div className="wrapper">
                         <div className="block block-breadcrumbs">
@@ -360,7 +354,7 @@ export default function FundsShow() {
                         </div>
                     </div>
                 </section>
-            </main>
-        </div>
+            )}
+        </BlockShowcase>
     );
 }

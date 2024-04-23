@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import { TopNavbar } from '../top-navbar/TopNavbar';
 import BlockLoader from '../../../../dashboard/components/elements/block-loader/BlockLoader';
 
@@ -18,8 +18,17 @@ export default function BlockShowcase({
             <TopNavbar />
 
             <main id="main-content">
-                {breadcrumbs}
-                {wrapper ? <div className={'wrapper'}>{children || <BlockLoader />}</div> : children || <BlockLoader />}
+                {wrapper ? (
+                    <div className={'wrapper'}>
+                        {breadcrumbs}
+                        {children || <BlockLoader />}
+                    </div>
+                ) : (
+                    <Fragment>
+                        {breadcrumbs}
+                        {children || <BlockLoader />}
+                    </Fragment>
+                )}
             </main>
         </div>
     );

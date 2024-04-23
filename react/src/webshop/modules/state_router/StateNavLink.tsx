@@ -13,6 +13,7 @@ export default function StateNavLink({
     disabled = false,
     target,
     activeClass = 'active',
+    activeExact = false,
     customElement = null,
     onClick = null,
 }: HTMLAttributes<HTMLAnchorElement> & {
@@ -25,6 +26,7 @@ export default function StateNavLink({
     disabled?: boolean;
     target?: string;
     activeClass?: string;
+    activeExact?: boolean;
     customElement?: string;
     onClick?: (e: React.MouseEvent) => void;
 }) {
@@ -61,6 +63,7 @@ export default function StateNavLink({
             target={target}
             data-dusk={dataDusk}
             onClick={onClick}
+            end={activeExact}
             className={({ isActive, isPending }) =>
                 ['state-nav-link', className, isPending ? 'pending' : '', isActive ? activeClass : ''].join(' ')
             }

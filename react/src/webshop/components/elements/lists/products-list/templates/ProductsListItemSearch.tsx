@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import Product from '../../../../../props/models/Product';
 import useAssetUrl from '../../../../../hooks/useAssetUrl';
 
@@ -6,10 +6,10 @@ export default function ProductsListItemSearch({ product }: { product?: Product 
     const assetUrl = useAssetUrl();
 
     return (
-        <div className="search-item search-item-product">
+        <Fragment>
             <div className="search-media">
                 <img
-                    src={product.photo?.sizes?.thumbnail || assetUrl('/assets/img/placeholders/product-small.png')}
+                    src={product.photo?.sizes?.small || assetUrl('/assets/img/placeholders/product-small.png')}
                     alt={product.alternative_text}
                 />
             </div>
@@ -30,6 +30,6 @@ export default function ProductsListItemSearch({ product }: { product?: Product 
                     </div>
                 </div>
             </div>
-        </div>
+        </Fragment>
     );
 }

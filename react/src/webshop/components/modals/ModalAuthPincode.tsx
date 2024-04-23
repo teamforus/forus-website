@@ -93,7 +93,16 @@ export default function ModalAuthPincode({ modal }: { modal: ModalState }) {
                                 </div>
                             </div>
                             <div className="app-instructions-separator">
-                                <img src={assetUrl('/assets/img/icon-auth/icon-app-step-separator.svg')} alt={''} />
+                                <img
+                                    src={assetUrl('/assets/img/icon-auth/icon-app-step-separator.svg')}
+                                    className={'hide-sm'}
+                                    alt={''}
+                                />
+                                <img
+                                    src={assetUrl('/assets/img/icon-auth/icon-app-step-separator-mobile.svg')}
+                                    className={'show-sm'}
+                                    alt={''}
+                                />
                             </div>
                             <div className="app-instructions-step">
                                 <div className="step-item-img">

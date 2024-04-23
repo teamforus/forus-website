@@ -1,7 +1,6 @@
 import React, { Fragment, useCallback, useEffect, useState } from 'react';
 import useEnvData from '../../../hooks/useEnvData';
 import useAppConfigs from '../../../hooks/useAppConfigs';
-import { useTranslation } from 'react-i18next';
 import { TopNavbar } from '../../elements/top-navbar/TopNavbar';
 import useTranslate from '../../../../dashboard/hooks/useTranslate';
 import Markdown from '../../elements/markdown/Markdown';
@@ -18,7 +17,6 @@ import CmsBlocks from '../../elements/cms-blocks/CmsBlocks';
 import BlockProducts from '../../elements/block-products/BlockProducts';
 
 export default function Home() {
-    const { t } = useTranslation();
     const translate = useTranslate();
     const envData = useEnvData();
     const appConfigs = useAppConfigs();
@@ -100,7 +98,7 @@ export default function Home() {
                         />
                     )}
                     <div className="header-note">
-                        {t(`home.header.${envData.client_key}.header_note`) || t('home.header.header_note')}
+                        {translate(`home.header.${envData.client_key}.header_note`, null, 'home.header.header_note')}
                     </div>
                     <div className="wrapper">
                         <div className="header-content" data-dusk="header">
@@ -334,12 +332,7 @@ export default function Home() {
                                     <div className="wrapper">
                                         <BlockProducts
                                             products={products.data}
-                                            setProducts={(list) =>
-                                                setProducts({
-                                                    ...products,
-                                                    data: list,
-                                                })
-                                            }
+                                            setProducts={(list) => setProducts({ ...products, data: list })}
                                             type="budget"
                                             large={true}
                                             display="grid"

@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { TopNavbar } from '../../elements/top-navbar/TopNavbar';
 import StateNavLink from '../../../modules/state_router/StateNavLink';
 import CmsBlocks from '../../elements/cms-blocks/CmsBlocks';
 import useTranslate from '../../../../dashboard/hooks/useTranslate';
@@ -9,6 +8,7 @@ import Fund from '../../../props/models/Fund';
 import useEnvData from '../../../hooks/useEnvData';
 import { uniqueId } from 'lodash';
 import useCmsPage from './hooks/useCmsPage';
+import BlockShowcase from '../../elements/block-showcase/BlockShowcase';
 
 export default function Explanation() {
     const envData = useEnvData();
@@ -72,26 +72,25 @@ export default function Explanation() {
         fundService.list().then((res) => makeDefaultFAQ(res.data.data));
     }, [fundService, makeDefaultFAQ]);
 
-    if (!page) {
-        return null;
-    }
-
     return (
-        <div className="block block-showcase">
-            <TopNavbar />
-
-            <main id="main-content">
+        <BlockShowcase
+            wrapper={false}
+            breadcrumbs={
+                <div className={'wrapper'}>
+                    <div className="block block-breadcrumbs">
+                        <StateNavLink name="home" className="breadcrumb-item">
+                            Home
+                        </StateNavLink>
+                        <div className="breadcrumb-item active" aria-current="location">
+                            Uitleg
+                        </div>
+                    </div>
+                </div>
+            }>
+            {page && (
                 <div className="page page-home">
                     <section className="section section-details">
                         <div className="wrapper flex flex-vertical">
-                            <div className="block block-breadcrumbs">
-                                <StateNavLink name="home" className="breadcrumb-item">
-                                    Home
-                                </StateNavLink>
-                                <div className="breadcrumb-item active" aria-current="location">
-                                    Uitleg
-                                </div>
-                            </div>
                             <div
                                 className={`flex flex-vertical ${
                                     page.description_position == 'after' ? 'flex-vertical-reverse' : ''
@@ -189,7 +188,7 @@ export default function Explanation() {
                         </div>
                     </section>
                 </div>
-            </main>
-        </div>
+            )}
+        </BlockShowcase>
     );
 }

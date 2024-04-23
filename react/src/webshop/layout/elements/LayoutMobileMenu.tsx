@@ -95,6 +95,7 @@ export default function LayoutMobileMenu() {
                                 <StateNavLink
                                     className="mobile-menu-item"
                                     name={menuItem.state}
+                                    params={menuItem.stateParams}
                                     target={menuItem.target || '_blank'}
                                     onClick={hideMobileMenu}>
                                     <em className="mobile-menu-item-icon mdi mdi-arrow-right" />

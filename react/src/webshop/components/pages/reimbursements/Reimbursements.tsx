@@ -61,7 +61,10 @@ export default function Reimbursements() {
         setProgress(0);
 
         reimbursementService
-            .list(filters.activeValues)
+            .list({
+                ...filters.activeValues,
+                state: filters.activeValues.archived ? null : filters.activeValues.state,
+            })
             .then((res) => setReimbursements(res.data))
             .finally(() => setProgress(100));
     }, [setProgress, reimbursementService, filters.activeValues]);

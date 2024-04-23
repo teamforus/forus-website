@@ -149,6 +149,7 @@ export const TopNavbar = ({ hideOnScroll = false, className = '' }: { hideOnScro
                         <StateNavLink
                             name={menuItem.state}
                             params={menuItem.stateParams}
+                            activeExact={true}
                             className="navbar-item"
                             target={menuItem.target || '_blank'}>
                             {translate(
@@ -444,7 +445,7 @@ export const TopNavbar = ({ hideOnScroll = false, className = '' }: { hideOnScro
                     <div
                         className={`button navbar-menu-button show-sm ${mobileMenuOpened ? 'active' : ''}`}
                         onClick={openMobileMenu}>
-                        <em className={`mdi mdi-menu mdi-${mobileMenuOpened ? 'close' : 'menu'}`} />
+                        <em className={`mdi ${mobileMenuOpened ? 'mdi-close' : 'mdi-menu'}`} />
                         {translate('topnavbar.items.menu')}
                     </div>
 

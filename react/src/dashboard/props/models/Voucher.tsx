@@ -3,6 +3,7 @@ import Media from './Media';
 import Transaction from './Transaction';
 import Product from './Product';
 import Office from './Office';
+import Reservation from './Reservation';
 
 export default interface Voucher {
     id: number;
@@ -23,6 +24,7 @@ export default interface Voucher {
         record_type_name: string;
     }>;
     product: Product;
+    product_reservation: Reservation;
     offices?: Array<Office>;
     query_product?: {
         reservable?: boolean;

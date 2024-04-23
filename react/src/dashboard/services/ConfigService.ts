@@ -157,11 +157,15 @@ export type AppConfigProp = {
     products_hard_limit?: number;
     products_soft_limit?: number;
     pages: {
+        home: ImplementationPage;
         funds: ImplementationPage;
+        products: ImplementationPage;
         provider: ImplementationPage;
         providers: ImplementationPage;
         explanation: ImplementationPage;
-        [key: string]: ImplementationPage;
+        footer_app_info: ImplementationPage;
+        footer_opening_times: ImplementationPage;
+        footer_contact_details: ImplementationPage;
     };
     has_productboard_integration: boolean;
     social_medias: Array<{
@@ -184,10 +188,6 @@ export type AppConfigProp = {
     show_office_map: boolean;
     show_voucher_map: boolean;
     show_product_map: boolean;
-    description_contact_details_html: string;
-    description_opening_times_html: string;
-    description_footer_app_info_position: 'before' | 'after' | 'replace';
-    description_footer_app_info_html: string;
 };
 
 export class ConfigService<T = AppConfigProp> {

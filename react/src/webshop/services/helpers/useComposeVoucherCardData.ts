@@ -58,7 +58,7 @@ export default function useComposeVoucherCardData() {
             type: 'product_voucher',
             product: product_voucher.product,
             target: null,
-            product_reservation: null,
+            product_reservation: product_voucher.product_reservation,
             organization: null,
             created_at_locale: product_voucher.created_at_locale,
             incoming: false,

@@ -528,6 +528,7 @@ export default function VouchersShow() {
                                         </div>
                                     </div>
                                 </div>
+
                                 {!voucherCard.product && (
                                     <div className="base-card base-card-sponsor">
                                         <div className="card-inner">
@@ -570,6 +571,7 @@ export default function VouchersShow() {
                                         </div>
                                     </div>
                                 )}
+
                                 {voucherCard.product && (
                                     <div className="base-card base-card-sponsor">
                                         <div className="card-inner">
@@ -577,7 +579,7 @@ export default function VouchersShow() {
                                                 <div className="card-photo">
                                                     <img
                                                         src={
-                                                            voucherCard?.fund?.organization?.logo?.sizes?.large ||
+                                                            voucherCard?.product?.organization?.logo?.sizes?.large ||
                                                             assetUrl('/assets/img/placeholders/organization-large.png')
                                                         }
                                                         alt={voucherCard.fund?.organization?.name}
@@ -588,7 +590,9 @@ export default function VouchersShow() {
                                                         {translate('voucher.voucher_card.header.title')}
                                                     </h2>
                                                     <div className="card-description">
-                                                        {translate('voucher.voucher_card.labels.description')}
+                                                        <TranslateHtml
+                                                            i18n={'voucher.voucher_card.labels.description'}
+                                                        />
                                                     </div>
                                                 </div>
                                             </div>
@@ -598,14 +602,10 @@ export default function VouchersShow() {
                                                 </div>
                                                 <div className="card-value card-value-sm">
                                                     E-mailadres:{' '}
-                                                    <strong>
-                                                        {translate('voucherCard.product.organization.email')}
-                                                    </strong>
+                                                    <strong>{voucherCard.product.organization.email}</strong>
                                                     <br />
                                                     Telefoonnummer:{' '}
-                                                    <strong>
-                                                        {translate('voucherCard.product.organization.phone')}
-                                                    </strong>
+                                                    <strong>{voucherCard.product.organization.phone}</strong>
                                                 </div>
                                             </div>
                                         </div>
@@ -658,11 +658,12 @@ export default function VouchersShow() {
                                                     {translate('voucher.voucher_card_combined.header.title')}
                                                 </h2>
                                                 <div className="card-description">
-                                                    {translate(
-                                                        `voucher.voucher_card_combined.labels.${voucherCard.fund?.key}.how_it_works`,
-                                                        null,
-                                                        'voucher.voucher_card_combined.labels.how_it_works',
-                                                    )}
+                                                    <TranslateHtml
+                                                        i18n={`voucher.voucher_card_combined.labels.${voucherCard.fund?.key}.how_it_works`}
+                                                        i18nDefault={
+                                                            'voucher.voucher_card_combined.labels.how_it_works'
+                                                        }
+                                                    />
                                                 </div>
                                             </div>
                                             <div className="card-section">
@@ -860,6 +861,7 @@ export default function VouchersShow() {
                                         </div>
                                     )}
                                 </div>
+
                                 <div className="transactions-body">
                                     <div className="transactions-list">
                                         {voucherCard.history?.map((log) => (
@@ -907,13 +909,13 @@ export default function VouchersShow() {
                                         {translate('voucher.labels.transactions')}
                                         {voucher.expired && (
                                             <span className="text-strong-half">
-                                                - Verlopen op {voucherCard.last_active_day_locale}
+                                                {` - Verlopen op ${voucherCard.last_active_day_locale}`}
                                             </span>
                                         )}
                                     </h2>
                                 </div>
 
-                                {voucher.expired && voucherCard.transactions?.length == 0 && (
+                                {voucher.expired && voucherCard.transactionsList?.length == 0 && (
                                     <div className="transactions-body">
                                         <div className="transactions-list">
                                             <div className="transactions-item">
