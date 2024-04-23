@@ -82,6 +82,10 @@ export default function FundsListItem({
         [applyingFund, fundService, onApplySuccess, pushDanger, showTakenByPartnerModal],
     );
 
+    if (!fundModel) {
+        return null;
+    }
+
     if (display === 'search') {
         return (
             <StateNavLink

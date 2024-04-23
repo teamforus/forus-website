@@ -6,11 +6,9 @@ import FundsListItemModel from '../../../../../services/types/FundsListItemModel
 export default function FundsListItemSearch({
     fund,
     applyFund,
-    searchParams,
 }: {
     fund?: FundsListItemModel;
     applyFund?: (event: React.MouseEvent, fund: FundsListItemModel) => void;
-    searchParams?: object;
 }) {
     const assetUrl = useAssetUrl();
     const translate = useTranslate();
