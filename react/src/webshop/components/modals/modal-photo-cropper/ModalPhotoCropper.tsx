@@ -58,7 +58,7 @@ export default function ModalPhotoCropper({
     };
 
     const blobToFile = useCallback((blob: Blob, file: File) => {
-        return new File([blob], file.name, { type: file.type });
+        return new File([blob], file.name, { type: blob.type, lastModified: Date.now() });
     }, []);
 
     const makeImage = useCallback((file: File): Promise<HTMLImageElement> => {
@@ -79,12 +79,15 @@ export default function ModalPhotoCropper({
         (file: File): Promise<ModalPhotoCropperFile> => {
             return new Promise((resolve, reject) => {
                 if (!fileIsImage(file)) {
-                    return resolve({ file, is_image: false, is_pdf: fileIsPdf(file) });
+                    return resolve({
+                        file,
+                        uid: uniqueId('cropper_media_'),
+                        is_image: false,
+                        is_pdf: fileIsPdf(file),
+                    });
                 }
 
-                const imagePromise = makeImage(file);
-
-                imagePromise
+                makeImage(file)
                     .then((image) =>
                         resolve({
                             file,

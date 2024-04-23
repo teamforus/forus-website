@@ -61,7 +61,7 @@ export interface ResponseSimple<T> extends BaseResponse {
 
 export type RequestConfigData = {
     responseType?: XMLHttpRequestResponseType;
-    onProgress?: (e: { progress: number }) => void;
+    onProgress?: (e: { progress: number }, xhr: XMLHttpRequest) => void;
     headers?: { [key: string]: string };
     onXhr?: (xhr: XMLHttpRequest) => void;
     body?: string | FormData;

@@ -24,6 +24,7 @@ export default function ImageCropper({
     minWidth = 40,
     minHeight = 40,
     initialWidth = 90,
+    quality = 0.93,
 }: {
     file: File;
     aspect?: number;
@@ -33,6 +34,7 @@ export default function ImageCropper({
     minWidth?: number;
     minHeight?: number;
     initialWidth?: number;
+    quality?: number;
 }) {
     const imgSrc = useMemo(() => window.URL.createObjectURL(file ? file : null), [file]);
     const [img, setImg] = useState<HTMLImageElement>(null);
@@ -57,8 +59,8 @@ export default function ImageCropper({
             const pixelCrop = {
                 width: img.width * (percentCrop.width / 100),
                 height: img.height * (percentCrop.height / 100),
-                x: img.x * (percentCrop.width / 100),
-                y: img.x * (percentCrop.height / 100),
+                x: img.width * (percentCrop.x / 100),
+                y: img.height * (percentCrop.y / 100),
                 unit: 'px',
             };
 
@@ -68,10 +70,14 @@ export default function ImageCropper({
                     item.width ? item.width : item.height ? item.height * selectionRatio : pixelCrop.width,
                     item.height ? item.height : item.width ? item.width * selectionRatio : pixelCrop.height,
                     'cover',
-                ).toBlob((blob) => resolve({ ...item, blob, data: blob ? createObjectURL(blob) : null }));
+                ).toBlob(
+                    (blob) => resolve({ ...item, blob, data: blob ? createObjectURL(blob) : null }),
+                    file.type,
+                    quality,
+                );
             });
         },
-        [img],
+        [file.type, img, quality],
     );
 
     const onComplete = useCallback(
@@ -97,7 +103,7 @@ export default function ImageCropper({
     useEffect(() => {
         const image = new Image();
         image.onload = () => setImg(image);
-        image.src = imgSrc;
+        image.src = encodeURI(imgSrc);
     }, [imgSrc]);
 
     useEffect(() => {
@@ -114,13 +120,9 @@ export default function ImageCropper({
                 keepSelection={true}
                 minWidth={minWidth}
                 minHeight={minHeight}
-                onChange={(_, percentageCrop) => {
-                    setCrop(percentageCrop);
-                }}
-                onComplete={(_, percentageCrop) => {
-                    onComplete(percentageCrop);
-                }}>
-                <img src={imgSrc} alt={''} style={{ display: 'block' }} />
+                onChange={(_, percentageCrop) => setCrop(percentageCrop)}
+                onComplete={(_, percentageCrop) => onComplete(percentageCrop)}>
+                <img src={encodeURI(imgSrc)} alt={''} style={{ display: 'block' }} />
             </ReactCrop>
         )
     );

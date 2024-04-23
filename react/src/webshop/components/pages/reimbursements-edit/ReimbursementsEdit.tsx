@@ -49,43 +49,50 @@ export default function ReimbursementsEdit() {
     const [vouchers, setVouchers] = useState<Array<Voucher>>(null);
     const [reimbursement, setReimbursement] = useState<Reimbursement>(null);
     const [skipEmail, setSkipEmail] = useState(false);
-    const [submitToReview, setSubmitToReview] = useState(false);
 
-    const form = useFormBuilder(
+    const form = useFormBuilder<
+        {
+            title: string;
+            description: string;
+            amount: string;
+            voucher_id: number;
+            iban: string;
+            iban_name: string;
+        },
+        'pending' | 'draft'
+    >(
         {
             title: '',
             description: '',
-            amount: null,
+            amount: '',
             voucher_id: null,
             iban: '',
             iban_name: '',
         },
-        () => {
+        (values, _, state) => {
             setProgress(0);
 
-            const values = {
-                ...form.values,
-                state: submitToReview ? 'pending' : 'draft',
+            const data = {
+                ...values,
+                state: state,
                 files: files.map((file) => file.uid),
             };
 
-            if (typeof values.iban === 'string') {
-                values.iban = values.iban.replace(/\s/g, '');
+            if (typeof data.iban === 'string') {
+                data.iban = data.iban.replace(/\s/g, '');
             }
 
             const promise = !reimbursement
-                ? reimbursementService.store(values)
-                : reimbursementService.update(reimbursement.id, values);
+                ? reimbursementService.store(data)
+                : reimbursementService.update(reimbursement.id, data);
 
             promise
                 .then((res) => {
                     form.errors = null;
 
                     if (res.data.data.state === 'pending') {
-                        // Submitted for review
                         pushSuccess('Gelukt!', 'Declaratie verzoek is ingediend voor beoordeling.');
                     } else {
-                        // Saved as draft
                         pushSuccess('Gelukt!', 'Declaratie verzoek is opgeslagen.');
                     }
 
@@ -148,10 +155,12 @@ export default function ReimbursementsEdit() {
             const { amount = '', iban = '', iban_name = '' } = reimbursement || {};
 
             formUpdate({
-                ...{ title, description, iban, iban_name },
-                amount: amount ? parseFloat(amount) : null,
+                ...{ title, description, iban, iban_name, amount },
                 voucher_id:
-                    reimbursement?.voucher_id || (voucher_id ? parseInt(voucher_id) : null) || vouchers[0]?.id || '',
+                    reimbursement?.voucher_id ||
+                    (voucher_id ? parseInt(voucher_id) : null) ||
+                    vouchers[0]?.id ||
+                    undefined,
             });
 
             setFiles(reimbursement?.files || []);
@@ -177,16 +186,14 @@ export default function ReimbursementsEdit() {
 
     const submit = useCallback(
         (submitToReview = false) => {
-            setSubmitToReview(submitToReview);
-
             if (!submitToReview) {
-                return form.submit();
+                return form.submit(null, 'draft');
             }
 
             openModal((modal) => (
                 <ModalReimbursementConfirm
                     modal={modal}
-                    onConfirm={() => submit(false)}
+                    onConfirm={() => form.submit(null, 'pending')}
                     reimbursement={{
                         ...form.values,
                         files: files.map((file) => file),
@@ -277,7 +284,7 @@ export default function ReimbursementsEdit() {
                                 className="form form-compact form-compact-flat"
                                 onSubmit={(e) => {
                                     e?.preventDefault();
-                                    submit();
+                                    submit(true);
                                 }}>
                                 <div className="card-section">
                                     <FileUploader
@@ -454,7 +461,6 @@ export default function ReimbursementsEdit() {
                                                     className="button button-primary button-sm"
                                                     type="submit"
                                                     disabled={!submitAvailable}
-                                                    onClick={() => submit(true)}
                                                     data-dusk="reimbursementFormSubmit">
                                                     Indienen
                                                 </button>

@@ -16,6 +16,7 @@ export type FileUploaderItem = {
     error?: Array<string>;
     progress?: number;
     has_preview?: boolean;
+    cancel?: () => void;
     file_preview?: File;
 };
 
@@ -112,22 +113,31 @@ export default function FileUploader({
 
     const uploadFile = useCallback(
         (fileItem: FileUploaderItem) => {
-            fileItem.uploading = true;
+            updateItem(fileItem.id, (item) => ({ ...item, uploading: true, progress: 0 }));
 
             fileService
                 .storeWithProgress({
                     file: fileItem.file,
                     type: type,
-                    preview: fileItem?.file_preview,
-                    onProgress: ({ progress }) => updateItem(fileItem.id, (item) => ({ ...item, progress })),
+                    preview: fileItem.file_preview,
+                    onProgress: ({ progress }, xhr) => {
+                        updateItem(fileItem.id, (item) => ({
+                            ...item,
+                            uploading: true,
+                            cancel: () => xhr.abort(),
+                            progress,
+                        }));
+                    },
                 })
                 .then((res) => {
                     updateItem(fileItem.id, (item) => ({
                         ...item,
-                        progress: 1,
+                        cancel: null,
+                        progress: 100,
                         uploaded: true,
+                        uploading: false,
                         file_data: res.data.data,
-                        has_preview: ['pdf', 'png', 'jpeg', 'jpg'].includes(item?.file_data?.ext),
+                        has_preview: ['pdf', 'png', 'jpeg', 'jpg'].includes(res.data.data?.ext),
                     }));
 
                     callbackRef?.current?.onFileUploaded?.(makeFileEvent(filesRef?.current, fileItem));
@@ -225,6 +235,8 @@ export default function FileUploader({
         (file: FileUploaderItem) => {
             fileItems.splice(fileItems.indexOf(file), 1);
 
+            file.cancel?.();
+
             setFileItems([...fileItems]);
 
             callbackRef?.current?.onFileRemoved?.(makeFileEvent(filesRef?.current));
@@ -316,9 +328,9 @@ export default function FileUploader({
 
             {fileItems.length > 0 && (
                 <div className="uploader-files">
-                    {fileItems?.map((file, index) => (
+                    {fileItems?.map((file) => (
                         <FileUploaderItemView
-                            key={index}
+                            key={file.id}
                             item={file}
                             compact={fileListCompact}
                             buttons={!hideButtons}

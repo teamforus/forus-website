@@ -1,13 +1,10 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { useFileService } from '../../../../dashboard/services/FileService';
-import FileModel from '../../../../dashboard/props/models/File';
 import useAssetUrl from '../../../hooks/useAssetUrl';
-import usePushSuccess from '../../../../dashboard/hooks/usePushSuccess';
 import { ResponseError } from '../../../../dashboard/props/ApiResponses';
 import useOpenModal from '../../../../dashboard/hooks/useOpenModal';
 import ModalImagePreview from '../../modals/ModalImagePreview';
 import ModalPdfPreview from '../../modals/ModalPdfPreview';
-import ModalPhotoCropper from '../../modals/modal-photo-cropper/ModalPhotoCropper';
 import { FileUploaderItem } from './FileUploader';
 
 export default function FileUploaderItemView({
@@ -27,7 +24,9 @@ export default function FileUploaderItemView({
     const openModal = useOpenModal();
     const fileService = useFileService();
 
-    const name = useMemo(() => item.file?.name || item.file_data?.original_name || '', []);
+    const name = useMemo(() => {
+        return item.file?.name || item.file_data?.original_name || '';
+    }, [item.file?.name, item.file_data?.original_name]);
     const extension = useMemo(() => name?.split('.')[name.split('.').length - 1], [name]);
 
     const previewFile = useCallback(

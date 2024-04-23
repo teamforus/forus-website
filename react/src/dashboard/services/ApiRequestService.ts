@@ -147,7 +147,7 @@ export default class ApiRequestService<T = null> {
             if (cfg?.onProgress) {
                 xhr.upload.onprogress = function (event) {
                     if (event.lengthComputable) {
-                        cfg?.onProgress({ progress: (event.loaded / event.total) * 100 });
+                        cfg?.onProgress({ progress: (event.loaded / event.total) * 100 }, xhr);
                     }
                 };
             }
