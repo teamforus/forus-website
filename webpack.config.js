@@ -1,5 +1,5 @@
-const _path = require('path');
 const fs = require('fs');
+const _path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const { DefinePlugin, ProvidePlugin } = require('webpack');
@@ -7,13 +7,19 @@ const timestamp = new Date().getTime();
 const isDevServer = process.env.WEBPACK_SERVE;
 const CopyPlugin = require('copy-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
-const { fronts, enableOnly = null, httpsKey = null, httpsCert = null } = require('./env.js');
-
-const configs = Object.keys(fronts)
-    .filter((key) => !enableOnly || enableOnly.includes(key))
-    .map((key) => ({ out: key, ...fronts[key] }));
+const envData = require('./env.js');
+const { info: logInfo } = console;
 
 module.exports = (env, argv) => {
+    const { fronts, enableOnly = null, httpsKey = null, httpsCert = null } = envData;
+    const cliEnableOnly = env.only?.split(',') || null;
+
+    const configs = Object.keys(fronts)
+        .filter((key) => !(cliEnableOnly || enableOnly) || (cliEnableOnly || enableOnly).includes(key))
+        .map((key) => ({ out: key, ...fronts[key] }));
+
+    logInfo(`Building fronts:\n${configs?.map((config) => `   - ${config?.out}`)?.join('\n')}\n`);
+
     const { mode = 'development' } = argv;
     const distPath = 'dist';
     const scriptPath = `app-${timestamp}.js`;
