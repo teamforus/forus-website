@@ -65,9 +65,9 @@ export default function Notifications() {
                         Notificaties
                     </div>
                 </div>
-            }>
-            {notifications && (
-                <Fragment>
+            }
+            profileHeader={
+                notifications && (
                     <div className="profile-content-header clearfix">
                         <div className="profile-content-title">
                             <div className="pull-left">
@@ -80,7 +80,10 @@ export default function Notifications() {
                             </div>
                         </div>
                     </div>
-
+                )
+            }>
+            {notifications && (
+                <Fragment>
                     {notifications?.data.length > 0 && (
                         <div className="card block block-notifications-table">
                             <div className="card-section card-section-padless">

@@ -99,9 +99,9 @@ export default function PreferencesNotifications() {
                         {translate('notification_preferences.title_preferences')}
                     </div>
                 </div>
-            }>
-            {preferences && (
-                <Fragment>
+            }
+            profileHeader={
+                preferences && (
                     <div className="profile-content-header clearfix">
                         <div className="profile-content-title">
                             <div className="pull-left">
@@ -109,7 +109,10 @@ export default function PreferencesNotifications() {
                             </div>
                         </div>
                     </div>
-
+                )
+            }>
+            {preferences && (
+                <Fragment>
                     {preferences && !preferences?.email && (
                         <div className="card">
                             <div className="card-header">

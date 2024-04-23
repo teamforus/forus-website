@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { TopNavbar } from '../../elements/top-navbar/TopNavbar';
 import { useParams } from 'react-router-dom';
 import StateNavLink from '../../../modules/state_router/StateNavLink';
 import useAppConfigs from '../../../hooks/useAppConfigs';
@@ -17,6 +16,8 @@ import { useProductService } from '../../../services/ProductService';
 import { useStateParams } from '../../../modules/state_router/Router';
 import useSetTitle from '../../../hooks/useSetTitle';
 import useTranslate from '../../../../dashboard/hooks/useTranslate';
+import BlockShowcase from '../../elements/block-showcase/BlockShowcase';
+import BlockLoader from '../../../../dashboard/components/elements/block-loader/BlockLoader';
 
 export default function ProvidersShow() {
     const { id } = useParams();
@@ -72,9 +73,7 @@ export default function ProvidersShow() {
     }, [provider?.name, setTitle, translate]);
 
     return (
-        <div className="block block-showcase">
-            <TopNavbar />
-
+        <BlockShowcase wrapper={false} loaderElement={<BlockLoader type={'full'} />}>
             {provider && (
                 <main id="main-content">
                     <div className="block block-provider">
@@ -90,7 +89,7 @@ export default function ProvidersShow() {
                                             Terug
                                         </StateNavLink>
                                     )}
-                                    <StateNavLink name={'providers'} className="breadcrumb-item">
+                                    <StateNavLink name={'providers'} className="breadcrumb-item" activeExact={true}>
                                         Aanbieders
                                     </StateNavLink>
                                     <div className="breadcrumb-item active" aria-current="location">
@@ -274,6 +273,6 @@ export default function ProvidersShow() {
                     </div>
                 </main>
             )}
-        </div>
+        </BlockShowcase>
     );
 }

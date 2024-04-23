@@ -22,6 +22,8 @@ import Markdown from '../../elements/markdown/Markdown';
 import BlockCard2FAWarning from '../../elements/block-card-2fa-warning/BlockCard2FAWarning';
 import useSetTitle from '../../../hooks/useSetTitle';
 import BlockShowcase from '../../elements/block-showcase/BlockShowcase';
+import BlockLoader from '../../../../dashboard/components/elements/block-loader/BlockLoader';
+import BlockLoaderBreadcrumbs from '../../../../dashboard/components/elements/block-loader/BlockLoaderBreadcrumbs';
 
 export default function FundsShow() {
     const { id } = useParams();
@@ -123,6 +125,12 @@ export default function FundsShow() {
     }, [fund, fetchProducts]);
 
     useEffect(() => {
+        if (fund && fund.id !== parseInt(id)) {
+            setFund(null);
+        }
+    }, [fund, id]);
+
+    useEffect(() => {
         if (fund) {
             setTitle(
                 translate('page_state_titles.fund', {
@@ -135,7 +143,17 @@ export default function FundsShow() {
     }, [envData, fund, fund?.name, fund?.organization?.name, setTitle, translate]);
 
     return (
-        <BlockShowcase className="block block-showcase">
+        <BlockShowcase
+            breadcrumbs={<></>}
+            wrapper={true}
+            loaderElement={
+                <section className="section section-fund">
+                    <div className="wrapper">
+                        <BlockLoaderBreadcrumbs />
+                        <BlockLoader />
+                    </div>
+                </section>
+            }>
             {fund && (
                 <section className="section section-fund">
                     <div className="wrapper">
@@ -152,19 +170,19 @@ export default function FundsShow() {
                             <StateNavLink name={'home'} className="breadcrumb-item">
                                 Home
                             </StateNavLink>
-                            <StateNavLink name={'funds'} className="breadcrumb-item" activeClass={null}>
+                            <StateNavLink name={'funds'} className="breadcrumb-item" activeExact={true}>
                                 {translate(`funds.funds.${envData.client_key}.title`, {}, 'funds.header.title')}
                             </StateNavLink>
                             <a className="breadcrumb-item active" aria-current="location">
                                 {fund?.name}
                             </a>
                         </div>
-
                         <div className="block block-fund">
                             <div className="fund-content">
                                 <div className="fund-card">
                                     <div className="fund-details">
                                         <h1 className="fund-name">{fund?.name}</h1>
+
                                         {fund?.description_short && (
                                             <div className="fund-description">
                                                 <div className="block block-markdown">

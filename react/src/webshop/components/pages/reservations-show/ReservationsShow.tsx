@@ -71,7 +71,7 @@ export default function ReservationsShow() {
                     <StateNavLink name="home" className="breadcrumb-item">
                         Home
                     </StateNavLink>
-                    <StateNavLink name="reservations" className="breadcrumb-item" activeClass={null}>
+                    <StateNavLink name="reservations" className="breadcrumb-item" activeExact={true}>
                         {translate('reservations.header.title')}
                     </StateNavLink>
                     <div className="breadcrumb-item active" aria-current="location">
@@ -79,6 +79,7 @@ export default function ReservationsShow() {
                     </div>
                 </div>
             }
+            profileHeader={<></>}
             contentDusk={'reservationDetailsPage'}>
             {reservation && (
                 <Fragment>

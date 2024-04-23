@@ -1,10 +1,15 @@
 @font-face {
-    font-family: "Century Gothic";
-    src: url("../fonts/Century Gothic.ttf");
+    font-family: 'Century Gothic';
+
+    @if ($buildReact) {
+        src: url('./assets/fonts/Century Gothic.ttf');
+    } @else {
+        src: url('../fonts/Century Gothic.ttf');
+    }
 }
 
-@import "schagen/vars";
-@import "_common/webshop";
+@import 'schagen/vars';
+@import '_common/webshop';
 
 // INCLUDES
-@import "schagen/includes/shame";
+@import 'schagen/includes/shame';

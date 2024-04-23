@@ -144,43 +144,48 @@ export default function Reservations() {
                         </div>
                     </div>
                 </div>
+            }
+            profileHeader={
+                reservations && (
+                    <Fragment>
+                        <div className="profile-content-header clearfix">
+                            <div className="profile-content-title">
+                                <div className="pull-left">
+                                    <div className="profile-content-title-count">{reservations.meta.total}</div>
+                                    <h1 className="profile-content-header" data-dusk="reservationsTitle">
+                                        {translate('reservations.header.title')}
+                                    </h1>
+                                </div>
+                            </div>
+
+                            <div className="block block-label-tabs form pull-right">
+                                <div className="label-tab-set">
+                                    <div
+                                        className={`label-tab label-tab-sm ${!filters.values.archived ? 'active' : ''}`}
+                                        onClick={() => filters.update({ archived: 0 })}
+                                        aria-pressed={!filters.values.archived ? 'true' : 'false'}
+                                        role="button">
+                                        Actief
+                                    </div>
+                                    <div
+                                        className={`label-tab label-tab-sm ${filters.values.archived ? 'active' : ''}`}
+                                        onClick={() => filters.update({ archived: 1 })}
+                                        aria-pressed={filters.values.archived ? 'true' : 'false'}
+                                        role="button">
+                                        Archief
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="profile-content-header">
+                            <div className="profile-content-subtitle">{translate('reservations.header.subtitle')}</div>
+                        </div>
+                    </Fragment>
+                )
             }>
             {reservations && (
                 <Fragment>
-                    <div className="profile-content-header clearfix">
-                        <div className="profile-content-title">
-                            <div className="pull-left">
-                                <div className="profile-content-title-count">{reservations.meta.total}</div>
-                                <h1 className="profile-content-header" data-dusk="reservationsTitle">
-                                    {translate('reservations.header.title')}
-                                </h1>
-                            </div>
-                        </div>
-
-                        <div className="block block-label-tabs form pull-right">
-                            <div className="label-tab-set">
-                                <div
-                                    className={`label-tab label-tab-sm ${!filters.values.archived ? 'active' : ''}`}
-                                    onClick={() => filters.update({ archived: 0 })}
-                                    aria-pressed={!filters.values.archived ? 'true' : 'false'}
-                                    role="button">
-                                    Actief
-                                </div>
-                                <div
-                                    className={`label-tab label-tab-sm ${filters.values.archived ? 'active' : ''}`}
-                                    onClick={() => filters.update({ archived: 1 })}
-                                    aria-pressed={filters.values.archived ? 'true' : 'false'}
-                                    role="button">
-                                    Archief
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="profile-content-header">
-                        <div className="profile-content-subtitle">{translate('reservations.header.subtitle')}</div>
-                    </div>
-
                     {reservations.data?.length > 0 && (
                         <div className="block block-reservations">
                             {reservations.data?.map((reservation) => (

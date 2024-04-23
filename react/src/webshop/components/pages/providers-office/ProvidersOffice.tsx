@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { TopNavbar } from '../../elements/top-navbar/TopNavbar';
 import { useParams } from 'react-router-dom';
 import StateNavLink from '../../../modules/state_router/StateNavLink';
 import useAppConfigs from '../../../hooks/useAppConfigs';
@@ -14,6 +13,8 @@ import { PaginationData } from '../../../../dashboard/props/ApiResponses';
 import Product from '../../../props/models/Product';
 import { useProductService } from '../../../services/ProductService';
 import { useOfficeService } from '../../../services/OfficeService';
+import BlockLoader from '../../../../dashboard/components/elements/block-loader/BlockLoader';
+import BlockShowcase from '../../elements/block-showcase/BlockShowcase';
 
 export default function ProvidersOffice() {
     const { organization_id, id } = useParams();
@@ -75,23 +76,21 @@ export default function ProvidersOffice() {
     }, [fetchProducts]);
 
     return (
-        <div className="block block-showcase">
-            <TopNavbar />
-
+        <BlockShowcase wrapper={false} loaderElement={<BlockLoader type={'full'} />}>
             {provider && office && (
                 <main id="main-content">
                     <div className="block block-office">
                         <div className="office-breadcrumbs">
                             <div className="wrapper">
                                 <div className="block block-breadcrumbs">
-                                    <StateNavLink name="providers" className="breadcrumb-item" activeClass={null}>
+                                    <StateNavLink name="providers" className="breadcrumb-item" activeExact={true}>
                                         Aanbieders
                                     </StateNavLink>
                                     <StateNavLink
                                         name="provider"
                                         className="breadcrumb-item"
                                         params={{ id: provider.id }}
-                                        activeClass={null}>
+                                        activeExact={true}>
                                         {provider.name}
                                     </StateNavLink>
                                     <div className="breadcrumb-item active" aria-current="location">
@@ -329,6 +328,6 @@ export default function ProvidersOffice() {
                     </div>
                 </main>
             )}
-        </div>
+        </BlockShowcase>
     );
 }

@@ -1,23 +1,15 @@
 import React from 'react';
 
-// todo: implement loader
-export default function BlockLoader() {
+export default function BlockLoader({ type }: { type?: 'full' }) {
     return (
-        <div
-            style={{
-                width: '100%',
-                height: '200px',
-                background: 'red',
-                alignItems: 'center',
-                fontFamily: 'sans-serif',
-                backgroundColor: 'white',
-                color: 'darkgray',
-                gap: '6px',
-                fontStyle: '12px',
-                borderRadius: 'var(--border-radius)',
-                marginBottom: '20px',
-            }}
-            className={'flex flex-vertical flex-center flex-align-items-center' + ''}
-        />
+        <div className={`block block-loader ${type == 'full' ? 'block-loader-full' : ''}`}>
+            <div className="loader-content">
+                <div className={'loader-bars'}>
+                    <div className={'loader-bar'} />
+                    <div className={'loader-bar'} />
+                    <div className={'loader-bar'} />
+                </div>
+            </div>
+        </div>
     );
 }

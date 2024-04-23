@@ -282,7 +282,7 @@ export default function VouchersShow() {
                         <StateNavLink name={'home'} className="breadcrumb-item">
                             Home
                         </StateNavLink>
-                        <StateNavLink name={'vouchers'} className="breadcrumb-item" activeClass={null}>
+                        <StateNavLink name={'vouchers'} className="breadcrumb-item" activeExact={true}>
                             Mijn tegoeden
                         </StateNavLink>
                         {voucher && (

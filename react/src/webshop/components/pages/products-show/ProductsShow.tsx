@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { TopNavbar } from '../../elements/top-navbar/TopNavbar';
 import { useParams } from 'react-router-dom';
 import StateNavLink from '../../../modules/state_router/StateNavLink';
 import useAppConfigs from '../../../hooks/useAppConfigs';
@@ -22,6 +21,7 @@ import ProductFundsCard from './elements/ProductFundsCard';
 import Voucher from '../../../../dashboard/props/models/Voucher';
 import useSetTitle from '../../../hooks/useSetTitle';
 import useEnvData from '../../../hooks/useEnvData';
+import BlockShowcase from '../../elements/block-showcase/BlockShowcase';
 
 export default function ProductsShow() {
     const { id } = useParams();
@@ -116,131 +116,127 @@ export default function ProductsShow() {
     }, [envData?.client_key, product?.name, product?.organization?.name, setTitle, translate]);
 
     return (
-        <div className="block block-showcase">
-            <TopNavbar />
+        <BlockShowcase
+            wrapper={true}
+            breadcrumbs={
+                product && (
+                    <div className="block block-breadcrumbs">
+                        {searchParams && (
+                            <StateNavLink
+                                className="breadcrumb-item breadcrumb-item-back"
+                                name={'search-result'}
+                                state={searchParams}>
+                                <em className="mdi mdi-chevron-left" />
+                                Terug
+                            </StateNavLink>
+                        )}
+                        <StateNavLink name="home" className="breadcrumb-item">
+                            {translate('product.headers.home')}
+                        </StateNavLink>
 
+                        {hasBudgetFunds && (
+                            <StateNavLink className="breadcrumb-item" activeExact={true} name="products">
+                                {translate('product.headers.products')}
+                            </StateNavLink>
+                        )}
+
+                        {hasSubsidyFunds && !hasBudgetFunds && (
+                            <StateNavLink className="breadcrumb-item" activeExact={true} name="actions">
+                                {translate('product.headers.subsidies')}
+                            </StateNavLink>
+                        )}
+
+                        <div className="breadcrumb-item active" aria-current="location">
+                            {product.name}
+                        </div>
+                    </div>
+                )
+            }>
             {product && (
-                <main id="main-content">
-                    <section className="section section-product">
-                        <div className="wrapper">
-                            <div className="block block-breadcrumbs">
-                                {searchParams && (
-                                    <StateNavLink
-                                        className="breadcrumb-item breadcrumb-item-back"
-                                        name={'search-result'}
-                                        state={searchParams}>
-                                        <em className="mdi mdi-chevron-left" />
-                                        Terug
-                                    </StateNavLink>
-                                )}
-                                <StateNavLink name="home" className="breadcrumb-item">
-                                    {translate('product.headers.home')}
-                                </StateNavLink>
-                                {hasBudgetFunds && (
-                                    <StateNavLink className="breadcrumb-item" activeClass={null} name="products">
-                                        {translate('product.headers.products')}
-                                    </StateNavLink>
-                                )}
-                                {hasSubsidyFunds && !hasBudgetFunds && (
-                                    <StateNavLink className="breadcrumb-item" activeClass={null} name="actions">
-                                        {translate('product.headers.subsidies')}
-                                    </StateNavLink>
-                                )}
-                                <div className="breadcrumb-item active" aria-current="location">
-                                    {product.name}
-                                </div>
+                <section className="section section-product">
+                    <div className="block block-product">
+                        <div className="product-card">
+                            <div className="product-photo">
+                                <img
+                                    src={
+                                        product.photo?.sizes?.large ||
+                                        assetUrl('/assets/img/placeholders/product-large.png')
+                                    }
+                                    alt={productService.transformProductAlternativeText(product)}
+                                />
                             </div>
-                            <div className="block block-product">
-                                <div className="product-card">
-                                    <div className="product-photo">
-                                        <img
-                                            src={
-                                                product.photo?.sizes?.large ||
-                                                assetUrl('/assets/img/placeholders/product-large.png')
-                                            }
-                                            alt={productService.transformProductAlternativeText(product)}
-                                        />
-                                    </div>
-                                    <div className="product-details">
-                                        <h1 className="product-name">
-                                            <span data-dusk="productName">{product.name}</span>
+                            <div className="product-details">
+                                <h1 className="product-name">
+                                    <span data-dusk="productName">{product.name}</span>
 
-                                            {!product.deleted && product.sold_out && (
-                                                <span className="label label-danger">
-                                                    {translate('product.status.out_of_stock')}
-                                                </span>
-                                            )}
-                                        </h1>
-                                        <div className="organization-name">{product.organization?.name}</div>
-                                        <div className="product-properties">
-                                            <div className="product-property">
-                                                <div className="product-property-label">
-                                                    {translate('product.labels.category')}
-                                                </div>
-                                                <h2 className="product-property-value">
-                                                    {product.product_category.name}
-                                                </h2>
-                                            </div>
-                                        </div>
-                                        <div className="product-properties">
-                                            <div className="product-property product-property-full">
-                                                <div className="product-property-label">
-                                                    {translate('product.labels.description')}
-                                                </div>
-                                                <div className="product-property-value">
-                                                    <Markdown
-                                                        content={product.description_html}
-                                                        ariaLevel={3}
-                                                        role={'heading'}
-                                                    />
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    {authIdentity && (
-                                        <div
-                                            className={`block block-bookmark-toggle ${
-                                                product.bookmarked ? 'active' : ''
-                                            }`}
-                                            onClick={(e) => toggleBookmark(e, product)}
-                                            aria-label="toevoegen aan verlanglijstje"
-                                            aria-pressed={product.bookmarked}>
-                                            <em className="mdi mdi-cards-heart" />
-                                        </div>
+                                    {!product.deleted && product.sold_out && (
+                                        <span className="label label-danger">
+                                            {translate('product.status.out_of_stock')}
+                                        </span>
                                     )}
-                                </div>
-
-                                {product && vouchers && <ProductFundsCard product={product} vouchers={vouchers} />}
-
-                                {provider && (
-                                    <div className="block block-organizations">
-                                        <ProvidersListItem provider={provider} display={'list'} />
-                                    </div>
-                                )}
-
-                                {appConfigs?.show_product_map && (
-                                    <div className="block block-map_card">
-                                        <div className="map_card-header">
-                                            <h2 className="map_card-title">{translate('product.headers.map')}</h2>
+                                </h1>
+                                <div className="organization-name">{product.organization?.name}</div>
+                                <div className="product-properties">
+                                    <div className="product-property">
+                                        <div className="product-property-label">
+                                            {translate('product.labels.category')}
                                         </div>
-                                        <div className="map_card-iframe">
-                                            <GoogleMap
-                                                appConfigs={appConfigs}
-                                                mapPointers={product.offices}
-                                                mapGestureHandling={'greedy'}
-                                                mapGestureHandlingMobile={'none'}
-                                                markerTemplate={(office: Office) => (
-                                                    <MapMarkerProviderOffice office={office} />
-                                                )}
+                                        <h2 className="product-property-value">{product.product_category.name}</h2>
+                                    </div>
+                                </div>
+                                <div className="product-properties">
+                                    <div className="product-property product-property-full">
+                                        <div className="product-property-label">
+                                            {translate('product.labels.description')}
+                                        </div>
+                                        <div className="product-property-value">
+                                            <Markdown
+                                                content={product.description_html}
+                                                ariaLevel={3}
+                                                role={'heading'}
                                             />
                                         </div>
                                     </div>
-                                )}
+                                </div>
                             </div>
+                            {authIdentity && (
+                                <div
+                                    className={`block block-bookmark-toggle ${product.bookmarked ? 'active' : ''}`}
+                                    onClick={(e) => toggleBookmark(e, product)}
+                                    aria-label="toevoegen aan verlanglijstje"
+                                    aria-pressed={product.bookmarked}>
+                                    <em className="mdi mdi-cards-heart" />
+                                </div>
+                            )}
                         </div>
-                    </section>
-                </main>
+
+                        {product && vouchers && <ProductFundsCard product={product} vouchers={vouchers} />}
+
+                        {provider && (
+                            <div className="block block-organizations">
+                                <ProvidersListItem provider={provider} display={'list'} />
+                            </div>
+                        )}
+
+                        {appConfigs?.show_product_map && (
+                            <div className="block block-map_card">
+                                <div className="map_card-header">
+                                    <h2 className="map_card-title">{translate('product.headers.map')}</h2>
+                                </div>
+                                <div className="map_card-iframe">
+                                    <GoogleMap
+                                        appConfigs={appConfigs}
+                                        mapPointers={product.offices}
+                                        mapGestureHandling={'greedy'}
+                                        mapGestureHandlingMobile={'none'}
+                                        markerTemplate={(office: Office) => <MapMarkerProviderOffice office={office} />}
+                                    />
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </section>
             )}
-        </div>
+        </BlockShowcase>
     );
 }

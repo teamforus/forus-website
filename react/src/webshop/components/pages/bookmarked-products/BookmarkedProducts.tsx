@@ -60,9 +60,9 @@ export default function BookmarkedProducts() {
                         Mijn verlanglijstje
                     </div>
                 </div>
-            }>
-            {products && (
-                <Fragment>
+            }
+            profileHeader={
+                products && (
                     <div className="profile-content-header clearfix">
                         <div className="profile-content-title">
                             <div className="pull-left">
@@ -107,7 +107,10 @@ export default function BookmarkedProducts() {
                             </div>
                         </div>
                     </div>
-
+                )
+            }>
+            {products && (
+                <Fragment>
                     {products.meta.total > 0 ? (
                         <ProductsList display={displayType} products={products.data} />
                     ) : (

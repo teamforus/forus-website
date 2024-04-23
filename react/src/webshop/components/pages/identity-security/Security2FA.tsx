@@ -120,27 +120,35 @@ export default function Security2FA() {
                     </StateNavLink>
                     <div className="breadcrumb-item active">Beveiliging</div>
                 </div>
+            }
+            profileHeader={
+                auth2FAState &&
+                form.values && (
+                    <Fragment>
+                        <div className="profile-content-header clearfix">
+                            <h2 className="profile-content-title">
+                                <div className="pull-left">
+                                    <div className="profile-content-title-count">
+                                        {auth2FAState?.provider_types.length}
+                                    </div>
+                                    <h1 className="profile-content-header">Tweefactorauthenticatie</h1>
+                                </div>
+                            </h2>
+                        </div>
+                        <div className="profile-content-header clearfix">
+                            <h2 className="profile-content-title">
+                                <div className="profile-content-subtitle">
+                                    Voeg een extra beveiligingslaag toe aan uw account door tweefactorauthenticatie in
+                                    te schakelen. U kunt kiezen uit de volgende verificatiemethoden: Authenticator app
+                                    en SMS-verificatie.
+                                </div>
+                            </h2>
+                        </div>
+                    </Fragment>
+                )
             }>
             {auth2FAState && form.values && (
                 <Fragment>
-                    <div className="profile-content-header clearfix">
-                        <h2 className="profile-content-title">
-                            <div className="pull-left">
-                                <div className="profile-content-title-count">{auth2FAState?.provider_types.length}</div>
-                                <h1 className="profile-content-header">Tweefactorauthenticatie</h1>
-                            </div>
-                        </h2>
-                    </div>
-                    <div className="profile-content-header clearfix">
-                        <h2 className="profile-content-title">
-                            <div className="profile-content-subtitle">
-                                Voeg een extra beveiligingslaag toe aan uw account door tweefactorauthenticatie in te
-                                schakelen. U kunt kiezen uit de volgende verificatiemethoden: Authenticator app en
-                                SMS-verificatie.
-                            </div>
-                        </h2>
-                    </div>
-
                     {auth2FAState?.provider_types?.map((provider_type) => (
                         <div key={provider_type.type} className="block block-auth-2fa">
                             <div className="auth-2fa-item">

@@ -98,7 +98,7 @@
     @import 'sections/blocks/block-sign_up.scss';
     @import 'sections/blocks/block-sign_up-provider.scss';
     @import 'sections/blocks/block-notifications-table.scss';
-    
+
     @import 'sections/blocks/block-action-card.scss';
     @import 'sections/blocks/block-voucher-records.scss';
     @import 'sections/blocks/block-error-page.scss';
@@ -132,6 +132,7 @@
     @import 'sections/blocks/block-fund-pre-check-result.scss';
     @import 'sections/blocks/block-key-value-list.scss';
     @import 'sections/blocks/block-card-table.scss';
+    @import 'sections/blocks/block-loader.scss';
 }
 
 @import 'modals/modal-file-preview.scss';

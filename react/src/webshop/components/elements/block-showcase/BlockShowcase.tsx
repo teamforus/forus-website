@@ -1,17 +1,22 @@
 import React, { Fragment } from 'react';
 import { TopNavbar } from '../top-navbar/TopNavbar';
 import BlockLoader from '../../../../dashboard/components/elements/block-loader/BlockLoader';
+import BlockLoaderBreadcrumbs from '../../../../dashboard/components/elements/block-loader/BlockLoaderBreadcrumbs';
 
 export default function BlockShowcase({
     children = null,
     breadcrumbs = null,
     wrapper = false,
     className = null,
+    loaderElement = null,
+    breadcrumbLoaderElement = null,
 }: {
     children?: React.ReactElement | Array<React.ReactElement>;
     breadcrumbs?: React.ReactElement | Array<React.ReactElement>;
     wrapper?: boolean;
     className?: string;
+    loaderElement?: React.ReactElement;
+    breadcrumbLoaderElement?: React.ReactElement;
 }) {
     return (
         <div className={`block block-showcase ${className || ''}`}>
@@ -20,13 +25,13 @@ export default function BlockShowcase({
             <main id="main-content">
                 {wrapper ? (
                     <div className={'wrapper'}>
-                        {breadcrumbs}
-                        {children || <BlockLoader />}
+                        {breadcrumbs || breadcrumbLoaderElement || <BlockLoaderBreadcrumbs />}
+                        {children || loaderElement || <BlockLoader />}
                     </div>
                 ) : (
                     <Fragment>
                         {breadcrumbs}
-                        {children || <BlockLoader />}
+                        {children || loaderElement || <BlockLoader />}
                     </Fragment>
                 )}
             </main>

@@ -13,7 +13,7 @@ import Providers from '../components/pages/providers/Providers';
 import ProvidersShow from '../components/pages/providers-show/ProvidersShow';
 import ProductsShow from '../components/pages/products-show/ProductsShow';
 import Explanation from '../components/pages/cms-pages/Explanation';
-import PreferencesEmails from '../components/pages/identity-preferences/PreferencesEmails';
+import PreferencesEmails from '../components/pages/identity-emails/PreferencesEmails';
 import Redirect from '../components/pages/redirect/Redirect';
 import SecuritySessions from '../components/pages/identity-security/SecuritySessions';
 import Security2FA from '../components/pages/identity-security/Security2FA';

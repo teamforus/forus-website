@@ -83,28 +83,8 @@ export default function FundRequests() {
                     </div>
                 </div>
             }
-            filters={
-                funds && (
-                    <div className="form form-compact">
-                        <div className="profile-aside-block">
-                            <div className="form-group">
-                                <label className="form-label" htmlFor="select_fund">
-                                    Tegoeden
-                                </label>
-                                <SelectControl
-                                    id="select_fund"
-                                    value={filters.values.fund_id}
-                                    options={funds}
-                                    onChange={(fund_id?: number) => filters.update({ fund_id })}
-                                    placeholder={funds?.[0]?.name}
-                                />
-                            </div>
-                        </div>
-                    </div>
-                )
-            }>
-            {fundRequests && (
-                <Fragment>
+            profileHeader={
+                fundRequests && (
                     <div className="profile-content-header clearfix">
                         <div className="profile-content-title">
                             <div className="pull-left">
@@ -131,7 +111,30 @@ export default function FundRequests() {
                             </div>
                         </div>
                     </div>
-
+                )
+            }
+            filters={
+                funds && (
+                    <div className="form form-compact">
+                        <div className="profile-aside-block">
+                            <div className="form-group">
+                                <label className="form-label" htmlFor="select_fund">
+                                    Tegoeden
+                                </label>
+                                <SelectControl
+                                    id="select_fund"
+                                    value={filters.values.fund_id}
+                                    options={funds}
+                                    onChange={(fund_id?: number) => filters.update({ fund_id })}
+                                    placeholder={funds?.[0]?.name}
+                                />
+                            </div>
+                        </div>
+                    </div>
+                )
+            }>
+            {fundRequests && (
+                <Fragment>
                     {fundRequests?.data?.length > 0 && (
                         <div className="block block-fund-requests" data-dusk="fundRequestsList">
                             {fundRequests.data.map((fundRequest) => (

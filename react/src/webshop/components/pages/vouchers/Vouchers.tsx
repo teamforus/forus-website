@@ -77,9 +77,9 @@ export default function Vouchers() {
                         {translate('vouchers.header.title')}
                     </div>
                 </div>
-            }>
-            {vouchers && (
-                <Fragment>
+            }
+            profileHeader={
+                vouchers && (
                     <div className="profile-content-header clearfix">
                         <div className="profile-content-title">
                             <div className="pull-left">
@@ -106,7 +106,10 @@ export default function Vouchers() {
                             </div>
                         </div>
                     </div>
-
+                )
+            }>
+            {vouchers && (
+                <Fragment>
                     {vouchers.data.length > 0 && (
                         <div className="block block-vouchers">
                             {vouchers.data.map((voucher) => (

@@ -1,4 +1,4 @@
-import React, { Fragment, useCallback, useEffect, useState } from 'react';
+import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
 import useTranslate from '../../../../dashboard/hooks/useTranslate';
 import StateNavLink from '../../../modules/state_router/StateNavLink';
 import useAuthIdentity2FAState from '../../../hooks/useAuthIdentity2FAState';
@@ -21,6 +21,7 @@ export default function PreferencesEmails() {
 
     const appConfigs = useAppConfigs();
     const auth2FAState = useAuthIdentity2FAState();
+    const auth2faRestricted = useMemo(() => auth2FAState?.restrictions?.emails?.restricted, [auth2FAState]);
 
     const identityEmailService = useIdentityEmailsService();
 
@@ -143,8 +144,24 @@ export default function PreferencesEmails() {
                         {translate('email_preferences.title_email_preferences')}
                     </div>
                 </div>
+            }
+            profileHeader={
+                (auth2faRestricted || emails) &&
+                (auth2faRestricted ? (
+                    <></>
+                ) : (
+                    <div className="profile-content-header clearfix">
+                        <div className="profile-content-title">
+                            <div className="pull-left">
+                                <h1 className="profile-content-header">
+                                    {translate('email_preferences.title_email_preferences')}
+                                </h1>
+                            </div>
+                        </div>
+                    </div>
+                ))
             }>
-            {auth2FAState?.restrictions?.emails?.restricted ? (
+            {auth2faRestricted ? (
                 <Auth2FARestriction
                     type={'emails'}
                     items={auth2FAState.restrictions.emails.funds}
@@ -153,19 +170,8 @@ export default function PreferencesEmails() {
                     defaultThumbnail={'fund-thumbnail'}
                 />
             ) : (
-                auth2FAState &&
                 emails && (
                     <Fragment>
-                        <div className="profile-content-header clearfix">
-                            <div className="profile-content-title">
-                                <div className="pull-left">
-                                    <h1 className="profile-content-header">
-                                        {translate('email_preferences.title_email_preferences')}
-                                    </h1>
-                                </div>
-                            </div>
-                        </div>
-
                         {emails?.data?.map((email) => (
                             <div key={email.id} className="card" id={`email_${email.id}`}>
                                 <div className="card-section card-section-padless">

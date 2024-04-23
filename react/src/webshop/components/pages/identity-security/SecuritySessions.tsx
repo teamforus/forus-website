@@ -145,6 +145,21 @@ export default function SecuritySessions() {
                     </StateNavLink>
                     <div className="breadcrumb-item active">Beveiliging</div>
                 </div>
+            }
+            profileHeader={
+                (auth2faRestricted || sessions) &&
+                (auth2faRestricted ? (
+                    <></>
+                ) : (
+                    <div className="profile-content-header clearfix">
+                        <div className="profile-content-title">
+                            <div className="pull-left">
+                                {sessions && <div className="profile-content-title-count">{sessions?.data.length}</div>}
+                                Sessies
+                            </div>
+                        </div>
+                    </div>
+                ))
             }>
             {auth2faRestricted ? (
                 <Auth2FARestriction
@@ -157,17 +172,6 @@ export default function SecuritySessions() {
             ) : (
                 sessions && (
                     <Fragment>
-                        <div className="profile-content-header clearfix">
-                            <div className="profile-content-title">
-                                <div className="pull-left">
-                                    {sessions && (
-                                        <div className="profile-content-title-count">{sessions?.data.length}</div>
-                                    )}
-                                    Sessies
-                                </div>
-                            </div>
-                        </div>
-
                         {sessions?.data.map((session) => (
                             <div className="card" key={session.uid}>
                                 <div className="card-section card-section-padless">

@@ -215,7 +215,7 @@ export default function ReimbursementsEdit() {
                     <StateNavLink name={'home'} className="breadcrumb-item">
                         Home
                     </StateNavLink>
-                    <StateNavLink name={'reimbursements'} className="breadcrumb-item">
+                    <StateNavLink name={'reimbursements'} className="breadcrumb-item" activeExact={true}>
                         {translate('reimbursements.header.title')}
                     </StateNavLink>
                     <div className="breadcrumb-item active" aria-current="location">
@@ -223,9 +223,10 @@ export default function ReimbursementsEdit() {
                     </div>
                 </div>
             }
-            contentDusk={'reimbursementEditContent'}>
-            {!auth2FAState?.restrictions?.reimbursements?.restricted && vouchers && (!id || reimbursement) && (
-                <Fragment>
+            profileHeader={
+                !auth2FAState?.restrictions?.reimbursements?.restricted &&
+                vouchers &&
+                (!id || reimbursement) && (
                     <div className="profile-content-header">
                         {reimbursement ? (
                             <h2 className="profile-content-title">Declaratienummer: #{reimbursement.code}</h2>
@@ -233,7 +234,11 @@ export default function ReimbursementsEdit() {
                             <h2 className="profile-content-title">Nieuwe kosten terugvragen</h2>
                         )}
                     </div>
-
+                )
+            }
+            contentDusk={'reimbursementEditContent'}>
+            {!auth2FAState?.restrictions?.reimbursements?.restricted && vouchers && (!id || reimbursement) && (
+                <Fragment>
                     {!reimbursement && !authIdentity?.email && !skipEmail && (
                         <div className="card" data-dusk="reimbursementNoEmail">
                             <div className="card-section">

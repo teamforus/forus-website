@@ -88,7 +88,7 @@ export default function ReimbursementsShow() {
                     <StateNavLink name={'home'} className="breadcrumb-item">
                         Home
                     </StateNavLink>
-                    <StateNavLink name={'reimbursements'} className="breadcrumb-item" activeClass={null}>
+                    <StateNavLink name={'reimbursements'} className="breadcrumb-item" activeExact={true}>
                         {translate('reimbursements.header.title')}
                     </StateNavLink>
                     <div className="breadcrumb-item active" aria-current="location">
@@ -96,9 +96,9 @@ export default function ReimbursementsShow() {
                     </div>
                 </div>
             }
-            contentDusk={'reimbursementDetailsPage'}>
-            {reimbursement && (
-                <Fragment>
+            contentDusk={'reimbursementDetailsPage'}
+            profileHeader={
+                reimbursement && (
                     <div className="profile-content-header">
                         <div className="flex">
                             <div className="flex flex-grow flex-center">
@@ -119,6 +119,10 @@ export default function ReimbursementsShow() {
                             </div>
                         </div>
                     </div>
+                )
+            }>
+            {reimbursement && (
+                <Fragment>
                     <div className="card">
                         <div className="card-section">
                             <ReimbursementDetailsCard reimbursement={reimbursement} />

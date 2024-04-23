@@ -2,17 +2,20 @@ import React from 'react';
 import ProfileMenu from '../profile-menu/ProfileMenu';
 import BlockShowcase from './BlockShowcase';
 import BlockLoader from '../../../../dashboard/components/elements/block-loader/BlockLoader';
+import BlockLoaderHeader from '../../../../dashboard/components/elements/block-loader/BlockLoaderHeader';
 
 export default function BlockShowcaseProfile({
     filters = null,
     children = null,
     breadcrumbs = null,
-    contentDusk,
+    contentDusk = null,
+    profileHeader = null,
 }: {
     filters?: React.ReactElement | Array<React.ReactElement>;
     children?: React.ReactElement | Array<React.ReactElement>;
     breadcrumbs?: React.ReactElement | Array<React.ReactElement>;
     contentDusk?: string;
+    profileHeader: React.ReactElement | Array<React.ReactElement>;
 }) {
     return (
         <BlockShowcase>
@@ -26,6 +29,7 @@ export default function BlockShowcaseProfile({
                             {filters}
                         </div>
                         <div className="profile-content" data-dusk={contentDusk}>
+                            {profileHeader || <BlockLoaderHeader />}
                             {children || <BlockLoader />}
                         </div>
                     </div>

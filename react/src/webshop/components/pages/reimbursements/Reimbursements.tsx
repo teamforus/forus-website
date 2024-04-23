@@ -119,6 +119,91 @@ export default function Reimbursements() {
                         </div>
                     </div>
                 )
+            }
+            profileHeader={
+                (reimbursements || auth2faRestricted) &&
+                (auth2faRestricted ? (
+                    <></>
+                ) : (
+                    <div className="profile-content-header clearfix">
+                        <div className="profile-content-title">
+                            <div className="pull-left">
+                                <div className="profile-content-title-count">{reimbursements.meta.total}</div>
+                                <h1 className="profile-content-header">{translate('reimbursements.header.title')}</h1>
+                            </div>
+                        </div>
+                        <div className="block block-label-tabs form pull-right">
+                            {!filters.values.archived && (
+                                <div className="label-tab-set">
+                                    <div
+                                        role="button"
+                                        className={`label-tab label-tab-sm ${
+                                            filters.values.state == null ? 'active' : ''
+                                        }`}
+                                        onClick={() => filters.update({ state: null })}
+                                        aria-pressed={filters.values.state == null}>
+                                        Alle
+                                    </div>
+                                    <div
+                                        role="button"
+                                        className={`label-tab label-tab-sm ${
+                                            filters.values.state == 'pending' ? 'active' : ''
+                                        }`}
+                                        onClick={() => filters.update({ state: 'pending' })}
+                                        aria-pressed={filters.values.state == 'pending'}>
+                                        In afwachting
+                                    </div>
+                                    <div
+                                        role="button"
+                                        className={`label-tab label-tab-sm ${
+                                            filters.values.state == 'approved' ? 'active' : ''
+                                        }`}
+                                        onClick={() => filters.update({ state: 'approved' })}
+                                        aria-pressed={filters.values.state == 'approved'}>
+                                        Uitbetaald
+                                    </div>
+                                    <div
+                                        role="button"
+                                        className={`label-tab label-tab-sm ${
+                                            filters.values.state == 'declined' ? 'active' : ''
+                                        }`}
+                                        onClick={() => filters.update({ state: 'declined' })}
+                                        aria-pressed={filters.values.state == 'declined'}>
+                                        Afgewezen
+                                    </div>
+                                    <div
+                                        role="button"
+                                        className={`label-tab label-tab-sm ${
+                                            filters.values.state == 'draft' ? 'active' : ''
+                                        }`}
+                                        onClick={() => filters.update({ state: 'draft' })}
+                                        aria-pressed={filters.values.state == 'draft'}>
+                                        Nog niet ingediend
+                                    </div>
+                                </div>
+                            )}
+
+                            <div className="label-tab-set">
+                                <div
+                                    className={`label-tab label-tab-sm ${!filters.values.archived ? 'active' : ''}`}
+                                    role="button"
+                                    data-dusk="reimbursementsFilterActive"
+                                    onClick={() => filters.update({ archived: 0 })}
+                                    aria-pressed={!filters.values.archived}>
+                                    Actief
+                                </div>
+                                <div
+                                    className={`label-tab label-tab-sm ${filters.values.archived ? 'active' : ''}`}
+                                    onClick={() => filters.update({ archived: 1 })}
+                                    role="button"
+                                    data-dusk="reimbursementsFilterArchived"
+                                    aria-pressed={!!filters.values.archived}>
+                                    Archief
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                ))
             }>
             {auth2faRestricted ? (
                 <Auth2FARestriction
@@ -131,87 +216,6 @@ export default function Reimbursements() {
             ) : (
                 reimbursements && (
                     <Fragment>
-                        <div className="profile-content-header clearfix">
-                            <div className="profile-content-title">
-                                <div className="pull-left">
-                                    <div className="profile-content-title-count">{reimbursements.meta.total}</div>
-                                    <h1 className="profile-content-header">
-                                        {translate('reimbursements.header.title')}
-                                    </h1>
-                                </div>
-                            </div>
-                            <div className="block block-label-tabs form pull-right">
-                                {!filters.values.archived && (
-                                    <div className="label-tab-set">
-                                        <div
-                                            role="button"
-                                            className={`label-tab label-tab-sm ${
-                                                filters.values.state == null ? 'active' : ''
-                                            }`}
-                                            onClick={() => filters.update({ state: null })}
-                                            aria-pressed={filters.values.state == null}>
-                                            Alle
-                                        </div>
-                                        <div
-                                            role="button"
-                                            className={`label-tab label-tab-sm ${
-                                                filters.values.state == 'pending' ? 'active' : ''
-                                            }`}
-                                            onClick={() => filters.update({ state: 'pending' })}
-                                            aria-pressed={filters.values.state == 'pending'}>
-                                            In afwachting
-                                        </div>
-                                        <div
-                                            role="button"
-                                            className={`label-tab label-tab-sm ${
-                                                filters.values.state == 'approved' ? 'active' : ''
-                                            }`}
-                                            onClick={() => filters.update({ state: 'approved' })}
-                                            aria-pressed={filters.values.state == 'approved'}>
-                                            Uitbetaald
-                                        </div>
-                                        <div
-                                            role="button"
-                                            className={`label-tab label-tab-sm ${
-                                                filters.values.state == 'declined' ? 'active' : ''
-                                            }`}
-                                            onClick={() => filters.update({ state: 'declined' })}
-                                            aria-pressed={filters.values.state == 'declined'}>
-                                            Afgewezen
-                                        </div>
-                                        <div
-                                            role="button"
-                                            className={`label-tab label-tab-sm ${
-                                                filters.values.state == 'draft' ? 'active' : ''
-                                            }`}
-                                            onClick={() => filters.update({ state: 'draft' })}
-                                            aria-pressed={filters.values.state == 'draft'}>
-                                            Nog niet ingediend
-                                        </div>
-                                    </div>
-                                )}
-
-                                <div className="label-tab-set">
-                                    <div
-                                        className={`label-tab label-tab-sm ${!filters.values.archived ? 'active' : ''}`}
-                                        role="button"
-                                        data-dusk="reimbursementsFilterActive"
-                                        onClick={() => filters.update({ archived: 0 })}
-                                        aria-pressed={!filters.values.archived}>
-                                        Actief
-                                    </div>
-                                    <div
-                                        className={`label-tab label-tab-sm ${filters.values.archived ? 'active' : ''}`}
-                                        onClick={() => filters.update({ archived: 1 })}
-                                        role="button"
-                                        data-dusk="reimbursementsFilterArchived"
-                                        aria-pressed={!!filters.values.archived}>
-                                        Archief
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
                         {reimbursements.data.length > 0 && (
                             <div className="block block-reimbursements" data-dusk="reimbursementsList">
                                 {reimbursements?.data?.map((reimbursement) => (

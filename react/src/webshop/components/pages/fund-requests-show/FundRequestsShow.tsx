@@ -31,7 +31,7 @@ export default function FundRequestsShow() {
                     <StateNavLink name={'home'} className="breadcrumb-item">
                         Home
                     </StateNavLink>
-                    <StateNavLink name={'fund-requests'} className="breadcrumb-item" activeClass={null}>
+                    <StateNavLink name={'fund-requests'} className="breadcrumb-item" activeExact={true}>
                         {translate('fund_requests.header.title')}
                     </StateNavLink>
                     {fundRequest && (
@@ -40,9 +40,9 @@ export default function FundRequestsShow() {
                         </div>
                     )}
                 </div>
-            }>
-            {fundRequest && (
-                <div className={'block block-fund-request'}>
+            }
+            profileHeader={
+                fundRequest && (
                     <div className="profile-content-header">
                         <div className="flex">
                             <div className="flex flex-grow flex-center">
@@ -52,6 +52,10 @@ export default function FundRequestsShow() {
                             </div>
                         </div>
                     </div>
+                )
+            }>
+            {fundRequest && (
+                <div className={'block block-fund-request'}>
                     <div className="card">
                         <div className="card-section">
                             <h3 className="card-heading card-heading-lg flex">
