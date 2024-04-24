@@ -152,7 +152,7 @@ export default function SignUpProvider() {
         (values) => {
             const resolveErrors = (err: ResponseError) => {
                 signUpForm.setIsLocked(false);
-                signUpForm.setErrors(err.data.errors);
+                signUpForm.setErrors(err.data?.errors || { email: err?.data?.message });
             };
 
             return identityService.validateEmail(values).then((res) => {
@@ -207,7 +207,7 @@ export default function SignUpProvider() {
                     .store(data)
                     .then((res) => {
                         setOrganizationValue(res.data.data);
-                        goToStep('STEP_SIGNUP_FINISHED');
+                        goToStep(STEPS[STEPS.indexOf(step) + 1]);
                     })
                     .catch((err: ResponseError) => {
                         formOrganization.setErrors(err.data.errors);
@@ -1284,7 +1284,7 @@ export default function SignUpProvider() {
                                                         className={'large'}
                                                         placeholder={'e-mail@e-mail.nl'}
                                                     />
-                                                    <FormError error={signUpForm.errors.email} />
+                                                    <FormError error={signUpForm.errors?.email} />
                                                 </div>
                                             </div>
                                             <div className="col col-md-5 col-xs-12">
