@@ -54,6 +54,7 @@ import Features from '../components/pages/features/Features';
 import Feature from '../components/pages/feature/Feature';
 import EventLogs from '../components/pages/eventLogs/EventLogs';
 import ReimbursementCategories from '../components/pages/reimbursement-categories/ReimbursementCategories';
+import BiConnection from '../components/pages/bi-connection/BiConnection';
 
 const router = new RouterBuilder();
 
@@ -193,7 +194,7 @@ router.state('organization-logs', <EventLogs />, {
     fallbackState: 'organizations',
 });
 
-router.state('bi-connection', <WIP title={'BI Connection'} />, {
+router.state('bi-connection', <BiConnection />, {
     path: `/organizations/:organizationId/bi-connection`,
     fallbackState: 'organizations',
 });

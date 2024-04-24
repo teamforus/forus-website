@@ -12,7 +12,7 @@ export default function Auth2FARestriction({
     itemThumbnail,
     defaultThumbnail,
 }: {
-    type: 'sessions' | 'emails';
+    type: 'sessions' | 'emails' | 'bi_connections';
     items: Array<Partial<Fund>>;
     itemName: string;
     itemThumbnail: string;
@@ -64,6 +64,26 @@ export default function Auth2FARestriction({
                             accounts te authenticeren. Gebruikers moeten een identificatiemethode verstrekken voordat ze
                             toegang krijgen tot functies waarin persoonlijke gegevens worden ingevoerd of
                             accountaanpassingen kunnen worden gemaakt.
+                        </div>
+                        <div className="button-group">
+                            <NavLink className="button button-primary button-sm" to={getStateRouteUrl('security-2fa')}>
+                                <div className="icon-start mdi mdi-lock-outline" />
+                                Tweefactorauthenticatie instellen
+                            </NavLink>
+                        </div>
+                    </div>
+                )}
+
+                {type == 'sessions' && (
+                    <div className="restriction-hero-details">
+                        <div className="restriction-hero-title">
+                            Tweefactorauthenticatie is vereist voor het beheren van bi connections
+                        </div>
+                        <div className="restriction-hero-description">
+                            Om de veiligheid en bescherming van persoonlijke gegevens te waarborgen, is het verplicht om
+                            Gebruikers moeten een identificatiemethode verstrekken voordat ze toegang krijgen tot
+                            functies waarin persoonlijke gegevens worden ingevoerd of accountaanpassingen kunnen worden
+                            gemaakt.
                         </div>
                         <div className="button-group">
                             <NavLink className="button button-primary button-sm" to={getStateRouteUrl('security-2fa')}>

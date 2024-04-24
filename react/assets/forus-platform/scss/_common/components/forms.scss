@@ -282,6 +282,7 @@
                 box-shadow: none;
                 height: 100%;
                 align-items: center;
+                margin: 0;
 
                 &:hover, &.active {
                     .mdi {
@@ -429,6 +430,19 @@
     .form-group {
         margin-bottom: 10px;
         @include cf();
+
+        .form-group-divider {
+            padding-top: 10px;
+            border-bottom: 1px solid #d4d9dd;
+        }
+
+        .expiration-value {
+            display: flex;
+            align-self: center;
+            font: 500 12px/16px var(--base-font);
+            color: #282B39;
+            font-style: italic;
+        }
 
         &.tooltipped {
             position: relative;
