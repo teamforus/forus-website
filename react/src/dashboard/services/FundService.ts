@@ -1,8 +1,25 @@
-import ApiResponse, { ApiResponseSingle } from '../props/ApiResponses';
+import ApiResponse, { ApiPaginationMetaProp, ApiResponseSingle, ResponseSimple } from '../props/ApiResponses';
 import { useState } from 'react';
 import ApiRequestService from './ApiRequestService';
 import Fund from '../props/models/Fund';
 import Product from '../props/models/Product';
+import Identity from '../props/models/Identity';
+import { ExportFieldProp } from '../components/modals/ModalExportDataSelect';
+
+interface ApiIdentitiesResponse<T> extends ApiResponse<T> {
+    data: PaginationIdentitiesData<T>;
+}
+
+export interface PaginationIdentitiesData<T> {
+    data: Array<T>;
+    meta: ApiPaginationMetaProp & {
+        counts: {
+            active: number;
+            selected: number;
+            without_email: number;
+        };
+    };
+}
 
 export class FundService<T = Fund> {
     /**
@@ -26,6 +43,48 @@ export class FundService<T = Fund> {
 
     public delete(company_id: number, data: object = {}): Promise<null> {
         return this.apiRequest.get<null>(`${this.prefix + company_id}/funds`, data);
+    }
+
+    /**
+     * Fetch identities list
+     */
+    public listIdentities(
+        company_id: number,
+        fund_id: number,
+        data: object = {},
+    ): Promise<ApiIdentitiesResponse<Identity>> {
+        return this.apiRequest.get(`${this.prefix + company_id}/funds/${fund_id}/identities`, data);
+    }
+
+    /**
+     * Send notification
+     */
+    public sendNotification(company_id: number, fund_id: number, data: object = {}): Promise<null> {
+        return this.apiRequest.post<null>(`${this.prefix + company_id}/funds/${fund_id}/identities/notification`, data);
+    }
+
+    /**
+     * Export identities
+     */
+    public exportIdentities(
+        company_id: number,
+        fund_id: number,
+        data: object = {},
+    ): Promise<ResponseSimple<ArrayBuffer>> {
+        return this.apiRequest.get<null>(`${this.prefix + company_id}/funds/${fund_id}/identities/export`, data, {
+            responseType: 'arraybuffer',
+        });
+    }
+
+    /**
+     * Get export identity fields
+     */
+    public exportIdentityFields(
+        company_id: number,
+        fund_id: number,
+        data: object = {},
+    ): Promise<ApiResponseSingle<Array<ExportFieldProp>>> {
+        return this.apiRequest.get<null>(`${this.prefix + company_id}/funds/${fund_id}/identities/export-fields`, data);
     }
 
     public getProviderProduct(

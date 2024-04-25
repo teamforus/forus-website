@@ -54,6 +54,10 @@ import Features from '../components/pages/features/Features';
 import Feature from '../components/pages/feature/Feature';
 import EventLogs from '../components/pages/eventLogs/EventLogs';
 import ReimbursementCategories from '../components/pages/reimbursement-categories/ReimbursementCategories';
+import ImplementationsNotifications from '../components/pages/implementations-notifications/ImplementationsNotifications';
+import ImplementationsNotificationsSend from '../components/pages/implementations-notifications-send/ImplementationsNotificationsSend';
+import ImplementationsNotificationsEdit from '../components/pages/implementations-notifications-edit/ImplementationsNotificationsEdit';
+import ImplementationsNotificationsBranding from '../components/pages/implementations-notifications-branding/ImplementationsNotificationsBranding';
 
 const router = new RouterBuilder();
 
@@ -183,8 +187,23 @@ router.state('implementations', <WIP title={'Implementations'} />, {
     fallbackState: 'organizations',
 });
 
-router.state('implementation-notifications', <WIP title={'Implementation notifications'} />, {
+router.state('implementation-notifications', <ImplementationsNotifications />, {
     path: `/organizations/:organizationId/implementation-notifications`,
+    fallbackState: 'organizations',
+});
+
+router.state('implementation-notifications-send', <ImplementationsNotificationsSend />, {
+    path: `/organizations/:organizationId/implementations/:id/implementation-notifications/send`,
+    fallbackState: 'organizations',
+});
+
+router.state('implementation-notifications-edit', <ImplementationsNotificationsEdit />, {
+    path: `/organizations/:organizationId/implementations/:implementationId/implementation-notifications/:id`,
+    fallbackState: 'organizations',
+});
+
+router.state('implementation-notifications-branding', <ImplementationsNotificationsBranding />, {
+    path: `/organizations/:organizationId/implementations/:id/notifications-branding`,
     fallbackState: 'organizations',
 });
 
