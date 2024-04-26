@@ -42,10 +42,6 @@ export default function ReimbursementsShow() {
             .finally(() => setProgress(100));
     }, [id, setProgress, reimbursementService]);
 
-    useEffect(() => {
-        fetchReimbursement();
-    }, [fetchReimbursement]);
-
     const cancelReimbursement = useCallback(
         (e: React.MouseEvent) => {
             e.preventDefault();
@@ -78,7 +74,13 @@ export default function ReimbursementsShow() {
     );
 
     useEffect(() => {
-        setTitle(translate('page_state_titles.reimbursement', { code: `#${reimbursement?.code || ''}` }));
+        fetchReimbursement();
+    }, [fetchReimbursement]);
+
+    useEffect(() => {
+        if (reimbursement?.code) {
+            setTitle(translate('page_state_titles.reimbursement', { code: `#${reimbursement?.code || ''}` }));
+        }
     }, [setTitle, reimbursement, translate]);
 
     return (

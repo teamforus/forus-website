@@ -56,11 +56,11 @@ export default function SelectControlOptionsVouchers<T>({
                     <div className="voucher-item voucher-item-select voucher-item-select-placeholder">
                         <div className="voucher-image">
                             <img
-                                src={assetUrl(
+                                src={
                                     selectedVoucher?.fund?.logo?.sizes?.thumbnail ||
-                                        selectedVoucher?.fund?.organization?.logo?.sizes?.thumbnail ||
-                                        './assets/img/placeholders/fund-thumbnail.png',
-                                )}
+                                    selectedVoucher?.fund?.organization?.logo?.sizes?.thumbnail ||
+                                    assetUrl('./assets/img/placeholders/fund-thumbnail.png')
+                                }
                                 alt={''}
                             />
                         </div>

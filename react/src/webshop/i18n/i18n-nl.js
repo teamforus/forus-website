@@ -1,6 +1,15 @@
 module.exports = {
     test: '{{name}} {{foo}}',
     page_title: 'Forus platform',
+    page_state_loading_titles: {
+        home: 'Webshop',
+        fund: 'Fund',
+        reimbursement: 'Declaratie',
+        'reimbursement-edit': 'Kosten terugvragen bewerk',
+        product: 'Aanbod',
+        voucher: 'Uw tegoed',
+        provider: 'Aanbieder',
+    },
     page_state_titles: {
         home: '{{implementation}} webshop',
         fund: '{{fund_name}} van {{organization_name}}',
@@ -49,7 +58,6 @@ module.exports = {
         'auth-link': 'Inloggen',
         sitemap: 'Sitemap',
         'sign-up': 'Aanmelden',
-        'me-app': 'Me-app',
     },
     implementation_name: {
         general: 'General',

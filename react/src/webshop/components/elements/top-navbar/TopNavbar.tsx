@@ -567,7 +567,7 @@ export const TopNavbar = ({ hideOnScroll = false, className = '' }: { hideOnScro
                                     ) : (
                                         <button
                                             className="button button-primary"
-                                            onClick={() => startFundRequest()}
+                                            onClick={() => startFundRequest({ reset: 1 })}
                                             role="button"
                                             id="start_modal"
                                             data-dusk="btnStart">

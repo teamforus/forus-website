@@ -1,3 +1,5 @@
-type PhysicalCard = {};
+type PhysicalCard = {
+    //
+};
 
 export default PhysicalCard;

@@ -81,10 +81,6 @@ export default function VouchersShow() {
         [appConfigs, voucher],
     );
 
-    const [mapOptions] = useState({
-        centerType: 'avg',
-    });
-
     const physicalCardIsLinkable = useMemo(() => {
         return voucher?.fund?.allow_physical_cards && voucher?.type === 'regular';
     }, [voucher]);
@@ -200,6 +196,26 @@ export default function VouchersShow() {
             .finally(() => setProgress(100));
     }, [address, setProgress, voucherService]);
 
+    const fetchProducts = useCallback(
+        (voucher: Voucher) => {
+            setProgress(0);
+
+            productService
+                .list({ fund_type: voucher?.fund?.type, sample: 1, per_page: 6, fund_id: voucher.fund_id })
+                .then((res) => {
+                    if (voucher?.fund?.type === 'budget') {
+                        setProducts(res.data);
+                    }
+
+                    if (voucher?.fund?.type === 'subsidies') {
+                        setSubsidies(res.data);
+                    }
+                })
+                .finally(() => setProgress(100));
+        },
+        [setProgress, productService],
+    );
+
     const linkPhysicalCard = useCallback(
         (voucher: Voucher, state?: 'select_type' | 'card_code') => {
             openModal((modal) => (
@@ -239,26 +255,6 @@ export default function VouchersShow() {
         [fetchVoucher, linkPhysicalCard, openModal, voucherService],
     );
 
-    const fetchProducts = useCallback(
-        (voucher: Voucher) => {
-            setProgress(0);
-
-            productService
-                .list({ fund_type: voucher?.fund?.type, sample: 1, per_page: 6, fund_id: voucher.fund_id })
-                .then((res) => {
-                    if (voucher?.fund?.type === 'budget') {
-                        setProducts(res.data);
-                    }
-
-                    if (voucher?.fund?.type === 'subsidies') {
-                        setSubsidies(res.data);
-                    }
-                })
-                .finally(() => setProgress(100));
-        },
-        [setProgress, productService],
-    );
-
     useEffect(() => {
         fetchVoucher();
     }, [fetchVoucher]);
@@ -270,7 +266,9 @@ export default function VouchersShow() {
     }, [fetchProducts, voucher]);
 
     useEffect(() => {
-        setTitle(translate('page_state_titles.voucher', { address: voucher?.address || '' }));
+        if (voucher?.address) {
+            setTitle(translate('page_state_titles.voucher', { address: voucher?.address || '' }));
+        }
     }, [setTitle, translate, voucher?.address]);
 
     return (
@@ -1059,7 +1057,12 @@ export default function VouchersShow() {
                                             )}
                                             mapGestureHandling={'greedy'}
                                             mapGestureHandlingMobile={'none'}
-                                            mapOptions={mapOptions}
+                                            mapOptions={{
+                                                centerType: 'avg',
+                                                fullscreenControlOptions: {
+                                                    position: window.google.maps.ControlPosition.TOP_RIGHT,
+                                                },
+                                            }}
                                         />
                                     </div>
 

@@ -1,4 +1,4 @@
-import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { Fragment, useCallback, useMemo, useState } from 'react';
 import useAssetUrl from '../../../../../hooks/useAssetUrl';
 import { PreCheckCriteria, PreCheckTotalsFund } from '../../../../../services/types/PreCheckTotals';
 import { useNavigateState } from '../../../../../modules/state_router/Router';
@@ -166,7 +166,7 @@ export default function FundsListItemPreCheck({ fund }: { fund?: PreCheckTotalsF
                                 type="button"
                                 disabled={!fund.allow_direct_requests}
                                 onClick={(e) => applyFund(e)}>
-                                {fund.allow_direct_requests ? 'Activeren' : 'Niet beschikbaar'}
+                                {fund.allow_direct_requests ? 'Direct aanvragen' : 'Niet beschikbaar'}
                                 <em className="mdi mdi-arrow-right icon-right" aria-hidden="true" />
                             </button>
                         </div>

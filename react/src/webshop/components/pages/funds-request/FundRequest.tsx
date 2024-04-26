@@ -34,6 +34,8 @@ import FundRequestStepConfirmCriteria from './elements/steps/FundRequestStepConf
 import FundRequestStepCriteria from './elements/steps/FundRequestStepCriteria';
 import FundRequestBsnWarning from './elements/FundRequestBsnWarning';
 import BlockShowcase from '../../elements/block-showcase/BlockShowcase';
+import useFetchAuthIdentity from '../../../hooks/useFetchAuthIdentity';
+import useSetProgress from '../../../../dashboard/hooks/useSetProgress';
 
 export type LocalCriterion = FundCriterion & {
     input_value?: string;
@@ -58,6 +60,8 @@ export default function FundRequest() {
     const pushDanger = usePushDanger();
     const pushSuccess = usePushSuccess();
     const navigateState = useNavigateState();
+    const setProgress = useSetProgress();
+    const fetchAuthIdentity = useFetchAuthIdentity();
 
     const fundService = useFundService();
     const digIdService = useDigiDService();
@@ -314,12 +318,22 @@ export default function FundRequest() {
     );
 
     const fetchFund = useCallback(() => {
-        fundService.read(parseInt(id)).then((res) => setFund(res.data.data));
-    }, [fundService, id]);
+        setProgress(0);
+
+        fundService
+            .read(parseInt(id))
+            .then((res) => setFund(res.data.data))
+            .finally(() => setProgress(100));
+    }, [fundService, setProgress, id]);
 
     const fetchRecordTypes = useCallback(() => {
-        recordTypeService.list().then((res) => setRecordTypes(res.data));
-    }, [recordTypeService]);
+        setProgress(0);
+
+        recordTypeService
+            .list()
+            .then((res) => setRecordTypes(res.data))
+            .finally(() => setProgress(100));
+    }, [recordTypeService, setProgress]);
 
     const fetchVouchers = useCallback(() => {
         if (!authIdentity || !fund) {
@@ -327,18 +341,26 @@ export default function FundRequest() {
             return;
         }
 
-        voucherService.list().then((res) => {
-            setVouchers(res.data.data);
-        });
-    }, [authIdentity, fund, voucherService]);
+        setProgress(0);
+
+        voucherService
+            .list()
+            .then((res) => setVouchers(res.data.data))
+            .finally(() => setProgress(100));
+    }, [authIdentity, fund, voucherService, setProgress]);
 
     const fetchFundRequests = useCallback(() => {
         if (!authIdentity || !fund) {
             return setFundRequests(null);
         }
 
-        fundRequestService.index(fund.id).then((res) => setFundRequests(res.data.data));
-    }, [authIdentity, fund, fundRequestService]);
+        setProgress(0);
+
+        fundRequestService
+            .index(fund.id)
+            .then((res) => setFundRequests(res.data.data))
+            .finally(() => setProgress(100));
+    }, [authIdentity, fund, fundRequestService, setProgress]);
 
     useEffect(() => {
         fetchFund();
@@ -351,6 +373,10 @@ export default function FundRequest() {
     useEffect(() => {
         fetchVouchers();
     }, [fetchVouchers]);
+
+    useEffect(() => {
+        fetchAuthIdentity().then();
+    }, [fetchAuthIdentity]);
 
     useEffect(() => {
         fetchFundRequests();
@@ -447,7 +473,7 @@ export default function FundRequest() {
     }
 
     return (
-        <BlockShowcase wrapper={true}>
+        <BlockShowcase wrapper={true} breadcrumbs={<></>}>
             {!digiExpired && (
                 <div className="block block-sign_up">
                     <div className="block-wrapper form">

@@ -20,7 +20,6 @@ import { useReimbursementService } from '../../../services/ReimbursementService'
 import ReimbursementCard from './elements/ReimbursementCard';
 import IconReimbursement from '../../../../../assets/forus-webshop/resources/_webshop-common/assets/img/icon-reimbursement.svg';
 import Auth2FARestriction from '../../elements/auth2fa-restriction/Auth2FARestriction';
-import useSetTitle from '../../../hooks/useSetTitle';
 
 export default function Reimbursements() {
     const envData = useEnvData();
@@ -28,7 +27,6 @@ export default function Reimbursements() {
     const auth2faRestricted = useMemo(() => auth2FAState?.restrictions?.reimbursements?.restricted, [auth2FAState]);
 
     const translate = useTranslate();
-    const setTitle = useSetTitle();
     const setProgress = useSetProgress();
     const navigateState = useNavigateState();
 
@@ -46,16 +44,22 @@ export default function Reimbursements() {
     });
 
     const fetchFunds = useCallback(() => {
+        setProgress(0);
+
         fundService
             .list({ per_page: 100 })
-            .then((res) => setFunds([{ name: 'Alle tegoeden', id: null }, ...res.data.data]));
-    }, [fundService]);
+            .then((res) => setFunds([{ name: 'Alle tegoeden', id: null }, ...res.data.data]))
+            .finally(() => setProgress(100));
+    }, [fundService, setProgress]);
 
     const fetchVouchers = useCallback(() => {
+        setProgress(0);
+
         voucherService
             .list({ allow_reimbursements: 1, implementation_key: envData.client_key, per_page: 100 })
-            .then((res) => setVouchers(res.data.data));
-    }, [voucherService, envData]);
+            .then((res) => setVouchers(res.data.data))
+            .finally(() => setProgress(100));
+    }, [voucherService, setProgress, envData]);
 
     const fetchReimbursements = useCallback(() => {
         setProgress(0);
@@ -82,10 +86,6 @@ export default function Reimbursements() {
             fetchReimbursements();
         }
     }, [fetchReimbursements, auth2faRestricted]);
-
-    useEffect(() => {
-        setTitle(translate('page_state_titles.reimbursements'));
-    }, [setTitle, translate]);
 
     return (
         <BlockShowcaseProfile

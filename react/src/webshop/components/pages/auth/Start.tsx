@@ -40,7 +40,8 @@ export default function Start() {
 
     const [qrValue, setQrValue] = useState(null);
 
-    const [{ logout, restore_with_digid, restore_with_email }, setQueryParams] = useQueryParams({
+    const [{ reset, logout, restore_with_digid, restore_with_email }, setQueryParams] = useQueryParams({
+        reset: BooleanParam,
         logout: BooleanParam,
         restore_with_digid: BooleanParam,
         restore_with_email: BooleanParam,
@@ -181,8 +182,12 @@ export default function Start() {
             setState('email');
         }
 
-        setQueryParams({ logout: null, restore_with_digid: null, restore_with_email: null });
-    }, [logout, restore_with_digid, restore_with_email, setQueryParams, signOut, startDigId]);
+        if (reset) {
+            setState('start');
+        }
+
+        setQueryParams({ logout: null, restore_with_digid: null, restore_with_email: null, reset: null });
+    }, [reset, logout, restore_with_digid, restore_with_email, setQueryParams, signOut, startDigId]);
 
     useEffect(() => {
         if (signedIn) {
@@ -191,7 +196,9 @@ export default function Start() {
     }, [authService, signedIn]);
 
     useEffect(() => {
-        setTitle(translate(`signup.items.${envData.client_key}.title`, null, 'Inloggen'));
+        if (envData) {
+            setTitle(translate(`signup.items.${envData.client_key}.title`, null, 'Inloggen'));
+        }
     }, [envData, setTitle, translate]);
 
     const inlineEmailForm = (showPolicy = true) => (

@@ -22,6 +22,7 @@ import Voucher from '../../../../dashboard/props/models/Voucher';
 import useSetTitle from '../../../hooks/useSetTitle';
 import useEnvData from '../../../hooks/useEnvData';
 import BlockShowcase from '../../elements/block-showcase/BlockShowcase';
+import useSetProgress from '../../../../dashboard/hooks/useSetProgress';
 
 export default function ProductsShow() {
     const { id } = useParams();
@@ -33,6 +34,7 @@ export default function ProductsShow() {
     const assetUrl = useAssetUrl();
     const setTitle = useSetTitle();
     const translate = useTranslate();
+    const setProgress = useSetProgress();
     const navigateState = useNavigateState();
     const bookmarkProductToggle = useBookmarkProductToggle();
 
@@ -65,26 +67,39 @@ export default function ProductsShow() {
     );
 
     const fetchProduct = useCallback(() => {
-        productService.read(parseInt(id)).then((res) => setProduct(res.data.data));
-    }, [productService, id]);
+        setProgress(0);
+
+        productService
+            .read(parseInt(id))
+            .then((res) => setProduct(res.data.data))
+            .finally(() => setProgress(100));
+    }, [productService, setProgress, id]);
 
     const fetchProvider = useCallback(() => {
         if (!product?.organization_id) {
             return setProvider(null);
         }
 
-        providerService.read(product.organization_id).then((res) => setProvider(res.data.data));
-    }, [product?.organization_id, providerService]);
+        setProgress(0);
+
+        providerService
+            .read(product.organization_id)
+            .then((res) => setProvider(res.data.data))
+            .finally(() => setProgress(100));
+    }, [product?.organization_id, setProgress, providerService]);
 
     const fetchVouchers = useCallback(() => {
         if (!authIdentity) {
             return setVouchers([]);
         }
 
+        setProgress(0);
+
         voucherService
             .list({ product_id: parseInt(id), type: 'regular', state: 'active' })
-            .then((res) => setVouchers(res.data.data));
-    }, [authIdentity, voucherService, id]);
+            .then((res) => setVouchers(res.data.data))
+            .finally(() => setProgress(100));
+    }, [authIdentity, voucherService, setProgress, id]);
 
     useEffect(() => {
         fetchProduct();
@@ -106,14 +121,16 @@ export default function ProductsShow() {
     }, [appConfigs, navigateState]);
 
     useEffect(() => {
-        setTitle(
-            translate('page_state_titles.product', {
-                product_name: product?.name || '',
-                implementation: translate(`implementation_name.${envData?.client_key}`, null, ''),
-                organization_name: product?.organization?.name || '',
-            }),
-        );
-    }, [envData?.client_key, product?.name, product?.organization?.name, setTitle, translate]);
+        if (product?.name && product?.organization?.name && envData?.client_key) {
+            setTitle(
+                translate('page_state_titles.product', {
+                    product_name: product?.name || '',
+                    implementation: translate(`implementation_name.${envData?.client_key}`, null, ''),
+                    organization_name: product?.organization?.name || '',
+                }),
+            );
+        }
+    }, [envData?.client_key, product, product?.name, product?.organization?.name, setTitle, translate]);
 
     return (
         <BlockShowcase
@@ -199,6 +216,7 @@ export default function ProductsShow() {
                                     </div>
                                 </div>
                             </div>
+
                             {authIdentity && (
                                 <div
                                     className={`block block-bookmark-toggle ${product.bookmarked ? 'active' : ''}`}
@@ -229,6 +247,11 @@ export default function ProductsShow() {
                                         mapPointers={product.offices}
                                         mapGestureHandling={'greedy'}
                                         mapGestureHandlingMobile={'none'}
+                                        mapOptions={{
+                                            fullscreenControlOptions: {
+                                                position: window.google.maps.ControlPosition.TOP_RIGHT,
+                                            },
+                                        }}
                                         markerTemplate={(office: Office) => <MapMarkerProviderOffice office={office} />}
                                     />
                                 </div>

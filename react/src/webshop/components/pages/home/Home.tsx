@@ -15,11 +15,14 @@ import Product from '../../../../dashboard/props/models/Product';
 import { useProductService } from '../../../services/ProductService';
 import CmsBlocks from '../../elements/cms-blocks/CmsBlocks';
 import BlockProducts from '../../elements/block-products/BlockProducts';
+import useSetProgress from '../../../../dashboard/hooks/useSetProgress';
 
 export default function Home() {
-    const translate = useTranslate();
     const envData = useEnvData();
     const appConfigs = useAppConfigs();
+
+    const translate = useTranslate();
+    const setProgress = useSetProgress();
 
     const authIdentity = useAuthIdentity();
 
@@ -33,30 +36,40 @@ export default function Home() {
     const [subsidies, setSubsidies] = useState<PaginationData<Product>>(null);
 
     const fetchFunds = useCallback(() => {
+        setProgress(0);
+
         fundService
             .list()
             .then((res) => setFunds(res.data.data))
-            .catch((e) => console.error(e));
-    }, [fundService]);
+            .catch((e) => console.error(e))
+            .finally(() => setProgress(100));
+    }, [fundService, setProgress]);
 
     const fetchVouchers = useCallback(() => {
+        setProgress(0);
+
         voucherService
             .list()
             .then((res) => setVouchers(res.data.data))
-            .catch((e) => console.error(e));
-    }, [voucherService]);
+            .catch((e) => console.error(e))
+            .finally(() => setProgress(100));
+    }, [voucherService, setProgress]);
 
     const fetchProducts = useCallback(() => {
+        setProgress(0);
+
         productService
             .sample('budget')
             .then((res) => setProducts(res.data))
-            .catch((e) => console.error(e));
+            .catch((e) => console.error(e))
+            .finally(() => setProgress(100));
 
         productService
             .sample('subsidies')
             .then((res) => setSubsidies(res.data))
-            .catch((e) => console.error(e));
-    }, [productService]);
+            .catch((e) => console.error(e))
+            .finally(() => setProgress(100));
+    }, [productService, setProgress]);
 
     useEffect(() => {
         fetchFunds();

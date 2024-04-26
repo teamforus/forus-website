@@ -23,10 +23,8 @@ import ProductsList from '../../elements/lists/products-list/ProductsList';
 import EmptyBlock from '../../elements/empty-block/EmptyBlock';
 import useTranslate from '../../../../dashboard/hooks/useTranslate';
 import BlockShowcasePage from '../../elements/block-showcase/BlockShowcasePage';
-import BlockLoader from '../../../../dashboard/components/elements/block-loader/BlockLoader';
 
 export default function Products({ fundType = 'budget' }: { fundType: 'budget' | 'subsidies' }) {
-    const translate = useTranslate();
     const appConfigs = useAppConfigs();
     const authIdentity = useAuthIdentity();
 
@@ -35,6 +33,7 @@ export default function Products({ fundType = 'budget' }: { fundType: 'budget' |
     const organizationService = useOrganizationService();
     const productCategoryService = useProductCategoryService();
 
+    const translate = useTranslate();
     const setProgress = useSetProgress();
 
     const [sortByOptions] = useState(productService.getSortOptions());

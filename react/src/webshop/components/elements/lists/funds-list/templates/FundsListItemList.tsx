@@ -69,14 +69,18 @@ export default function FundsListItemList({
                                 {showMore ? fund.description_short : strLimit(fund.description_short, 190)}
                             </span>
                             <br />
-                            <button
-                                className="button button-text button-xs"
-                                onClick={() => setShowMore(!showMore)}
-                                aria-expanded={showMore}
-                                aria-controls="fund_description_short">
-                                {showMore ? 'Toon minder' : 'Toon meer'}
-                                <em className={`mdi ${showMore ? 'mdi-chevron-up' : 'mdi-chevron-down'} icon-right`} />
-                            </button>
+                            {fund.description_short.length > 190 && (
+                                <button
+                                    className="button button-text button-xs"
+                                    onClick={() => setShowMore(!showMore)}
+                                    aria-expanded={showMore}
+                                    aria-controls="fund_description_short">
+                                    {showMore ? 'Toon minder' : 'Toon meer'}
+                                    <em
+                                        className={`mdi ${showMore ? 'mdi-chevron-up' : 'mdi-chevron-down'} icon-right`}
+                                    />
+                                </button>
+                            )}
                         </div>
                     )}
                 </div>

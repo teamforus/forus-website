@@ -6,10 +6,13 @@ import { useFundRequestService } from '../../../services/FundRequestService';
 import { useParams } from 'react-router-dom';
 import FundRequestRecordCard from './elements/FundRequestRecordCard';
 import BlockShowcaseProfile from '../../elements/block-showcase/BlockShowcaseProfile';
+import useSetProgress from '../../../../dashboard/hooks/useSetProgress';
 
 export default function FundRequestsShow() {
     const { id } = useParams();
+
     const translate = useTranslate();
+    const setProgress = useSetProgress();
 
     const [fundRequest, setFundRequest] = useState<FundRequest>(null);
     const [showDeclinedNote, setShowDeclinedNote] = useState(true);
@@ -17,8 +20,13 @@ export default function FundRequestsShow() {
     const fundRequestService = useFundRequestService();
 
     const fetchFundRequest = useCallback(() => {
-        fundRequestService.readRequester(parseInt(id)).then((res) => setFundRequest(res.data.data));
-    }, [fundRequestService, id]);
+        setProgress(0);
+
+        fundRequestService
+            .readRequester(parseInt(id))
+            .then((res) => setFundRequest(res.data.data))
+            .finally(() => setProgress(100));
+    }, [fundRequestService, setProgress, id]);
 
     useEffect(() => {
         fetchFundRequest();

@@ -97,6 +97,7 @@ export default function LayoutMobileMenu() {
                                     name={menuItem.state}
                                     params={menuItem.stateParams}
                                     target={menuItem.target || '_blank'}
+                                    activeExact={true}
                                     onClick={hideMobileMenu}>
                                     <em className="mobile-menu-item-icon mdi mdi-arrow-right" />
                                     {translate(

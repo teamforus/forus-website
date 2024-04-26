@@ -18,11 +18,14 @@ import SearchItemsList from './elements/SearchItemsList';
 import { useVoucherService } from '../../../services/VoucherService';
 import Voucher from '../../../../dashboard/props/models/Voucher';
 import BlockShowcasePage from '../../elements/block-showcase/BlockShowcasePage';
+import useSetProgress from '../../../../dashboard/hooks/useSetProgress';
 
 // todo: query filters
 export default function Search() {
-    const translate = useTranslate();
     const authIdentity = useAuthIdentity();
+
+    const translate = useTranslate();
+    const setProgress = useSetProgress();
 
     const fundService = useFundService();
     const searchService = useSearchService();
@@ -76,11 +79,14 @@ export default function Search() {
 
     const doSearch = useCallback(
         (query: object, stateParams?: object) => {
-            searchService.search(query).then((res) => {
-                setSearchItems(transformItems(res.data, stateParams));
-            });
+            setProgress(0);
+
+            searchService
+                .search(query)
+                .then((res) => setSearchItems(transformItems(res.data, stateParams)))
+                .finally(() => setProgress(100));
         },
-        [searchService, transformItems],
+        [searchService, transformItems, setProgress],
     );
 
     const toggleType = useCallback(
@@ -117,29 +123,43 @@ export default function Search() {
 
     const fetchVouchers = useCallback(() => {
         if (authIdentity) {
-            return voucherService.list().then((res) => setVouchers(res.data.data));
+            setProgress(0);
+
+            return voucherService
+                .list()
+                .then((res) => setVouchers(res.data.data))
+                .finally(() => setProgress(100));
         }
 
         return setVouchers([]);
-    }, [voucherService, authIdentity]);
+    }, [authIdentity, setProgress, voucherService]);
 
     const fetchFunds = useCallback(() => {
+        setProgress(0);
+
         fundService
             .list({ with_external: 1 })
-            .then((res) => setFunds([{ id: null, name: 'Selecteer tegoeden...' }, ...res.data.data]));
-    }, [fundService]);
+            .then((res) => setFunds([{ id: null, name: 'Selecteer tegoeden...' }, ...res.data.data]))
+            .finally(() => setProgress(100));
+    }, [fundService, setProgress]);
 
     const fetchOrganizations = useCallback(() => {
+        setProgress(0);
+
         organizationService
             .list({ is_employee: 0, has_products: 1, per_page: 500, fund_type: 'budget' })
-            .then((res) => setOrganizations([{ id: null, name: 'Selecteer aanbieders...' }, ...res.data.data]));
-    }, [organizationService]);
+            .then((res) => setOrganizations([{ id: null, name: 'Selecteer aanbieders...' }, ...res.data.data]))
+            .finally(() => setProgress(100));
+    }, [organizationService, setProgress]);
 
     const fetchProductCategories = useCallback(() => {
+        setProgress(0);
+
         productCategoryService
             .list({ parent_id: 'null', used: 1, per_page: 1000 })
-            .then((res) => setProductCategories([{ id: null, name: 'Selecteer categorie...' }, ...res.data.data]));
-    }, [productCategoryService]);
+            .then((res) => setProductCategories([{ id: null, name: 'Selecteer categorie...' }, ...res.data.data]))
+            .finally(() => setProgress(100));
+    }, [productCategoryService, setProgress]);
 
     useEffect(() => {
         fetchFunds();

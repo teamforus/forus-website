@@ -65,7 +65,7 @@ export default function Security2FA() {
         identity2FAService
             .status()
             .then((res) => {
-                updateIdentity();
+                updateIdentity().then();
                 setAuth2FAState(res.data.data);
             })
             .catch((err: ResponseError) => pushDanger('Mislukt!', err.data?.message || 'Unknown error.'))

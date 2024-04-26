@@ -24,6 +24,7 @@ import useSetTitle from '../../../hooks/useSetTitle';
 import BlockShowcase from '../../elements/block-showcase/BlockShowcase';
 import BlockLoader from '../../../../dashboard/components/elements/block-loader/BlockLoader';
 import BlockLoaderBreadcrumbs from '../../../../dashboard/components/elements/block-loader/BlockLoaderBreadcrumbs';
+import useSetProgress from '../../../../dashboard/hooks/useSetProgress';
 
 export default function FundsShow() {
     const { id } = useParams();
@@ -34,6 +35,7 @@ export default function FundsShow() {
 
     const setTitle = useSetTitle();
     const translate = useTranslate();
+    const setProgress = useSetProgress();
     const navigateState = useNavigateState();
 
     const showTakenByPartnerModal = useShowTakenByPartnerModal();
@@ -74,28 +76,40 @@ export default function FundsShow() {
     }, [fund, recordsByTypesKey]);
 
     const fetchFund = useCallback(() => {
+        setProgress(0);
+
         fundService
             .read(parseInt(id), { check_criteria: 1 })
-            .then((res) => setFund(fundService.mapFund(res.data.data, vouchers || [], appConfigs)));
-    }, [appConfigs, fundService, id, vouchers]);
+            .then((res) => setFund(fundService.mapFund(res.data.data, vouchers || [], appConfigs)))
+            .finally(() => setProgress(100));
+    }, [appConfigs, fundService, id, vouchers, setProgress]);
 
     const fetchVouchers = useCallback(() => {
-        voucherService.list({ implementation: 1, is_employee: 0 }).then((res) => setVouchers(res.data.data));
-    }, [voucherService]);
+        setProgress(0);
+
+        voucherService
+            .list({ implementation: 1, is_employee: 0 })
+            .then((res) => setVouchers(res.data.data))
+            .finally(() => setProgress(100));
+    }, [voucherService, setProgress]);
 
     const fetchProducts = useCallback(() => {
+        setProgress(0);
+
         if (fund?.type === 'budget') {
             productService
                 .list({ fund_type: 'budget', sample: 1, per_page: 6, fund_id: fund?.id })
-                .then((res) => setProducts(res.data));
+                .then((res) => setProducts(res.data))
+                .finally(() => setProgress(100));
         }
 
         if (fund?.type === 'subsidies') {
             productService
                 .list({ fund_type: 'subsidies', sample: 1, per_page: 6, fund_id: fund?.id })
-                .then((res) => setSubsidies(res.data));
+                .then((res) => setSubsidies(res.data))
+                .finally(() => setProgress(100));
         }
-    }, [fund?.id, fund?.type, productService]);
+    }, [fund?.id, fund?.type, productService, setProgress]);
 
     const applyFund = useCallback(
         (e: React.MouseEvent, fund: Fund) => {

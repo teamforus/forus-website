@@ -9,14 +9,16 @@ import useFilter from '../../../../dashboard/hooks/useFilter';
 import { useProductService } from '../../../services/ProductService';
 import ProductsList from '../../elements/lists/products-list/ProductsList';
 import { useNavigateState } from '../../../modules/state_router/Router';
+import useSetProgress from '../../../../dashboard/hooks/useSetProgress';
 
 export default function BookmarkedProducts() {
+    const setProgress = useSetProgress();
     const navigateState = useNavigateState();
+
     const productService = useProductService();
+
     const [products, setProducts] = useState<PaginationData<Product>>(null);
-
     const [sortByOptions] = useState(productService.getSortOptions());
-
     const [sortBy /*, setSortBy*/] = useState(sortByOptions[0]);
     const [displayType, setDisplayType] = useState<'list' | 'grid'>('list');
 
@@ -29,8 +31,13 @@ export default function BookmarkedProducts() {
     const { update: filtersUpdate } = filters;
 
     const fetchProducts = useCallback(() => {
-        productService.list(filters.activeValues).then((res) => setProducts(res.data));
-    }, [productService, filters.activeValues]);
+        setProgress(0);
+
+        productService
+            .list(filters.activeValues)
+            .then((res) => setProducts(res.data))
+            .finally(() => setProgress(100));
+    }, [productService, filters.activeValues, setProgress]);
 
     useEffect(() => {
         filtersUpdate((values) => ({ ...values, ...sortBy.value }));

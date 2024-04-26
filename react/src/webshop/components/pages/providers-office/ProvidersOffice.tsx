@@ -15,10 +15,13 @@ import { useProductService } from '../../../services/ProductService';
 import { useOfficeService } from '../../../services/OfficeService';
 import BlockLoader from '../../../../dashboard/components/elements/block-loader/BlockLoader';
 import BlockShowcase from '../../elements/block-showcase/BlockShowcase';
+import useSetProgress from '../../../../dashboard/hooks/useSetProgress';
 
 export default function ProvidersOffice() {
     const { organization_id, id } = useParams();
+
     const assetUrl = useAssetUrl();
+    const setProgress = useSetProgress();
 
     const appConfigs = useAppConfigs();
     const officeService = useOfficeService();
@@ -42,26 +45,40 @@ export default function ProvidersOffice() {
     }, [office?.schedule]);
 
     const fetchProvider = useCallback(() => {
-        providerService.read(parseInt(organization_id)).then((res) => setProvider(res.data.data));
-    }, [organization_id, providerService]);
+        setProgress(0);
+
+        providerService
+            .read(parseInt(organization_id))
+            .then((res) => setProvider(res.data.data))
+            .finally(() => setProgress(100));
+    }, [organization_id, providerService, setProgress]);
 
     const fetchOffice = useCallback(() => {
-        officeService.read(parseInt(id)).then((res) => setOffice(res.data.data));
-    }, [id, officeService]);
+        setProgress(0);
 
-    const fetchProducts = useCallback(() => {
+        officeService
+            .read(parseInt(id))
+            .then((res) => setOffice(res.data.data))
+            .finally(() => setProgress(100));
+    }, [id, officeService, setProgress]);
+
+    const fetchProducts = useCallback(async () => {
         if (!provider) {
             return;
         }
 
-        productService
+        setProgress(0);
+
+        await productService
             .list({ fund_type: 'budget', per_page: 3, organization_id: provider?.id })
             .then((res) => setProducts(res.data));
 
-        productService
+        await productService
             .list({ fund_type: 'subsidies', per_page: 3, organization_id: provider?.id })
             .then((res) => setSubsidies(res.data));
-    }, [provider, productService]);
+
+        setProgress(100);
+    }, [provider, productService, setProgress]);
 
     useEffect(() => {
         fetchOffice();
@@ -72,261 +89,258 @@ export default function ProvidersOffice() {
     }, [fetchProvider]);
 
     useEffect(() => {
-        fetchProducts();
+        fetchProducts().then();
     }, [fetchProducts]);
 
     return (
         <BlockShowcase wrapper={false} loaderElement={<BlockLoader type={'full'} />}>
             {provider && office && (
-                <main id="main-content">
-                    <div className="block block-office">
-                        <div className="office-breadcrumbs">
-                            <div className="wrapper">
-                                <div className="block block-breadcrumbs">
-                                    <StateNavLink name="providers" className="breadcrumb-item" activeExact={true}>
-                                        Aanbieders
-                                    </StateNavLink>
-                                    <StateNavLink
-                                        name="provider"
-                                        className="breadcrumb-item"
-                                        params={{ id: provider.id }}
-                                        activeExact={true}>
-                                        {provider.name}
-                                    </StateNavLink>
-                                    <div className="breadcrumb-item active" aria-current="location">
-                                        {office.address}
-                                    </div>
+                <div className="block block-office">
+                    <div className="office-breadcrumbs">
+                        <div className="wrapper">
+                            <div className="block block-breadcrumbs">
+                                <StateNavLink name="providers" className="breadcrumb-item" activeExact={true}>
+                                    Aanbieders
+                                </StateNavLink>
+                                <StateNavLink
+                                    name="provider"
+                                    className="breadcrumb-item"
+                                    params={{ id: provider.id }}
+                                    activeExact={true}>
+                                    {provider.name}
+                                </StateNavLink>
+                                <div className="breadcrumb-item active" aria-current="location">
+                                    {office.address}
                                 </div>
                             </div>
                         </div>
+                    </div>
 
-                        {appConfigs?.show_office_map && (
-                            <div className="office-map">
-                                <div className="block block-google-map">
-                                    <GoogleMap
-                                        mapPointers={[office]}
-                                        markerTemplate={(office: Office) => (
-                                            <MapMarkerProviderOfficeView office={office} />
-                                        )}
-                                        mapGestureHandling={'greedy'}
-                                        mapGestureHandlingMobile={'none'}
-                                        appConfigs={appConfigs}
-                                    />
-                                </div>
+                    {appConfigs?.show_office_map && (
+                        <div className="office-map">
+                            <div className="block block-google-map">
+                                <GoogleMap
+                                    mapPointers={[office]}
+                                    markerTemplate={(office: Office) => <MapMarkerProviderOfficeView office={office} />}
+                                    mapGestureHandling={'greedy'}
+                                    mapGestureHandlingMobile={'none'}
+                                    mapOptions={{
+                                        fullscreenControlOptions: {
+                                            position: window.google.maps.ControlPosition.TOP_RIGHT,
+                                        },
+                                    }}
+                                    appConfigs={appConfigs}
+                                />
                             </div>
-                        )}
+                        </div>
+                    )}
 
-                        <div className={`office-content ${!appConfigs.show_office_map ? 'office-content-top' : ''}`}>
-                            <div className="block block-pane">
-                                <div className="pane-head">
-                                    <h1 className="sr-only">{office.address}</h1>
-                                    <h2 className="pane-head-title">Vestiging informatie</h2>
-                                </div>
-                                <div className="pane-section pane-section-compact-vertical">
-                                    <div className="block block-data-list">
-                                        {office.address && (
-                                            <div className="data-list-row">
-                                                <div className="data-list-key">Adres:</div>
-                                                <div className="data-list-value">{office.address}</div>
-                                            </div>
-                                        )}
-
-                                        {provider.email && (
-                                            <div className="data-list-row">
-                                                <div className="data-list-key">E-mailadres:</div>
-                                                <div className="data-list-value">{provider.email}</div>
-                                            </div>
-                                        )}
-
-                                        {(office.phone || provider.phone) && (
-                                            <div className="data-list-row">
-                                                <div className="data-list-key">Telefoonnummer:</div>
-                                                <div className="data-list-value">{office.phone || provider.phone}</div>
-                                            </div>
-                                        )}
-
-                                        {provider.business_type?.name && (
-                                            <div className="data-list-row">
-                                                <div className="data-list-key">Type aanbieder:</div>
-                                                <div className="data-list-value">
-                                                    <div className="label label-default label-sm">
-                                                        {provider.business_type.name || 'Geen type geselecteerd'}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
+                    <div className={`office-content ${!appConfigs.show_office_map ? 'office-content-top' : ''}`}>
+                        <div className="block block-pane">
+                            <div className="pane-head">
+                                <h1 className="sr-only">{office.address}</h1>
+                                <h2 className="pane-head-title">Vestiging informatie</h2>
                             </div>
-
-                            <div className="block block-pane">
-                                <div className="pane-head">
-                                    <h2 className="pane-head-title">Openingstijden</h2>
-                                </div>
-                                {office.schedule?.length > 0 ? (
-                                    <div className="pane-section pane-section-compact-vertical">
-                                        <div className="block block-schedule-list">
-                                            {Object.keys(weekDays)?.map((dayIndex) => (
-                                                <div key={dayIndex} className="schedule-item">
-                                                    <div className="schedule-day">{weekDays[dayIndex]}</div>
-                                                    <div className="schedule-hours">
-                                                        {[
-                                                            schedules?.[dayIndex]?.start_time,
-                                                            '-',
-                                                            schedules?.[dayIndex]?.end_time,
-                                                        ]
-                                                            .join(' ')
-                                                            .trim()}
-                                                    </div>
-                                                </div>
-                                            ))}
+                            <div className="pane-section pane-section-compact-vertical">
+                                <div className="block block-data-list">
+                                    {office.address && (
+                                        <div className="data-list-row">
+                                            <div className="data-list-key">Adres:</div>
+                                            <div className="data-list-value">{office.address}</div>
                                         </div>
-                                    </div>
-                                ) : (
-                                    <div className="pane-section">
-                                        Aanbieder heeft geen openingstijden ingesteld. Contacteer aanbieder voor de
-                                        openingstijden.
-                                    </div>
-                                )}
-                            </div>
+                                    )}
 
-                            <div className="block block-pane last-child">
-                                <div className="pane-head">
-                                    <h2 className="pane-head-title">Aanbieder</h2>
-                                </div>
-                                <div className="pane-section">
-                                    <div className="office-organization" onClick={() => setShowOffices(!showOffices)}>
-                                        <StateNavLink
-                                            name={'provider'}
-                                            params={{ id: provider.id }}
-                                            className="organization-photo"
-                                            onClick={(e) => e.stopPropagation()}>
-                                            <img
-                                                className="organization-photo-img"
-                                                src={
-                                                    office.photo?.sizes?.thumbnail ||
-                                                    office.organization.logo?.sizes?.thumbnail ||
-                                                    assetUrl('assets/img/placeholders/office-thumbnail.png')
-                                                }
-                                                alt={office.organization.name}
-                                            />
-                                        </StateNavLink>
-
-                                        <StateNavLink
-                                            name={'provider'}
-                                            params={{ id: provider.id }}
-                                            className="organization-title"
-                                            onClick={(e) => e.stopPropagation()}>
-                                            <div className="organization-title-value">{provider.name}</div>
-                                            <div className="organization-title-count">{provider.offices?.length}</div>
-                                        </StateNavLink>
-
-                                        <div className="organization-chevron">
-                                            <div
-                                                className={`mdi ${
-                                                    showOffices ? 'mdi-chevron-up' : 'mdi-chevron-right'
-                                                }`}
-                                                role="button"
-                                                aria-expanded={showOffices}
-                                                aria-label="Toon/verberg informatie over aanbieder"></div>
+                                    {provider.email && (
+                                        <div className="data-list-row">
+                                            <div className="data-list-key">E-mailadres:</div>
+                                            <div className="data-list-value">{provider.email}</div>
                                         </div>
-                                    </div>
-                                </div>
-                            </div>
+                                    )}
 
-                            <div className="block block-organizations">
-                                <div className="organization-item">
-                                    {showOffices && (
-                                        <div className="organization-offices">
-                                            <div className="block block-offices">
-                                                {provider.offices.map((office) => (
-                                                    <StateNavLink
-                                                        key={office.id}
-                                                        name={'provider-office'}
-                                                        params={{
-                                                            organization_id: office.organization_id,
-                                                            id: office.id,
-                                                        }}
-                                                        className="office-item">
-                                                        <div className="office-item-map-icon">
-                                                            <div className="mdi mdi-map-marker"></div>
-                                                        </div>
+                                    {(office.phone || provider.phone) && (
+                                        <div className="data-list-row">
+                                            <div className="data-list-key">Telefoonnummer:</div>
+                                            <div className="data-list-value">{office.phone || provider.phone}</div>
+                                        </div>
+                                    )}
 
-                                                        <div className="office-pane">
-                                                            <div className="office-pane-block">
-                                                                <div className="office-logo">
-                                                                    <img
-                                                                        className="office-logo-img"
-                                                                        src={
-                                                                            office.photo?.sizes?.thumbnail ||
-                                                                            assetUrl(
-                                                                                '/assets/img/placeholders/office-thumbnail.png',
-                                                                            )
-                                                                        }
-                                                                        alt="office thumbnail"
-                                                                    />
-                                                                </div>
-
-                                                                <div className="office-details">
-                                                                    <div className="office-title">{office.address}</div>
-                                                                    <div className="office-labels">
-                                                                        <div className="label label-default">
-                                                                            {provider.business_type?.name ||
-                                                                                'Geen organisatie type'}
-                                                                        </div>
-                                                                    </div>
-                                                                    {(office.phone ||
-                                                                        provider.phone ||
-                                                                        provider.email) && (
-                                                                        <div>
-                                                                            {(office.phone || provider.phone) && (
-                                                                                <div className="office-info office-info-inline">
-                                                                                    <div className="mdi mdi-phone-outline" />
-                                                                                    {office.phone
-                                                                                        ? office.phone
-                                                                                        : provider.phone}
-                                                                                </div>
-                                                                            )}
-
-                                                                            {provider.email && (
-                                                                                <div className="office-info office-info-inline">
-                                                                                    <div className="mdi mdi-email-outline"></div>
-                                                                                    {provider.email}
-                                                                                </div>
-                                                                            )}
-                                                                        </div>
-                                                                    )}
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </StateNavLink>
-                                                ))}
+                                    {provider.business_type?.name && (
+                                        <div className="data-list-row">
+                                            <div className="data-list-key">Type aanbieder:</div>
+                                            <div className="data-list-value">
+                                                <div className="label label-default label-sm">
+                                                    {provider.business_type.name || 'Geen type geselecteerd'}
+                                                </div>
                                             </div>
                                         </div>
                                     )}
                                 </div>
                             </div>
+                        </div>
 
-                            {products?.data.length > 0 && (
-                                <BlockProducts
-                                    type="budget"
-                                    display="grid"
-                                    products={products.data}
-                                    filters={{ organization_id: provider.id }}
-                                />
-                            )}
-
-                            {subsidies?.data.length > 0 && (
-                                <BlockProducts
-                                    type="subsidies"
-                                    display="grid"
-                                    products={subsidies.data}
-                                    filters={{ organization_id: provider.id }}
-                                />
+                        <div className="block block-pane">
+                            <div className="pane-head">
+                                <h2 className="pane-head-title">Openingstijden</h2>
+                            </div>
+                            {office.schedule?.length > 0 ? (
+                                <div className="pane-section pane-section-compact-vertical">
+                                    <div className="block block-schedule-list">
+                                        {Object.keys(weekDays)?.map((dayIndex) => (
+                                            <div key={dayIndex} className="schedule-item">
+                                                <div className="schedule-day">{weekDays[dayIndex]}</div>
+                                                <div className="schedule-hours">
+                                                    {[
+                                                        schedules?.[dayIndex]?.start_time,
+                                                        '-',
+                                                        schedules?.[dayIndex]?.end_time,
+                                                    ]
+                                                        .join(' ')
+                                                        .trim()}
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            ) : (
+                                <div className="pane-section">
+                                    Aanbieder heeft geen openingstijden ingesteld. Contacteer aanbieder voor de
+                                    openingstijden.
+                                </div>
                             )}
                         </div>
+
+                        <div className="block block-pane last-child">
+                            <div className="pane-head">
+                                <h2 className="pane-head-title">Aanbieder</h2>
+                            </div>
+                            <div className="pane-section">
+                                <div className="office-organization" onClick={() => setShowOffices(!showOffices)}>
+                                    <StateNavLink
+                                        name={'provider'}
+                                        params={{ id: provider.id }}
+                                        className="organization-photo"
+                                        onClick={(e) => e.stopPropagation()}>
+                                        <img
+                                            className="organization-photo-img"
+                                            src={
+                                                office.photo?.sizes?.thumbnail ||
+                                                office.organization.logo?.sizes?.thumbnail ||
+                                                assetUrl('assets/img/placeholders/office-thumbnail.png')
+                                            }
+                                            alt={office.organization.name}
+                                        />
+                                    </StateNavLink>
+
+                                    <StateNavLink
+                                        name={'provider'}
+                                        params={{ id: provider.id }}
+                                        className="organization-title"
+                                        onClick={(e) => e.stopPropagation()}>
+                                        <div className="organization-title-value">{provider.name}</div>
+                                        <div className="organization-title-count">{provider.offices?.length}</div>
+                                    </StateNavLink>
+
+                                    <div className="organization-chevron">
+                                        <div
+                                            className={`mdi ${showOffices ? 'mdi-chevron-up' : 'mdi-chevron-right'}`}
+                                            role="button"
+                                            aria-expanded={showOffices}
+                                            aria-label="Toon/verberg informatie over aanbieder"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="block block-organizations">
+                            <div className="organization-item">
+                                {showOffices && (
+                                    <div className="organization-offices">
+                                        <div className="block block-offices">
+                                            {provider.offices.map((office) => (
+                                                <StateNavLink
+                                                    key={office.id}
+                                                    name={'provider-office'}
+                                                    params={{
+                                                        organization_id: office.organization_id,
+                                                        id: office.id,
+                                                    }}
+                                                    className="office-item">
+                                                    <div className="office-item-map-icon">
+                                                        <div className="mdi mdi-map-marker"></div>
+                                                    </div>
+
+                                                    <div className="office-pane">
+                                                        <div className="office-pane-block">
+                                                            <div className="office-logo">
+                                                                <img
+                                                                    className="office-logo-img"
+                                                                    src={
+                                                                        office.photo?.sizes?.thumbnail ||
+                                                                        assetUrl(
+                                                                            '/assets/img/placeholders/office-thumbnail.png',
+                                                                        )
+                                                                    }
+                                                                    alt="office thumbnail"
+                                                                />
+                                                            </div>
+
+                                                            <div className="office-details">
+                                                                <div className="office-title">{office.address}</div>
+                                                                <div className="office-labels">
+                                                                    <div className="label label-default">
+                                                                        {provider.business_type?.name ||
+                                                                            'Geen organisatie type'}
+                                                                    </div>
+                                                                </div>
+                                                                {(office.phone || provider.phone || provider.email) && (
+                                                                    <div>
+                                                                        {(office.phone || provider.phone) && (
+                                                                            <div className="office-info office-info-inline">
+                                                                                <div className="mdi mdi-phone-outline" />
+                                                                                {office.phone
+                                                                                    ? office.phone
+                                                                                    : provider.phone}
+                                                                            </div>
+                                                                        )}
+
+                                                                        {provider.email && (
+                                                                            <div className="office-info office-info-inline">
+                                                                                <div className="mdi mdi-email-outline"></div>
+                                                                                {provider.email}
+                                                                            </div>
+                                                                        )}
+                                                                    </div>
+                                                                )}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </StateNavLink>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+
+                        {products?.data.length > 0 && (
+                            <BlockProducts
+                                type="budget"
+                                display="grid"
+                                products={products.data}
+                                filters={{ organization_id: provider.id }}
+                            />
+                        )}
+
+                        {subsidies?.data.length > 0 && (
+                            <BlockProducts
+                                type="subsidies"
+                                display="grid"
+                                products={subsidies.data}
+                                filters={{ organization_id: provider.id }}
+                            />
+                        )}
                     </div>
-                </main>
+                </div>
             )}
         </BlockShowcase>
     );

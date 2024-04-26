@@ -24,6 +24,7 @@ import { useVoucherService } from '../../../services/VoucherService';
 import useAuthIdentity from '../../../hooks/useAuthIdentity';
 import useSetTitle from '../../../hooks/useSetTitle';
 import BlockShowcasePage from '../../elements/block-showcase/BlockShowcasePage';
+import useSetProgress from '../../../../dashboard/hooks/useSetProgress';
 
 export default function Funds() {
     const envData = useEnvData();
@@ -32,6 +33,7 @@ export default function Funds() {
 
     const setTitle = useSetTitle();
     const translate = useTranslate();
+    const setProgress = useSetProgress();
     const navigateState = useNavigateState();
 
     const tagService = useTagService();
@@ -64,24 +66,40 @@ export default function Funds() {
     }, [filter.values.organization_id, filter.values.q, filter.values.tag_id]);
 
     const fetchFunds = useCallback(() => {
-        fundService.list(filter.activeValues).then((res) => setFunds(res.data));
-    }, [filter.activeValues, fundService]);
+        setProgress(0);
+
+        fundService
+            .list(filter.activeValues)
+            .then((res) => setFunds(res.data))
+            .finally(() => setProgress(100));
+    }, [filter.activeValues, fundService, setProgress]);
 
     const fetchTags = useCallback(() => {
+        setProgress(0);
+
         tagService
             .list({ type: 'funds', per_page: 1000 })
-            .then((res) => setTags([...res.data.data, { id: null, name: 'Alle categorieën' }]));
-    }, [tagService]);
+            .then((res) => setTags([{ id: null, name: 'Alle categorieën' }, ...res.data.data]))
+            .finally(() => setProgress(100));
+    }, [tagService, setProgress]);
 
     const fetchVouchers = useCallback(() => {
-        voucherService.list({}).then((res) => setVouchers(res.data.data));
-    }, [voucherService]);
+        setProgress(0);
+
+        voucherService
+            .list({})
+            .then((res) => setVouchers(res.data.data))
+            .finally(() => setProgress(100));
+    }, [voucherService, setProgress]);
 
     const fetchOrganizations = useCallback(() => {
+        setProgress(0);
+
         organizationService
             .list({ implementation: 1, is_employee: 0 })
-            .then((res) => setOrganizations([{ id: null, name: 'Alle organisaties' }, ...res.data.data]));
-    }, [organizationService]);
+            .then((res) => setOrganizations([{ id: null, name: 'Alle organisaties' }, ...res.data.data]))
+            .finally(() => setProgress(100));
+    }, [organizationService, setProgress]);
 
     useEffect(() => {
         fetchTags();

@@ -15,6 +15,7 @@ import useAssetUrl from '../../../../hooks/useAssetUrl';
 import useOpenModal from '../../../../../dashboard/hooks/useOpenModal';
 import ModalProductReserve from '../../../modals/modal-product-reserve/ModalProductReserve';
 import Tooltip from '../../../elements/tooltip/Tooltip';
+import useFetchAuthIdentity from '../../../../hooks/useFetchAuthIdentity';
 
 export default function ProductFundsCard({ product, vouchers = [] }: { product: Product; vouchers: Array<Voucher> }) {
     const envData = useEnvData();
@@ -24,6 +25,7 @@ export default function ProductFundsCard({ product, vouchers = [] }: { product: 
     const translate = useTranslate();
     const openModal = useOpenModal();
     const navigateState = useNavigateState();
+    const fetchAuthIdentity = useFetchAuthIdentity();
 
     const authIdentity = useAuthIdentity();
     const showTakenByPartnerModal = useShowTakenByPartnerModal();
@@ -77,16 +79,18 @@ export default function ProductFundsCard({ product, vouchers = [] }: { product: 
 
     const reserveProduct = useCallback(
         (fund) => {
-            openModal((modal) => (
-                <ModalProductReserve
-                    fund={fund}
-                    modal={modal}
-                    product={product}
-                    vouchers={fund.meta.reservableVouchers}
-                />
-            ));
+            fetchAuthIdentity().then(() => {
+                openModal((modal) => (
+                    <ModalProductReserve
+                        fund={fund}
+                        modal={modal}
+                        product={product}
+                        vouchers={fund.meta.reservableVouchers}
+                    />
+                ));
+            });
         },
-        [openModal, product],
+        [fetchAuthIdentity, openModal, product],
     );
 
     const fetchFunds = useCallback(() => {

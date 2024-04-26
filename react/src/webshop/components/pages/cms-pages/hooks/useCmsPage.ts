@@ -5,9 +5,9 @@ import { useNavigateState } from '../../../../modules/state_router/Router';
 
 export default function useCmsPage(pageKey: string) {
     const appConfigs = useAppConfigs();
+    const navigateState = useNavigateState();
 
     const [page, setPage] = useState<ImplementationPage>(null);
-    const navigateState = useNavigateState();
 
     const fetchPage = useCallback(() => {
         const page = appConfigs.pages?.[pageKey] || false;

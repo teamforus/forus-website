@@ -9,12 +9,12 @@ export default function SkipLinks() {
     const navigate = useNavigate();
 
     const mainContentUrl = useMemo(() => {
-        if (!envData || !route.route) {
+        if (!envData || !route?.route?.state?.name) {
             return null;
         }
 
-        return getStateRouteUrl(route.route.state.name, route.route.params) + '#main-content';
-    }, [route.route, envData]);
+        return getStateRouteUrl(route.route.state.name, route.route?.params) + '#main-content';
+    }, [route?.route, envData]);
 
     return (
         <div className="skiplinks" role="navigation">

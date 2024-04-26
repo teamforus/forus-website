@@ -147,22 +147,31 @@ export default function Providers() {
     }, []);*/
 
     const fetchFunds = useCallback(() => {
+        setProgress(0);
+
         fundService
             .list({ has_products: 1 })
-            .then((res) => setFunds([{ id: null, name: 'Alle tegoeden...' }, ...res.data.data]));
-    }, [fundService]);
+            .then((res) => setFunds([{ id: null, name: 'Alle tegoeden...' }, ...res.data.data]))
+            .finally(() => setProgress(100));
+    }, [fundService, setProgress]);
 
     const fetchBusinessTypes = useCallback(() => {
+        setProgress(0);
+
         businessTypeService
             .list({ parent_id: 'null', per_page: 9999, used: 1 })
-            .then((res) => setBusinessTypes([{ id: null, name: 'Alle typen...' }, ...res.data.data]));
-    }, [businessTypeService]);
+            .then((res) => setBusinessTypes([{ id: null, name: 'Alle typen...' }, ...res.data.data]))
+            .finally(() => setProgress(100));
+    }, [businessTypeService, setProgress]);
 
     const fetchProductCategories = useCallback(() => {
+        setProgress(0);
+
         productCategoryService
             .list({ parent_id: 'null', used: 1, per_page: 1000 })
-            .then((res) => setProductCategories([{ id: null, name: 'Selecteer categorie...' }, ...res.data.data]));
-    }, [productCategoryService]);
+            .then((res) => setProductCategories([{ id: null, name: 'Selecteer categorie...' }, ...res.data.data]))
+            .finally(() => setProgress(100));
+    }, [productCategoryService, setProgress]);
 
     useEffect(() => {
         fetchFunds();

@@ -55,14 +55,16 @@ const MainProvider = ({ children }: { children: React.ReactElement }) => {
     }, [configService, envData?.type]);
 
     useEffect(() => {
+        const props = { implementation: appConfigs?.implementation_name };
+
         setTitle(
             translate(
-                `page_state_titles.${route.state.name}`,
-                { implementation: appConfigs?.implementation_name },
-                'page_title',
+                `page_state_loading_titles.${route?.state?.name}`,
+                props,
+                translate(`page_state_titles.${route?.state?.name}`, props, 'page_title'),
             ),
         );
-    }, [route.pathname, route.state.name, translate, appConfigs]);
+    }, [route.pathname, route?.state?.name, translate, appConfigs]);
 
     useEffect(() => {
         document.title = title;

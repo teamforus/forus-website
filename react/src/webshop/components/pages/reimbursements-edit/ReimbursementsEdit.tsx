@@ -27,6 +27,7 @@ import useOpenModal from '../../../../dashboard/hooks/useOpenModal';
 import SelectControlOptionsVouchers from '../../elements/select-control/templates/SelectControlOptionsVouchers';
 import Tooltip from '../../elements/tooltip/Tooltip';
 import useSetTitle from '../../../hooks/useSetTitle';
+import useFetchAuthIdentity from '../../../hooks/useFetchAuthIdentity';
 
 export default function ReimbursementsEdit() {
     const { id, voucher_id } = useParams();
@@ -41,6 +42,7 @@ export default function ReimbursementsEdit() {
     const pushSuccess = usePushSuccess();
     const setProgress = useSetProgress();
     const navigateState = useNavigateState();
+    const fetchAuthIdentity = useFetchAuthIdentity();
 
     const voucherService = useVoucherService();
     const reimbursementService = useReimbursementService();
@@ -150,6 +152,10 @@ export default function ReimbursementsEdit() {
     }, [fetchReimbursement]);
 
     useEffect(() => {
+        fetchAuthIdentity().then();
+    }, [fetchAuthIdentity]);
+
+    useEffect(() => {
         if ((reimbursement || !id) && vouchers) {
             const { title = '', description = '' } = reimbursement || {};
             const { amount = '', iban = '', iban_name = '' } = reimbursement || {};
@@ -212,7 +218,9 @@ export default function ReimbursementsEdit() {
     }, [auth2FAState?.restrictions?.reimbursements?.restricted, navigateState]);
 
     useEffect(() => {
-        setTitle(translate('page_state_titles.reimbursement-edit', { code: `#${reimbursement?.code || ''}` }));
+        if (reimbursement?.code) {
+            setTitle(translate('page_state_titles.reimbursement-edit', { code: `#${reimbursement?.code || ''}` }));
+        }
     }, [reimbursement?.code, setTitle, translate]);
 
     return (

@@ -30,7 +30,7 @@ interface AuthMemoProps {
     setIdentity2FAState?: React.Dispatch<Identity2FAState>;
     isSignedIn?: boolean;
     setToken?: (token: string) => void;
-    updateIdentity?: () => void;
+    updateIdentity?: () => Promise<{ identity: Identity; identity2FAState: Identity2FAState }>;
 }
 
 const authContext = createContext<AuthMemoProps>(null);
@@ -95,14 +95,18 @@ const AuthProvider = ({ children }: { children: React.ReactElement }) => {
         [appConfigs?.communication_type, identityService, navigateState, openModal, translate],
     );
 
-    const updateIdentity = useCallback(() => {
-        authService.identity().then((res) => {
+    const updateIdentity = useCallback(async () => {
+        const identity = await authService.identity().then((res) => {
             setIdentity(res.data);
+            return res.data;
         });
 
-        identity2FAService.status().then((res) => {
+        const identity2FAState = await identity2FAService.status().then((res) => {
             setIdentity2FAState(res.data.data);
+            return res.data.data;
         });
+
+        return { identity, identity2FAState };
     }, [authService, identity2FAService]);
 
     useEffect(() => {
@@ -111,7 +115,7 @@ const AuthProvider = ({ children }: { children: React.ReactElement }) => {
 
     useEffect(() => {
         if (token && !identity) {
-            updateIdentity();
+            updateIdentity().then();
             return;
         }
 

@@ -45,16 +45,22 @@ export default function Reservations() {
     });
 
     const fetchFunds = useCallback(() => {
+        setProgress(0);
+
         fundService
             .list({ per_page: 100 })
-            .then((res) => setFunds([{ name: 'Alle tegoeden...', id: null }, ...res.data.data]));
-    }, [fundService]);
+            .then((res) => setFunds([{ name: 'Alle tegoeden...', id: null }, ...res.data.data]))
+            .finally(() => setProgress(100));
+    }, [fundService, setProgress]);
 
     const fetchOrganizations = useCallback(() => {
+        setProgress(0);
+
         organizationService
             .list({ is_employee: 0, has_reservations: 1, per_page: 300, fund_type: 'budget' })
-            .then((res) => setOrganizations([{ name: 'Selecteer aanbieder...', id: null }, ...res.data.data]));
-    }, [organizationService]);
+            .then((res) => setOrganizations([{ name: 'Selecteer aanbieder...', id: null }, ...res.data.data]))
+            .finally(() => setProgress(100));
+    }, [organizationService, setProgress]);
 
     const fetchReservations = useCallback(() => {
         setProgress(0);

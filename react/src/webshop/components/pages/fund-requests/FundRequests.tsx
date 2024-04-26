@@ -32,9 +32,6 @@ export default function FundRequests() {
         page: 1,
         per_page: 15,
         order_by: 'no_answer_clarification',
-        /*fund_id: $stateParams.fund_id || null,
-        archived: $stateParams.archived || 0,
-        page: $stateParams.page || 1,*/
     });
 
     // todo: query filters
@@ -53,10 +50,13 @@ export default function FundRequests() {
     };*/
 
     const fetchFunds = useCallback(() => {
+        setProgress(0);
+
         fundService
             .list({ per_page: 100 })
-            .then((res) => setFunds([{ name: 'Alle tegoeden', id: null }, ...res.data.data]));
-    }, [fundService]);
+            .then((res) => setFunds([{ name: 'Alle tegoeden', id: null }, ...res.data.data]))
+            .finally(() => setProgress(100));
+    }, [fundService, setProgress]);
 
     useEffect(() => {
         fetchFunds();
@@ -124,6 +124,7 @@ export default function FundRequests() {
                                 <SelectControl
                                     id="select_fund"
                                     value={filters.values.fund_id}
+                                    propKey={'id'}
                                     options={funds}
                                     onChange={(fund_id?: number) => filters.update({ fund_id })}
                                     placeholder={funds?.[0]?.name}

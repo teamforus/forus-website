@@ -34,10 +34,13 @@ import BlockCard2FAWarning from '../../elements/block-card-2fa-warning/BlockCard
 import { useInterval } from '../../../../dashboard/hooks/useInterval';
 import useOpenModal from '../../../../dashboard/hooks/useOpenModal';
 import ModalNotification from '../../modals/ModalNotification';
+import useFetchAuthIdentity from '../../../hooks/useFetchAuthIdentity';
+import useSetProgress from '../../../../dashboard/hooks/useSetProgress';
 
 export default function FundActivate() {
     const { id } = useParams();
     const assetUrl = useAssetUrl();
+    const setProgress = useSetProgress();
     const translate = useTranslate();
 
     const [state, setState] = useState('');
@@ -47,6 +50,7 @@ export default function FundActivate() {
     const authIdentity = useAuthIdentity();
 
     const fundService = useFundService();
+    const digIdService = useDigiDService();
     const voucherService = useVoucherService();
     const identityService = useIdentityService();
     const fundRequestService = useFundRequestService();
@@ -56,7 +60,7 @@ export default function FundActivate() {
     const pushDanger = usePushDanger();
     const pushSuccess = usePushSuccess();
     const navigateState = useNavigateState();
-    const digIdService = useDigiDService();
+    const fetchAuthIdentity = useFetchAuthIdentity();
 
     const [digidResponse, setDigidResponse] = useQueryParams({
         digid_error: StringParam,
@@ -352,8 +356,13 @@ export default function FundActivate() {
     );
 
     const fetchFund = useCallback(() => {
-        fundService.read(parseInt(id)).then((res) => setFund(res.data.data));
-    }, [fundService, id]);
+        setProgress(0);
+
+        fundService
+            .read(parseInt(id))
+            .then((res) => setFund(res.data.data))
+            .finally(() => setProgress(100));
+    }, [fundService, setProgress, id]);
 
     const fetchVouchers = useCallback(() => {
         if (!authIdentity || !fund) {
@@ -362,19 +371,28 @@ export default function FundActivate() {
             return;
         }
 
-        voucherService.list().then((res) => {
-            setVouchers(res.data.data);
-            setVouchersActive(res.data.data.filter((voucher) => voucher.fund_id === fund.id && !voucher.expired));
-        });
-    }, [authIdentity, fund, voucherService]);
+        setProgress(0);
+
+        voucherService
+            .list()
+            .then((res) => {
+                setVouchers(res.data.data);
+                setVouchersActive(res.data.data.filter((voucher) => voucher.fund_id === fund.id && !voucher.expired));
+            })
+            .finally(() => setProgress(100));
+    }, [authIdentity, fund, voucherService, setProgress]);
 
     const fetchFundRequests = useCallback(() => {
         if (!authIdentity || !fund) {
             return setFundRequests(null);
         }
+        setProgress(0);
 
-        fundRequestService.index(fund.id).then((res) => setFundRequests(res.data.data));
-    }, [authIdentity, fund, fundRequestService]);
+        fundRequestService
+            .index(fund.id)
+            .then((res) => setFundRequests(res.data.data))
+            .finally(() => setProgress(100));
+    }, [authIdentity, fund, fundRequestService, setProgress]);
 
     const getAvailableOptions = useCallback(
         (fund: Fund) => {
@@ -426,6 +444,10 @@ export default function FundActivate() {
     useEffect(() => {
         fetchVouchers();
     }, [fetchVouchers]);
+
+    useEffect(() => {
+        fetchAuthIdentity().then();
+    }, [fetchAuthIdentity]);
 
     useEffect(() => {
         fetchFundRequests();
