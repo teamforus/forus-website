@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { useStateRoutes } from '../../../modules/state_router/Router';
+import { useNavigateState, useStateRoutes } from '../../../modules/state_router/Router';
 import useAppConfigs from '../../../hooks/useAppConfigs';
 import useEnvData from '../../../hooks/useEnvData';
 import { mainContext } from '../../../contexts/MainContext';
@@ -14,6 +14,7 @@ import IconSearchProducts from '../../../../../assets/forus-webshop/resources/_w
 import IconSearchProviders from '../../../../../assets/forus-webshop/resources/_webshop-common/assets/img/icon-search/providers.svg';
 import IconSearchEmptyResult from '../../../../../assets/forus-webshop/resources/_webshop-common/assets/img/icon-search/empty-search.svg';
 import TopNavbarSearchResultItem from './TopNavbarSearchResultItem';
+import useSetProgress from '../../../../dashboard/hooks/useSetProgress';
 
 export default function TopNavbarSearch() {
     const envData = useEnvData();
@@ -22,7 +23,10 @@ export default function TopNavbarSearch() {
     const { setShowSearchBox, searchFilter } = useContext(mainContext);
 
     const translate = useTranslate();
+    const navigateState = useNavigateState();
     const searchService = useSearchService();
+
+    const setProgress = useSetProgress();
 
     const [dropdown, setDropdown] = useState(false);
     const [searchFocused, setSearchFocused] = useState(false);
@@ -39,8 +43,10 @@ export default function TopNavbarSearch() {
         q: '',
     });
 
-    const { resetFilters } = filters;
+    const { resetFilters, update: filterUpdate } = filters;
     const { update: updateSearchFilters } = searchFilter;
+
+    const globalQuery = useMemo(() => searchFilter?.values?.q, [searchFilter?.values?.q]);
 
     const isSearchResultPage = useMemo(() => {
         return route.state.name === 'search-result';
@@ -102,36 +108,49 @@ export default function TopNavbarSearch() {
         hideDropDown();
     }, [envData?.config?.flags?.genericSearchUseToggle, setShowSearchBox, hideDropDown]);
 
-    const doSearch = useCallback(
-        (e?: React.FormEvent) => {
-            e?.preventDefault();
+    useEffect(() => {
+        setLastQuery(filters.activeValues.q);
 
-            setLastQuery(filters.activeValues.q);
+        if (isSearchResultPage) {
+            return;
+        }
 
-            if (isSearchResultPage) {
-                updateSearchFilters({ q: filters.activeValues.q });
-                return;
-            }
+        if (!filters.activeValues.q || filters.activeValues.q?.length == 0) {
+            return clearSearch();
+        }
+        setProgress(0);
 
-            if (!filters.activeValues.q || filters.activeValues.q?.length == 0) {
-                return clearSearch();
-            }
-
-            searchService
-                .search({ q: filters.activeValues.q, overview: 1, with_external: 1, take: 9 })
-                .then((res) => updateResults(res.data.data));
-        },
-        [filters.activeValues.q, isSearchResultPage, searchService, updateSearchFilters, clearSearch, updateResults],
-    );
+        searchService
+            .search({ q: filters.activeValues.q, overview: 1, with_external: 1, take: 9 })
+            .then((res) => updateResults(res.data.data))
+            .finally(() => setProgress(100));
+    }, [filters.activeValues.q, isSearchResultPage, searchService, clearSearch, updateResults, setProgress]);
 
     useEffect(() => {
-        doSearch();
-    }, [doSearch]);
+        if (isSearchResultPage) {
+            return updateSearchFilters({ q: filters.values.q });
+        }
+    }, [filters.values.q, isSearchResultPage, updateSearchFilters]);
+
+    useEffect(() => {
+        filterUpdate({ q: globalQuery });
+    }, [filterUpdate, globalQuery]);
 
     return (
         <div className={`block block-navbar-search ${dropdown ? 'block-navbar-search-results' : ''}`}>
             <form
-                onSubmit={doSearch}
+                onSubmit={(e) => {
+                    e?.preventDefault();
+                    e?.stopPropagation();
+
+                    if (!isSearchResultPage) {
+                        navigateState('search-result', {}, { q: filters.values.q });
+
+                        window.setTimeout(() => {
+                            updateSearchFilters({ q: filters.values.q });
+                        }, 0);
+                    }
+                }}
                 className={`search-form form ${resultsAll?.length > 0 ? 'search-form-found' : ''}`}>
                 <ClickOutside onClickOutside={hideSearchBox}>
                     <div className="search-area">
@@ -285,20 +304,21 @@ export default function TopNavbarSearch() {
                                             )}
                                         </div>
                                     ))}
+
                                 <div className="search-result-footer">
                                     {groupKey == 'all' && resultsAll.length > 0 && (
                                         <div className="search-result-actions">
-                                            <StateNavLink
-                                                customElement={'button'}
+                                            <button
+                                                type={'submit'}
                                                 name={'search-result'}
-                                                params={{ q: filters.activeValues.q }}
                                                 className="button button-primary">
                                                 {translate('top_navbar_search.result.btn')}
                                                 <em className="mdi mdi-arrow-right icon-right" aria-hidden="true" />
-                                            </StateNavLink>
+                                            </button>
                                         </div>
                                     )}
                                 </div>
+
                                 {((groupKey == 'all' && !resultsAll.length) ||
                                     (groupKey != 'all' && !results[groupKey].items.length)) && (
                                     <div className="search-no-result">

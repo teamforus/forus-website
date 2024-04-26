@@ -357,12 +357,7 @@ export default function Home() {
                                     <div className="wrapper">
                                         <BlockProducts
                                             products={subsidies.data}
-                                            setProducts={(list) =>
-                                                setSubsidies({
-                                                    ...subsidies,
-                                                    data: list,
-                                                })
-                                            }
+                                            setProducts={(list) => setSubsidies({ ...subsidies, data: list })}
                                             type="subsidies"
                                             large={true}
                                             display="grid"
@@ -382,7 +377,7 @@ export default function Home() {
                                             <StateNavLink
                                                 id="show_map"
                                                 name={'providers'}
-                                                params={{ show_map: true }}
+                                                query={{ show_map: 1 }}
                                                 className="button button-primary">
                                                 {translate('buttons.show_map')}
                                                 <em className="mdi mdi-arrow-right icon-right" aria-hidden="true" />

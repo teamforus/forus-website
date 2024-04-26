@@ -1,5 +1,4 @@
 import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
-import useFilter from '../../../../dashboard/hooks/useFilter';
 import { PaginationData, ResponseError } from '../../../../dashboard/props/ApiResponses';
 import useSetProgress from '../../../../dashboard/hooks/useSetProgress';
 import { useFundService } from '../../../services/FundService';
@@ -25,6 +24,8 @@ import { GoogleMap } from '../../../../dashboard/components/elements/google-map/
 import MapMarkerProviderOffice from '../../elements/map-markers/MapMarkerProviderOffice';
 import Provider from '../../../props/models/Provider';
 import BlockShowcasePage from '../../elements/block-showcase/BlockShowcasePage';
+import useFilterNext from '../../../../dashboard/modules/filter-next/useFilterNext';
+import { BooleanParam, NumberParam, StringParam } from 'use-query-params';
 
 export default function Providers() {
     const translate = useTranslate();
@@ -36,26 +37,27 @@ export default function Providers() {
     const businessTypeService = useBusinessTypeService();
     const productCategoryService = useProductCategoryService();
 
-    const [sortByOptions] = useState([
+    const [sortByOptions] = useState<
+        Array<{
+            id: number;
+            label: string;
+            value: { order_by: 'name'; order_dir: 'asc' | 'desc' };
+        }>
+    >([
         { id: 1, label: 'Naam (oplopend)', value: { order_by: 'name', order_dir: 'asc' } },
         { id: 2, label: 'Naam (aflopend)', value: { order_by: 'name', order_dir: 'desc' } },
     ]);
 
-    const [sortBy, setSortBy] = useState(sortByOptions[0]);
     const [errors, setErrors] = useState<{ [key: string]: string | Array<string> }>({});
 
     const [funds, setFunds] = useState<Array<Partial<Fund>>>(null);
     const [businessTypes, setBusinessTypes] = useState<Array<Partial<BusinessType>>>(null);
-    const [productCategories, setProductCategories] = useState<Array<Partial<ProductCategory>>>(null);
-    const [productSubCategories, setProductSubCategories] = useState<Array<Partial<ProductCategory>>>(null);
-
-    const [showMap, setShowMap] = useState(false);
 
     const [offices, setOffices] = useState<Array<Office>>(null);
     const [providers, setProviders] = useState<PaginationData<Provider>>(null);
 
-    const [productCategoryId, setProductCategoryId] = useState<number>(null);
-    const [productSubCategoryId, setProductSubCategoryId] = useState<number>(null);
+    const [productCategories, setProductCategories] = useState<Array<Partial<ProductCategory>>>(null);
+    const [productSubCategories, setProductSubCategories] = useState<Array<Partial<ProductCategory>>>(null);
 
     const [distances] = useState([
         { id: null, name: 'Overal' },
@@ -68,6 +70,50 @@ export default function Providers() {
         { id: 75, name: '< 75 km' },
     ]);
 
+    const [filterValues, filterActiveValues, filterUpdate] = useFilterNext<{
+        q: string;
+        page: number;
+        fund_id: number;
+        business_type_id: number;
+        product_category_id: number;
+        product_sub_category_id?: number;
+        postcode: string;
+        distance: number;
+        show_map: boolean;
+        order_by: 'name';
+        order_dir: 'asc' | 'desc';
+    }>(
+        {
+            q: '',
+            page: 1,
+            fund_id: null,
+            business_type_id: null,
+            product_category_id: null,
+            product_sub_category_id: null,
+            postcode: '',
+            distance: null,
+            show_map: false,
+            order_by: sortByOptions[0]?.value.order_by,
+            order_dir: sortByOptions[0]?.value.order_dir,
+        },
+        {
+            queryParams: {
+                q: StringParam,
+                page: NumberParam,
+                fund_id: NumberParam,
+                business_type_id: NumberParam,
+                product_category_id: NumberParam,
+                product_sub_category_id: NumberParam,
+                postcode: StringParam,
+                distance: NumberParam,
+                show_map: BooleanParam,
+                order_by: StringParam,
+                order_dir: StringParam,
+            },
+            filterParams: ['show_map'],
+        },
+    );
+
     const buildQuery = useCallback(
         (values) => ({
             q: values.q,
@@ -77,23 +123,9 @@ export default function Providers() {
             product_category_id: values.product_category_id || null,
             postcode: values.postcode || '',
             distance: values.distance || null,
-            ...sortBy.value,
         }),
-        [sortBy],
+        [],
     );
-
-    const {
-        values: filterValues,
-        update: filterUpdate,
-        activeValues: filterActiveValues,
-    } = useFilter({
-        q: '',
-        fund_id: null,
-        business_type_id: null,
-        product_category_id: null,
-        postcode: '',
-        distance: null,
-    });
 
     const countFiltersApplied = useMemo(() => {
         return [filterActiveValues.q, filterActiveValues.fund_id, filterActiveValues.business_type_id].filter(
@@ -129,23 +161,6 @@ export default function Providers() {
         [providersService, setProgress],
     );
 
-    // todo: query filters
-    /*const updateState = useCallback((query, location = 'replace') => {
-        $state.go('providers', {
-            q: query.q || '',
-            page: query.page,
-            fund_id: query.fund_id,
-            postcode: query.postcode,
-            distance: query.distance,
-            business_type_id: query.business_type_id,
-            product_category_id: query.product_category_id,
-            show_map: showMap,
-            show_menu: showModalFilters,
-            order_by: query.order_by,
-            order_dir: query.order_dir,
-        }, { location });
-    }, []);*/
-
     const fetchFunds = useCallback(() => {
         setProgress(0);
 
@@ -180,15 +195,15 @@ export default function Providers() {
     }, [fetchFunds, fetchBusinessTypes, fetchProductCategories]);
 
     useEffect(() => {
-        if (productCategoryId) {
+        if (filterValues.product_category_id) {
             productCategoryService
                 .list({
-                    parent_id: productCategoryId,
+                    parent_id: filterValues.product_category_id,
                     per_page: 1000,
                     used: 1,
                 })
                 .then((res) => {
-                    setProductSubCategoryId(null);
+                    filterUpdate({ product_sub_category_id: null });
                     setProductSubCategories(
                         res.data.meta.total
                             ? [{ name: 'Selecteer subcategorie...', id: null }, ...res.data.data]
@@ -196,28 +211,22 @@ export default function Providers() {
                     );
                 });
         } else {
-            setProductSubCategoryId(null);
+            filterUpdate({ product_sub_category_id: null });
             setProductSubCategories(null);
         }
-
-        filterUpdate({ product_category_id: productCategoryId });
-    }, [filterUpdate, productCategoryId, productCategoryService]);
+    }, [filterUpdate, filterValues.product_category_id, productCategoryService]);
 
     useEffect(() => {
-        filterUpdate({ product_category_id: productSubCategoryId });
-    }, [filterUpdate, productSubCategoryId]);
-
-    useEffect(() => {
-        if (showMap) {
+        if (filterValues.show_map) {
             fetchProvidersMap(buildQuery(filterActiveValues));
         } else {
             fetchProviders(buildQuery(filterActiveValues));
         }
-    }, [filterActiveValues, fetchProvidersMap, fetchProviders, buildQuery, showMap]);
+    }, [filterActiveValues, fetchProvidersMap, fetchProviders, buildQuery, filterValues?.show_map]);
 
     return (
         <BlockShowcasePage
-            showCaseClassName={showMap ? 'block-showcase-fullscreen' : ''}
+            showCaseClassName={filterValues.show_map ? 'block-showcase-fullscreen' : ''}
             countFiltersApplied={countFiltersApplied}
             breadcrumbs={
                 <div className="block block-breadcrumbs">
@@ -236,7 +245,7 @@ export default function Providers() {
                 productCategories && (
                     <Fragment>
                         <div className="showcase-aside-block">
-                            {showMap && (
+                            {filterValues.show_map && (
                                 <div className="showcase-subtitle">Selecteer een aanbieder voor meer informatie</div>
                             )}
                             <div className="form-group">
@@ -264,44 +273,43 @@ export default function Providers() {
                                 />
                                 <FormError error={errors?.business_type_id} />
                             </div>
+
                             <div className="form-group">
                                 <label className="form-label" htmlFor="select_category">
                                     Categorie
                                 </label>
+
                                 <SelectControl
                                     id={'select_category'}
                                     propKey={'id'}
-                                    value={productCategoryId}
                                     allowSearch={true}
-                                    onChange={(id: number) => setProductCategoryId(id)}
+                                    value={filterValues.product_category_id}
+                                    onChange={(id: number) => filterUpdate({ product_category_id: id })}
                                     options={productCategories || []}
                                     placeholder={productCategories?.[0]?.name}
                                     optionsComponent={SelectControlOptions}
                                 />
-                                {productCategoryId === filterValues.product_category_id && (
-                                    <FormError error={errors?.product_category_id} />
-                                )}
                             </div>
+
                             {productSubCategories?.length > 1 && (
                                 <div className="form-group">
                                     <label className="form-label" htmlFor="select_sub_category">
                                         Subcategorie
                                     </label>
+
                                     <SelectControl
                                         id={'select_sub_category'}
                                         propKey={'id'}
-                                        value={productSubCategoryId}
+                                        value={filterValues.product_sub_category_id}
+                                        onChange={(id: number) => filterUpdate({ product_sub_category_id: id })}
                                         allowSearch={true}
-                                        onChange={(id: number) => setProductSubCategoryId(id)}
                                         options={productSubCategories || []}
                                         placeholder={productSubCategories?.[0]?.name}
                                         optionsComponent={SelectControlOptions}
                                     />
-                                    {productSubCategoryId === filterValues.product_category_id && (
-                                        <FormError error={errors?.product_category_id} />
-                                    )}
                                 </div>
                             )}
+
                             <div className="form-group">
                                 <label className="form-label" htmlFor="select_fund">
                                     Tegoeden
@@ -357,15 +365,15 @@ export default function Providers() {
                                     </div>
                                 </div>
                             </div>
-                            {showMap && (
+                            {filterValues.show_map && (
                                 <div className="showcase-result">
-                                    Er zijn <div className="showcase-result-count">{providers.meta.total}</div>{' '}
+                                    Er zijn <div className="showcase-result-count">{providers?.meta?.total}</div>{' '}
                                     aanbieders gevonden
                                 </div>
                             )}
                         </div>
 
-                        {!showMap && appConfigs.pages.provider && (
+                        {!filterValues.show_map && appConfigs.pages.provider && (
                             <StateNavLink name={'sign-up'} className="button button-primary hide-sm">
                                 <em className="mdi mdi-store-outline" aria-hidden="true" />
                                 Aanmelden als aanbieder
@@ -375,7 +383,7 @@ export default function Providers() {
                     </Fragment>
                 )
             }>
-            {appConfigs && providers && (
+            {appConfigs && (providers || offices) && (
                 <Fragment>
                     <div className="showcase-content-header showcase-content-header-compact">
                         <h1 className="showcase-filters-title">
@@ -384,17 +392,27 @@ export default function Providers() {
                         </h1>
                         <div className="showcase-filters-block">
                             <div className="block block-label-tabs form">
-                                <div className={`showcase-filters-item ${showMap ? 'hide-sm' : ''}`}>
+                                <div className={`showcase-filters-item ${filterValues.show_map ? 'hide-sm' : ''}`}>
                                     <label className="form-label">Sorteer</label>
                                     <SelectControl
                                         id={'sort_by'}
                                         allowSearch={false}
                                         propKey={'id'}
                                         propValue={'label'}
-                                        value={sortBy.id}
                                         options={sortByOptions}
+                                        value={
+                                            sortByOptions.find(
+                                                (option) =>
+                                                    option.value.order_by == filterValues.order_by &&
+                                                    option.value.order_dir == filterValues.order_dir,
+                                            )?.id
+                                        }
                                         onChange={(id: number) => {
-                                            setSortBy(sortByOptions.find((value) => value.id == id));
+                                            filterUpdate(
+                                                sortByOptions.find((option) => {
+                                                    return option.id == id;
+                                                })?.value || {},
+                                            );
                                         }}
                                         placeholder="Sorteer"
                                         optionsComponent={SelectControlOptions}
@@ -403,19 +421,23 @@ export default function Providers() {
                                 {appConfigs?.show_providers_map && (
                                     <div
                                         className={`block block-label-tabs pull-right ${
-                                            showMap ? 'block-label-tabs-sm' : ''
+                                            filterValues.show_map ? 'block-label-tabs-sm' : ''
                                         }`}>
                                         <button
-                                            className={`label-tab label-tab-sm ${showMap ? '' : 'active'}`}
-                                            onClick={() => setShowMap(false)}
-                                            aria-pressed={!showMap}>
+                                            className={`label-tab label-tab-sm ${
+                                                filterValues.show_map ? '' : 'active'
+                                            }`}
+                                            onClick={() => filterUpdate({ show_map: false })}
+                                            aria-pressed={!filterValues.show_map}>
                                             <em className="mdi mdi-format-list-text icon-start" />
                                             Lijst
                                         </button>
                                         <button
-                                            className={`label-tab label-tab-sm ${showMap ? 'active' : ''}`}
-                                            onClick={() => setShowMap(true)}
-                                            aria-pressed={showMap}>
+                                            className={`label-tab label-tab-sm ${
+                                                filterValues.show_map ? 'active' : ''
+                                            }`}
+                                            onClick={() => filterUpdate({ show_map: true })}
+                                            aria-pressed={!!filterValues.show_map}>
                                             <em className="mdi mdi-map-marker-radius icon-start" />
                                             Kaart
                                         </button>
@@ -425,7 +447,8 @@ export default function Providers() {
                         </div>
                     </div>
                     {appConfigs.pages.providers && <CmsBlocks page={appConfigs.pages.providers} />}
-                    {!showMap && providers?.data.length > 0 && (
+
+                    {!filterValues.show_map && providers?.data.length > 0 && (
                         <div className="block block-organizations" id="providers_list">
                             {providers.data.map((provider) => (
                                 <ProvidersListItem key={provider.id} provider={provider} display={'list'} />
@@ -446,7 +469,8 @@ export default function Providers() {
                             )}
                         </div>
                     )}
-                    {providers?.data?.length == 0 && !showMap && (
+
+                    {providers?.data?.length == 0 && !filterValues.show_map && (
                         <EmptyBlock
                             title={translate('block_providers.empty.title')}
                             description={translate('block_providers.empty.subtitle')}
@@ -454,7 +478,8 @@ export default function Providers() {
                             svgIcon={'reimbursements'}
                         />
                     )}
-                    {showMap && (
+
+                    {!!filterValues.show_map && (
                         <div className="block block-google-map">
                             {offices && (
                                 <GoogleMap

@@ -1,6 +1,5 @@
 import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
 import { useProductService } from '../../../services/ProductService';
-import useFilter from '../../../../dashboard/hooks/useFilter';
 import { PaginationData, ResponseError } from '../../../../dashboard/props/ApiResponses';
 import Product from '../../../props/models/Product';
 import useSetProgress from '../../../../dashboard/hooks/useSetProgress';
@@ -23,6 +22,8 @@ import ProductsList from '../../elements/lists/products-list/ProductsList';
 import EmptyBlock from '../../elements/empty-block/EmptyBlock';
 import useTranslate from '../../../../dashboard/hooks/useTranslate';
 import BlockShowcasePage from '../../elements/block-showcase/BlockShowcasePage';
+import useFilterNext from '../../../../dashboard/modules/filter-next/useFilterNext';
+import { BooleanParam, NumberParam, StringParam } from 'use-query-params';
 
 export default function Products({ fundType = 'budget' }: { fundType: 'budget' | 'subsidies' }) {
     const appConfigs = useAppConfigs();
@@ -37,8 +38,6 @@ export default function Products({ fundType = 'budget' }: { fundType: 'budget' |
     const setProgress = useSetProgress();
 
     const [sortByOptions] = useState(productService.getSortOptions());
-    const [sortBy, setSortBy] = useState(sortByOptions[0]);
-    const [displayType, setDisplayType] = useState<'list' | 'grid'>('list');
 
     const [errors, setErrors] = useState<{ [key: string]: string | Array<string> }>({});
 
@@ -46,9 +45,6 @@ export default function Products({ fundType = 'budget' }: { fundType: 'budget' |
     const [organizations, setOrganizations] = useState<Array<Partial<Organization>>>(null);
     const [productCategories, setProductCategories] = useState<Array<Partial<ProductCategory>>>(null);
     const [productSubCategories, setProductSubCategories] = useState<Array<Partial<ProductCategory>>>(null);
-
-    const [productCategoryId, setProductCategoryId] = useState<number>(null);
-    const [productSubCategoryId, setProductSubCategoryId] = useState<number>(null);
 
     const [distances] = useState([
         { id: null, name: 'Overal' },
@@ -61,39 +57,68 @@ export default function Products({ fundType = 'budget' }: { fundType: 'budget' |
         { id: 75, name: '< 75 km' },
     ]);
 
-    const {
-        values: filterValues,
-        update: filterUpdate,
-        activeValues: filterActiveValues,
-    } = useFilter({
-        q: '',
-        fund_id: null,
-        organization_id: null,
-        product_category_id: null,
-        postcode: '',
-        distance: null,
-        bookmarked: 0,
-    });
+    const [filterValues, filterValuesActive, filterUpdate] = useFilterNext<{
+        q: string;
+        page: number;
+        fund_id: number;
+        organization_id: number;
+        product_category_id: number;
+        product_sub_category_id: number;
+        postcode: string;
+        distance: number;
+        bookmarked: boolean;
+        display_type: 'list' | 'grid';
+        order_by: 'created_at' | 'price' | 'most_popular' | 'name';
+        order_dir: 'asc' | 'desc';
+    }>(
+        {
+            q: '',
+            page: 1,
+            fund_id: null,
+            organization_id: null,
+            product_category_id: null,
+            product_sub_category_id: null,
+            postcode: '',
+            distance: null,
+            bookmarked: false,
+            display_type: 'list',
+            order_by: sortByOptions[0]?.value.order_by,
+            order_dir: sortByOptions[0]?.value.order_dir,
+        },
+        {
+            throttledValues: ['q'],
+            queryParams: {
+                q: StringParam,
+                page: NumberParam,
+                fund_id: NumberParam,
+                organization_id: NumberParam,
+                product_category_id: NumberParam,
+                product_sub_category_id: NumberParam,
+                postcode: StringParam,
+                distance: NumberParam,
+                bookmarked: BooleanParam,
+                display_type: StringParam,
+                order_by: StringParam,
+                order_dir: StringParam,
+            },
+            filterParams: ['display_type'],
+        },
+    );
 
     const countFiltersApplied = useMemo(() => {
         return [
-            filterActiveValues.q,
-            filterActiveValues.fund_id,
-            filterActiveValues.organization_id,
-            filterActiveValues.product_category_id,
+            filterValues.q,
+            filterValues.fund_id,
+            filterValues.organization_id,
+            filterValues.product_category_id,
         ].filter((value) => value).length;
-    }, [filterActiveValues]);
+    }, [filterValues]);
 
     const [products, setProducts] = useState<PaginationData<Product>>(null);
 
     const buildQuery = useCallback(
         (values = {}) => {
-            const isSortingByPrice = sortBy.value.order_by === 'price';
-
-            const orderByValue = {
-                ...sortBy.value,
-                order_by: isSortingByPrice ? (fundType === 'budget' ? 'price' : 'price_min') : sortBy.value.order_by,
-            };
+            const isSortingByPrice = values.order_by === 'price';
 
             return {
                 q: values.q,
@@ -101,15 +126,15 @@ export default function Products({ fundType = 'budget' }: { fundType: 'budget' |
                 fund_id: values.fund_id,
                 organization_id: values.organization_id,
                 product_category_id: values.product_category_id,
-                display_type: displayType,
                 fund_type: fundType,
                 postcode: values.postcode || '',
                 distance: values.distance || null,
                 bookmarked: values.bookmarked ? 1 : 0,
-                ...orderByValue,
+                order_by: isSortingByPrice ? (fundType === 'budget' ? 'price' : 'price_min') : values.order_by,
+                order_dir: values.order_dir,
             };
         },
-        [displayType, sortBy.value, fundType],
+        [fundType],
     );
 
     const fetchProducts = useCallback(
@@ -126,28 +151,6 @@ export default function Products({ fundType = 'budget' }: { fundType: 'budget' |
         [fundType, productService, setProgress],
     );
 
-    // todo: query filters
-    /*const updateState = useCallback((query, location = 'replace') => {
-        $state.go(
-            fund_type == 'budget' ? 'products' : 'actions',
-            {
-                q: query.q || '',
-                page: query.page,
-                display_type: query.display_type,
-                fund_id: query.fund_id,
-                organization_id: query.organization_id,
-                product_category_id: query.product_category_id,
-                show_menu: showModalFilters,
-                postcode: query.postcode,
-                distance: query.distance,
-                bookmarked: query.bookmarked,
-                order_by: query.order_by,
-                order_dir: query.order_dir,
-            },
-            { location },
-        );
-    }, []);*/
-
     const fetchFunds = useCallback(() => {
         fundService
             .list({ has_products: 1 })
@@ -162,7 +165,7 @@ export default function Products({ fundType = 'budget' }: { fundType: 'budget' |
 
     const fetchProductCategories = useCallback(() => {
         productCategoryService
-            .list({ per_page: 1000, used: 1, used_type: fundType })
+            .list({ per_page: 1000, used: 1, used_type: fundType, parent_id: 'null' })
             .then((res) => setProductCategories([{ id: null, name: 'Selecteer categorie...' }, ...res.data.data]));
     }, [productCategoryService, fundType]);
 
@@ -173,16 +176,20 @@ export default function Products({ fundType = 'budget' }: { fundType: 'budget' |
     }, [fetchFunds, fetchOrganizations, fetchProductCategories]);
 
     useEffect(() => {
-        if (productCategoryId) {
+        fetchProducts(buildQuery(filterValuesActive));
+    }, [fetchProducts, buildQuery, filterValuesActive]);
+
+    useEffect(() => {
+        if (filterValues.product_category_id) {
             productCategoryService
                 .list({
-                    parent_id: productCategoryId,
+                    parent_id: filterValues.product_category_id,
                     per_page: 1000,
                     used: 1,
                     used_type: fundType,
                 })
                 .then((res) => {
-                    setProductSubCategoryId(null);
+                    filterUpdate({ product_sub_category_id: null });
                     setProductSubCategories(
                         res.data.meta.total
                             ? [{ name: 'Selecteer subcategorie...', id: null }, ...res.data.data]
@@ -190,20 +197,10 @@ export default function Products({ fundType = 'budget' }: { fundType: 'budget' |
                     );
                 });
         } else {
-            setProductSubCategoryId(null);
+            filterUpdate({ product_sub_category_id: null });
             setProductSubCategories(null);
         }
-
-        filterUpdate({ product_category_id: productCategoryId });
-    }, [filterUpdate, fundType, productCategoryId, productCategoryService]);
-
-    useEffect(() => {
-        filterUpdate({ product_category_id: productSubCategoryId });
-    }, [filterUpdate, productSubCategoryId]);
-
-    useEffect(() => {
-        fetchProducts(buildQuery(filterActiveValues));
-    }, [fetchProducts, buildQuery, filterActiveValues]);
+    }, [filterUpdate, fundType, filterValues.product_category_id, productCategoryService]);
 
     return (
         <BlockShowcasePage
@@ -227,15 +224,19 @@ export default function Products({ fundType = 'budget' }: { fundType: 'budget' |
                         {authIdentity && (
                             <div className="showcase-aside-tabs">
                                 <div
-                                    className={`showcase-aside-tab ${!filterActiveValues?.bookmarked ? 'active' : ''}`}
-                                    onClick={() => filterUpdate({ bookmarked: 0 })}
+                                    className={`showcase-aside-tab clickable ${
+                                        !filterValues?.bookmarked ? 'active' : ''
+                                    }`}
+                                    onClick={() => filterUpdate({ bookmarked: false })}
                                     role="button">
                                     <em className="mdi mdi-tag-multiple-outline" />
                                     Volledig aanbod
                                 </div>
                                 <div
-                                    className={`showcase-aside-tab ${filterActiveValues?.bookmarked ? 'active' : ''}`}
-                                    onClick={() => filterUpdate({ bookmarked: 1 })}
+                                    className={`showcase-aside-tab clickable ${
+                                        filterValues?.bookmarked ? 'active' : ''
+                                    }`}
+                                    onClick={() => filterUpdate({ bookmarked: true })}
                                     role="button"
                                     aria-label="toevoegen aan verlanglijstje"
                                     aria-pressed={!!filterValues.bookmarked}>
@@ -271,6 +272,7 @@ export default function Products({ fundType = 'budget' }: { fundType: 'budget' |
                                 optionsComponent={SelectControlOptions}
                             />
                         </div>
+
                         <div className="form-group">
                             <label className="form-label" htmlFor="select_category">
                                 Categorie
@@ -279,14 +281,15 @@ export default function Products({ fundType = 'budget' }: { fundType: 'budget' |
                             <SelectControl
                                 id={'select_category'}
                                 propKey={'id'}
-                                value={productCategoryId}
                                 allowSearch={true}
-                                onChange={(id: number) => setProductCategoryId(id)}
+                                value={filterValues.product_category_id}
+                                onChange={(id: number) => filterUpdate({ product_category_id: id })}
                                 options={productCategories || []}
                                 placeholder={productCategories?.[0]?.name}
                                 optionsComponent={SelectControlOptions}
                             />
                         </div>
+
                         {productSubCategories?.length > 1 && (
                             <div className="form-group">
                                 <label className="form-label" htmlFor="select_sub_category">
@@ -296,15 +299,16 @@ export default function Products({ fundType = 'budget' }: { fundType: 'budget' |
                                 <SelectControl
                                     id={'select_sub_category'}
                                     propKey={'id'}
-                                    value={productSubCategoryId}
+                                    value={filterValues.product_sub_category_id}
+                                    onChange={(id: number) => filterUpdate({ product_sub_category_id: id })}
                                     allowSearch={true}
-                                    onChange={(id: number) => setProductSubCategoryId(id)}
                                     options={productSubCategories || []}
                                     placeholder={productSubCategories?.[0]?.name}
                                     optionsComponent={SelectControlOptions}
                                 />
                             </div>
                         )}
+
                         <div className="form-group">
                             <label className="form-label" htmlFor="select_fund">
                                 Tegoeden
@@ -379,10 +383,20 @@ export default function Products({ fundType = 'budget' }: { fundType: 'budget' |
                                         allowSearch={false}
                                         propKey={'id'}
                                         propValue={'label'}
-                                        value={sortBy.id}
                                         options={sortByOptions}
+                                        value={
+                                            sortByOptions.find(
+                                                (option) =>
+                                                    option.value.order_by == filterValues.order_by &&
+                                                    option.value.order_dir == filterValues.order_dir,
+                                            )?.id
+                                        }
                                         onChange={(id: number) => {
-                                            setSortBy(sortByOptions.find((value) => value.id == id));
+                                            filterUpdate(
+                                                sortByOptions.find((option) => {
+                                                    return option.id == id;
+                                                })?.value || {},
+                                            );
                                         }}
                                         placeholder="Sorteer"
                                         optionsComponent={SelectControlOptions}
@@ -390,17 +404,21 @@ export default function Products({ fundType = 'budget' }: { fundType: 'budget' |
                                 </div>
                                 <div className="label-tab-set">
                                     <div
-                                        className={`label-tab label-tab-sm ${displayType == 'list' ? 'active' : ''}`}
-                                        onClick={() => setDisplayType('list')}
-                                        aria-pressed={displayType == 'list'}
+                                        className={`label-tab label-tab-sm ${
+                                            filterValues.display_type == 'list' ? 'active' : ''
+                                        }`}
+                                        onClick={() => filterUpdate({ display_type: 'list' })}
+                                        aria-pressed={filterValues.display_type == 'list'}
                                         role="button">
                                         <em className="mdi mdi-format-list-text icon-start" />
                                         Lijst
                                     </div>
                                     <div
-                                        className={`label-tab label-tab-sm ${displayType == 'grid' ? 'active' : ''}`}
-                                        onClick={() => setDisplayType('grid')}
-                                        aria-pressed={displayType == 'grid'}
+                                        className={`label-tab label-tab-sm ${
+                                            filterValues.display_type == 'grid' ? 'active' : ''
+                                        }`}
+                                        onClick={() => filterUpdate({ display_type: 'grid' })}
+                                        aria-pressed={filterValues.display_type == 'grid'}
                                         role="button">
                                         <em className="mdi mdi-view-grid-outline icon-start" />
                                         {"Foto's"}
@@ -413,7 +431,12 @@ export default function Products({ fundType = 'budget' }: { fundType: 'budget' |
                     {appConfigs.pages.products && <CmsBlocks page={appConfigs.pages.products} />}
 
                     {products?.meta?.total > 0 && (
-                        <ProductsList type={fundType} large={false} display={displayType} products={products.data} />
+                        <ProductsList
+                            type={fundType}
+                            large={false}
+                            display={filterValues.display_type}
+                            products={products.data}
+                        />
                     )}
 
                     {products?.meta?.total == 0 && (

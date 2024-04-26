@@ -4,7 +4,6 @@ import useTranslate from '../../../../dashboard/hooks/useTranslate';
 import useAuthIdentity from '../../../hooks/useAuthIdentity';
 import { mainContext } from '../../../contexts/MainContext';
 import { SearchResultItem, useSearchService } from '../../../services/SearchService';
-import useFilter from '../../../../dashboard/hooks/useFilter';
 import { useFundService } from '../../../services/FundService';
 import { useOrganizationService } from '../../../../dashboard/services/OrganizationService';
 import Fund from '../../../props/models/Fund';
@@ -19,8 +18,10 @@ import { useVoucherService } from '../../../services/VoucherService';
 import Voucher from '../../../../dashboard/props/models/Voucher';
 import BlockShowcasePage from '../../elements/block-showcase/BlockShowcasePage';
 import useSetProgress from '../../../../dashboard/hooks/useSetProgress';
+import useFilterNext from '../../../../dashboard/modules/filter-next/useFilterNext';
+import { NumberParam, StringParam } from 'use-query-params';
+import { CommaDelimitedArrayParam } from '../../../../dashboard/modules/filter-next/params/CommaDelimitedArrayParam';
 
-// todo: query filters
 export default function Search() {
     const authIdentity = useAuthIdentity();
 
@@ -38,13 +39,20 @@ export default function Search() {
     const [displayType, setDisplayType] = useState<'list' | 'grid'>('list');
     const [searchItems, setSearchItems] = useState(null);
 
-    // Search direction
-    const [sortByOptions] = useState([
-        { name: 'Oudste eerst', value: 'date', filters: { order_by: 'created_at', order_dir: 'asc' } },
-        { name: 'Nieuwe eerst', value: 'newest', filters: { order_by: 'created_at', order_dir: 'desc' } },
-    ]);
+    const globalQuery = useMemo(() => searchFilter?.values?.q, [searchFilter?.values?.q]);
+    const [globalInitialized, setGlobalInitialized] = useState(false);
 
-    const [sortBy, setSortBy] = useState(sortByOptions?.[1]?.value);
+    // Search direction
+    const [sortByOptions] = useState<
+        Array<{
+            id: number;
+            label: string;
+            value: { order_by: 'created_at'; order_dir: 'asc' | 'desc' };
+        }>
+    >([
+        { id: 1, label: 'Oudste eerst', value: { order_by: 'created_at', order_dir: 'asc' } },
+        { id: 2, label: 'Nieuwe eerst', value: { order_by: 'created_at', order_dir: 'desc' } },
+    ]);
 
     // Search by resource type
     const [searchItemTypes] = useState([
@@ -58,17 +66,41 @@ export default function Search() {
     const [organizations, setOrganizations] = useState<Array<Partial<Organization>>>(null);
     const [productCategories, setProductCategories] = useState<Array<Partial<ProductCategory>>>(null);
 
-    const filters = useFilter({
-        page: 1,
-        fund_id: '',
-        organization_id: '',
-        product_category_id: '',
-        search_item_types: searchItemTypes?.map((type) => type.key),
-        overview: 0,
-        with_external: 1,
-    });
-
-    const { update: filtersUpdate } = filters;
+    const [filterValues, filterValuesActive, filterUpdate] = useFilterNext<{
+        q: string;
+        page: number;
+        fund_id: number;
+        organization_id: number;
+        product_category_id: number;
+        search_item_types: Array<string>;
+        order_by: 'created_at';
+        order_dir: 'asc' | 'desc';
+    }>(
+        {
+            q: '',
+            page: 1,
+            fund_id: 1,
+            organization_id: null,
+            product_category_id: null,
+            search_item_types: searchItemTypes?.map((type) => type.key),
+            order_by: sortByOptions[1]?.value.order_by,
+            order_dir: sortByOptions[1]?.value.order_dir,
+        },
+        {
+            queryParams: {
+                q: StringParam,
+                page: NumberParam,
+                fund_id: NumberParam,
+                organization_id: NumberParam,
+                product_category_id: NumberParam,
+                search_item_types: CommaDelimitedArrayParam,
+                order_by: StringParam,
+                order_dir: StringParam,
+            },
+            queryParamsRemoveDefault: false,
+            throttledValues: ['q', 'search_item_types'],
+        },
+    );
 
     const transformItems = useCallback(function (items, stateParams) {
         return {
@@ -91,24 +123,23 @@ export default function Search() {
 
     const toggleType = useCallback(
         (type: string) => {
-            filtersUpdate((values) => {
-                const index = values.search_item_types.indexOf(type);
+            const { search_item_types = [] } = filterValues;
+            const index = search_item_types?.indexOf(type);
 
-                if (index === -1) {
-                    values.search_item_types.push(type);
-                } else {
-                    values.search_item_types.splice(index, 1);
-                }
+            if (index === -1) {
+                search_item_types?.push(type);
+            } else {
+                search_item_types?.splice(index, 1);
+            }
 
-                return { ...values };
-            });
+            filterUpdate({ search_item_types: search_item_types });
         },
-        [filtersUpdate],
+        [filterUpdate, filterValues],
     );
 
     const countFiltersApplied = useMemo(() => {
         return (
-            Object.values(filters.activeValues).reduce((count: number, filter) => {
+            Object.values(filterValuesActive).reduce((count: number, filter) => {
                 return (
                     count +
                     (filter
@@ -119,7 +150,7 @@ export default function Search() {
                 );
             }, 0) - 3
         );
-    }, [filters.activeValues]);
+    }, [filterValuesActive]);
 
     const fetchVouchers = useCallback(() => {
         if (authIdentity) {
@@ -180,20 +211,32 @@ export default function Search() {
     useEffect(() => {
         doSearch(
             {
-                ...searchFilter.activeValues,
-                ...(sortByOptions.find((value) => value.value === sortBy)?.filters || {}),
-                ...filters.activeValues,
+                ...filterValuesActive,
+                overview: 0,
+                with_external: 1,
                 search_item_types: [
-                    filters.activeValues.search_item_types.includes('funds') ? 'funds' : null,
-                    filters.activeValues.search_item_types.includes('providers') ? 'providers' : null,
-                    filters.activeValues.search_item_types.includes('products') ? 'products' : null,
+                    filterValuesActive.search_item_types?.includes('funds') ? 'funds' : null,
+                    filterValuesActive.search_item_types?.includes('providers') ? 'providers' : null,
+                    filterValuesActive.search_item_types?.includes('products') ? 'products' : null,
                 ].filter((type) => type),
             },
             {
                 foo: 'bar',
             },
         );
-    }, [doSearch, filters.activeValues, searchFilter.activeValues, sortByOptions, sortBy]);
+    }, [doSearch, filterValuesActive, sortByOptions]);
+
+    useEffect(() => {
+        setGlobalInitialized(true);
+
+        if (!globalInitialized && filterValues?.q) {
+            setTimeout(() => searchFilter.update({ q: filterValues.q }), 150);
+        }
+    }, [filterValues.q, globalInitialized, searchFilter]);
+
+    useEffect(() => {
+        filterUpdate({ q: globalQuery });
+    }, [filterUpdate, globalQuery]);
 
     return (
         <BlockShowcasePage
@@ -219,12 +262,12 @@ export default function Search() {
                                 <div
                                     className="checkbox"
                                     role="checkbox"
-                                    aria-checked={filters.activeValues.search_item_types.includes(itemType.key)}>
+                                    aria-checked={filterValuesActive.search_item_types?.includes(itemType.key)}>
                                     <input
                                         aria-hidden="true"
                                         type="checkbox"
                                         id={`type_${itemType.key}`}
-                                        checked={filters.activeValues.search_item_types.includes(itemType.key)}
+                                        checked={filterValuesActive.search_item_types?.includes(itemType.key)}
                                         onChange={() => toggleType(itemType.key)}
                                     />
                                     <label className="checkbox-label" htmlFor={`type_${itemType.key}`}>
@@ -246,8 +289,8 @@ export default function Search() {
                                     id="category_id"
                                     propKey="id"
                                     allowSearch={true}
-                                    value={filters.values.product_category_id}
-                                    onChange={(id?: string) => filters.update({ product_category_id: id })}
+                                    value={filterValues.product_category_id}
+                                    onChange={(id?: number) => filterUpdate({ product_category_id: id })}
                                     options={productCategories}
                                     placeholder={productCategories?.[0]?.name}
                                 />
@@ -263,8 +306,8 @@ export default function Search() {
                                     id="fund_id"
                                     propKey="id"
                                     allowSearch={true}
-                                    value={filters.values.fund_id}
-                                    onChange={(id?: string) => filters.update({ fund_id: id })}
+                                    value={filterValues.fund_id}
+                                    onChange={(id?: number) => filterUpdate({ fund_id: id })}
                                     options={funds}
                                     placeholder={funds?.[0]?.name}
                                 />
@@ -280,8 +323,8 @@ export default function Search() {
                                     id="organizations_id"
                                     propKey="id"
                                     allowSearch={true}
-                                    value={filters.values.organization_id}
-                                    onChange={(id?: string) => filters.update({ organization_id: id })}
+                                    value={filterValues.organization_id}
+                                    onChange={(id?: number) => filterUpdate({ organization_id: id })}
                                     options={organizations}
                                     placeholder={organizations?.[0]?.name}
                                 />
@@ -295,9 +338,9 @@ export default function Search() {
                     <div className="showcase-content-header">
                         <div className="showcase-filters-title">
                             <div className="showcase-filters-title-count">{searchItems?.meta?.total}</div>
-                            {searchFilter.activeValues.q ? (
+                            {filterValuesActive.q ? (
                                 <div className="ellipsis">
-                                    Zoekresultaten gevonden voor {`"${searchFilter.activeValues.q}"`}
+                                    Zoekresultaten gevonden voor {`"${filterValuesActive.q}"`}
                                 </div>
                             ) : (
                                 <div className="ellipsis">Zoekresultaten</div>
@@ -309,11 +352,20 @@ export default function Search() {
                                     <label className="form-label">Sorteer</label>
                                     <SelectControl
                                         id="sort_by"
-                                        propKey={'value'}
+                                        propKey={'id'}
+                                        propValue={'label'}
                                         allowSearch={false}
-                                        value={sortBy}
                                         options={sortByOptions}
-                                        onChange={(sortBy: string) => setSortBy(sortBy)}
+                                        value={
+                                            sortByOptions.find(
+                                                (option) =>
+                                                    option.value.order_by == filterValues.order_by &&
+                                                    option.value.order_dir == filterValues.order_dir,
+                                            )?.id
+                                        }
+                                        onChange={(id: number) => {
+                                            filterUpdate(sortByOptions.find((option) => option.id == id)?.value || {});
+                                        }}
                                         placeholder="Sorteer"
                                     />
                                 </div>
@@ -358,8 +410,8 @@ export default function Search() {
                             <div className="card-section">
                                 <Paginator
                                     meta={searchItems.meta}
-                                    filters={filters.values}
-                                    updateFilters={filters.update}
+                                    filters={filterValues}
+                                    updateFilters={filterUpdate}
                                     buttonClass={'button-primary-outline'}
                                 />
                             </div>

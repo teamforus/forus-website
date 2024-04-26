@@ -2,7 +2,6 @@ import React, { Fragment, useCallback, useEffect, useState } from 'react';
 import StateNavLink from '../../../modules/state_router/StateNavLink';
 import useTranslate from '../../../../dashboard/hooks/useTranslate';
 import Paginator from '../../../../dashboard/modules/paginator/components/Paginator';
-import useFilter from '../../../../dashboard/hooks/useFilter';
 import useSetProgress from '../../../../dashboard/hooks/useSetProgress';
 import { PaginationData } from '../../../../dashboard/props/ApiResponses';
 import FundRequest from '../../../../dashboard/props/models/FundRequest';
@@ -14,6 +13,8 @@ import EmptyBlock from '../../elements/empty-block/EmptyBlock';
 import { useNavigateState } from '../../../modules/state_router/Router';
 import FundRequestCard from './elements/FundRequestCard';
 import BlockShowcaseProfile from '../../elements/block-showcase/BlockShowcaseProfile';
+import useFilterNext from '../../../../dashboard/modules/filter-next/useFilterNext';
+import { BooleanParam, NumberParam } from 'use-query-params';
 
 export default function FundRequests() {
     const translate = useTranslate();
@@ -26,28 +27,24 @@ export default function FundRequests() {
     const [funds, setFunds] = useState<Array<Partial<Fund>>>(null);
     const [fundRequests, setFundRequests] = useState<PaginationData<FundRequest>>(null);
 
-    const filters = useFilter({
-        fund_id: null,
-        archived: 0,
-        page: 1,
-        per_page: 15,
-        order_by: 'no_answer_clarification',
-    });
-
-    // todo: query filters
-    /*$ctrl.updateState = (query) => {
-        $state.go(
-            'fund-requests',
-            {
-                page: query.page,
-                fund_id: query.fund_id,
-                archived: query.archived,
-                order_by: query.order_by,
-                order_dir: query.order_dir,
+    const [filterValues, filterValuesActive, filterUpdate] = useFilterNext<{
+        page: number;
+        fund_id: number;
+        archived: boolean;
+    }>(
+        {
+            page: 1,
+            fund_id: null,
+            archived: false,
+        },
+        {
+            queryParams: {
+                page: NumberParam,
+                fund_id: NumberParam,
+                archived: BooleanParam,
             },
-            { location: 'replace' },
-        );
-    };*/
+        },
+    );
 
     const fetchFunds = useCallback(() => {
         setProgress(0);
@@ -66,10 +63,15 @@ export default function FundRequests() {
         setProgress(0);
 
         fundRequestService
-            .indexRequester({ ...filters.activeValues })
+            .indexRequester({
+                ...filterValuesActive,
+                archived: filterValuesActive?.archived ? 1 : 0,
+                per_page: 15,
+                order_by: 'no_answer_clarification',
+            })
             .then((res) => setFundRequests(res.data))
             .finally(() => setProgress(100));
-    }, [fundRequestService, filters.activeValues, setProgress]);
+    }, [fundRequestService, filterValuesActive, setProgress]);
 
     return (
         <BlockShowcaseProfile
@@ -95,17 +97,17 @@ export default function FundRequests() {
                         <div className="block block-label-tabs form pull-right">
                             <div className="label-tab-set">
                                 <div
-                                    className={`label-tab label-tab-sm ${!filters.values.archived ? 'active' : ''}`}
+                                    className={`label-tab label-tab-sm ${!filterValues.archived ? 'active' : ''}`}
                                     role="button"
                                     data-dusk="fundRequestsFilterActive"
-                                    onClick={() => filters.update({ archived: 0 })}>
+                                    onClick={() => filterUpdate({ archived: false })}>
                                     Actief
                                 </div>
                                 <div
-                                    className={`label-tab label-tab-sm ${filters.values.archived ? 'active' : ''}`}
+                                    className={`label-tab label-tab-sm ${filterValues.archived ? 'active' : ''}`}
                                     role="button"
                                     data-dusk="fundRequestsFilterArchived"
-                                    onClick={() => filters.update({ archived: 1 })}>
+                                    onClick={() => filterUpdate({ archived: true })}>
                                     Archief
                                 </div>
                             </div>
@@ -123,10 +125,10 @@ export default function FundRequests() {
                                 </label>
                                 <SelectControl
                                     id="select_fund"
-                                    value={filters.values.fund_id}
+                                    value={filterValues.fund_id}
                                     propKey={'id'}
                                     options={funds}
-                                    onChange={(fund_id?: number) => filters.update({ fund_id })}
+                                    onChange={(fund_id?: number) => filterUpdate({ fund_id })}
                                     placeholder={funds?.[0]?.name}
                                 />
                             </div>
@@ -170,8 +172,8 @@ export default function FundRequests() {
                             <div className="card-section">
                                 <Paginator
                                     meta={fundRequests.meta}
-                                    filters={filters.values}
-                                    updateFilters={filters.update}
+                                    filters={filterValues}
+                                    updateFilters={filterUpdate}
                                     buttonClass={'button-primary-outline'}
                                 />
                             </div>

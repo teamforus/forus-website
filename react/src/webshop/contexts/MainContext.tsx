@@ -44,6 +44,8 @@ const MainProvider = ({ children }: { children: React.ReactElement }) => {
         q: '',
     });
 
+    const { update: searchFilterUpdate } = searchFilter;
+
     useEffect(() => {
         if (!envData?.type) {
             return;
@@ -64,7 +66,9 @@ const MainProvider = ({ children }: { children: React.ReactElement }) => {
                 translate(`page_state_titles.${route?.state?.name}`, props, 'page_title'),
             ),
         );
-    }, [route.pathname, route?.state?.name, translate, appConfigs]);
+
+        searchFilterUpdate({ q: '' });
+    }, [route.pathname, route?.state?.name, translate, appConfigs, searchFilterUpdate]);
 
     useEffect(() => {
         document.title = title;

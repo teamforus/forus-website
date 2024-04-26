@@ -5,11 +5,12 @@ import Paginator from '../../../../dashboard/modules/paginator/components/Pagina
 import BlockShowcaseProfile from '../../elements/block-showcase/BlockShowcaseProfile';
 import { PaginationData } from '../../../../dashboard/props/ApiResponses';
 import Product from '../../../props/models/Product';
-import useFilter from '../../../../dashboard/hooks/useFilter';
 import { useProductService } from '../../../services/ProductService';
 import ProductsList from '../../elements/lists/products-list/ProductsList';
 import { useNavigateState } from '../../../modules/state_router/Router';
 import useSetProgress from '../../../../dashboard/hooks/useSetProgress';
+import useFilterNext from '../../../../dashboard/modules/filter-next/useFilterNext';
+import { NumberParam, StringParam } from 'use-query-params';
 
 export default function BookmarkedProducts() {
     const setProgress = useSetProgress();
@@ -19,42 +20,42 @@ export default function BookmarkedProducts() {
 
     const [products, setProducts] = useState<PaginationData<Product>>(null);
     const [sortByOptions] = useState(productService.getSortOptions());
-    const [sortBy /*, setSortBy*/] = useState(sortByOptions[0]);
-    const [displayType, setDisplayType] = useState<'list' | 'grid'>('list');
 
-    const filters = useFilter({
-        page: 1,
-        bookmarked: 1,
-        ...sortBy.value,
-    });
-
-    const { update: filtersUpdate } = filters;
+    const [filterValues, filterValuesActive, filterUpdate] = useFilterNext<{
+        page: number;
+        display_type: 'list' | 'grid';
+        order_by: 'created_at' | 'price' | 'most_popular' | 'name';
+        order_dir: 'asc' | 'desc';
+    }>(
+        {
+            page: 1,
+            display_type: 'list',
+            order_by: sortByOptions[0]?.value.order_by,
+            order_dir: sortByOptions[0]?.value.order_dir,
+        },
+        {
+            queryParams: {
+                page: NumberParam,
+                display_type: StringParam,
+                order_by: StringParam,
+                order_dir: StringParam,
+            },
+            filterParams: ['display_type'],
+        },
+    );
 
     const fetchProducts = useCallback(() => {
         setProgress(0);
 
         productService
-            .list(filters.activeValues)
+            .list({ ...filterValuesActive, bookmarked: 1 })
             .then((res) => setProducts(res.data))
             .finally(() => setProgress(100));
-    }, [productService, filters.activeValues, setProgress]);
-
-    useEffect(() => {
-        filtersUpdate((values) => ({ ...values, ...sortBy.value }));
-    }, [sortBy, filtersUpdate]);
+    }, [productService, filterValuesActive, setProgress]);
 
     useEffect(() => {
         fetchProducts();
     }, [fetchProducts]);
-
-    // todo: query filters
-    /*$ctrl.updateState = (query = {}, location = 'replace') => {
-        $state.go(
-            'bookmarked-products',
-            { display_type: $ctrl.display_type },
-            { location },
-        );
-    };*/
 
     return (
         <BlockShowcaseProfile
@@ -96,17 +97,21 @@ export default function BookmarkedProducts() {
                             </div>*/}
                             <div className="label-tab-set">
                                 <div
-                                    className={`label-tab label-tab-sm ${displayType == 'list' ? 'active' : ''}`}
-                                    onClick={() => setDisplayType('list')}
-                                    aria-pressed={displayType == 'list'}
+                                    className={`label-tab label-tab-sm ${
+                                        filterValues.display_type == 'list' ? 'active' : ''
+                                    }`}
+                                    onClick={() => filterUpdate({ display_type: 'list' })}
+                                    aria-pressed={filterValues.display_type == 'list'}
                                     role="button">
                                     <em className="mdi mdi-format-list-text icon-start" />
                                     Lijst
                                 </div>
                                 <div
-                                    className={`label-tab label-tab-sm ${displayType == 'grid' ? 'active' : ''}`}
-                                    onClick={() => setDisplayType('grid')}
-                                    aria-pressed={displayType == 'grid'}
+                                    className={`label-tab label-tab-sm ${
+                                        filterValues.display_type == 'grid' ? 'active' : ''
+                                    }`}
+                                    onClick={() => filterUpdate({ display_type: 'grid' })}
+                                    aria-pressed={filterValues.display_type == 'grid'}
                                     role="button">
                                     <em className="mdi mdi-view-grid-outline icon-start" />
                                     {"Foto's"}
@@ -119,7 +124,7 @@ export default function BookmarkedProducts() {
             {products && (
                 <Fragment>
                     {products.meta.total > 0 ? (
-                        <ProductsList display={displayType} products={products.data} />
+                        <ProductsList display={filterValues.display_type} products={products.data} />
                     ) : (
                         <EmptyBlock
                             title="Er zijn nog geen aanbiedingen toegevoegd."
@@ -140,8 +145,8 @@ export default function BookmarkedProducts() {
                             <div className="card-section">
                                 <Paginator
                                     meta={products.meta}
-                                    filters={filters.values}
-                                    updateFilters={filters.update}
+                                    filters={filterValues}
+                                    updateFilters={filterUpdate}
                                     buttonClass={'button-primary-outline'}
                                 />
                             </div>

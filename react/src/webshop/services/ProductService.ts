@@ -120,7 +120,7 @@ export class ProductService<T = Product> {
     public getSortOptions(): Array<{
         id: number;
         label: string;
-        value: { order_by: string; order_dir: 'asc' | 'desc' };
+        value: { order_by: 'created_at' | 'price' | 'most_popular' | 'name'; order_dir: 'asc' | 'desc' };
     }> {
         return [
             { id: 1, label: 'Nieuwe eerst', value: { order_by: 'created_at', order_dir: 'desc' } },
