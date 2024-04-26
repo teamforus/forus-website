@@ -425,13 +425,13 @@ export const TopNavbar = ({ hideOnScroll = false, className = '' }: { hideOnScro
 
     const subNavSearchButton =
         envData.config.flags.genericSearchUseToggle && envData.config?.flags.genericSearch ? (
-            <button
+            <div
                 className={`button subnav-search-button hide-sm ${showSearchBox ? 'active' : ''}`}
                 onClick={(e) => toggleSearchBox(e)}
                 role="button"
                 aria-label="Zoeken">
                 <em className="mdi mdi-magnify" />
-            </button>
+            </div>
         ) : null;
 
     return (
