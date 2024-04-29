@@ -19,8 +19,7 @@ import Voucher from '../../../../dashboard/props/models/Voucher';
 import BlockShowcasePage from '../../elements/block-showcase/BlockShowcasePage';
 import useSetProgress from '../../../../dashboard/hooks/useSetProgress';
 import useFilterNext from '../../../../dashboard/modules/filter-next/useFilterNext';
-import { NumberParam, StringParam } from 'use-query-params';
-import { CommaDelimitedArrayParam } from '../../../../dashboard/modules/filter-next/params/CommaDelimitedArrayParam';
+import { BooleanParam, NumberParam, StringParam } from 'use-query-params';
 
 export default function Search() {
     const authIdentity = useAuthIdentity();
@@ -55,10 +54,10 @@ export default function Search() {
     ]);
 
     // Search by resource type
-    const [searchItemTypes] = useState([
-        { label: 'Tegoeden', key: 'funds', checked: false },
-        { label: 'Aanbod', key: 'products', checked: false },
-        { label: 'Aanbieders', key: 'providers', checked: false },
+    const [searchItemTypes] = useState<Array<{ label: string; key: 'funds' | 'products' | 'providers' }>>([
+        { label: 'Tegoeden', key: 'funds' },
+        { label: 'Aanbod', key: 'products' },
+        { label: 'Aanbieders', key: 'providers' },
     ]);
 
     const [funds, setFunds] = useState<Array<Partial<Fund>>>(null);
@@ -72,7 +71,9 @@ export default function Search() {
         fund_id: number;
         organization_id: number;
         product_category_id: number;
-        search_item_types: Array<string>;
+        funds: boolean;
+        products: boolean;
+        providers: boolean;
         order_by: 'created_at';
         order_dir: 'asc' | 'desc';
     }>(
@@ -82,7 +83,9 @@ export default function Search() {
             fund_id: 1,
             organization_id: null,
             product_category_id: null,
-            search_item_types: searchItemTypes?.map((type) => type.key),
+            funds: true,
+            products: true,
+            providers: true,
             order_by: sortByOptions[1]?.value.order_by,
             order_dir: sortByOptions[1]?.value.order_dir,
         },
@@ -93,12 +96,13 @@ export default function Search() {
                 fund_id: NumberParam,
                 organization_id: NumberParam,
                 product_category_id: NumberParam,
-                search_item_types: CommaDelimitedArrayParam,
+                funds: BooleanParam,
+                products: BooleanParam,
+                providers: BooleanParam,
                 order_by: StringParam,
                 order_dir: StringParam,
             },
-            queryParamsRemoveDefault: false,
-            throttledValues: ['q', 'search_item_types'],
+            throttledValues: ['q', 'funds', 'products', 'providers'],
         },
     );
 
@@ -119,22 +123,6 @@ export default function Search() {
                 .finally(() => setProgress(100));
         },
         [searchService, transformItems, setProgress],
-    );
-
-    const toggleType = useCallback(
-        (type: string) => {
-            const { search_item_types = [] } = filterValues;
-            const index = search_item_types?.indexOf(type);
-
-            if (index === -1) {
-                search_item_types?.push(type);
-            } else {
-                search_item_types?.splice(index, 1);
-            }
-
-            filterUpdate({ search_item_types: search_item_types });
-        },
-        [filterUpdate, filterValues],
     );
 
     const countFiltersApplied = useMemo(() => {
@@ -214,10 +202,13 @@ export default function Search() {
                 ...filterValuesActive,
                 overview: 0,
                 with_external: 1,
+                funds: undefined,
+                products: undefined,
+                providers: undefined,
                 search_item_types: [
-                    filterValuesActive.search_item_types?.includes('funds') ? 'funds' : null,
-                    filterValuesActive.search_item_types?.includes('providers') ? 'providers' : null,
-                    filterValuesActive.search_item_types?.includes('products') ? 'products' : null,
+                    filterValuesActive.funds ? 'funds' : null,
+                    filterValuesActive.providers ? 'providers' : null,
+                    filterValuesActive.products ? 'products' : null,
                 ].filter((type) => type),
             },
             {
@@ -259,16 +250,13 @@ export default function Search() {
                         <div className="form-label">Uitgelicht</div>
                         {searchItemTypes?.map((itemType) => (
                             <div key={itemType.key} className="form-group">
-                                <div
-                                    className="checkbox"
-                                    role="checkbox"
-                                    aria-checked={filterValuesActive.search_item_types?.includes(itemType.key)}>
+                                <div className="checkbox" role="checkbox" aria-checked={filterValues?.[itemType.key]}>
                                     <input
                                         aria-hidden="true"
                                         type="checkbox"
                                         id={`type_${itemType.key}`}
-                                        checked={filterValuesActive.search_item_types?.includes(itemType.key)}
-                                        onChange={() => toggleType(itemType.key)}
+                                        checked={filterValues?.[itemType.key]}
+                                        onChange={() => filterUpdate({ [itemType.key]: !filterValues?.[itemType.key] })}
                                     />
                                     <label className="checkbox-label" htmlFor={`type_${itemType.key}`}>
                                         <div className="checkbox-box">

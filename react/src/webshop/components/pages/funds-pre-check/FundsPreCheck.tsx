@@ -32,8 +32,8 @@ import EmptyBlock from '../../elements/empty-block/EmptyBlock';
 import FundsListItemPreCheck from '../../elements/lists/funds-list/templates/FundsListItemPreCheck';
 import useFilter from '../../../../dashboard/hooks/useFilter';
 import BlockShowcase from '../../elements/block-showcase/BlockShowcase';
-import BlockLoader from '../../../../dashboard/components/elements/block-loader/BlockLoader';
-import BlockLoaderBreadcrumbs from '../../../../dashboard/components/elements/block-loader/BlockLoaderBreadcrumbs';
+import BlockLoader from '../../elements/block-loader/BlockLoader';
+import BlockLoaderBreadcrumbs from '../../elements/block-loader/BlockLoaderBreadcrumbs';
 
 type PreCheckLocal = PreCheck<{
     label?: string;

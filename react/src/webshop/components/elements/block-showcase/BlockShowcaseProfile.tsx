@@ -1,8 +1,8 @@
 import React from 'react';
 import ProfileMenu from '../profile-menu/ProfileMenu';
 import BlockShowcase from './BlockShowcase';
-import BlockLoader from '../../../../dashboard/components/elements/block-loader/BlockLoader';
-import BlockLoaderHeader from '../../../../dashboard/components/elements/block-loader/BlockLoaderHeader';
+import BlockLoader from '../block-loader/BlockLoader';
+import BlockLoaderHeader from '../block-loader/BlockLoaderHeader';
 
 export default function BlockShowcaseProfile({
     filters = null,

@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react';
 import { TopNavbar } from '../top-navbar/TopNavbar';
-import BlockLoader from '../../../../dashboard/components/elements/block-loader/BlockLoader';
-import BlockLoaderBreadcrumbs from '../../../../dashboard/components/elements/block-loader/BlockLoaderBreadcrumbs';
+import BlockLoader from '../block-loader/BlockLoader';
+import BlockLoaderBreadcrumbs from '../block-loader/BlockLoaderBreadcrumbs';
 
 export default function BlockShowcase({
     children = null,

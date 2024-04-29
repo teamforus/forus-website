@@ -1,5 +1,4 @@
-import React, { Fragment, useContext, useMemo } from 'react';
-import { classList } from '../../dashboard/helpers/utils';
+import React, { Fragment, useContext, useEffect, useMemo, useRef } from 'react';
 import { useStateRoutes } from '../../dashboard/modules/state_router/Router';
 import Modals from '../../dashboard/modules/modals/components/Modals';
 import PushNotifications from '../../dashboard/modules/push_notifications/components/PushNotifications';
@@ -24,15 +23,21 @@ export const Layout = ({ children }: { children: React.ReactElement }) => {
 
     const layout = route?.state?.layout;
     const authIdentity = useAuthIdentity();
+    const pageScrollRef = useRef<HTMLDivElement>(null);
 
     const isReady = useMemo(() => {
         return !!envData && !!appConfigs && (!route.state?.protected || authIdentity);
     }, [authIdentity, route.state, envData, appConfigs]);
 
+    useEffect(() => {
+        pageScrollRef?.current?.scrollTo({ top: 0 });
+    }, [route?.pathname]);
+
     return (
         <Fragment>
             <div
-                className={classList([route?.state?.name == 'fund-request' ? 'signup-layout' : ''])}
+                className={`${route?.state?.name == 'fund-request' ? 'signup-layout' : ''}`}
+                ref={pageScrollRef}
                 style={{
                     width: '100%',
                     height: '100%',

@@ -13,7 +13,7 @@ import { PaginationData } from '../../../../dashboard/props/ApiResponses';
 import Product from '../../../props/models/Product';
 import { useProductService } from '../../../services/ProductService';
 import { useOfficeService } from '../../../services/OfficeService';
-import BlockLoader from '../../../../dashboard/components/elements/block-loader/BlockLoader';
+import BlockLoader from '../../elements/block-loader/BlockLoader';
 import BlockShowcase from '../../elements/block-showcase/BlockShowcase';
 import useSetProgress from '../../../../dashboard/hooks/useSetProgress';
 

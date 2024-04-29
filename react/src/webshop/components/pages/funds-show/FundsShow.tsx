@@ -22,8 +22,8 @@ import Markdown from '../../elements/markdown/Markdown';
 import BlockCard2FAWarning from '../../elements/block-card-2fa-warning/BlockCard2FAWarning';
 import useSetTitle from '../../../hooks/useSetTitle';
 import BlockShowcase from '../../elements/block-showcase/BlockShowcase';
-import BlockLoader from '../../../../dashboard/components/elements/block-loader/BlockLoader';
-import BlockLoaderBreadcrumbs from '../../../../dashboard/components/elements/block-loader/BlockLoaderBreadcrumbs';
+import BlockLoader from '../../elements/block-loader/BlockLoader';
+import BlockLoaderBreadcrumbs from '../../elements/block-loader/BlockLoaderBreadcrumbs';
 import useSetProgress from '../../../../dashboard/hooks/useSetProgress';
 
 export default function FundsShow() {

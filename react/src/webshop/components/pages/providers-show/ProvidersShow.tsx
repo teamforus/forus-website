@@ -17,7 +17,7 @@ import { useStateParams } from '../../../modules/state_router/Router';
 import useSetTitle from '../../../hooks/useSetTitle';
 import useTranslate from '../../../../dashboard/hooks/useTranslate';
 import BlockShowcase from '../../elements/block-showcase/BlockShowcase';
-import BlockLoader from '../../../../dashboard/components/elements/block-loader/BlockLoader';
+import BlockLoader from '../../elements/block-loader/BlockLoader';
 import useSetProgress from '../../../../dashboard/hooks/useSetProgress';
 
 export default function ProvidersShow() {

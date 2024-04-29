@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import BlockShowcase from './BlockShowcase';
-import BlockLoader from '../../../../dashboard/components/elements/block-loader/BlockLoader';
+import BlockLoader from '../block-loader/BlockLoader';
 
 export default function BlockShowcasePage({
     aside = null,
