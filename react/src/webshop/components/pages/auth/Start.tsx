@@ -21,6 +21,7 @@ import AppLinks from '../../elements/app-links/AppLinks';
 import UIControlText from '../../../../dashboard/components/elements/forms/ui-controls/UIControlText';
 import TranslateHtml from '../../../../dashboard/components/elements/translate-html/TranslateHtml';
 import useSetTitle from '../../../hooks/useSetTitle';
+import { clickOnKeyEnter } from '../../../../dashboard/helpers/wcag';
 
 export default function Start() {
     const { token, signOut, setToken } = useContext(authContext);
@@ -247,17 +248,22 @@ export default function Start() {
                         <label
                             className="sign_up-pane-text sign_up-pane-text-sm flex"
                             htmlFor="privacy"
-                            tabIndex={2}
                             onClick={(e) => togglePrivacy(e)}>
                             <input
                                 type="checkbox"
                                 checked={authForm.values.privacy}
+                                onChange={() => null}
+                                tabIndex={2}
                                 onClick={(e) => authForm.update({ privacy: e.currentTarget.checked })}
                                 id="privacy"
                             />
                             <strong>
                                 Ik heb de{' '}
-                                <StateNavLink className="text-primary-light sign_up-pane-link" name="privacy">
+                                <StateNavLink
+                                    tabIndex={2}
+                                    target={'_blank'}
+                                    className="text-primary-light sign_up-pane-link"
+                                    name="privacy">
                                     privacyverklaring
                                 </StateNavLink>{' '}
                                 gelezen
@@ -270,7 +276,12 @@ export default function Start() {
     );
 
     const qrOption = (
-        <div className="sign_up-option" onClick={() => setState('qr')} role="button">
+        <div
+            className="sign_up-option"
+            tabIndex={0}
+            onKeyDown={clickOnKeyEnter}
+            onClick={() => setState('qr')}
+            role="button">
             <div className="sign_up-option-media">
                 <img
                     className="sign_up-option-media-img"
@@ -291,7 +302,12 @@ export default function Start() {
     const restoreLink = (label = 'Kun je niet meer inloggen?', link = 'Account herstellen met DigiD') => (
         <div className="sign_up-restore">
             <div className="sign_up-restore-label">{label}</div>
-            <div className="sign_up-restore-link" onClick={() => setState('restore')} role="button" tabIndex={0}>
+            <div
+                className="sign_up-restore-link"
+                onClick={() => setState('restore')}
+                role="button"
+                tabIndex={0}
+                onKeyDown={clickOnKeyEnter}>
                 {link}
                 <div className="sign_up-restore-chevron">
                     <em className="mdi mdi-chevron-right" />
@@ -301,7 +317,7 @@ export default function Start() {
     );
 
     const digidOption = (title: string, description: string) => (
-        <div className="sign_up-option" role="button" onClick={startDigId}>
+        <div className="sign_up-option" tabIndex={0} onKeyDown={clickOnKeyEnter} role="button" onClick={startDigId}>
             <div className="sign_up-option-media">
                 <img
                     className="sign_up-option-media-img"
@@ -317,7 +333,13 @@ export default function Start() {
     );
 
     const emailOption = (dusk: string, title: string, description: string) => (
-        <div className="sign_up-option" onClick={() => setState('email')} role="button" data-dusk={dusk}>
+        <div
+            className="sign_up-option"
+            tabIndex={0}
+            onKeyDown={clickOnKeyEnter}
+            onClick={() => setState('email')}
+            role="button"
+            data-dusk={dusk}>
             <div className="sign_up-option-media">
                 <img
                     className="sign_up-option-media-img"
@@ -440,6 +462,9 @@ export default function Start() {
                                             </div>
                                             <div className="sign_up-pane-footer">
                                                 <div
+                                                    role={'button'}
+                                                    tabIndex={0}
+                                                    onKeyDown={clickOnKeyEnter}
                                                     className="button button-text button-text-padless"
                                                     onClick={() => setState('start')}>
                                                     <em className="mdi mdi-chevron-left icon-lefts" />
@@ -470,6 +495,9 @@ export default function Start() {
                                             </div>
                                             <div className="sign_up-pane-footer">
                                                 <div
+                                                    role={'button'}
+                                                    tabIndex={4}
+                                                    onKeyDown={clickOnKeyEnter}
                                                     className="button button-text button-text-padless"
                                                     onClick={() => setState('start')}>
                                                     <em className="mdi mdi-chevron-left icon-lefts" />
@@ -584,6 +612,9 @@ export default function Start() {
                                         </div>
                                         <div className="sign_up-pane-footer">
                                             <div
+                                                role={'button'}
+                                                tabIndex={0}
+                                                onKeyDown={clickOnKeyEnter}
                                                 className="button button-text button-text-padless"
                                                 onClick={() => setState('start')}>
                                                 <em className="mdi mdi-chevron-left icon-lefts" />
