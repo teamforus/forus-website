@@ -405,10 +405,10 @@ export const TopNavbar = ({ hideOnScroll = false, className = '' }: { hideOnScro
                     </div>
 
                     <StateNavLink name={'home'} className="navbar-logo show-sm">
-                        <img src={assetUrl(`./assets/img/logo-normal${logoExtension}`)} alt="Terug naar hoofdpagina" />
+                        <img src={assetUrl(`/assets/img/logo-normal${logoExtension}`)} alt="Terug naar hoofdpagina" />
                         <img
                             className="hover"
-                            src={assetUrl(`./assets/img/logo-hover${logoExtension}`)}
+                            src={assetUrl(`/assets/img/logo-hover${logoExtension}`)}
                             alt="Terug naar hoofdpagina"
                         />
                     </StateNavLink>
