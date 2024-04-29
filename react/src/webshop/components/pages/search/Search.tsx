@@ -20,6 +20,7 @@ import BlockShowcasePage from '../../elements/block-showcase/BlockShowcasePage';
 import useSetProgress from '../../../../dashboard/hooks/useSetProgress';
 import useFilterNext from '../../../../dashboard/modules/filter-next/useFilterNext';
 import { BooleanParam, NumberParam, StringParam } from 'use-query-params';
+import { clickOnKeyEnter } from '../../../../dashboard/helpers/wcag';
 
 export default function Search() {
     const authIdentity = useAuthIdentity();
@@ -362,6 +363,8 @@ export default function Search() {
                                     <div
                                         className={`label-tab label-tab-sm ${displayType == 'list' ? 'active' : ''}`}
                                         onClick={() => setDisplayType('list')}
+                                        onKeyDown={clickOnKeyEnter}
+                                        tabIndex={0}
                                         aria-pressed={displayType == 'list'}
                                         role="button">
                                         <em className="mdi mdi-format-list-text icon-start" />
@@ -370,6 +373,8 @@ export default function Search() {
                                     <div
                                         className={`label-tab label-tab-sm ${displayType == 'grid' ? 'active' : ''}`}
                                         onClick={() => setDisplayType('grid')}
+                                        onKeyDown={clickOnKeyEnter}
+                                        tabIndex={0}
                                         aria-pressed={displayType == 'grid'}
                                         role="button">
                                         <em className="mdi mdi-view-grid-outline icon-start" />

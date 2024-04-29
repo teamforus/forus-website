@@ -18,6 +18,8 @@ export default function SelectControlOptionItemVoucher<T>({
             key={option.id}
             className="voucher-item voucher-item-select voucher-item-select"
             data-dusk={`voucherSelectorOption${voucher?.id}`}
+            onKeyDown={(e) => (e.key === 'Enter' ? e.currentTarget.click() : null)}
+            tabIndex={0}
             onClick={(e) => {
                 e.stopPropagation();
                 selectOption(option);

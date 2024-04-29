@@ -30,6 +30,9 @@ export default function SelectControlOptionsVouchers<T>({
     const input = useRef(null);
     const assetUrl = useAssetUrl();
 
+    const selectorRef = useRef<HTMLDivElement>(null);
+    const placeholderRef = useRef<HTMLLabelElement>(null);
+
     const selectedVoucher = useMemo(() => modelValue?.raw as Voucher, [modelValue]);
 
     return (
@@ -40,7 +43,23 @@ export default function SelectControlOptionsVouchers<T>({
             aria-haspopup="listbox"
             aria-expanded={showOptions}
             aria-labelledby={controlId}
-            aria-controls={`${controlId}_options`}>
+            aria-controls={`${controlId}_options`}
+            tabIndex={0}
+            ref={selectorRef}
+            onKeyDown={(e) => {
+                if (e.key == 'Enter') {
+                    placeholderRef?.current?.click();
+                }
+
+                if (e.key == 'Escape') {
+                    setShowOptions(false);
+                }
+            }}
+            onBlur={(e) => {
+                if (showOptions && !e.currentTarget.contains(e.relatedTarget)) {
+                    selectorRef?.current?.focus();
+                }
+            }}>
             <div className={['select-control-input', showOptions ? 'options' : ''].filter((item) => item).join(' ')}>
                 {/* Placeholder */}
                 <label
@@ -49,6 +68,7 @@ export default function SelectControlOptionsVouchers<T>({
                     className={`block block-vouchers block-vouchers-select ${
                         showOptions ? 'block-vouchers-select-open' : ''
                     }`}
+                    ref={placeholderRef}
                     data-dusk={dusk || 'voucherSelector'}
                     onClick={searchOption}
                     style={{ display: showOptions && allowSearch ? 'none' : 'block' }}

@@ -2,6 +2,7 @@ import React from 'react';
 import Product from '../../../../../props/models/Product';
 import useAssetUrl from '../../../../../hooks/useAssetUrl';
 import useAuthIdentity from '../../../../../hooks/useAuthIdentity';
+import { clickOnKeyEnter } from '../../../../../../dashboard/helpers/wcag';
 
 export default function ProductsListItemGrid({
     price,
@@ -20,6 +21,9 @@ export default function ProductsListItemGrid({
             {authIdentity && (
                 <div
                     onClick={toggleBookmark}
+                    onKeyDown={clickOnKeyEnter}
+                    role={'button'}
+                    tabIndex={0}
                     className={`block block-bookmark-toggle ${product.bookmarked ? 'active' : ''}`}
                     aria-label="toevoegen aan verlanglijstje"
                     aria-pressed={product.bookmarked}>

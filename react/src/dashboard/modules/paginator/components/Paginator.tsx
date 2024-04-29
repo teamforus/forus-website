@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import usePaginatorService from '../services/usePaginatorService';
 import SelectControl from '../../../components/elements/select-control/SelectControl';
 import SelectControlOptions from '../../../components/elements/select-control/templates/SelectControlOptions';
+import { clickOnKeyEnter } from '../../../helpers/wcag';
 
 export default function Paginator({
     meta,
@@ -104,20 +105,29 @@ export default function Paginator({
 
             <div className="table-pagination-navigation">
                 <div
+                    role={'button'}
                     onClick={() => setPage(1)}
+                    onKeyDown={clickOnKeyEnter}
+                    tabIndex={meta.current_page === 1 ? undefined : 0}
                     className={`button ${buttonClass} ${meta.current_page === 1 ? ' disabled' : ''}`}>
                     {t('paginator.buttons.first')}
                 </div>
                 {pages.map((page, key) => (
                     <div
                         key={key}
+                        role={'button'}
+                        tabIndex={0}
                         onClick={() => setPage(page)}
+                        onKeyDown={clickOnKeyEnter}
                         className={`button ${page === meta.current_page ? buttonClassActive : buttonClass}`}>
                         {page}
                     </div>
                 ))}
                 <div
+                    role={'button'}
                     onClick={() => setPage(meta.last_page)}
+                    onKeyDown={clickOnKeyEnter}
+                    tabIndex={meta.current_page === meta.last_page ? undefined : 0}
                     className={`button ${buttonClass} ${meta.current_page === meta.last_page ? ' disabled' : ''}`}>
                     {t('paginator.buttons.last')}
                 </div>

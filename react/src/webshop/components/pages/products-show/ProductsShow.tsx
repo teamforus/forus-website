@@ -23,6 +23,7 @@ import useSetTitle from '../../../hooks/useSetTitle';
 import useEnvData from '../../../hooks/useEnvData';
 import BlockShowcase from '../../elements/block-showcase/BlockShowcase';
 import useSetProgress from '../../../../dashboard/hooks/useSetProgress';
+import { clickOnKeyEnter } from '../../../../dashboard/helpers/wcag';
 
 export default function ProductsShow() {
     const { id } = useParams();
@@ -221,6 +222,9 @@ export default function ProductsShow() {
                                 <div
                                     className={`block block-bookmark-toggle ${product.bookmarked ? 'active' : ''}`}
                                     onClick={(e) => toggleBookmark(e, product)}
+                                    onKeyDown={clickOnKeyEnter}
+                                    role={'button'}
+                                    tabIndex={0}
                                     aria-label="toevoegen aan verlanglijstje"
                                     aria-pressed={product.bookmarked}>
                                     <em className="mdi mdi-cards-heart" />

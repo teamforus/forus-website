@@ -26,6 +26,7 @@ import Provider from '../../../props/models/Provider';
 import BlockShowcasePage from '../../elements/block-showcase/BlockShowcasePage';
 import useFilterNext from '../../../../dashboard/modules/filter-next/useFilterNext';
 import { BooleanParam, NumberParam, StringParam } from 'use-query-params';
+import { clickOnKeyEnter } from '../../../../dashboard/helpers/wcag';
 
 export default function Providers() {
     const translate = useTranslate();
@@ -428,6 +429,8 @@ export default function Providers() {
                                                 filterValues.show_map ? '' : 'active'
                                             }`}
                                             onClick={() => filterUpdate({ show_map: false })}
+                                            onKeyDown={clickOnKeyEnter}
+                                            tabIndex={0}
                                             aria-pressed={!filterValues.show_map}>
                                             <em className="mdi mdi-format-list-text icon-start" />
                                             Lijst
@@ -437,6 +440,8 @@ export default function Providers() {
                                                 filterValues.show_map ? 'active' : ''
                                             }`}
                                             onClick={() => filterUpdate({ show_map: true })}
+                                            onKeyDown={clickOnKeyEnter}
+                                            tabIndex={0}
                                             aria-pressed={!!filterValues.show_map}>
                                             <em className="mdi mdi-map-marker-radius icon-start" />
                                             Kaart

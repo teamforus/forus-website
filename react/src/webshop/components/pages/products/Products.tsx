@@ -24,6 +24,7 @@ import useTranslate from '../../../../dashboard/hooks/useTranslate';
 import BlockShowcasePage from '../../elements/block-showcase/BlockShowcasePage';
 import useFilterNext from '../../../../dashboard/modules/filter-next/useFilterNext';
 import { BooleanParam, NumberParam, StringParam } from 'use-query-params';
+import { clickOnKeyEnter } from '../../../../dashboard/helpers/wcag';
 
 export default function Products({ fundType = 'budget' }: { fundType: 'budget' | 'subsidies' }) {
     const appConfigs = useAppConfigs();
@@ -228,6 +229,8 @@ export default function Products({ fundType = 'budget' }: { fundType: 'budget' |
                                         !filterValues?.bookmarked ? 'active' : ''
                                     }`}
                                     onClick={() => filterUpdate({ bookmarked: false })}
+                                    onKeyDown={clickOnKeyEnter}
+                                    tabIndex={0}
                                     role="button">
                                     <em className="mdi mdi-tag-multiple-outline" />
                                     Volledig aanbod
@@ -237,7 +240,9 @@ export default function Products({ fundType = 'budget' }: { fundType: 'budget' |
                                         filterValues?.bookmarked ? 'active' : ''
                                     }`}
                                     onClick={() => filterUpdate({ bookmarked: true })}
+                                    onKeyDown={clickOnKeyEnter}
                                     role="button"
+                                    tabIndex={0}
                                     aria-label="toevoegen aan verlanglijstje"
                                     aria-pressed={!!filterValues.bookmarked}>
                                     <em className="mdi mdi-cards-heart-outline" />
@@ -408,6 +413,8 @@ export default function Products({ fundType = 'budget' }: { fundType: 'budget' |
                                             filterValues.display_type == 'list' ? 'active' : ''
                                         }`}
                                         onClick={() => filterUpdate({ display_type: 'list' })}
+                                        onKeyDown={clickOnKeyEnter}
+                                        tabIndex={0}
                                         aria-pressed={filterValues.display_type == 'list'}
                                         role="button">
                                         <em className="mdi mdi-format-list-text icon-start" />
@@ -418,6 +425,8 @@ export default function Products({ fundType = 'budget' }: { fundType: 'budget' |
                                             filterValues.display_type == 'grid' ? 'active' : ''
                                         }`}
                                         onClick={() => filterUpdate({ display_type: 'grid' })}
+                                        onKeyDown={clickOnKeyEnter}
+                                        tabIndex={0}
                                         aria-pressed={filterValues.display_type == 'grid'}
                                         role="button">
                                         <em className="mdi mdi-view-grid-outline icon-start" />

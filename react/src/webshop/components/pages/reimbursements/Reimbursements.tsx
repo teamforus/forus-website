@@ -20,6 +20,7 @@ import { useReimbursementService } from '../../../services/ReimbursementService'
 import ReimbursementCard from './elements/ReimbursementCard';
 import IconReimbursement from '../../../../../assets/forus-webshop/resources/_webshop-common/assets/img/icon-reimbursement.svg';
 import Auth2FARestriction from '../../elements/auth2fa-restriction/Auth2FARestriction';
+import { clickOnKeyEnter } from '../../../../dashboard/helpers/wcag';
 
 export default function Reimbursements() {
     const envData = useEnvData();
@@ -141,6 +142,8 @@ export default function Reimbursements() {
                                             filters.values.state == null ? 'active' : ''
                                         }`}
                                         onClick={() => filters.update({ state: null })}
+                                        onKeyDown={clickOnKeyEnter}
+                                        tabIndex={0}
                                         aria-pressed={filters.values.state == null}>
                                         Alle
                                     </div>
@@ -150,6 +153,8 @@ export default function Reimbursements() {
                                             filters.values.state == 'pending' ? 'active' : ''
                                         }`}
                                         onClick={() => filters.update({ state: 'pending' })}
+                                        onKeyDown={clickOnKeyEnter}
+                                        tabIndex={0}
                                         aria-pressed={filters.values.state == 'pending'}>
                                         In afwachting
                                     </div>
@@ -159,6 +164,8 @@ export default function Reimbursements() {
                                             filters.values.state == 'approved' ? 'active' : ''
                                         }`}
                                         onClick={() => filters.update({ state: 'approved' })}
+                                        onKeyDown={clickOnKeyEnter}
+                                        tabIndex={0}
                                         aria-pressed={filters.values.state == 'approved'}>
                                         Uitbetaald
                                     </div>
@@ -168,6 +175,8 @@ export default function Reimbursements() {
                                             filters.values.state == 'declined' ? 'active' : ''
                                         }`}
                                         onClick={() => filters.update({ state: 'declined' })}
+                                        onKeyDown={clickOnKeyEnter}
+                                        tabIndex={0}
                                         aria-pressed={filters.values.state == 'declined'}>
                                         Afgewezen
                                     </div>
@@ -177,6 +186,8 @@ export default function Reimbursements() {
                                             filters.values.state == 'draft' ? 'active' : ''
                                         }`}
                                         onClick={() => filters.update({ state: 'draft' })}
+                                        onKeyDown={clickOnKeyEnter}
+                                        tabIndex={0}
                                         aria-pressed={filters.values.state == 'draft'}>
                                         Nog niet ingediend
                                     </div>

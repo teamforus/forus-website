@@ -1,4 +1,4 @@
-import React, { Fragment, useCallback, useContext, useEffect, useMemo } from 'react';
+import React, { Fragment, useCallback, useContext, useEffect, useMemo, useRef } from 'react';
 import useEnvData from '../../../hooks/useEnvData';
 import useTranslate from '../../../../dashboard/hooks/useTranslate';
 import { mainContext } from '../../../contexts/MainContext';
@@ -16,6 +16,7 @@ import { useNavigateState } from '../../../modules/state_router/Router';
 import TopNavbarSearch from './TopNavbarSearch';
 import Announcements from '../announcements/Announcements';
 import ModalAuthPincode from '../../modals/ModalAuthPincode';
+import { clickOnKeyEnter } from '../../../../dashboard/helpers/wcag';
 
 export const TopNavbar = ({ hideOnScroll = false, className = '' }: { hideOnScroll?: boolean; className?: string }) => {
     const {
@@ -29,9 +30,10 @@ export const TopNavbar = ({ hideOnScroll = false, className = '' }: { hideOnScro
 
     const { signOut } = useContext(authContext);
 
-    const openModal = useOpenModal();
     const assetUrl = useAssetUrl();
+    const openModal = useOpenModal();
     const navigateState = useNavigateState();
+    const menuRef = useRef<HTMLDivElement>(null);
 
     const envData = useEnvData();
     const appConfigs = useAppConfigs();
@@ -71,30 +73,11 @@ export const TopNavbar = ({ hideOnScroll = false, className = '' }: { hideOnScro
         [navigateState],
     );
 
-    const goToState = useCallback(
-        (state_name) => {
-            navigateState(state_name, {});
-        },
-        [navigateState],
-    );
-
     const openPinCodePopup = useCallback(() => {
         setUserMenuOpened(false);
 
         openModal((modal) => <ModalAuthPincode modal={modal} />);
     }, [openModal, setUserMenuOpened]);
-
-    const openUserMenu = useCallback(
-        (e) => {
-            if (e?.target?.tagName != 'A') {
-                e.stopPropagation();
-                e.preventDefault();
-            }
-
-            setUserMenuOpened((userMenuOpened) => !userMenuOpened);
-        },
-        [setUserMenuOpened],
-    );
 
     const hideUserMenu = useCallback(() => {
         setUserMenuOpened(false);
@@ -217,15 +200,27 @@ export const TopNavbar = ({ hideOnScroll = false, className = '' }: { hideOnScro
     );
 
     const authMenu = authIdentity ? (
-        <div className="auth-in hide-sm">
+        <div
+            className="auth-in hide-sm"
+            onBlur={(e) => {
+                if (userMenuOpened && !e.currentTarget.contains(e.relatedTarget)) {
+                    menuRef?.current?.focus();
+                }
+            }}>
             <div
+                id="user_menu"
                 className="auth-user"
                 data-dusk="userProfile"
-                onClick={(e) => openUserMenu(e)}
+                onClick={(e) => {
+                    e.stopPropagation();
+                    setUserMenuOpened((userMenuOpened) => !userMenuOpened);
+                }}
                 aria-haspopup="true"
-                id="user_menu"
+                tabIndex={0}
                 aria-expanded={userMenuOpened ? 'true' : 'false'}
-                role="link"
+                onKeyDown={clickOnKeyEnter}
+                role="button"
+                ref={menuRef}
                 aria-label="Gebruikersmenu">
                 <div className="auth-user-avatar" />
                 <div className="auth-user-caret">
@@ -237,7 +232,16 @@ export const TopNavbar = ({ hideOnScroll = false, className = '' }: { hideOnScro
                         className={`auth-user-menu hide-sm ${userMenuOpened ? 'active' : ''}`}
                         aria-labelledby="user_menu">
                         <div className="triangle" />
-                        <div className="inner">
+                        <div
+                            className="inner"
+                            onKeyDown={(e) => {
+                                if (e.key === 'Escape') {
+                                    setUserMenuOpened(false);
+                                    menuRef?.current?.focus();
+                                }
+
+                                e.stopPropagation();
+                            }}>
                             {authIdentity?.email && (
                                 <div className="auth-user-menu-user">
                                     <span className="text-strong-half">
@@ -249,40 +253,32 @@ export const TopNavbar = ({ hideOnScroll = false, className = '' }: { hideOnScro
 
                             {authIdentity?.email && <div className="auth-user-menu-separator" />}
 
-                            <StateNavLink
-                                name={'vouchers'}
-                                className="auth-user-menu-item"
-                                id="vouchers"
-                                onClick={() => goToState('vouchers')}
-                                role="link"
-                                tabIndex={0}>
+                            <StateNavLink id="vouchers" name={'vouchers'} className="auth-user-menu-item" tabIndex={0}>
                                 <em className="mdi mdi-ticket-percent-outline" />
                                 Mijn tegoeden
                             </StateNavLink>
                             <div
+                                id="open_pincode_popup"
+                                tabIndex={0}
                                 className="auth-user-menu-item"
                                 onClick={() => openPinCodePopup()}
-                                id="open_pincode_popup"
-                                role="link">
+                                onKeyDown={clickOnKeyEnter}
+                                role="button">
                                 <em className="mdi mdi-cellphone" />
                                 {translate('topnavbar.buttons.authorize')}
                             </div>
                             <StateNavLink
-                                className="auth-user-menu-item"
-                                name={'bookmarked-products'}
                                 id="bookmarked_products"
-                                ng-click="goToState('bookmarked-products')"
-                                role="link"
+                                name={'bookmarked-products'}
+                                className="auth-user-menu-item"
                                 tabIndex={0}>
                                 <em className="mdi mdi-cards-heart-outline" />
                                 Mijn verlanglijstje
                             </StateNavLink>
                             <StateNavLink
-                                className="auth-user-menu-item"
-                                name={'reservations'}
                                 id="reservations"
-                                onClick={() => goToState('reservations')}
-                                role="link"
+                                name={'reservations'}
+                                className="auth-user-menu-item"
                                 tabIndex={0}>
                                 <em className="mdi mdi-calendar-outline" />
                                 Reserveringen
@@ -292,125 +288,84 @@ export const TopNavbar = ({ hideOnScroll = false, className = '' }: { hideOnScro
                                     id="reimbursements"
                                     name={'reimbursements'}
                                     className="auth-user-menu-item"
-                                    onClick={() => goToState('reimbursements')}
-                                    role="link"
                                     tabIndex={0}>
                                     <em className="mdi mdi-receipt-outline" />
                                     Kosten terugvragen
                                 </StateNavLink>
                             )}
                             <StateNavLink
-                                className="auth-user-menu-item"
-                                name={'fund-requests'}
                                 id="fund-requests"
-                                onClick={() => goToState('fund-requests')}
-                                role="link"
+                                name={'fund-requests'}
+                                className="auth-user-menu-item"
                                 dataDusk="btnFundRequests"
                                 tabIndex={0}>
                                 <em className="mdi mdi-card-account-details-outline" />
                                 Aanvragen
                             </StateNavLink>
-                            <StateNavLink
-                                className="auth-user-menu-item"
-                                name={'notifications'}
-                                onClick={() => goToState('notifications')}
-                                role="link"
-                                tabIndex={0}>
+                            <StateNavLink name={'notifications'} className="auth-user-menu-item" tabIndex={0}>
                                 <em className="mdi mdi-bell-outline" />
                                 Notificaties
                             </StateNavLink>
                             <StateNavLink
-                                className="auth-user-menu-item"
-                                name={'preferences-notifications'}
                                 id="notification_preferences"
-                                onClick={() => goToState('preferences-notifications')}
-                                role="link"
+                                name="preferences-notifications"
+                                className="auth-user-menu-item"
                                 tabIndex={0}>
                                 <em className="mdi mdi-cog-outline" />
                                 {translate('notification_preferences.title_preferences')}
                             </StateNavLink>
                             {envData.config.sessions && (
-                                <StateNavLink
-                                    className="auth-user-menu-item"
-                                    name={'security-sessions'}
-                                    onClick={() => goToState('security-sessions')}
-                                    role="link"
-                                    tabIndex={0}>
+                                <StateNavLink name={'security-sessions'} className="auth-user-menu-item" tabIndex={0}>
                                     <em className="mdi mdi-shield-account" />
                                     Sessies
                                 </StateNavLink>
                             )}
                             <StateNavLink
-                                className="auth-user-menu-item"
-                                name={'identity-emails'}
                                 id="identity_emails"
-                                onClick={() => goToState('identity-emails')}
+                                name="identity-emails"
+                                className="auth-user-menu-item"
                                 dataDusk="btnUserEmails"
-                                role="link"
                                 tabIndex={0}>
                                 <em className="mdi mdi-at" />
                                 {translate('email_preferences.title_preferences')}
                             </StateNavLink>
                             {(envData.config.flags.show2FAMenu || auth2faState.required) && (
-                                <StateNavLink
-                                    className="auth-user-menu-item"
-                                    name={'security-2fa'}
-                                    onClick={() => goToState('security-2fa')}
-                                    role="link">
+                                <StateNavLink name="security-2fa" className="auth-user-menu-item" tabIndex={0}>
                                     <em className="mdi mdi-security" />
                                     Beveiliging
                                 </StateNavLink>
                             )}
                             <div className="auth-user-menu-separator show-sm" />
                             {authIdentity && (
-                                <StateNavLink
-                                    className="auth-user-menu-item show-sm"
-                                    name={'funds'}
-                                    onClick={() => goToState('funds')}
-                                    role="link"
-                                    tabIndex={0}>
+                                <StateNavLink name="funds" className="auth-user-menu-item show-sm" tabIndex={0}>
                                     <em className="mdi mdi-star-outline" />
                                     {translate('topnavbar.buttons.logout')}
                                 </StateNavLink>
                             )}
                             {appConfigs.products.list && (
-                                <StateNavLink
-                                    className="auth-user-menu-item show-sm"
-                                    name={'products'}
-                                    onClick={() => goToState('products')}
-                                    role="link"
-                                    tabIndex={0}>
+                                <StateNavLink name="products" className="auth-user-menu-item show-sm" tabIndex={0}>
                                     <em className="mdi mdi-store" />
                                     {translate('topnavbar.buttons.products')}
                                 </StateNavLink>
                             )}
                             {envData.config.flags.providersMenu && (
-                                <StateNavLink
-                                    className="auth-user-menu-item show-sm"
-                                    name={'providers'}
-                                    onClick={() => goToState('providers')}
-                                    role="link"
-                                    tabIndex={0}>
+                                <StateNavLink name="providers" className="auth-user-menu-item show-sm" tabIndex={0}>
                                     <em className="mdi mdi-store" />
                                     {translate('topnavbar.items.providers')}
                                 </StateNavLink>
                             )}
                             <div className="auth-user-menu-separator show-sm" />
-                            <StateNavLink
-                                className="auth-user-menu-item show-sm"
-                                name={'vouchers'}
-                                onClick={() => goToState('vouchers')}
-                                role="link"
-                                tabIndex={0}>
+                            <StateNavLink name="vouchers" className="auth-user-menu-item show-sm" tabIndex={0}>
                                 <em className="mdi mdi-ticket-confirmation" />
                                 {translate('topnavbar.buttons.voucher')}
                             </StateNavLink>
                             <div className="auth-user-menu-separator" />
                             <div
-                                className="auth-user-menu-item"
                                 id="sign_out"
+                                className="auth-user-menu-item"
                                 onClick={() => signOut()}
-                                role="link"
+                                onKeyDown={clickOnKeyEnter}
+                                role="button"
                                 data-dusk="btnUserLogout"
                                 tabIndex={0}>
                                 <em className="mdi mdi-logout" />

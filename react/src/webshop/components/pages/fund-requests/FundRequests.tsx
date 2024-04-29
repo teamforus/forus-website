@@ -15,6 +15,7 @@ import FundRequestCard from './elements/FundRequestCard';
 import BlockShowcaseProfile from '../../elements/block-showcase/BlockShowcaseProfile';
 import useFilterNext from '../../../../dashboard/modules/filter-next/useFilterNext';
 import { BooleanParam, NumberParam } from 'use-query-params';
+import { clickOnKeyEnter } from '../../../../dashboard/helpers/wcag';
 
 export default function FundRequests() {
     const translate = useTranslate();
@@ -100,14 +101,18 @@ export default function FundRequests() {
                                     className={`label-tab label-tab-sm ${!filterValues.archived ? 'active' : ''}`}
                                     role="button"
                                     data-dusk="fundRequestsFilterActive"
-                                    onClick={() => filterUpdate({ archived: false })}>
+                                    onClick={() => filterUpdate({ archived: false })}
+                                    onKeyDown={clickOnKeyEnter}
+                                    tabIndex={0}>
                                     Actief
                                 </div>
                                 <div
                                     className={`label-tab label-tab-sm ${filterValues.archived ? 'active' : ''}`}
                                     role="button"
                                     data-dusk="fundRequestsFilterArchived"
-                                    onClick={() => filterUpdate({ archived: true })}>
+                                    onClick={() => filterUpdate({ archived: true })}
+                                    onKeyDown={clickOnKeyEnter}
+                                    tabIndex={0}>
                                     Archief
                                 </div>
                             </div>

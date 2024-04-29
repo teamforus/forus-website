@@ -2,6 +2,7 @@ import React, { Fragment } from 'react';
 import Product from '../../../../../props/models/Product';
 import useAssetUrl from '../../../../../hooks/useAssetUrl';
 import useAuthIdentity from '../../../../../hooks/useAuthIdentity';
+import { clickOnKeyEnter } from '../../../../../../dashboard/helpers/wcag';
 
 export default function ProductsListItemList({
     price,
@@ -36,6 +37,9 @@ export default function ProductsListItemList({
                         <div
                             className={`block block-bookmark-toggle ${product.bookmarked ? 'active' : ''}`}
                             onClick={toggleBookmark}
+                            onKeyDown={clickOnKeyEnter}
+                            role={'button'}
+                            tabIndex={0}
                             aria-label="toevoegen aan verlanglijstje"
                             aria-pressed={product.bookmarked}>
                             <em className="mdi mdi-cards-heart" />

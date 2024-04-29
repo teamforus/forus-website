@@ -13,6 +13,7 @@ import { useVoucherService } from '../../../services/VoucherService';
 import useSetProgress from '../../../../dashboard/hooks/useSetProgress';
 import VoucherCard from './elements/VoucherCard';
 import useEnvData from '../../../hooks/useEnvData';
+import { clickOnKeyEnter } from '../../../../dashboard/helpers/wcag';
 
 export default function Vouchers() {
     const envData = useEnvData();
@@ -92,6 +93,8 @@ export default function Vouchers() {
                                 <div
                                     className={`label-tab label-tab-sm ${filter.values.archived ? '' : 'active'}`}
                                     onClick={() => filter.update({ archived: 0 })}
+                                    onKeyDown={clickOnKeyEnter}
+                                    tabIndex={0}
                                     aria-pressed={!filter.values.archived}
                                     role="button">
                                     Actief
@@ -99,6 +102,8 @@ export default function Vouchers() {
                                 <div
                                     className={`label-tab label-tab-sm ${filter.values.archived ? 'active' : ''}`}
                                     onClick={() => filter.update({ archived: 1 })}
+                                    onKeyDown={clickOnKeyEnter}
+                                    tabIndex={0}
                                     aria-pressed={!!filter.values.archived}
                                     role="button">
                                     Archief
