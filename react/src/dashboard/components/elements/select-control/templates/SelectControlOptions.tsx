@@ -75,7 +75,7 @@ export default function SelectControlOptions<T>({
                         {showOptions && (
                             <input
                                 id={controlId}
-                                placeholder={placeholderValue || placeholder}
+                                placeholder={placeholder || placeholderValue}
                                 ref={input}
                                 value={query}
                                 onClick={onInputClick}

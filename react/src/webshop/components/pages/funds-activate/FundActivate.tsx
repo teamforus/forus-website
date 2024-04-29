@@ -116,7 +116,7 @@ export default function FundActivate() {
                         return pushDanger(err.data.message);
                     }
 
-                    navigateState('error', { errorCode: err.headers['Error-Code'] });
+                    navigateState('error', { errorCode: err.headers['error-code'] });
                 });
         },
         [digIdService, navigateState, pushDanger],
@@ -642,7 +642,7 @@ export default function FundActivate() {
                                         </form>
                                     </div>
                                     <div className="sign_up-pane-footer">
-                                        {options.length > 1 && (
+                                        {options?.length > 1 && (
                                             <div
                                                 className="button button-text button-text-padless"
                                                 onClick={() => setState('select')}>

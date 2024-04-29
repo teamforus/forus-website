@@ -25,7 +25,7 @@ export function useAuthService() {
             if (fundsNoVouchers.length > 0) {
                 // Apply to the first form the list
                 if (envData.config.flags.activateFirstFund || fundsNoVouchers.length == 1) {
-                    return navigateState('fund-activate', { fund_id: fundsNoVouchers[0].id });
+                    return navigateState('fund-activate', { id: fundsNoVouchers[0].id });
                 }
 
                 // Go to funds list

@@ -124,6 +124,8 @@ export default function Providers() {
             product_category_id: values.product_category_id || null,
             postcode: values.postcode || '',
             distance: values.distance || null,
+            order_by: values.order_by || null,
+            order_dir: values.order_dir || null,
         }),
         [],
     );
@@ -155,7 +157,10 @@ export default function Providers() {
 
             providersService
                 .search({ ...query, per_page: 1000 })
-                .then((res) => setOffices(res.data.data.reduce((arr, provider) => arr.concat(provider.offices), [])))
+                .then((res) => {
+                    setProviders(res.data);
+                    setOffices(res.data.data.reduce((arr, provider) => arr.concat(provider.offices), []));
+                })
                 .catch((err: ResponseError) => setErrors(err.data.errors))
                 .finally(() => setProgress(100));
         },
@@ -359,7 +364,7 @@ export default function Providers() {
                                             allowSearch={true}
                                             onChange={(distance: number) => filterUpdate({ distance })}
                                             options={distances || []}
-                                            placeholder={distances?.[0]?.name}
+                                            placeholder={'Afstand...'}
                                             optionsComponent={SelectControlOptions}
                                         />
                                         <FormError error={errors?.distance} />

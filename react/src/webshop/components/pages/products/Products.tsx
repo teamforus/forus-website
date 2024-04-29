@@ -362,7 +362,7 @@ export default function Products({ fundType = 'budget' }: { fundType: 'budget' |
                                         allowSearch={true}
                                         onChange={(distance: number) => filterUpdate({ distance })}
                                         options={distances || []}
-                                        placeholder={distances?.[0]?.name}
+                                        placeholder={'Afstand...'}
                                         optionsComponent={SelectControlOptions}
                                     />
                                     <FormError error={errors?.distance} />

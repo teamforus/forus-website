@@ -2,7 +2,6 @@ import React, { ReactElement, useCallback, useEffect, useMemo, useState } from '
 import { GoogleMap as GoogleMapComponent, InfoWindow, Marker } from '@react-google-maps/api';
 import { AppConfigProp } from '../../../services/ConfigService';
 
-// todo: figure out about the envData and appConfigs dependency
 export function GoogleMap({
     appConfigs,
     mapOptions = {},
@@ -10,24 +9,30 @@ export function GoogleMap({
     mapGestureHandling,
     mapGestureHandlingMobile,
     markerTemplate,
+    openFirstPointer = false,
 }: {
     appConfigs: AppConfigProp;
-    mapOptions?: object;
+    mapOptions?: {
+        centerType?: string;
+        zoom?: number;
+        fullscreenControlOptions?: { position?: google.maps.ControlPosition | null };
+    };
     mapPointers: Array<{ lat: string; lon: string }>;
     mapGestureHandling?: 'cooperative' | 'greedy' | 'none' | 'auto';
     mapGestureHandlingMobile?: 'cooperative' | 'greedy' | 'none' | 'auto';
     markerTemplate?: (item: { lat: string; lon: string }) => React.ReactElement | Array<ReactElement>;
+    openFirstPointer?: boolean;
 }) {
     const [selectedMarker, setSelectedMarker] = React.useState(null);
     const [markers, setMarkers] = useState([]);
-    const zoomLevel = 12;
+    const [zoomLevel] = useState(mapOptions?.zoom || 12);
 
     const avg = useCallback((values: Array<number>) => {
         return values.reduce((avg, value) => value + avg, 0) / values.length;
     }, []);
 
     const center = useMemo(() => {
-        if (mapPointers.length > 0) {
+        if (mapOptions.centerType == 'avg' && mapPointers.length > 0) {
             return {
                 lat: avg(
                     mapPointers.map((pointer) => {
@@ -43,10 +48,10 @@ export function GoogleMap({
         }
 
         return {
-            lat: appConfigs?.map?.lat || 0,
-            lng: appConfigs?.map?.lon || 0,
+            lat: mapPointers.length > 0 ? parseFloat(mapPointers[0].lat) : appConfigs.map.lat,
+            lng: mapPointers.length > 0 ? parseFloat(mapPointers[0].lon) : appConfigs.map.lon,
         };
-    }, [appConfigs?.map?.lat, appConfigs?.map?.lon, avg, mapPointers]);
+    }, [appConfigs.map.lat, appConfigs.map.lon, avg, mapOptions?.centerType, mapPointers]);
 
     const mapStyles = [
         { featureType: 'poi.business', stylers: [{ visibility: 'off' }] },
@@ -59,13 +64,21 @@ export function GoogleMap({
 
     useEffect(() => {
         setMarkers(
-            mapPointers.map((pointer) => ({
-                ...pointer,
-                lat: typeof pointer.lat === 'string' ? parseFloat(pointer.lat) : pointer.lat,
-                lng: typeof pointer.lon === 'string' ? parseFloat(pointer.lon) : pointer.lon,
-            })),
+            mapPointers
+                .filter((pointer) => !isNaN(parseFloat(pointer.lon)) && !isNaN(parseFloat(pointer.lat)))
+                .map((pointer) => ({
+                    ...pointer,
+                    lat: typeof pointer.lat === 'string' ? parseFloat(pointer.lat) : pointer.lat,
+                    lng: typeof pointer.lon === 'string' ? parseFloat(pointer.lon) : pointer.lon,
+                })),
         );
     }, [appConfigs?.map?.lat, appConfigs?.map?.lon, avg, mapPointers]);
+
+    useEffect(() => {
+        if (openFirstPointer) {
+            setSelectedMarker(markers[0]);
+        }
+    }, [markers, openFirstPointer]);
 
     return (
         <div className={'map'}>

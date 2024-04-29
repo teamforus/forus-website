@@ -70,15 +70,15 @@ export default function useComposeVoucherCardData() {
     const getVoucherThumbnail = useCallback(
         (voucher) => {
             if (voucher.type == 'regular') {
-                if (voucher.fund.logo) {
-                    return voucher.fund.logo.sizes.thumbnail;
-                } else if (voucher.fund.organization.logo) {
-                    return voucher.fund.organization.logo.sizes.thumbnail;
+                if (voucher.fund?.logo) {
+                    return voucher.fund?.logo?.sizes?.thumbnail;
+                } else if (voucher.fund?.organization?.logo) {
+                    return voucher.fund?.organization?.logo?.sizes?.thumbnail;
                 }
             }
 
             if (voucher.type == 'product' && voucher.product.photo) {
-                return voucher.product.photo.sizes.thumbnail;
+                return voucher.product?.photo?.sizes?.thumbnail;
             }
 
             return assetUrl('/assets/img/placeholders/product-thumbnail.png');

@@ -49,7 +49,7 @@ export default function FundsListItemPreCheck({ fund }: { fund?: PreCheckTotalsF
         function (e) {
             e.preventDefault();
 
-            navigateSate('fund-activate', { fund_id: fund.id });
+            navigateSate('fund-activate', { id: fund.id });
         },
         [fund, navigateSate],
     );

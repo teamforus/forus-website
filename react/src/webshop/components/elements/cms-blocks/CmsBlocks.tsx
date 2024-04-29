@@ -25,7 +25,7 @@ export default function CmsBlocks({ page }: { page: ImplementationPage }) {
                                         <div className="fund-media">
                                             <img
                                                 src={
-                                                    block.media.sizes.public ||
+                                                    block.media?.sizes?.public ||
                                                     assetUrl('/assets/img/placeholders/product-small.png')
                                                 }
                                                 alt=""

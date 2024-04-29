@@ -120,6 +120,7 @@ export default function ProvidersShow() {
                                     mapGestureHandling={'greedy'}
                                     mapGestureHandlingMobile={'none'}
                                     mapOptions={mapOptions}
+                                    openFirstPointer={true}
                                     markerTemplate={(office: Office) => <MapMarkerProviderOfficeView office={office} />}
                                 />
                             </div>

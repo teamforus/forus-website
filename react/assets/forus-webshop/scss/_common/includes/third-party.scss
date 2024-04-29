@@ -62,7 +62,7 @@
                 }
 
                 &.react-datepicker__day--disabled {
-                    color: rgba(0,0,0,.2);
+                    color: rgba(0, 0, 0, 0.2);
                 }
 
                 // &.react-datepicker__day--today {}
@@ -210,6 +210,7 @@
 .gm-style .gm-style-iw-t {
     position: absolute;
     width: 100%;
+    transform: translateY(-37px);
 }
 
 .gm-style .gm-style-iw-t::after {
@@ -220,7 +221,7 @@
         rgba(255, 255, 255, 0) 100%
     );
     box-shadow: -2px 2px 2px 0 rgba(178, 178, 178, 0.4);
-    content: "";
+    content: '';
     height: 15px;
     left: 0;
     position: absolute;
@@ -400,7 +401,7 @@
             max-width: 275px;
             border: 1px solid #e9ecee;
             border-radius: 5px;
-            box-shadow: 5px 5px 20px rgba(0, 0, 0, .1);
+            box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.1);
 
             &-days-header {
                 background: #fff;
@@ -435,7 +436,7 @@
                 line-height: 35px;
                 position: relative;
                 z-index: 1;
-                transition: color .4s;
+                transition: color 0.4s;
 
                 &:before {
                     content: '';
@@ -449,14 +450,14 @@
                     transform: translate(-50%, -50%);
                     z-index: -1;
                     border-radius: 20px;
-                    transition: background .4s;
+                    transition: background 0.4s;
                 }
 
                 &:hover {
                     background: transparent;
 
                     &:before {
-                        background: rgba(0,0,0,.03);
+                        background: rgba(0, 0, 0, 0.03);
                     }
                 }
 
@@ -470,17 +471,17 @@
                 }
 
                 &._720kb-datepicker-disabled {
-                    color: rgba(0,0,0,.2);
+                    color: rgba(0, 0, 0, 0.2);
                     background: transparent;
 
                     &:before {
-                        background: rgba(25,2,0,.02);
+                        background: rgba(25, 2, 0, 0.02);
                     }
                 }
             }
 
             &-header {
-                &:nth-child(odd), 
+                &:nth-child(odd),
                 &:nth-child(even) {
                     background: #fff;
                     border-bottom: 1px solid #e9ecee;
@@ -492,7 +493,7 @@
                 font: 500 13px/40px var(--base-font);
 
                 a {
-                    &>span {
+                    & > span {
                         color: #282b39;
                         font: 500 13px/40px var(--base-font);
                     }

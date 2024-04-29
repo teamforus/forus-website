@@ -1,11 +1,11 @@
 import React, { useMemo } from 'react';
-import { TopNavbar } from '../../elements/top-navbar/TopNavbar';
 import useTranslate from '../../../../dashboard/hooks/useTranslate';
 import { useParams } from 'react-router-dom';
 import { snakeCase } from 'lodash';
 import { getStateRouteUrl, useStateParams } from '../../../modules/state_router/Router';
 import StateNavLink from '../../../modules/state_router/StateNavLink';
 import TranslateHtml from '../../../../dashboard/components/elements/translate-html/TranslateHtml';
+import BlockShowcase from '../../elements/block-showcase/BlockShowcase';
 
 export default function Error() {
     const params = useParams();
@@ -25,9 +25,7 @@ export default function Error() {
     }, []);
 
     return (
-        <div className="block block-showcase">
-            <TopNavbar />
-
+        <BlockShowcase wrapper={false}>
             <section className="section section-product">
                 <div className="wrapper">
                     <div className="block block-sign_up">
@@ -88,6 +86,6 @@ export default function Error() {
                     </div>
                 </div>
             </section>
-        </div>
+        </BlockShowcase>
     );
 }

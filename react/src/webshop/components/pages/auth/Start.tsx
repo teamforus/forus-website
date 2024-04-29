@@ -95,6 +95,7 @@ export default function Start() {
                     .then(() => {
                         setState('email');
                         setAuthEmailConfirmationSent(true);
+                        authForm.reset();
                     }, handleErrors)
                     .finally(() => setProgress(100));
             }
@@ -103,6 +104,7 @@ export default function Start() {
                 .make(values)
                 .then(() => {
                     setAuthEmailRestoreSent(true);
+                    authForm.reset();
                     setState('email');
                 }, handleErrors)
                 .finally(() => setProgress(100));
@@ -125,7 +127,7 @@ export default function Start() {
         digIdService
             .startAuthRestore()
             .then((res) => (document.location = res.data.redirect_url))
-            .catch((res: ResponseError) => navigateState('error', { errorCode: res.headers['Error-Code'] }))
+            .catch((res: ResponseError) => navigateState('error', { errorCode: res.headers['error-code'] }))
             .finally(() => {
                 setLoading(false);
                 setProgress(100);
@@ -179,6 +181,8 @@ export default function Start() {
         }
 
         if (!restore_with_digid && restore_with_email) {
+            setAuthEmailConfirmationSent(false);
+            setAuthEmailRestoreSent(false);
             setState('email');
         }
 

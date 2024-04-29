@@ -234,7 +234,7 @@ export default function FundRequest() {
                     return pushDanger(err.data.message);
                 }
 
-                navigateState('error', { errorCode: err.headers('Error-Code') });
+                navigateState('error', { errorCode: err.headers('error-code') });
             });
     }, [digIdService, fund?.id, navigateState, pushDanger]);
 
