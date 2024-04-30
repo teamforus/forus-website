@@ -86,6 +86,7 @@ module.exports = (env, argv) => {
                     from: `**/**.*`,
                     to: resolvePath(`${distPath}/${item.out}/assets`),
                     noErrorOnMissing: true,
+                    force: true,
                 },
                 {
                     from: resolvePath(`./node_modules/pdfjs-dist/build/pdf.worker.js`),
