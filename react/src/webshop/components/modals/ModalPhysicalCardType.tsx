@@ -13,6 +13,7 @@ import TranslateHtml from '../../../dashboard/components/elements/translate-html
 import EmailProviderLink from '../../../dashboard/components/pages/auth/elements/EmailProviderLink';
 import useAuthIdentity from '../../hooks/useAuthIdentity';
 import useEnvData from '../../hooks/useEnvData';
+import { clickOnKeyEnter } from '../../../dashboard/helpers/wcag';
 
 export default function ModalPhysicalCardType({
     modal,
@@ -159,9 +160,15 @@ export default function ModalPhysicalCardType({
             <Fragment>
                 {state == 'card_code' && (
                     <form className="modal-window form form-compact" onSubmit={activateCodeForm.submit}>
-                        <div className="modal-close">
-                            <div className="mdi mdi-close" onClick={modal.close} aria-label="Sluiten" role="button" />
-                        </div>
+                        <div
+                            className="modal-close mdi mdi-close"
+                            onClick={modal.close}
+                            tabIndex={0}
+                            onKeyDown={clickOnKeyEnter}
+                            aria-label="Sluiten"
+                            role="button"
+                        />
+
                         <div className="modal-header">
                             <h2 className="modal-header-title" id="physicalCardTypeDialogTitle">
                                 {translate('physical_card.modal_section.link_card.title')}
@@ -220,14 +227,14 @@ export default function ModalPhysicalCardType({
                 {state == 'select_type' && (
                     <form className="modal-window form form-compact" onSubmit={requestCard}>
                         <div className={'modal-header'}>
-                            <div className="modal-close">
-                                <div
-                                    className="mdi mdi-close"
-                                    onClick={modal.close}
-                                    aria-label="Sluiten"
-                                    role="button"
-                                />
-                            </div>
+                            <div
+                                className="modal-close mdi mdi-close"
+                                onClick={modal.close}
+                                tabIndex={0}
+                                onKeyDown={clickOnKeyEnter}
+                                aria-label="Sluiten"
+                                role="button"
+                            />
                             <h2 className="modal-header-title" id="physicalCardTypeDialogTitle">
                                 {preferPlasticCard
                                     ? translate('physical_card.modal_section.request_new_card.title', {
@@ -491,9 +498,15 @@ export default function ModalPhysicalCardType({
 
                 {state == 'confirm_new_card' && (
                     <div className="modal-window">
-                        <div className="modal-close">
-                            <div className="mdi mdi-close" onClick={modal.close} aria-label="Sluiten" role="button" />
-                        </div>
+                        <div
+                            className="modal-close mdi mdi-close"
+                            onClick={modal.close}
+                            tabIndex={0}
+                            onKeyDown={clickOnKeyEnter}
+                            aria-label="Sluiten"
+                            role="button"
+                        />
+
                         <div className="modal-header">
                             <h2 className="modal-header-title" id="physicalCardTypeDialogTitle">
                                 {translate('physical_card.modal_section.confirm_card.header')}
@@ -541,9 +554,14 @@ export default function ModalPhysicalCardType({
 
                 {state == 'success_old_card' && (
                     <div className="modal-window">
-                        <div className="modal-close">
-                            <div className="mdi mdi-close" onClick={modal.close} aria-label="Sluiten" role="button" />
-                        </div>
+                        <div
+                            className="modal-close mdi mdi-close"
+                            onClick={modal.close}
+                            tabIndex={0}
+                            onKeyDown={clickOnKeyEnter}
+                            aria-label="Sluiten"
+                            role="button"
+                        />
                         <div className="modal-header">
                             <h2 className="modal-header-title" id="physicalCardTypeDialogTitle">
                                 {translate('physical_card.modal_section.link_card_success.title')}
@@ -574,9 +592,15 @@ export default function ModalPhysicalCardType({
 
                 {state == 'success_new_card' && (
                     <div className="modal-window">
-                        <div className="modal-close">
-                            <div className="mdi mdi-close" onClick={modal.close} aria-label="Sluiten" role="button" />
-                        </div>
+                        <div
+                            className="modal-close mdi mdi-close"
+                            onClick={modal.close}
+                            tabIndex={0}
+                            onKeyDown={clickOnKeyEnter}
+                            aria-label="Sluiten"
+                            role="button"
+                        />
+
                         <div className="modal-header">
                             <h2 className="modal-header-title" id="physicalCardTypeDialogTitle">
                                 {translate('physical_card.modal_section.request_card_success.title')}
@@ -611,7 +635,9 @@ export default function ModalPhysicalCardType({
                             <button
                                 className="button button-light button-sm flex-center"
                                 type="button"
-                                onClick={modal.close}>
+                                onClick={modal.close}
+                                tabIndex={0}
+                                onKeyDown={clickOnKeyEnter}>
                                 {translate('physical_card.buttons.close')}
                             </button>
 

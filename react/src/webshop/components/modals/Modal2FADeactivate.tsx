@@ -9,6 +9,7 @@ import { classList } from '../../../dashboard/helpers/utils';
 import FormError from '../../../dashboard/components/elements/forms/errors/FormError';
 import PincodeControl from '../../../dashboard/components/elements/forms/controls/PincodeControl';
 import BlockAuth2FAInfoBox from '../elements/block-auth-2fa-info-box/BlockAuth2FAInfoBox';
+import { clickOnKeyEnter } from '../../../dashboard/helpers/wcag';
 
 export default function Modal2FADeactivate({
     modal,
@@ -135,7 +136,13 @@ export default function Modal2FADeactivate({
                 <form className="modal-window form" onSubmit={deactivateProvider}>
                     <div className="modal-header">
                         <div className="modal-heading">Tweefactorauthenticatie uischakelen</div>
-                        <div className="modal-close mdi mdi-close" onClick={cancel} role="button" />
+                        <div
+                            className="modal-close mdi mdi-close"
+                            onClick={cancel}
+                            tabIndex={0}
+                            onKeyDown={clickOnKeyEnter}
+                            role="button"
+                        />
                     </div>
 
                     <div className="modal-body text-center">
@@ -218,7 +225,13 @@ export default function Modal2FADeactivate({
 
             {step == 'success' && (
                 <form className="modal-window form" onSubmit={done}>
-                    <div className="modal-close mdi mdi-close" onClick={cancel} role="button" />
+                    <div
+                        className="modal-close mdi mdi-close"
+                        tabIndex={0}
+                        onKeyDown={clickOnKeyEnter}
+                        onClick={cancel}
+                        role="button"
+                    />
                     <div className="modal-header">
                         <h2 className="modal-header-title">Tweefactorauthenticatie uitschakelen</h2>
                     </div>

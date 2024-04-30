@@ -8,6 +8,7 @@ import useOpenModal from '../../../dashboard/hooks/useOpenModal';
 import { useVoucherService } from '../../services/VoucherService';
 import ModalNotification from './ModalNotification';
 import Voucher from '../../../dashboard/props/models/Voucher';
+import { clickOnKeyEnter } from '../../../dashboard/helpers/wcag';
 
 export default function ModalShareVoucher({ modal, voucher }: { modal: ModalState; voucher: Voucher }) {
     const translate = useTranslate();
@@ -52,9 +53,14 @@ export default function ModalShareVoucher({ modal, voucher }: { modal: ModalStat
 
             <div className="modal-window">
                 <form className="form" onSubmit={shareVoucherForm.submit}>
-                    <div className="modal-close">
-                        <div className="mdi mdi-close" onClick={modal.close} aria-label="Sluiten" role="button" />
-                    </div>
+                    <div
+                        className="modal-close mdi mdi-close"
+                        onClick={modal.close}
+                        tabIndex={0}
+                        onKeyDown={clickOnKeyEnter}
+                        aria-label="Sluiten"
+                        role="button"
+                    />
                     <div className="modal-header">
                         <h2 className="modal-header-title">Delen</h2>
                     </div>

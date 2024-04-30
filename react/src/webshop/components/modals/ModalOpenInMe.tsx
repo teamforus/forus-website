@@ -12,6 +12,7 @@ import IconMeLogo from '../../../../assets/forus-webshop/resources/_webshop-comm
 import ModalAuthPincode from './ModalAuthPincode';
 import useOpenModal from '../../../dashboard/hooks/useOpenModal';
 import TranslateHtml from '../../../dashboard/components/elements/translate-html/TranslateHtml';
+import {clickOnKeyEnter} from "../../../dashboard/helpers/wcag";
 
 export default function ModalOpenInMe({ modal }: { modal: ModalState }) {
     const translate = useTranslate();
@@ -70,6 +71,8 @@ export default function ModalOpenInMe({ modal }: { modal: ModalState }) {
                     <div
                         className="modal-close mdi mdi-close"
                         onClick={modal.close}
+                        tabIndex={0}
+                        onKeyDown={clickOnKeyEnter}
                         aria-label="Sluiten"
                         role="button"
                     />

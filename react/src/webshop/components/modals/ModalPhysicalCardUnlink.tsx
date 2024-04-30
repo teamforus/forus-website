@@ -5,6 +5,7 @@ import Voucher from '../../../dashboard/props/models/Voucher';
 import { ResponseError } from '../../../dashboard/props/ApiResponses';
 import { usePhysicalCardsService } from '../../services/PhysicalCardsService';
 import usePushDanger from '../../../dashboard/hooks/usePushDanger';
+import { clickOnKeyEnter } from '../../../dashboard/helpers/wcag';
 
 export default function ModalPhysicalCardUnlink({
     modal,
@@ -49,9 +50,15 @@ export default function ModalPhysicalCardUnlink({
 
             {state == 'start' && (
                 <div className="modal-window">
-                    <div className="modal-close">
-                        <div className="mdi mdi-close" onClick={closeModal} aria-label="Sluiten" role="button" />
-                    </div>
+                    <div
+                        className="modal-close mdi mdi-close"
+                        onClick={closeModal}
+                        tabIndex={0}
+                        onKeyDown={clickOnKeyEnter}
+                        aria-label="Sluiten"
+                        role="button"
+                    />
+
                     <div className="modal-header">
                         <h2 className="modal-header-title">
                             {translate('physical_card.modal_section.link_card_unlink.title')}
@@ -82,9 +89,15 @@ export default function ModalPhysicalCardUnlink({
 
             {state == 'unlinked' && (
                 <div className="modal-window">
-                    <div className="modal-close">
-                        <div className="mdi mdi-close" onClick={closeModal} aria-label="Sluiten" role="button" />
-                    </div>
+                    <div
+                        className="modal-close mdi mdi-close"
+                        onClick={closeModal}
+                        tabIndex={0}
+                        onKeyDown={clickOnKeyEnter}
+                        aria-label="Sluiten"
+                        role="button"
+                    />
+
                     <div className="modal-header">
                         <h2 className="modal-header-title">Pas geblokkeerd!</h2>
                     </div>

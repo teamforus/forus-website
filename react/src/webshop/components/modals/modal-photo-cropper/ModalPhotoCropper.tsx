@@ -6,6 +6,7 @@ import PdfPreview from '../../../../dashboard/components/elements/pdf-preview/Pd
 import * as pdfJsLib from 'pdfjs-dist';
 import { uniqueId } from 'lodash';
 import ModalPhotoCropperControl from './elements/ModalPhotoCropperControl';
+import { clickOnKeyEnter } from '../../../../dashboard/helpers/wcag';
 
 export type ModalPhotoCropperFile = {
     uid?: string;
@@ -285,9 +286,14 @@ export default function ModalPhotoCropper({
             data-dusk={'modalPhotoCropper'}>
             <div className="modal-backdrop" onClick={modal.close} />
             <div className="modal-window">
-                <div className="modal-close">
-                    <div className="mdi mdi-close" onClick={modal.close} aria-label="Sluiten" role="button" />
-                </div>
+                <div
+                    className="modal-close mdi mdi-close"
+                    onClick={modal.close}
+                    tabIndex={0}
+                    onKeyDown={clickOnKeyEnter}
+                    aria-label="Sluiten"
+                    role="button"
+                />
 
                 <div className="modal-header">
                     <h2 className="modal-header-title">Upload een document</h2>

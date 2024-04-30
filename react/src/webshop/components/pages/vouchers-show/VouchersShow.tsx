@@ -37,6 +37,7 @@ import useOpenPrintable from '../../../../dashboard/hooks/useOpenPrintable';
 import VoucherQrCodePrintable from '../../printable/VoucherQrCodePrintable';
 import useSetTitle from '../../../hooks/useSetTitle';
 import BlockShowcase from '../../elements/block-showcase/BlockShowcase';
+import { clickOnKeyEnter } from '../../../../dashboard/helpers/wcag';
 
 export default function VouchersShow() {
     const { address } = useParams();
@@ -398,6 +399,9 @@ export default function VouchersShow() {
                                             <div className="card-actions">
                                                 <div className="action-col">
                                                     <div
+                                                        role={'button'}
+                                                        tabIndex={0}
+                                                        onKeyDown={clickOnKeyEnter}
                                                         className="action-item"
                                                         onClick={() => sendVoucherEmail(voucher)}>
                                                         <div className="action-item-icon">
@@ -411,7 +415,12 @@ export default function VouchersShow() {
                                                     </div>
                                                 </div>
                                                 <div className="action-col">
-                                                    <div className="action-item" onClick={openInMeModal}>
+                                                    <div
+                                                        role={'button'}
+                                                        tabIndex={0}
+                                                        onKeyDown={clickOnKeyEnter}
+                                                        className="action-item"
+                                                        onClick={openInMeModal}>
                                                         <div className="action-item-icon">
                                                             <em className="mdi mdi-account-circle" />
                                                         </div>
@@ -426,6 +435,9 @@ export default function VouchersShow() {
                                                 {!envData.config.flags.noPrintOption && (
                                                     <div className="action-col">
                                                         <div
+                                                            role={'button'}
+                                                            tabIndex={0}
+                                                            onKeyDown={clickOnKeyEnter}
                                                             className="action-item"
                                                             onClick={() => printQrCode(voucher)}>
                                                             <div className="action-item-icon">
@@ -445,6 +457,9 @@ export default function VouchersShow() {
                                                     !voucher.physical_card && (
                                                         <div className="action-col">
                                                             <div
+                                                                role={'button'}
+                                                                tabIndex={0}
+                                                                onKeyDown={clickOnKeyEnter}
                                                                 className="action-item"
                                                                 onClick={() => linkPhysicalCard(voucher)}>
                                                                 <div className="action-item-icon">
@@ -462,10 +477,11 @@ export default function VouchersShow() {
                                                 {showPhysicalCardsOption && (
                                                     <div className="action-col">
                                                         <div
+                                                            role={'button'}
+                                                            tabIndex={0}
+                                                            onKeyDown={clickOnKeyEnter}
                                                             className="action-item"
-                                                            onClick={() => {
-                                                                linkPhysicalCard(voucher, 'card_code');
-                                                            }}>
+                                                            onClick={() => linkPhysicalCard(voucher, 'card_code')}>
                                                             <div className="action-item-icon">
                                                                 <em className="mdi mdi-card-bulleted-outline" />
                                                             </div>
@@ -477,6 +493,9 @@ export default function VouchersShow() {
                                                 {voucher.physical_card && (
                                                     <div className="action-col">
                                                         <div
+                                                            role={'button'}
+                                                            tabIndex={0}
+                                                            onKeyDown={clickOnKeyEnter}
                                                             className="action-item"
                                                             onClick={() => unlinkPhysicalCard(voucher)}>
                                                             <div className="action-item-icon">
@@ -489,7 +508,12 @@ export default function VouchersShow() {
                                                     </div>
                                                 )}
                                                 <div className="action-col">
-                                                    <div className="action-item" onClick={() => shareVoucher(voucher)}>
+                                                    <div
+                                                        role={'button'}
+                                                        tabIndex={0}
+                                                        onKeyDown={clickOnKeyEnter}
+                                                        className="action-item"
+                                                        onClick={() => shareVoucher(voucher)}>
                                                         <div className="action-item-icon">
                                                             <em className="mdi mdi-share-variant" />
                                                         </div>
@@ -500,6 +524,9 @@ export default function VouchersShow() {
                                                 {!voucherCard.used && voucherCard.product && voucherCard.returnable && (
                                                     <div className="action-col">
                                                         <div
+                                                            role={'button'}
+                                                            tabIndex={0}
+                                                            onKeyDown={clickOnKeyEnter}
                                                             className="action-item"
                                                             onClick={() => deleteVoucher(voucher)}>
                                                             <div className="action-item-icon">
@@ -513,6 +540,9 @@ export default function VouchersShow() {
                                                 {!voucher.expired && voucher.fund.allow_blocking_vouchers && (
                                                     <div className="action-col">
                                                         <div
+                                                            role={'button'}
+                                                            tabIndex={0}
+                                                            onKeyDown={clickOnKeyEnter}
                                                             className="action-item"
                                                             onClick={() => deactivateVoucher(voucher)}>
                                                             <div className="action-item-icon">

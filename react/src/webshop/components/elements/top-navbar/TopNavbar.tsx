@@ -73,15 +73,19 @@ export const TopNavbar = ({ hideOnScroll = false, className = '' }: { hideOnScro
         [navigateState],
     );
 
-    const openPinCodePopup = useCallback(() => {
-        setUserMenuOpened(false);
-
-        openModal((modal) => <ModalAuthPincode modal={modal} />);
-    }, [openModal, setUserMenuOpened]);
-
     const hideUserMenu = useCallback(() => {
         setUserMenuOpened(false);
     }, [setUserMenuOpened]);
+
+    const openPinCodePopup = useCallback(
+        (e: React.MouseEvent) => {
+            e.stopPropagation();
+            hideUserMenu();
+
+            openModal((modal) => <ModalAuthPincode modal={modal} />);
+        },
+        [openModal, hideUserMenu],
+    );
 
     const toggleSearchBox = useCallback(
         (e) => {
@@ -261,7 +265,7 @@ export const TopNavbar = ({ hideOnScroll = false, className = '' }: { hideOnScro
                                 id="open_pincode_popup"
                                 tabIndex={0}
                                 className="auth-user-menu-item"
-                                onClick={() => openPinCodePopup()}
+                                onClick={(e) => openPinCodePopup(e)}
                                 onKeyDown={clickOnKeyEnter}
                                 role="button">
                                 <em className="mdi mdi-cellphone" />

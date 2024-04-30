@@ -2,6 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { ModalState } from '../../../dashboard/modules/modals/context/ModalContext';
 import PdfPreview from '../../../dashboard/components/elements/pdf-preview/PdfPreview';
+import { clickOnKeyEnter } from '../../../dashboard/helpers/wcag';
 
 export default function ModalPdfPreview({
     modal,
@@ -19,7 +20,13 @@ export default function ModalPdfPreview({
             <div className="modal-backdrop" onClick={modal.close} />
 
             <div className="modal-window">
-                <a className="mdi mdi-close modal-close" onClick={modal.close} role="button" />
+                <a
+                    className="mdi mdi-close modal-close"
+                    tabIndex={0}
+                    onClick={modal.close}
+                    onKeyDown={clickOnKeyEnter}
+                    role="button"
+                />
                 <div className="modal-header">
                     <h2 className="modal-header-title">{t('pdf_preview.header.title')}</h2>
                 </div>

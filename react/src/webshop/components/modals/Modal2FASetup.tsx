@@ -18,6 +18,7 @@ import FormError from '../../../dashboard/components/elements/forms/errors/FormE
 import PincodeControl from '../../../dashboard/components/elements/forms/controls/PincodeControl';
 import BlockAuth2FAInfoBox from '../elements/block-auth-2fa-info-box/BlockAuth2FAInfoBox';
 import Icon2faPhoneConnect from '../../../../assets/forus-webshop/resources/_webshop-common/assets/img/icon-2fa-phone-connect.svg';
+import { clickOnKeyEnter } from '../../../dashboard/helpers/wcag';
 
 export default function Modal2FASetup({
     modal,
@@ -297,7 +298,13 @@ export default function Modal2FASetup({
                 <form className={'modal-window form form-compact'} onSubmit={submitAuthenticator}>
                     <div className="modal-header">
                         <div className="modal-heading">Tweefactorauthenticatie instellen</div>
-                        <div className="modal-close mdi mdi-close" onClick={cancel} role="button" />
+                        <div
+                            className="modal-close mdi mdi-close"
+                            tabIndex={0}
+                            onKeyDown={clickOnKeyEnter}
+                            onClick={cancel}
+                            role="button"
+                        />
                     </div>
 
                     <div className="modal-body">
@@ -416,7 +423,13 @@ export default function Modal2FASetup({
                 <form className={'modal-window form form-compact'} onSubmit={submitPhoneNumber}>
                     <div className="modal-header">
                         <div className="modal-heading">Tweefactorauthenticatie instellen</div>
-                        <div className="modal-close mdi mdi-close" onClick={cancel} role="button" />
+                        <div
+                            className="modal-close  mdi mdi-close"
+                            onClick={cancel}
+                            tabIndex={0}
+                            onKeyDown={clickOnKeyEnter}
+                            role="button"
+                        />
                     </div>
 
                     <div className="modal-body">
@@ -468,7 +481,13 @@ export default function Modal2FASetup({
                 <form className={'modal-window form form-compact'} onSubmit={activateProvider}>
                     <div className="modal-header">
                         <div className="modal-header-title">Tweefactorauthenticatie instellen</div>
-                        <div className="modal-close mdi mdi-close" onClick={cancel} role="button" />
+                        <div
+                            className="modal-close mdi mdi-close"
+                            onClick={cancel}
+                            tabIndex={0}
+                            onKeyDown={clickOnKeyEnter}
+                            role="button"
+                        />
                     </div>
 
                     <div className="modal-body">
@@ -546,7 +565,13 @@ export default function Modal2FASetup({
                 <form className={'modal-window form form-compact'} onSubmit={verifyAuthProvider}>
                     <div className="modal-header">
                         <h2 className="modal-header-title">Tweefactorauthenticatie</h2>
-                        <div className="modal-close mdi mdi-close" onClick={cancel} role="button" />
+                        <div
+                            className="modal-close mdi mdi-close"
+                            onClick={cancel}
+                            tabIndex={0}
+                            onKeyDown={clickOnKeyEnter}
+                            role="button"
+                        />
                     </div>
 
                     <div className={'modal-body'}>
@@ -633,7 +658,13 @@ export default function Modal2FASetup({
                 <div className="modal-window">
                     <div className="modal-header">
                         <h2 className="modal-header-title">Tweefactorauthenticatie</h2>
-                        <div className="modal-close mdi mdi-close" onClick={cancel} role="button" />
+                        <div
+                            className="modal-close mdi mdi-close"
+                            onClick={cancel}
+                            tabIndex={0}
+                            onKeyDown={clickOnKeyEnter}
+                            role="button"
+                        />
                     </div>
 
                     <div className="modal-body">
@@ -660,7 +691,13 @@ export default function Modal2FASetup({
 
             {step == 'success' && !auth && (
                 <div className="modal-window">
-                    <div className="modal-close mdi mdi-close" onClick={cancel} role="button" />
+                    <div
+                        className="modal-close mdi mdi-close"
+                        onClick={cancel}
+                        tabIndex={0}
+                        onKeyDown={clickOnKeyEnter}
+                        role="button"
+                    />
                     <div className="modal-header">
                         <h2 className="modal-header-title">Tweefactorauthenticatie instellen</h2>
                     </div>

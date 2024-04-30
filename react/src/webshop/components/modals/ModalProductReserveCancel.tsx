@@ -4,6 +4,7 @@ import Reservation from '../../../dashboard/props/models/Reservation';
 import { ModalState } from '../../../dashboard/modules/modals/context/ModalContext';
 import useTranslate from '../../../dashboard/hooks/useTranslate';
 import StateNavLink from '../../modules/state_router/StateNavLink';
+import { clickOnKeyEnter } from '../../../dashboard/helpers/wcag';
 
 export default function ModalProductReserveCancel({
     modal,
@@ -23,7 +24,14 @@ export default function ModalProductReserveCancel({
             data-dusk="modalProductReserveCancel">
             <div className="modal-backdrop" onClick={modal.close} aria-label="Sluiten" />
             <div className="modal-window">
-                <div className="modal-close mdi mdi-close" onClick={modal.close} aria-label="Sluiten" role="button" />
+                <div
+                    className="modal-close mdi mdi-close"
+                    onClick={modal.close}
+                    tabIndex={0}
+                    onKeyDown={clickOnKeyEnter}
+                    aria-label="Sluiten"
+                    role="button"
+                />
                 <div className="modal-header">
                     <h2 className="modal-header-title">Reservering annuleren</h2>
                 </div>

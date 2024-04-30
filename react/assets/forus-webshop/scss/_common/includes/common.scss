@@ -1,6 +1,14 @@
-*:focus {
+*:focus *:focus-visible {
     outline-width: var(--outline-width);
     outline-offset: var(--outline-offset);
+}
+
+:focus {
+    outline: -webkit-focus-ring-color auto 1px;
+}
+
+:focus-visible {
+    outline: -webkit-focus-ring-color auto 1px;
 }
 
 img {

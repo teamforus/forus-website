@@ -6,6 +6,7 @@ import { ResponseError } from '../../../dashboard/props/ApiResponses';
 import { useVoucherService } from '../../services/VoucherService';
 import Voucher from '../../../dashboard/props/models/Voucher';
 import InputRadioControl from '../elements/input-radio-control/InputRadioControl';
+import { clickOnKeyEnter } from '../../../dashboard/helpers/wcag';
 
 export default function ModalDeactivateVoucher({
     modal,
@@ -50,9 +51,14 @@ export default function ModalDeactivateVoucher({
 
             {state == 'reason' && (
                 <form className="modal-window form" onSubmit={() => setState('confirmation')}>
-                    <div className="modal-close">
-                        <div className="mdi mdi-close" onClick={modal.close} aria-label="Sluiten" role="button" />
-                    </div>
+                    <div
+                        className="modal-close mdi mdi-close"
+                        onClick={modal.close}
+                        tabIndex={0}
+                        onKeyDown={clickOnKeyEnter}
+                        aria-label="Sluiten"
+                        role="button"
+                    />
 
                     <div className="modal-header">
                         <h2 className="modal-header-title">Deelname stoppen</h2>
@@ -121,6 +127,8 @@ export default function ModalDeactivateVoucher({
                     <div
                         className="modal-close mdi mdi-close"
                         onClick={modal.close}
+                        onKeyDown={clickOnKeyEnter}
+                        tabIndex={0}
                         aria-label="Sluiten"
                         role="button"
                     />
@@ -155,9 +163,14 @@ export default function ModalDeactivateVoucher({
 
             {state == 'success' && (
                 <div className="modal-window">
-                    <div className="modal-close">
-                        <div className="mdi mdi-close" onClick={modal.close} aria-label="Sluiten" role="button" />
-                    </div>
+                    <div
+                        className="modal-close mdi mdi-close"
+                        onClick={modal.close}
+                        tabIndex={0}
+                        onKeyDown={clickOnKeyEnter}
+                        aria-label="Sluiten"
+                        role="button"
+                    />
                     <div className="modal-header">
                         <h2 className="modal-header-title">Deelname stoppen</h2>
                     </div>

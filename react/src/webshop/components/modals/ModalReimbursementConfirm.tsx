@@ -2,6 +2,7 @@ import React, { useCallback } from 'react';
 import { ModalState } from '../../../dashboard/modules/modals/context/ModalContext';
 import Reimbursement from '../../props/models/Reimbursement';
 import ReimbursementDetailsCard from '../pages/reimbursements/elements/ReimbursementDetailsCard';
+import { clickOnKeyEnter } from '../../../dashboard/helpers/wcag';
 
 export default function ModalReimbursementConfirm({
     modal,
@@ -26,9 +27,14 @@ export default function ModalReimbursementConfirm({
             role="dialog">
             <div className="modal-backdrop" onClick={modal.close} aria-label="Sluiten" />
             <div className="modal-window">
-                <div className="modal-close">
-                    <div className="mdi mdi-close" onClick={modal.close} aria-label="Sluiten" role="button" />
-                </div>
+                <div
+                    className="modal-close mdi mdi-close"
+                    onClick={modal.close}
+                    tabIndex={0}
+                    onKeyDown={clickOnKeyEnter}
+                    aria-label="Sluiten"
+                    role="button"
+                />
                 <div className="modal-header">
                     <h2 className="modal-header-title">Declaratie indienen</h2>
                 </div>

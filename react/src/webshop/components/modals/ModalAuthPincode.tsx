@@ -11,6 +11,7 @@ import useFormBuilder from '../../../dashboard/hooks/useFormBuilder';
 import ModalNotification from '../../components/modals/ModalNotification';
 import { ResponseError } from '../../../dashboard/props/ApiResponses';
 import ModalOpenInMe from './ModalOpenInMe';
+import { clickOnKeyEnter } from '../../../dashboard/helpers/wcag';
 
 export default function ModalAuthPincode({ modal }: { modal: ModalState }) {
     const appConfigs = useAppConfigs();
@@ -67,7 +68,14 @@ export default function ModalAuthPincode({ modal }: { modal: ModalState }) {
             <div className="modal-backdrop" onClick={modal.close} aria-label="Sluiten" role="button" />
 
             <form className="modal-window form" onSubmit={form.submit}>
-                <div className="modal-close mdi mdi-close" onClick={modal.close} aria-label="Sluiten" role="button" />
+                <div
+                    className="modal-close mdi mdi-close"
+                    onClick={modal.close}
+                    tabIndex={0}
+                    onKeyDown={clickOnKeyEnter}
+                    aria-label="Sluiten"
+                    role="button"
+                />
 
                 <div className="modal-header">
                     <h2 className="modal-header-title">Log in op de app</h2>

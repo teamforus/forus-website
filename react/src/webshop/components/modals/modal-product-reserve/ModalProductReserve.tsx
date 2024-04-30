@@ -24,6 +24,7 @@ import ClickOutside from '../../../../dashboard/components/elements/click-outsid
 import DatePickerControl from '../../../../dashboard/components/elements/forms/controls/DatePickerControl';
 import { dateFormat, dateParse } from '../../../../dashboard/helpers/dates';
 import Tooltip from '../../elements/tooltip/Tooltip';
+import { clickOnKeyEnter } from '../../../../dashboard/helpers/wcag';
 
 type VoucherType = Voucher & { amount_extra: number };
 
@@ -351,6 +352,8 @@ export default function ModalProductReserve({
                 <div className="modal-window">
                     <div
                         className="modal-close mdi mdi-close"
+                        tabIndex={0}
+                        onKeyDown={clickOnKeyEnter}
                         onClick={modal.close}
                         aria-label="Sluiten"
                         role="button"
@@ -401,6 +404,8 @@ export default function ModalProductReserve({
                     <div
                         className="modal-close mdi mdi-close"
                         onClick={() => modal.close()}
+                        tabIndex={0}
+                        onKeyDown={clickOnKeyEnter}
                         aria-label="Sluiten"
                         role="button"
                     />
@@ -585,15 +590,15 @@ export default function ModalProductReserve({
                         validateFields();
                     }}
                     data-dusk="productReserveForm">
-                    <div className="modal-close">
-                        <div
-                            className="mdi mdi-close"
-                            onClick={modal.close}
-                            id="close"
-                            aria-label="Sluiten"
-                            role="button"
-                        />
-                    </div>
+                    <div
+                        className="modal-close mdi mdi-close"
+                        onClick={modal.close}
+                        onKeyDown={clickOnKeyEnter}
+                        tabIndex={0}
+                        id="close"
+                        aria-label="Sluiten"
+                        role="button"
+                    />
                     <div className="modal-header">
                         <h2 className="modal-header-title">{translate('modal_product_reserve.header.title')}</h2>
                     </div>
@@ -805,7 +810,9 @@ export default function ModalProductReserve({
                     data-dusk="productReserveAddress">
                     <div
                         className="modal-close mdi mdi-close"
+                        tabIndex={0}
                         onClick={modal.close}
+                        onKeyDown={clickOnKeyEnter}
                         id="close"
                         aria-label="Sluiten"
                         role="button"
@@ -947,6 +954,8 @@ export default function ModalProductReserve({
                     <div
                         className="modal-close mdi mdi-close"
                         onClick={modal.close}
+                        onKeyDown={clickOnKeyEnter}
+                        tabIndex={0}
                         id="close"
                         aria-label="Sluiten"
                         role="button"
@@ -1010,7 +1019,9 @@ export default function ModalProductReserve({
                 <div className="modal-window">
                     <div
                         className="modal-close mdi mdi-close"
+                        tabIndex={0}
                         onClick={modal.close}
+                        onKeyDown={clickOnKeyEnter}
                         aria-label="Sluiten"
                         role="button"
                     />
@@ -1189,7 +1200,9 @@ export default function ModalProductReserve({
                 <div className="modal-window" data-dusk="productReserveSuccess">
                     <div
                         className="modal-close mdi mdi-close"
+                        tabIndex={0}
                         onClick={modal.close}
+                        onKeyDown={clickOnKeyEnter}
                         aria-label="Sluiten"
                         role="button"
                     />
@@ -1221,6 +1234,8 @@ export default function ModalProductReserve({
                 <div className="modal-window form" data-dusk="productReserveExtraPayment">
                     <div
                         className="modal-close mdi mdi-close"
+                        tabIndex={0}
+                        onKeyDown={clickOnKeyEnter}
                         onClick={modal.close}
                         id="close"
                         aria-label="Sluiten"
