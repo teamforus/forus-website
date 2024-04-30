@@ -111,7 +111,7 @@ export default function ProvidersShow() {
                         </div>
                     </div>
 
-                    {appConfigs.show_provider_map && (
+                    {appConfigs.show_provider_map && provider.offices && (
                         <div className="provider-map">
                             <div className="block block-google-map">
                                 <GoogleMap

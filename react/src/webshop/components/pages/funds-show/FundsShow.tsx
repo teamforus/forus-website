@@ -76,6 +76,10 @@ export default function FundsShow() {
     }, [fund, recordsByTypesKey]);
 
     const fetchFund = useCallback(() => {
+        if (!vouchers) {
+            return null;
+        }
+
         setProgress(0);
 
         fundService
@@ -296,6 +300,7 @@ export default function FundsShow() {
                                     </div>
                                 </div>
 
+                                <pre>{JSON.stringify([fund.showPendingButton], null, '    ')}</pre>
                                 {fund.showPendingButton && (
                                     <div className="block block-action-card block-action-card-compact">
                                         <div className="block-card-logo">

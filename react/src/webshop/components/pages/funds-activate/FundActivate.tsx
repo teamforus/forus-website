@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { TopNavbar } from '../../elements/top-navbar/TopNavbar';
 import { useParams } from 'react-router-dom';
 import useTranslate from '../../../../dashboard/hooks/useTranslate';
 import useEnvData from '../../../hooks/useEnvData';
@@ -36,6 +35,8 @@ import useOpenModal from '../../../../dashboard/hooks/useOpenModal';
 import ModalNotification from '../../modals/ModalNotification';
 import useFetchAuthIdentity from '../../../hooks/useFetchAuthIdentity';
 import useSetProgress from '../../../../dashboard/hooks/useSetProgress';
+import BlockShowcase from '../../elements/block-showcase/BlockShowcase';
+import BlockLoader from '../../elements/block-loader/BlockLoader';
 
 export default function FundActivate() {
     const { id } = useParams();
@@ -386,13 +387,18 @@ export default function FundActivate() {
         if (!authIdentity || !fund) {
             return setFundRequests(null);
         }
+
         setProgress(0);
 
         fundRequestService
             .index(fund.id)
             .then((res) => setFundRequests(res.data.data))
+            .catch((err: ResponseError) => {
+                pushDanger('Mislukt!', err.data.message);
+                navigateState('fund', { id: id });
+            })
             .finally(() => setProgress(100));
-    }, [authIdentity, fund, fundRequestService, setProgress]);
+    }, [authIdentity, fund, fundRequestService, id, navigateState, pushDanger, setProgress]);
 
     const getAvailableOptions = useCallback(
         (fund: Fund) => {
@@ -506,525 +512,513 @@ export default function FundActivate() {
         }
     }, 1000);
 
-    if (!fund || !appConfigs) {
-        return;
-    }
-
     return (
-        <div className="block block-showcase">
-            <TopNavbar />
+        <BlockShowcase wrapper={true} breadcrumbs={<></>} loaderElement={<BlockLoader type={'full'} />}>
+            {fund && vouchers && appConfigs && (
+                <div className="block block-sign_up">
+                    <div className="block-wrapper">
+                        {state && state != 'select' && state != 'digid' && state != 'code' && (
+                            <h1 className="block-title">
+                                {translate('fund_request.sign_up.header.main', {
+                                    fund_name: startCase(fund.name || ''),
+                                })}
+                            </h1>
+                        )}
 
-            <main id="main-content">
-                <div className="wrapper">
-                    <div className="block block-sign_up">
-                        <div className="block-wrapper">
-                            {state && state != 'select' && state != 'digid' && state != 'code' && (
-                                <h1 className="block-title">
-                                    {translate('fund_request.sign_up.header.main', {
-                                        fund_name: startCase(fund.name || ''),
-                                    })}
-                                </h1>
-                            )}
-
-                            {state == 'select' && (
-                                <div className="sign_up-pane">
-                                    <div className="sign_up-pane-header">
-                                        <h2 className="sign_up-pane-header-title">
-                                            {translate('fund_request.sign_up.header.main', {
-                                                fund_name: startCase(fund.name || ''),
-                                            })}
-                                        </h2>
-                                    </div>
-                                    <div className="sign_up-pane-body">
-                                        <h3 className="sign_up-pane-text">
-                                            <div className="sign_up-pane-heading">
-                                                {translate(
-                                                    `signup.items.${envData.client_key}.signup_option`,
-                                                    null,
-                                                    `signup.items.signup_option`,
-                                                )}
-                                            </div>
-                                        </h3>
-                                        <div className="sign_up-options">
-                                            {options?.includes('code') && (
-                                                <div className="sign_up-option" onClick={() => setState('code')}>
-                                                    <div className="sign_up-option-media">
-                                                        <img
-                                                            className="sign_up-option-media-img"
-                                                            src={assetUrl('/assets/img/icon-auth/icon-auth-me_app.svg')}
-                                                            alt=""
-                                                        />
-                                                    </div>
-                                                    <div className="sign_up-option-details">
-                                                        <div className="sign_up-option-title">
-                                                            Ik heb een activatiecode
-                                                        </div>
-                                                        <div className="sign_up-option-description">
-                                                            Ga verder met het activeren van je tegoed door gebruik te
-                                                            maken van een activatiecode
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            )}
-
-                                            {options?.includes('digid') && (
-                                                <div className="sign_up-option" onClick={() => selectDigiDOption(fund)}>
-                                                    <div className="sign_up-option-media">
-                                                        <img
-                                                            className="sign_up-option-media-img"
-                                                            src={assetUrl('/assets/img/icon-auth/icon-auth-digid.svg')}
-                                                            alt=""
-                                                        />
-                                                    </div>
-                                                    <div className="sign_up-option-details">
-                                                        <div className="sign_up-option-title">DigiD</div>
-                                                        <div className="sign_up-option-description">
-                                                            Open het DigiD inlogscherm
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            )}
-
-                                            {options?.includes('request') && (
-                                                <StateNavLink
-                                                    name="fund-request"
-                                                    params={{ id: fund?.id }}
-                                                    className="sign_up-option">
-                                                    <div className="sign_up-option-media">
-                                                        <img
-                                                            className="sign_up-option-media-img"
-                                                            src={assetUrl('/assets/img/icon-auth/icon-auth-me_app.svg')}
-                                                            alt=""
-                                                        />
-                                                    </div>
-                                                    <div className="sign_up-option-details">
-                                                        <div className="sign_up-option-title">
-                                                            Ik wil een tegoed aanvragen
-                                                        </div>
-                                                        <div className="sign_up-option-description">
-                                                            Doorloop het aanvraagformulier om een tegoed aan te vragen
-                                                        </div>
-                                                    </div>
-                                                </StateNavLink>
+                        {state == 'select' && (
+                            <div className="sign_up-pane">
+                                <div className="sign_up-pane-header">
+                                    <h2 className="sign_up-pane-header-title">
+                                        {translate('fund_request.sign_up.header.main', {
+                                            fund_name: startCase(fund.name || ''),
+                                        })}
+                                    </h2>
+                                </div>
+                                <div className="sign_up-pane-body">
+                                    <h3 className="sign_up-pane-text">
+                                        <div className="sign_up-pane-heading">
+                                            {translate(
+                                                `signup.items.${envData.client_key}.signup_option`,
+                                                null,
+                                                `signup.items.signup_option`,
                                             )}
                                         </div>
+                                    </h3>
+                                    <div className="sign_up-options">
+                                        {options?.includes('code') && (
+                                            <div className="sign_up-option" onClick={() => setState('code')}>
+                                                <div className="sign_up-option-media">
+                                                    <img
+                                                        className="sign_up-option-media-img"
+                                                        src={assetUrl('/assets/img/icon-auth/icon-auth-me_app.svg')}
+                                                        alt=""
+                                                    />
+                                                </div>
+                                                <div className="sign_up-option-details">
+                                                    <div className="sign_up-option-title">Ik heb een activatiecode</div>
+                                                    <div className="sign_up-option-description">
+                                                        Ga verder met het activeren van je tegoed door gebruik te maken
+                                                        van een activatiecode
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )}
+
+                                        {options?.includes('digid') && (
+                                            <div className="sign_up-option" onClick={() => selectDigiDOption(fund)}>
+                                                <div className="sign_up-option-media">
+                                                    <img
+                                                        className="sign_up-option-media-img"
+                                                        src={assetUrl('/assets/img/icon-auth/icon-auth-digid.svg')}
+                                                        alt=""
+                                                    />
+                                                </div>
+                                                <div className="sign_up-option-details">
+                                                    <div className="sign_up-option-title">DigiD</div>
+                                                    <div className="sign_up-option-description">
+                                                        Open het DigiD inlogscherm
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )}
+
+                                        {options?.includes('request') && (
+                                            <StateNavLink
+                                                name="fund-request"
+                                                params={{ id: fund?.id }}
+                                                className="sign_up-option">
+                                                <div className="sign_up-option-media">
+                                                    <img
+                                                        className="sign_up-option-media-img"
+                                                        src={assetUrl('/assets/img/icon-auth/icon-auth-me_app.svg')}
+                                                        alt=""
+                                                    />
+                                                </div>
+                                                <div className="sign_up-option-details">
+                                                    <div className="sign_up-option-title">
+                                                        Ik wil een tegoed aanvragen
+                                                    </div>
+                                                    <div className="sign_up-option-description">
+                                                        Doorloop het aanvraagformulier om een tegoed aan te vragen
+                                                    </div>
+                                                </div>
+                                            </StateNavLink>
+                                        )}
                                     </div>
                                 </div>
-                            )}
+                            </div>
+                        )}
 
-                            {state == 'code' && (
-                                <div className="sign_up-pane">
-                                    <div className="sign_up-pane-header">
-                                        <h2 className="sign_up-pane-header-title">Vul uw activatiecode in</h2>
-                                    </div>
-                                    <div className="sign_up-pane-body sign_up-pane-body-padless-bottom">
-                                        <form className="form" onSubmit={codeForm.submit}>
-                                            <div className="form-group text-center">
-                                                <div className="form-label">{translate('popup_auth.input.code')}</div>
-                                                <PincodeControl
-                                                    value={codeForm.values.code}
-                                                    onChange={(code) => codeForm.update({ code: code?.trim() })}
-                                                    blockCount={2}
-                                                    blockSize={4}
-                                                    valueType={'alphaNum'}
+                        {state == 'code' && (
+                            <div className="sign_up-pane">
+                                <div className="sign_up-pane-header">
+                                    <h2 className="sign_up-pane-header-title">Vul uw activatiecode in</h2>
+                                </div>
+                                <div className="sign_up-pane-body sign_up-pane-body-padless-bottom">
+                                    <form className="form" onSubmit={codeForm.submit}>
+                                        <div className="form-group text-center">
+                                            <div className="form-label">{translate('popup_auth.input.code')}</div>
+                                            <PincodeControl
+                                                value={codeForm.values.code}
+                                                onChange={(code) => codeForm.update({ code: code?.trim() })}
+                                                blockCount={2}
+                                                blockSize={4}
+                                                valueType={'alphaNum'}
+                                            />
+                                            <FormError error={codeForm.errors.code} />
+                                        </div>
+                                        <div className="form-group" />
+                                        <div className="form-group text-center">
+                                            <button
+                                                className={`button button-primary`}
+                                                disabled={codeForm.values.code.length != 8 || codeForm.isLoading}
+                                                type="submit">
+                                                {translate('popup_auth.buttons.submit')}
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div className="sign_up-pane-footer">
+                                    {options?.length > 1 && (
+                                        <div
+                                            className="button button-text button-text-padless"
+                                            onClick={() => setState('select')}>
+                                            <em className="mdi mdi-chevron-left icon-lefts" />
+                                            Terug
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        )}
+
+                        {state == 'digid' && !fetchingData && (
+                            <div className="sign_up-pane">
+                                <div className="sign_up-pane-header">
+                                    <h2 className="sign_up-pane-header-title">
+                                        {translate(
+                                            `fund_activate.header.${envData.client_key}.title`,
+                                            null,
+                                            `fund_activate.header.title`,
+                                        )}
+                                    </h2>
+                                </div>
+                                <div className="sign_up-pane-body">
+                                    <div className="form">
+                                        <FundCriteriaCustomOverview fundKey={fund.key} />
+
+                                        <div className="sign_up-pane-text">
+                                            <UIControlCheckbox
+                                                id={'confirm_criteria'}
+                                                checked={criteriaChecked}
+                                                label={'Ik verklaar dat ik voldoe aan de bovenstaande voorwaarden'}
+                                                onChange={(e) => setCriteriaChecked(e.target.checked)}
+                                            />
+                                        </div>
+
+                                        {fund.key == 'IIT' && (
+                                            <div className="sign_up-pane-text">
+                                                <UIControlCheckbox
+                                                    id={'confirm_criteria_warning'}
+                                                    checked={criteriaCheckedWarning}
+                                                    label={
+                                                        'Ik weet dat het verstrekken van onjuiste informatie strafbaar is, dat ik een onterecht of een teveel ontvangen vergoeding terug moet betalen en dat ik een boete kan krijgen.'
+                                                    }
+                                                    onChange={(e) => setCriteriaCheckedWarning(e.target.checked)}
                                                 />
-                                                <FormError error={codeForm.errors.code} />
-                                            </div>
-                                            <div className="form-group" />
-                                            <div className="form-group text-center">
-                                                <button
-                                                    className={`button button-primary`}
-                                                    disabled={codeForm.values.code.length != 8 || codeForm.isLoading}
-                                                    type="submit">
-                                                    {translate('popup_auth.buttons.submit')}
-                                                </button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                    <div className="sign_up-pane-footer">
-                                        {options?.length > 1 && (
-                                            <div
-                                                className="button button-text button-text-padless"
-                                                onClick={() => setState('select')}>
-                                                <em className="mdi mdi-chevron-left icon-lefts" />
-                                                Terug
                                             </div>
                                         )}
                                     </div>
                                 </div>
-                            )}
-
-                            {state == 'digid' && !fetchingData && (
-                                <div className="sign_up-pane">
-                                    <div className="sign_up-pane-header">
-                                        <h2 className="sign_up-pane-header-title">
-                                            {translate(
-                                                `fund_activate.header.${envData.client_key}.title`,
-                                                null,
-                                                `fund_activate.header.title`,
-                                            )}
-                                        </h2>
-                                    </div>
-                                    <div className="sign_up-pane-body">
-                                        <div className="form">
-                                            <FundCriteriaCustomOverview fundKey={fund.key} />
-
-                                            <div className="sign_up-pane-text">
-                                                <UIControlCheckbox
-                                                    id={'confirm_criteria'}
-                                                    checked={criteriaChecked}
-                                                    label={'Ik verklaar dat ik voldoe aan de bovenstaande voorwaarden'}
-                                                    onChange={(e) => setCriteriaChecked(e.target.checked)}
-                                                />
-                                            </div>
-
-                                            {fund.key == 'IIT' && (
-                                                <div className="sign_up-pane-text">
-                                                    <UIControlCheckbox
-                                                        id={'confirm_criteria_warning'}
-                                                        checked={criteriaCheckedWarning}
-                                                        label={
-                                                            'Ik weet dat het verstrekken van onjuiste informatie strafbaar is, dat ik een onterecht of een teveel ontvangen vergoeding terug moet betalen en dat ik een boete kan krijgen.'
-                                                        }
-                                                        onChange={(e) => setCriteriaCheckedWarning(e.target.checked)}
-                                                    />
+                                <div className="sign_up-pane-footer">
+                                    <div className="row">
+                                        <div className="col col-lg-6 text-left">&nbsp;</div>
+                                        <div className="col col-lg-6 text-right">
+                                            {criteriaChecked && (fund.key != 'IIT' || criteriaCheckedWarning) && (
+                                                <div
+                                                    className="button button-text button-text-padless"
+                                                    onClick={() => confirmCriteria()}
+                                                    role="button">
+                                                    {translate('fund_request.sign_up.pane.footer.next')}
+                                                    <em className="mdi mdi-chevron-right icon-right" />
                                                 </div>
                                             )}
                                         </div>
                                     </div>
-                                    <div className="sign_up-pane-footer">
-                                        <div className="row">
-                                            <div className="col col-lg-6 text-left">&nbsp;</div>
-                                            <div className="col col-lg-6 text-right">
-                                                {criteriaChecked && (fund.key != 'IIT' || criteriaCheckedWarning) && (
-                                                    <div
-                                                        className="button button-text button-text-padless"
-                                                        onClick={() => confirmCriteria()}
-                                                        role="button">
-                                                        {translate('fund_request.sign_up.pane.footer.next')}
-                                                        <em className="mdi mdi-chevron-right icon-right" />
-                                                    </div>
-                                                )}
-                                            </div>
-                                        </div>
-                                    </div>
                                 </div>
-                            )}
+                            </div>
+                        )}
 
-                            {state == 'digid' && fetchingData && (
-                                <div className="sign_up-pane">
-                                    <div className="sign_up-pane-body">
-                                        <br />
-                                        <div className="sign_up-pane-loading">
-                                            <div className="mdi mdi-loading mdi-spin" />
-                                        </div>
-                                        <div className="sign_up-pane-text text-center text-muted">
-                                            Een moment geduld, het verzoek wordt verwerkt.
-                                        </div>
-                                        <br />
-                                    </div>
-                                </div>
-                            )}
-
-                            {state == 'error_not_available' && (
-                                <div className="sign_up-pane">
-                                    <div className="sign_up-pane-header">
-                                        <h2 className="sign_up-pane-header-title">Aanvraag mislukt</h2>
-                                    </div>
-                                    <div className="sign_up-pane-body">
-                                        <p className="sign_up-pane-text text-center">
-                                            U kunt zich niet aanmelden voor {fund.name}.
-                                        </p>
-                                        <div className="block-icon">
-                                            <img
-                                                src={assetUrl('/assets/img/icon-sign_up-error.svg')}
-                                                alt="icon sign-up error"
-                                            />
-                                        </div>
-                                        <p className="sign_up-pane-text text-center">
-                                            Neem contact op met {fund.organization.name}.
-                                        </p>
-                                        <div className="text-center">
-                                            <StateNavLink
-                                                name={'funds'}
-                                                className="button button-text button-text-primary button-text-padless">
-                                                Terug
-                                            </StateNavLink>
-                                        </div>
-                                        <div className="form-group col col-lg-12 hidden-xs">
-                                            <br />
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
-
-                            {state == 'taken_by_partner' && (
-                                <div className="sign_up-pane">
-                                    <div className="sign_up-pane-header">
-                                        <h2 className="sign_up-pane-header-title">Dit tegoed is al geactiveerd</h2>
-                                    </div>
-                                    <div className="sign_up-pane-body text-center">
-                                        <p className="sign_up-pane-heading sign_up-pane-heading-lg">Aanvraag mislukt</p>
-                                        <p className="sign_up-pane-text">
-                                            U krijgt deze melding omdat het tegoed is geactiveerd door een <br />
-                                            familielid of voogd. <br />
-                                            <br />
-                                            De tegoeden zijn beschikbaar in het account van de persoon die <br />
-                                            deze als eerste heeft geactiveerd.
-                                        </p>
-                                        <div className="block-icon">
-                                            <img
-                                                src={assetUrl('/assets/img/icon-sign_up-error.svg')}
-                                                alt="icon sign-up error"
-                                            />
-                                        </div>
-                                        <p className="sign_up-pane-text text-center">
-                                            Neem voor vragen contact op met {fund.organization.name}.
-                                        </p>
-                                        <div className="text-center">
-                                            <StateNavLink
-                                                name={'funds'}
-                                                className="button button-text button-text-primary button-text-padless">
-                                                Terug
-                                            </StateNavLink>
-                                        </div>
-                                        <div className="form-group col col-lg-12 hidden-xs">
-                                            <br />
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
-
-                            {state == 'backoffice_error_not_resident' && (
-                                <div className="sign_up-pane">
-                                    <div className="sign_up-pane-header">
-                                        <h2 className="sign_up-pane-header-title">Aanvraag mislukt</h2>
-                                    </div>
-                                    <div className="sign_up-pane-body text-center">
-                                        <p className="sign_up-pane-text">
-                                            Volgens onze gegevens bent u geen inwoner van de gemeente Nijmegen. De
-                                            {fund.name} geldt alleen voor inwoners van de gemeente Nijmegen. <br />
-                                            <br />
-                                            Mogelijk heeft uw eigen gemeente wel regelingen waarvoor u in aanmerking
-                                            komt. Neem hiervoor contact op met de gemeente waar u woonachtig bent.{' '}
-                                        </p>
-                                        <div className="block-icon">
-                                            <img
-                                                src={assetUrl('/assets/img/icon-sign_up-error.svg')}
-                                                alt="icon sign-up error"
-                                            />
-                                        </div>
-                                        <p className="sign_up-pane-text text-center">
-                                            Voor meer informatie of vragen kunt u contact opnemen met gemeente Nijmegen.
-                                            <br />
-                                            E-mailadres:{' '}
-                                            <a className="txt_link var" href="mailto:inkomensondersteuning@nijmegen.nl">
-                                                inkomensondersteuning@nijmegen.nl
-                                            </a>
-                                            <br />
-                                            Telefoonnumer: 14 024
-                                        </p>
-                                        <div className="text-center">
-                                            <StateNavLink
-                                                name={'funds'}
-                                                className="button button-text button-text-primary button-text-padless">
-                                                Terug
-                                            </StateNavLink>
-                                        </div>
-                                        <div className="form-group col col-lg-12 hidden-xs">
-                                            <br />
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
-
-                            {state == 'backoffice_error_not_eligible' && (
-                                <div className="sign_up-pane">
-                                    <div className="sign_up-pane-header">
-                                        <h2 className="sign_up-pane-header-title">
-                                            Aanvraag mislukt. U voldoet niet aan de voorwaarden.
-                                        </h2>
-                                    </div>
-                                    <div className="sign_up-pane-body text-center">
-                                        <p className="sign_up-pane-heading sign_up-pane-heading-lg">
-                                            Het is niet gelukt
-                                        </p>
-                                        <p className="sign_up-pane-text">
-                                            Sorry, uw aanvraag voor {fund.name} is helaas niet gelukt.
-                                        </p>
-                                        <div className="block-icon">
-                                            <img
-                                                src={assetUrl('/assets/img/icon-sign_up-error.svg')}
-                                                alt="icon sign-up error"
-                                            />
-                                        </div>
-                                        <p className="sign_up-pane-text text-center">
-                                            Neem voor meer informatie contact op met gemeente Nijmegen.
-                                        </p>
-                                        <div className="text-center">
-                                            <StateNavLink
-                                                name="funds"
-                                                className="button button-text button-text-primary button-text-padless">
-                                                Terug
-                                            </StateNavLink>
-                                        </div>
-                                        <div className="form-group col col-lg-12 hidden-xs">
-                                            <br />
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
-
-                            {state == 'backoffice_error_taken_by_partner' && (
-                                <div className="sign_up-pane">
-                                    <div className="sign_up-pane-header">
-                                        <h2 className="sign_up-pane-header-title">Aanvraag mislukt</h2>
-                                    </div>
-                                    <div className="sign_up-pane-body text-center">
-                                        <p className="sign_up-pane-text">
-                                            Volgens onze informatie hebben wij al een aanvraag van uw partner ontvangen.
-                                            Het is daarom niet mogelijk om een aanvraag te doen.
-                                        </p>
-                                        <div className="block-icon">
-                                            <img
-                                                src={assetUrl('/assets/img/icon-sign_up-error.svg')}
-                                                alt="icon sign-up error"
-                                            />
-                                        </div>
-                                        <p className="sign_up-pane-text text-center">
-                                            Wilt u hiervoor een bezwaar indienen of heeft u vragen, neem dan contact met
-                                            ons op.
-                                            <br />
-                                            E-mailadres:{' '}
-                                            <a href="mailto:inkomensondersteuning@nijmegen.nl">
-                                                inkomensondersteuning@nijmegen.nl
-                                            </a>
-                                            <br />
-                                            Telefoonnumer: 14 024
-                                        </p>
-                                        <div className="text-center">
-                                            <StateNavLink
-                                                name={'funds'}
-                                                className="button button-text button-text-primary button-text-padless">
-                                                Terug
-                                            </StateNavLink>
-                                        </div>
-                                        <div className="form-group col col-lg-12 hidden-xs">
-                                            <br />
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
-
-                            {state == 'backoffice_error_no_response' && (
-                                <div className="sign_up-pane">
-                                    <div className="sign_up-pane-header">
-                                        <h2 className="sign_up-pane-header-title">
-                                            Er is een technische fout opgetreden, probeer het later opnieuw.
-                                        </h2>
-                                    </div>
-                                    <div className="sign_up-pane-body text-center">
-                                        <p className="sign_up-pane-heading sign_up-pane-heading-lg">
-                                            Het is niet gelukt
-                                        </p>
-                                        <p className="sign_up-pane-text">
-                                            Sorry, uw aanvraag voor {fund.name} is helaas niet gelukt.
-                                        </p>
-                                        <div className="block-icon">
-                                            <img
-                                                src={assetUrl('/assets/img/icon-sign_up-error.svg')}
-                                                alt="icon sign-up error"
-                                            />
-                                        </div>
-                                        <p className="sign_up-pane-text text-center">
-                                            Neem voor meer informatie contact op met gemeente Nijmegen.
-                                        </p>
-                                        <div className="text-center">
-                                            <StateNavLink
-                                                name={'funds'}
-                                                className="button button-text button-text-primary button-text-padless">
-                                                Terug
-                                            </StateNavLink>
-                                        </div>
-                                        <div className="form-group col col-lg-12 hidden-xs">
-                                            <br />
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
-
-                            {state == 'fund_already_applied' && (
-                                <div className="sign_up-pane">
-                                    <div className="sign_up-pane-header">
-                                        <h2 className="sign_up-pane-header-title">
-                                            {translate('fund_request.sign_up.header.title_fund_already_applied')}
-                                        </h2>
-                                    </div>
-                                    <div className="sign_up-pane-body">
-                                        <div className="sign_up-pane-media">
-                                            <img
-                                                src={assetUrl('/assets/img/fund-request-error.png')}
-                                                alt="icon fund request error"
-                                            />
-                                        </div>
-                                        <p className="sign_up-pane-text">
-                                            {translate('fund_request.sign_up.subtitles.fund_already_applied')}
-                                        </p>
-                                        <ul className="sign_up-pane-list sign_up-pane-list-criteria">
-                                            {fund.criteria?.map((criterion) => (
-                                                <li
-                                                    key={criterion.id}
-                                                    className={
-                                                        {
-                                                            pending: 'item-progress',
-                                                            approved: 'item-valid',
-                                                            declined: 'item-declined',
-                                                        }[findCriterionState(criterion)]
-                                                    }>
-                                                    <div className="item-icon">
-                                                        <em
-                                                            className={`mdi ${
-                                                                {
-                                                                    pending: 'mdi-help',
-                                                                    approved: 'mdi-check-bold',
-                                                                    declined: 'mdi-close-thick',
-                                                                }[findCriterionState(criterion)]
-                                                            }`}
-                                                        />
-                                                    </div>
-
-                                                    {criterion.title && criterion.title}
-
-                                                    {!criterion.title &&
-                                                        translate(
-                                                            `fund_request.sign_up.pane.criterion_${
-                                                                { '>': 'more', '<': 'less', '=': 'same' }[
-                                                                    criterion.operator
-                                                                ]
-                                                            }`,
-                                                            {
-                                                                name: criterion?.record_type?.name,
-                                                                value: criterion?.value,
-                                                            },
-                                                        )}
-                                                </li>
-                                            ))}
-                                        </ul>
-                                        <span>{translate('fund_request.sign_up.pane.fund_already_applied')}</span>
-                                    </div>
-                                </div>
-                            )}
-
-                            {state == 'select' && (
-                                <div>
+                        {state == 'digid' && fetchingData && (
+                            <div className="sign_up-pane">
+                                <div className="sign_up-pane-body">
                                     <br />
-                                    {fund && <BlockCard2FAWarning fund={fund} buttonPosition={'bottom'} />}
+                                    <div className="sign_up-pane-loading">
+                                        <div className="mdi mdi-loading mdi-spin" />
+                                    </div>
+                                    <div className="sign_up-pane-text text-center text-muted">
+                                        Een moment geduld, het verzoek wordt verwerkt.
+                                    </div>
+                                    <br />
                                 </div>
-                            )}
-                        </div>
+                            </div>
+                        )}
+
+                        {state == 'error_not_available' && (
+                            <div className="sign_up-pane">
+                                <div className="sign_up-pane-header">
+                                    <h2 className="sign_up-pane-header-title">Aanvraag mislukt</h2>
+                                </div>
+                                <div className="sign_up-pane-body">
+                                    <p className="sign_up-pane-text text-center">
+                                        U kunt zich niet aanmelden voor {fund.name}.
+                                    </p>
+                                    <div className="block-icon">
+                                        <img
+                                            src={assetUrl('/assets/img/icon-sign_up-error.svg')}
+                                            alt="icon sign-up error"
+                                        />
+                                    </div>
+                                    <p className="sign_up-pane-text text-center">
+                                        Neem contact op met {fund.organization.name}.
+                                    </p>
+                                    <div className="text-center">
+                                        <StateNavLink
+                                            name={'funds'}
+                                            className="button button-text button-text-primary button-text-padless">
+                                            Terug
+                                        </StateNavLink>
+                                    </div>
+                                    <div className="form-group col col-lg-12 hidden-xs">
+                                        <br />
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {state == 'taken_by_partner' && (
+                            <div className="sign_up-pane">
+                                <div className="sign_up-pane-header">
+                                    <h2 className="sign_up-pane-header-title">Dit tegoed is al geactiveerd</h2>
+                                </div>
+                                <div className="sign_up-pane-body text-center">
+                                    <p className="sign_up-pane-heading sign_up-pane-heading-lg">Aanvraag mislukt</p>
+                                    <p className="sign_up-pane-text">
+                                        U krijgt deze melding omdat het tegoed is geactiveerd door een <br />
+                                        familielid of voogd. <br />
+                                        <br />
+                                        De tegoeden zijn beschikbaar in het account van de persoon die <br />
+                                        deze als eerste heeft geactiveerd.
+                                    </p>
+                                    <div className="block-icon">
+                                        <img
+                                            src={assetUrl('/assets/img/icon-sign_up-error.svg')}
+                                            alt="icon sign-up error"
+                                        />
+                                    </div>
+                                    <p className="sign_up-pane-text text-center">
+                                        Neem voor vragen contact op met {fund.organization.name}.
+                                    </p>
+                                    <div className="text-center">
+                                        <StateNavLink
+                                            name={'funds'}
+                                            className="button button-text button-text-primary button-text-padless">
+                                            Terug
+                                        </StateNavLink>
+                                    </div>
+                                    <div className="form-group col col-lg-12 hidden-xs">
+                                        <br />
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {state == 'backoffice_error_not_resident' && (
+                            <div className="sign_up-pane">
+                                <div className="sign_up-pane-header">
+                                    <h2 className="sign_up-pane-header-title">Aanvraag mislukt</h2>
+                                </div>
+                                <div className="sign_up-pane-body text-center">
+                                    <p className="sign_up-pane-text">
+                                        Volgens onze gegevens bent u geen inwoner van de gemeente Nijmegen. De
+                                        {fund.name} geldt alleen voor inwoners van de gemeente Nijmegen. <br />
+                                        <br />
+                                        Mogelijk heeft uw eigen gemeente wel regelingen waarvoor u in aanmerking komt.
+                                        Neem hiervoor contact op met de gemeente waar u woonachtig bent.{' '}
+                                    </p>
+                                    <div className="block-icon">
+                                        <img
+                                            src={assetUrl('/assets/img/icon-sign_up-error.svg')}
+                                            alt="icon sign-up error"
+                                        />
+                                    </div>
+                                    <p className="sign_up-pane-text text-center">
+                                        Voor meer informatie of vragen kunt u contact opnemen met gemeente Nijmegen.
+                                        <br />
+                                        E-mailadres:{' '}
+                                        <a className="txt_link var" href="mailto:inkomensondersteuning@nijmegen.nl">
+                                            inkomensondersteuning@nijmegen.nl
+                                        </a>
+                                        <br />
+                                        Telefoonnumer: 14 024
+                                    </p>
+                                    <div className="text-center">
+                                        <StateNavLink
+                                            name={'funds'}
+                                            className="button button-text button-text-primary button-text-padless">
+                                            Terug
+                                        </StateNavLink>
+                                    </div>
+                                    <div className="form-group col col-lg-12 hidden-xs">
+                                        <br />
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {state == 'backoffice_error_not_eligible' && (
+                            <div className="sign_up-pane">
+                                <div className="sign_up-pane-header">
+                                    <h2 className="sign_up-pane-header-title">
+                                        Aanvraag mislukt. U voldoet niet aan de voorwaarden.
+                                    </h2>
+                                </div>
+                                <div className="sign_up-pane-body text-center">
+                                    <p className="sign_up-pane-heading sign_up-pane-heading-lg">Het is niet gelukt</p>
+                                    <p className="sign_up-pane-text">
+                                        Sorry, uw aanvraag voor {fund.name} is helaas niet gelukt.
+                                    </p>
+                                    <div className="block-icon">
+                                        <img
+                                            src={assetUrl('/assets/img/icon-sign_up-error.svg')}
+                                            alt="icon sign-up error"
+                                        />
+                                    </div>
+                                    <p className="sign_up-pane-text text-center">
+                                        Neem voor meer informatie contact op met gemeente Nijmegen.
+                                    </p>
+                                    <div className="text-center">
+                                        <StateNavLink
+                                            name="funds"
+                                            className="button button-text button-text-primary button-text-padless">
+                                            Terug
+                                        </StateNavLink>
+                                    </div>
+                                    <div className="form-group col col-lg-12 hidden-xs">
+                                        <br />
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {state == 'backoffice_error_taken_by_partner' && (
+                            <div className="sign_up-pane">
+                                <div className="sign_up-pane-header">
+                                    <h2 className="sign_up-pane-header-title">Aanvraag mislukt</h2>
+                                </div>
+                                <div className="sign_up-pane-body text-center">
+                                    <p className="sign_up-pane-text">
+                                        Volgens onze informatie hebben wij al een aanvraag van uw partner ontvangen. Het
+                                        is daarom niet mogelijk om een aanvraag te doen.
+                                    </p>
+                                    <div className="block-icon">
+                                        <img
+                                            src={assetUrl('/assets/img/icon-sign_up-error.svg')}
+                                            alt="icon sign-up error"
+                                        />
+                                    </div>
+                                    <p className="sign_up-pane-text text-center">
+                                        Wilt u hiervoor een bezwaar indienen of heeft u vragen, neem dan contact met ons
+                                        op.
+                                        <br />
+                                        E-mailadres:{' '}
+                                        <a href="mailto:inkomensondersteuning@nijmegen.nl">
+                                            inkomensondersteuning@nijmegen.nl
+                                        </a>
+                                        <br />
+                                        Telefoonnumer: 14 024
+                                    </p>
+                                    <div className="text-center">
+                                        <StateNavLink
+                                            name={'funds'}
+                                            className="button button-text button-text-primary button-text-padless">
+                                            Terug
+                                        </StateNavLink>
+                                    </div>
+                                    <div className="form-group col col-lg-12 hidden-xs">
+                                        <br />
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {state == 'backoffice_error_no_response' && (
+                            <div className="sign_up-pane">
+                                <div className="sign_up-pane-header">
+                                    <h2 className="sign_up-pane-header-title">
+                                        Er is een technische fout opgetreden, probeer het later opnieuw.
+                                    </h2>
+                                </div>
+                                <div className="sign_up-pane-body text-center">
+                                    <p className="sign_up-pane-heading sign_up-pane-heading-lg">Het is niet gelukt</p>
+                                    <p className="sign_up-pane-text">
+                                        Sorry, uw aanvraag voor {fund.name} is helaas niet gelukt.
+                                    </p>
+                                    <div className="block-icon">
+                                        <img
+                                            src={assetUrl('/assets/img/icon-sign_up-error.svg')}
+                                            alt="icon sign-up error"
+                                        />
+                                    </div>
+                                    <p className="sign_up-pane-text text-center">
+                                        Neem voor meer informatie contact op met gemeente Nijmegen.
+                                    </p>
+                                    <div className="text-center">
+                                        <StateNavLink
+                                            name={'funds'}
+                                            className="button button-text button-text-primary button-text-padless">
+                                            Terug
+                                        </StateNavLink>
+                                    </div>
+                                    <div className="form-group col col-lg-12 hidden-xs">
+                                        <br />
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {state == 'fund_already_applied' && (
+                            <div className="sign_up-pane">
+                                <div className="sign_up-pane-header">
+                                    <h2 className="sign_up-pane-header-title">
+                                        {translate('fund_request.sign_up.header.title_fund_already_applied')}
+                                    </h2>
+                                </div>
+                                <div className="sign_up-pane-body">
+                                    <div className="sign_up-pane-media">
+                                        <img
+                                            src={assetUrl('/assets/img/fund-request-error.png')}
+                                            alt="icon fund request error"
+                                        />
+                                    </div>
+                                    <p className="sign_up-pane-text">
+                                        {translate('fund_request.sign_up.subtitles.fund_already_applied')}
+                                    </p>
+                                    <ul className="sign_up-pane-list sign_up-pane-list-criteria">
+                                        {fund.criteria?.map((criterion) => (
+                                            <li
+                                                key={criterion.id}
+                                                className={
+                                                    {
+                                                        pending: 'item-progress',
+                                                        approved: 'item-valid',
+                                                        declined: 'item-declined',
+                                                    }[findCriterionState(criterion)]
+                                                }>
+                                                <div className="item-icon">
+                                                    <em
+                                                        className={`mdi ${
+                                                            {
+                                                                pending: 'mdi-help',
+                                                                approved: 'mdi-check-bold',
+                                                                declined: 'mdi-close-thick',
+                                                            }[findCriterionState(criterion)]
+                                                        }`}
+                                                    />
+                                                </div>
+
+                                                {criterion.title && criterion.title}
+
+                                                {!criterion.title &&
+                                                    translate(
+                                                        `fund_request.sign_up.pane.criterion_${
+                                                            {
+                                                                '>': 'more',
+                                                                '<': 'less',
+                                                                '=': 'same',
+                                                            }[criterion.operator]
+                                                        }`,
+                                                        {
+                                                            name: criterion?.record_type?.name,
+                                                            value: criterion?.value,
+                                                        },
+                                                    )}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                    <span>{translate('fund_request.sign_up.pane.fund_already_applied')}</span>
+                                </div>
+                            </div>
+                        )}
+
+                        {state == 'select' && (
+                            <div>
+                                <br />
+                                {fund && <BlockCard2FAWarning fund={fund} buttonPosition={'bottom'} />}
+                            </div>
+                        )}
                     </div>
                 </div>
-            </main>
-        </div>
+            )}
+        </BlockShowcase>
     );
 }

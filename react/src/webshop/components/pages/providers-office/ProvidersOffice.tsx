@@ -124,6 +124,7 @@ export default function ProvidersOffice() {
                                     markerTemplate={(office: Office) => <MapMarkerProviderOfficeView office={office} />}
                                     mapGestureHandling={'greedy'}
                                     mapGestureHandlingMobile={'none'}
+                                    openFirstPointer={true}
                                     mapOptions={{
                                         fullscreenControlOptions: {
                                             position: window.google.maps.ControlPosition.TOP_RIGHT,

@@ -32,26 +32,18 @@ export function GoogleMap({
     }, []);
 
     const center = useMemo(() => {
-        if (mapOptions.centerType == 'avg' && mapPointers.length > 0) {
+        if (mapOptions.centerType == 'avg' && markers.length > 0) {
             return {
-                lat: avg(
-                    mapPointers.map((pointer) => {
-                        return typeof pointer.lat === 'string' ? parseFloat(pointer.lat) : pointer.lat;
-                    }),
-                ),
-                lng: avg(
-                    mapPointers.map((pointer) => {
-                        return typeof pointer.lon === 'string' ? parseFloat(pointer.lon) : pointer.lon;
-                    }),
-                ),
+                lat: avg(markers.map((pointer) => parseFloat(pointer.lat))),
+                lng: avg(markers.map((pointer) => parseFloat(pointer.lon))),
             };
         }
 
         return {
-            lat: mapPointers.length > 0 ? parseFloat(mapPointers[0].lat) : appConfigs.map.lat,
-            lng: mapPointers.length > 0 ? parseFloat(mapPointers[0].lon) : appConfigs.map.lon,
+            lat: markers.length > 0 ? parseFloat(markers[0].lat) : appConfigs.map.lat,
+            lng: markers.length > 0 ? parseFloat(markers[0].lon) : appConfigs.map.lon,
         };
-    }, [appConfigs.map.lat, appConfigs.map.lon, avg, mapOptions?.centerType, mapPointers]);
+    }, [appConfigs?.map?.lat, appConfigs?.map?.lon, avg, mapOptions.centerType, markers]);
 
     const mapStyles = [
         { featureType: 'poi.business', stylers: [{ visibility: 'off' }] },

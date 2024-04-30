@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { CSSProperties, useCallback, useState } from 'react';
 import BlockShowcase from './BlockShowcase';
 import BlockLoader from '../block-loader/BlockLoader';
 
@@ -6,12 +6,14 @@ export default function BlockShowcasePage({
     aside = null,
     children = null,
     breadcrumbs = null,
+    contentStyles = null,
     countFiltersApplied = null,
     showCaseClassName = null,
 }: {
     aside?: React.ReactElement | Array<React.ReactElement>;
     children?: React.ReactElement | Array<React.ReactElement>;
     breadcrumbs?: React.ReactElement | Array<React.ReactElement>;
+    contentStyles?: CSSProperties;
     countFiltersApplied?: number;
     showCaseClassName?: string;
 }) {
@@ -49,7 +51,9 @@ export default function BlockShowcasePage({
                         {aside || <BlockLoader />}
                     </div>
 
-                    <div className="showcase-content">{children || <BlockLoader />}</div>
+                    <div className="showcase-content" style={contentStyles}>
+                        {children || <BlockLoader />}
+                    </div>
                 </div>
             </div>
         </BlockShowcase>

@@ -92,7 +92,7 @@ export default function LayoutFooter() {
                                 }`}>
                                 {appConfigs?.pages?.footer_app_info?.description_html && (
                                     <div className="block block-markdown">
-                                        {appConfigs?.pages?.footer_app_info?.description_html}
+                                        <Markdown content={appConfigs?.pages?.footer_app_info?.description_html} />
                                     </div>
                                 )}
                                 {(!appConfigs?.pages?.footer_app_info?.description_html ||

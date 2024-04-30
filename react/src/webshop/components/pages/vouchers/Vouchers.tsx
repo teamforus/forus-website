@@ -125,18 +125,16 @@ export default function Vouchers() {
                                 />
                             ))}
 
-                            {vouchers?.meta.last_page > 1 && (
-                                <div className="card">
-                                    <div className="card-section">
-                                        <Paginator
-                                            meta={vouchers.meta}
-                                            filters={filter.values}
-                                            updateFilters={filter.update}
-                                            buttonClass={'button-primary-outline'}
-                                        />
-                                    </div>
+                            <div className="card" hidden={vouchers?.meta?.last_page < 2}>
+                                <div className="card-section">
+                                    <Paginator
+                                        meta={vouchers.meta}
+                                        filters={filter.values}
+                                        updateFilters={filter.update}
+                                        buttonClass={'button-primary-outline'}
+                                    />
                                 </div>
-                            )}
+                            </div>
 
                             {vouchers.data.length > 0 && reimbursementVouchers?.meta.total > 0 && (
                                 <div className="block block-action-card block-action-card-compact">

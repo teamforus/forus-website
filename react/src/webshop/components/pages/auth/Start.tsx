@@ -1,7 +1,6 @@
-import React, { Fragment, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { authContext } from '../../../contexts/AuthContext';
 import { useNavigateState } from '../../../modules/state_router/Router';
-import { TopNavbar } from '../../elements/top-navbar/TopNavbar';
 import { useAuthService } from '../../../services/AuthService';
 import useFormBuilder from '../../../../dashboard/hooks/useFormBuilder';
 import { ResponseError } from '../../../../dashboard/props/ApiResponses';
@@ -22,6 +21,8 @@ import UIControlText from '../../../../dashboard/components/elements/forms/ui-co
 import TranslateHtml from '../../../../dashboard/components/elements/translate-html/TranslateHtml';
 import useSetTitle from '../../../hooks/useSetTitle';
 import { clickOnKeyEnter } from '../../../../dashboard/helpers/wcag';
+import BlockShowcase from '../../elements/block-showcase/BlockShowcase';
+import BlockLoader from '../../elements/block-loader/BlockLoader';
 
 export default function Start() {
     const { token, signOut, setToken } = useContext(authContext);
@@ -48,7 +49,7 @@ export default function Start() {
         restore_with_email: BooleanParam,
     });
 
-    const authService = useAuthService();
+    const { onAuthRedirect } = useAuthService();
     const digIdService = useDigiDService();
     const identityService = useIdentityService();
 
@@ -111,6 +112,8 @@ export default function Start() {
                 .finally(() => setProgress(100));
         },
     );
+
+    const { reset: authFormReset } = authForm;
 
     const togglePrivacy = useCallback(
         ($event) => {
@@ -184,6 +187,7 @@ export default function Start() {
         if (!restore_with_digid && restore_with_email) {
             setAuthEmailConfirmationSent(false);
             setAuthEmailRestoreSent(false);
+            authFormReset();
             setState('email');
         }
 
@@ -192,13 +196,13 @@ export default function Start() {
         }
 
         setQueryParams({ logout: null, restore_with_digid: null, restore_with_email: null, reset: null });
-    }, [reset, logout, restore_with_digid, restore_with_email, setQueryParams, signOut, startDigId]);
+    }, [reset, logout, restore_with_digid, restore_with_email, setQueryParams, signOut, startDigId, authFormReset]);
 
     useEffect(() => {
         if (signedIn) {
-            authService.onAuthRedirect().then();
+            onAuthRedirect().then();
         }
-    }, [authService, signedIn]);
+    }, [onAuthRedirect, signedIn]);
 
     useEffect(() => {
         if (envData) {
@@ -234,6 +238,7 @@ export default function Start() {
                         id={'submit'}
                         className="button button-primary button-fill"
                         type="submit"
+                        disabled={showPolicy && !authForm.values.privacy && envData.config.flags.privacyPage}
                         data-dusk="authEmailFormSubmit"
                         tabIndex={3}>
                         {translate('popup_auth.buttons.submit')}
@@ -355,10 +360,8 @@ export default function Start() {
     );
 
     return (
-        <Fragment>
-            <TopNavbar />
-
-            <main id="main-content">
+        <BlockShowcase wrapper={true} breadcrumbs={<></>} loaderElement={<BlockLoader type={'full'} />}>
+            {!signedIn && (
                 <header className="section section-sign-up-choose">
                     <div className="wrapper">
                         {state === 'start' && (
@@ -627,7 +630,7 @@ export default function Start() {
                         )}
                     </div>
                 </header>
-            </main>
-        </Fragment>
+            )}
+        </BlockShowcase>
     );
 }

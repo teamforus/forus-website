@@ -109,7 +109,7 @@ export default function ProductFundsCard({ product, vouchers = [] }: { product: 
 
     return (
         <Fragment>
-            {productMeta?.funds?.length > 0 && (!onlyAvailableFunds || productMeta.hasReservableFunds) && (
+            {productMeta?.funds?.length > 0 && (!onlyAvailableFunds || productMeta?.hasReservableFunds) && (
                 <div className="block block-pane">
                     <div className="pane-head">
                         <StateNavLink className="pane-head-title" name="vouchers" customElement={'h2'}>
@@ -307,7 +307,7 @@ export default function ProductFundsCard({ product, vouchers = [] }: { product: 
                 </div>
             )}
 
-            {(!authIdentity || (onlyAvailableFunds && !productMeta.hasReservableFunds)) && (
+            {(!authIdentity || (onlyAvailableFunds && !productMeta?.hasReservableFunds)) && (
                 <div className="block block-action-card block-action-card-compact">
                     <div className="block-card-logo" aria-hidden="true" />
                     <div className="block-card-details">

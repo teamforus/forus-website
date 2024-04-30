@@ -36,6 +36,7 @@ import FundRequestBsnWarning from './elements/FundRequestBsnWarning';
 import BlockShowcase from '../../elements/block-showcase/BlockShowcase';
 import useFetchAuthIdentity from '../../../hooks/useFetchAuthIdentity';
 import useSetProgress from '../../../../dashboard/hooks/useSetProgress';
+import BlockLoader from '../../elements/block-loader/BlockLoader';
 
 export type LocalCriterion = FundCriterion & {
     input_value?: string;
@@ -473,7 +474,7 @@ export default function FundRequest() {
     }
 
     return (
-        <BlockShowcase wrapper={true} breadcrumbs={<></>}>
+        <BlockShowcase wrapper={true} breadcrumbs={<></>} loaderElement={<BlockLoader type={'full'} />}>
             {!digiExpired && (
                 <div className="block block-sign_up">
                     <div className="block-wrapper form">

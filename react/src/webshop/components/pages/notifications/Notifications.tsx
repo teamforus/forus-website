@@ -126,18 +126,16 @@ export default function Notifications() {
                         />
                     )}
 
-                    {notifications?.meta?.last_page > 1 && (
-                        <div className="card">
-                            <div className="card-section">
-                                <Paginator
-                                    meta={notifications.meta}
-                                    filters={filter.values}
-                                    updateFilters={filter.update}
-                                    buttonClass={'button-primary-outline'}
-                                />
-                            </div>
+                    <div className="card" hidden={notifications?.meta?.last_page < 2}>
+                        <div className="card-section">
+                            <Paginator
+                                meta={notifications.meta}
+                                filters={filter.values}
+                                updateFilters={filter.update}
+                                buttonClass={'button-primary-outline'}
+                            />
                         </div>
-                    )}
+                    </div>
                 </Fragment>
             )}
         </BlockShowcaseProfile>

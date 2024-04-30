@@ -140,18 +140,16 @@ export default function BookmarkedProducts() {
                         />
                     )}
 
-                    {products.meta.last_page > 1 && (
-                        <div className="card">
-                            <div className="card-section">
-                                <Paginator
-                                    meta={products.meta}
-                                    filters={filterValues}
-                                    updateFilters={filterUpdate}
-                                    buttonClass={'button-primary-outline'}
-                                />
-                            </div>
+                    <div className="card" hidden={products?.meta?.last_page < 2}>
+                        <div className="card-section">
+                            <Paginator
+                                meta={products.meta}
+                                filters={filterValues}
+                                updateFilters={filterUpdate}
+                                buttonClass={'button-primary-outline'}
+                            />
                         </div>
-                    )}
+                    </div>
                 </Fragment>
             )}
         </BlockShowcaseProfile>

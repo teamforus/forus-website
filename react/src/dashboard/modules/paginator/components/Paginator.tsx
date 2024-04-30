@@ -75,6 +75,12 @@ export default function Paginator({
         }
     }, [filters.per_page, onChangePerPage, perPageKey, perPageOptions]);
 
+    useEffect(() => {
+        if (meta && meta.current_page > meta.last_page) {
+            setPage(meta.last_page);
+        }
+    }, [meta, setPage]);
+
     return (
         <div className={`table-pagination form ${className}`}>
             {meta.from && meta.to && (
