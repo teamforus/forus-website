@@ -133,7 +133,7 @@ export default function FundsShow() {
     }, [fetchFund]);
 
     useEffect(() => {
-        authIdentity ? fetchVouchers() : setVouchers(null);
+        authIdentity ? fetchVouchers() : setVouchers([]);
     }, [authIdentity, fetchVouchers]);
 
     useEffect(() => {
@@ -300,7 +300,6 @@ export default function FundsShow() {
                                     </div>
                                 </div>
 
-                                <pre>{JSON.stringify([fund.showPendingButton], null, '    ')}</pre>
                                 {fund.showPendingButton && (
                                     <div className="block block-action-card block-action-card-compact">
                                         <div className="block-card-logo">

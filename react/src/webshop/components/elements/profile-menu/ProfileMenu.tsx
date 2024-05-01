@@ -108,7 +108,7 @@ export default function ProfileMenu({ className }: { className?: string }) {
                 {translate('profile_menu.buttons.email_settings')}
                 <em className="mdi mdi-arrow-right" aria-hidden="true" />
             </StateNavLink>
-            {(envData.config.flags.show2FAMenu || auth2FAState.required) && (
+            {(envData.config.flags.show2FAMenu || auth2FAState?.required) && (
                 <StateNavLink
                     className="profile-menu-item"
                     name="security-2fa"
