@@ -16,7 +16,7 @@ module.exports = {
         execution_date: 'Datum van uitbetaling',
         status: 'Status',
         accepted: 'Accepted',
-        date_non_cancelable: 'Vastgestelde datum',
+        date_non_cancelable: 'Definitieve transactie',
     },
     tooltips: {
         pending_iban_from:

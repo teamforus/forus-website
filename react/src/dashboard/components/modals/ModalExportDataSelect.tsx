@@ -1,6 +1,5 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 import { ModalState } from '../../modules/modals/context/ModalContext';
-import { classList } from '../../helpers/utils';
 import { useTranslation } from 'react-i18next';
 import { chunk } from 'lodash';
 import CheckboxControl from '../elements/forms/controls/CheckboxControl';
@@ -17,22 +16,16 @@ export type ExportFieldProp = {
 export type ExportSectionProp = {
     type: 'radio' | 'checkbox';
     key: string;
+    title: string;
     value?: string;
     fields: Array<ExportFieldProp>;
     fieldsPerRow?: number;
-    title: string;
     collapsable?: boolean;
     selectAll?: boolean;
 };
 
 type ExportSectionPropLocal = ExportSectionProp & {
-    fieldsView: Array<
-        Array<{
-            key: string;
-            name: string;
-            selected: boolean;
-        }>
-    >;
+    fieldsView: Array<Array<{ key: string; name: string; selected: boolean }>>;
     value?: string;
     collapsed: boolean;
     selected: Array<ExportFieldProp>;
@@ -56,23 +49,19 @@ export default function ModalExportDataSelect({
     onSuccess: (values: object) => void;
 }) {
     const { t } = useTranslation();
-
-    const [isValid, setIsValid] = React.useState(false);
     const [localSections, setLocalSections] = React.useState<Array<ExportSectionPropLocal>>(null);
 
-    const updateIsValid = useCallback(
-        (localSections) => {
-            const checkboxSections = localSections?.filter(
-                (section: ExportSectionPropLocal) => section.type === 'checkbox',
-            );
-            const checkboxSectionsChecked = checkboxSections?.filter(
-                (section: ExportSectionPropLocal) => section.selected.length > 0,
-            );
+    const isValid = useMemo(() => {
+        const checkboxSections = localSections?.filter(
+            (section: ExportSectionPropLocal) => section.type === 'checkbox',
+        );
 
-            setIsValid(!required || !checkboxSections?.length || checkboxSectionsChecked?.length);
-        },
-        [required],
-    );
+        const checkboxSectionsChecked = checkboxSections?.filter(
+            (section: ExportSectionPropLocal) => section.selected.length > 0,
+        );
+
+        return !required || !checkboxSections?.length || checkboxSectionsChecked?.length;
+    }, [localSections, required]);
 
     const updateSelectedFields = useCallback((section: ExportSectionPropLocal) => {
         section.selected = section.fields.filter((field: ExportFieldProp) => field.selected);
@@ -86,11 +75,7 @@ export default function ModalExportDataSelect({
             section.selectAll = checked;
             section.fieldsView.forEach((row) => row.forEach((field) => (field.selected = section.selectAll)));
 
-            const localSections2 = localSections.map((section: ExportSectionPropLocal) =>
-                updateSelectedFields(section),
-            );
-
-            setLocalSections(localSections2);
+            setLocalSections(localSections.map(updateSelectedFields));
         },
         [localSections, updateSelectedFields],
     );
@@ -144,26 +129,11 @@ export default function ModalExportDataSelect({
             return section;
         });
 
-        const localSections2 = localSections.map((section: ExportSectionPropLocal) => updateSelectedFields(section));
-
-        setLocalSections(localSections2);
+        setLocalSections(localSections.map(updateSelectedFields));
     }, [sections, updateSelectedFields]);
 
-    useEffect(() => {
-        if (localSections) {
-            updateIsValid(localSections);
-        }
-    }, [localSections, updateIsValid]);
-
     return (
-        <div
-            className={classList([
-                'modal',
-                'modal-md',
-                'modal-animated',
-                modal.loading ? 'modal-loading' : null,
-                className,
-            ])}>
+        <div className={`modal modal-md modal-animated ${modal.loading ? 'modal-loading' : ''} ${className}`}>
             <div className="modal-backdrop" onClick={modal.close} />
             <form
                 className="modal-window form"

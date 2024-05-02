@@ -1,6 +1,5 @@
 import React, { ChangeEvent, Fragment, useCallback, useRef, useState } from 'react';
 import { ModalState } from '../../modules/modals/context/ModalContext';
-import { classList } from '../../helpers/utils';
 import Organization from '../../props/models/Organization';
 import { useFileService } from '../../services/FileService';
 import Papa from 'papaparse';
@@ -29,6 +28,7 @@ export default function ModalVoucherTransactionsUpload({
 }) {
     const { t } = useTranslation();
     const authIdentity = useAuthIdentity();
+
     const fileService = useFileService();
     const transactionService = useTransactionService();
 
@@ -238,7 +238,6 @@ export default function ModalVoucherTransactionsUpload({
                             stats.errors = { ...transformErrors(res.data['errors']), ...stats.errors };
                             stats.success = stats.success += res.data['created'].length || 0;
 
-                            console.log(stats);
                             return stats;
                         })
                         .catch((res: ResponseError) => {
@@ -251,8 +250,6 @@ export default function ModalVoucherTransactionsUpload({
                                     {},
                                 ),
                             );
-
-                            console.log('ResponseError', res);
 
                             return (stats.errors = {
                                 ...errors,
@@ -399,12 +396,7 @@ export default function ModalVoucherTransactionsUpload({
 
     return (
         <div
-            className={classList([
-                'modal',
-                'modal-animated',
-                modal.loading || hideModal ? 'modal-loading' : null,
-                className,
-            ])}
+            className={`modal modal-animated ${modal.loading || hideModal ? 'modal-loading' : ''} ${className}`}
             data-dusk="modalTransactionUpload">
             <div className="modal-backdrop" onClick={closeModal} />
             <div className="modal-window">

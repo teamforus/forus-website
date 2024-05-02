@@ -68,15 +68,17 @@ export default function TransactionBulksView() {
                     modal={modal}
                     title={title}
                     description_text={description}
-                    buttonSubmit={{
-                        text: 'Bevestigen',
-                        onClick: () => {
-                            onSubmit?.();
-                            modal.close();
-                        },
-                    }}
+                    buttonSubmit={
+                        onSubmit && {
+                            text: 'Bevestigen',
+                            onClick: () => {
+                                onSubmit?.();
+                                modal.close();
+                            },
+                        }
+                    }
                     buttonCancel={{
-                        text: 'Annuleren',
+                        text: onSubmit ? 'Annuleren' : 'Sluiten',
                         onClick: () => {
                             onCancel?.();
                             modal.close();
@@ -107,19 +109,27 @@ export default function TransactionBulksView() {
             if (bank.key === 'bng') {
                 // Reset BNG bulk confirmation
                 return confirmDangerAction(
-                    'Reset BNG bulk',
+                    'Bulktransactie opnieuw versturen naar BNG',
                     [
-                        'Weet u zeker dat u de bulk opnieuw wilt instellen?',
-                        'Stel alleen de bulk opnieuw in als de link om te autoriseren niet meer geldig is.',
-                        'Alleen de bulk betalingen die nog niet geautoriseerd zijn kunnen opnieuw worden ingesteld.\n\n',
-                        'U wordt doorverwezen naar de betalingsverkeer pagina van de BNG.\n',
-                        'Weet u zeker dat u door wil gaan?',
+                        'Als u een foutmelding tegenkomt bij het verzenden van bulktransacties naar BNG, of als een transactie bij BNG is verlopen, neem dan contact op met de support van Forus.',
+                        envData?.config?.support_contact_email || envData?.config?.support_contact_phone
+                            ? `\n\nContactgegevens:`
+                            : `\n\n`,
+                        envData?.config?.support_contact_email
+                            ? `\nTelefoon: ${envData?.config?.support_contact_email}`
+                            : null,
+                        envData?.config?.support_contact_phone
+                            ? `\nE-mail: ${envData?.config?.support_contact_phone}`
+                            : null,
+
+                        '\n\nVoordat u contact opneemt met Forus om een nieuwe bulktransactie naar BNG te verzenden,',
+                        'controleer alstublieft of een bestaande transactie geannuleerd en verwijderd is in het BNG-systeem.',
+                        'Als u een bestaande transactie niet annuleert, kan dit leiden tot dubbele betalingen of inconsistenties tussen het Forus-platform en BNG.',
                     ].join(' '),
-                    onConfirm,
                 );
             }
         },
-        [confirmDangerAction],
+        [confirmDangerAction, envData?.config?.support_contact_email, envData?.config?.support_contact_phone],
     );
 
     const confirmSubmitToBNG = useCallback(
@@ -319,26 +329,19 @@ export default function TransactionBulksView() {
                                 <div className="button-group">
                                     {transactionBulk.bank.key === 'bng' && (
                                         <Fragment>
-                                            {transactionBulk.state === 'pending' && transactionBulk.auth_url && (
-                                                <a
-                                                    className="button button-default button-sm"
-                                                    href={transactionBulk.auth_url}>
-                                                    <em className="mdi mdi-link icon-start" />
-                                                    Autoriseer
-                                                </a>
-                                            )}
-
                                             {transactionBulk.state == 'draft' && (
                                                 <Fragment>
+                                                    {/* Export SEPA file */}
                                                     {activeOrganization.allow_manual_bulk_processing && (
                                                         <button
                                                             className="button button-default button-sm"
                                                             onClick={() => exportSepa()}>
                                                             <em className="mdi mdi-download icon-start" />
-                                                            Export SEPA file
+                                                            SEPA-bestand exporteren
                                                         </button>
                                                     )}
 
+                                                    {/* BNG: Submit bulk to BNG */}
                                                     <button
                                                         className="button button-primary button-sm"
                                                         onClick={() => submitPaymentRequestToBNG()}
@@ -352,6 +355,7 @@ export default function TransactionBulksView() {
                                                         Verstuur de bulk naar BNG
                                                     </button>
 
+                                                    {/* Set paid */}
                                                     {transactionBulk.is_exported && (
                                                         <button
                                                             className="button button-danger button-sm"
@@ -369,17 +373,25 @@ export default function TransactionBulksView() {
                                         (transactionBulk.bank.key === 'bunq' &&
                                             transactionBulk.state == 'rejected')) && (
                                         <button
-                                            className="button button-danger button-sm"
+                                            className="button button-text button-narrow button-sm"
                                             onClick={() => resetPaymentRequest()}
                                             disabled={submittingBulk || resettingBulk}>
-                                            {resettingBulk ? (
-                                                <em className="mdi mdi-reload mdi-spin icon-start" />
-                                            ) : (
-                                                <em className="mdi mdi-reload icon-start" />
-                                            )}
+                                            <em className="mdi mdi-lock-reset icon-start" />
                                             Verstuur bulktransactie opnieuw
                                         </button>
                                     )}
+
+                                    {/* BNG: Auth url button */}
+                                    {transactionBulk.bank.key === 'bng' &&
+                                        transactionBulk.state === 'pending' &&
+                                        transactionBulk.auth_url && (
+                                            <a
+                                                className="button button-primary button-sm"
+                                                href={transactionBulk.auth_url}>
+                                                <em className="mdi mdi-link icon-start" />
+                                                Transactie autoriseren
+                                            </a>
+                                        )}
                                 </div>
                             </div>
                         )}

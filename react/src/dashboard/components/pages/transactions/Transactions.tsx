@@ -1,7 +1,7 @@
 import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
 import useActiveOrganization from '../../../hooks/useActiveOrganization';
 import { useTranslation } from 'react-i18next';
-import { getStateRouteUrl, useNavigateState } from '../../../modules/state_router/Router';
+import { useNavigateState } from '../../../modules/state_router/Router';
 import Transaction from '../../../props/models/Transaction';
 import useOpenModal from '../../../hooks/useOpenModal';
 import useTransactionService from '../../../services/TransactionService';
@@ -329,7 +329,7 @@ export default function Transactions() {
         } else {
             fetchTransactions(filter.activeValues).then((res) => setTransactions(res.data));
 
-            if (isSponsor) {
+            if (isSponsor && activeOrganization?.has_bank_connection) {
                 updateHasPendingBulking();
             }
         }
@@ -340,6 +340,7 @@ export default function Transactions() {
         bulkFilter.activeValues,
         filter.activeValues,
         viewType.key,
+        activeOrganization?.has_bank_connection,
         updateHasPendingBulking,
     ]);
 
@@ -1112,7 +1113,7 @@ export default function Transactions() {
             )}
 
             {viewType.key == 'transactions' && transactions?.meta && (
-                <div className="card-section">
+                <div className="card-section" hidden={transactions?.meta?.total < 1}>
                     <Paginator
                         meta={transactions.meta}
                         filters={filter.values}
@@ -1208,20 +1209,17 @@ export default function Transactions() {
 
             {viewType.key === 'bulks' && transactionBulks.meta.total == 0 && (
                 <EmptyCard
+                    type={'card-section'}
                     title={'Geen bulktransacties gevonden'}
                     description={[
                         'Bulktransacties worden dagelijks om 09:00 gegereneerd en bevatten alle nog niet uitbetaalde transacties uit de wachtrij.',
                         'Momenteel zijn er geen bulk transacties beschikbaar.',
                     ].join('\n')}
-                    button={{
-                        text: 'Vestiging toevoegen',
-                        to: getStateRouteUrl('transactions-create', { organizationId: activeOrganization.id }),
-                    }}
                 />
             )}
 
             {transactionBulks && viewType.key == 'bulks' && transactionBulks?.meta && (
-                <div className="card-section">
+                <div className="card-section" hidden={transactionBulks?.meta?.total < 1}>
                     <Paginator
                         meta={transactionBulks.meta}
                         filters={bulkFilter.values}
