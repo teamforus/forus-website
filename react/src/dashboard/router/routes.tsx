@@ -44,6 +44,9 @@ import OrganizationsNoPermissions from '../components/pages/organizations-no-per
 import PaymentMethods from '../components/pages/payment-methods/PaymentMethods';
 import MolliePrivacy from '../components/pages/mollie-privacy/MolliePrivacy';
 import CsvValidationsRedirect from '../components/pages/csv_validations/CsvValidationsRedirect';
+import Reimbursements from '../components/pages/reimbursements/Reimbursements';
+import ReimbursementsView from '../components/pages/reimbursements-view/ReimbursementsView';
+import BankConnections from '../components/pages/bank-connections/BankConnections';
 import WIP from '../components/pages_system/WIP';
 import ExtraPayments from '../components/pages/extra-payments/ExtraPayments';
 import ExtraPaymentsView from '../components/pages/extra-payments-view/ExtraPaymentsView';
@@ -52,6 +55,7 @@ import Feature from '../components/pages/feature/Feature';
 import EventLogs from '../components/pages/eventLogs/EventLogs';
 import FinancialDashboard from '../components/pages/financial-dashboard/FinancialDashboard';
 import FinancialDashboardOverview from '../components/pages/financial-dashboard-overview/FinancialDashboardOverview';
+import ReimbursementCategories from '../components/pages/reimbursement-categories/ReimbursementCategories';
 
 const router = new RouterBuilder();
 
@@ -129,9 +133,8 @@ router.state('sponsor-provider-organizations', <WIP title={'Provider organizatio
     fallbackState: 'organizations',
 });
 
-router.state('bank-connections', <WIP title={'Bank connections'} />, {
+router.state('bank-connections', <BankConnections />, {
     path: `/organizations/:organizationId/bank-connections`,
-    fallbackState: 'organizations',
 });
 
 router.state('financial-dashboard', <FinancialDashboard />, {
@@ -152,9 +155,17 @@ router.state('product-vouchers', <WIP title={'Product vouchers'} />, {
     fallbackState: 'organizations',
 });
 
-router.state('reimbursements', <WIP title={'Reimbursements'} />, {
+router.state('reimbursements', <Reimbursements />, {
     path: `/organizations/:organizationId/reimbursements`,
-    fallbackState: 'organizations',
+});
+
+router.state('reimbursements-view', <ReimbursementsView />, {
+    path: `/organizations/:organizationId/reimbursements/:id`,
+    fallbackState: 'reimbursements',
+});
+
+router.state('reimbursement-categories', <ReimbursementCategories />, {
+    path: `/organizations/:organizationId/reimbursement-categories`,
 });
 
 router.state('extra-payments', <ExtraPayments />, {

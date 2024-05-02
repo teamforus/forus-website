@@ -6,6 +6,6 @@ module.exports = {
     ].join(" "),
     buttons: {
         cancel: 'Annuleren',
-        confirm: 'Bevestig',
+        confirm: 'Bevestigen',
     },
 };
