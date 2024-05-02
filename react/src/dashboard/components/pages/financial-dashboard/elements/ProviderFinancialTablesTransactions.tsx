@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import ThSortable from '../../../elements/tables/ThSortable';
 import { strLimit } from '../../../../helpers/string';
 import Transaction from '../../../../props/models/Transaction';
-import { PaginationData } from '../../../../props/ApiResponses';
+import { PaginationData, ResponseError } from '../../../../props/ApiResponses';
 import Paginator from '../../../../modules/paginator/components/Paginator';
 import { useNavigateState } from '../../../../modules/state_router/Router';
 import useEnvData from '../../../../hooks/useEnvData';
@@ -15,7 +15,7 @@ import useTransactionService from '../../../../services/TransactionService';
 import useSetProgress from '../../../../hooks/useSetProgress';
 import usePushDanger from '../../../../hooks/usePushDanger';
 
-export default function ProviderTransactionsTable({
+export default function ProviderFinancialTablesTransactions({
     provider,
     organization,
     externalFilters,
@@ -64,7 +64,7 @@ export default function ProviderTransactionsTable({
         transactionService
             .list(panelType, organization.id, { ...externalFilters, ...filter.activeValues })
             .then((res) => setTransactions(res.data))
-            .catch((res) => pushDanger('Mislukt!', res.data.message))
+            .catch((err: ResponseError) => pushDanger('Mislukt!', err.data.message))
             .finally(() => setProgress(100));
     }, [
         setProgress,

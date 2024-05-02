@@ -1,5 +1,5 @@
 import React from 'react';
-import ProviderFinancialStatistics from '../../../../services/types/ProviderFinancialStatistics';
+import { ProviderFinancialStatistics } from '../types/FinancialStatisticTypes';
 
 export default function FinancialStatistics({ chartData }: { chartData: ProviderFinancialStatistics }) {
     return (
@@ -23,7 +23,7 @@ export default function FinancialStatistics({ chartData }: { chartData: Provider
 
                 {chartData.highest_transaction ? (
                     <div className="financial-totals-content">
-                        <div className="financial-totals-value">{chartData.highest_transaction.amount}</div>
+                        <div className="financial-totals-value">{chartData.highest_transaction.amount_locale}</div>
                         {chartData.highest_transaction.provider ? (
                             <div className="financial-totals-value financial-totals-value-sm">
                                 {chartData.highest_transaction.provider}
@@ -52,7 +52,9 @@ export default function FinancialStatistics({ chartData }: { chartData: Provider
 
                 {chartData.highest_daily_transaction ? (
                     <div className="financial-totals-content">
-                        <div className="financial-totals-value">{chartData.highest_daily_transaction.amount}</div>
+                        <div className="financial-totals-value">
+                            {chartData.highest_daily_transaction.amount_locale}
+                        </div>
                         <div className="financial-totals-value financial-totals-value-sm">
                             {chartData.highest_daily_transaction.date_locale}
                         </div>

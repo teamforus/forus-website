@@ -7,17 +7,16 @@ import {
     endOfQuarter,
     endOfYear,
     format,
+    getQuarter,
     getYear,
     isFuture,
     startOfYear,
     subYears,
 } from 'date-fns';
+import { nl } from 'date-fns/locale';
 import LoadingCard from '../../../elements/loading-card/LoadingCard';
 import { strLimit } from '../../../../helpers/string';
-import {
-    ProviderFinancialFilterOptions,
-    FinancialFilterOptionItem,
-} from '../../../../services/types/ProviderFinancialStatistics';
+import { ProviderFinancialFilterOptions, FinancialFilterOptionItem } from '../types/FinancialStatisticTypes';
 
 interface SelectionItem {
     ids?: Array<number>;
@@ -38,19 +37,16 @@ interface Selections {
     business_types: SelectionItem;
 }
 
-interface SearchQuery {
+export interface FinancialFiltersQuery {
     fund_ids?: Array<number>;
     postcodes?: Array<string>;
     provider_ids?: Array<number>;
     product_category_ids?: Array<number>;
     business_type_ids?: Array<number>;
-}
-
-interface TimeSearchQuery {
-    type?: string;
-    type_value?: string;
     from?: string;
     to?: string;
+    type?: string;
+    type_value?: string;
 }
 
 interface Year {
@@ -74,16 +70,17 @@ interface Quarter extends Year {
 
 export default function FinancialFilters({
     options,
-    onQueryChange,
+    onChange,
 }: {
     options: ProviderFinancialFilterOptions;
-    onQueryChange: (query: SearchQuery) => void;
+    onChange: (query: FinancialFiltersQuery) => void;
 }) {
     const [filterType, setFilterType] = useState('year');
     const [shownDropdownType, setShownDropdownType] = useState(null);
 
     const [startYear] = useState(2015);
     const [endYear] = useState(parseInt(format(new Date(), 'yyyy')));
+
     const [year, setYear] = useState<Year>(null);
     const [month, setMonth] = useState<Month>(null);
     const [quarter, setQuarter] = useState<Quarter>(null);
@@ -97,9 +94,9 @@ export default function FinancialFilters({
     const [quartersList, setQuartersList] = useState<Array<Quarter>>([]);
     const [yearDirection, setYearDirection] = useState('prev');
 
-    const [queryList, setQueryList] = useState<SearchQuery>(null);
-    const [timeQueryList, setTimeQueryList] = useState<TimeSearchQuery>(null);
+    const [queryList, setQueryList] = useState<FinancialFiltersQuery>(null);
     const [optionsList, setOptionsList] = useState<ProviderFinancialFilterOptions>(null);
+
     const [selections, setSelections] = useState<Selections>({
         funds: {
             ids: null,
@@ -184,13 +181,11 @@ export default function FinancialFilters({
     );
 
     const setOptions = useCallback(() => {
-        let { funds, postcodes, providers, product_categories, business_types } = options;
-
-        funds = funds.map((fund) => ({ ...fund, checked: true }));
-        postcodes = postcodes.map((postcode) => ({ ...postcode, checked: true }));
-        providers = providers.map((provider) => ({ ...provider, checked: true }));
-        product_categories = product_categories.map((category) => ({ ...category, checked: true }));
-        business_types = business_types.map((type) => ({ ...type, checked: true }));
+        const funds = options.funds.map((item) => ({ ...item, checked: true }));
+        const postcodes = options.postcodes.map((item) => ({ ...item, checked: true }));
+        const providers = options.providers.map((item) => ({ ...item, checked: true }));
+        const business_types = options.business_types.map((item) => ({ ...item, checked: true }));
+        const product_categories = options.product_categories.map((item) => ({ ...item, checked: true }));
 
         postcodes.sort();
 
@@ -270,7 +265,7 @@ export default function FinancialFilters({
                                 active: !isFuture(monthStartDate),
                                 year: parseInt(format(monthStartDate, 'yyyy')),
                                 title: format(monthStartDate, 'yyyy'),
-                                subtitle: format(monthStartDate, 'MMMM'),
+                                subtitle: format(monthStartDate, 'MMMM', { locale: nl }),
                                 value: format(monthStartDate, 'yyyy-MM-dd'),
                                 from: format(monthStartDate, 'yyyy-MM-dd'),
                                 to: format(monthEndDate, 'yyyy-MM-dd'),
@@ -298,7 +293,7 @@ export default function FinancialFilters({
                                 active: !isFuture(quarterStartDate),
                                 year: parseInt(format(quarterStartDate, 'yyyy')),
                                 title: format(quarterStartDate, 'yyyy'),
-                                subtitle: format(quarterStartDate, 'MMMM'),
+                                subtitle: `Q${getQuarter(quarterStartDate)}`,
                                 value: format(quarterStartDate, 'yyyy-MM-dd'),
                                 from: format(quarterStartDate, 'yyyy-MM-dd'),
                                 to: format(quarterEndDate, 'yyyy-MM-dd'),
@@ -350,6 +345,7 @@ export default function FinancialFilters({
 
     useEffect(() => {
         const years = makeYears();
+
         setYears(years);
         setMonths(makeMonths(years));
         setQuarters(makeQuarters(years));
@@ -362,56 +358,57 @@ export default function FinancialFilters({
     }, [updateLists, year]);
 
     useEffect(() => {
-        setQueryList({
+        setQueryList((query) => ({
+            ...query,
             fund_ids: selections.funds.ids,
             postcodes: selections.postcodes.items.map((item) => item.name),
             provider_ids: selections.providers.ids,
             product_category_ids: selections.product_categories.ids,
             business_type_ids: selections.business_types.ids,
-        });
+        }));
     }, [selections]);
 
     useEffect(() => {
         if (year && filterType === 'year') {
-            setTimeQueryList({
+            setQueryList((query) => ({
+                ...query,
                 type: filterType,
                 type_value: year.value,
                 from: year.from,
                 to: year.to,
-            });
+            }));
         }
     }, [filterType, year]);
 
     useEffect(() => {
         if (quarter && filterType === 'quarter') {
-            setTimeQueryList({
+            setQueryList((query) => ({
+                ...query,
                 type: filterType,
                 type_value: quarter.value,
                 from: quarter.from,
                 to: quarter.to,
-            });
+            }));
         }
     }, [filterType, quarter]);
 
     useEffect(() => {
         if (month && filterType === 'month') {
-            setTimeQueryList({
+            setQueryList((query) => ({
+                ...query,
                 type: filterType,
                 type_value: month.value,
                 from: month.from,
                 to: month.to,
-            });
+            }));
         }
     }, [filterType, month]);
 
     useEffect(() => {
-        if (queryList && timeQueryList) {
-            onQueryChange({
-                ...queryList,
-                ...timeQueryList,
-            });
+        if (queryList) {
+            onChange(queryList);
         }
-    }, [onQueryChange, queryList, timeQueryList]);
+    }, [onChange, queryList]);
 
     if (!optionsList) {
         return <LoadingCard />;
@@ -523,6 +520,7 @@ export default function FinancialFilters({
                         <div className="timeframe-item timeframe-item-disabled">
                             <em className="mdi mdi-chevron-left" />
                         </div>
+
                         {yearsList.map((item, index) => (
                             <div
                                 key={index}
@@ -547,6 +545,7 @@ export default function FinancialFilters({
                             onClick={() => prevPage()}>
                             <em className="mdi mdi-chevron-left" />
                         </div>
+
                         {quartersList.map((item, index) => (
                             <div
                                 key={index}
@@ -558,6 +557,7 @@ export default function FinancialFilters({
                                 <div className="timeframe-item-subtitle">{item.subtitle}</div>
                             </div>
                         ))}
+
                         <div
                             className={`timeframe-item ${year.year >= endYear ? 'timeframe-item-disabled' : ''}`}
                             onClick={() => nextPage()}>
@@ -575,6 +575,7 @@ export default function FinancialFilters({
                             onClick={() => prevPage()}>
                             <em className="mdi mdi-chevron-left" />
                         </div>
+
                         {monthsList.map((item, index) => (
                             <div
                                 key={index}
@@ -586,6 +587,7 @@ export default function FinancialFilters({
                                 <div className="timeframe-item-subtitle">{item.subtitle}</div>
                             </div>
                         ))}
+
                         <div
                             className={`timeframe-item ${year.year >= endYear ? 'timeframe-item-disabled' : ''}`}
                             onClick={() => nextPage()}>

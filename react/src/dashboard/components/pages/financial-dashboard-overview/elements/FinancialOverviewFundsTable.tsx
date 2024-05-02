@@ -3,9 +3,9 @@ import { useTranslation } from 'react-i18next';
 import ThSortable from '../../../elements/tables/ThSortable';
 import Tooltip from '../../../elements/tooltip/Tooltip';
 import Fund from '../../../../props/models/Fund';
-import FinancialOverview from '../../../../services/types/FinancialOverview';
 import useExportFunds from '../hooks/useExportFunds';
 import Organization from '../../../../props/models/Organization';
+import { FinancialOverview } from '../../financial-dashboard/types/FinancialStatisticTypes';
 
 export default function FinancialOverviewFundsTable({
     funds,

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import ClickOutside from '../../../elements/click-outside/ClickOutside';
 import { useTranslation } from 'react-i18next';
-import { FinancialFilterOptionItem } from '../../../../services/types/ProviderFinancialStatistics';
+import { FinancialFilterOptionItem } from '../types/FinancialStatisticTypes';
 
 export default function FinancialFilter({
     type,

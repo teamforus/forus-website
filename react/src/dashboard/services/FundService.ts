@@ -3,8 +3,7 @@ import { useState } from 'react';
 import ApiRequestService from './ApiRequestService';
 import Fund from '../props/models/Fund';
 import Product from '../props/models/Product';
-import ProviderFinancialStatistics from './types/ProviderFinancialStatistics';
-import FinancialOverview from './types/FinancialOverview';
+import { ProviderFinancialStatistics, FinancialOverview } from '../components/pages/financial-dashboard/types/FinancialStatisticTypes';
 
 export class FundService<T = Fund> {
     /**

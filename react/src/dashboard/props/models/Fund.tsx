@@ -2,6 +2,22 @@ import Organization from './Organization';
 import Media from './Media';
 import Implementation from './Implementation';
 
+interface FundVoucherStatistics {
+    active_vouchers_amount?: string;
+    active_vouchers_amount_locale?: string;
+    vouchers_amount?: string;
+    vouchers_amount_locale?: string;
+    inactive_vouchers_amount?: string;
+    inactive_vouchers_amount_locale?: string;
+    deactivated_vouchers_amount?: string;
+    deactivated_vouchers_amount_locale?: string;
+    vouchers_count?: number;
+    active_vouchers_count?: number;
+    inactive_vouchers_count?: number;
+    deactivated_vouchers_count?: number;
+    children_count?: number;
+}
+
 export default interface Fund {
     id: number;
     name?: string;
@@ -24,7 +40,7 @@ export default interface Fund {
     archived?: boolean;
     expired?: boolean;
     implementation?: Implementation;
-    budget?: VoucherData & {
+    budget?: FundVoucherStatistics & {
         used_active_vouchers?: string;
         used_active_vouchers_locale?: string;
         total?: string;
@@ -36,27 +52,11 @@ export default interface Fund {
         transaction_costs?: string;
         transaction_costs_locale?: string;
     };
-    product_vouchers: VoucherData;
+    product_vouchers: FundVoucherStatistics;
     formulas: Array<{
         type?: string;
         amount?: string;
         amount_locale?: string;
         record_type_key?: string;
     }>;
-}
-
-export interface VoucherData {
-    active_vouchers_amount?: string;
-    active_vouchers_amount_locale?: string;
-    vouchers_amount?: string;
-    vouchers_amount_locale?: string;
-    inactive_vouchers_amount?: string;
-    inactive_vouchers_amount_locale?: string;
-    deactivated_vouchers_amount?: string;
-    deactivated_vouchers_amount_locale?: string;
-    vouchers_count?: number;
-    active_vouchers_count?: number;
-    inactive_vouchers_count?: number;
-    deactivated_vouchers_count?: number;
-    children_count?: number;
 }

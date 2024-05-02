@@ -4,10 +4,10 @@ import ThSortable from '../../../elements/tables/ThSortable';
 import { currencyFormat } from '../../../../helpers/string';
 import Tooltip from '../../../elements/tooltip/Tooltip';
 import FinancialOverviewFundsBudgetTableItem from './FinancialOverviewFundsBudgetTableItem';
-import FinancialOverview from '../../../../services/types/FinancialOverview';
 import useExportFunds from '../hooks/useExportFunds';
 import Fund from '../../../../props/models/Fund';
 import Organization from '../../../../props/models/Organization';
+import { FinancialOverview } from '../../financial-dashboard/types/FinancialStatisticTypes';
 
 export default function FinancialOverviewFundsBudgetTable({
     funds,

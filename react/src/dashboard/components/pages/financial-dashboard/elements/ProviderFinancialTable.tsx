@@ -1,6 +1,6 @@
 import React, { Fragment, useCallback, useEffect, useState } from 'react';
 import ThSortable from '../../../elements/tables/ThSortable';
-import ProviderTransactionsTable from './ProviderTransactionsTable';
+import ProviderFinancialTablesTransactions from './ProviderFinancialTablesTransactions';
 import Paginator from '../../../../modules/paginator/components/Paginator';
 import useFilter from '../../../../hooks/useFilter';
 import usePaginatorService from '../../../../modules/paginator/services/usePaginatorService';
@@ -8,17 +8,16 @@ import useActiveOrganization from '../../../../hooks/useActiveOrganization';
 import { useOrganizationService } from '../../../../services/OrganizationService';
 import LoadingCard from '../../../elements/loading-card/LoadingCard';
 import { uniqueId } from 'lodash';
-import { PaginationData } from '../../../../props/ApiResponses';
-import ProviderFinancial from '../../../../services/types/ProviderFinancial';
+import { PaginationData, ResponseError } from '../../../../props/ApiResponses';
 import { format } from 'date-fns';
 import { useFileService } from '../../../../services/FileService';
 import usePushDanger from '../../../../hooks/usePushDanger';
+import { FinancialFiltersQuery } from './FinancialFilters';
+import { ProviderFinancial } from '../types/FinancialStatisticTypes';
 
-type ProviderFinancialLocal = ProviderFinancial & {
-    id: string;
-};
+type ProviderFinancialLocal = ProviderFinancial & { id: string };
 
-export default function ProviderFinancialTable({ externalFilters }: { externalFilters?: object }) {
+export default function ProviderFinancialTable({ externalFilters }: { externalFilters?: FinancialFiltersQuery }) {
     const pushDanger = usePushDanger();
     const activeOrganization = useActiveOrganization();
 
@@ -45,7 +44,7 @@ export default function ProviderFinancialTable({ externalFilters }: { externalFi
 
                 fileService.downloadFile(fileName, res.data, fileType);
             })
-            .catch((res) => pushDanger('Mislukt!', res.data.message));
+            .catch((err: ResponseError) => pushDanger('Mislukt!', err.data.message));
     }, [
         organizationService,
         activeOrganization.id,
@@ -67,7 +66,7 @@ export default function ProviderFinancialTable({ externalFilters }: { externalFi
                     data: res.data.data.map((provider) => ({ id: uniqueId(), ...provider })),
                 });
             })
-            .catch((res) => pushDanger('Mislukt!', res.data.message));
+            .catch((err: ResponseError) => pushDanger('Mislukt!', err.data.message));
     }, [organizationService, activeOrganization?.id, filter?.activeValues, externalFilters, pushDanger]);
 
     useEffect(() => fetchProviderFinances(), [fetchProviderFinances]);
@@ -154,7 +153,7 @@ export default function ProviderFinancialTable({ externalFilters }: { externalFi
                                                 {showTransaction === provider.id && (
                                                     <tr>
                                                         <td className="td-paddless" colSpan={5}>
-                                                            <ProviderTransactionsTable
+                                                            <ProviderFinancialTablesTransactions
                                                                 provider={provider.provider}
                                                                 organization={activeOrganization}
                                                                 externalFilters={externalFilters}

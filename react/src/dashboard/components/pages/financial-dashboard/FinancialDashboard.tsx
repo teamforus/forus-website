@@ -1,32 +1,32 @@
-import React, { Fragment, useCallback, useEffect, useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import useActiveOrganization from '../../../hooks/useActiveOrganization';
 import { useTranslation } from 'react-i18next';
 import ProviderFinancialTable from './elements/ProviderFinancialTable';
 import FinancialStatistics from './elements/FinancialStatistics';
 import LoadingCard from '../../elements/loading-card/LoadingCard';
 import FinancialChart from './elements/FinancialChart';
-import FinancialFilters from './elements/FinancialFilters';
+import FinancialFilters, { FinancialFiltersQuery } from './elements/FinancialFilters';
 import { useFundService } from '../../../services/FundService';
 import useSetProgress from '../../../hooks/useSetProgress';
-import ProviderFinancialStatistics, {
+import {
+    ProviderFinancialStatistics,
     ProviderFinancialFilterOptions,
-} from '../../../services/types/ProviderFinancialStatistics';
+} from './types/FinancialStatisticTypes';
 import usePushDanger from '../../../hooks/usePushDanger';
+import { ResponseError } from '../../../props/ApiResponses';
 
 export default function FinancialDashboard() {
     const { t } = useTranslation();
+    const activeOrganization = useActiveOrganization();
 
     const pushDanger = usePushDanger();
     const setProgress = useSetProgress();
-    const activeOrganization = useActiveOrganization();
 
     const fundService = useFundService();
 
     const [options, setOptions] = useState<ProviderFinancialFilterOptions>(null);
     const [chartData, setChartData] = useState<ProviderFinancialStatistics>(null);
-    const [externalFilters, setExternalFilters] = useState(null);
-
-    const onQueryChange = useCallback((query) => setExternalFilters(query), []);
+    const [externalFilters, setExternalFilters] = useState<FinancialFiltersQuery>(null);
 
     useEffect(() => {
         // wait for external filters to prevent not filtered requests
@@ -36,7 +36,7 @@ export default function FinancialDashboard() {
             fundService
                 .readFinances(activeOrganization.id, externalFilters)
                 .then((res) => setChartData(res.data))
-                .catch((res) => pushDanger('Mislukt!', res.data.message))
+                .catch((err: ResponseError) => pushDanger('Mislukt!', err.data.message))
                 .finally(() => setProgress(100));
         }
     }, [activeOrganization.id, fundService, externalFilters, setProgress, pushDanger]);
@@ -45,7 +45,7 @@ export default function FinancialDashboard() {
         fundService
             .readFinances(activeOrganization.id, { filters: 1 })
             .then((res) => setOptions(res.data.filters))
-            .catch((res) => pushDanger('Mislukt!', res.data.message));
+            .catch((err: ResponseError) => pushDanger('Mislukt!', err.data.message));
     }, [activeOrganization.id, fundService, pushDanger]);
 
     if (!options) {
@@ -56,7 +56,7 @@ export default function FinancialDashboard() {
         <Fragment>
             <div className="card-heading">{t('financial_dashboard.header.title')}</div>
             <div className="block block-financial-dashboard">
-                <FinancialFilters options={options} onQueryChange={onQueryChange} />
+                <FinancialFilters options={options} onChange={setExternalFilters} />
 
                 {chartData && (
                     <Fragment>

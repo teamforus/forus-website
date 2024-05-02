@@ -8,7 +8,7 @@ import FinancialOverviewFundsBudgetTable from './elements/FinancialOverviewFunds
 import { ResponseError } from '../../../props/ApiResponses';
 import usePushDanger from '../../../hooks/usePushDanger';
 import Fund from '../../../props/models/Fund';
-import FinancialOverview from '../../../services/types/FinancialOverview';
+import { FinancialOverview } from '../financial-dashboard/types/FinancialStatisticTypes';
 
 export default function FinancialDashboardOverview() {
     const { t } = useTranslation();

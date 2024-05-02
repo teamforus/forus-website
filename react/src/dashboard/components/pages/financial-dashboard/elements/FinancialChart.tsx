@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { Bar } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
 import { currencyFormat } from '../../../../helpers/string';
-import ProviderFinancialStatistics from '../../../../services/types/ProviderFinancialStatistics';
+import { ProviderFinancialStatistics } from '../types/FinancialStatisticTypes';
 import LoadingCard from '../../../elements/loading-card/LoadingCard';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
@@ -10,8 +10,8 @@ ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 export default function FinancialChart({ chartData }: { chartData: ProviderFinancialStatistics }) {
     const [timeFormat] = useState('MM/DD/YYYY');
     const [data, setData] = useState(null);
-    const [options, setOptions] = useState(null);
     const [field, setField] = useState('amount');
+    const [options, setOptions] = useState(null);
 
     const drawChart = useCallback(() => {
         const labels = [];
@@ -19,24 +19,12 @@ export default function FinancialChart({ chartData }: { chartData: ProviderFinan
 
         chartData.dates.forEach((value) => {
             labels.push(value.key);
-            values.push({
-                x: value.key,
-                y: value[field || 'value'],
-            });
+            values.push({ x: value.key, y: value[field || 'value'] });
         });
-
-        const labelFormatter =
-            field === 'amount' ? (val?: string) => currencyFormat(parseFloat(val)) : (val?: string) => val;
 
         setData({
             labels: labels,
-            datasets: [
-                {
-                    data: values,
-                    borderColor: '#2987fd',
-                    backgroundColor: '#2987fd',
-                },
-            ],
+            datasets: [{ data: values, borderColor: '#2987fd', backgroundColor: '#2987fd' }],
         });
 
         setOptions({
@@ -55,7 +43,10 @@ export default function FinancialChart({ chartData }: { chartData: ProviderFinan
                 y: {
                     ticks: {
                         beginAtZero: true,
-                        callback: labelFormatter,
+                        callback:
+                            field === 'amount'
+                                ? (val?: string) => currencyFormat(parseFloat(val))
+                                : (val?: string) => val,
                         stepSize: field === 'amount' ? null : 1,
                     },
                 },

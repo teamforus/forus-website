@@ -6,7 +6,7 @@ import { hasPermission } from '../helpers/utils';
 import ExternalFund from '../props/models/ExternalFund';
 import Product from '../props/models/Product';
 import OrganizationFeatureStatuses from './types/OrganizationFeatureStatuses';
-import ProviderFinancial from './types/ProviderFinancial';
+import { ProviderFinancial } from '../components/pages/financial-dashboard/types/FinancialStatisticTypes';
 
 export class OrganizationService<T = Organization> {
     /**
