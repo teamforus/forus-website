@@ -14,6 +14,7 @@ const android_link = 'https://media.forus.io/static/me-0.0.5-staging-7-release.a
 const help_link = 'https://helpcentrum.forus.io';
 
 const use_hash_router = true;
+const disable_indexing = true;
 
 fronts['webshop.general'] = {
     type: 'webshop',
@@ -23,8 +24,9 @@ fronts['webshop.general'] = {
     useHashRouter: use_hash_router,
     config: {
         api_url: api_url,
-        google_maps_api_key: google_maps_api_key,
         sessions: true,
+        disable_indexing: disable_indexing,
+        google_maps_api_key: google_maps_api_key,
         provider_sign_up_filters: {
             foo: 'bar',
         },
@@ -57,6 +59,7 @@ fronts['dashboard.sponsor'] = {
         api_url: api_url,
         chat_id: chat_id,
         support_id: support_id,
+        disable_indexing: disable_indexing,
         google_maps_api_key: google_maps_api_key,
 
         help_link: help_link,
@@ -80,6 +83,7 @@ fronts['dashboard.provider'] = {
         api_url: api_url,
         chat_id: chat_id,
         support_id: support_id,
+        disable_indexing: disable_indexing,
         google_maps_api_key: google_maps_api_key,
 
         help_link: help_link,
@@ -103,6 +107,7 @@ fronts['dashboard.validator'] = {
         api_url: api_url,
         chat_id: chat_id,
         support_id: support_id,
+        disable_indexing: disable_indexing,
         google_maps_api_key: google_maps_api_key,
 
         help_link: help_link,

@@ -13,6 +13,7 @@ export default interface EnvDataWebshopProp {
         sessions?: boolean;
         google_maps_api_key?: string;
         default_title?: string;
+        allow_indexing?: boolean;
 
         me_app_link?: string;
         ios_ipad_link?: string;

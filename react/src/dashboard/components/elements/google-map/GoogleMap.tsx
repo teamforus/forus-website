@@ -4,19 +4,19 @@ import { AppConfigProp } from '../../../services/ConfigService';
 
 export function GoogleMap({
     appConfigs,
-    mapOptions = {},
     mapPointers = [],
     mapGestureHandling,
     mapGestureHandlingMobile,
     markerTemplate,
     openFirstPointer = false,
+    centerType = null,
+    zoomLevel = 12,
+    fullscreenPosition = null,
 }: {
     appConfigs: AppConfigProp;
-    mapOptions?: {
-        centerType?: string;
-        zoom?: number;
-        fullscreenControlOptions?: { position?: google.maps.ControlPosition | null };
-    };
+    centerType?: 'avg';
+    zoomLevel?: number;
+    fullscreenPosition?: google.maps.ControlPosition | null;
     mapPointers: Array<{ lat: string; lon: string }>;
     mapGestureHandling?: 'cooperative' | 'greedy' | 'none' | 'auto';
     mapGestureHandlingMobile?: 'cooperative' | 'greedy' | 'none' | 'auto';
@@ -25,30 +25,31 @@ export function GoogleMap({
 }) {
     const [selectedMarker, setSelectedMarker] = React.useState(null);
     const [markers, setMarkers] = useState([]);
-    const [zoomLevel] = useState(mapOptions?.zoom || 12);
 
     const avg = useCallback((values: Array<number>) => {
         return values.reduce((avg, value) => value + avg, 0) / values.length;
     }, []);
 
     const center = useMemo(() => {
-        if (mapOptions.centerType == 'avg' && markers.length > 0) {
+        if (centerType == 'avg' && markers.length > 0) {
             return {
                 lat: avg(markers.map((pointer) => parseFloat(pointer.lat))),
                 lng: avg(markers.map((pointer) => parseFloat(pointer.lon))),
             };
         }
 
-        return {
+        const center = {
             lat: markers.length > 0 ? parseFloat(markers[0].lat) : appConfigs.map.lat,
             lng: markers.length > 0 ? parseFloat(markers[0].lon) : appConfigs.map.lon,
         };
-    }, [appConfigs?.map?.lat, appConfigs?.map?.lon, avg, mapOptions.centerType, markers]);
 
-    const mapStyles = [
+        return center.lat && center.lng ? center : null;
+    }, [appConfigs?.map?.lat, appConfigs?.map?.lon, avg, centerType, markers]);
+
+    const [mapStyles] = useState([
         { featureType: 'poi.business', stylers: [{ visibility: 'off' }] },
         { featureType: 'transit', elementType: 'labels.icon', stylers: [{ visibility: 'off' }] },
-    ];
+    ]);
 
     const [gestureHandling] = useState(
         window.innerWidth >= 768 ? mapGestureHandling : mapGestureHandlingMobile || mapGestureHandling,
@@ -67,7 +68,7 @@ export function GoogleMap({
     }, [appConfigs?.map?.lat, appConfigs?.map?.lon, avg, mapPointers]);
 
     useEffect(() => {
-        if (openFirstPointer) {
+        if (openFirstPointer && markers.length === 1) {
             setSelectedMarker(markers[0]);
         }
     }, [markers, openFirstPointer]);
@@ -80,17 +81,16 @@ export function GoogleMap({
                 zoom={zoomLevel}
                 options={{
                     styles: mapStyles,
-                    center: center,
                     scrollwheel: true,
                     disableDefaultUI: false,
-                    zoom: zoomLevel,
                     gestureHandling: gestureHandling || undefined,
                     scaleControl: true,
                     mapTypeControl: true,
                     fullscreenControl: true,
                     mapTypeControlOptions: { mapTypeIds: ['roadmap', 'map_style'] },
-                    fullscreenControlOptions: { position: window.google.maps.ControlPosition.LEFT_BOTTOM },
-                    ...mapOptions,
+                    fullscreenControlOptions: {
+                        position: fullscreenPosition || window.google.maps.ControlPosition.LEFT_BOTTOM,
+                    },
                 }}>
                 {markers.map((marker, index) => (
                     <Marker

@@ -110,7 +110,7 @@ router.state('fund-requests', <FundRequests />, {
 
 router.state('fund-request-show', <FundRequestsShow />, {
     path: `/fondsen-aanvraag/:id`,
-    altPath: `/fund-requests/:id`,
+    altPath: [`/fund-requests/:id`, `/fund-request/:id`],
     protected: true,
 });
 

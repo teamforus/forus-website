@@ -81,7 +81,7 @@ export default function Search() {
         {
             q: '',
             page: 1,
-            fund_id: 1,
+            fund_id: null,
             organization_id: null,
             product_category_id: null,
             funds: true,

@@ -38,12 +38,6 @@ export default function ProvidersShow() {
 
     const { searchParams } = useStateParams();
 
-    const [mapOptions] = useState({
-        zoom: 11,
-        centerType: 'avg',
-        fullscreenControlOptions: { position: window.google.maps.ControlPosition.TOP_RIGHT },
-    });
-
     const fetchProvider = useCallback(() => {
         setProgress(0);
 
@@ -119,7 +113,9 @@ export default function ProvidersShow() {
                                     mapPointers={provider.offices}
                                     mapGestureHandling={'greedy'}
                                     mapGestureHandlingMobile={'none'}
-                                    mapOptions={mapOptions}
+                                    zoomLevel={11}
+                                    centerType={'avg'}
+                                    fullscreenPosition={window.google.maps.ControlPosition.TOP_RIGHT}
                                     openFirstPointer={true}
                                     markerTemplate={(office: Office) => <MapMarkerProviderOfficeView office={office} />}
                                 />

@@ -380,7 +380,7 @@ export default function ModalProductReserve({
                             </div>
                         </div>
                     </div>
-                    <div className="modal-footer">
+                    <div className="modal-footer flex-gap-lg">
                         <div className="flex flex-grow">
                             <button className="button button-light button-sm" type="button" onClick={modal.close}>
                                 Annuleren
@@ -548,17 +548,11 @@ export default function ModalProductReserve({
                             )}
                         </div>
                     </div>
-                    <div className="modal-footer">
+                    <div className="modal-footer flex-gap-lg">
                         <div className={`flex flex-grow ${vouchers.length > 1 ? 'flex-center' : ''}`}>
-                            {!hasEmail ? (
-                                <button className="button button-light button-sm" type="button" onClick={back}>
-                                    Terug
-                                </button>
-                            ) : (
-                                <button className="button button-light button-sm" onClick={modal.close}>
-                                    {translate('modal.buttons.cancel')}
-                                </button>
-                            )}
+                            <button className="button button-light button-sm" onClick={modal.close}>
+                                {translate('modal.buttons.cancel')}
+                            </button>
                         </div>
 
                         {vouchers?.length === 1 && (
@@ -774,7 +768,7 @@ export default function ModalProductReserve({
                                         {field.custom ? (
                                             <FormError error={form.errors[`custom_fields.${field.key}`]} />
                                         ) : (
-                                            <FormError error={form.errors[`errors.${field.key}`]} />
+                                            <FormError error={form.errors[`${field.key}`]} />
                                         )}
                                     </div>
                                 ))}

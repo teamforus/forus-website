@@ -23,6 +23,7 @@ export default function ProfileMenu({ className }: { className?: string }) {
                 {translate('profile_menu.buttons.vouchers')}
                 <em className="mdi mdi-arrow-right" aria-hidden="true" />
             </StateNavLink>
+
             <StateNavLink
                 name="bookmarked-products"
                 className="profile-menu-item"
@@ -30,6 +31,7 @@ export default function ProfileMenu({ className }: { className?: string }) {
                 {translate('profile_menu.buttons.bookmarks')}
                 <em className="mdi mdi-arrow-right" aria-hidden="true" />
             </StateNavLink>
+
             <StateNavLink
                 className="profile-menu-item"
                 name="reservations"
@@ -37,6 +39,7 @@ export default function ProfileMenu({ className }: { className?: string }) {
                 {translate('profile_menu.buttons.reservations')}
                 <em className="mdi mdi-arrow-right" aria-hidden="true" />
             </StateNavLink>
+
             {appConfigs.has_reimbursements && (
                 <StateNavLink
                     className="profile-menu-item"
@@ -47,6 +50,7 @@ export default function ProfileMenu({ className }: { className?: string }) {
                     <em className="mdi mdi-arrow-right" aria-hidden="true" />
                 </StateNavLink>
             )}
+
             <StateNavLink
                 className="profile-menu-item"
                 name="fund-requests"
@@ -55,6 +59,7 @@ export default function ProfileMenu({ className }: { className?: string }) {
                 {translate('profile_menu.buttons.fund_requests')}
                 <em className="mdi mdi-arrow-right" aria-hidden="true" />
             </StateNavLink>
+
             {envData.config.flags.fundsMenu && (
                 <StateNavLink
                     className="profile-menu-item show-sm"
@@ -69,6 +74,7 @@ export default function ProfileMenu({ className }: { className?: string }) {
                     <em className="mdi mdi-arrow-right" aria-hidden="true" />
                 </StateNavLink>
             )}
+
             {appConfigs.records.list && (
                 <StateNavLink
                     className="profile-menu-item"
@@ -78,6 +84,7 @@ export default function ProfileMenu({ className }: { className?: string }) {
                     <em className="mdi mdi-arrow-right" aria-hidden="true" />
                 </StateNavLink>
             )}
+
             <StateNavLink
                 className="profile-menu-item"
                 name="notifications"
@@ -85,6 +92,7 @@ export default function ProfileMenu({ className }: { className?: string }) {
                 {translate('profile_menu.buttons.notifications')}
                 <em className="mdi mdi-arrow-right" aria-hidden="true" />
             </StateNavLink>
+
             <StateNavLink
                 className="profile-menu-item"
                 name="preferences-notifications"
@@ -92,6 +100,7 @@ export default function ProfileMenu({ className }: { className?: string }) {
                 {translate('profile_menu.buttons.notification_preferences')}
                 <em className="mdi mdi-arrow-right" aria-hidden="true" />
             </StateNavLink>
+
             {envData.config.sessions && (
                 <StateNavLink
                     className="profile-menu-item"
@@ -101,6 +110,7 @@ export default function ProfileMenu({ className }: { className?: string }) {
                     <em className="mdi mdi-arrow-right" aria-hidden="true" />
                 </StateNavLink>
             )}
+
             <StateNavLink
                 className="profile-menu-item"
                 name="identity-emails"
@@ -108,6 +118,7 @@ export default function ProfileMenu({ className }: { className?: string }) {
                 {translate('profile_menu.buttons.email_settings')}
                 <em className="mdi mdi-arrow-right" aria-hidden="true" />
             </StateNavLink>
+
             {(envData.config.flags.show2FAMenu || auth2FAState?.required) && (
                 <StateNavLink
                     className="profile-menu-item"

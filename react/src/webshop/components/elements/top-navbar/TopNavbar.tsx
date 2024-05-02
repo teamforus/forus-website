@@ -333,13 +333,16 @@ export const TopNavbar = ({ hideOnScroll = false, className = '' }: { hideOnScro
                                 <em className="mdi mdi-at" />
                                 {translate('email_preferences.title_preferences')}
                             </StateNavLink>
-                            {(envData.config.flags.show2FAMenu || auth2faState.required) && (
+
+                            {(envData.config.flags.show2FAMenu || auth2faState?.required) && (
                                 <StateNavLink name="security-2fa" className="auth-user-menu-item" tabIndex={0}>
                                     <em className="mdi mdi-security" />
                                     Beveiliging
                                 </StateNavLink>
                             )}
+
                             <div className="auth-user-menu-separator show-sm" />
+
                             {authIdentity && (
                                 <StateNavLink name="funds" className="auth-user-menu-item show-sm" tabIndex={0}>
                                     <em className="mdi mdi-star-outline" />

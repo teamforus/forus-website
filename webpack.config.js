@@ -41,6 +41,7 @@ module.exports = (env, argv) => {
                 script: webPath(`/${scriptPath}`),
                 base: webPath(`/`),
                 favicon: webPath(`/assets/img/favicon.ico`),
+                disable_indexing: item.config?.disable_indexing,
                 libs: {
                     summernote: {
                         js: webPath(`/assets/dist/js/summernote.${timestamp}.min.js`),

@@ -1087,12 +1087,8 @@ export default function VouchersShow() {
                                             )}
                                             mapGestureHandling={'greedy'}
                                             mapGestureHandlingMobile={'none'}
-                                            mapOptions={{
-                                                centerType: 'avg',
-                                                fullscreenControlOptions: {
-                                                    position: window.google.maps.ControlPosition.TOP_RIGHT,
-                                                },
-                                            }}
+                                            centerType={'avg'}
+                                            fullscreenPosition={window.google.maps.ControlPosition.TOP_RIGHT}
                                         />
                                     </div>
 

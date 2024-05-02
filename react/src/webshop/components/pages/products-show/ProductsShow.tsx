@@ -251,11 +251,7 @@ export default function ProductsShow() {
                                         mapPointers={product.offices}
                                         mapGestureHandling={'greedy'}
                                         mapGestureHandlingMobile={'none'}
-                                        mapOptions={{
-                                            fullscreenControlOptions: {
-                                                position: window.google.maps.ControlPosition.TOP_RIGHT,
-                                            },
-                                        }}
+                                        fullscreenPosition={window.google.maps.ControlPosition.TOP_RIGHT}
                                         markerTemplate={(office: Office) => <MapMarkerProviderOffice office={office} />}
                                     />
                                 </div>

@@ -125,11 +125,7 @@ export default function ProvidersOffice() {
                                     mapGestureHandling={'greedy'}
                                     mapGestureHandlingMobile={'none'}
                                     openFirstPointer={true}
-                                    mapOptions={{
-                                        fullscreenControlOptions: {
-                                            position: window.google.maps.ControlPosition.TOP_RIGHT,
-                                        },
-                                    }}
+                                    fullscreenPosition={window.google.maps.ControlPosition.TOP_RIGHT}
                                     appConfigs={appConfigs}
                                 />
                             </div>

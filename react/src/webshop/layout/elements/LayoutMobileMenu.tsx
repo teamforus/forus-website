@@ -265,7 +265,7 @@ export default function LayoutMobileMenu() {
                         </StateNavLink>
                     )}
 
-                    {authIdentity && (envData.config.flags.show2FAMenu || authIdentity2FAState.required) && (
+                    {authIdentity && (envData.config.flags.show2FAMenu || authIdentity2FAState?.required) && (
                         <StateNavLink
                             className="mobile-menu-item"
                             name="security-2fa"

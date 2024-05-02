@@ -491,7 +491,9 @@ export default function FundsPreCheck() {
                                                 </div>
                                             </div>
                                             {preChecks[activeStepIndex].record_types?.map((preCheckRecord, index) => (
-                                                <div key={index} className="pre-check-step-section-question">
+                                                <div
+                                                    key={`${activeStepIndex}_${index}`}
+                                                    className="pre-check-step-section-question">
                                                     <div className="pre-check-step-section-question-title">
                                                         {preCheckRecord.title}
                                                     </div>
