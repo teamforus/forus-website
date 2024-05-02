@@ -237,7 +237,7 @@ export default function TransactionSettings() {
                             </StateNavLink>
 
                             <button type="submit" className="button button-primary">
-                                Bevestig
+                                Bevestigen
                             </button>
                         </div>
                     </div>

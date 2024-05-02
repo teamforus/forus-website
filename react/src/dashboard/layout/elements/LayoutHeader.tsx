@@ -177,17 +177,23 @@ export const LayoutHeader = () => {
                                 <ClickOutside
                                     onClickOutside={() => setShowIdentityMenu(false)}
                                     className="auth-user-menu">
-                                    <IdentityMenuItem
-                                        name={'E-mail instellingen'}
-                                        url={getStateRouteUrl('preferences-emails')}
-                                        dusk={'btnUserEmails'}
-                                        icon={<IconEmail />}
-                                    />
-                                    <IdentityMenuItem
-                                        name={'Notificatievoorkeuren'}
-                                        url={getStateRouteUrl('preferences-notifications')}
-                                        icon={<IconNotifications />}
-                                    />
+                                    {activeOrganization && (
+                                        <IdentityMenuItem
+                                            name={'E-mail instellingen'}
+                                            url={getStateRouteUrl('preferences-emails')}
+                                            dusk={'btnUserEmails'}
+                                            icon={<IconEmail />}
+                                        />
+                                    )}
+
+                                    {activeOrganization && (
+                                        <IdentityMenuItem
+                                            name={'Notificatievoorkeuren'}
+                                            url={getStateRouteUrl('preferences-notifications')}
+                                            icon={<IconNotifications />}
+                                        />
+                                    )}
+
                                     {(activeOrganization?.allow_2fa_restrictions || authIdentity2FAState?.required) && (
                                         <IdentityMenuItem
                                             name="Beveiliging"
@@ -195,19 +201,24 @@ export const LayoutHeader = () => {
                                             icon={<IconSecurity />}
                                         />
                                     )}
-                                    <IdentityMenuItem
-                                        name="Sessies"
-                                        url={getStateRouteUrl('security-sessions')}
-                                        icon={<IconSessions />}
-                                    />
+
+                                    {activeOrganization && (
+                                        <IdentityMenuItem
+                                            name="Sessies"
+                                            url={getStateRouteUrl('security-sessions')}
+                                            icon={<IconSessions />}
+                                        />
+                                    )}
 
                                     {activeOrganization && <div className="auth-user-menu-sep" />}
 
-                                    <IdentityMenuItem
-                                        name="Autoriseer apparaat"
-                                        onClick={openAuthPincodeModal}
-                                        icon={<IconAuthorizeDevice />}
-                                    />
+                                    {activeOrganization && (
+                                        <IdentityMenuItem
+                                            name="Autoriseer apparaat"
+                                            onClick={openAuthPincodeModal}
+                                            icon={<IconAuthorizeDevice />}
+                                        />
+                                    )}
 
                                     {activeOrganization && <div className="auth-user-menu-sep" />}
 

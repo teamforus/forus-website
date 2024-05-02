@@ -5,6 +5,7 @@ import EnvDataProp from '../../props/EnvData';
 import { AppConfigProp, useConfigService } from '../services/ConfigService';
 import { useOrganizationService } from '../services/OrganizationService';
 import useAuthIdentity from '../hooks/useAuthIdentity';
+import { useNavigateState } from '../modules/state_router/Router';
 
 interface AuthMemoProps {
     envData?: EnvDataProp;
@@ -26,6 +27,7 @@ const MainProvider = ({ children }: { children: React.ReactElement }) => {
     const [envData, setEnvData] = useState<EnvDataProp>(null);
     const [appConfigs, setAppConfigs] = useState(null);
     const authIdentity = useAuthIdentity();
+    const navigateState = useNavigateState();
 
     const [organizations, setOrganizations] = useState(null);
     const [activeOrganization, setActiveOrganization] = useState(null);
@@ -55,7 +57,7 @@ const MainProvider = ({ children }: { children: React.ReactElement }) => {
 
         setOrganizations(null);
         return null;
-    }, [authIdentity, organizationService]);
+    }, [authIdentity, envData?.client_type, organizationService]);
 
     useEffect(() => {
         if (!envData?.type) {
@@ -69,11 +71,17 @@ const MainProvider = ({ children }: { children: React.ReactElement }) => {
 
     useEffect(() => {
         if (organizations) {
-            setActiveOrganization(
-                organizations.find((organization: Organization) => organization.id == organizationService.active()),
+            const organization = organizations.find(
+                (organization: Organization) => organization.id == organizationService.active(),
             );
+
+            setActiveOrganization(organization);
+
+            if (organizations.length > 0 && !organization) {
+                return navigateState('organizations');
+            }
         }
-    }, [organizationService, organizations]);
+    }, [organizationService, organizations, navigateState]);
 
     useEffect(() => {
         fetchOrganizations().then();

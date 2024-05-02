@@ -47,7 +47,7 @@ export default function useMakeExporterService() {
             res: ResponseSimple<ArrayBuffer>,
             suffix = null,
         ) => {
-            pushSuccess('Gelukt!', 'The downloading should start shortly.');
+            pushSuccess('Gelukt!', 'Het downloaden begint binnenkort.');
 
             const fileName = [
                 envData.client_type,
