@@ -1,6 +1,7 @@
 const fs = require('fs');
 const _path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CompressionPlugin = require('compression-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const { DefinePlugin, ProvidePlugin } = require('webpack');
 const timestamp = new Date().getTime();
@@ -11,7 +12,7 @@ const envData = require('./env.js');
 const { info: logInfo } = console;
 
 module.exports = (env, argv) => {
-    const { fronts, enableOnly = null, httpsKey = null, httpsCert = null } = envData;
+    const { fronts, enableOnly = null, httpsKey = null, httpsCert = null, buildGzipFiles = false } = envData;
     const cliEnableOnly = env.only?.split(',') || null;
 
     const configs = Object.keys(fronts)
@@ -244,9 +245,10 @@ module.exports = (env, argv) => {
             ...outPlugins,
             new CleanWebpackPlugin(),
             ...copyPlugins,
+            buildGzipFiles ? new CompressionPlugin({ algorithm: 'gzip', test: /\.js(\?.*)?$/i }) : null,
             new DefinePlugin({ __REACT_DEVTOOLS_GLOBAL_HOOK__: '({ isDisabled: true })' }),
             new ProvidePlugin({ React: 'react' }),
-        ],
+        ].filter((plugin) => plugin),
 
         optimization: {
             minimize: mode !== 'development',

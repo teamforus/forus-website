@@ -7,6 +7,7 @@ import BlockAuth2FAInfoBox from '../../elements/block-auth-2fa-info-box/BlockAut
 import Modal2FASetup from '../../modals/Modal2FASetup';
 import useOpenModal from '../../../../dashboard/hooks/useOpenModal';
 import BlockShowcase from '../../elements/block-showcase/BlockShowcase';
+import BlockLoader from '../../elements/block-loader/BlockLoader';
 
 export default function Auth2FA() {
     const openModal = useOpenModal();
@@ -81,7 +82,7 @@ export default function Auth2FA() {
     }
 
     return (
-        <BlockShowcase wrapper={true}>
+        <BlockShowcase wrapper={true} breadcrumbs={<></>} loaderElement={<BlockLoader type={'full'} />}>
             <div className="block block-sign_up">
                 <div className="block-wrapper">
                     {step == 'setup' && !paneHidden && (

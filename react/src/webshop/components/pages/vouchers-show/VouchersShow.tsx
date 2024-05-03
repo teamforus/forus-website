@@ -930,7 +930,7 @@ export default function VouchersShow() {
                         )}
 
                         {/* Voucher transactions */}
-                        {!voucherCard.product && (voucherCard.transactions.length > 0 || voucher.expired) && (
+                        {!voucherCard.product && (voucherCard.transactionsList.length > 0 || voucher.expired) && (
                             <div className="block block-transactions">
                                 <div className="transactions-header">
                                     <h2 className="transactions-title">

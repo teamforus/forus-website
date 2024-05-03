@@ -53,15 +53,15 @@ const AuthProvider = ({ children }: { children: React.ReactElement }) => {
     }, []);
 
     const updateIdentity = useCallback(async () => {
+        const identity2FAState = await identity2FAService.status().then((res) => {
+            setIdentity2FAState(res.data.data);
+            return res.data.data;
+        });
+
         const identity = await authService.identity().then((res) => {
             setIdentity(res.data);
             setIdentityEmployee(null);
             return res.data;
-        });
-
-        const identity2FAState = await identity2FAService.status().then((res) => {
-            setIdentity2FAState(res.data.data);
-            return res.data.data;
         });
 
         return { identity, identity2FAState };

@@ -127,4 +127,5 @@ module.exports = {
     enableOnly: [/*'dashboard.sponsor', 'dashboard.provider', */ 'dashboard.validator'],
     httpsKey: null,
     httpsCert: null,
+    buildGzipFiles: false,
 };
