@@ -84,11 +84,12 @@ export default function Home() {
         }
     }, [fetchVouchers, authIdentity]);
 
-    if (!funds) {
-        return <div style={{ width: '100%', height: '100vh' }} />;
-    }
-
-    return (
+    return !funds ? (
+        <Fragment>
+            <TopNavbar className="nav-var" />
+            <div style={{ width: '100%', height: '100vh' }} />
+        </Fragment>
+    ) : (
         <Fragment>
             <TopNavbar className="nav-var" />
 
@@ -146,7 +147,10 @@ export default function Home() {
                                         <p>
                                             {translate(
                                                 `home.header.${envData.client_key}.subtitle`,
-                                                { fund: funds?.[0]?.name, start_date: funds?.[0]?.start_date_locale },
+                                                {
+                                                    fund: funds?.[0]?.name,
+                                                    start_date: funds?.[0]?.start_date_locale,
+                                                },
                                                 'home.header.subtitle',
                                             )}
                                         </p>
@@ -164,7 +168,10 @@ export default function Home() {
                                         <p>
                                             {translate(
                                                 `home.header.${envData.client_key}.cta`,
-                                                { fund: funds?.[0]?.name, start_date: funds?.[0]?.start_date_locale },
+                                                {
+                                                    fund: funds?.[0]?.name,
+                                                    start_date: funds?.[0]?.start_date_locale,
+                                                },
                                                 'home.header.cta',
                                             )}
                                         </p>
@@ -174,7 +181,10 @@ export default function Home() {
                                         <p>
                                             {translate(
                                                 `home.header.${envData.client_key}.cta`,
-                                                { fund: funds?.[0].name, start_date: funds?.[0].start_date_locale },
+                                                {
+                                                    fund: funds?.[0].name,
+                                                    start_date: funds?.[0].start_date_locale,
+                                                },
                                                 'home.header.cta_multi',
                                             )}
                                         </p>
@@ -196,7 +206,10 @@ export default function Home() {
                                     <p>
                                         {translate(
                                             `home.header.${envData.client_key}.subtitle_av`,
-                                            { fund: funds?.[0]?.name, start_date: funds?.[0]?.start_date_locale },
+                                            {
+                                                fund: funds?.[0]?.name,
+                                                start_date: funds?.[0]?.start_date_locale,
+                                            },
                                             'home.header.subtitle_av',
                                         )}
                                     </p>
@@ -205,7 +218,10 @@ export default function Home() {
                                         <p>
                                             {translate(
                                                 `home.header.${envData.client_key}.cta_av`,
-                                                { fund: funds?.[0]?.name, start_date: funds?.[0]?.start_date_locale },
+                                                {
+                                                    fund: funds?.[0]?.name,
+                                                    start_date: funds?.[0]?.start_date_locale,
+                                                },
                                                 'home.header.cta_av',
                                             )}
                                         </p>
@@ -345,7 +361,12 @@ export default function Home() {
                                     <div className="wrapper">
                                         <BlockProducts
                                             products={products.data}
-                                            setProducts={(list) => setProducts({ ...products, data: list })}
+                                            setProducts={(list) =>
+                                                setProducts({
+                                                    ...products,
+                                                    data: list,
+                                                })
+                                            }
                                             type="budget"
                                             large={true}
                                             display="grid"
@@ -357,7 +378,12 @@ export default function Home() {
                                     <div className="wrapper">
                                         <BlockProducts
                                             products={subsidies.data}
-                                            setProducts={(list) => setSubsidies({ ...subsidies, data: list })}
+                                            setProducts={(list) =>
+                                                setSubsidies({
+                                                    ...subsidies,
+                                                    data: list,
+                                                })
+                                            }
                                             type="subsidies"
                                             large={true}
                                             display="grid"
