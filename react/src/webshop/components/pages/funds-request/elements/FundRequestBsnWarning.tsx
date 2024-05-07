@@ -51,9 +51,8 @@ export default function FundRequestBsnWarning({
                 <div className="mdi mdi-alert-circle-outline" />
             </div>
             <div className="warning-details">
-                Let op! U dient het aanvraagformulier afgerond te hebben voor
-                <strong>{bsnWarningValue}</strong>, anders dient opnieuw in te loggen met DigiD en opnieuw te beginnen
-                met de aanvraag.
+                Let op! U dient het aanvraagformulier afgerond te hebben voor <strong>{bsnWarningValue}</strong>, anders
+                dient opnieuw in te loggen met DigiD en opnieuw te beginnen met de aanvraag.
             </div>
         </div>
     ) : null;

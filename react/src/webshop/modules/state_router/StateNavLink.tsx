@@ -16,6 +16,7 @@ export default function StateNavLink({
     activeExact = false,
     customElement = null,
     onClick = null,
+    onKeyDown = null,
     tabIndex = null,
 }: HTMLAttributes<HTMLAnchorElement> & {
     name: string;
@@ -31,6 +32,7 @@ export default function StateNavLink({
     customElement?: string;
     tabIndex?: number;
     onClick?: (e: React.MouseEvent) => void;
+    onKeyDown?: (e: React.KeyboardEvent) => void;
 }) {
     const navigateState = useNavigateState();
 
@@ -50,6 +52,7 @@ export default function StateNavLink({
                 'data-dusk': dataDusk,
                 tabIndex,
                 style: { cursor: 'pointer' },
+                onKeyDown: onKeyDown,
                 onClick: (e) => {
                     e.stopPropagation();
                     e.preventDefault();
@@ -66,6 +69,7 @@ export default function StateNavLink({
             target={target}
             data-dusk={dataDusk}
             onClick={onClick}
+            onKeyDown={onKeyDown}
             end={activeExact}
             tabIndex={tabIndex}
             className={({ isActive, isPending }) =>

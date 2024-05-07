@@ -37,6 +37,7 @@ import useFetchAuthIdentity from '../../../hooks/useFetchAuthIdentity';
 import useSetProgress from '../../../../dashboard/hooks/useSetProgress';
 import BlockShowcase from '../../elements/block-showcase/BlockShowcase';
 import BlockLoader from '../../elements/block-loader/BlockLoader';
+import { clickOnKeyEnter } from '../../../../dashboard/helpers/wcag';
 
 export default function FundActivate() {
     const { id } = useParams();
@@ -546,7 +547,11 @@ export default function FundActivate() {
                                     </h3>
                                     <div className="sign_up-options">
                                         {options?.includes('code') && (
-                                            <div className="sign_up-option" onClick={() => setState('code')}>
+                                            <div
+                                                className="sign_up-option"
+                                                onClick={() => setState('code')}
+                                                onKeyDown={clickOnKeyEnter}
+                                                tabIndex={0}>
                                                 <div className="sign_up-option-media">
                                                     <img
                                                         className="sign_up-option-media-img"
@@ -565,7 +570,11 @@ export default function FundActivate() {
                                         )}
 
                                         {options?.includes('digid') && (
-                                            <div className="sign_up-option" onClick={() => selectDigiDOption(fund)}>
+                                            <div
+                                                className="sign_up-option"
+                                                onClick={() => selectDigiDOption(fund)}
+                                                onKeyDown={clickOnKeyEnter}
+                                                tabIndex={0}>
                                                 <div className="sign_up-option-media">
                                                     <img
                                                         className="sign_up-option-media-img"
@@ -586,6 +595,8 @@ export default function FundActivate() {
                                             <StateNavLink
                                                 name="fund-request"
                                                 params={{ id: fund?.id }}
+                                                tabIndex={0}
+                                                onKeyDown={clickOnKeyEnter}
                                                 className="sign_up-option">
                                                 <div className="sign_up-option-media">
                                                     <img

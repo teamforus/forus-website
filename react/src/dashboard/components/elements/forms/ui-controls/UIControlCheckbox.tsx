@@ -32,7 +32,7 @@ export default function UIControlCheckbox({
     }, []);
 
     return (
-        <div className={`ui-control ui-control-checkbox ${className} ${disabled ? 'disabled' : ''}`}>
+        <span className={`ui-control ui-control-checkbox ${className} ${disabled ? 'disabled' : ''}`}>
             <input
                 className="form-control"
                 hidden={true}
@@ -56,11 +56,11 @@ export default function UIControlCheckbox({
                 tabIndex={0}
                 aria-checked={inputRef?.current?.checked}
                 onKeyDown={toggleCheckbox}>
-                <div className="ui-checkbox-box">
-                    <div className="mdi mdi-check" />
-                </div>
+                <span className="ui-checkbox-box">
+                    <em className="mdi mdi-check" />
+                </span>
                 {label}
             </label>
-        </div>
+        </span>
     );
 }

@@ -115,15 +115,6 @@ export default function Start() {
 
     const { reset: authFormReset } = authForm;
 
-    const togglePrivacy = useCallback(
-        ($event) => {
-            if ($event?.key == 'Enter') {
-                authForm.values.privacy = !authForm.values.privacy;
-            }
-        },
-        [authForm.values],
-    );
-
     const startDigId = useCallback(() => {
         setLoading(true);
         setProgress(0);
@@ -210,74 +201,86 @@ export default function Start() {
         }
     }, [envData, setTitle, translate]);
 
-    const inlineEmailForm = (showPolicy = true) => (
-        <form className="form" onSubmit={authForm.submit} data-dusk="authEmailForm">
-            <div className="row">
-                <div className="form-group col col-lg-9">
-                    <label className="form-label" htmlFor="email">
-                        <strong>{translate('popup_auth.input.mail')}</strong>
-                    </label>
-                    <UIControlText
-                        type={'email'}
-                        value={authForm.values.email}
-                        onChange={(e) => authForm.update({ email: e.target.value })}
-                        placeholder={'e-mail@e-mail.nl'}
-                        id={'email'}
-                        name={'email'}
-                        tabIndex={1}
-                        autoFocus={true}
-                        dataDusk={'authEmailFormEmail'}
-                    />
-                    <FormError error={authForm.errors.email} />
-                </div>
-                <div className="form-group col col-lg-3">
-                    <label className="form-label hide-sm" htmlFor="submit">
-                        &nbsp;
-                    </label>
-                    <button
-                        id={'submit'}
-                        className="button button-primary button-fill"
-                        type="submit"
-                        disabled={showPolicy && !authForm.values.privacy && envData.config.flags.privacyPage}
-                        data-dusk="authEmailFormSubmit"
-                        tabIndex={3}>
-                        {translate('popup_auth.buttons.submit')}
-                    </button>
-                </div>
-            </div>
-
-            {showPolicy && envData.config.flags.privacyPage && (
+    const inlineEmailForm = useCallback(
+        (showPolicy = true) => (
+            <form className="form" onSubmit={authForm.submit} data-dusk="authEmailForm">
                 <div className="row">
-                    <div className="col col-lg-12">
-                        <br className="hidden-lg" />
-                        <label
-                            className="sign_up-pane-text sign_up-pane-text-sm flex"
-                            htmlFor="privacy"
-                            onClick={(e) => togglePrivacy(e)}>
-                            <input
-                                type="checkbox"
-                                checked={authForm.values.privacy}
-                                onChange={() => null}
-                                tabIndex={2}
-                                onClick={(e) => authForm.update({ privacy: e.currentTarget.checked })}
-                                id="privacy"
-                            />
-                            <strong>
-                                Ik heb de{' '}
-                                <StateNavLink
-                                    tabIndex={2}
-                                    target={'_blank'}
-                                    className="text-primary-light sign_up-pane-link"
-                                    name="privacy">
-                                    privacyverklaring
-                                </StateNavLink>{' '}
-                                gelezen
-                            </strong>
+                    <div className="form-group col col-lg-9">
+                        <label className="form-label" htmlFor="email">
+                            <strong>{translate('popup_auth.input.mail')}</strong>
                         </label>
+                        <UIControlText
+                            type={'email'}
+                            value={authForm.values.email}
+                            onChange={(e) => authForm.update({ email: e.target.value })}
+                            placeholder={'e-mail@e-mail.nl'}
+                            id={'email'}
+                            name={'email'}
+                            tabIndex={1}
+                            autoFocus={true}
+                            dataDusk={'authEmailFormEmail'}
+                        />
+                        <FormError error={authForm.errors.email} />
+                    </div>
+                    <div className="form-group col col-lg-3">
+                        <label className="form-label hide-sm" htmlFor="submit">
+                            &nbsp;
+                        </label>
+                        <button
+                            id={'submit'}
+                            className="button button-primary button-fill"
+                            type="submit"
+                            disabled={showPolicy && !authForm.values.privacy && envData.config.flags.privacyPage}
+                            data-dusk="authEmailFormSubmit"
+                            tabIndex={4}>
+                            {translate('popup_auth.buttons.submit')}
+                        </button>
                     </div>
                 </div>
-            )}
-        </form>
+
+                {showPolicy && envData.config.flags.privacyPage && (
+                    <div className="row">
+                        <div className="col col-lg-12">
+                            <br className="hidden-lg" />
+                            <label
+                                className="sign_up-pane-text sign_up-pane-text-sm flex"
+                                htmlFor="privacy"
+                                tabIndex={2}
+                                onKeyDown={(e) => {
+                                    e.stopPropagation();
+                                    clickOnKeyEnter(e);
+                                }}>
+                                <input
+                                    type="checkbox"
+                                    checked={authForm.values.privacy}
+                                    onChange={(e) => {
+                                        authForm.update({ privacy: e.target.checked });
+                                        e.target?.parentElement?.focus();
+                                    }}
+                                    id="privacy"
+                                />
+                                <strong>
+                                    Ik heb de{' '}
+                                    <StateNavLink
+                                        tabIndex={3}
+                                        target={'_blank'}
+                                        onKeyDown={(e: React.KeyboardEvent<HTMLElement>) => {
+                                            e.stopPropagation();
+                                            clickOnKeyEnter(e);
+                                        }}
+                                        className="text-primary-light sign_up-pane-link"
+                                        name="privacy">
+                                        privacyverklaring
+                                    </StateNavLink>{' '}
+                                    gelezen
+                                </strong>
+                            </label>
+                        </div>
+                    </div>
+                )}
+            </form>
+        ),
+        [authForm, envData?.config?.flags?.privacyPage, translate],
     );
 
     const qrOption = (
@@ -308,7 +311,7 @@ export default function Start() {
         <div className="sign_up-restore">
             <div className="sign_up-restore-label">{label}</div>
             <div
-                className="sign_up-restore-link"
+                className="sign_up-restore-link clickable"
                 onClick={() => setState('restore')}
                 role="button"
                 tabIndex={0}
@@ -342,7 +345,9 @@ export default function Start() {
             className="sign_up-option"
             tabIndex={0}
             onKeyDown={clickOnKeyEnter}
-            onClick={() => setState('email')}
+            onClick={() => {
+                window.setTimeout(() => setState('email'), 0);
+            }}
             role="button"
             data-dusk={dusk}>
             <div className="sign_up-option-media">

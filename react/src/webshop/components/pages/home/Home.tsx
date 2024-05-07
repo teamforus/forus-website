@@ -1,4 +1,4 @@
-import React, { Fragment, useCallback, useEffect, useState } from 'react';
+import React, { Fragment, useCallback, useContext, useEffect, useState } from 'react';
 import useEnvData from '../../../hooks/useEnvData';
 import useAppConfigs from '../../../hooks/useAppConfigs';
 import { TopNavbar } from '../../elements/top-navbar/TopNavbar';
@@ -16,6 +16,11 @@ import { useProductService } from '../../../services/ProductService';
 import CmsBlocks from '../../elements/cms-blocks/CmsBlocks';
 import BlockProducts from '../../elements/block-products/BlockProducts';
 import useSetProgress from '../../../../dashboard/hooks/useSetProgress';
+import { StringParam, useQueryParams } from 'use-query-params';
+import { useNavigateState, useStateParams } from '../../../modules/state_router/Router';
+import useOpenModal from '../../../../dashboard/hooks/useOpenModal';
+import { modalsContext } from '../../../../dashboard/modules/modals/context/ModalContext';
+import ModalNotification from '../../modals/ModalNotification';
 
 export default function Home() {
     const envData = useEnvData();
@@ -23,6 +28,9 @@ export default function Home() {
 
     const translate = useTranslate();
     const setProgress = useSetProgress();
+    const navigateState = useNavigateState();
+    const openModal = useOpenModal();
+    const { closeModal } = useContext(modalsContext);
 
     const authIdentity = useAuthIdentity();
 
@@ -34,6 +42,14 @@ export default function Home() {
     const [vouchers, setVouchers] = useState<Array<Voucher>>(null);
     const [products, setProducts] = useState<PaginationData<Product>>(null);
     const [subsidies, setSubsidies] = useState<PaginationData<Product>>(null);
+
+    const [digidResponse] = useQueryParams({
+        digid_error: StringParam,
+    });
+
+    const stateParams = useStateParams<{
+        session_expired?: boolean;
+    }>();
 
     const fetchFunds = useCallback(() => {
         setProgress(0);
@@ -77,12 +93,41 @@ export default function Home() {
     }, [fetchFunds, fetchProducts]);
 
     useEffect(() => {
+        if (digidResponse?.digid_error) {
+            navigateState('error', { errorCode: 'digid_' + digidResponse?.digid_error });
+        }
+    }, [digidResponse, navigateState]);
+
+    useEffect(() => {
         if (authIdentity) {
             fetchVouchers();
         } else {
             setVouchers(null);
         }
     }, [fetchVouchers, authIdentity]);
+
+    useEffect(() => {
+        if (!stateParams?.session_expired) {
+            return;
+        }
+
+        const modal = openModal((modal) => (
+            <ModalNotification
+                modal={modal}
+                type={'confirm'}
+                title={'Sessie verlopen'}
+                header={translate('modal.logout.description')}
+                mdiIconType="primary"
+                mdiIconClass={'information-outline'}
+                confirmBtnText={'Inloggen'}
+                onConfirm={() => navigateState('start', {}, { reload: true })}
+            />
+        ));
+
+        return () => {
+            closeModal(modal);
+        };
+    }, [closeModal, navigateState, openModal, stateParams?.session_expired, translate]);
 
     return !funds ? (
         <Fragment>

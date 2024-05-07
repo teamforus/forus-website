@@ -1,4 +1,4 @@
-import React, { Fragment, useCallback, useMemo, useState } from 'react';
+import React, { Fragment, useMemo, useState } from 'react';
 import UIControlText from '../../../../../../dashboard/components/elements/forms/ui-controls/UIControlText';
 import FormError from '../../../../../../dashboard/components/elements/forms/errors/FormError';
 import StateNavLink from '../../../../../modules/state_router/StateNavLink';
@@ -8,6 +8,7 @@ import { useIdentityEmailsService } from '../../../../../../dashboard/services/I
 import useTranslate from '../../../../../../dashboard/hooks/useTranslate';
 import useEnvData from '../../../../../hooks/useEnvData';
 import FundRequestGoBackButton from '../FundRequestGoBackButton';
+import { clickOnKeyEnter } from '../../../../../../dashboard/helpers/wcag';
 
 export default function FundRequestStepEmailSetup({
     fund,
@@ -35,7 +36,7 @@ export default function FundRequestStepEmailSetup({
     const emailForm = useFormBuilder<{ email: string; privacy: boolean }>(
         {
             email: ``,
-            privacy: null,
+            privacy: false,
         },
         (values) => {
             identityEmailsService
@@ -46,17 +47,6 @@ export default function FundRequestStepEmailSetup({
                 })
                 .finally(() => emailForm.setIsLocked(false));
         },
-    );
-
-    const { update: emailFormUpdate } = emailForm;
-
-    const togglePrivacy = useCallback(
-        (e: React.KeyboardEvent) => {
-            if (e?.key == 'Enter') {
-                emailFormUpdate({ privacy: !emailForm.values.privacy });
-            }
-        },
-        [emailFormUpdate, emailForm.values.privacy],
     );
 
     return (
@@ -98,7 +88,7 @@ export default function FundRequestStepEmailSetup({
                                             className="button button-primary button-fill"
                                             disabled={!emailForm.values.privacy && envData.config?.flags?.privacyPage}
                                             type="submit"
-                                            tabIndex={3}>
+                                            tabIndex={4}>
                                             {translate('popup_auth.buttons.submit')}
                                         </button>
                                     </div>
@@ -128,20 +118,28 @@ export default function FundRequestStepEmailSetup({
                                             className="sign_up-pane-text"
                                             htmlFor="privacy"
                                             tabIndex={2}
-                                            onKeyDown={togglePrivacy}>
+                                            onKeyDown={(e) => {
+                                                e.stopPropagation();
+                                                clickOnKeyEnter(e);
+                                            }}>
                                             <input
                                                 type="checkbox"
                                                 checked={emailForm.values.privacy}
                                                 onChange={(e) => {
-                                                    emailForm.update({
-                                                        privacy: !e.target.checked,
-                                                    });
+                                                    emailForm.update({ privacy: e.target.checked });
+                                                    e.target?.parentElement?.focus();
                                                 }}
                                                 id="privacy"
                                             />
                                             Ik heb de{' '}
                                             <StateNavLink
                                                 name={'privacy'}
+                                                tabIndex={3}
+                                                target={'_blank'}
+                                                onKeyDown={(e: React.KeyboardEvent<HTMLElement>) => {
+                                                    e.stopPropagation();
+                                                    clickOnKeyEnter(e);
+                                                }}
                                                 className="text-primary-light sign_up-pane-link">
                                                 privacyverklaring
                                             </StateNavLink>{' '}
@@ -155,7 +153,7 @@ export default function FundRequestStepEmailSetup({
 
                     <div className="sign_up-pane-footer">
                         <div className="flex-row">
-                            <FundRequestGoBackButton prevStep={prevStep} fund={fund} step={step} tabIndex={4} />
+                            <FundRequestGoBackButton prevStep={prevStep} fund={fund} step={step} tabIndex={5} />
 
                             <div className="flex-col text-right">
                                 {!emailSetupRequired && (
@@ -164,7 +162,7 @@ export default function FundRequestStepEmailSetup({
                                         disabled={envData.config.flags.privacyPage && !emailForm.values.privacy}
                                         onClick={nextStep}
                                         role="button"
-                                        tabIndex={5}>
+                                        tabIndex={6}>
                                         Overslaan
                                         <em className="mdi mdi-chevron-right icon-right" />
                                     </button>

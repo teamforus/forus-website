@@ -1,9 +1,7 @@
-import React, { useCallback, useState } from 'react';
-import { createContext, useEffect } from 'react';
+import React, { useCallback, useEffect, useState, createContext } from 'react';
 import Identity from '../../dashboard/props/models/Identity';
 import { useAuthService } from '../../dashboard/services/AuthService';
-import { getStateRouteUrl, useStateRoutes } from '../modules/state_router/Router';
-import { useNavigate } from 'react-router-dom';
+import { useStateRoutes } from '../modules/state_router/Router';
 import events from '../../dashboard/helpers/events';
 import { ResponseError } from '../../dashboard/props/ApiResponses';
 import Identity2FAState from '../../dashboard/props/models/Identity2FAState';
@@ -52,7 +50,6 @@ const AuthProvider = ({ children }: { children: React.ReactElement }) => {
     const [identity, setIdentity] = useState<Identity>(null);
     const identityService = useIdentityService();
     const [identity2FAState, setIdentity2FAState] = useState<Identity2FAState>(null);
-    const navigate = useNavigate();
     const setProgress = useSetProgress();
     const openModal = useOpenModal();
     const navigateState = useNavigateState();
@@ -95,19 +92,38 @@ const AuthProvider = ({ children }: { children: React.ReactElement }) => {
         [appConfigs?.communication_type, identityService, navigateState, openModal, translate],
     );
 
-    const updateIdentity = useCallback(async () => {
-        const identity2FAState = await identity2FAService.status().then((res) => {
-            setIdentity2FAState(res.data.data);
-            return res.data.data;
-        });
+    const fetchIdentity = useCallback(async () => {
+        const identity = token
+            ? await authService
+                  .identity()
+                  .then((res) => res.data)
+                  .catch(() => null)
+            : null;
 
-        const identity = await authService.identity().then((res) => {
-            setIdentity(res.data);
-            return res.data;
-        });
+        setIdentity(identity);
+
+        return identity;
+    }, [authService, token]);
+
+    const fetchIdentity2FA = useCallback(async () => {
+        const identity2FAState = token
+            ? await identity2FAService
+                  .status()
+                  .then((res) => res.data.data)
+                  .catch(() => null)
+            : null;
+
+        setIdentity2FAState(identity2FAState);
+
+        return identity2FAState;
+    }, [identity2FAService, token]);
+
+    const updateIdentity = useCallback(async () => {
+        const identity = await fetchIdentity();
+        const identity2FAState = await fetchIdentity2FA();
 
         return { identity, identity2FAState };
-    }, [authService, identity2FAService]);
+    }, [fetchIdentity, fetchIdentity2FA]);
 
     useEffect(() => {
         localStorage.active_account = token;
@@ -120,30 +136,36 @@ const AuthProvider = ({ children }: { children: React.ReactElement }) => {
         }
 
         if (!token && route?.state?.protected) {
-            navigate(getStateRouteUrl('start'));
+            navigateState('start');
             return;
         }
-    }, [updateIdentity, token, navigate, signOut, identity, route?.state?.name, route?.state?.protected]);
+    }, [updateIdentity, token, navigateState, signOut, identity, route?.state?.name, route?.state?.protected]);
 
     useEffect(() => {
-        const callback = (data: CustomEvent<ResponseError<{ error?: string }>>) => {
-            if (data.detail.status != 401) {
-                return;
-            }
-
+        const callback = (
+            data: CustomEvent<{ reject: () => void } & ResponseError<{ error?: string; message?: string }>>,
+        ) => {
             setProgress(100);
 
             if (data.detail.data.error === '2fa') {
-                return navigate(getStateRouteUrl('auth-2fa'));
+                if (route?.state?.name !== 'auth-2fa') {
+                    setIdentity(null);
+                    fetchIdentity2FA().then();
+                    navigateState('auth-2fa');
+                }
+
+                return;
             }
 
-            return navigate(getStateRouteUrl('sign-out'));
+            navigateState('sign-out', null, null, {
+                state: { session_expired: data.detail.data.message == 'session_expired' },
+            });
         };
 
         events.subscribe('api-response:401', callback);
 
         return () => events.unsubscribe('api-response:401', callback);
-    }, [navigate, setProgress]);
+    }, [fetchIdentity2FA, navigateState, route?.state?.name, setProgress, updateIdentity]);
 
     return (
         <Provider

@@ -245,7 +245,7 @@ export default function Security2FA() {
                                     <input
                                         className="form-control"
                                         disabled={true}
-                                        value="auth2FARememberIpOptions[0].name"
+                                        value={auth2FARememberIpOptions?.[0]?.name}
                                     />
                                 )}
                                 {auth2FAState.auth_2fa_forget_force.voucher && (

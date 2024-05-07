@@ -154,12 +154,14 @@ export default function FundRequest() {
             fundService
                 .apply(fund.id)
                 .then((res) => {
-                    navigateState('voucher', { address: res.data.data.address });
-                    pushSuccess(`Succes! ${fund.name} tegoed geactiveerd!`);
+                    fetchAuthIdentity().then(() => {
+                        navigateState('voucher', { address: res.data.data.address });
+                        pushSuccess(`Succes! ${fund.name} tegoed geactiveerd!`);
+                    });
                 })
-                .catch((res) => pushDanger(res.data.message));
+                .catch((err: ResponseError) => pushDanger(err.data.message));
         },
-        [fundService, navigateState, pushDanger, pushSuccess],
+        [fetchAuthIdentity, fundService, navigateState, pushDanger, pushSuccess],
     );
 
     const submitRequest = useCallback(() => {

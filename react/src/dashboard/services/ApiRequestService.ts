@@ -187,7 +187,7 @@ export default class ApiRequestService<T = null> {
                     resolve(resData as A);
                 } else {
                     if (resData.status == 401) {
-                        return events.publish('api-response:401', resData);
+                        events.publish('api-response:401', resData);
                     }
 
                     reject(resData);
