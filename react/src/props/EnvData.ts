@@ -1,3 +1,5 @@
+import AwsRumProps from './AwsRumProps';
+
 export default interface EnvDataProp {
     client_key: string;
     client_type: 'sponsor' | 'provider' | 'validator' | 'webshop';
@@ -6,6 +8,7 @@ export default interface EnvDataProp {
     type: 'webshop' | 'dashboard' | 'backend';
     webRoot?: string;
     useHashRouter?: boolean;
+
     config: {
         api_url: string;
         google_maps_api_key?: string;
@@ -19,6 +22,8 @@ export default interface EnvDataProp {
         feedback_email?: string;
         features_contact_email?: string;
         features_contact_phone?: string;
-        [key: string]: string | number | boolean;
+        aws_rum?: AwsRumProps;
+
+        [key: string]: string | number | boolean | AwsRumProps;
     };
 }

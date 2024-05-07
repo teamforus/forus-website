@@ -16,6 +16,18 @@ const help_link = 'https://helpcentrum.forus.io';
 const use_hash_router = true;
 const disable_indexing = true;
 
+const aws_rum = null; /*{
+    appId: 'XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX',
+    appVersion: '1.0.0',
+    appRegion: 'eu-west-1',
+    allowCookies: false,
+    enableXRay: false,
+    endpoint: 'XXXXXXXXXXXXXXXXXXXXXXXX',
+    identityPoolId: 'XXXXXXXXXXXXXXXXXXXXXXXX',
+    sessionSampleRate: 1,
+    telemetries: ['errors'],
+}*/
+
 fronts['webshop.general'] = {
     type: 'webshop',
     client_key: 'general',
@@ -25,6 +37,8 @@ fronts['webshop.general'] = {
     config: {
         api_url: api_url,
         sessions: true,
+        aws_rum: aws_rum,
+        allow_test_errors: false,
         disable_indexing: disable_indexing,
         google_maps_api_key: google_maps_api_key,
         provider_sign_up_filters: {
@@ -60,6 +74,7 @@ fronts['dashboard.sponsor'] = {
         chat_id: chat_id,
         support_id: support_id,
         disable_indexing: disable_indexing,
+        aws_rum: aws_rum,
         google_maps_api_key: google_maps_api_key,
 
         help_link: help_link,
@@ -84,6 +99,7 @@ fronts['dashboard.provider'] = {
         chat_id: chat_id,
         support_id: support_id,
         disable_indexing: disable_indexing,
+        aws_rum: aws_rum,
         google_maps_api_key: google_maps_api_key,
 
         help_link: help_link,
@@ -108,6 +124,7 @@ fronts['dashboard.validator'] = {
         chat_id: chat_id,
         support_id: support_id,
         disable_indexing: disable_indexing,
+        aws_rum: aws_rum,
         google_maps_api_key: google_maps_api_key,
 
         help_link: help_link,

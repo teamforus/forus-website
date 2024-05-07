@@ -22,7 +22,7 @@ import ProductsList from '../../elements/lists/products-list/ProductsList';
 import EmptyBlock from '../../elements/empty-block/EmptyBlock';
 import useTranslate from '../../../../dashboard/hooks/useTranslate';
 import BlockShowcasePage from '../../elements/block-showcase/BlockShowcasePage';
-import useFilterNext from '../../../../dashboard/modules/filter-next/useFilterNext';
+import useFilterNext from '../../../../dashboard/modules/filter_next/useFilterNext';
 import { BooleanParam, NumberParam, StringParam } from 'use-query-params';
 import { clickOnKeyEnter } from '../../../../dashboard/helpers/wcag';
 

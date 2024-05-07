@@ -9,7 +9,7 @@ import { useProductService } from '../../../services/ProductService';
 import ProductsList from '../../elements/lists/products-list/ProductsList';
 import { useNavigateState } from '../../../modules/state_router/Router';
 import useSetProgress from '../../../../dashboard/hooks/useSetProgress';
-import useFilterNext from '../../../../dashboard/modules/filter-next/useFilterNext';
+import useFilterNext from '../../../../dashboard/modules/filter_next/useFilterNext';
 import { NumberParam, StringParam } from 'use-query-params';
 
 export default function BookmarkedProducts() {

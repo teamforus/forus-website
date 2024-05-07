@@ -18,7 +18,8 @@ import EnvDataWebshopProp from '../props/EnvDataWebshopProp';
 import { LoadScript } from '@react-google-maps/api';
 import { PrintableProvider } from '../dashboard/modules/printable/context/PrintableContext';
 import MatomoScript from './modules/matomo/MatomoScript';
-import SiteImproveAnalytics from './modules/site-improve-analytics/SiteImproveAnalytics';
+import SiteImproveAnalytics from './modules/site_improve_analytics/SiteImproveAnalytics';
+import AwsRumScript from '../dashboard/modules/aws_rum/AwsRumScript';
 
 i18n.use(initReactI18next)
     .init({
@@ -114,6 +115,7 @@ export default function Webshop({ envData }: { envData: EnvDataWebshopProp }): R
                 </PushNotificationsProvider>
             </LoadScript>
 
+            <AwsRumScript awsRum={envData.config?.aws_rum} />
             <MatomoScript envData={envData} />
             <SiteImproveAnalytics envData={envData} />
         </Fragment>

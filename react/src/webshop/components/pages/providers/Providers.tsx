@@ -24,7 +24,7 @@ import { GoogleMap } from '../../../../dashboard/components/elements/google-map/
 import MapMarkerProviderOffice from '../../elements/map-markers/MapMarkerProviderOffice';
 import Provider from '../../../props/models/Provider';
 import BlockShowcasePage from '../../elements/block-showcase/BlockShowcasePage';
-import useFilterNext from '../../../../dashboard/modules/filter-next/useFilterNext';
+import useFilterNext from '../../../../dashboard/modules/filter_next/useFilterNext';
 import { BooleanParam, NumberParam, StringParam } from 'use-query-params';
 import { clickOnKeyEnter } from '../../../../dashboard/helpers/wcag';
 

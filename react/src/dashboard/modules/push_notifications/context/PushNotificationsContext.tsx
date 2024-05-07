@@ -38,7 +38,7 @@ interface PushNotificationMemo {
 const pushNotificationContext = createContext<PushNotificationMemo>(null);
 const { Provider } = pushNotificationContext;
 
-const PushNotificationsProvider = ({ children }: { children: React.ReactElement }) => {
+const PushNotificationsProvider = ({ children }: { children: React.ReactElement | React.ReactElement[] }) => {
     const [total] = useState(4);
     const [notifications, setNotifications] = useState<Array<PushNotification>>([]);
 

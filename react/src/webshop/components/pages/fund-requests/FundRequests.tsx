@@ -13,7 +13,7 @@ import EmptyBlock from '../../elements/empty-block/EmptyBlock';
 import { useNavigateState } from '../../../modules/state_router/Router';
 import FundRequestCard from './elements/FundRequestCard';
 import BlockShowcaseProfile from '../../elements/block-showcase/BlockShowcaseProfile';
-import useFilterNext from '../../../../dashboard/modules/filter-next/useFilterNext';
+import useFilterNext from '../../../../dashboard/modules/filter_next/useFilterNext';
 import { BooleanParam, NumberParam } from 'use-query-params';
 import { clickOnKeyEnter } from '../../../../dashboard/helpers/wcag';
 

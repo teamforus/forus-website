@@ -1,3 +1,5 @@
+import AwsRumProps from './AwsRumProps';
+
 export default interface EnvDataWebshopProp {
     client_key: string;
     client_type: string;
@@ -23,6 +25,9 @@ export default interface EnvDataWebshopProp {
         provider_sign_up_filters: {
             [key: string]: string;
         };
+
+        aws_rum?: AwsRumProps;
+        allow_test_errors?: boolean;
 
         flags: {
             genericSearch?: boolean;
