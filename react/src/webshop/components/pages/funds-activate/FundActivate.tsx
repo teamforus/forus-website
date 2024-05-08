@@ -361,7 +361,7 @@ export default function FundActivate() {
         setProgress(0);
 
         fundService
-            .read(parseInt(id))
+            .read(parseInt(id), { check_criteria: 1 })
             .then((res) => setFund(res.data.data))
             .finally(() => setProgress(100));
     }, [fundService, setProgress, id]);
@@ -425,6 +425,11 @@ export default function FundActivate() {
     const initState = useCallback(
         (fund: Fund) => {
             const options = getAvailableOptions(fund);
+
+            // The fund is already taken by identity partner
+            if (fund.taken_by_partner) {
+                return setState('taken_by_partner');
+            }
 
             if (options.length == 0) {
                 return navigateState('funds');

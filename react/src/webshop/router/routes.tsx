@@ -94,7 +94,7 @@ router.state('fund', <FundsShow />, {
 router.state('fund-request', <FundRequest />, {
     path: '/fondsen/:id/aanvraag',
     altPath: ['/fund/:id/request', '/funds/:id/request'],
-    protected: false,
+    protected: true,
 });
 
 router.state('fund-activate', <FundActivate />, {
