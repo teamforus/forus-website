@@ -27,6 +27,8 @@ export default function SelectControlOptionsOrganization<T>({
     const [controlId] = useState('select_control_' + uniqueId());
     const thumbnailUrl = useThumbnailUrl();
     const input = useRef(null);
+    const selectorRef = useRef<HTMLDivElement>(null);
+    const placeholderRef = useRef<HTMLLabelElement>(null);
 
     return (
         <div
@@ -36,11 +38,26 @@ export default function SelectControlOptionsOrganization<T>({
             aria-haspopup="listbox"
             aria-expanded={showOptions}
             aria-labelledby={controlId}
-            aria-controls={`${controlId}_options`}>
+            aria-controls={`${controlId}_options`}
+            onKeyDown={(e) => {
+                if (e.key == 'Enter') {
+                    placeholderRef?.current?.click();
+                }
+
+                if (e.key == 'Escape') {
+                    setShowOptions(false);
+                }
+            }}
+            onBlur={(e) => {
+                if (showOptions && !e.currentTarget.contains(e.relatedTarget)) {
+                    selectorRef?.current?.focus();
+                }
+            }}>
             <div className={['select-control-input', showOptions ? 'options' : ''].filter((item) => item).join(' ')}>
                 {/* Placeholder */}
-                <div
+                <label
                     role="button"
+                    ref={placeholderRef}
                     className="select-control-search form-control"
                     onClick={searchOption}
                     style={{ display: showOptions ? 'none' : 'block' }}>
@@ -62,7 +79,7 @@ export default function SelectControlOptionsOrganization<T>({
                             (showOptions ? 'select-control-icon-up' : 'select-control-icon-down')
                         }
                     />
-                </div>
+                </label>
 
                 <div className="select-control-search form-control">
                     <div className="select-control-search-icon">
@@ -108,6 +125,7 @@ export default function SelectControlOptionsOrganization<T>({
                                 <div
                                     data-dusk={`headerOrganizationItem${(option.raw as Organization)?.id}`}
                                     className={`select-control-option ${option.id == modelValue.id ? 'selected' : ''}`}
+                                    tabIndex={0}
                                     key={option.id}
                                     onClick={(e) => {
                                         e.stopPropagation();

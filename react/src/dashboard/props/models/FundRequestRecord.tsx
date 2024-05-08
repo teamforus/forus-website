@@ -1,17 +1,11 @@
+import File from './File';
 import Employee from './Employee';
 import RecordType from './RecordType';
-import File from './File';
+import FundRequestClarification from './FundRequestClarification';
 
 export default interface FundRequestRecord {
     id: number;
-    clarifications: Array<{
-        id?: number;
-        answer?: string;
-        question?: string;
-        answered_at?: string;
-        answered_at_locale?: string;
-        files?: Array<File>;
-    }>;
+    clarifications: Array<FundRequestClarification>;
     created_at: string;
     created_at_locale: string;
     employee: Employee;

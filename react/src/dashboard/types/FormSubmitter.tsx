@@ -1,5 +1,5 @@
 import { FormEvent } from 'react';
 
-type FormSubmitter<T> = (values: T, e?: FormEvent<HTMLFormElement>) => Promise<unknown> | null | void;
+type FormSubmitter<T, D> = (values: T, e?: FormEvent<HTMLFormElement>, data?: D) => Promise<unknown> | null | void;
 
 export default FormSubmitter;
