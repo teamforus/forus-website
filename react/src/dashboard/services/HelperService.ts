@@ -57,6 +57,14 @@ export class HelperService {
 
         return provider && providersList.includes(provider) ? 'https://' + provider : null;
     }
+
+    public focusElement(element: HTMLElement) {
+        const link = document.createElement('a');
+        link.href = '#';
+        element?.prepend(link);
+        link.focus();
+        link.remove();
+    }
 }
 
 export function useHelperService(): HelperService {

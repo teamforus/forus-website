@@ -66,7 +66,7 @@ export default function Security2FA() {
             .status()
             .then(
                 (res) => {
-                    updateIdentity();
+                    updateIdentity().then();
                     setAuth2FAState(res.data.data);
                 },
                 (err) => pushDanger('Mislukt!', err.data?.message || 'Unknown error.'),

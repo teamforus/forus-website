@@ -53,7 +53,7 @@ const IdentityMenuItem = ({ url, href, name, icon, dusk, active, onClick }: Iden
     }
 
     return (
-        <a href={href} className={`auth-user-menu-item ${active ? 'active' : ''}`} onClick={onClick}>
+        <a href={href} data-dusk={dusk} className={`auth-user-menu-item ${active ? 'active' : ''}`} onClick={onClick}>
             <div className="auth-user-menu-item-icon">{icon}</div>
             {name}
         </a>
@@ -228,7 +228,6 @@ export const LayoutHeader = () => {
                                         name="Beoordelaar"
                                         active={envData.client_type == 'validator'}
                                         href={appConfigs.fronts.url_validator}
-                                        dusk={'btnUserLogout'}
                                         icon={<IconValidator />}
                                     />
 
@@ -236,7 +235,6 @@ export const LayoutHeader = () => {
                                         name="Sponsor"
                                         active={envData.client_type == 'sponsor'}
                                         href={appConfigs.fronts.url_sponsor}
-                                        dusk={'btnUserLogout'}
                                         icon={<IconSponsor />}
                                     />
 
@@ -244,7 +242,6 @@ export const LayoutHeader = () => {
                                         name="Aanbieder"
                                         active={envData.client_type == 'provider'}
                                         href={appConfigs.fronts.url_provider}
-                                        dusk={'btnUserLogout'}
                                         icon={<IconProvider />}
                                     />
 

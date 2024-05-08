@@ -2,7 +2,11 @@
     &.section-header {
         padding: 80px 0;
         background-color: #9DE7D7;
-        background-image: url(../img/wave-header.svg);
+        @if ($buildReact) {
+            background-image: url(./assets/img/wave-header.svg);
+        } @else {
+            background-image: url(../img/wave-header.svg);
+        }
         background-repeat: no-repeat, repeat;
         background-size: contain;
         background-position: 0 100%;
@@ -47,7 +51,11 @@
                 }
     
                 &:before {
-                    background-image: url(../img/monetary.svg);
+                    @if ($buildReact) {
+                        background-image: url(./assets/img/monetary.svg);
+                    } @else {
+                        background-image: url(../img/monetary.svg);
+                    }
                     background-position: left center;
                 }
             }

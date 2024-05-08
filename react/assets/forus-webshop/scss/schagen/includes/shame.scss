@@ -62,11 +62,6 @@
                 }
             }
         }
-
-        &.block-products {
-            display: flex;
-            justify-content: center;
-        }
     }
 
     .block-subnav {
@@ -90,17 +85,6 @@
                         display: block;
                     }
                 }
-            }
-        }
-    }
-
-    &.block-products {
-        .product-item {
-            width: 100%;
-
-            .product-item-inner {
-                box-shadow: none;
-                border: solid 1px #e4e4e4;
             }
         }
     }
@@ -217,7 +201,7 @@
     @media screen and (min-width: 1000px) {
         &.block-products {
             max-width: 1280px;
-            margin: 0 auto;
+            margin: 0 auto 30px;
         }
     }
 }

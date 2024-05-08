@@ -1,7 +1,7 @@
 import EnvDataProp from '../../props/EnvData';
 
 export const assetUrl = (uri: string, envData: EnvDataProp) => {
-    return envData ? `/${envData?.webRoot}/${uri.replace(/^\/+/, '')}` : null;
+    return envData ? `/${envData?.webRoot}/${uri.replace(/^\/+/, '')}`.replace(/^\/+/, '/') : null;
 };
 
 export const thumbnailUrl = (type: string, envData: EnvDataProp) => {

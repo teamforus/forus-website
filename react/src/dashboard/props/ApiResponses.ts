@@ -24,13 +24,13 @@ interface BaseResponse {
     response: XMLHttpRequest;
 }
 
-export interface PaginationData<T> {
+export interface PaginationData<T, M = object> {
     data: Array<T>;
-    meta: ApiPaginationMetaProp;
+    meta: ApiPaginationMetaProp & M;
 }
 
-export interface ApiResponse<T> extends BaseResponse {
-    data: PaginationData<T>;
+export interface ApiResponse<T, M = object> extends BaseResponse {
+    data: PaginationData<T, M>;
 }
 
 export interface ApiResponseSingle<T> extends BaseResponse {
@@ -45,8 +45,9 @@ export interface ResponseErrorData {
     [key: string]: Array<string>;
 }
 
-export interface ResponseError<T = { title?: string; message: string; errors: ResponseErrorData }>
-    extends BaseResponse {
+export interface ResponseError<
+    T = { title?: string; message: string; errors: ResponseErrorData; meta?: { title?: string; message?: string } },
+> extends BaseResponse {
     data: T;
 }
 
@@ -60,7 +61,7 @@ export interface ResponseSimple<T> extends BaseResponse {
 
 export type RequestConfigData = {
     responseType?: XMLHttpRequestResponseType;
-    onProgress?: (e: { progress: number }) => void;
+    onProgress?: (e: { progress: number }, xhr: XMLHttpRequest) => void;
     headers?: { [key: string]: string };
     onXhr?: (xhr: XMLHttpRequest) => void;
     body?: string | FormData;

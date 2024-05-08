@@ -6,12 +6,15 @@ import { useTranslation } from 'react-i18next';
 import usePaginatorService from '../services/usePaginatorService';
 import SelectControl from '../../../components/elements/select-control/SelectControl';
 import SelectControlOptions from '../../../components/elements/select-control/templates/SelectControlOptions';
+import { clickOnKeyEnter } from '../../../helpers/wcag';
 
 export default function Paginator({
     meta,
     filters,
     countButtons = 5,
     updateFilters,
+    buttonClass = 'button-default',
+    buttonClassActive = 'button-primary',
     perPageKey,
     className = '',
 }: {
@@ -19,6 +22,8 @@ export default function Paginator({
     filters: FilterModel;
     updateFilters: FilterSetter;
     countButtons?: number;
+    buttonClass?: string;
+    buttonClassActive?: string;
     perPageKey?: string;
     className?: string;
 }) {
@@ -70,6 +75,12 @@ export default function Paginator({
         }
     }, [filters.per_page, onChangePerPage, perPageKey, perPageOptions]);
 
+    useEffect(() => {
+        if (meta && meta.current_page > meta.last_page) {
+            setPage(meta.last_page);
+        }
+    }, [meta, setPage]);
+
     return (
         <div className={`table-pagination form ${className}`}>
             {meta.from && meta.to && (
@@ -100,21 +111,30 @@ export default function Paginator({
 
             <div className="table-pagination-navigation">
                 <div
+                    role={'button'}
                     onClick={() => setPage(1)}
-                    className={'button button-default' + (meta.current_page === 1 ? ' disabled' : '')}>
+                    onKeyDown={clickOnKeyEnter}
+                    tabIndex={meta.current_page === 1 ? undefined : 0}
+                    className={`button ${buttonClass} ${meta.current_page === 1 ? ' disabled' : ''}`}>
                     {t('paginator.buttons.first')}
                 </div>
                 {pages.map((page, key) => (
                     <div
                         key={key}
+                        role={'button'}
+                        tabIndex={0}
                         onClick={() => setPage(page)}
-                        className={'button' + (page === meta.current_page ? ' button-primary' : ' button-default')}>
+                        onKeyDown={clickOnKeyEnter}
+                        className={`button ${page === meta.current_page ? buttonClassActive : buttonClass}`}>
                         {page}
                     </div>
                 ))}
                 <div
+                    role={'button'}
                     onClick={() => setPage(meta.last_page)}
-                    className={'button button-default' + (meta.current_page === meta.last_page ? ' disabled' : '')}>
+                    onKeyDown={clickOnKeyEnter}
+                    tabIndex={meta.current_page === meta.last_page ? undefined : 0}
+                    className={`button ${buttonClass} ${meta.current_page === meta.last_page ? ' disabled' : ''}`}>
                     {t('paginator.buttons.last')}
                 </div>
             </div>
