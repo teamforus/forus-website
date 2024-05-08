@@ -24,4 +24,5 @@ export default interface Fund {
     archived?: boolean;
     expired?: boolean;
     implementation?: Implementation;
+    type_locale?: string;
 }

@@ -54,6 +54,13 @@ import Features from '../components/pages/features/Features';
 import Feature from '../components/pages/feature/Feature';
 import EventLogs from '../components/pages/eventLogs/EventLogs';
 import ReimbursementCategories from '../components/pages/reimbursement-categories/ReimbursementCategories';
+import SponsorProviderOrganizations from '../components/pages/sponsor-provider-organizations/SponsorProviderOrganizations';
+import SponsorProviderOrganization from '../components/pages/sponsor-provider-organization/SponsorProviderOrganization';
+import FundProvider from '../components/pages/fund-provider/FundProvider';
+import SponsorProductsCreate from '../components/pages/sponsor-product-edit/SponsorProductsCreate';
+import SponsorProductsEdit from '../components/pages/sponsor-product-edit/SponsorProductsEdit';
+import FundProviderProductView from '../components/pages/fund-provider-product-view/FundProviderProductView';
+import FundProviderProductSubsidyEdit from '../components/pages/fund-provider-product-subsidy-edit/FundProviderProductSubsidyEdit';
 
 const router = new RouterBuilder();
 
@@ -126,8 +133,38 @@ router.state('external-validators', <WIP title={'External validators'} />, {
     fallbackState: 'organizations',
 });
 
-router.state('sponsor-provider-organizations', <WIP title={'Provider organizations'} />, {
+router.state('sponsor-provider-organizations', <SponsorProviderOrganizations />, {
     path: `/organizations/:organizationId/providers`,
+    fallbackState: 'organizations',
+});
+
+router.state('sponsor-provider-organization', <SponsorProviderOrganization />, {
+    path: `/organizations/:organizationId/providers/:id`,
+    fallbackState: 'organizations',
+});
+
+router.state('fund-provider', <FundProvider />, {
+    path: `/organizations/:organizationId/funds/:fundId/providers/:id`,
+    fallbackState: 'organizations',
+});
+
+router.state('fund-provider-product-create', <SponsorProductsCreate />, {
+    path: `/organizations/:organizationId/funds/:fundId/providers/:fundProviderId/products/create`,
+    fallbackState: 'organizations',
+});
+
+router.state('fund-provider-product', <FundProviderProductView />, {
+    path: `/organizations/:organizationId/funds/:fundId/providers/:fundProviderId/products/:id`,
+    fallbackState: 'organizations',
+});
+
+router.state('fund-provider-product-edit', <SponsorProductsEdit />, {
+    path: `/organizations/:organizationId/funds/:fundId/providers/:fundProviderId/products/:id/edit`,
+    fallbackState: 'organizations',
+});
+
+router.state('fund-provider-product-subsidy-edit', <FundProviderProductSubsidyEdit />, {
+    path: `/organizations/:organizationId/funds/:fundId/providers/:fundProviderId/products/:id/subsidy`,
     fallbackState: 'organizations',
 });
 

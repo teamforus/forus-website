@@ -1,11 +1,12 @@
-import ApiResponse, { ApiResponseSingle } from '../props/ApiResponses';
+import ApiResponse, { ApiResponseSingle, ResponseSimple } from '../props/ApiResponses';
 import { useState } from 'react';
 import ApiRequestService from './ApiRequestService';
-import Organization from '../props/models/Organization';
+import Organization, { SponsorProviderOrganization } from '../props/models/Organization';
 import { hasPermission } from '../helpers/utils';
 import ExternalFund from '../props/models/ExternalFund';
 import Product from '../props/models/Product';
 import OrganizationFeatureStatuses from './types/OrganizationFeatureStatuses';
+import FundProvider from '../props/models/FundProvider';
 
 export class OrganizationService<T = Organization> {
     /**
@@ -128,7 +129,7 @@ export class OrganizationService<T = Organization> {
         });
     }
 
-    public listProviders(id: number, data = {}): Promise<ApiResponse<T>> {
+    public listProviders(id: number, data = {}): Promise<ApiResponse<FundProvider>> {
         return this.apiRequest.get(`${this.prefix}/${id}/providers`, data);
     }
 
@@ -144,16 +145,22 @@ export class OrganizationService<T = Organization> {
         return this.apiRequest.patch(`${this.prefix}/${id}/external-funds/${fund_id}`, data);
     }
 
-    public providerOrganizations(id: number, data = {}): Promise<ApiResponse<T>> {
+    public providerOrganizations(id: number, data = {}): Promise<ApiResponse<SponsorProviderOrganization>> {
         return this.apiRequest.get(`${this.prefix}/${id}/sponsor/providers`, data);
     }
 
-    public providerOrganization(id: number, provider_organization_id: number, data = {}): Promise<ApiResponse<T>> {
+    public providerOrganization(
+        id: number,
+        provider_organization_id: number,
+        data = {},
+    ): Promise<ApiResponseSingle<SponsorProviderOrganization>> {
         return this.apiRequest.get(`${this.prefix}/${id}/sponsor/providers/${provider_organization_id}`, data);
     }
 
-    public providerOrganizationsExport(id: number, data = {}): Promise<ApiResponse<T>> {
-        return this.apiRequest.get(`${this.prefix}/${id}/sponsor/providers/export`, data);
+    public providerOrganizationsExport(id: number, data = {}): Promise<ResponseSimple<ArrayBuffer>> {
+        return this.apiRequest.get(`${this.prefix}/${id}/sponsor/providers/export`, data, {
+            responseType: 'arraybuffer',
+        });
     }
 
     public financeProviders(id: number, data = {}): Promise<ApiResponse<T>> {
@@ -164,14 +171,8 @@ export class OrganizationService<T = Organization> {
         return this.apiRequest.get(`${this.prefix}/${id}/sponsor/providers/finances-export`, data);
     }
 
-    public sponsorProducts(id: number, provider_organization_id: number, data = {}): Promise<ApiResponse<T>> {
+    public sponsorProducts(id: number, provider_organization_id: number, data = {}): Promise<ApiResponse<Product>> {
         return this.apiRequest.get(`${this.prefix}/${id}/sponsor/providers/${provider_organization_id}/products`, data);
-    }
-
-    public sponsorProduct(id: number, provider_organization_id: number, product_id: number): Promise<ApiResponse<T>> {
-        return this.apiRequest.get(
-            `${this.prefix}/${id}/sponsor/providers/${provider_organization_id}/products/${product_id}`,
-        );
     }
 
     public sponsorProductUpdate(

@@ -183,8 +183,7 @@ export default function ProductsView() {
                         organizationId: activeOrganization.id,
                         id: product.id,
                     }}
-                    className="breadcrumb-item"
-                    ui-sref="offices({organization_id:$ctrl.product.organization_id})">
+                    className="breadcrumb-item">
                     {product.organization.name}
                 </StateNavLink>
                 <div className="breadcrumb-item active">{product.name}</div>

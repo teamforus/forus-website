@@ -29,6 +29,7 @@ import { ApiResponseSingle, ResponseError } from '../../../../props/ApiResponses
 import CheckboxControl from '../../../elements/forms/controls/CheckboxControl';
 import { dateFormat, dateParse } from '../../../../helpers/dates';
 import { hasPermission } from '../../../../helpers/utils';
+import { strLimit } from '../../../../helpers/string';
 
 export default function ProductsForm({
     organization,
@@ -149,9 +150,9 @@ export default function ProductsForm({
     const goToFundProvider = useCallback(
         (provider: FundProvider) => {
             navigateState('fund-provider', {
+                id: provider.id,
+                fundId: provider.fund_id,
                 organizationId: provider.fund.organization_id,
-                fund_id: provider.fund_id,
-                fund_provider_id: provider.id,
             });
         },
         [navigateState],
@@ -189,13 +190,21 @@ export default function ProductsForm({
         (id) => {
             setProgress(0);
 
-            productService
-                .read(organization.id, id)
-                .then((res) => setProduct(res.data.data))
-                .catch(() => navigateState('products', { organizationId: organization.id }))
-                .finally(() => setProgress(100));
+            if (fund_provider) {
+                fundService
+                    .getProviderProduct(organization.id, fund_provider.fund_id, fund_provider.id, id)
+                    .then((res) => setProduct(res.data.data))
+                    .catch(() => navigateState('products', { organizationId: organization.id }))
+                    .finally(() => setProgress(100));
+            } else {
+                productService
+                    .read(organization.id, id)
+                    .then((res) => setProduct(res.data.data))
+                    .catch(() => navigateState('products', { organizationId: organization.id }))
+                    .finally(() => setProgress(100));
+            }
         },
-        [setProgress, productService, organization.id, navigateState],
+        [setProgress, fund_provider, fundService, organization.id, navigateState, productService],
     );
 
     const fetchSourceProduct = useCallback(
@@ -304,10 +313,10 @@ export default function ProductsForm({
 
                     if (fund_provider.fund.type === 'subsidies') {
                         navigateState(product ? 'fund-provider-product' : 'fund-provider-product-subsidy-edit', {
-                            organization_id: fund_provider.fund.organization_id,
-                            fund_id: fund_provider.fund_id,
-                            fund_provider_id: fund_provider.id,
-                            product_id: res.data.data.id,
+                            id: res.data.data.id,
+                            fundId: fund_provider.fund_id,
+                            organizationId: fund_provider.fund.organization_id,
+                            fundProviderId: fund_provider.id,
                         });
                     } else {
                         goToFundProvider(fund_provider);
@@ -435,7 +444,7 @@ export default function ProductsForm({
         }
 
         if (source_id) {
-            fetchSourceProduct(id);
+            fetchSourceProduct(source_id);
         }
     }, [id, source_id, fetchProduct, fetchSourceProduct]);
 
@@ -486,17 +495,48 @@ export default function ProductsForm({
 
     return (
         <Fragment>
-            <div className="block block-breadcrumbs">
-                <StateNavLink
-                    name={'products'}
-                    params={{ organizationId: organization.id }}
-                    className="breadcrumb-item">
-                    Aanbod
-                </StateNavLink>
-                <div className="breadcrumb-item active">
-                    {t(id ? 'product_edit.header.title_edit' : 'product_edit.header.title_add')}
+            {fund_provider ? (
+                <div className="block block-breadcrumbs">
+                    <StateNavLink
+                        name={'sponsor-provider-organizations'}
+                        params={{ organizationId: organization.id }}
+                        className="breadcrumb-item">
+                        {t('page_state_titles.organization-providers')}
+                    </StateNavLink>
+                    <StateNavLink
+                        name={'sponsor-provider-organization'}
+                        params={{
+                            id: fund_provider.organization.id,
+                            organizationId: organization.id,
+                        }}
+                        className="breadcrumb-item">
+                        {strLimit(fund_provider.organization.name, 40)}
+                    </StateNavLink>
+                    <StateNavLink
+                        name={'fund-provider'}
+                        params={{
+                            id: fund_provider.id,
+                            fundId: fund_provider.fund.id,
+                            organizationId: organization.id,
+                        }}
+                        className="breadcrumb-item">
+                        {strLimit(fund_provider.fund.name, 40)}
+                    </StateNavLink>
+                    <div className="breadcrumb-item active">{id ? strLimit(product.name, 40) : 'Voeg aanbod toe'}</div>
                 </div>
-            </div>
+            ) : (
+                <div className="block block-breadcrumbs">
+                    <StateNavLink
+                        name={'products'}
+                        params={{ organizationId: organization.id }}
+                        className="breadcrumb-item">
+                        Aanbod
+                    </StateNavLink>
+                    <div className="breadcrumb-item active">
+                        {t(id ? 'product_edit.header.title_edit' : 'product_edit.header.title_add')}
+                    </div>
+                </div>
+            )}
 
             <form className="card form" onSubmit={saveProduct}>
                 <div className="card-header">

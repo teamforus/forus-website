@@ -23,12 +23,16 @@ export const getRoutes = (): Array<RouteState> => {
     return router.getRoutes();
 };
 
-export const getStateRouteUrl = (name: string, params = {}): string | null => {
+export const getStateRouteUrl = (name: string, params = {}, query = {}): string | null => {
     const route = getRoutes().find((route) => route.state?.name == name);
-    const routePath = route ? generatePath(route.state.path, params) : null;
+    let routePath = route ? generatePath(route.state.path, params) : null;
 
     if (!route) {
         console.error(`Error: route "${name}" not found!`, route);
+    }
+
+    if (Object.keys(query).length > 0) {
+        routePath += '?' + new URLSearchParams(query).toString();
     }
 
     return routePath;
