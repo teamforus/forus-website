@@ -75,10 +75,6 @@ module.exports = (env, argv) => {
                     force: true,
                 },
                 {
-                    from: path.resolve(__dirname, `./node_modules/pdfjs-dist/build/pdf.worker.js`),
-                    to: path.resolve(__dirname, `${distPath}/${item.out}/app-${timestamp}.worker.js`),
-                },
-                {
                     from: path.resolve(__dirname, `./node_modules/summernote/dist/summernote-lite.min.js`),
                     to: path.resolve(
                         __dirname,
