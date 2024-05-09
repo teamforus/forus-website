@@ -46,14 +46,14 @@ export class FundService<T = Fund> {
         return Papa.unparse([fund.csv_required_keys.filter((key) => key.indexOf('_eligible') == -1)]);
     }
 
-    public getLastSelectedFundId(): number {
-        return parseInt(localStorage.getItem('selected_fund_id'));
-    }
-
     public getLastSelectedFund(funds: Array<Fund> = []): Fund {
         const lastSelectedId = this.getLastSelectedFundId();
 
-        return funds.find((fund) => fund.id == lastSelectedId) || funds[0] || null;
+        return funds.find((fund) => fund.id == lastSelectedId) || funds?.[0] || null;
+    }
+
+    public getLastSelectedFundId(): number {
+        return parseInt(localStorage.getItem('selected_fund_id'));
     }
 
     public setLastSelectedFund(fund: Fund) {

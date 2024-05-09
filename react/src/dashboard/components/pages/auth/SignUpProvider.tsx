@@ -46,6 +46,7 @@ import SignUpAvailableFunds from './elements/SignUpAvailableFunds';
 import useFilter from '../../../hooks/useFilter';
 import useDemoTransactionService from '../../../services/DemoTransactionService';
 import { uniq } from 'lodash';
+import useAppConfigs from '../../../hooks/useAppConfigs';
 
 type OfficeLocal = Office & { edit?: boolean };
 
@@ -53,6 +54,7 @@ export default function SignUpProvider() {
     const { t } = useTranslation();
     const isMobile = window.innerWidth < 1000;
     const envData = useEnvData();
+    const appConfigs = useAppConfigs();
 
     const [printDebug] = useState(false);
 
@@ -152,7 +154,7 @@ export default function SignUpProvider() {
         (values) => {
             const resolveErrors = (err: ResponseError) => {
                 signUpForm.setIsLocked(false);
-                signUpForm.setErrors(err.data.errors);
+                signUpForm.setErrors(err.data?.errors || { email: err?.data?.message });
             };
 
             return identityService.validateEmail(values).then((res) => {
@@ -207,7 +209,7 @@ export default function SignUpProvider() {
                     .store(data)
                     .then((res) => {
                         setOrganizationValue(res.data.data);
-                        goToStep('STEP_SIGNUP_FINISHED');
+                        goToStep(STEPS[STEPS.indexOf(step) + 1]);
                     })
                     .catch((err: ResponseError) => {
                         formOrganization.setErrors(err.data.errors);
@@ -1284,7 +1286,7 @@ export default function SignUpProvider() {
                                                         className={'large'}
                                                         placeholder={'e-mail@e-mail.nl'}
                                                     />
-                                                    <FormError error={signUpForm.errors.email} />
+                                                    <FormError error={signUpForm.errors?.email} />
                                                 </div>
                                             </div>
                                             <div className="col col-md-5 col-xs-12">
@@ -1738,7 +1740,7 @@ export default function SignUpProvider() {
                                                 </div>
                                                 <div className="office-map">
                                                     <div className="office-map-content">
-                                                        <GoogleMap mapPointers={[office]} />
+                                                        <GoogleMap mapPointers={[office]} appConfigs={appConfigs} />
                                                     </div>
                                                     <div className="office-actions">
                                                         <a

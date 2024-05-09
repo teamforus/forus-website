@@ -14,6 +14,20 @@ const android_link = 'https://media.forus.io/static/me-0.0.5-staging-7-release.a
 const help_link = 'https://helpcentrum.forus.io';
 
 const use_hash_router = true;
+const disable_indexing = true;
+const allow_test_errors = false;
+
+const aws_rum = null; /*{
+    appId: 'XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX',
+    appVersion: '1.0.0',
+    appRegion: 'eu-west-1',
+    allowCookies: false,
+    enableXRay: false,
+    endpoint: 'XXXXXXXXXXXXXXXXXXXXXXXX',
+    identityPoolId: 'XXXXXXXXXXXXXXXXXXXXXXXX',
+    sessionSampleRate: 1,
+    telemetries: ['errors'],
+}*/
 
 fronts['webshop.general'] = {
     type: 'webshop',
@@ -21,6 +35,24 @@ fronts['webshop.general'] = {
     client_type: 'webshop',
     name: 'General webshop',
     useHashRouter: use_hash_router,
+    config: {
+        api_url: api_url,
+        sessions: true,
+        aws_rum: aws_rum,
+        allow_test_errors: allow_test_errors,
+        disable_indexing: disable_indexing,
+        google_maps_api_key: google_maps_api_key,
+        provider_sign_up_filters: {
+            foo: 'bar',
+        },
+        flags: {
+            fundsMenu: true,
+            show2FAMenu: true,
+            logoExtension: '.svg',
+            showStartButton: true,
+            genericSearch: true,
+        },
+    },
 };
 
 fronts['webshop.nijmegen'] = {
@@ -42,6 +74,9 @@ fronts['dashboard.sponsor'] = {
         api_url: api_url,
         chat_id: chat_id,
         support_id: support_id,
+        disable_indexing: disable_indexing,
+        aws_rum: aws_rum,
+        allow_test_errors: allow_test_errors,
         google_maps_api_key: google_maps_api_key,
 
         help_link: help_link,
@@ -65,6 +100,9 @@ fronts['dashboard.provider'] = {
         api_url: api_url,
         chat_id: chat_id,
         support_id: support_id,
+        disable_indexing: disable_indexing,
+        aws_rum: aws_rum,
+        allow_test_errors: allow_test_errors,
         google_maps_api_key: google_maps_api_key,
 
         help_link: help_link,
@@ -88,6 +126,9 @@ fronts['dashboard.validator'] = {
         api_url: api_url,
         chat_id: chat_id,
         support_id: support_id,
+        disable_indexing: disable_indexing,
+        aws_rum: aws_rum,
+        allow_test_errors: allow_test_errors,
         google_maps_api_key: google_maps_api_key,
 
         help_link: help_link,
@@ -105,4 +146,7 @@ fronts['dashboard.validator'] = {
 module.exports = {
     fronts: fronts,
     enableOnly: [/*'dashboard.sponsor', 'dashboard.provider', */ 'dashboard.validator'],
+    httpsKey: null,
+    httpsCert: null,
+    buildGzipFiles: false,
 };

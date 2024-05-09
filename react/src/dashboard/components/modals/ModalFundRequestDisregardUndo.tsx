@@ -81,7 +81,7 @@ export default function ModalFundRequestDisregardUndo({
                         Annuleer
                     </button>
                     <button type="submit" className="button button-primary">
-                        Bevestig
+                        Bevestigen
                     </button>
                 </div>
             </form>

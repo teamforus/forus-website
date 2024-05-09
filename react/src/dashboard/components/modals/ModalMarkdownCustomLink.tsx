@@ -79,7 +79,7 @@ export default function ModalMarkdownCustomLink({
             <div className="modal-backdrop" onClick={modal.close} />
 
             <form className="modal-window form" onSubmit={form.submit}>
-                <div className="modal-close mdi mdi-close" onClick={close} role="button" />
+                <div className="modal-close mdi mdi-close" onClick={modal.close} role="button" />
                 {type == 'imageLink' && (
                     <div className="modal-header">{t('modals.modal_markdown_custom_link.header.image')}</div>
                 )}

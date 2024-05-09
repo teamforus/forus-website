@@ -6,11 +6,13 @@
     .map-card-img {
         display: flex;
         width: 125px;
+        flex: 0 0 125px;
 
         img {
             width: 100%;
             height: 100%;
             display: block;
+            object-fit: cover;
         }
     }
 

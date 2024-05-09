@@ -16,8 +16,8 @@ export class NotificationService<T = Notification> {
      */
     public prefix = '/platform/notifications';
 
-    public list(data = {}) {
-        return this.apiRequest.get<ApiResponse<T>>(`${this.prefix}`, data);
+    public list(data = {}): Promise<ApiResponse<T, { total_unseen: number }>> {
+        return this.apiRequest.get(`${this.prefix}`, data);
     }
 }
 

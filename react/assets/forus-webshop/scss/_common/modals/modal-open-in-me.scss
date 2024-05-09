@@ -1,0 +1,41 @@
+.modal.modal-open-in-me {
+    .modal-window {
+        .modal-body {
+            .modal-section {
+                .modal-section-icon {
+                    margin: 0 0 15px;
+
+                    svg {
+                        width: 80px;
+                        height: 80px;
+                        padding: 20px;
+                        border-radius: 24px;
+                        border: 2px solid var(--icons-colors-icon-blue-gradient-3, rgba(224, 232, 255, 0));
+                        background: var(--general-colors-white-sample, #fff);
+                        box-shadow: 0px 13px 36px 0px rgba(100, 111, 121, 0.12);
+
+                        path {
+                            fill: #315efd;
+                        }
+                    }
+                }
+
+                .modal-open-in-me-phone-control {
+                    padding: 20px 100px;
+                }
+            }
+        }
+    }
+
+    @media screen and (max-width: 1000px) {
+        .modal-window {
+            .modal-body {
+                .modal-section {
+                    .modal-open-in-me-phone-control {
+                        padding: 15px 0;
+                    }
+                }
+            }
+        }
+    }
+}

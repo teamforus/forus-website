@@ -55,7 +55,7 @@ export default function CsvValidations() {
     return (
         <>
             <div className="card-heading">{t('csv_validation.header.title')}</div>
-            <FundSelector fund={fund} funds={funds?.data} onFundSelect={onFundSelect} />
+            <FundSelector fund={fund} funds={funds?.data} onSelectFund={onFundSelect} />
             {fund?.state != 'closed' && <CSVUpload fund={fund} recordTypes={recordTypes} />}
             {fund && <PrevalidatedTable fund={fund} recordTypes={recordTypes} />}
 

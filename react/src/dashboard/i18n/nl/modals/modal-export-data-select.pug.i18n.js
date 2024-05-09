@@ -17,6 +17,6 @@ module.exports = {
     errors: {},
     buttons: {
         cancel: "Annuleren",
-        submit: "Bevestig",
+        submit: "Bevestigen",
     }
 };

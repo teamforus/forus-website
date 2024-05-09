@@ -6,7 +6,7 @@ export default function SelectControlOptionItem<T>({
     selectOption,
 }: {
     option: OptionType<T>;
-    selectOption: (options: OptionType<T>) => void;
+    selectOption: (option: OptionType<T>) => void;
 }) {
     return (
         <div
@@ -15,6 +15,8 @@ export default function SelectControlOptionItem<T>({
                 e.stopPropagation();
                 selectOption(option);
             }}
+            onKeyDown={(e) => (e.key === 'Enter' ? e.currentTarget.click() : null)}
+            tabIndex={0}
             role="option">
             {option.labelFormat?.map((str, index) => (
                 <Fragment key={str.id}>{index != 1 ? <span>{str.value}</span> : <strong>{str.value}</strong>}</Fragment>
