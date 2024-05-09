@@ -7,7 +7,8 @@
   "scripts": {
     "start": "webpack serve --mode development",
     "watch": "webpack --watch --mode development",
-    "build": "webpack --mode production"
+    "build": "webpack --mode production",
+    "build-dev": "webpack --mode development"
   },
   "author": "",
   "license": "ISC",
@@ -44,6 +45,7 @@
     "babel-plugin-syntax-trailing-function-commas": "^6.22.0",
     "babelify": "^10.0.0",
     "browserify": "^17.0.0",
+    "compression-webpack-plugin": "^11.1.0",
     "copy-webpack-plugin": "^11.0.0",
     "css-loader": "^6.5.1",
     "eslint": "^8.37.0",
@@ -86,6 +88,7 @@
     "@mdi/font": "^7.2.96",
     "@mdi/js": "^7.1.96",
     "@react-google-maps/api": "^2.19.2",
+    "aws-rum-web": "^1.17.2",
     "clean-webpack-plugin": "^4.0.0",
     "colors": "^1.4.0",
     "date-fns": "^2.29.3",

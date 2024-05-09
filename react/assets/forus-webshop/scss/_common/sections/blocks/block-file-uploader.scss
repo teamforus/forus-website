@@ -1,7 +1,7 @@
 .block.block-file-uploader {
     .uploader-droparea {
         width: 100%;
-        background: #F8F8F8;
+        background: #f8f8f8;
         padding: 25px 30px;
         text-align: center;
         border: 1px dashed #e5e6ec;
@@ -139,12 +139,13 @@
 
                 .file-item-action {
                     padding-left: 10px;
-                    
+
                     button {
                         border: none;
+                        cursor: pointer;
                         background-color: inherit;
                         margin: 0;
-                        padding: 0;     
+                        padding: 0;
                     }
 
                     .mdi {

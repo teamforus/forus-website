@@ -1,7 +1,11 @@
 .block {
     &.block-navbar {
         .block-subnav {
-            background: url(../img/city-skyline.svg) no-repeat bottom center;
+            @if ($buildReact) {
+                background: url(./assets/img/city-skyline.svg) no-repeat bottom center;
+            } @else {
+                background: url(../img/city-skyline.svg) no-repeat bottom center;
+            }
             background-size: 50% 50%;
             background-color: #E4E4E4;
 

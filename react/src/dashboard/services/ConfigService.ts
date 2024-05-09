@@ -2,6 +2,8 @@ import { ResponseProp } from '../props/ApiResponses';
 import { useState } from 'react';
 import ApiRequestService from './ApiRequestService';
 import Announcement from '../props/models/Announcement';
+import Media from '../props/models/Media';
+import ImplementationPage from '../../webshop/props/models/ImplementationPage';
 
 export type AppConfigProp = {
     add_money: boolean;
@@ -121,6 +123,7 @@ export type AppConfigProp = {
     has_reimbursements: boolean;
     announcements: Array<Announcement>;
     digid: boolean;
+    bsn_confirmation_offset?: number;
     digid_sign_up_allowed: boolean;
     digid_mandatory: boolean;
     digid_api_url: string;
@@ -146,13 +149,38 @@ export type AppConfigProp = {
         lon?: number;
         lat?: number;
     };
-    banner?: unknown;
+    products?: { list: boolean; show?: boolean };
+    records?: { list: boolean };
+    funds?: { list: boolean; fund_requests: boolean };
+    banner?: Media;
     implementation_name?: string;
     products_hard_limit?: number;
     products_soft_limit?: number;
-    pages: Array<unknown>;
+    pages: {
+        home: ImplementationPage;
+        funds: ImplementationPage;
+        products: ImplementationPage;
+        provider: ImplementationPage;
+        providers: ImplementationPage;
+        explanation: ImplementationPage;
+        footer_app_info: ImplementationPage;
+        footer_opening_times: ImplementationPage;
+        footer_contact_details: ImplementationPage;
+    };
     has_productboard_integration: boolean;
-    social_medias: Array<unknown>;
+    social_medias: Array<{
+        type?: string;
+        url?: string;
+        title?: string;
+    }>;
+    pre_check_enabled: boolean;
+    pre_check_banner_state: 'draft' | 'public';
+    pre_check_banner_label?: string;
+    pre_check_banner_title?: string;
+    pre_check_banner_description?: string;
+    pre_check_banner?: Media;
+    pre_check_title?: string;
+    pre_check_description?: string;
     show_home_map: boolean;
     show_home_products: boolean;
     show_providers_map: boolean;

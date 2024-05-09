@@ -1,0 +1,17 @@
+@import "kerstpakket/vars";
+@import "_common/webshop";
+
+// COMPONENTS
+@import "kerstpakket/components/buttons";
+
+// LAYOUTS
+@import "kerstpakket/layout/header";
+@import "kerstpakket/layout/footer";
+
+// SECTIONS
+@import "kerstpakket/sections/faq";
+@import "kerstpakket/sections/steps";
+@import "kerstpakket/sections/map";
+
+// BLOCKS
+@import "kerstpakket/sections/blocks/products";

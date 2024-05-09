@@ -6,7 +6,7 @@
     
     .breadcrumb-item {
         display: inline-block;
-        font: 600 var(--breadcrumb-size) var(--base-font);
+        font: 600 var(--breadcrumb-size)/20px var(--base-font);
         color: var(--breadcrumb-color);
         transition: .4s;
         text-decoration: underline;

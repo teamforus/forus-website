@@ -80,7 +80,7 @@ export default function OrganizationsSecurity() {
                     (res) => {
                         pushSuccess('Opgeslagen!');
                         setActiveOrganization(Object.assign(activeOrganization, res.data.data));
-                        updateIdentity();
+                        updateIdentity().then();
                     },
                     (err) => {
                         pushDanger('Mislukt!', err.data?.message || 'Onbekende foutmelding.');
