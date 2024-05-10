@@ -28,6 +28,10 @@ export class FundService<T = Fund> {
         return this.apiRequest.get<null>(`${this.prefix + company_id}/funds`, data);
     }
 
+    public read(company_id: number, id: number, data: object = {}): Promise<ApiResponseSingle<T>> {
+        return this.apiRequest.get(`${this.prefix + company_id}/funds/${id}`, data);
+    }
+
     public getProviderProduct(
         organization_id: number,
         fund_id: number,

@@ -54,6 +54,9 @@ import Features from '../components/pages/features/Features';
 import Feature from '../components/pages/feature/Feature';
 import EventLogs from '../components/pages/eventLogs/EventLogs';
 import ReimbursementCategories from '../components/pages/reimbursement-categories/ReimbursementCategories';
+import Vouchers from '../components/pages/vouchers/Vouchers';
+import VouchersViewComponent from '../components/pages/vouchers-view/VouchersViewComponent';
+import ProductVouchers from '../components/pages/product-vouchers/ProductVouchers';
 
 const router = new RouterBuilder();
 
@@ -145,12 +148,17 @@ router.state('financial-dashboard-overview', <WIP title={'Financial dashboard ov
     fallbackState: 'organizations',
 });
 
-router.state('vouchers', <WIP title={'Vouchers'} />, {
+router.state('vouchers', <Vouchers />, {
     path: `/organizations/:organizationId/vouchers`,
     fallbackState: 'organizations',
 });
 
-router.state('product-vouchers', <WIP title={'Product vouchers'} />, {
+router.state('vouchers-show', <VouchersViewComponent />, {
+    path: `/organizations/:organizationId/vouchers/:id`,
+    fallbackState: 'organizations',
+});
+
+router.state('product-vouchers', <ProductVouchers />, {
     path: `/organizations/:organizationId/product-vouchers`,
     fallbackState: 'organizations',
 });

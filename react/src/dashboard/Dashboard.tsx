@@ -14,6 +14,7 @@ import { PushNotificationsProvider } from './modules/push_notifications/context/
 import { LoadingBarProvider } from './modules/loading_bar/context/LoadingBarContext';
 import ApiRequestService from './services/ApiRequestService';
 import StateHashPrefixRedirect from './modules/state_router/StateHashPrefixRedirect';
+import { ToastsProvider } from './modules/toasts/context/ToastsContext';
 
 i18n.use(initReactI18next)
     .init({
@@ -69,20 +70,22 @@ export default function Dashboard({ envData }: { envData: EnvDataProp }): React.
 
     return (
         <PushNotificationsProvider>
-            <RouterSelector envData={envData}>
-                <LoadingBarProvider>
-                    <AuthProvider>
-                        <MainProvider>
-                            <ModalsProvider>
-                                <QueryParamProvider adapter={ReactRouter6Adapter}>
-                                    <StateHashPrefixRedirect />
-                                    <RouterLayout envData={envData} />
-                                </QueryParamProvider>
-                            </ModalsProvider>
-                        </MainProvider>
-                    </AuthProvider>
-                </LoadingBarProvider>
-            </RouterSelector>
+            <ToastsProvider>
+                <RouterSelector envData={envData}>
+                    <LoadingBarProvider>
+                        <AuthProvider>
+                            <MainProvider>
+                                <ModalsProvider>
+                                    <QueryParamProvider adapter={ReactRouter6Adapter}>
+                                        <StateHashPrefixRedirect />
+                                        <RouterLayout envData={envData} />
+                                    </QueryParamProvider>
+                                </ModalsProvider>
+                            </MainProvider>
+                        </AuthProvider>
+                    </LoadingBarProvider>
+                </RouterSelector>
+            </ToastsProvider>
         </PushNotificationsProvider>
     );
 }

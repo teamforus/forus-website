@@ -6,7 +6,7 @@ export default interface Fund {
     id: number;
     name?: string;
     logo?: Media;
-    organization_id: number;
+    organization_id?: number;
     organization?: Organization;
     products_count_all?: number;
     products_count_approved?: number;
@@ -24,4 +24,8 @@ export default interface Fund {
     archived?: boolean;
     expired?: boolean;
     implementation?: Implementation;
+    allow_voucher_records?: boolean;
+    allow_voucher_top_ups?: boolean;
+    allow_physical_cards?: boolean;
+    limit_per_voucher?: number;
 }

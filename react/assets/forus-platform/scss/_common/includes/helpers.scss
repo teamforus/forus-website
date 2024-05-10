@@ -114,6 +114,26 @@
     }
 }
 
+@mixin webkit_scrollbar_horizontal($color: #646F79) {
+    &::-webkit-scrollbar {
+        width: 24px;
+        height: 6px;
+    }
+
+    &::-webkit-scrollbar-track {
+        background: #FFF;
+        border-left: 1px solid var(--border-color) !important;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        border-radius: 2px;
+        border: 8px solid rgba(0, 0, 0, 0);
+        background-clip: padding-box;
+        background-color: $color;
+        box-shadow: inset -1px -1px 0px rgba(0, 0, 0, 0.05), inset 1px 1px 0px rgba(0, 0, 0, 0.05);
+    }
+}
+
 @mixin anim_blink() {
     @keyframes blink {
         0% {
