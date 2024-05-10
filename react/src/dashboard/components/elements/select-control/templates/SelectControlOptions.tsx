@@ -5,6 +5,8 @@ import { SelectControlOptionsProp } from '../SelectControl';
 import SelectControlOptionItem from './elements/SelectControlOptionItem';
 
 export default function SelectControlOptions<T>({
+    id,
+    dusk,
     query,
     setQuery,
     optionsFiltered,
@@ -23,20 +25,41 @@ export default function SelectControlOptions<T>({
 }: SelectControlOptionsProp<T>) {
     const [controlId] = useState('select_control_' + uniqueId());
     const input = useRef(null);
+    const selectorRef = useRef<HTMLDivElement>(null);
+    const placeholderRef = useRef<HTMLLabelElement>(null);
 
     return (
         <div
+            id={id}
             className={'select-control ' + (className ? className : '')}
+            tabIndex={0}
             role="button"
+            data-dusk={dusk}
             aria-haspopup="listbox"
             aria-expanded={showOptions}
             aria-labelledby={controlId}
-            aria-controls={`${controlId}_options`}>
+            aria-controls={`${controlId}_options`}
+            ref={selectorRef}
+            onKeyDown={(e) => {
+                if (e.key == 'Enter') {
+                    placeholderRef?.current?.click();
+                }
+
+                if (e.key == 'Escape') {
+                    setShowOptions(false);
+                }
+            }}
+            onBlur={(e) => {
+                if (showOptions && !e.currentTarget.contains(e.relatedTarget)) {
+                    selectorRef?.current?.focus();
+                }
+            }}>
             <div className={['select-control-input', showOptions ? 'options' : ''].filter((item) => item).join(' ')}>
                 {/* Placeholder */}
                 <label
                     htmlFor={controlId}
                     role="presentation"
+                    ref={placeholderRef}
                     className="select-control-search form-control"
                     onClick={searchOption}
                     style={{ display: showOptions && allowSearch ? 'none' : 'block' }}
@@ -52,7 +75,7 @@ export default function SelectControlOptions<T>({
                         {showOptions && (
                             <input
                                 id={controlId}
-                                placeholder={placeholderValue || placeholder}
+                                placeholder={placeholder || placeholderValue}
                                 ref={input}
                                 value={query}
                                 onClick={onInputClick}

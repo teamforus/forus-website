@@ -20,8 +20,8 @@ export class IdentityEmailService<T = IdentityEmail> {
         return this.apiRequest.get(this.prefix);
     }
 
-    public store(email: string): Promise<ApiResponseSingle<T>> {
-        return this.apiRequest.post(this.prefix, { email });
+    public store(email: string, data: object = {}): Promise<ApiResponseSingle<T>> {
+        return this.apiRequest.post(this.prefix, { email, ...data });
     }
 
     public show(id: number): Promise<ApiResponseSingle<T>> {

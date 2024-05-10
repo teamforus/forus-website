@@ -1,0 +1,9 @@
+@import "ede/vars";
+@import "_common/webshop";
+
+// SHAME
+@import "ede/includes/shame";
+
+.block {
+    @import "ede/sections/blocks/block-provider";
+}

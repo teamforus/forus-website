@@ -1,80 +1,110 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import useAppConfigs from '../../../hooks/useAppConfigs';
-import { GoogleMap as GoogleMapComponent, LoadScript, Marker } from '@react-google-maps/api';
-import useEnvData from '../../../hooks/useEnvData';
+import React, { ReactElement, useCallback, useEffect, useMemo, useState } from 'react';
+import { GoogleMap as GoogleMapComponent, InfoWindow, Marker } from '@react-google-maps/api';
+import { AppConfigProp } from '../../../services/ConfigService';
 
 export function GoogleMap({
+    appConfigs,
     mapPointers = [],
     mapGestureHandling,
+    mapGestureHandlingMobile,
+    markerTemplate,
+    openFirstPointer = false,
+    centerType = null,
+    zoomLevel = 12,
+    fullscreenPosition = null,
 }: {
+    appConfigs: AppConfigProp;
+    centerType?: 'avg';
+    zoomLevel?: number;
+    fullscreenPosition?: google.maps.ControlPosition | null;
     mapPointers: Array<{ lat: string; lon: string }>;
-    mapGestureHandling?: string;
+    mapGestureHandling?: 'cooperative' | 'greedy' | 'none' | 'auto';
+    mapGestureHandlingMobile?: 'cooperative' | 'greedy' | 'none' | 'auto';
+    markerTemplate?: (item: { lat: string; lon: string }) => React.ReactElement | Array<ReactElement>;
+    openFirstPointer?: boolean;
 }) {
+    const [selectedMarker, setSelectedMarker] = React.useState(null);
     const [markers, setMarkers] = useState([]);
-    const zoomLevel = 12;
-    const appConfigs = useAppConfigs();
-    const envData = useEnvData();
 
     const avg = useCallback((values: Array<number>) => {
         return values.reduce((avg, value) => value + avg, 0) / values.length;
     }, []);
 
     const center = useMemo(() => {
-        if (mapPointers.length > 0) {
+        if (centerType == 'avg' && markers.length > 0) {
             return {
-                lat: avg(
-                    mapPointers.map((pointer) => {
-                        return typeof pointer.lat === 'string' ? parseFloat(pointer.lat) : pointer.lat;
-                    }),
-                ),
-                lng: avg(
-                    mapPointers.map((pointer) => {
-                        return typeof pointer.lon === 'string' ? parseFloat(pointer.lon) : pointer.lon;
-                    }),
-                ),
+                lat: avg(markers.map((pointer) => parseFloat(pointer.lat))),
+                lng: avg(markers.map((pointer) => parseFloat(pointer.lon))),
             };
         }
 
-        return {
-            lat: appConfigs?.map?.lat,
-            lng: appConfigs?.map?.lon,
+        const center = {
+            lat: markers.length > 0 ? parseFloat(markers[0].lat) : appConfigs.map.lat,
+            lng: markers.length > 0 ? parseFloat(markers[0].lon) : appConfigs.map.lon,
         };
-    }, [appConfigs?.map?.lat, appConfigs?.map?.lon, avg, mapPointers]);
 
-    const mapStyles = [
+        return center.lat && center.lng ? center : null;
+    }, [appConfigs?.map?.lat, appConfigs?.map?.lon, avg, centerType, markers]);
+
+    const [mapStyles] = useState([
         { featureType: 'poi.business', stylers: [{ visibility: 'off' }] },
         { featureType: 'transit', elementType: 'labels.icon', stylers: [{ visibility: 'off' }] },
-    ];
+    ]);
+
+    const [gestureHandling] = useState(
+        window.innerWidth >= 768 ? mapGestureHandling : mapGestureHandlingMobile || mapGestureHandling,
+    );
 
     useEffect(() => {
         setMarkers(
-            mapPointers.map((pointer) => ({
-                lat: typeof pointer.lat === 'string' ? parseFloat(pointer.lat) : pointer.lat,
-                lng: typeof pointer.lon === 'string' ? parseFloat(pointer.lon) : pointer.lon,
-            })),
+            mapPointers
+                .filter((pointer) => !isNaN(parseFloat(pointer.lon)) && !isNaN(parseFloat(pointer.lat)))
+                .map((pointer) => ({
+                    ...pointer,
+                    lat: typeof pointer.lat === 'string' ? parseFloat(pointer.lat) : pointer.lat,
+                    lng: typeof pointer.lon === 'string' ? parseFloat(pointer.lon) : pointer.lon,
+                })),
         );
     }, [appConfigs?.map?.lat, appConfigs?.map?.lon, avg, mapPointers]);
 
+    useEffect(() => {
+        if (openFirstPointer && markers.length === 1) {
+            setSelectedMarker(markers[0]);
+        }
+    }, [markers, openFirstPointer]);
+
     return (
         <div className={'map'}>
-            <LoadScript googleMapsApiKey={envData.config.google_maps_api_key}>
-                <GoogleMapComponent
-                    mapContainerClassName={'map-canvas'}
-                    center={{ lat: markers[0]?.lat || 0, lng: markers[0]?.lng || 0 }}
-                    zoom={zoomLevel}
-                    options={{
-                        styles: mapStyles,
-                        center: center,
-                        scrollwheel: true,
-                        disableDefaultUI: false,
-                        zoom: zoomLevel,
-                        gestureHandling: mapGestureHandling || undefined,
-                    }}>
-                    {markers.map((marker, index) => (
-                        <Marker key={index} position={marker} />
-                    ))}
-                </GoogleMapComponent>
-            </LoadScript>
+            <GoogleMapComponent
+                mapContainerClassName={'map-canvas'}
+                center={center}
+                zoom={zoomLevel}
+                options={{
+                    styles: mapStyles,
+                    scrollwheel: true,
+                    disableDefaultUI: false,
+                    gestureHandling: gestureHandling || undefined,
+                    scaleControl: true,
+                    mapTypeControl: true,
+                    fullscreenControl: true,
+                    mapTypeControlOptions: { mapTypeIds: ['roadmap', 'map_style'] },
+                    fullscreenControlOptions: {
+                        position: fullscreenPosition || window.google.maps.ControlPosition.LEFT_BOTTOM,
+                    },
+                }}>
+                {markers.map((marker, index) => (
+                    <Marker
+                        key={index}
+                        position={marker}
+                        onClick={() => (markerTemplate ? setSelectedMarker(marker) : null)}
+                    />
+                ))}
+                {markerTemplate && selectedMarker && (
+                    <InfoWindow position={selectedMarker} onCloseClick={() => setSelectedMarker(null)}>
+                        {markerTemplate(selectedMarker)}
+                    </InfoWindow>
+                )}
+            </GoogleMapComponent>
         </div>
     );
 }

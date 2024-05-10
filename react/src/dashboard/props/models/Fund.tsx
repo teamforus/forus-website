@@ -1,6 +1,7 @@
 import Organization from './Organization';
 import Media from './Media';
 import Implementation from './Implementation';
+import FundFormula from '../../../webshop/props/models/FundFormula';
 
 interface FundVoucherStatistics {
     active_vouchers_amount?: string;
@@ -21,7 +22,10 @@ interface FundVoucherStatistics {
 export default interface Fund {
     id: number;
     name?: string;
+    key?: string;
     logo?: Media;
+    description?: string;
+    description_short?: string;
     organization_id: number;
     organization?: Organization;
     products_count_all?: number;
@@ -39,6 +43,11 @@ export default interface Fund {
     allow_direct_payments?: boolean;
     archived?: boolean;
     expired?: boolean;
+    request_btn_text?: string;
+    external_link_url?: string;
+    external_link_text?: string;
+    description_html?: string;
+    description_position?: 'before' | 'after' | 'replace';
     implementation?: Implementation;
     budget?: FundVoucherStatistics & {
         used_active_vouchers?: string;
@@ -53,10 +62,15 @@ export default interface Fund {
         transaction_costs_locale?: string;
     };
     product_vouchers: FundVoucherStatistics;
-    formulas: Array<{
-        type?: string;
-        amount?: string;
-        amount_locale?: string;
-        record_type_key?: string;
+    formulas?: Array<FundFormula>;
+    faq: Array<{
+        id: number;
+        title: string;
+        description: string;
+        description_html: string;
     }>;
+    faq_title?: string;
+    allow_reimbursements?: boolean;
+    allow_physical_cards?: boolean;
+    allow_blocking_vouchers?: boolean;
 }

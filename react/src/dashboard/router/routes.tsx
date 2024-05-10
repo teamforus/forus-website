@@ -55,7 +55,9 @@ import Feature from '../components/pages/feature/Feature';
 import EventLogs from '../components/pages/eventLogs/EventLogs';
 import FinancialDashboard from '../components/pages/financial-dashboard/FinancialDashboard';
 import FinancialDashboardOverview from '../components/pages/financial-dashboard-overview/FinancialDashboardOverview';
+import TransactionBulksView from '../components/pages/transaction-bulks-view/TransactionBulksView';
 import ReimbursementCategories from '../components/pages/reimbursement-categories/ReimbursementCategories';
+import ThrowError from '../components/pages_system/ThrowError';
 
 const router = new RouterBuilder();
 
@@ -237,7 +239,7 @@ router.state('transaction-settings', <TransactionSettings />, {
     path: `/organizations/:organizationId/transaction-settings`,
 });
 
-router.state('transaction-bulk', <WIP />, {
+router.state('transaction-bulk', <TransactionBulksView />, {
     path: `/organizations/:organizationId/transaction-bulks/:id`,
 });
 
@@ -353,6 +355,11 @@ router.state('home', <Home />, {
 
 router.state('not-found', <NotFound />, {
     path: `/not-found`,
+    protected: false,
+});
+
+router.state('throw', <ThrowError />, {
+    path: `/throw`,
     protected: false,
 });
 

@@ -40,7 +40,7 @@ $primaryColorLight: #305dfb;
     --hf: var(--base-font);
 
     // text color
-    --tc: #353535;
+    --tc: #282B39;
     --htc: var(--tc);
     --tc-var: inherit;
     --tc-link: inherit;
@@ -144,6 +144,7 @@ $primaryColorLight: #305dfb;
     --showcase-item-background: var(--showcase-aside-background);
     --showcase-item-border: var(--showcase-aside-border);
     --showcase-item-border-radius: var(--showcase-aside-border-radius);
+    --showcase-item-hover-shadow: 2px 8px 14px 0px rgba(0, 0, 0, 0.10);
     
     --showcase-aside-button-color: var(--color-primary);
     --showcase-aside-button-border: 1px solid var(--color-primary);
@@ -168,4 +169,8 @@ $primaryColorLight: #305dfb;
     --breadcrumb-color: var(--color-primary);
     --breadcrumb-color-active: #353535;
     --breadcrumb-padding: 20px;
+
+    // Loader
+    --loader-background: #f5f5f5;
+    --loader-color: var(--color-primary);
 }

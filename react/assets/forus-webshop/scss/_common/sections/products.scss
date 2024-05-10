@@ -13,8 +13,8 @@
             @include cf();
             margin-bottom: 40px;
 
-            input[type=text] {
-                background: url('../img/looking-glass.png') no-repeat;
+            input[type="text"] {
+                background: url("../img/looking-glass.png") no-repeat;
                 background-position: 100% 0;
                 background-size: 60px 60px;
             }
@@ -29,21 +29,6 @@
     }
 
     @media screen and (max-width: 1700px) {
-        /*&.section-faq {
-            .section-title {
-                font: 500 2em var(--base-font);
-                text-align: left;
-            }
-        }*/
-
-       /*  &.section-products {
-            position: relative;
-
-            .section-title {
-                font: 500 2em var(--base-font);
-            }
-        } */
-
         &.section-products {
             .section-filters {
                 margin-bottom: 30px;
@@ -52,13 +37,12 @@
     }
 
     @media screen and (max-width: 1000px) {
-
         &.section-products {
             margin: 0 0 30px;
 
             .section-filters {
                 margin: 0 0 30px;
-                box-shadow: 5px 5px 20px rgba(0, 0, 0, .1);
+                box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.1);
                 border-radius: 6px;
 
                 .row {
@@ -67,12 +51,6 @@
                     .col {
                         padding: 0;
                         float: left;
-
-                        .form-group {
-                            .form-control {
-                                &:first-child {}
-                            }
-                        }
 
                         &:first-child {
                             width: 40%;
@@ -111,7 +89,7 @@
                     }
                 }
 
-                input[type=text] {
+                input[type="text"] {
                     background-size: 50px 50px;
                 }
             }
