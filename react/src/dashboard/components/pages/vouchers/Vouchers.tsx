@@ -313,22 +313,26 @@ export default function Vouchers() {
 
                         <div className="flex">
                             <div className="block block-inline-filters">
-                                <button
-                                    id="create_voucher"
-                                    className="button button-primary"
-                                    onClick={() => createVoucher()}>
-                                    <em className="mdi mdi-plus-circle icon-start" />
-                                    {t('vouchers.buttons.add_new')}
-                                </button>
+                                {hasPermission(activeOrganization, 'manage_vouchers') && (
+                                    <Fragment>
+                                        <button
+                                            id="create_voucher"
+                                            className="button button-primary"
+                                            onClick={() => createVoucher()}>
+                                            <em className="mdi mdi-plus-circle icon-start" />
+                                            {t('vouchers.buttons.add_new')}
+                                        </button>
 
-                                <button
-                                    id="voucher_upload_csv"
-                                    className="button button-primary"
-                                    onClick={() => uploadVouchersCsv()}
-                                    data-dusk="uploadVouchersBatchButton">
-                                    <em className="mdi mdi-upload icon-start" />
-                                    {t('vouchers.buttons.upload_csv')}
-                                </button>
+                                        <button
+                                            id="voucher_upload_csv"
+                                            className="button button-primary"
+                                            onClick={() => uploadVouchersCsv()}
+                                            data-dusk="uploadVouchersBatchButton">
+                                            <em className="mdi mdi-upload icon-start" />
+                                            {t('vouchers.buttons.upload_csv')}
+                                        </button>
+                                    </Fragment>
+                                )}
 
                                 <div className="form">
                                     <div className="form-group">
@@ -601,17 +605,19 @@ export default function Vouchers() {
                                                         />
                                                     </FilterItemToggle>
 
-                                                    <div className="form-actions">
-                                                        <button
-                                                            className="button button-primary button-wide"
-                                                            onClick={() => exportVouchers()}
-                                                            disabled={vouchers.meta.total == 0}>
-                                                            <em className="mdi mdi-download icon-start"> </em>
-                                                            {t('components.dropdown.export', {
-                                                                total: vouchers.meta.total,
-                                                            })}
-                                                        </button>
-                                                    </div>
+                                                    {hasPermission(activeOrganization, 'manage_vouchers') && (
+                                                        <div className="form-actions">
+                                                            <button
+                                                                className="button button-primary button-wide"
+                                                                onClick={() => exportVouchers()}
+                                                                disabled={vouchers.meta.total == 0}>
+                                                                <em className="mdi mdi-download icon-start"> </em>
+                                                                {t('components.dropdown.export', {
+                                                                    total: vouchers.meta.total,
+                                                                })}
+                                                            </button>
+                                                        </div>
+                                                    )}
                                                 </div>
                                             </div>
                                         )}
@@ -1006,7 +1012,11 @@ export default function Vouchers() {
                                                                             Bekijken
                                                                         </StateNavLink>
 
-                                                                        {!voucher.is_granted &&
+                                                                        {hasPermission(
+                                                                            activeOrganization,
+                                                                            'manage_vouchers',
+                                                                        ) &&
+                                                                            !voucher.is_granted &&
                                                                             !voucher.expired &&
                                                                             voucher.state != 'deactivated' && (
                                                                                 <Fragment>

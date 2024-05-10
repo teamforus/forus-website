@@ -320,86 +320,90 @@ export default function VouchersViewComponent() {
                             </div>
                         </div>
 
-                        <div className="flex flex-self-start">
-                            <div className="flex-row">
-                                <div className="button-group">
-                                    {showMakeTransactionButton && fund?.allow_voucher_top_ups && (
-                                        <div
-                                            className="button button-default button-sm"
-                                            onClick={() => makeTopUpTransaction()}>
-                                            <em className="mdi mdi-cash-plus icon-start" />
-                                            {t('vouchers.buttons.make_top_up_transaction')}
-                                        </div>
-                                    )}
-
-                                    {showMakeTransactionButton && (
-                                        <div
-                                            className="button button-primary button-sm"
-                                            onClick={() => makeTransaction()}>
-                                            <em className="mdi mdi-cash-fast icon-start" />
-                                            {t('vouchers.buttons.make_transaction')}
-                                        </div>
-                                    )}
-
-                                    {!voucher.expired && voucher.state === 'active' && (
-                                        <div
-                                            className="button button-danger button-sm"
-                                            onClick={() => deactivateVoucher()}>
-                                            <em className="mdi mdi-close icon-start" />
-                                            Deactiveren
-                                        </div>
-                                    )}
-
-                                    {!voucher.expired && voucher.state === 'deactivated' && !voucher.is_external && (
-                                        <div
-                                            className="button button-danger button-sm"
-                                            onClick={() => activateVoucher()}>
-                                            <em className="mdi mdi-alert-outline icon-start" />
-                                            Activeren
-                                        </div>
-                                    )}
-
-                                    {physicalCardsAvailable && !voucher.expired && (
-                                        <div
-                                            className="button button-default button-sm"
-                                            onClick={() => orderPhysicalCard()}>
-                                            <em className="mdi mdi-card-text-outline icon-start" />
-                                            Plastic pas bestellen
-                                        </div>
-                                    )}
-
-                                    {physicalCardsAvailable && !voucher.physical_card && (
-                                        <div
-                                            className="button button-default button-sm"
-                                            onClick={() => addPhysicalCard()}>
-                                            <em className="mdi mdi-ticket-account icon-start" />
-                                            {t('vouchers.buttons.physical_card_add')}
-                                        </div>
-                                    )}
-
-                                    {physicalCardsAvailable && voucher.physical_card && (
-                                        <div
-                                            className="button button-default button-sm"
-                                            onClick={() => deletePhysicalCard()}>
-                                            <em className="mdi mdi-ticket-account icon-start" />
-                                            {t('vouchers.buttons.physical_card_delete')}
-                                        </div>
-                                    )}
-
-                                    {!voucher.expired &&
-                                        !voucher.is_granted &&
-                                        voucher.state === 'pending' &&
-                                        !voucher.is_external && (
+                        {hasPermission(activeOrganization, 'manage_vouchers') && (
+                            <div className="flex flex-self-start">
+                                <div className="flex-row">
+                                    <div className="button-group">
+                                        {showMakeTransactionButton && fund?.allow_voucher_top_ups && (
                                             <div
-                                                className="button button-primary button-sm"
-                                                onClick={() => showQrCode()}>
-                                                <em className="mdi mdi-qrcode icon-start " />
-                                                {t('vouchers.labels.qr_code')}
+                                                className="button button-default button-sm"
+                                                onClick={() => makeTopUpTransaction()}>
+                                                <em className="mdi mdi-cash-plus icon-start" />
+                                                {t('vouchers.buttons.make_top_up_transaction')}
                                             </div>
                                         )}
+
+                                        {showMakeTransactionButton && (
+                                            <div
+                                                className="button button-primary button-sm"
+                                                onClick={() => makeTransaction()}>
+                                                <em className="mdi mdi-cash-fast icon-start" />
+                                                {t('vouchers.buttons.make_transaction')}
+                                            </div>
+                                        )}
+
+                                        {!voucher.expired && voucher.state === 'active' && (
+                                            <div
+                                                className="button button-danger button-sm"
+                                                onClick={() => deactivateVoucher()}>
+                                                <em className="mdi mdi-close icon-start" />
+                                                Deactiveren
+                                            </div>
+                                        )}
+
+                                        {!voucher.expired &&
+                                            voucher.state === 'deactivated' &&
+                                            !voucher.is_external && (
+                                                <div
+                                                    className="button button-danger button-sm"
+                                                    onClick={() => activateVoucher()}>
+                                                    <em className="mdi mdi-alert-outline icon-start" />
+                                                    Activeren
+                                                </div>
+                                            )}
+
+                                        {physicalCardsAvailable && !voucher.expired && (
+                                            <div
+                                                className="button button-default button-sm"
+                                                onClick={() => orderPhysicalCard()}>
+                                                <em className="mdi mdi-card-text-outline icon-start" />
+                                                Plastic pas bestellen
+                                            </div>
+                                        )}
+
+                                        {physicalCardsAvailable && !voucher.physical_card && (
+                                            <div
+                                                className="button button-default button-sm"
+                                                onClick={() => addPhysicalCard()}>
+                                                <em className="mdi mdi-ticket-account icon-start" />
+                                                {t('vouchers.buttons.physical_card_add')}
+                                            </div>
+                                        )}
+
+                                        {physicalCardsAvailable && voucher.physical_card && (
+                                            <div
+                                                className="button button-default button-sm"
+                                                onClick={() => deletePhysicalCard()}>
+                                                <em className="mdi mdi-ticket-account icon-start" />
+                                                {t('vouchers.buttons.physical_card_delete')}
+                                            </div>
+                                        )}
+
+                                        {!voucher.expired &&
+                                            !voucher.is_granted &&
+                                            voucher.state === 'pending' &&
+                                            !voucher.is_external && (
+                                                <div
+                                                    className="button button-primary button-sm"
+                                                    onClick={() => showQrCode()}>
+                                                    <em className="mdi mdi-qrcode icon-start " />
+                                                    {t('vouchers.labels.qr_code')}
+                                                </div>
+                                            )}
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        )}
                     </div>
                 </div>
 
@@ -443,21 +447,27 @@ export default function VouchersViewComponent() {
                         {voucher.fund.type == 'subsidies' && (
                             <div className="keyvalue-item">
                                 <div className="keyvalue-key">{t('vouchers.labels.limit_multiplier')}</div>
-                                <div className="keyvalue-value">
-                                    <div className="form">
-                                        <NumericControl
-                                            minValue={1}
-                                            maxValue={1000}
-                                            value={voucher.limit_multiplier}
-                                            apply={true}
-                                            applyText={'Aanpassen'}
-                                            onChange={(value) => setVoucher({ ...voucher, limit_multiplier: value })}
-                                            onSubmit={(value: number) =>
-                                                submitLimitMultiplier(value, voucher.limit_multiplier)
-                                            }
-                                        />
+                                {hasPermission(activeOrganization, 'manage_vouchers') ? (
+                                    <div className="keyvalue-value">
+                                        <div className="form">
+                                            <NumericControl
+                                                minValue={1}
+                                                maxValue={1000}
+                                                value={voucher.limit_multiplier}
+                                                apply={true}
+                                                applyText={'Aanpassen'}
+                                                onChange={(value) =>
+                                                    setVoucher({ ...voucher, limit_multiplier: value })
+                                                }
+                                                onSubmit={(value: number) =>
+                                                    submitLimitMultiplier(value, voucher.limit_multiplier)
+                                                }
+                                            />
+                                        </div>
                                     </div>
-                                </div>
+                                ) : (
+                                    <div className="keyvalue-value">{voucher.limit_multiplier}</div>
+                                )}
                             </div>
                         )}
                         {voucher.product && (
@@ -642,17 +652,21 @@ export default function VouchersViewComponent() {
                 </div>
             )}
 
-            <VoucherTransactions
-                organization={activeOrganization}
-                blockTitle={'Transacties'}
-                filterValues={transactionsFilters.activeValues}
-            />
+            {hasPermission(activeOrganization, 'manage_vouchers') && (
+                <Fragment>
+                    <VoucherTransactions
+                        organization={activeOrganization}
+                        blockTitle={'Transacties'}
+                        filterValues={transactionsFilters.activeValues}
+                    />
 
-            <VoucherTransactions
-                organization={activeOrganization}
-                blockTitle={'Reserveringen'}
-                filterValues={reservationTransactionsFilters.activeValues}
-            />
+                    <VoucherTransactions
+                        organization={activeOrganization}
+                        blockTitle={'Reserveringen'}
+                        filterValues={reservationTransactionsFilters.activeValues}
+                    />
+                </Fragment>
+            )}
         </Fragment>
     );
 }

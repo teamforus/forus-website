@@ -26,7 +26,7 @@ export default function LayoutAsideSponsor({ organization }: { organization: Org
                 icon={'vouchers'}
                 route={'vouchers'}
                 routeParams={{ organizationId: organization?.id }}
-                show={hasPermission(organization, 'manage_vouchers')}
+                show={hasPermission(organization, ['manage_vouchers', 'view_vouchers'])}
                 id={'vouchers'}
                 dusk={'vouchersPage'}
             />
@@ -35,7 +35,7 @@ export default function LayoutAsideSponsor({ organization }: { organization: Org
                 icon={'product_voucher'}
                 route={'product-vouchers'}
                 routeParams={{ organizationId: organization?.id }}
-                show={hasPermission(organization, 'manage_vouchers')}
+                show={hasPermission(organization, ['manage_vouchers', 'view_vouchers'])}
                 id={'product_vouchers'}
             />
             <LayoutAsideNavItem

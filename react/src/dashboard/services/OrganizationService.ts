@@ -215,7 +215,7 @@ export class OrganizationService<T = Organization> {
         return {
             sponsor: [
                 { permissions: ['manage_funds', 'view_finances', 'view_funds'], name: 'organization-funds' },
-                { permissions: ['manage_vouchers'], name: 'vouchers' },
+                { permissions: ['manage_vouchers', 'view_vouchers'], name: 'vouchers' },
                 { permissions: ['view_finances'], name: 'transactions' },
                 { permissions: ['validate_records'], name: 'csv-validation' },
             ],

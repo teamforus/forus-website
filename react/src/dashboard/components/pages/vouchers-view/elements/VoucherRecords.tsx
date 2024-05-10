@@ -14,6 +14,7 @@ import usePaginatorService from '../../../../modules/paginator/services/usePagin
 import ThSortable from '../../../elements/tables/ThSortable';
 import ModalDangerZone from '../../../modals/ModalDangerZone';
 import usePushSuccess from '../../../../hooks/usePushSuccess';
+import { hasPermission } from '../../../../helpers/utils';
 
 export default function VoucherRecords({ voucher, organization }: { voucher: Voucher; organization: Organization }) {
     const { t } = useTranslation();
@@ -111,10 +112,13 @@ export default function VoucherRecords({ voucher, organization }: { voucher: Vou
                                     />
                                 </div>
                             </div>
-                            <div className="button button-primary button-sm" onClick={() => editRecord()}>
-                                <div className="mdi mdi-plus-circle icon-start" />
-                                {t('voucher_records.buttons.add_record')}
-                            </div>
+
+                            {hasPermission(organization, 'manage_vouchers') && (
+                                <div className="button button-primary button-sm" onClick={() => editRecord()}>
+                                    <div className="mdi mdi-plus-circle icon-start" />
+                                    {t('voucher_records.buttons.add_record')}
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
@@ -153,12 +157,14 @@ export default function VoucherRecords({ voucher, organization }: { voucher: Vou
                                             label={t('voucher_records.labels.note')}
                                             value="note"
                                         />
-                                        <ThSortable
-                                            className="th-narrow text-right"
-                                            filter={filter}
-                                            label={t('voucher_records.labels.action')}
-                                            value="note"
-                                        />
+                                        {hasPermission(organization, 'manage_vouchers') && (
+                                            <ThSortable
+                                                className="th-narrow text-right"
+                                                filter={filter}
+                                                label={t('voucher_records.labels.action')}
+                                                value="note"
+                                            />
+                                        )}
                                     </tr>
 
                                     {records.data.map((record, index: number) => (
@@ -170,20 +176,22 @@ export default function VoucherRecords({ voucher, organization }: { voucher: Vou
                                             <td className={record.note ? '' : 'text-muted'}>
                                                 {record.note || 'No note'}
                                             </td>
-                                            <td>
-                                                <div className="button-group">
-                                                    <div
-                                                        className="button button-sm button-icon button-default"
-                                                        onClick={() => editRecord(record)}>
-                                                        <div className="mdi mdi-pencil-outline icon-start" />
+                                            {hasPermission(organization, 'manage_vouchers') && (
+                                                <td>
+                                                    <div className="button-group">
+                                                        <div
+                                                            className="button button-sm button-icon button-default"
+                                                            onClick={() => editRecord(record)}>
+                                                            <div className="mdi mdi-pencil-outline icon-start" />
+                                                        </div>
+                                                        <div
+                                                            className="button button-sm button-icon button-danger"
+                                                            onClick={() => deleteRecord(record)}>
+                                                            <div className="mdi mdi-delete-outline icon-start" />
+                                                        </div>
                                                     </div>
-                                                    <div
-                                                        className="button button-sm button-icon button-danger"
-                                                        onClick={() => deleteRecord(record)}>
-                                                        <div className="mdi mdi-delete-outline icon-start" />
-                                                    </div>
-                                                </div>
-                                            </td>
+                                                </td>
+                                            )}
                                         </tr>
                                     ))}
                                 </tbody>
