@@ -27,6 +27,7 @@ export default interface Reservation {
     birth_date_locale?: string;
     identity_email?: string;
     identity_physical_card?: string;
+    extra_payment_expires_in?: number;
     archivable?: boolean;
     archived?: boolean;
     canceled?: boolean;
@@ -37,13 +38,17 @@ export default interface Reservation {
     rejected_at_locale?: string;
     expire_at?: string;
     expire_at_locale?: string;
+    canceled_at?: string;
+    canceled_at_locale?: string;
     user_note?: string;
     acceptable?: boolean;
     rejectable?: boolean;
+    cancelable?: boolean;
     custom_fields?: Array<{
         label: string;
         value: string;
     }>;
+    records_title?: string;
     fund: {
         id: number;
         name: string;

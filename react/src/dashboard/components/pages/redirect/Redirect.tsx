@@ -3,6 +3,7 @@ import { NavLink, useSearchParams } from 'react-router-dom';
 import { getStateRouteUrl } from '../../../modules/state_router/Router';
 import useAssetUrl from '../../../hooks/useAssetUrl';
 
+// todo: investigate
 export default function Redirect() {
     const [params] = useSearchParams();
     const assetUrl = useAssetUrl();

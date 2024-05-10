@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 
-export default function PdfPreview({ rawPdfFile }: { rawPdfFile?: Blob }) {
+export default function PdfPreview({ rawPdfFile, className = '' }: { rawPdfFile?: Blob; className?: string }) {
     const element = useRef(null);
 
     useEffect(() => {
@@ -53,5 +53,5 @@ export default function PdfPreview({ rawPdfFile }: { rawPdfFile?: Blob }) {
         });
     }, [rawPdfFile]);
 
-    return <div className="block block-pdf-preview" ref={element} />;
+    return <div className={className} ref={element} />;
 }

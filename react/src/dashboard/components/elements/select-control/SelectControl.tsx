@@ -1,8 +1,10 @@
 import React, { FunctionComponent, UIEvent, useCallback, useEffect, useState } from 'react';
 import './styles/ui-select.scss';
 import { uniqueId } from 'lodash';
+import SelectControlOptions from './templates/SelectControlOptions';
 
 type SelectControlProps<T> = {
+    id?: string;
     options?: Array<T>;
     propKey?: string | null;
     propValue?: string | null;
@@ -17,7 +19,8 @@ type SelectControlProps<T> = {
     disabled?: boolean;
     className?: string;
     scrollSize?: number;
-    optionsComponent: FunctionComponent<SelectControlOptionsProp<T>>;
+    dusk?: string;
+    optionsComponent?: FunctionComponent<SelectControlOptionsProp<T>>;
 };
 
 export interface OptionType<T> {
@@ -29,6 +32,8 @@ export interface OptionType<T> {
 }
 
 export type SelectControlOptionsProp<T> = {
+    id?: string;
+    dusk: string;
     query: string;
     setQuery: (query: string) => void;
     optionsFiltered: Array<OptionType<T>>;
@@ -49,6 +54,7 @@ export type SelectControlOptionsProp<T> = {
 };
 
 export default function SelectControl<T>({
+    id = null,
     propKey = null,
     propValue = 'name',
     options = [],
@@ -62,7 +68,8 @@ export default function SelectControl<T>({
     disabled = false,
     className = null,
     scrollSize = 50,
-    optionsComponent,
+    optionsComponent = SelectControlOptions,
+    dusk = null,
 }: SelectControlProps<T>) {
     const [query, setQuery] = useState('');
     const [modelValue, setModelValue] = useState(null);
@@ -219,6 +226,8 @@ export default function SelectControl<T>({
     }, [query, scrollSize, searchInputChanged]);
 
     return React.createElement(optionsComponent, {
+        id,
+        dusk,
         optionsFiltered,
         selectOption,
         placeholder,

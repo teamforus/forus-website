@@ -6,9 +6,21 @@
     .tooltip-icon {
         width: 16px;
         height: 16px;
-        background: url('../img/Info.png') no-repeat 50% 50%;
-        background-size: contain;
         cursor: pointer;
+
+        .mdi {
+            line-height: 16px;
+            height: 16px;
+            text-align: center;
+            width: 16px;
+            font-size: 18px;
+            color: #7b8893;
+            display: block;
+
+            &:hover {
+                color: var(--color-primary);
+            }
+        }
     }
 
     .tooltip {
@@ -26,7 +38,7 @@
         display: none;
 
         &:not(.tooltip-bottom) {
-            left: 24px;
+            left: 26px;
             top: 8px;
             transform: translate(0, -50%);
             
@@ -86,10 +98,6 @@
     }
 
     &:hover {
-        .tooltip-icon {
-            background-image: url('../img/Info_hover.png');
-        }
-
         .tooltip {
             display: block;
         }
