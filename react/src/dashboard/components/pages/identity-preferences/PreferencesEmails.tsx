@@ -20,7 +20,7 @@ export default function PreferencesEmails() {
     const [showForm, setShowForm] = useState(false);
     const [emails, setEmails] = useState<PaginationData<IdentityEmail>>(null);
     const identityEmailService = useIdentityEmailsService();
-    const authIdentity2FAState = useAuthIdentity2FAState();
+    const auth2FAState = useAuthIdentity2FAState();
 
     const form = useFormBuilder({ email: '' }, (values) => {
         setProgress(0);
@@ -62,20 +62,19 @@ export default function PreferencesEmails() {
                 return false;
             }
 
-            updateEmail(email, { errors: null, disabled: true });
             setProgress(0);
+            updateEmail(email, { errors: null, disabled: true });
 
             identityEmailService
                 .resendVerification(email.id)
-                .then(
-                    () => {
-                        pushSuccess('Verificatie e-mail opnieuw verstuurd!');
-                        setTimeout(() => updateEmail(email, { disabled: false, errors: null }), 1000);
-                    },
-                    (res: ResponseError) => {
-                        updateEmail(email, { errors: res.status === 429 ? [res.data.message] : null });
-                    },
-                )
+                .then(() => {
+                    pushSuccess('Verificatie e-mail opnieuw verstuurd!');
+                    setTimeout(() => updateEmail(email, { disabled: false, errors: null }), 2000);
+                })
+                .catch((res: ResponseError) => {
+                    updateEmail(email, { disabled: false });
+                    updateEmail(email, { errors: res.status === 429 ? [res.data.message] : null });
+                })
                 .finally(() => setProgress(100));
         },
         [identityEmailService, pushSuccess, updateEmail, setProgress],
@@ -135,16 +134,16 @@ export default function PreferencesEmails() {
     }, [form]);
 
     useEffect(() => {
-        if (authIdentity2FAState?.restrictions?.emails?.restricted == false) {
+        if (auth2FAState && !auth2FAState?.restrictions?.emails?.restricted) {
             fetchEmails();
         }
-    }, [fetchEmails, authIdentity2FAState?.restrictions?.emails?.restricted]);
+    }, [auth2FAState, fetchEmails]);
 
-    if (authIdentity2FAState?.restrictions?.emails?.restricted !== false) {
+    if (auth2FAState?.restrictions?.emails?.restricted !== false) {
         return (
             <Auth2FARestriction
                 type={'emails'}
-                items={authIdentity2FAState?.restrictions?.emails.funds}
+                items={auth2FAState?.restrictions?.emails.funds}
                 itemName={'name'}
                 itemThumbnail={'logo.sizes.thumbnail'}
                 defaultThumbnail={'fund-thumbnail'}
@@ -152,7 +151,7 @@ export default function PreferencesEmails() {
         );
     }
 
-    if (!emails || !authIdentity2FAState) {
+    if (!emails || !auth2FAState) {
         return <LoadingCard />;
     }
 
@@ -254,7 +253,7 @@ export default function PreferencesEmails() {
             {showForm && form.state !== 'success' && (
                 <div className="card-section card-section-primary">
                     <div className="card-heading">Voeg een e-mailadres toe</div>
-                    <form onSubmit={(e) => form.submit(e)} data-dusk="identityNewEmailForm" className="form row">
+                    <form onSubmit={form.submit} data-dusk="identityNewEmailForm" className="form row">
                         <div className="col col-lg-6 form-group">
                             <div className="form-label form-label-required">E-mailadres</div>
                             <div className="flex-row">

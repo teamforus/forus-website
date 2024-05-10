@@ -14,6 +14,7 @@ import { PushNotificationsProvider } from './modules/push_notifications/context/
 import { LoadingBarProvider } from './modules/loading_bar/context/LoadingBarContext';
 import ApiRequestService from './services/ApiRequestService';
 import StateHashPrefixRedirect from './modules/state_router/StateHashPrefixRedirect';
+import AwsRumScript from './modules/aws_rum/AwsRumScript';
 
 i18n.use(initReactI18next)
     .init({
@@ -83,6 +84,8 @@ export default function Dashboard({ envData }: { envData: EnvDataProp }): React.
                     </AuthProvider>
                 </LoadingBarProvider>
             </RouterSelector>
+
+            <AwsRumScript awsRum={envData.config?.aws_rum} />
         </PushNotificationsProvider>
     );
 }

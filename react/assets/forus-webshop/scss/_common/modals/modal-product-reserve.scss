@@ -1,67 +1,11 @@
-&.modal-product-reserve {
+.modal.modal-product-reserve {
     cursor: default;
-    z-index: 99;
-
-    .modal-title {
-        font: 700 22px/30px var(--base-font);
-        margin: 0 0 5px;
-        color: #222;
-    }
-
-    .modal-subtitle {
-        font: 400 14px/21px var(--base-font);
-        color: #595959;
-        margin-bottom: 15px;
-
-        &:last-child {
-            margin-bottom: 0;
-        }
-    }
-
-    .modal-window {
-        background: #fff;
-        width: 820px;
-    }
-
-    .modal-header {
-        padding: 25px 25px 20px;
-        text-align: center;
-    }
 
     .modal-body {
         overflow: auto;
         @include webkit_scrollbar();
-    }
-
-    .modal-content {
-        overflow: visible;
         box-shadow: none;
         background: none;
-
-        .modal-section {
-            overflow: visible;
-            padding: 25px;
-
-            &.modal-section-narrow {
-                padding: 15px 20px;
-            }
-        }
-
-        .description {
-            font: 400 14px/22px var(--base-font);
-            margin-bottom: 15px;
-            padding: 0;
-            color: #595959;
-
-            a {
-                color: var(--color-primary);
-                text-decoration: underline;
-            }
-
-            &:last-child {
-                margin-bottom: 0;
-            }
-        }
 
         .payment-details {
             border: 1px solid var(--border-color);
@@ -90,135 +34,112 @@
             .divider {
                 height: 1px;
                 width: 100%;
-                background: #E5E5E5;
+                background: #e5e5e5;
                 margin: 12px 0;
             }
         }
-    }
 
-    .reservation-progress {
-        width: 50%;
-        display: flex;
-        position: relative;
-        margin-left: auto;
-        margin-right: auto;
-        margin-bottom: 15px;
-
-        .reservation-step {
+        .reservation-progress {
+            width: 50%;
             display: flex;
-            flex-grow: 1;
-            text-align: right;
-            font: 500 14px/30px var(--base-font);
-            color: #525252;
-            border: none;
             position: relative;
-            flex-basis: 1;
+            display: flex;
+            flex-direction: row;
+            align-self: center;
+            padding: 10px 0 5px;
 
-            .reservation-step-border {
+            .reservation-step {
+                display: flex;
                 flex-grow: 1;
-                background: #ebedf0;
-                height: 4px;
-                border-radius: var(--border-radius);
-                transition: background-color .4s;
-
-                &:before {
-                    content: "";
-                    display: block;
-                    border-radius: inherit;
-                    background: #ebedf0;
-                    @include fill_parent();
-                }
-            }
-
-            .reservation-step-separator {
-                content: "";
-                display: block;
-                position: absolute;
-                top: 50%;
-                right: -4px;
-                width: 12px;
-                height: 12px;
-                border-radius: 12px;
-                transform: translate(0, -50%);
-                background-color: #dbdcdb;
-                border: 2.5px solid #fff;
-                z-index: 1;
-                transition: background-color .4s;
-            }
-
-            &:first-child {
-                flex-basis: .75;
-            }
-
-            &:last-child {
-                flex-basis: .75;
-
-                .reservation-step-separator {
-                    display: none;
-                }
-            }
-
-            &.reservation-step-info {
-                width: 40px;
-                max-width: 40px;
-                text-align: center;
-                font-size: 24px;
-
-                .mdi {
-                    color: var(--sign_up_accent_color);
-                }
-            }
-
-            &.reservation-step-active {
-                color: #cdced2;
+                text-align: right;
+                font: 500 14px/30px var(--base-font);
+                color: #525252;
+                border: none;
+                position: relative;
+                flex-basis: 1;
 
                 .reservation-step-border {
+                    flex-grow: 1;
+                    background: #ebedf0;
+                    height: 4px;
+                    border-radius: var(--border-radius);
+                    transition: background-color 0.4s;
+
                     &:before {
                         content: "";
                         display: block;
+                        border-radius: inherit;
+                        background: #ebedf0;
                         @include fill_parent();
-                        background-color: #cdced2;
                     }
                 }
 
                 .reservation-step-separator {
-                    background-color: #282b39;
+                    content: "";
+                    display: block;
+                    position: absolute;
+                    top: 50%;
+                    right: -4px;
+                    width: 12px;
+                    height: 12px;
+                    border-radius: 12px;
+                    transform: translate(0, -50%);
+                    background-color: #dbdcdb;
+                    border: 2.5px solid #fff;
+                    z-index: 1;
+                    transition: background-color 0.4s;
                 }
-            }
 
-            &.reservation-step-done {
-                .reservation-step-border {
-                    &:before {
+                &:first-child {
+                    flex-basis: 0.75;
+                }
+
+                &:last-child {
+                    flex-basis: 0.75;
+
+                    .reservation-step-separator {
+                        display: none;
+                    }
+                }
+
+                &.reservation-step-info {
+                    width: 40px;
+                    max-width: 40px;
+                    text-align: center;
+                    font-size: 24px;
+
+                    .mdi {
+                        color: var(--sign_up_accent_color);
+                    }
+                }
+
+                &.reservation-step-active {
+                    color: #cdced2;
+
+                    .reservation-step-border {
+                        &:before {
+                            content: "";
+                            display: block;
+                            @include fill_parent();
+                            background-color: #cdced2;
+                        }
+                    }
+
+                    .reservation-step-separator {
+                        background-color: #282b39;
+                    }
+                }
+
+                &.reservation-step-done {
+                    .reservation-step-border {
+                        &:before {
+                            background-color: var(--color-primary);
+                        }
+                    }
+
+                    .reservation-step-separator {
                         background-color: var(--color-primary);
                     }
-                }
-
-                .reservation-step-separator {
-                    background-color: var(--color-primary);
-                }
-            }
-        }
-
-        &:last-child {
-            margin-bottom: 0;
-        }
-    }
-
-    .reservation-overview {
-        .overview-item {
-            margin: 0 0 10px;
-
-            .overview-item-label {
-                font-size: 14px;
-                font-weight: 700;
-            }
-
-            .overview-item-value {
-                font-size: 14px;
-                font-weight: 500;
-
-                &.overview-item-value-empty {
-                    font-style: italic;
                 }
             }
 
@@ -226,85 +147,62 @@
                 margin-bottom: 0;
             }
         }
-    }
 
-    .reservation-success {
-        text-align: center;
-        padding: 40px 0;
+        .reservation-overview {
+            .overview-list {
+                display: flex;
+                flex-direction: row;
+                flex-wrap: wrap;
+                border: 1px solid var(--border-color);
+                border-radius: var(--border-radius);
+                padding: 20px;
+                row-gap: 15px;
 
-        .reservation-success-media {
-            margin-bottom: 20px;
-            text-align: center;
+                .overview-item {
+                    display: flex;
+                    flex-direction: column;
+                    flex: 0 1 50%;
+                    padding-right: 10px;
 
-            svg {
-                display: block;
-                margin: auto;
+                    .overview-item-label {
+                        font: 600 12px/18px var(--base-font);
+                        color: #595959;
+                    }
+
+                    .overview-item-value {
+                        font: 600 14px/21px var(--base-font);
+                        color: #222;
+
+                        &.overview-item-value-empty {
+                            font-style: italic;
+                        }
+                    }
+
+                    &.overview-item-full {
+                        flex: 0 1 100%;
+                    }
+                }
             }
         }
 
-        .reservation-success-title {
-            font: 700 16px/24px var(--base-font);
-            margin: 0 0 5px;
-        }
-
-        .reservation-success-subtitle {
-            font: 400 14px/20px var(--base-font);
-            margin: 0 0 30px;
-        }
-    }
-
-    .form {
-        .form-label {
-            color: #595959;
-            font: 600 11px/16px var(--base-font);
-        }
-    }
-
-    &.modal-sm {
-        .modal-window {
-            width: 800px;
+        .form {
+            .form-label {
+                color: #595959;
+                font: 600 11px/16px var(--base-font);
+            }
         }
     }
 
     @media screen and (max-width: 1000px) {
-        overflow: scroll;
-        border-radius: 0;
-
         .modal-window {
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            border-radius: 0;
-        }
-
-        .modal-header {
-            border-radius: 0;
-        }
-
-        .modal-body {
-            display: flex;
-            flex-grow: 1;
-        }
-
-        .modal-content {
-            flex-grow: 1;
-            padding: 0;
-            flex-direction: column;
-            overflow: auto;
-
-            .block.block-vouchers {
-                display: flex;
-                flex-grow: 1;
-                flex-direction: column;
-                max-height: initial;
-                height: auto;
-            }
-
-            .modal-section {
-                min-height: 100%;
-                flex-grow: 1;
-                justify-content: center;
-                padding: 20px;
+            .modal-body {
+                .block.block-vouchers {
+                    display: flex;
+                    flex-grow: 1;
+                    flex-direction: column;
+                    max-height: initial;
+                    height: auto;
+                }
 
                 .block-vouchers {
                     margin: 0;
@@ -364,7 +262,7 @@
                                 }
 
                                 .voucher-organization {
-                                    font: 400 11px/14px  var(--base-font);
+                                    font: 400 11px/14px var(--base-font);
                                     color: #595959;
                                     padding-bottom: 5px;
                                 }
@@ -413,7 +311,6 @@
                                         font: 600 11px/25px var(--base-font);
                                     }
                                 }
-
                             }
 
                             .voucher-overview {
@@ -427,8 +324,8 @@
 
                                 & + .voucher-records {
                                     margin: 0 -12px -12px;
-                                    box-shadow: 0 1px 0 0 #E5E5E5 inset;
-                                    background: #FBFBFB;
+                                    box-shadow: 0 1px 0 0 #e5e5e5 inset;
+                                    background: #fbfbfb;
                                     width: calc(100% + 24px);
 
                                     .block.block-voucher-records {
@@ -444,7 +341,9 @@
                                                 padding: 15px;
                                                 border: 0;
                                                 border-radius: 0;
-                                                box-shadow: 0 0 0 0 #D4D9DD inset, 0 1px 0 0 #D4D9DD inset;
+                                                box-shadow:
+                                                    0 0 0 0 #d4d9dd inset,
+                                                    0 1px 0 0 #d4d9dd inset;
                                             }
                                         }
 
@@ -506,37 +405,23 @@
                 }
 
                 .reservation-overview {
-                    text-align: left;
-                    border: 1px solid var(--border-color);
-                    border-radius: var(--border-radius);
-                    padding: 12px;
+                    .overview-list {
+                        padding: 15px;
 
-                    .overview-item {
-                        .overview-item-label {
-                            color: #595959;
-                            font: 600 11px/16px var(--base-font);
-                        }
+                        .overview-item {
+                            .overview-item-label {
+                                color: #595959;
+                                font: 600 11px/16px var(--base-font);
+                            }
 
-                        .overview-item-value {
-                            color: #222;
-                            font: 600 12px/18px var(--base-font);
+                            .overview-item-value {
+                                color: #222;
+                                font: 600 12px/18px var(--base-font);
+                            }
                         }
                     }
                 }
             }
-        }
-
-        .modal-footer {
-            padding: 12px 15px;
-
-            .button {
-                font: 700 13px/18px var(--base-font);
-            }
-        }
-
-        .reservation-progress {
-            width: 100%;
-            padding: 0 30px;
         }
     }
 }

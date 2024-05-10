@@ -66,7 +66,7 @@
                     left: 14px;
                     top: 30px;
                     bottom: 0;
-                    content: "";
+                    content: '';
                     display: block;
                     width: 2px;
                     background-color: var(--border-color);
@@ -98,7 +98,11 @@
                     padding-bottom: 0;
 
                     .pre-check-progress-step-icon {
-                        background: url("../img/icon-pre-check-totals-inactive.svg") center no-repeat;
+                        @if ($buildReact) {
+                            background: url('./assets/img/icon-pre-check-totals-inactive.svg') center no-repeat;
+                        } @else {
+                            background: url('../img/icon-pre-check-totals-inactive.svg') center no-repeat;
+                        }
                     }
 
                     &:before {
@@ -107,7 +111,11 @@
 
                     &.active {
                         .pre-check-progress-step-icon {
-                            background: url("../img/icon-pre-check-totals-active.svg") center no-repeat;
+                            @if ($buildReact) {
+                                background: url('./assets/img/icon-pre-check-totals-active.svg') center no-repeat;
+                            } @else {
+                                background: url('../img/icon-pre-check-totals-active.svg') center no-repeat;
+                            }
                             color: #fff;
                             background-color: var(--color-primary);
                         }
@@ -120,29 +128,19 @@
             }
         }
 
-        .pre-check-amounts {
-            margin: 0 0 25px;
-            background-color: #fbfbfb;
-            padding: 12px 16px;
-            border: 1px solid var(--border-color);
-            border-radius: var(--border-radius);
+        .pre-check-actions {
+            .button {
+                margin-bottom: 10px;
 
-            .pre-check-amount {
-                display: flex;
-                justify-content: space-between;
-                gap: 10px;
-
-                .pre-check-amount-title {
-                    font: 600 14px/21px var(--base-font);
+                &.button-download {
+                    color: #fff;
+                    background: var(--color-primary);
+                    border: 1px solid var(--color-primary);
                 }
 
-                .pre-check-amount-value {
-                    font: 600 14px/21px var(--base-font);
+                &:last-child {
+                    margin-bottom: 0;
                 }
-            }
-
-            &:last-child {
-                margin-bottom: 0;
             }
         }
     }
@@ -226,7 +224,7 @@
                 top: 5px;
                 bottom: 5px;
                 right: 5px;
-                content: "";
+                content: '';
                 display: block;
                 background-color: #fff;
                 border-radius: 100px;
@@ -305,8 +303,6 @@
                 font: 600 16px/22px var(--base-font);
                 border-bottom: 1px solid var(--border-color);
                 padding: 15px 20px;
-                padding-left: 20px;
-                padding-right: 20px;
                 margin: 0;
 
                 &:last-child {
@@ -350,10 +346,6 @@
                 }
             }
 
-            .pre-check-amounts {
-                padding: 15px 20px;
-            }
-
             &.pre-check-progress-complete {
                 margin: 0;
                 border: 1px solid var(--border-color);
@@ -369,16 +361,6 @@
 
                     .pre-check-progress-step {
                         grid-template-columns: 40px 1fr;
-                    }
-                }
-
-                .pre-check-amounts {
-                    margin: 0 20px 20px;
-                    padding: 15px;
-
-                    .pre-check-amount-title,
-                    .pre-check-amount-value {
-                        font: 500 12px/20px var(--base-font)
                     }
                 }
 
@@ -430,6 +412,50 @@
                     .button {
                         width: 100%;
                     }
+                }
+            }
+        }
+
+        .block-progress-pie {
+            .progress-pie-info {
+                gap: 8px;
+                display: flex;
+                flex-direction: column;
+                min-width: 0;
+
+                .progress-pie-info-details {
+                    flex-direction: column;
+                    // display: none;
+                    display: flex;
+                    gap: 2px;
+                    min-width: 0;
+
+                    .progress-pie-info-details-key,
+                    .progress-pie-info-details-value {
+                        word-wrap: break-word;
+                    }
+
+                    .progress-pie-info-details-key {
+                        font: 400 11px/14px var(--base-font);
+                    }
+
+                    .progress-pie-info-details-value {
+                        font: 600 11px/16px var(--base-font);
+                    }
+                }
+            }
+
+            .progress-pie-show-details {
+                display: block;
+                padding-top: 5px;
+                padding-left: 75px;
+                width: 100%;
+
+                .button {
+                    position: initial;
+                    transform: none;
+                    display: flex;
+                    white-space: nowrap;
                 }
             }
         }
