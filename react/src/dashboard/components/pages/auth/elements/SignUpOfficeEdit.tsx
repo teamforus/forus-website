@@ -11,8 +11,7 @@ import OfficeSchedule from '../../../../props/models/OfficeSchedule';
 import { useMediaService } from '../../../../services/MediaService';
 import useOfficeService from '../../../../services/OfficeService';
 import { ApiResponseSingle, ResponseError } from '../../../../props/ApiResponses';
-import { LoadScript, Autocomplete } from '@react-google-maps/api';
-import useEnvData from '../../../../hooks/useEnvData';
+import { Autocomplete } from '@react-google-maps/api';
 
 export default function SignUpOfficeEdit({
     office,
@@ -32,7 +31,6 @@ export default function SignUpOfficeEdit({
     const [autocomplete, setAutocomplete] = React.useState(null);
     const addressInputRef = useRef<HTMLInputElement>();
 
-    const envData = useEnvData();
     const mediaService = useMediaService();
     const officeService = useOfficeService();
 
@@ -83,80 +81,78 @@ export default function SignUpOfficeEdit({
     }, [autocomplete, formUpdate]);
 
     return (
-        <LoadScript googleMapsApiKey={envData.config.google_maps_api_key} libraries={['places']}>
-            <div className="sign_up-office-edit">
-                <form className="form" onSubmit={form.submit}>
-                    <div className="sign_up-pane-section">
-                        <div className="sign_up-pane-col sign_up-pane-col-2">
-                            <div className="form-group">
-                                <label className="form-label">Adres</label>
-                                <Autocomplete onLoad={onLoad} onPlaceChanged={onPlaceChanged}>
-                                    <UIControlText
-                                        value={form.values.address}
-                                        id="office_address"
-                                        placeholder="Adres"
-                                        inputRef={addressInputRef}
-                                        onChangeValue={(address) => form.update({ address })}
-                                    />
-                                </Autocomplete>
-                                <FormError error={form.errors.address} />
-                            </div>
-                            <div className="form-group">
-                                <label className="form-label">Telefoonnummer</label>
+        <div className="sign_up-office-edit">
+            <form className="form" onSubmit={form.submit}>
+                <div className="sign_up-pane-section">
+                    <div className="sign_up-pane-col sign_up-pane-col-2">
+                        <div className="form-group">
+                            <label className="form-label">Adres</label>
+                            <Autocomplete onLoad={onLoad} onPlaceChanged={onPlaceChanged}>
                                 <UIControlText
-                                    value={form.values.phone}
-                                    id="office_phone"
-                                    placeholder="Telefoonnummer"
-                                    onChangeValue={(phone) => form.update({ phone })}
+                                    value={form.values.address}
+                                    id="office_address"
+                                    placeholder="Adres"
+                                    inputRef={addressInputRef}
+                                    onChangeValue={(address) => form.update({ address })}
                                 />
-                                <FormError error={form.errors.phone} />
+                            </Autocomplete>
+                            <FormError error={form.errors.address} />
+                        </div>
+                        <div className="form-group">
+                            <label className="form-label">Telefoonnummer</label>
+                            <UIControlText
+                                value={form.values.phone}
+                                id="office_phone"
+                                placeholder="Telefoonnummer"
+                                onChangeValue={(phone) => form.update({ phone })}
+                            />
+                            <FormError error={form.errors.phone} />
+                        </div>
+                    </div>
+                    <div className="sign_up-pane-col sign_up-pane-col-1">
+                        <PhotoSelector
+                            template={'photo-selector-sign_up'}
+                            type={'organization_logo'}
+                            description={t('organization_edit.labels.photo_description')}
+                            selectPhoto={setOfficeMediaFile}
+                        />
+                    </div>
+                </div>
+                <div className="sign_up-pane-section">
+                    <div className="sign_up-pane-col">
+                        <ScheduleControl
+                            errors={form.errors}
+                            schedule={form.values.schedule}
+                            onChange={onScheduleChange}
+                        />
+                    </div>
+                </div>
+                <div className="sign_up-pane-section office-edit-actions">
+                    <div className="sign_up-pane-col">
+                        <div className="flex-row">
+                            <div className="flex-col">
+                                <div className="flex-col">
+                                    <button
+                                        className="button button-primary button-fill button-sm"
+                                        type="button"
+                                        onClick={() => cancel()}>
+                                        {t('organization_edit.buttons.cancel')}
+                                    </button>
+                                </div>
+                            </div>
+                            <div className="flex-col">
+                                <div className="flex-col">
+                                    <button
+                                        className="button button-primary-variant button-fill button-sm"
+                                        type="submit">
+                                        {t('organization_edit.buttons.save_location')}
+                                    </button>
+                                </div>
                             </div>
                         </div>
-                        <div className="sign_up-pane-col sign_up-pane-col-1">
-                            <PhotoSelector
-                                template={'photo-selector-sign_up'}
-                                type={'organization_logo'}
-                                description={t('organization_edit.labels.photo_description')}
-                                selectPhoto={setOfficeMediaFile}
-                            />
-                        </div>
                     </div>
-                    <div className="sign_up-pane-section">
-                        <div className="sign_up-pane-col">
-                            <ScheduleControl
-                                errors={form.errors}
-                                schedule={form.values.schedule}
-                                onChange={onScheduleChange}
-                            />
-                        </div>
-                    </div>
-                    <div className="sign_up-pane-section office-edit-actions">
-                        <div className="sign_up-pane-col">
-                            <div className="flex-row">
-                                <div className="flex-col">
-                                    <div className="flex-col">
-                                        <button
-                                            className="button button-primary button-fill button-sm"
-                                            type="button"
-                                            onClick={() => cancel()}>
-                                            {t('organization_edit.buttons.cancel')}
-                                        </button>
-                                    </div>
-                                </div>
-                                <div className="flex-col">
-                                    <div className="flex-col">
-                                        <button
-                                            className="button button-primary-variant button-fill button-sm"
-                                            type="submit">
-                                            {t('organization_edit.buttons.save_location')}
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </LoadScript>
+                </div>
+            </form>
+        </div>
     );
 }

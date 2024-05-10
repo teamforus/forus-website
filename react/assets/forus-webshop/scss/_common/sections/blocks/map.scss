@@ -1,7 +1,11 @@
 .block {
     &.block-map {
         @include cf();
-        background: url('../img/sprite-map.png') no-repeat;
+        @if ($buildReact) {
+            background: url(./assets/img/sprite-map.png) no-repeat;
+        } @else {
+            background: url('../img/sprite-map.png') no-repeat;
+        }
         background-position: 100% 50%;
         background-size: auto 710px;
 
@@ -23,7 +27,7 @@
     }
 
     @media screen and (min-width: 1000px) {
-        &.block-map { 
+        &.block-map {
             padding: 120px 0 240px;
         }
     }
@@ -41,7 +45,7 @@
             }
         }
     }
-    
+
     @media screen and (max-width: 1000px) {
         &.block-map {
             padding: 0px 0 30px;

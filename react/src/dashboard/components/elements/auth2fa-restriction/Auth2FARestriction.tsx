@@ -94,6 +94,7 @@ export default function Auth2FARestriction({
                     </div>
                 )}
             </div>
+
             <div className="restriction-reasons">
                 {type == 'emails' && (
                     <div className="restriction-details">
