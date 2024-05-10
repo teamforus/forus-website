@@ -3,7 +3,7 @@
         "strict": false,
         "outDir": "./dist-react",
         "module": "esnext",
-        "target": "es5",
+        "target": "es6",
         "jsx": "react",
         "lib": ["dom", "dom.iterable", "esnext"],
         "allowJs": true,

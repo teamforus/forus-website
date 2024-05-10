@@ -33,7 +33,7 @@
 
     .form-control:not([type="radio"]):not([type="checkbox"]) {
         appearance: none;
-    
+
         &::-webkit-outer-spin-button,
         &::-webkit-inner-spin-button {
             appearance: none;
@@ -68,7 +68,7 @@
 
         .form-control:not([type="radio"]):not([type="checkbox"]) {
             padding-left: 40px;
-            margin: 0; 
+            margin: 0;
         }
     }
 

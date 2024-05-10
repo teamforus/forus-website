@@ -1,15 +1,8 @@
 import { classList } from '../../../helpers/utils';
 import React, { useState } from 'react';
+import ButtonType from '../../../../props/elements/ButtonType';
 
-export type ModalButton = {
-    text?: string;
-    type?: string;
-    icon?: string;
-    iconEnd?: boolean;
-    onClick: (e: React.MouseEvent | React.FormEvent) => void;
-    className?: string;
-    disableOnClick?: boolean;
-};
+export type ModalButton = ButtonType;
 
 export function ModalButton({
     submit,

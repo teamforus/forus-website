@@ -1,5 +1,5 @@
 &.block-auth-2fa {
-    --success-icon-color: #39B924;
+    --success-icon-color: #39b924;
     margin-bottom: 20px;
     background-color: #fff;
     border: 1px solid var(--border-color);
@@ -17,18 +17,18 @@
     .auth-2fa-item {
         margin: 0 0 15px;
         display: flex;
+        gap: 20px;
 
         .auth-2fa-item-icon {
-            margin-right: 20px;
             display: inline-flex;
             flex-direction: column;
-            justify-content: center;
+            flex: 0 0 50px;
 
             .mdi {
                 width: 50px;
                 height: 50px;
                 display: flex;
-                background-color: #F4F4F4;
+                background-color: #f4f4f4;
                 border-radius: var(--border-radius);
                 line-height: 50px;
                 font-size: 20px;
@@ -37,38 +37,99 @@
             }
         }
 
-        .auth-2fa-item-title {
-            font: 600 16px/30px var(--base-font);
-            padding: 10px 0;
-            margin-right: 10px;
-            display: inline-flex;
+        .auth-2fa-item-details {
+            display: flex;
             flex-direction: column;
-            justify-content: center;
-        }
+            flex: 1 1 auto;
+            gap: 15px;
 
-        .auth-2fa-item-label {
-            display: inline-flex;
-            flex-direction: column;
-            justify-content: center;
-            font: 600 13px/24px var(--base-font);
+            .auth-2fa-item-title {
+                font: 600 16px/30px var(--base-font);
+                display: flex;
+                flex-direction: row;
+                justify-content: space-between;
+            }
 
-            .mdi {
-                font-size: 16px;
-                line-height: 24px;
-                color: var(--success-icon-color);
-                padding-right: 5px;
+            .auth-2fa-item-label {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+            }
+
+            .auth-2fa-item-date {
+                display: flex;
+                flex-direction: row;
+                font: 600 13px/30px var(--base-font);
+
+                .mdi {
+                    font-size: 16px;
+                    line-height: 30px;
+                    color: var(--success-icon-color);
+                    padding-right: 5px;
+                }
+            }
+
+            .auth-2fa-item-space {
+                display: inline-flex;
+                flex-grow: 1;
             }
         }
 
-        .auth-2fa-item-space {
-            display: inline-flex;
-            flex-grow: 1;
-        }
-
         .auth-2fa-item-actions {
+            width: 100%;
             display: inline-flex;
             flex-direction: column;
             justify-content: center;
+        }
+
+        .auth-phone-details {
+            display: flex;
+            flex-direction: row;
+            border-radius: var(--border-radius);
+            border: 1px solid #e5e5e5;
+            background: #fbfbfb;
+            padding: 10px;
+            gap: 10px;
+
+            .auth-phone-details-icon {
+                display: flex;
+                flex: 0 0 16px;
+                line-height: 20px;
+
+                .mdi {
+                    color: #282b39;
+                }
+            }
+
+            .auth-phone-details-content {
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+                flex: 1 1 auto;
+
+                .auth-phone-details-title {
+                    font: 600 13px/20px var(--base-font);
+                }
+
+                .auth-phone-details-subtitle {
+                    display: flex;
+                    flex-direction: row;
+                    gap: 10px;
+                    font: 600 12px/20px var(--base-font);
+
+                    .label {
+                        color: #fff;
+                        padding: 3px 4px;
+                        font: 600 11px/12px var(--base-font);
+                        background: #31b0a1;
+                    }
+                }
+
+                .auth-phone-details-description {
+                    font: 400 11px/11px var(--base-font);
+                    color: #151b26;
+                }
+            }
         }
 
         &:last-child {
@@ -78,95 +139,46 @@
 
     @media screen and (max-width: 1000px) {
         .auth-2fa-item {
-            flex-direction: row;
-            flex-wrap: wrap;
-            align-items: center;
-
-            .auth-2fa-item-title {
-                flex-grow: 100;
-                padding: 0;
-                font: 700 13px/24px var(--base-font);
-                color: #222;
-                margin-right: 5px;
-            }
+            gap: 8px;
 
             .auth-2fa-item-icon {
-                margin-right: 8px;
+                flex: 0 0 16px;
 
                 .mdi {
-                    font-size: 18px;
-                    line-height: 18px;
+                    width: 16px;
+                    height: 22px;
                     background: none;
-                    width: auto;
-                    height: auto;
+                    line-height: 22px;
                 }
             }
 
-            .auth-2fa-item-label {
-                font: 600 11px/24px var(--base-font);
+            .auth-2fa-item-details {
+                margin-left: -24px;
 
-                .label {
-                    font: 600 10px/10px var(--base-font);
-                    padding: 5px;
+                .auth-2fa-item-title {
+                    font: 700 14px/22px var(--base-font);
+                    padding-left: 24px;
                 }
 
-                .mdi, span {
-                    line-height: 24px;
-                }
-            }
-
-            .auth-2fa-item-actions {
-                margin-top: 20px;
-                width: 100%;
-
-                .button {
-                    flex-grow: 1;
-                    justify-content: center;
-                    font: 600 11px/11px var(--base-font);
-                }
-            }
-
-            .auth-phone-details {
-                width: 100%;
-                border-radius: var(--border-radius);
-                border: 1px solid #E5E5E5;
-                background: #FBFBFB;
-                padding: 12px;
-                margin-top: 15px;
-
-                .auth-item-icon {
-                    margin-right: 10px;
+                .auth-2fa-item-date {
+                    font: 600 11px/22px var(--base-font);
 
                     .mdi {
-                        color: #282B39;
+                        line-height: 22px;
                     }
                 }
 
-                .auth-phone-details-title {
-                    font: 600 13px/13px var(--base-font);
-                    margin-bottom: 7px;
-                }
+                .auth-2fa-item-actions {
+                    .button {
+                        width: 100%;
+                        justify-content: center;
+                        padding: 5px 15px;
+                        font-size: 11px;
 
-                .auth-phone-details-subtitle {
-                    align-items: center;
-                    font: 600 12px/12px var(--base-font);
-                    margin-bottom: 7px;
-
-                    .auth-phone-details-phone {
-                        margin-right: 5px;
+                        .mdi {
+                            font-size: 12px;
+                        }
                     }
-
-                    .label {
-                        color: #FFF;
-                        padding: 3px 4px;
-                        font: 600 11px/11px var(--base-font);
-                        background: #31B0A1;
-                    }
-                }
-
-                .auth-phone-details-description {
-                    font: 400 11px/11px var(--base-font);
-                    color: #151B26;
                 }
             }
         }

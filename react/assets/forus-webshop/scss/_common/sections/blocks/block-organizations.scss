@@ -78,6 +78,7 @@
                 padding: 25px;
                 margin: 0;
                 display: flex;
+                cursor: pointer;
 
                 .organization-total-offices, 
                 .organization-total-offices-count {
@@ -128,7 +129,7 @@
             }
 
             &:hover {
-                box-shadow: var(--box-shadow);
+                box-shadow: var(--showcase-item-hover-shadow);
             }
         }
 
