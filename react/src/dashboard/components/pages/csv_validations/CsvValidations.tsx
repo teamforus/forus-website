@@ -1,69 +1,82 @@
-import React, { useState, useCallback, useEffect } from 'react';
-import 'react-image-crop/dist/ReactCrop.css';
-import { useTranslation } from 'react-i18next';
+import React, { useState, useCallback, useEffect, Fragment } from 'react';
 import { useFundService } from '../../../services/FundService';
 import FundSelector from '../../elements/fund-selector/FundSelector';
 import Fund from '../../../props/models/Fund';
-import { PaginationData } from '../../../props/ApiResponses';
 import CSVUpload from './elements/CSVUpload';
-import useActiveOrganization from '../../../hooks/useActiveOrganization';
 import { useRecordTypeService } from '../../../services/RecordTypeService';
 import RecordType from '../../../props/models/RecordType';
 import PrevalidatedTable from './elements/PrevalidatedTable';
 import EmptyCard from '../../elements/empty-card/EmptyCard';
+import useTranslate from '../../../hooks/useTranslate';
+import LoadingCard from '../../elements/loading-card/LoadingCard';
+import { hasPermission } from '../../../helpers/utils';
+import useSetProgress from '../../../hooks/useSetProgress';
 
 export default function CsvValidations() {
-    const { t } = useTranslation();
-
-    const activeOrganization = useActiveOrganization();
+    const translate = useTranslate();
+    const setProgress = useSetProgress();
 
     const fundService = useFundService();
     const recordTypeService = useRecordTypeService();
 
     const [fund, setFund] = useState<Fund>(null);
-    const [funds, setFunds] = useState<PaginationData<Fund>>(null);
+    const [funds, setFunds] = useState<Array<Fund>>(null);
     const [recordTypes, setRecordTypes] = useState<Array<RecordType>>(null);
 
-    const onFundSelect = useCallback((fund: Fund) => {
-        setFund(fund);
-    }, []);
+    const [filters, setFilters] = useState({});
 
-    const fetchFunds = useCallback(async () => {
-        const res = await fundService.list(activeOrganization.id, { per_page: 100, configured: 1 });
-        return res.data;
-    }, [activeOrganization.id, fundService]);
+    const fetchFunds = useCallback(() => {
+        setProgress(0);
+
+        fundService
+            .listPublic({ state: 'active_paused_and_closed' })
+            .then((res) => {
+                setFunds(res.data.data.filter((fund) => hasPermission(fund.organization, 'validate_records')));
+            })
+            .finally(() => setProgress(100));
+    }, [fundService, setProgress]);
 
     const fetchRecordTypes = useCallback(() => {
-        recordTypeService.list({ criteria: 1 }).then((res) => {
-            return setRecordTypes(res.data);
-        });
-    }, [recordTypeService]);
+        setProgress(0);
+
+        recordTypeService
+            .list({ criteria: 1 })
+            .then((res) => setRecordTypes(res.data))
+            .finally(() => setProgress(100));
+    }, [recordTypeService, setProgress]);
+
+    useEffect(() => {
+        fetchFunds();
+    }, [fetchFunds]);
 
     useEffect(() => {
         fetchRecordTypes();
     }, [fetchRecordTypes]);
 
-    useEffect(() => {
-        fetchFunds().then((funds) => {
-            const activeFund = fundService.getLastSelectedFund(funds.data) || funds.data[0];
-
-            setFunds(funds);
-            setFund(activeFund);
-        });
-    }, [fetchFunds, fundService]);
+    if (!funds) {
+        return <LoadingCard />;
+    }
 
     return (
-        <>
-            <div className="card-heading">{t('csv_validation.header.title')}</div>
-            <FundSelector fund={fund} funds={funds?.data} onSelectFund={onFundSelect} />
-            {fund?.state != 'closed' && <CSVUpload fund={fund} recordTypes={recordTypes} />}
-            {fund && <PrevalidatedTable fund={fund} recordTypes={recordTypes} />}
+        <Fragment>
+            <div className="card-heading">{translate('csv_validation.header.title')}</div>
+            <FundSelector fund={fund} funds={funds} onSelectFund={setFund} />
 
-            {funds?.meta.total == 0 && (
+            {fund && fund?.state != 'closed' && (
+                <CSVUpload
+                    fund={fund}
+                    recordTypes={recordTypes}
+                    onUpdated={() => setFilters((filters) => ({ ...filters }))}
+                />
+            )}
+
+            {fund && <PrevalidatedTable fund={fund} recordTypes={recordTypes} externalFilters={filters} />}
+
+            {funds?.length == 0 && (
                 <EmptyCard
                     description={'U bent geen validator voor een fonds dat actief is om aanvragers aan toe te voegen.'}
                 />
             )}
-        </>
+        </Fragment>
     );
 }

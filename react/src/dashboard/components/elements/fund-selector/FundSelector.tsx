@@ -30,11 +30,13 @@ export default function FundSelector({
     );
 
     useEffect(() => {
-        if (fund?.id !== fundService.getLastSelectedFund(funds)?.id) {
-            return selectFund(fund);
+        const lastSelectedFund = fundService.getLastSelectedFund(funds);
+
+        if (fund?.id !== lastSelectedFund?.id) {
+            selectFund(lastSelectedFund);
         }
 
-        setActiveFund(fund);
+        setActiveFund(lastSelectedFund);
     }, [fund, fundService, funds, selectFund]);
 
     return (

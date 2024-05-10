@@ -4,12 +4,17 @@ import RecordType from '../props/models/RecordType';
 import { ResponseSimple } from '../props/ApiResponses';
 
 export class RecordTypeService<T = RecordType> {
-    public prefix = '/identity/record-types';
-
     /**
      * @param apiRequest
      */
     public constructor(protected apiRequest: ApiRequestService<T> = new ApiRequestService<T>()) {}
+
+    /**
+     * Url prefix
+     *
+     * @param data
+     */
+    public prefix = '/identity/record-types';
 
     /**
      * Fetch list

@@ -8,8 +8,6 @@ export default interface Prevalidation {
     identity_address: string;
     records_hash: string;
     state: string;
-    uid: string;
-    uid_hash: string;
-    collection: string;
-    db: string;
+    uid?: string;
+    uid_hash?: string;
 }

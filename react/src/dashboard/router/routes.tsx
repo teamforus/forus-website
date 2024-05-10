@@ -319,7 +319,7 @@ router.state('feedback', <Feedback />, {
 });
 
 router.state('csv-validation', <CsvValidations />, {
-    path: `/csv-validation/funds`,
+    path: `/csv-validations`,
 });
 
 router.state('csv-validation-redirect', <CsvValidationsRedirect />, {

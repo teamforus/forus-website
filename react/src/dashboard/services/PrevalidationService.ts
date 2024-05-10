@@ -3,9 +3,7 @@ import ApiRequestService from './ApiRequestService';
 import ApiResponse, { ApiResponseSingle, ResponseSimple } from '../props/ApiResponses';
 import Prevalidation from '../props/models/Prevalidation';
 
-export class PrevalidationService<
-    T = { data: { collection: unknown; db: Array<{ uid_hash: string; records_hash: string }> } },
-> {
+export class PrevalidationService<T = Prevalidation> {
     /**
      * @param apiRequest
      */
@@ -18,18 +16,22 @@ export class PrevalidationService<
      */
     public prefix = '/platform/prevalidations';
 
-    public list(filters: object = {}): Promise<ApiResponse<Prevalidation>> {
+    public list(filters: object = {}): Promise<ApiResponse<T>> {
         return this.apiRequest.get(`${this.prefix}`, filters);
     }
 
-    public submit(data: object = {}, fund_id: number = null): Promise<ApiResponseSingle<Prevalidation>> {
+    public submit(data: object = {}, fund_id: number = null): Promise<ApiResponseSingle<T>> {
         return this.apiRequest.post(`${this.prefix}`, {
             data: data,
             fund_id: fund_id,
         });
     }
 
-    public submitCollection(data: Array<string>, fund_id: number = null, overwrite: Array<string> = []): Promise<T> {
+    public submitCollection(
+        data: Array<{ [key: string]: string }>,
+        fund_id: number = null,
+        overwrite: Array<string> = [],
+    ): Promise<T> {
         return this.apiRequest.post(`${this.prefix}/collection`, {
             data: data,
             fund_id: fund_id,
@@ -41,7 +43,12 @@ export class PrevalidationService<
         data: Array<string>,
         fund_id: number = null,
         overwrite: Array<string> = [],
-    ): Promise<T> {
+    ): Promise<{
+        data: {
+            collection: Array<{ uid_hash: string; records_hash: string; data: Array<{ [key: string]: string }> }>;
+            db: Array<{ uid_hash: string; records_hash: string }>;
+        };
+    }> {
         return this.apiRequest.post(`${this.prefix}/collection/hash`, {
             data: data,
             fund_id: fund_id,
@@ -49,7 +56,7 @@ export class PrevalidationService<
         });
     }
 
-    public destroy(code: string): Promise<ApiResponseSingle<Prevalidation>> {
+    public destroy(code: string): Promise<ApiResponseSingle<T>> {
         return this.apiRequest.delete(`${this.prefix}/${code}`);
     }
 
