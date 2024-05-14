@@ -31,7 +31,7 @@ export default function ModalPdfPreview({
                 <div className="modal-header">{t('modal_pdf_preview.header.title')}</div>
                 <div className="modal-body">
                     <div className="modal-section">
-                        <PdfPreview rawPdfFile={rawPdfFile} />
+                        <PdfPreview className={'block block-pdf-preview'} rawPdfFile={rawPdfFile} />
                     </div>
                 </div>
             </div>

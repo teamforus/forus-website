@@ -174,7 +174,7 @@
                     }
                 }
             }
-            
+
             &.voucher-item-compact {
                 margin-bottom: 10px;
                 min-height: 100px;
@@ -264,7 +264,7 @@
                     margin-bottom: 0;
                 }
             }
-            
+
             &.voucher-item-select {
                 min-height: 60px;
                 margin-bottom: 0;
@@ -347,7 +347,11 @@
                     border: 1px solid var(--border-color);
                     border-radius: calc(var(--border-radius) / 2);
                     padding-right: 25px;
-                    background-image: url('../img/select-bg.png');
+                    @if $buildReact {
+                        background-image: url('./assets/img/select-bg.png');
+                    } @else {
+                        background-image: url('../img/select-bg.png');
+                    }
                     background-position: calc(100% - 4px);
                     background-repeat: no-repeat;
                 }
@@ -478,13 +482,13 @@
                                     @include ellipsis();
                                     padding-right: 0;
                                 }
-            
+
                                 .voucher-organization {
                                     font: 400 11px/13px var(--base-font);
                                     padding-right: 0;
                                     text-wrap: wrap;
                                 }
-            
+
                                 .voucher-value {
                                     font: 700 22px/22px var(--base-font);
                                 }

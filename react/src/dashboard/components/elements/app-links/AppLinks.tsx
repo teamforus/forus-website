@@ -1,5 +1,4 @@
 import React from 'react';
-import { classList } from '../../../helpers/utils';
 import useEnvData from '../../../hooks/useEnvData';
 import useAssetUrl from '../../../hooks/useAssetUrl';
 
@@ -20,7 +19,7 @@ export default function AppLinks({
     const assetUrl = useAssetUrl();
 
     return (
-        <div className={classList(['block', 'block-app_links', type ? `block-app_links-${type}` : null])}>
+        <div className={`block block-app_links ${type ? `block-app_links-${type}` : ''}`}>
             {showAndroidButton && (
                 <a
                     href={envData?.config?.android_link}

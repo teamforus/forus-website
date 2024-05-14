@@ -13,7 +13,8 @@ import DatePickerControl from '../elements/forms/controls/DatePickerControl';
 import { dateFormat, dateParse } from '../../helpers/dates';
 import useFundUnsubscribeService from '../../services/FundUnsubscribeService';
 import useSetProgress from '../../hooks/useSetProgress';
-import {addDays} from "date-fns";
+import { addDays } from 'date-fns';
+import { clickOnKeyEnter } from '../../helpers/wcag';
 
 export default function ModalFundUnsubscribe({
     modal,
@@ -73,7 +74,13 @@ export default function ModalFundUnsubscribe({
             ])}>
             <div className="modal-backdrop" onClick={modal.close} />
             <form className="modal-window form" onSubmit={form.submit}>
-                <div className="modal-close mdi mdi-close" onClick={modal.close} role="button" />
+                <div
+                    className="modal-close mdi mdi-close"
+                    onClick={modal.close}
+                    tabIndex={0}
+                    onKeyDown={clickOnKeyEnter}
+                    role="button"
+                />
                 <div className="modal-header">Request unsubscription</div>
                 <div className="modal-body modal-body-visible">
                     <div className="modal-section">

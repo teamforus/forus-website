@@ -4,5 +4,5 @@ export default interface FilterModel {
     page?: number;
     order_by?: string;
     order_dir?: string;
-    [key: string]: number | string | Array<number | string>;
+    [key: string]: number | string | boolean | Array<number | string | boolean>;
 }

@@ -38,7 +38,7 @@ export default function OrganizationForm() {
     const setProgress = useSetProgress();
 
     const envData = useEnvData();
-    const isProvider = useMemo(() => envData.client_type === 'provider', [envData?.client_type]);
+    const isProvider = useMemo(() => envData?.client_type === 'provider', [envData?.client_type]);
 
     const [media, setMedia] = useState<Media>(null);
     const [mediaFile, setMediaFile] = useState<Blob>(null);
