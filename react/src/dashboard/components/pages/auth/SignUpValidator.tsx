@@ -183,7 +183,7 @@ export default function SignUpValidator() {
                     <Fragment>
                         <SignUpProgress infoSteps={INFO_STEPS} step={step} shownSteps={shownSteps} />
 
-                        <SignUpStepGeneralInfo panel_type={'validator'} onStepNext={next} />
+                        <SignUpStepGeneralInfo panelType={'validator'} onStepNext={next} />
                     </Fragment>
                 )}
 
@@ -223,7 +223,7 @@ export default function SignUpValidator() {
                     <Fragment>
                         <SignUpProgress infoSteps={INFO_STEPS} step={step} shownSteps={shownSteps} />
 
-                        <SignUpStepProfileCreate panel_type={'sponsor'} />
+                        <SignUpStepProfileCreate panelType={'validator'} />
                     </Fragment>
                 )}
 
@@ -232,7 +232,7 @@ export default function SignUpValidator() {
                         <SignUpProgress infoSteps={INFO_STEPS} step={step} shownSteps={shownSteps} />
 
                         <SignUpStepOrganizationSelect
-                            panel_type={'validator'}
+                            panelType={'validator'}
                             onOrganizationAdd={addOrganization}
                             onOrganizationSelect={selectOrganization}
                             onStepBack={back}
@@ -245,10 +245,9 @@ export default function SignUpValidator() {
                         <SignUpProgress infoSteps={INFO_STEPS} step={step} shownSteps={shownSteps} />
 
                         <SignUpStepOrganizationAdd
-                            panel_type={'validator'}
+                            panelType={'validator'}
                             onOrganizationSelect={selectOrganization}
                             onCancelAddOrganization={cancelAddOrganization}
-                            onStepNext={next}
                         />
                     </Fragment>
                 )}

@@ -1,5 +1,4 @@
 import React, { Fragment, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { getStateRouteUrl } from '../../../modules/state_router/Router';
 import ProgressStorage from '../../../helpers/ProgressStorage';
@@ -12,14 +11,14 @@ import SignUpStepGeneralInfo from './elements/sign-up-steps/SignUpStepGeneralInf
 import SignUpStepProfileCreate from './elements/sign-up-steps/SignUpStepProfileCreate';
 import SignUpStepOrganizationSelect from './elements/sign-up-steps/SignUpStepOrganizationSelect';
 import SignUpStepOrganizationAdd from './elements/sign-up-steps/SignUpStepOrganizationAdd';
+import useTranslate from '../../../hooks/useTranslate';
 
 export default function SignUpSponsor() {
-    const { t } = useTranslation();
     const assetUrl = useAssetUrl();
+    const navigate = useNavigate();
+    const translate = useTranslate();
 
     const { token: authToken } = useContext(authContext);
-
-    const navigate = useNavigate();
     const organizations = useOrganization();
 
     const [INFO_STEPS] = useState(1);
@@ -145,21 +144,19 @@ export default function SignUpSponsor() {
                     )}
                 </div>
 
-                <h2 className="block-title">{t('sign_up_sponsor.header.main_header')}</h2>
+                <h2 className="block-title">{translate('sign_up_sponsor.header.main_header')}</h2>
 
                 {step == STEP_INFO_GENERAL && (
                     <Fragment>
                         <SignUpProgress infoSteps={INFO_STEPS} step={step} shownSteps={shownSteps} />
-
-                        <SignUpStepGeneralInfo panel_type={'sponsor'} onStepNext={next} />
+                        <SignUpStepGeneralInfo panelType={'sponsor'} onStepNext={next} />
                     </Fragment>
                 )}
 
                 {step == STEP_CREATE_PROFILE && (
                     <Fragment>
                         <SignUpProgress infoSteps={INFO_STEPS} step={step} shownSteps={shownSteps} />
-
-                        <SignUpStepProfileCreate panel_type={'sponsor'} />
+                        <SignUpStepProfileCreate panelType={'sponsor'} />
                     </Fragment>
                 )}
 
@@ -168,7 +165,7 @@ export default function SignUpSponsor() {
                         <SignUpProgress infoSteps={INFO_STEPS} step={step} shownSteps={shownSteps} />
 
                         <SignUpStepOrganizationSelect
-                            panel_type={'sponsor'}
+                            panelType={'sponsor'}
                             onOrganizationAdd={addOrganization}
                             onOrganizationSelect={selectOrganization}
                             onStepBack={back}
@@ -181,10 +178,9 @@ export default function SignUpSponsor() {
                         <SignUpProgress infoSteps={INFO_STEPS} step={step} shownSteps={shownSteps} />
 
                         <SignUpStepOrganizationAdd
-                            panel_type={'sponsor'}
+                            panelType={'sponsor'}
                             onOrganizationSelect={selectOrganization}
                             onCancelAddOrganization={cancelAddOrganization}
-                            onStepNext={next}
                         />
                     </Fragment>
                 )}
@@ -194,19 +190,21 @@ export default function SignUpSponsor() {
                         <SignUpProgress step={step} infoSteps={INFO_STEPS} shownSteps={shownSteps} />
 
                         <div className="sign_up-pane">
-                            <div className="sign_up-pane-header">{t(`sign_up_sponsor.header.title_step_5`)}</div>
+                            <div className="sign_up-pane-header">
+                                {translate(`sign_up_sponsor.header.title_step_5`)}
+                            </div>
                             <div className="sign_up-pane-body">
                                 <div className="text-center">
                                     <img src={assetUrl('/assets/img/sign_up_finished.svg')} alt={''} />
                                 </div>
                                 <div className="sign_up-pane-subtitle">
-                                    {t('sign_up_sponsor.header.subtitle_step_5')}
+                                    {translate('sign_up_sponsor.header.subtitle_step_5')}
                                 </div>
                                 <br />
                                 <br />
                                 <div className="text-center">
                                     <div className="button button-primary-variant" onClick={finish}>
-                                        {t('sign_up_sponsor.buttons.go_to_dashboard')}
+                                        {translate('sign_up_sponsor.buttons.go_to_dashboard')}
                                     </div>
                                 </div>
                             </div>
