@@ -5,4 +5,6 @@ export default interface RecordType {
     system: boolean;
     name: string;
     options: Array<{ value: string; name: string }>;
+    operators: Array<{ key: string; name: string }>;
+    validations: Array<string>;
 }

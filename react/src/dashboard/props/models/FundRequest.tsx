@@ -10,7 +10,7 @@ export default interface FundRequest {
     fund: Fund & {
         has_person_bsn_api?: boolean;
         criteria: Array<{
-            id: number;
+            id?: number;
             operator: '>' | '>=' | '<' | '<=' | '=';
             value?: string;
             show_attachment: boolean;

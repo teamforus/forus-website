@@ -72,4 +72,7 @@ export default interface Organization {
         bank_fund_name?: boolean;
         bank_note?: boolean;
     };
+    accepted: boolean;
+    validator_organization: Organization;
+    validator_organization_id: number;
 }

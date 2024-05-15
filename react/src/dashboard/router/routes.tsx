@@ -54,6 +54,11 @@ import Features from '../components/pages/features/Features';
 import Feature from '../components/pages/feature/Feature';
 import EventLogs from '../components/pages/eventLogs/EventLogs';
 import ReimbursementCategories from '../components/pages/reimbursement-categories/ReimbursementCategories';
+import OrganizationFunds from '../components/pages/organizations-funds/OrganizationFunds';
+import OrganizationsFundsShow from '../components/pages/organizations-funds-show/OrganizationsFundsShow';
+import OrganizationsFundsEdit from '../components/pages/organizations-funds-edit/OrganizationsFundsEdit';
+import OrganizationsFundsSecurity from '../components/pages/organizations-funds-security/OrganizationsFundsSecurity';
+import IdentitiesShow from '../components/pages/identitities-show/IdentitiesShow';
 
 const router = new RouterBuilder();
 
@@ -111,8 +116,33 @@ router.state('organizations-edit', <OrganizationEdit />, {
     fallbackState: 'organizations',
 });
 
-router.state('organization-funds', <WIP />, {
+router.state('organization-funds', <OrganizationFunds />, {
     path: `/organizations/:organizationId/funds`,
+    fallbackState: 'organizations',
+});
+
+router.state('funds-show', <OrganizationsFundsShow />, {
+    path: `/organizations/:organizationId/funds/:fundId`,
+    fallbackState: 'organizations',
+});
+
+router.state('funds-create', <OrganizationsFundsEdit />, {
+    path: `/organizations/:organizationId/funds/create`,
+    fallbackState: 'organizations',
+});
+
+router.state('funds-edit', <OrganizationsFundsEdit />, {
+    path: `/organizations/:organizationId/funds/:fundId/edit`,
+    fallbackState: 'organizations',
+});
+
+router.state('funds-security', <OrganizationsFundsSecurity />, {
+    path: `/organizations/:organizationId/funds/:fundId/security`,
+    fallbackState: 'organizations',
+});
+
+router.state('identities-show', <IdentitiesShow />, {
+    path: `/organizations/:organizationId/funds/:fundId/identities/:id`,
     fallbackState: 'organizations',
 });
 
@@ -185,6 +215,11 @@ router.state('implementations', <WIP title={'Implementations'} />, {
 
 router.state('implementation-notifications', <WIP title={'Implementation notifications'} />, {
     path: `/organizations/:organizationId/implementation-notifications`,
+    fallbackState: 'organizations',
+});
+
+router.state('implementation-view', <WIP title={'Implementation view'} />, {
+    path: `/organizations/:organizationId/implementation/:id`,
     fallbackState: 'organizations',
 });
 

@@ -12,10 +12,10 @@ import { mainContext } from '../../../contexts/MainContext';
 import useSetProgress from '../../../hooks/useSetProgress';
 import CheckboxControl from '../../elements/forms/controls/CheckboxControl';
 import { authContext } from '../../../contexts/AuthContext';
+import { StringParam, useQueryParams } from 'use-query-params';
 
 export default function OrganizationsSecurity() {
     const activeOrganization = useActiveOrganization();
-    const [viewType, setViewType] = useState('employees');
     const organizationService = useOrganizationService();
     const { updateIdentity } = useContext(authContext);
     const { setActiveOrganization } = useContext(mainContext);
@@ -23,6 +23,12 @@ export default function OrganizationsSecurity() {
     const pushDanger = usePushDanger();
     const pushSuccess = usePushSuccess();
     const setProgress = useSetProgress();
+
+    const [{ view_type }, setQueryParams] = useQueryParams({
+        view_type: StringParam,
+    });
+
+    const [viewType, setViewType] = useState(view_type || 'employees');
 
     const [auth2FARequiredOptions] = useState([
         {
@@ -125,14 +131,20 @@ export default function OrganizationsSecurity() {
                                                             className={`label-tab label-tab-sm ${
                                                                 viewType == 'employees' ? 'active' : ''
                                                             }`}
-                                                            onClick={() => setViewType('employees')}>
+                                                            onClick={() => {
+                                                                setViewType('employees');
+                                                                setQueryParams({ view_type: 'employees' });
+                                                            }}>
                                                             Medewerkers
                                                         </div>
                                                         <div
                                                             className={`label-tab label-tab-sm ${
                                                                 viewType == 'funds' ? 'active' : ''
                                                             }`}
-                                                            onClick={() => setViewType('funds')}>
+                                                            onClick={() => {
+                                                                setViewType('funds');
+                                                                setQueryParams({ view_type: 'funds' });
+                                                            }}>
                                                             Fondsen
                                                         </div>
                                                     </div>

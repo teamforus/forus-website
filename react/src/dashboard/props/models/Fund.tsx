@@ -1,6 +1,9 @@
 import Organization from './Organization';
 import Media from './Media';
 import Implementation from './Implementation';
+import FundCriterion from './FundCriterion';
+import Tag from './Tag';
+import Faq from './Faq';
 
 export default interface Fund {
     id: number;
@@ -11,7 +14,7 @@ export default interface Fund {
     products_count_all?: number;
     products_count_approved?: number;
     products_count_available?: number;
-    state?: 'pending' | 'active' | 'closed';
+    state?: 'pending' | 'active' | 'closed' | 'paused' | 'waiting';
     state_locale?: string;
     start_date?: string;
     start_date_locale?: string;
@@ -24,4 +27,40 @@ export default interface Fund {
     archived?: boolean;
     expired?: boolean;
     implementation?: Implementation;
+    type_locale: string;
+    budget: { total: number; used: number; available: number };
+    requester_count: number;
+    showMenu: boolean;
+    key: string;
+    description_short: string;
+    description_html: string;
+    criteria: Array<FundCriterion>;
+    criteria_editable: boolean;
+    provider_organizations_count: number;
+    provider_employees_count: number;
+    is_configured: boolean;
+    sponsor_count: number;
+    canInviteProviders: boolean;
+    providersDescription: string;
+    canAccessFund: boolean;
+    auth_2fa_policy?: 'optional' | 'required' | 'restrict_features' | 'global';
+    auth_2fa_remember_ip?: boolean;
+    auth_2fa_restrict_emails?: boolean;
+    auth_2fa_restrict_auth_sessions?: boolean;
+    auth_2fa_restrict_bi_connections?: boolean;
+    auth_2fa_restrict_reimbursements?: boolean;
+    organization_funds_2fa?: {
+        auth_2fa_policy: 'optional' | 'required' | 'restrict_features' | 'global';
+        auth_2fa_remember_ip?: boolean;
+        auth_2fa_restrict_emails?: boolean;
+        auth_2fa_restrict_auth_sessions?: boolean;
+        auth_2fa_restrict_reimbursements?: boolean;
+        auth_2fa_restrict_bi_connections?: boolean;
+    };
+    topUpInProgress?: boolean;
+    balance_provider: string;
+    allow_fund_requests: boolean;
+    allow_prevalidations: boolean;
+    tags: Array<Tag>;
+    faq?: Array<Faq>;
 }
