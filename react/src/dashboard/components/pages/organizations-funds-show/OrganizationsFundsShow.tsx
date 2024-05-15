@@ -1000,17 +1000,17 @@ export default function OrganizationsFundsShow() {
 
                                 <tbody>
                                     {implementations?.data?.map((implementation: Implementation) => (
-                                        <tr key={implementation.id}>
+                                        <tr key={implementation?.id}>
                                             <td className="td-narrow">
                                                 <img
                                                     className="td-media"
                                                     src={
-                                                        implementation.logo ||
+                                                        implementation?.logo ||
                                                         './assets/img/placeholders/organization-thumbnail.png'
                                                     }
                                                     alt={''}></img>
                                             </td>
-                                            <td>{implementation.name}</td>
+                                            <td>{implementation?.name}</td>
                                             {fund.state == 'active' && (
                                                 <td>
                                                     <div className="label label-success">Zichtbaar</div>
@@ -1033,7 +1033,7 @@ export default function OrganizationsFundsShow() {
                                                         <a
                                                             className="dropdown-item"
                                                             target="_blank"
-                                                            href={implementation.url_webshop + 'funds/' + fund.id}
+                                                            href={implementation?.url_webshop + 'funds/' + fund.id}
                                                             rel="noreferrer">
                                                             <em className="mdi mdi-open-in-new icon-start" /> Bekijk op
                                                             webshop
@@ -1047,7 +1047,7 @@ export default function OrganizationsFundsShow() {
                                                                 className="dropdown-item"
                                                                 to={getStateRouteUrl('implementation-view', {
                                                                     organizationId: fund.organization_id,
-                                                                    id: implementation.id,
+                                                                    id: implementation?.id,
                                                                 })}>
                                                                 <div className="mdi mdi-store-outline icon-start" />
                                                                 Ga naar CMS

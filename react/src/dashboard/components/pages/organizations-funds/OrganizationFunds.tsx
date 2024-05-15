@@ -419,7 +419,7 @@ export default function OrganizationFunds() {
 
                                                 {!fund.archived && (
                                                     <td style={{ cursor: 'pointer' }}>
-                                                        {currencyFormat(fund.budget.total - fund.budget.used)}
+                                                        {currencyFormat(fund.budget?.total - fund.budget?.used)}
                                                     </td>
                                                 )}
 
@@ -432,7 +432,7 @@ export default function OrganizationFunds() {
                                                 )}
 
                                                 <td>
-                                                    {!fund.archived && (
+                                                    {!fund.archived && stateLabels[fund.state] && (
                                                         <span className={`label ${stateLabels[fund.state] || ''}`}>
                                                             {t(`components.organization_funds.states.${fund.state}`)}
                                                         </span>

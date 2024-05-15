@@ -137,6 +137,15 @@ export class FundService<T = Fund> {
     ): Promise<ApiResponseSingle<Array<ExportFieldProp>>> {
         return this.apiRequest.get(`${this.prefix + company_id}/funds/${fund_id}/identities/export-fields`, data);
     }
+
+    public getStates(): Array<{ value: string; name: string }> {
+        return [
+            { name: 'Waiting', value: 'waiting' },
+            { name: 'Actief', value: 'active' },
+            { name: 'Gepauzeerd', value: 'paused' },
+            { name: 'Gesloten', value: 'closed' },
+        ];
+    }
 }
 
 export function useFundService(): FundService {

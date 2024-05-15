@@ -41,7 +41,7 @@ export default function FundCriteriaEditorItem({
     onEditCriteria: () => void;
     onEditCancelCriteria: () => void;
     validatorOrganizations: Array<Organization>;
-    saveCriterionRef?: React.MutableRefObject<() => Promise<boolean>>;
+    saveCriterionRef?: React.MutableRefObject<() => Promise<FundCriterion>>;
 }) {
     const { t } = useTranslation();
 
@@ -74,12 +74,12 @@ export default function FundCriteriaEditorItem({
         [fund?.id, organization?.id, fundService],
     );
 
-    const saveCriterion = useCallback(async (): Promise<boolean> => {
+    const saveCriterion = useCallback(async (): Promise<FundCriterion> => {
         return new Promise((resolve) => {
-            const _criterion = JSON.parse(JSON.stringify(criterion));
+            const _criterion = JSON.parse(JSON.stringify(criterionPrepared));
 
             if (!_criterion.is_editing) {
-                return resolve(true);
+                return resolve(null);
             }
 
             _criterion.is_editing = false;
@@ -97,19 +97,19 @@ export default function FundCriteriaEditorItem({
                     validator.organization_validator_id,
             );
 
-            validateCriteria(criterion)
+            validateCriteria(_criterion)
                 .then(() => {
                     _criterion.is_new = false;
                     _criterion.validators = validatorsField;
                     _criterion.record_type = { ...recordType };
-                    resolve(true);
+                    resolve(_criterion);
                 })
                 .catch((res: ResponseError) => {
-                    resolve(false);
+                    resolve(null);
                     console.log('res: ', res);
                 });
         });
-    }, [criterion, recordType, validateCriteria]);
+    }, [criterionPrepared, recordType, validateCriteria]);
 
     const editDescription = useCallback(
         (criterion: FundCriterion) => {
@@ -138,17 +138,17 @@ export default function FundCriteriaEditorItem({
 
             const valueName =
                 type?.type == 'select' || type?.type == 'bool'
-                    ? type?.options?.find((option) => option.value == criterion.value)?.name
-                    : criterion.value;
+                    ? type?.options?.find((option) => option.value == criterion?.value)?.name
+                    : criterion?.value;
 
             const operatorKeys =
                 recordType?.operators?.reduce((obj: object, operator: { key: string; name: string }) => {
                     return { ...obj, [operator.key]: operator.name };
                 }, {}) || null;
 
-            const isCurrency = currency_types.includes(criterion.record_type_key);
+            const isCurrency = currency_types.includes(criterion?.record_type_key);
 
-            return criterion.is_new
+            return criterion?.is_new
                 ? 'Nieuwe voorwaarde'
                 : [
                       recordType?.name,
@@ -192,6 +192,10 @@ export default function FundCriteriaEditorItem({
 
     const prepareCriteria = useCallback(
         (criterion: Partial<FundCriterion>) => {
+            if (!criterion) {
+                return;
+            }
+
             criterion.header = makeTitle(criterion);
 
             criterion.validators_models = criterion.external_validators.map((validator) => {
@@ -315,12 +319,12 @@ export default function FundCriteriaEditorItem({
     const criterionToValidations = useCallback((criterion: FundCriterion, recordType: Partial<RecordType>) => {
         return recordType?.type !== 'date'
             ? {
-                  min: criterion.min ? parseInt(criterion.min) : null,
-                  max: criterion.max ? parseInt(criterion.max) : null,
+                  min: criterion?.min ? parseInt(criterion?.min) : null,
+                  max: criterion?.max ? parseInt(criterion?.max) : null,
               }
             : {
-                  min: criterion.min,
-                  max: criterion.max,
+                  min: criterion?.min,
+                  max: criterion?.max,
               };
     }, []);
 
@@ -344,10 +348,10 @@ export default function FundCriteriaEditorItem({
                 return list;
             },
             {
-                values: { [criterion.record_type_key]: criterion.value },
-                operators: { [criterion.record_type_key]: criterion.operator },
+                values: { [criterion?.record_type_key]: criterion?.value },
+                operators: { [criterion?.record_type_key]: criterion?.operator },
                 validations: {
-                    [criterion.record_type_key]: criterionToValidations(criterion, recordType),
+                    [criterion?.record_type_key]: criterionToValidations(criterion, recordType),
                 },
             },
         );
@@ -395,15 +399,15 @@ export default function FundCriteriaEditorItem({
             <div className="criterion-head">
                 <div
                     className={`criterion-title ${
-                        !criterion.is_editing && criterion.external_validators.length == 0
+                        !criterion?.is_editing && criterion?.external_validators.length == 0
                             ? 'criterion-title-large'
                             : ''
                     }`}>
-                    {criterion.title || criterion.header}
+                    {criterion?.title || criterion?.header}
                 </div>
 
                 <div className="criterion-actions">
-                    {criterion.is_editing && (
+                    {criterion?.is_editing && (
                         <div
                             className="button button-primary button-icon pull-left"
                             onClick={() => editDescription(criterion)}>
@@ -411,14 +415,14 @@ export default function FundCriteriaEditorItem({
                         </div>
                     )}
 
-                    {!criterion.is_editing && (
+                    {!criterion?.is_editing && (
                         <div className="button button-default" onClick={() => criterionEdit(criterion)}>
                             <em className="mdi mdi-pencil icon-start" />
                             {t('components.fund_criteria_editor_item.buttons.edit')}
                         </div>
                     )}
 
-                    {criterion.is_editing && (
+                    {criterion?.is_editing && (
                         <div className="button button-default" onClick={() => cancelCriterion(criterion)}>
                             <em className="mdi mdi-close icon-start" />
                             {t('components.fund_criteria_editor_item.buttons.cancel')}
@@ -429,7 +433,7 @@ export default function FundCriteriaEditorItem({
                         <button
                             className="button button-danger"
                             onClick={() => removeCriterion()}
-                            disabled={disabledControls || criterion.is_editing}>
+                            disabled={disabledControls || criterion?.is_editing}>
                             <em className="mdi mdi-delete-outline icon-start" />
                             {t('components.fund_criteria_editor_item.buttons.edit')}
                         </button>
@@ -437,10 +441,10 @@ export default function FundCriteriaEditorItem({
                 </div>
             </div>
 
-            {criterion.is_editing && (
+            {criterion?.is_editing && (
                 <div className="criterion-body">
                     <div className="criterion-section">
-                        {!criterion.is_editing && (
+                        {!criterion?.is_editing && (
                             <div className="criterion-organizations-list">
                                 {criterionPrepared.validators_models.length > 0 && (
                                     <div className="row">

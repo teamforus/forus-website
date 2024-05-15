@@ -33,14 +33,14 @@ export default function FundCriteriaEditor({
     const { t } = useTranslation();
 
     const $element = useRef<HTMLDivElement>(null);
-    const [criterionBlocksRefs] = useState<Array<MutableRefObject<() => Promise<boolean>>>>(
-        [...new Array(criteria.length)].map(() => createRef<() => Promise<boolean>>()),
-    );
+    const [criterionBlocksRefs, setCriterionBlocksRef] = useState<
+        Array<MutableRefObject<() => Promise<FundCriterion>>>
+    >([...new Array(criteria.length)].map(() => createRef<() => Promise<FundCriterion>>()));
     const [isEditing, setIsEditing] = useState<boolean>(false);
     const [deletedItemsCount, setDeleteItemsCount] = useState<number>(0);
 
     const updateOnEditFlag = useCallback(() => {
-        setIsEditing(criteria.filter((criterion) => criterion.is_editing).length > 0);
+        setIsEditing(criteria.filter((criterion) => criterion?.is_editing).length > 0);
     }, [criteria]);
 
     const addCriteria = useCallback(() => {
@@ -55,17 +55,28 @@ export default function FundCriteriaEditor({
             optional: false,
         });
         setCriteria([...criteria]);
+
+        criterionBlocksRefs[criteria.length - 1] = createRef<() => Promise<FundCriterion>>();
+        setCriterionBlocksRef([...criterionBlocksRefs]);
+
         updateOnEditFlag();
-    }, [criteria, setCriteria, updateOnEditFlag]);
+    }, [criteria, criterionBlocksRefs, setCriteria, updateOnEditFlag]);
 
     const saveCriteria = useCallback(() => {
         return new Promise((resolve) => {
             Promise.all(criteria.map((criterion, index) => criterionBlocksRefs[index].current())).then((result) => {
                 updateOnEditFlag();
 
+                result.forEach((criterion, index) => {
+                    criteria[index] = criterion;
+                    setCriteria([...criteria]);
+                });
+
                 if (result.filter((result) => !result).length === 0) {
                     resolve(true);
-                    onSaveCriteria(criteria);
+                    if (onSaveCriteria) {
+                        onSaveCriteria(criteria);
+                    }
                 } else {
                     resolve(false);
 
@@ -79,7 +90,7 @@ export default function FundCriteriaEditor({
                 }
             });
         });
-    }, [criteria, criterionBlocksRefs, onSaveCriteria, updateOnEditFlag]);
+    }, [criteria, criterionBlocksRefs, onSaveCriteria, setCriteria, updateOnEditFlag]);
 
     const onDelete = useCallback(
         (criterion: FundCriterion) => {

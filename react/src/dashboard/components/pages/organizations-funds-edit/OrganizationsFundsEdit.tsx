@@ -25,7 +25,7 @@ import FaqEditor from './elements/FaqEditor';
 import Faq from '../../../props/models/Faq';
 import DatePickerControl from '../../elements/forms/controls/DatePickerControl';
 import { addDays, addYears } from 'date-fns';
-import { dateFormat, dateParse } from '../../../helpers/dates';
+import { dateFormat } from '../../../helpers/dates';
 import useAppConfigs from '../../../hooks/useAppConfigs';
 import FundFormulaProduct from '../../../props/models/FundFormulaProduct';
 import Product from '../../../props/models/Product';
@@ -67,8 +67,8 @@ type FormDataProp = {
     description?: string;
     faq_title?: string;
     descriptionPosition?: string;
-    start_date?: string;
-    end_date?: string;
+    start_date?: Date;
+    end_date?: Date;
     formula_products?: Array<FundFormulaProduct>;
     product_id?: number;
     default_validator_employee_id?: number;
@@ -114,6 +114,7 @@ export default function OrganizationsFundsEdit() {
     const [recordTypesMultiplier, setRecordTypesMultiplier] = useState<Array<unknown>>([]);
     const [productOptions, setProductOptions] = useState<Array<Array<Partial<Product>>>>([]);
     const [validatorOrganizations, setValidatorOrganizations] = useState<PaginationData<Organization>>(null);
+    const [fundStates] = useState(fundService.getStates());
     const faqEditorBlock = useRef<() => Promise<boolean>>();
     const criteriaBlockRef = useRef<() => Promise<unknown>>();
 
@@ -161,16 +162,20 @@ export default function OrganizationsFundsEdit() {
         },
     ]);
 
-    const fund_id = parseInt(useParams().fundId);
+    const fundIdParam = useParams().fundId;
+    const fund_id = parseInt(fundIdParam);
 
     const form = useFormBuilder<FormDataProp>(
         {
             descriptionPosition: descriptionPositions[0]?.value,
-            start_date: dateFormat(addDays(new Date(), 1)),
-            end_date: dateFormat(addYears(new Date(), 1)),
+            type: 'budget',
+            start_date: addDays(new Date(), 6),
+            end_date: addYears(new Date(), 1),
             formula_products: [],
+            criteria: [],
             default_validator_employee_id: null,
             application_method: 'application_form',
+            state: fundStates[0].value,
 
             // contact information
             email_required: true,
@@ -181,6 +186,9 @@ export default function OrganizationsFundsEdit() {
         },
         async (values) => {
             const data = JSON.parse(JSON.stringify(values));
+
+            data.start_date = dateFormat(new Date(data.start_date), 'yyyy-MM-dd');
+            data.end_date = dateFormat(new Date(data.end_date), 'yyyy-MM-dd');
 
             const resolveErrors = (res: ResponseError) => {
                 form.setIsLocked(false);
@@ -436,7 +444,7 @@ export default function OrganizationsFundsEdit() {
         );
     }, [recordTypes]);
 
-    if (!fund || (fund_id && !fund)) {
+    if (fund_id && !fund) {
         return <LoadingCard />;
     }
 
@@ -450,9 +458,9 @@ export default function OrganizationsFundsEdit() {
                     Fondsen
                 </StateNavLink>
 
-                {fund_id && <div className="breadcrumb-item active">{fund?.name}</div>}
+                {fundIdParam && <div className="breadcrumb-item active">{fund?.name}</div>}
 
-                {!fund_id && <div className="breadcrumb-item active">{t('funds_edit.header.title_add')}</div>}
+                {!fundIdParam && <div className="breadcrumb-item active">{t('funds_edit.header.title_add')}</div>}
             </div>
 
             <div className="card">
@@ -556,11 +564,11 @@ export default function OrganizationsFundsEdit() {
                                             className="form-control"
                                             propKey={'key'}
                                             allowSearch={false}
-                                            value={form.values.fund_type}
+                                            value={form.values.type}
                                             options={fundTypes}
                                             optionsComponent={SelectControlOptions}
                                             disabled={!hasPermission(activeOrganization, 'manage_funds')}
-                                            onChange={(fund_type: string) => form.update({ fund_type })}
+                                            onChange={(type: string) => form.update({ type })}
                                         />
                                     )}
                                     <FormError error={form.errors?.type} />
@@ -916,7 +924,8 @@ export default function OrganizationsFundsEdit() {
                                         {t('funds_edit.labels.start')}
                                     </label>
                                     <DatePickerControl
-                                        value={dateParse(form.values.start_date)}
+                                        value={form.values.start_date}
+                                        dateFormat="dd-MM-yyyy"
                                         placeholder={t('dd-MM-yyyy')}
                                         disabled={
                                             form.values.state != 'waiting' ||
@@ -926,6 +935,7 @@ export default function OrganizationsFundsEdit() {
                                             form.update({ start_date: dateFormat(start_date) });
                                         }}
                                     />
+                                    <FormError error={form.errors?.start_date} />
                                 </div>
 
                                 <div className="form-group form-group-inline">
@@ -933,7 +943,8 @@ export default function OrganizationsFundsEdit() {
                                         {t('funds_edit.labels.end')}
                                     </label>
                                     <DatePickerControl
-                                        value={dateParse(form.values.end_date)}
+                                        value={form.values.end_date}
+                                        dateFormat="dd-MM-yyyy"
                                         placeholder={t('dd-MM-yyyy')}
                                         disabled={
                                             form.values.state != 'waiting' ||
@@ -943,6 +954,7 @@ export default function OrganizationsFundsEdit() {
                                             form.update({ end_date: dateFormat(end_date) });
                                         }}
                                     />
+                                    <FormError error={form.errors?.end_date} />
                                 </div>
                             </div>
                         </div>
@@ -1094,19 +1106,21 @@ export default function OrganizationsFundsEdit() {
 
                     {appConfigs.organizations.funds.criteria && !form.values.external_page && (
                         <Fragment>
-                            {form.values.criteria?.length > 0 && hasPermission(activeOrganization, 'manage_funds') && (
+                            {(form.values.criteria.length > 0 || hasPermission(activeOrganization, 'manage_funds')) && (
                                 <div className="card-section card-section-primary">
                                     <div className="form-group form-group-inline">
                                         <div className="form-label">Criteria</div>
                                         <div className="form-offset">
                                             <FundCriteriaEditor
                                                 fund={fund}
-                                                organization={fund.organization}
+                                                organization={activeOrganization}
                                                 criteria={form.values.criteria}
-                                                isEditable={fund.criteria_editable}
-                                                setCriteria={(criteria) => setFund({ ...fund, criteria })}
+                                                isEditable={!fund_id || fund.criteria_editable}
+                                                setCriteria={(criteria) => {
+                                                    form.update({ criteria });
+                                                }}
                                                 recordTypes={recordTypes}
-                                                validatorOrganizations={validatorOrganizations.data}
+                                                validatorOrganizations={validatorOrganizations?.data}
                                                 saveCriteriaRef={criteriaBlockRef}
                                             />
                                         </div>
@@ -1164,7 +1178,7 @@ export default function OrganizationsFundsEdit() {
                                 id="cancel">
                                 {t('funds_edit.buttons.cancel')}
                             </button>
-                            <button type="submit" className="button button-primary" id="cancel">
+                            <button type="submit" className="button button-primary">
                                 {t('funds_edit.buttons.confirm')}
                             </button>
                         </div>
