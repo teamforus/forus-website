@@ -99,6 +99,36 @@ export class FeatureService {
                     'Begin met geïntegreerde intake- en aanvraagprocedures voor (gemeentelijke) regelingen.',
                 labels: ['Aanvragen', 'Integratie'],
             },
+            {
+                key: 'external_funds',
+                name: 'Informatief fonds',
+                description: 'Alle beschikbare fondsen op één plek.',
+                overview_description: 'Zet alle beschikbare fondsen op één plek.',
+                labels: ['Communicatie', 'Toegankelijkheid'],
+            },
+            {
+                key: 'voucher_top_up',
+                name: 'Tegoed opwaarderen',
+                description: 'Handmatig opwaarderen van tegoeden.',
+                overview_description: 'Waardeer handmatig tegoeden op.',
+                labels: ['Financieel'],
+            },
+            {
+                key: 'budget_funds',
+                name: 'Budget fonds',
+                description: 'Een digitaal tegoed, te besteden bij gevalideerde aanbieders en aanbod.',
+                overview_description:
+                    'Geef deelnemers de optie om een digitaal tegoed vrij te besteden bij gevalideerde aanbieders en aanbod.',
+                labels: ['Financieel'],
+            },
+            {
+                key: 'subsidy_funds',
+                name: 'Product fonds',
+                description: 'Een digitaal tegoed voor een specifiek product of dienst. ',
+                overview_description:
+                    'Voorzie deelnemers van een digitaal tegoed voor een specifiek product of dienst.',
+                labels: ['Financieel'],
+            },
         ];
     }
 
@@ -146,6 +176,10 @@ export class FeatureService {
                 physical_cards: ['bi_tools', 'auth_2_fa'],
                 voucher_records: ['auth_2_fa', 'digid'],
                 email_connection: ['bi_tools', 'auth_2_fa'],
+                external_funds: ['budget_funds', 'email_connection'],
+                voucher_top_up: ['voucher_records', 'external_funds'],
+                budget_funds: ['subsidy_funds', 'email_connection'],
+                subsidy_funds: ['budget_funds', 'external_funds'],
             }[feature] || [];
 
         return this.list().filter((feature) => additionalFeatures.includes(feature.key));
