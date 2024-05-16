@@ -25,7 +25,7 @@ import FaqEditor from './elements/FaqEditor';
 import Faq from '../../../props/models/Faq';
 import DatePickerControl from '../../elements/forms/controls/DatePickerControl';
 import { addDays, addYears } from 'date-fns';
-import { dateFormat } from '../../../helpers/dates';
+import { dateFormat, dateParse } from '../../../helpers/dates';
 import useAppConfigs from '../../../hooks/useAppConfigs';
 import FundFormulaProduct from '../../../props/models/FundFormulaProduct';
 import Product from '../../../props/models/Product';
@@ -67,13 +67,13 @@ type FormDataProp = {
     description?: string;
     faq_title?: string;
     descriptionPosition?: string;
-    start_date?: Date;
-    end_date?: Date;
+    start_date?: string;
+    end_date?: string;
     formula_products?: Array<FundFormulaProduct>;
     product_id?: number;
     default_validator_employee_id?: number;
     auto_requests_validation?: boolean;
-    criteria?: Array<FundCriterion>;
+    criteria?: Array<Partial<FundCriterion>>;
     notification_amount?: number;
     tag_ids?: Array<number>;
     email_required?: boolean;
@@ -116,7 +116,7 @@ export default function OrganizationsFundsEdit() {
     const [validatorOrganizations, setValidatorOrganizations] = useState<PaginationData<Organization>>(null);
     const [fundStates] = useState(fundService.getStates());
     const faqEditorBlock = useRef<() => Promise<boolean>>();
-    const criteriaBlockRef = useRef<() => Promise<unknown>>();
+    const criteriaBlockRef = useRef<() => Promise<boolean>>();
 
     const [fundTypes] = useState([
         { key: 'budget', name: 'Waardebon' },
@@ -169,8 +169,8 @@ export default function OrganizationsFundsEdit() {
         {
             descriptionPosition: descriptionPositions[0]?.value,
             type: 'budget',
-            start_date: addDays(new Date(), 6),
-            end_date: addYears(new Date(), 1),
+            start_date: dateFormat(addDays(new Date(), 6)),
+            end_date: dateFormat(addYears(new Date(), 1)),
             formula_products: [],
             criteria: [],
             default_validator_employee_id: null,
@@ -220,7 +220,7 @@ export default function OrganizationsFundsEdit() {
 
             if (fund_id) {
                 return fundService
-                    .update(activeOrganization.id, fund_id, { ...data, faq: faq })
+                    .update(activeOrganization.id, fund_id, { ...data, faq: faq, criteria: form.values.criteria })
                     .then(() => {
                         navigate(
                             getStateRouteUrl('funds-show', { organizationId: activeOrganization.id, fundId: fund_id }),
@@ -231,7 +231,7 @@ export default function OrganizationsFundsEdit() {
                     .finally(() => form.setIsLocked(false));
             } else {
                 return fundService
-                    .store(activeOrganization.id, { ...data, faq: faq })
+                    .store(activeOrganization.id, { ...data, faq: faq, criteria: form.values.criteria })
                     .then(() => {
                         navigate(getStateRouteUrl('organization-funds', { organizationId: activeOrganization.id }));
                         pushSuccess('Gelukt!', 'Het fonds is aangemaakt!');
@@ -924,7 +924,7 @@ export default function OrganizationsFundsEdit() {
                                         {t('funds_edit.labels.start')}
                                     </label>
                                     <DatePickerControl
-                                        value={form.values.start_date}
+                                        value={dateParse(form.values.start_date)}
                                         dateFormat="dd-MM-yyyy"
                                         placeholder={t('dd-MM-yyyy')}
                                         disabled={
@@ -943,7 +943,7 @@ export default function OrganizationsFundsEdit() {
                                         {t('funds_edit.labels.end')}
                                     </label>
                                     <DatePickerControl
-                                        value={form.values.end_date}
+                                        value={dateParse(form.values.end_date)}
                                         dateFormat="dd-MM-yyyy"
                                         placeholder={t('dd-MM-yyyy')}
                                         disabled={
@@ -999,7 +999,7 @@ export default function OrganizationsFundsEdit() {
                                                                 />
                                                                 <FormError
                                                                     error={
-                                                                        form.errors[
+                                                                        form.errors?.[
                                                                             `formula_products.${index}.product_id`
                                                                         ]
                                                                     }></FormError>
@@ -1028,7 +1028,7 @@ export default function OrganizationsFundsEdit() {
                                                                 />
                                                                 <FormError
                                                                     error={
-                                                                        form.errors[
+                                                                        form.errors?.[
                                                                             'formula_products.' +
                                                                                 index +
                                                                                 '.record_type_key_multiplier'

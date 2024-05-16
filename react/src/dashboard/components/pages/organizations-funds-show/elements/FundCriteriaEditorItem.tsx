@@ -36,12 +36,12 @@ export default function FundCriteriaEditorItem({
     criterion: FundCriterion;
     isEditable: boolean;
     recordTypes: Array<Partial<RecordType>>;
-    setCriterion: (criteria: FundCriterion) => void;
+    setCriterion: (criteria: Partial<FundCriterion>) => void;
     onDeleteCriteria: (criterion: FundCriterion) => void;
     onEditCriteria: () => void;
     onEditCancelCriteria: () => void;
     validatorOrganizations: Array<Organization>;
-    saveCriterionRef?: React.MutableRefObject<() => Promise<FundCriterion>>;
+    saveCriterionRef?: React.MutableRefObject<() => Promise<boolean>>;
 }) {
     const { t } = useTranslation();
 
@@ -51,7 +51,7 @@ export default function FundCriteriaEditorItem({
 
     const [blockId] = useState<string>(uniqueId());
     const [shouldBeValid] = useState<boolean>(true);
-    const [errors] = useState<Array<ResponseError>>(null);
+    const [errors, setErrors] = useState(null);
     const [values, setValues] = useState<object>(null);
     const [operators, setOperators] = useState<object>(null);
     const [validations, setValidations] = useState<object>(null);
@@ -74,13 +74,9 @@ export default function FundCriteriaEditorItem({
         [fund?.id, organization?.id, fundService],
     );
 
-    const saveCriterion = useCallback(async (): Promise<FundCriterion> => {
+    const saveCriterion = useCallback((): Promise<boolean> => {
         return new Promise((resolve) => {
             const _criterion = JSON.parse(JSON.stringify(criterionPrepared));
-
-            if (!_criterion.is_editing) {
-                return resolve(null);
-            }
 
             _criterion.is_editing = false;
 
@@ -102,14 +98,15 @@ export default function FundCriteriaEditorItem({
                     _criterion.is_new = false;
                     _criterion.validators = validatorsField;
                     _criterion.record_type = { ...recordType };
-                    resolve(_criterion);
+                    setCriterion(_criterion);
+                    resolve(true);
                 })
-                .catch((res: ResponseError) => {
-                    resolve(null);
-                    console.log('res: ', res);
+                .catch((err: ResponseError) => {
+                    resolve(false);
+                    setErrors(err.data.errors);
                 });
         });
-    }, [criterionPrepared, recordType, validateCriteria]);
+    }, [criterionPrepared, recordType, setCriterion, validateCriteria]);
 
     const editDescription = useCallback(
         (criterion: FundCriterion) => {

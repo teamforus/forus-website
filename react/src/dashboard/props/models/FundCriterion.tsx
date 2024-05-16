@@ -14,7 +14,6 @@ export default interface FundCriterion {
     max?: string;
     optional: boolean;
     value: string;
-    is_editing: boolean;
     header?: string;
     external_validators: Array<{
         accepted: boolean;
@@ -27,9 +26,11 @@ export default interface FundCriterion {
         validator_organization_id?: number;
         validator_organization: { name: string };
     }>;
-    validators_list?: Array<Array<unknown>>;
+    validators?: Array<Array<Organization>>;
+    validators_list?: Array<Array<Organization>>;
     show_external_validators_form?: boolean;
     new_validator?: number;
     use_external_validators?: boolean;
+    is_editing?: boolean;
     is_new?: boolean;
 }

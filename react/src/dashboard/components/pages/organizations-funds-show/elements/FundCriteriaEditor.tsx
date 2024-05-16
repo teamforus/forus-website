@@ -33,9 +33,7 @@ export default function FundCriteriaEditor({
     const { t } = useTranslation();
 
     const $element = useRef<HTMLDivElement>(null);
-    const [criterionBlocksRefs, setCriterionBlocksRef] = useState<
-        Array<MutableRefObject<() => Promise<FundCriterion>>>
-    >([...new Array(criteria.length)].map(() => createRef<() => Promise<FundCriterion>>()));
+    const [criterionBlocksRefs, setCriterionBlocksRef] = useState<Array<MutableRefObject<() => Promise<boolean>>>>([]);
     const [isEditing, setIsEditing] = useState<boolean>(false);
     const [deletedItemsCount, setDeleteItemsCount] = useState<number>(0);
 
@@ -56,24 +54,17 @@ export default function FundCriteriaEditor({
         });
         setCriteria([...criteria]);
 
-        criterionBlocksRefs[criteria.length - 1] = createRef<() => Promise<FundCriterion>>();
-        setCriterionBlocksRef([...criterionBlocksRefs]);
-
         updateOnEditFlag();
-    }, [criteria, criterionBlocksRefs, setCriteria, updateOnEditFlag]);
+    }, [criteria, setCriteria, updateOnEditFlag]);
 
     const saveCriteria = useCallback(() => {
         return new Promise((resolve) => {
             Promise.all(criteria.map((criterion, index) => criterionBlocksRefs[index].current())).then((result) => {
                 updateOnEditFlag();
 
-                result.forEach((criterion, index) => {
-                    criteria[index] = criterion;
-                    setCriteria([...criteria]);
-                });
-
                 if (result.filter((result) => !result).length === 0) {
                     resolve(true);
+                    setCriteria([...criteria]);
                     if (onSaveCriteria) {
                         onSaveCriteria(criteria);
                     }
@@ -111,6 +102,10 @@ export default function FundCriteriaEditor({
     );
 
     useEffect(() => {
+        setCriterionBlocksRef([...new Array(criteria.length)].map(() => createRef<() => Promise<boolean>>()));
+    }, [criteria.length]);
+
+    useEffect(() => {
         if (saveCriteriaRef) {
             saveCriteriaRef.current = saveCriteria;
         }
@@ -136,8 +131,8 @@ export default function FundCriteriaEditor({
                             criterion={criterion}
                             onEditCriteria={updateOnEditFlag}
                             onEditCancelCriteria={updateOnEditFlag}
-                            setCriterion={(criterion) => {
-                                criteria[index] = criterion;
+                            setCriterion={(_criterion) => {
+                                criteria[index] = { ...criterion, ..._criterion };
                                 setCriteria([...criteria]);
                             }}
                             onDeleteCriteria={onDelete}
