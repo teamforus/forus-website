@@ -297,7 +297,7 @@ export default function Transactions() {
                         pushSuccess(`Succes!`, `Accepteer de transactie in uw mobiele app van bunq.`);
                     }
                 })
-                .catch((res) => pushDanger('Mislukt!', res.data.message || 'Er ging iets mis!'))
+                .catch((res) => pushDanger('Bulktransactie mislukt', res.data.message || 'Er ging iets mis!'))
                 .finally(() => {
                     setBuildingBulks(false);
                     updateHasPendingBulking();
@@ -411,7 +411,7 @@ export default function Transactions() {
                                 </div>
                             )}
 
-                            {viewType.key == 'transactions' && (
+                            {viewType.key == 'transactions' && isProvider && (
                                 <StateNavLink
                                     name={'transaction-settings'}
                                     params={{ organizationId: activeOrganization.id }}
