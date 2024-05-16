@@ -36,7 +36,8 @@ function contain(offsetX: number, offsetY: number, width: number, height: number
     return fitImage(true)(offsetX, offsetY, width, height);
 }
 
-function cover(offsetX: number, offsetY: number, width: number, height: number) {
+// todo: tmp
+export function cover(offsetX: number, offsetY: number, width: number, height: number) {
     return fitImage(false)(offsetX, offsetY, width, height);
 }
 

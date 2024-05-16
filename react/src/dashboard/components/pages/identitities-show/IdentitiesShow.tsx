@@ -49,10 +49,13 @@ export default function IdentitiesShow() {
             .readIdentity(activeOrganization.id, fund_id, identity_id)
             .then((res) => {
                 setIdentity(res.data.data);
-                setFilterValues({ ...filterValues, identity_address: res.data.data.address });
+                setFilterValues((filterValues) => ({
+                    ...filterValues,
+                    identity_address: res.data.data.address,
+                }));
             })
             .finally(() => setProgress(100));
-    }, [activeOrganization.id, filterValues, fundService, fund_id, identity_id, setProgress]);
+    }, [activeOrganization.id, fundService, fund_id, identity_id, setProgress]);
 
     useEffect(() => {
         fetchFund();

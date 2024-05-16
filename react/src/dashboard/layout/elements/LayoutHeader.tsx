@@ -53,7 +53,7 @@ const IdentityMenuItem = ({ url, href, name, icon, dusk, active, onClick }: Iden
     }
 
     return (
-        <a href={href} className={`auth-user-menu-item ${active ? 'active' : ''}`} onClick={onClick}>
+        <a href={href} data-dusk={dusk} className={`auth-user-menu-item ${active ? 'active' : ''}`} onClick={onClick}>
             <div className="auth-user-menu-item-icon">{icon}</div>
             {name}
         </a>
@@ -177,37 +177,48 @@ export const LayoutHeader = () => {
                                 <ClickOutside
                                     onClickOutside={() => setShowIdentityMenu(false)}
                                     className="auth-user-menu">
-                                    <IdentityMenuItem
-                                        name={'E-mail instellingen'}
-                                        url={getStateRouteUrl('preferences-emails')}
-                                        dusk={'btnUserEmails'}
-                                        icon={<IconEmail />}
-                                    />
-                                    <IdentityMenuItem
-                                        name={'Notificatievoorkeuren'}
-                                        url={getStateRouteUrl('preferences-notifications')}
-                                        icon={<IconNotifications />}
-                                    />
-                                    {(activeOrganization.allow_2fa_restrictions || authIdentity2FAState.required) && (
+                                    {activeOrganization && (
+                                        <IdentityMenuItem
+                                            name={'E-mail instellingen'}
+                                            url={getStateRouteUrl('preferences-emails')}
+                                            dusk={'btnUserEmails'}
+                                            icon={<IconEmail />}
+                                        />
+                                    )}
+
+                                    {activeOrganization && (
+                                        <IdentityMenuItem
+                                            name={'Notificatievoorkeuren'}
+                                            url={getStateRouteUrl('preferences-notifications')}
+                                            icon={<IconNotifications />}
+                                        />
+                                    )}
+
+                                    {(activeOrganization?.allow_2fa_restrictions || authIdentity2FAState?.required) && (
                                         <IdentityMenuItem
                                             name="Beveiliging"
                                             url={getStateRouteUrl('security-2fa')}
                                             icon={<IconSecurity />}
                                         />
                                     )}
-                                    <IdentityMenuItem
-                                        name="Sessies"
-                                        url={getStateRouteUrl('security-sessions')}
-                                        icon={<IconSessions />}
-                                    />
+
+                                    {activeOrganization && (
+                                        <IdentityMenuItem
+                                            name="Sessies"
+                                            url={getStateRouteUrl('security-sessions')}
+                                            icon={<IconSessions />}
+                                        />
+                                    )}
 
                                     {activeOrganization && <div className="auth-user-menu-sep" />}
 
-                                    <IdentityMenuItem
-                                        name="Autoriseer apparaat"
-                                        onClick={openAuthPincodeModal}
-                                        icon={<IconAuthorizeDevice />}
-                                    />
+                                    {activeOrganization && (
+                                        <IdentityMenuItem
+                                            name="Autoriseer apparaat"
+                                            onClick={openAuthPincodeModal}
+                                            icon={<IconAuthorizeDevice />}
+                                        />
+                                    )}
 
                                     {activeOrganization && <div className="auth-user-menu-sep" />}
 
@@ -217,7 +228,6 @@ export const LayoutHeader = () => {
                                         name="Beoordelaar"
                                         active={envData.client_type == 'validator'}
                                         href={appConfigs.fronts.url_validator}
-                                        dusk={'btnUserLogout'}
                                         icon={<IconValidator />}
                                     />
 
@@ -225,7 +235,6 @@ export const LayoutHeader = () => {
                                         name="Sponsor"
                                         active={envData.client_type == 'sponsor'}
                                         href={appConfigs.fronts.url_sponsor}
-                                        dusk={'btnUserLogout'}
                                         icon={<IconSponsor />}
                                     />
 
@@ -233,7 +242,6 @@ export const LayoutHeader = () => {
                                         name="Aanbieder"
                                         active={envData.client_type == 'provider'}
                                         href={appConfigs.fronts.url_provider}
-                                        dusk={'btnUserLogout'}
                                         icon={<IconProvider />}
                                     />
 

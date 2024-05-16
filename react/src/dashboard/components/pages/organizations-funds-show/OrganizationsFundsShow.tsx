@@ -15,7 +15,7 @@ import FundCriteriaEditor from './elements/FundCriteriaEditor';
 import { useOrganizationService } from '../../../services/OrganizationService';
 import Organization from '../../../props/models/Organization';
 import { PaginationData, ResponseError } from '../../../props/ApiResponses';
-import useRecordTypeService from '../../../services/RecordTypeService';
+import { useRecordTypeService } from '../../../services/RecordTypeService';
 import RecordType from '../../../props/models/RecordType';
 import { currencyFormat } from '../../../helpers/string';
 import useFilter from '../../../hooks/useFilter';

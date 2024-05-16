@@ -24,6 +24,6 @@ export class RecordTypeService<T = RecordType> {
     }
 }
 
-export default function useRecordTypeService(): RecordTypeService {
+export function useRecordTypeService(): RecordTypeService {
     return useState(new RecordTypeService())[0];
 }

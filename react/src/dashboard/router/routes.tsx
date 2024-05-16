@@ -53,12 +53,18 @@ import ExtraPaymentsView from '../components/pages/extra-payments-view/ExtraPaym
 import Features from '../components/pages/features/Features';
 import Feature from '../components/pages/feature/Feature';
 import EventLogs from '../components/pages/eventLogs/EventLogs';
+import FinancialDashboard from '../components/pages/financial-dashboard/FinancialDashboard';
+import FinancialDashboardOverview from '../components/pages/financial-dashboard-overview/FinancialDashboardOverview';
+import TransactionBulksView from '../components/pages/transaction-bulks-view/TransactionBulksView';
 import ReimbursementCategories from '../components/pages/reimbursement-categories/ReimbursementCategories';
 import OrganizationFunds from '../components/pages/organizations-funds/OrganizationFunds';
 import OrganizationsFundsShow from '../components/pages/organizations-funds-show/OrganizationsFundsShow';
 import OrganizationsFundsEdit from '../components/pages/organizations-funds-edit/OrganizationsFundsEdit';
 import OrganizationsFundsSecurity from '../components/pages/organizations-funds-security/OrganizationsFundsSecurity';
 import IdentitiesShow from '../components/pages/identitities-show/IdentitiesShow';
+import PreCheck from '../components/pages/pre-check/PreCheck';
+import BiConnection from '../components/pages/bi-connection/BiConnection';
+import ThrowError from '../components/pages_system/ThrowError';
 
 const router = new RouterBuilder();
 
@@ -146,9 +152,8 @@ router.state('identities-show', <IdentitiesShow />, {
     fallbackState: 'organizations',
 });
 
-router.state('pre-check', <WIP title={'Pre-check'} />, {
+router.state('pre-check', <PreCheck />, {
     path: `/organizations/:organizationId/pre-check`,
-    fallbackState: 'organizations',
 });
 
 router.state('external-validators', <WIP title={'External validators'} />, {
@@ -165,14 +170,12 @@ router.state('bank-connections', <BankConnections />, {
     path: `/organizations/:organizationId/bank-connections`,
 });
 
-router.state('financial-dashboard', <WIP title={'Financial dashboard'} />, {
+router.state('financial-dashboard', <FinancialDashboard />, {
     path: `/organizations/:organizationId/financial-dashboard`,
-    fallbackState: 'organizations',
 });
 
-router.state('financial-dashboard-overview', <WIP title={'Financial dashboard overview'} />, {
+router.state('financial-dashboard-overview', <FinancialDashboardOverview />, {
     path: `/organizations/:organizationId/financial-dashboard-overview`,
-    fallbackState: 'organizations',
 });
 
 router.state('vouchers', <WIP title={'Vouchers'} />, {
@@ -228,7 +231,7 @@ router.state('organization-logs', <EventLogs />, {
     fallbackState: 'organizations',
 });
 
-router.state('bi-connection', <WIP title={'BI Connection'} />, {
+router.state('bi-connection', <BiConnection />, {
     path: `/organizations/:organizationId/bi-connection`,
     fallbackState: 'organizations',
 });
@@ -272,7 +275,7 @@ router.state('transaction-settings', <TransactionSettings />, {
     path: `/organizations/:organizationId/transaction-settings`,
 });
 
-router.state('transaction-bulk', <WIP />, {
+router.state('transaction-bulk', <TransactionBulksView />, {
     path: `/organizations/:organizationId/transaction-bulks/:id`,
 });
 
@@ -353,7 +356,7 @@ router.state('feedback', <Feedback />, {
 });
 
 router.state('csv-validation', <CsvValidations />, {
-    path: `/csv-validation/funds/:fundId?`,
+    path: `/csv-validations`,
 });
 
 router.state('csv-validation-redirect', <CsvValidationsRedirect />, {
@@ -388,6 +391,11 @@ router.state('home', <Home />, {
 
 router.state('not-found', <NotFound />, {
     path: `/not-found`,
+    protected: false,
+});
+
+router.state('throw', <ThrowError />, {
+    path: `/throw`,
     protected: false,
 });
 

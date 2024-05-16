@@ -1,5 +1,10 @@
-h1, h2, h3, h4, h5, h6 {
-    font-family: "Oranda", sans-serif !important;
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: 'Oranda', sans-serif !important;
 }
 
 .block {
@@ -7,15 +12,16 @@ h1, h2, h3, h4, h5, h6 {
         border-bottom: none;
 
         .navbar-inner {
-            .search-result-content .search-result-section, .search-result-sidebar {
+            .search-result-content .search-result-section,
+            .search-result-sidebar {
                 svg {
                     path {
                         fill: var(--tc);
                     }
-        
+
                     &:hover {
                         path {
-                            fill: #176B55;
+                            fill: #176b55;
                         }
                     }
                 }
@@ -36,11 +42,11 @@ h1, h2, h3, h4, h5, h6 {
 
                 &:hover {
                     box-shadow: none;
-                    color: #176B55;
+                    color: #176b55;
 
                     svg {
                         path {
-                            fill: #176B55;
+                            fill: #176b55;
                         }
                     }
                 }
@@ -60,42 +66,46 @@ h1, h2, h3, h4, h5, h6 {
 
             .navbar-logo {
                 position: relative;
-                transition: padding .4s;
+                transition: padding 0.4s;
                 margin: 0 -50px 0 0;
 
                 img {
                     height: 40px;
-                    transition: height .4s;
+                    transition: height 0.4s;
                 }
             }
 
             .auth-in {
                 margin-left: 0;
                 margin-right: 15px;
-    
+
                 .auth-user {
                     display: flex;
-    
+
                     .auth-user-avatar {
                         width: 24px;
                         height: 24px;
-    
+
                         &:after {
                             width: 24px;
                             height: 24px;
                             background-position: 5px 5px;
                         }
                     }
-    
+
                     &:hover {
                         .auth-user-avatar {
                             &:after {
-                                background: url(../img/identity-avatar-hover.svg) 5px 5px no-repeat;
+                                @if ($buildReact) {
+                                    background: url(./assets/img/identity-avatar-hover.svg) 5px 5px no-repeat;
+                                } @else {
+                                    background: url(../img/identity-avatar-hover.svg) 5px 5px no-repeat;
+                                }
                             }
                         }
-    
+
                         .auth-user-caret {
-                            color: #176B55;
+                            color: #176b55;
                         }
                     }
                 }
@@ -182,7 +192,7 @@ h1, h2, h3, h4, h5, h6 {
         }
     }
 
-    @media screen and (min-width: 1000px) { 
+    @media screen and (min-width: 1000px) {
         &.block-navbar {
             position: fixed;
             width: 100%;
@@ -194,10 +204,10 @@ h1, h2, h3, h4, h5, h6 {
                     background: #fff;
                     order: 2;
                     padding: 20px;
-                    box-shadow: 0 10px 10px -5px rgba(0, 0, 0, .2);
+                    box-shadow: 0 10px 10px -5px rgba(0, 0, 0, 0.2);
                 }
             }
-    
+
             .block-navbar-search {
                 max-width: 1280px;
                 margin-left: auto;
@@ -210,7 +220,7 @@ h1, h2, h3, h4, h5, h6 {
 
                         .form-control {
                             border-radius: var(--border-radius);
-    
+
                             &::placeholder {
                                 color: #595959;
                                 font-weight: 500;
@@ -222,7 +232,7 @@ h1, h2, h3, h4, h5, h6 {
                             font-size: 20px;
 
                             &:hover {
-                                color: #157C68;
+                                color: #157c68;
                             }
                         }
                     }
@@ -233,11 +243,6 @@ h1, h2, h3, h4, h5, h6 {
                 }
             }
         }
-
-        &.block-products {
-            display: flex;
-            justify-content: center;
-        }
     }
 
     @media screen and (max-width: 1000px) {
@@ -247,21 +252,21 @@ h1, h2, h3, h4, h5, h6 {
             .block-auth {
                 .button {
                     background-color: var(--tc-auth-menu);
-                    color:  var(--tc-var);
+                    color: var(--tc-var);
                     text-transform: var(--text_format);
-    
+
                     svg {
                         path {
                             fill: var(--tc-var);
                         }
                     }
-    
+
                     &:hover {
-                        box-shadow: 0 10px 20px rgba(0,0,0,0.3);
-                        color:  var(--tc-var);
+                        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+                        color: var(--tc-var);
                         text-transform: var(--text_format);
                         background-color: var(--color-primary-light);
-    
+
                         svg {
                             path {
                                 fill: var(--tc-var);
@@ -280,7 +285,7 @@ h1, h2, h3, h4, h5, h6 {
                     .search-area {
                         .form-control {
                             &::placeholder {
-                                color: #9B9B9B;
+                                color: #9b9b9b;
                             }
                         }
                     }
@@ -308,17 +313,6 @@ h1, h2, h3, h4, h5, h6 {
         }
     }
 
-    &.block-products {
-        .product-item {
-            width: 100%;
-
-            .product-item-inner {
-                box-shadow: none;
-                border: solid 1px #e4e4e4;
-            }
-        }
-    }
-
     &.block-profile {
         .profile-aside {
             .profile-menu {
@@ -336,7 +330,7 @@ h1, h2, h3, h4, h5, h6 {
             border: 1px solid #e4e4e4;
         }
     }
-    
+
     &.block-fund {
         .fund-content {
             padding-bottom: 30px;
@@ -355,12 +349,12 @@ h1, h2, h3, h4, h5, h6 {
 
     &.block-pane {
         box-shadow: none;
-        border: 1px solid #e4e4e4;;
+        border: 1px solid #e4e4e4;
     }
 
     &.block-markdown {
         color: #212121;
-        
+
         a:not(.button) {
             color: #950022;
 
@@ -375,7 +369,7 @@ h1, h2, h3, h4, h5, h6 {
             box-shadow: none;
             border: 1px solid #e4e4e4;
 
-            &.base-card-voucher{
+            &.base-card-voucher {
                 box-shadow: none;
                 border: 1px solid #e4e4e4;
             }
@@ -402,9 +396,10 @@ h1, h2, h3, h4, h5, h6 {
     }
 
     @media screen and (min-width: 1000px) {
-        &.block-products, &.block-subsidies {
+        &.block-products,
+        &.block-subsidies {
             max-width: 1280px;
-            margin: 0 auto;
+            margin: 0 auto 30px;
         }
     }
 }
@@ -458,7 +453,12 @@ h1, h2, h3, h4, h5, h6 {
         .block.block-markdown {
             color: #fff;
 
-            h1, h2, h3, h4, h5, h6 {
+            h1,
+            h2,
+            h3,
+            h4,
+            h5,
+            h6 {
                 font: 400 22px/32px 'Oranda';
             }
 
@@ -468,18 +468,18 @@ h1, h2, h3, h4, h5, h6 {
         }
     }
 
-    @media screen and (min-width: 1000px) { 
-        &.section-header { 
+    @media screen and (min-width: 1000px) {
+        &.section-header {
             height: 500px;
             padding: 75px 0;
-        
+
             .header-content {
                 text-align: left;
                 padding: 50px 50px;
                 margin-left: 50px;
                 background-color: #ffffff;
                 text-align: left;
-        
+
                 .header-description p {
                     text-align: left !important;
                 }
@@ -488,15 +488,15 @@ h1, h2, h3, h4, h5, h6 {
 
         &.section-products {
             width: 100vw;
-            background: #F5F5F5;
+            background: #f5f5f5;
             left: calc(-50vw + 50%);
             padding: 30px 0 30px 0;
             margin: 0;
-    
+
             .section-title {
                 margin-top: 0;
             }
-        }    
+        }
     }
 }
 

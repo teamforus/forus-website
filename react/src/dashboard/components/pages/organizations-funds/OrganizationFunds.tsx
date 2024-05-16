@@ -419,7 +419,10 @@ export default function OrganizationFunds() {
 
                                                 {!fund.archived && (
                                                     <td style={{ cursor: 'pointer' }}>
-                                                        {currencyFormat(fund.budget?.total - fund.budget?.used)}
+                                                        {currencyFormat(
+                                                            parseFloat(fund.budget?.total) -
+                                                                parseFloat(fund.budget?.used),
+                                                        )}
                                                     </td>
                                                 )}
 

@@ -86,7 +86,7 @@ export default function OrganizationsSecurity() {
                     (res) => {
                         pushSuccess('Opgeslagen!');
                         setActiveOrganization(Object.assign(activeOrganization, res.data.data));
-                        updateIdentity();
+                        updateIdentity().then();
                     },
                     (err) => {
                         pushDanger('Mislukt!', err.data?.message || 'Onbekende foutmelding.');
@@ -300,7 +300,7 @@ export default function OrganizationsSecurity() {
                                     Annuleer
                                 </StateNavLink>
                                 <button className="button button-primary" type="submit">
-                                    Bevestig
+                                    Bevestigen
                                 </button>
                             </div>
                         </div>

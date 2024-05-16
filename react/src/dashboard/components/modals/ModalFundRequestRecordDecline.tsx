@@ -125,7 +125,7 @@ export default function ModalFundRequestRecordDecline({
                         Annuleer
                     </button>
                     <button type="submit" className="button button-primary">
-                        Bevestig
+                        Bevestigen
                     </button>
                 </div>
             </form>

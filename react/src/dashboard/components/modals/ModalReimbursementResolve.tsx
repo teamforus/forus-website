@@ -172,7 +172,7 @@ export default function ModalReimbursementResolve({
                             className="button button-primary"
                             data-dusk="reimbursementResolveSubmit"
                             disabled={form.isLocked}>
-                            Bevestig
+                            Bevestigen
                         </button>
                     </div>
                 </form>

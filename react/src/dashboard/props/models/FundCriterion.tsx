@@ -4,7 +4,7 @@ import Organization from './Organization';
 export default interface FundCriterion {
     id?: number;
     record_type_key?: string;
-    operator: '>' | '>=' | '<' | '<=' | '=';
+    operator: '<' | '<=' | '>' | '>=' | '!=' | '=' | '*';
     show_attachment: boolean;
     title?: string;
     description?: string;
@@ -13,7 +13,7 @@ export default interface FundCriterion {
     min?: string;
     max?: string;
     optional: boolean;
-    value: string;
+    value?: string;
     header?: string;
     external_validators: Array<{
         accepted: boolean;
@@ -33,4 +33,6 @@ export default interface FundCriterion {
     use_external_validators?: boolean;
     is_editing?: boolean;
     is_new?: boolean;
+    has_record?: boolean;
+    is_valid?: boolean;
 }

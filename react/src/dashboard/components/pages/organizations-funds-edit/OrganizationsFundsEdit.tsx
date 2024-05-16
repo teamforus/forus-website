@@ -32,7 +32,7 @@ import Product from '../../../props/models/Product';
 import useProductService from '../../../services/ProductService';
 import { sortBy } from 'lodash';
 import RecordType from '../../../props/models/RecordType';
-import useRecordTypeService from '../../../services/RecordTypeService';
+import { useRecordTypeService } from '../../../services/RecordTypeService';
 import { useEmployeeService } from '../../../services/EmployeeService';
 import FundCriterion from '../../../props/models/FundCriterion';
 import FundCriteriaEditor from '../organizations-funds-show/elements/FundCriteriaEditor';
