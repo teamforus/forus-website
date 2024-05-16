@@ -1,6 +1,5 @@
-import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { Fragment, useCallback, useEffect, useState } from 'react';
 import useFormBuilder from '../../../hooks/useFormBuilder';
-import { useTranslation } from 'react-i18next';
 import LoadingCard from '../../elements/loading-card/LoadingCard';
 import Implementation from '../../../props/models/Implementation';
 import SelectControl from '../../elements/select-control/SelectControl';
@@ -12,7 +11,7 @@ import { PaginationData, ResponseError } from '../../../props/ApiResponses';
 import PreCheck from '../../../props/models/PreCheck';
 import PreCheckStepEditor from './elements/PreCheckStepEditor';
 import EmptyCard from '../../elements/empty-card/EmptyCard';
-import { getStateRouteUrl } from '../../../modules/state_router/Router';
+import { getStateRouteUrl, useNavigateState } from '../../../modules/state_router/Router';
 import useActiveOrganization from '../../../hooks/useActiveOrganization';
 import PhotoSelector from '../../elements/photo-selector/PhotoSelector';
 import { useImplementationService } from '../../../services/ImplementationService';
@@ -23,20 +22,26 @@ import usePushDanger from '../../../hooks/usePushDanger';
 import usePushSuccess from '../../../hooks/usePushSuccess';
 import PreCheckRecord from '../../../props/models/PreCheckRecord';
 import { uniqueId } from 'lodash';
+import useSetProgress from '../../../hooks/useSetProgress';
+import useTranslate from '../../../hooks/useTranslate';
+import useAssetUrl from '../../../hooks/useAssetUrl';
 
 export default function PreCheck() {
-    const { t } = useTranslation();
+    const activeOrganization = useActiveOrganization();
 
+    const assetUrl = useAssetUrl();
+    const translate = useTranslate();
     const pushDanger = usePushDanger();
     const pushSuccess = usePushSuccess();
-    const activeOrganization = useActiveOrganization();
+    const setProgress = useSetProgress();
+    const navigateState = useNavigateState();
 
     const fundService = useFundService();
     const mediaService = useMediaService();
     const preCheckService = usePreCheckService();
     const implementationService = useImplementationService();
 
-    const [mediaFile, setMediaFile] = useState<Media>(null);
+    const [mediaFile, setMediaFile] = useState<Blob>(null);
     const [deleteMedia, setDeleteMedia] = useState<boolean>(false);
     const [thumbnailMedia, setThumbnailMedia] = useState<Media>(null);
     const [funds, setFunds] = useState<PaginationData<Fund>>(null);
@@ -44,31 +49,15 @@ export default function PreCheck() {
     const [implementation, setImplementation] = useState<Implementation>(null);
     const [implementations, setImplementations] = useState<Array<Implementation>>(null);
 
-    const bannerStates = useMemo(() => {
-        return [
-            {
-                value: 'draft',
-                name: 'Nee',
-            },
-            {
-                value: 'public',
-                name: 'Ja',
-            },
-        ];
-    }, []);
+    const [bannerStates] = useState([
+        { value: 'draft', name: 'Nee' },
+        { value: 'public', name: 'Ja' },
+    ]);
 
-    const enableOptions = useMemo(() => {
-        return [
-            {
-                key: false,
-                name: `Uitgeschakeld`,
-            },
-            {
-                key: true,
-                name: `Actief`,
-            },
-        ];
-    }, []);
+    const [enableOptions] = useState([
+        { key: false, name: `Uitgeschakeld` },
+        { key: true, name: `Actief` },
+    ]);
 
     const preCheckForm = useFormBuilder(
         {
@@ -87,14 +76,23 @@ export default function PreCheck() {
                     preCheckForm.setErrors(null);
                     pushSuccess('Opgeslagen!');
 
-                    implementationService.read(activeOrganization.id, implementation.id).then((res) => {
-                        setImplementation(res.data.data);
+                    setPreChecks((preChecks) => {
+                        const data = transformPreChecks(res.data.data);
+
+                        preChecks.forEach((preCheck, index) => {
+                            data[index] ? (data[index].uid = preCheck.uid) : null;
+                        });
+
+                        return data;
                     });
-                    setPreChecks(transformPreChecks(res.data.data));
+
+                    implementationService
+                        .read(activeOrganization.id, implementation.id)
+                        .then((res) => setImplementation(res.data.data));
                 })
-                .catch((res) => {
-                    preCheckForm.setErrors(res.data.errors);
-                    pushDanger(res.data?.message || 'Onbekende foutmelding!');
+                .catch((err: ResponseError) => {
+                    preCheckForm.setErrors(err.data.errors);
+                    pushDanger(err.data?.message || 'Onbekende foutmelding!');
                 })
                 .finally(() => preCheckForm.setIsLocked(false));
         },
@@ -107,50 +105,47 @@ export default function PreCheck() {
             pre_check_banner_title: '',
             pre_check_banner_description: '',
         },
-        (values) => {
-            storeMedia(mediaFile).then((media: Media) => {
-                implementationService
-                    .updatePreCheckBanner(activeOrganization.id, implementation.id, {
-                        ...values,
-                        ...(media ? { pre_check_media_uid: media.uid } : {}),
-                    })
-                    .then(() => {
-                        bannerForm.setErrors(null);
-                        pushSuccess('Opgeslagen!');
-                    })
-                    .catch((res: ResponseError) => {
-                        bannerForm.setErrors(res.data.errors);
-                        pushDanger(res.data?.message || 'Onbekende foutmelding!');
-                    })
-                    .finally(() => bannerForm.setIsLocked(false));
-            });
+        async (values) => {
+            const media = await storeMedia(mediaFile);
+
+            implementationService
+                .updatePreCheckBanner(activeOrganization.id, implementation.id, {
+                    ...values,
+                    ...(media ? { pre_check_media_uid: media.uid } : {}),
+                })
+                .then(() => {
+                    bannerForm.setErrors(null);
+                    pushSuccess('Opgeslagen!');
+                })
+                .catch((err: ResponseError) => {
+                    bannerForm.setErrors(err.data.errors);
+                    pushDanger(err.data?.message || 'Onbekende foutmelding!');
+                })
+                .finally(() => bannerForm.setIsLocked(false));
         },
     );
 
-    const selectPhoto = useCallback((file) => {
+    const { update: updatePreCheckForm, reset: resetPreCheckForm } = preCheckForm;
+    const { update: updateBannerForm, reset: resetBannerForm } = bannerForm;
+
+    const selectPhoto = useCallback((file: Blob) => {
         setMediaFile(file);
         setDeleteMedia(false);
     }, []);
 
     const storeMedia = useCallback(
-        (mediaFile) => {
-            return new Promise((resolve, reject) => {
-                if (deleteMedia) {
-                    mediaService.delete(implementation.pre_check_banner.uid);
-                }
+        async (mediaFile): Promise<Media> => {
+            if (deleteMedia) {
+                await mediaService.delete(implementation.pre_check_banner.uid);
+            }
 
-                if (mediaFile) {
-                    return mediaService
-                        .store('pre_check_banner', mediaFile)
-                        .then((res) => resolve(res.data.data))
-                        .catch((res) => {
-                            pushDanger('Error!', res.data?.message || 'Onbekende foutmelding!');
-                            reject(res);
-                        });
-                }
-
-                resolve(null);
-            });
+            return await mediaService
+                .store('pre_check_banner', mediaFile)
+                .then((res) => res.data?.data)
+                .catch((err: ResponseError) => {
+                    pushDanger('Mislukt!', err.data?.message || 'Onbekende foutmelding!');
+                    return null;
+                });
         },
         [deleteMedia, implementation?.pre_check_banner?.uid, mediaService, pushDanger],
     );
@@ -187,61 +182,35 @@ export default function PreCheck() {
     );
 
     const fetchPreChecks = useCallback(
-        (implementation_id: number) => {
-            preCheckService.list(activeOrganization.id, implementation_id).then((res) => {
-                setPreChecks(transformPreChecks(res.data.data));
-            });
+        async (implementation_id: number) => {
+            setProgress(0);
+
+            return preCheckService
+                .list(activeOrganization.id, implementation_id)
+                .then((res) => transformPreChecks(res.data.data))
+                .finally(() => setProgress(100));
         },
-        [activeOrganization.id, preCheckService, transformPreChecks],
-    );
-
-    const updatePreCheckForm = useCallback((implementation: Implementation) => {
-        preCheckForm.update({
-            implementation_id: implementation.id,
-            pre_check_enabled: implementation.pre_check_enabled,
-            pre_check_title: implementation.pre_check_title,
-            pre_check_description: implementation.pre_check_description,
-        });
-    }, []);
-
-    const updateBannerForm = useCallback((implementation: Implementation) => {
-        bannerForm.update({
-            pre_check_banner_state: implementation.pre_check_banner_state,
-            pre_check_banner_label: implementation.pre_check_banner_label,
-            pre_check_banner_title: implementation.pre_check_banner_title,
-            pre_check_banner_description: implementation.pre_check_banner_description,
-        });
-    }, []);
-
-    const updateImplementation = useCallback(
-        (implementation: Implementation) => {
-            setImplementation(implementation);
-            setThumbnailMedia(implementation?.pre_check_banner);
-            setMediaFile(null);
-
-            updatePreCheckForm(implementation);
-            updateBannerForm(implementation);
-            fetchPreChecks(implementation.id);
-        },
-        [fetchPreChecks, updateBannerForm, updatePreCheckForm],
+        [activeOrganization.id, setProgress, preCheckService, transformPreChecks],
     );
 
     const fetchImplementations = useCallback(() => {
-        implementationService.list(activeOrganization.id, { per_page: 100 }).then((res) => {
-            const implementationsData = res.data.data;
-            setImplementations(implementationsData);
-
-            if (implementationsData[0]) {
-                updateImplementation(implementationsData[0]);
-            }
-        });
-    }, [activeOrganization.id, implementationService, updateImplementation]);
+        implementationService
+            .list(activeOrganization.id, { per_page: 100 })
+            .then((res) => {
+                setImplementations(res.data.data);
+                setImplementation(res.data.data[0]);
+            })
+            .finally(() => setProgress(100));
+    }, [activeOrganization, implementationService, setProgress]);
 
     const fetchFunds = useCallback(() => {
-        fundService.list(activeOrganization.id, { per_page: 100, configured: 1 }).then((res) => {
-            setFunds(res.data);
-        });
-    }, [activeOrganization.id, fundService]);
+        setProgress(0);
+
+        fundService
+            .list(activeOrganization.id, { per_page: 100, configured: 1 })
+            .then((res) => setFunds(res.data))
+            .finally(() => setProgress(100));
+    }, [activeOrganization.id, fundService, setProgress]);
 
     useEffect(() => {
         fetchImplementations();
@@ -250,6 +219,44 @@ export default function PreCheck() {
     useEffect(() => {
         fetchFunds();
     }, [fetchFunds]);
+
+    useEffect(() => {
+        setMediaFile(null);
+        setThumbnailMedia(implementation?.pre_check_banner);
+
+        if (implementation) {
+            updateBannerForm({
+                pre_check_banner_state: implementation.pre_check_banner_state,
+                pre_check_banner_label: implementation.pre_check_banner_label,
+                pre_check_banner_title: implementation.pre_check_banner_title,
+                pre_check_banner_description: implementation.pre_check_banner_description,
+            });
+
+            updatePreCheckForm({
+                implementation_id: implementation.id,
+                pre_check_enabled: implementation.pre_check_enabled,
+                pre_check_title: implementation.pre_check_title,
+                pre_check_description: implementation.pre_check_description,
+            });
+        } else {
+            resetBannerForm();
+            resetPreCheckForm();
+        }
+    }, [implementation, resetBannerForm, resetPreCheckForm, updateBannerForm, updatePreCheckForm]);
+
+    useEffect(() => {
+        if (activeOrganization?.allow_pre_checks && implementation?.organization_id == activeOrganization?.id) {
+            fetchPreChecks(implementation?.id).then((preChecks) => setPreChecks(preChecks));
+        } else {
+            setPreChecks(null);
+        }
+    }, [activeOrganization, fetchPreChecks, implementation?.id, implementation?.organization_id]);
+
+    useEffect(() => {
+        if (!activeOrganization?.allow_pre_checks) {
+            navigateState('organizations');
+        }
+    }, [activeOrganization?.allow_pre_checks, navigateState]);
 
     if (!implementations || !funds) {
         return <LoadingCard />;
@@ -270,7 +277,7 @@ export default function PreCheck() {
                 <div className="card">
                     <form className="form" onSubmit={preCheckForm.submit}>
                         <div className="card-header flex-row">
-                            <div className="card-title">{t('funds_pre_check.header.title')}</div>
+                            <div className="card-title">{translate('funds_pre_check.header.title')}</div>
 
                             <div className="flex flex-grow flex-end">
                                 {implementation.pre_check_enabled && (
@@ -280,12 +287,12 @@ export default function PreCheck() {
                                         target="_blank"
                                         rel="noreferrer">
                                         Bekijk pagina
-                                        <div className="mdi mdi-open-in-new icon-end"></div>
+                                        <em className="mdi mdi-open-in-new icon-end" />
                                     </a>
                                 )}
 
                                 <button className="button button-primary button-sm" type="submit">
-                                    {t('funds_edit.buttons.confirm')}
+                                    {translate('funds_edit.buttons.confirm')}
                                 </button>
                             </div>
                         </div>
@@ -296,21 +303,15 @@ export default function PreCheck() {
                                     {implementations.length > 1 && (
                                         <div className="form-group">
                                             <label className="form-label">
-                                                {t('funds_pre_check.labels.implementation')}
+                                                {translate('funds_pre_check.labels.implementation')}
                                             </label>
                                             <SelectControl
                                                 className="form-control"
-                                                propKey={'id'}
                                                 allowSearch={false}
                                                 options={implementations}
-                                                value={implementation.id}
-                                                onChange={(implementation_id: number) => {
-                                                    preCheckForm.update({ implementation_id });
-                                                    updateImplementation(
-                                                        implementations.find(
-                                                            (implementation) => implementation.id == implementation_id,
-                                                        ),
-                                                    );
+                                                value={implementation}
+                                                onChange={(implementation: Implementation) => {
+                                                    setImplementation(implementation);
                                                 }}
                                                 optionsComponent={SelectControlOptions}
                                             />
@@ -319,7 +320,9 @@ export default function PreCheck() {
                                     )}
 
                                     <div className="form-group">
-                                        <label className="form-label">{t('funds_pre_check.labels.status')}</label>
+                                        <label className="form-label">
+                                            {translate('funds_pre_check.labels.status')}
+                                        </label>
                                         <SelectControl
                                             className="form-control"
                                             propKey={'key'}
@@ -340,11 +343,13 @@ export default function PreCheck() {
                         <div className="card-section card-section-primary">
                             <div className="row">
                                 <div className="col col-lg-12 col-xs-12">
-                                    <div className="card-heading">{t('funds_pre_check.labels.description_title')}</div>
+                                    <div className="card-heading">
+                                        {translate('funds_pre_check.labels.description_title')}
+                                    </div>
 
                                     <div className="form-group">
                                         <label className="form-label form-label-required">
-                                            {t('funds_pre_check.labels.title')}
+                                            {translate('funds_pre_check.labels.title')}
                                         </label>
                                         <input
                                             className="form-control r-n"
@@ -361,8 +366,8 @@ export default function PreCheck() {
                                     </div>
 
                                     <div className="form-group">
-                                        <label className="form-label form-label-required">
-                                            {t('funds_pre_check.labels.description')}
+                                        <label className="form-label">
+                                            {translate('funds_pre_check.labels.description')}
                                         </label>
                                         <textarea
                                             className="form-control r-n"
@@ -379,7 +384,7 @@ export default function PreCheck() {
                             </div>
                         </div>
 
-                        {funds.meta.total > 0 && (
+                        {funds.meta.total > 0 && preChecks && (
                             <div className="card-section card-section-primary">
                                 <div className="row">
                                     <div className="col col-lg-12 col-xs-12">
@@ -401,10 +406,11 @@ export default function PreCheck() {
                                     {funds.meta.total == 0 && (
                                         <EmptyCard
                                             title={'Geen fondsen gevonden'}
+                                            imageIcon={assetUrl('/assets/img/no-funds-icon.svg')}
                                             description={[
                                                 'Op dit moment lijkt u geen actieve fondsen te hebben.',
-                                                'Voordat u verder gaat, moet u eerst een fonds aanmaken',
-                                            ].join('\n')}
+                                                'Voordat u verder gaat, moet u eerst een fonds aanmaken.',
+                                            ].join(' ')}
                                             button={{
                                                 text: 'Ga naar de fondsenpagina',
                                                 type: 'primary',
@@ -434,11 +440,11 @@ export default function PreCheck() {
                         <div className="card-section">
                             <div className="text-right">
                                 <button className="button button-default" type="button" id="cancel">
-                                    {t('funds_edit.buttons.cancel')}
+                                    {translate('funds_edit.buttons.cancel')}
                                 </button>
 
                                 <button className="button button-primary" type="submit">
-                                    {t('funds_edit.buttons.confirm')}
+                                    {translate('funds_edit.buttons.confirm')}
                                 </button>
                             </div>
                         </div>
@@ -483,11 +489,11 @@ export default function PreCheck() {
                             </div>
 
                             <div className="form-group">
-                                <div className="form-label">{t('funds_pre_check.labels.title')}</div>
+                                <div className="form-label">{translate('funds_pre_check.labels.title')}</div>
                                 <div className="form-offset">
                                     <input
                                         className={'form-control r-n'}
-                                        placeholder={t('funds_pre_check.labels.title')}
+                                        placeholder={translate('funds_pre_check.labels.title')}
                                         value={bannerForm.values.pre_check_banner_title || ''}
                                         onChange={(e) => bannerForm.update({ pre_check_banner_title: e.target.value })}
                                     />
@@ -496,11 +502,11 @@ export default function PreCheck() {
                             </div>
 
                             <div className="form-group">
-                                <div className="form-label">{t('funds_pre_check.labels.description')}</div>
+                                <div className="form-label">{translate('funds_pre_check.labels.description')}</div>
                                 <div className="form-offset">
                                     <textarea
                                         className={'form-control r-n'}
-                                        placeholder={t('funds_pre_check.labels.description')}
+                                        placeholder={translate('funds_pre_check.labels.description')}
                                         value={bannerForm.values.pre_check_banner_description || ''}
                                         onChange={(e) =>
                                             bannerForm.update({ pre_check_banner_description: e.target.value })
@@ -511,11 +517,11 @@ export default function PreCheck() {
                             </div>
 
                             <div className="form-group">
-                                <div className="form-label">{t('funds_pre_check.labels.label')}</div>
+                                <div className="form-label">{translate('funds_pre_check.labels.label')}</div>
                                 <div className="form-offset">
                                     <input
                                         className={'form-control r-n'}
-                                        placeholder={t('funds_pre_check.labels.label')}
+                                        placeholder={translate('funds_pre_check.labels.label')}
                                         value={bannerForm.values.pre_check_banner_label || ''}
                                         onChange={(e) => bannerForm.update({ pre_check_banner_label: e.target.value })}
                                     />
@@ -539,11 +545,11 @@ export default function PreCheck() {
                         <div className="card-section">
                             <div className="text-right">
                                 <button className="button button-default" type="button" id="cancel">
-                                    {t('funds_edit.buttons.cancel')}
+                                    {translate('funds_edit.buttons.cancel')}
                                 </button>
 
                                 <button className="button button-primary" type="submit">
-                                    {t('funds_edit.buttons.confirm')}
+                                    {translate('funds_edit.buttons.confirm')}
                                 </button>
                             </div>
                         </div>

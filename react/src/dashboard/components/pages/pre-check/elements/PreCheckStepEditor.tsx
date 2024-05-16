@@ -1,21 +1,32 @@
-import React, { Fragment, useCallback, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import {
     arrayMove,
     SortableContext,
     sortableKeyboardCoordinates,
-    useSortable,
     verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import PreCheck from '../../../../props/models/PreCheck';
 import { uniqueId } from 'lodash';
-import { CSS } from '@dnd-kit/utilities';
-import FormError from '../../../elements/forms/errors/FormError';
 import { ResponseErrorData } from '../../../../props/ApiResponses';
 import ModalDangerZone from '../../../../components/modals/ModalDangerZone';
 import useOpenModal from '../../../../hooks/useOpenModal';
-import { useTranslation } from 'react-i18next';
-import PreCheckRecordSettings from './PreCheckRecordSettings';
-import { closestCenter, DndContext, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
+import {
+    closestCenter,
+    CollisionDetection,
+    DndContext,
+    getFirstCollision,
+    KeyboardSensor,
+    MeasuringStrategy,
+    PointerSensor,
+    pointerWithin,
+    rectIntersection,
+    useSensor,
+    useSensors,
+} from '@dnd-kit/core';
+
+import useTranslate from '../../../../hooks/useTranslate';
+import PreCheckStepEditorItem from './PreCheckStepEditorItem';
+import PreCheckRecord from '../../../../props/models/PreCheckRecord';
 
 export default function PreCheckStepEditor({
     preChecks = null,
@@ -23,46 +34,39 @@ export default function PreCheckStepEditor({
     errors = null,
 }: {
     preChecks: Array<PreCheck>;
-    setPreChecks: (preChecks: Array<PreCheck>) => void;
+    setPreChecks: React.Dispatch<React.SetStateAction<Array<PreCheck>>>;
     errors: ResponseErrorData;
 }) {
-    const { t } = useTranslation();
+    const openModal = useOpenModal();
+    const translate = useTranslate();
 
     const sensors = useSensors(
         useSensor(PointerSensor),
         useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
     );
 
-    const openModal = useOpenModal();
+    const [activeId, setActiveId] = useState<string | null>(null);
+    const lastOverId = useRef<string | null>(null);
 
-    const id = useState(uniqueId())[0];
-    const [unCollapsedPreChecks, setUnCollapsedPreChecks] = useState<Array<number>>([]);
-    const [unCollapsedRecords, setUnCollapsedRecords] = useState<
-        Array<{ preCheckKey: number; preCheckRecordKey: number }>
-    >([]);
+    const [clonedItems, setClonedItems] = useState<Array<PreCheck>>(null);
+    const [unCollapsed, setUnCollapsed] = useState<Array<string>>([]);
 
-    const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id });
-
-    const style = {
-        transform: CSS.Transform.toString(transform),
-        transition,
-    };
+    const isSortingContainer = activeId ? preChecks.map((item) => item.uid).includes(activeId.toString()) : false;
+    const recentlyMovedToNewContainer = useRef(false);
 
     const askConfirmation = useCallback(
         (onConfirm): void => {
             openModal((modal) => (
                 <ModalDangerZone
                     modal={modal}
-                    title={t('modals.danger_zone.remove_implementation_block.title')}
-                    description_text={t('modals.danger_zone.remove_implementation_block.description')}
+                    title={translate('modals.danger_zone.remove_implementation_block.title')}
+                    description_text={translate('modals.danger_zone.remove_implementation_block.description')}
                     buttonCancel={{
-                        text: t('modals.danger_zone.remove_implementation_block.buttons.cancel'),
-                        onClick: () => {
-                            modal.close();
-                        },
+                        text: translate('modals.danger_zone.remove_implementation_block.buttons.cancel'),
+                        onClick: () => modal.close(),
                     }}
                     buttonSubmit={{
-                        text: t('modals.danger_zone.remove_implementation_block.buttons.confirm'),
+                        text: translate('modals.danger_zone.remove_implementation_block.buttons.confirm'),
                         onClick: () => {
                             modal.close();
                             onConfirm();
@@ -71,53 +75,7 @@ export default function PreCheckStepEditor({
                 />
             ));
         },
-        [openModal, t],
-    );
-
-    const collapse = useCallback(
-        (preCheckKey: number) => {
-            unCollapsedPreChecks.splice(unCollapsedPreChecks.indexOf(preCheckKey), 1);
-            setUnCollapsedPreChecks([...unCollapsedPreChecks]);
-        },
-        [unCollapsedPreChecks],
-    );
-
-    const unCollapse = useCallback(
-        (preCheckKey: number) => {
-            setUnCollapsedPreChecks([...unCollapsedPreChecks, preCheckKey]);
-        },
-        [unCollapsedPreChecks],
-    );
-
-    const isCollapsedRecord = useCallback(
-        (preCheckKey: number, recordKey: number) => {
-            return !unCollapsedRecords.find(
-                (unCollapsedRecord) =>
-                    unCollapsedRecord.preCheckKey == preCheckKey && unCollapsedRecord.preCheckRecordKey == recordKey,
-            );
-        },
-        [unCollapsedRecords],
-    );
-
-    const collapseRecord = useCallback(
-        (preCheckKey: number, preCheckRecordKey: number) => {
-            setUnCollapsedRecords(
-                unCollapsedRecords.filter(
-                    (record) => record.preCheckKey != preCheckKey || record.preCheckRecordKey != preCheckRecordKey,
-                ),
-            );
-        },
-        [unCollapsedRecords],
-    );
-
-    const unCollapseRecord = useCallback(
-        (preCheckKey: number, preCheckRecordKey: number) => {
-            setUnCollapsedRecords([
-                ...unCollapsedRecords,
-                { preCheckKey: preCheckKey, preCheckRecordKey: preCheckRecordKey },
-            ]);
-        },
-        [unCollapsedRecords],
+        [openModal, translate],
     );
 
     const removePreCheck = useCallback(
@@ -126,7 +84,11 @@ export default function PreCheckStepEditor({
                 const deletedPreCheck = preChecks.splice(preCheckIndex, 1)[0];
                 const defaultPreCheck = preChecks.find((preCheck) => preCheck.default);
 
-                defaultPreCheck.record_types = [...defaultPreCheck.record_types, ...deletedPreCheck.record_types];
+                defaultPreCheck.record_types = [
+                    ...(defaultPreCheck.record_types || []),
+                    ...(deletedPreCheck.record_types || []),
+                ];
+
                 setPreChecks([...preChecks]);
             });
         },
@@ -134,375 +96,251 @@ export default function PreCheckStepEditor({
     );
 
     const addPreCheck = useCallback(() => {
-        setPreChecks([
-            ...preChecks,
-            {
-                uid: uniqueId(),
-                label: '',
-                title: '',
-                uncollapsed: true,
-                description: '',
-                record_types: [],
-            },
-        ]);
+        const preCheck = {
+            uid: uniqueId(),
+            label: '',
+            title: '',
+            uncollapsed: true,
+            description: '',
+            record_types: [],
+        };
 
-        setUnCollapsedPreChecks([...unCollapsedPreChecks, preChecks.length]);
-    }, [preChecks, unCollapsedPreChecks, setPreChecks]);
+        setPreChecks([...preChecks, preCheck]);
+        setUnCollapsed([...unCollapsed, preCheck.uid]);
+    }, [preChecks, unCollapsed, setPreChecks]);
 
-    const updatePreChecks = useCallback(
-        (preCheckIndex: number, values: object) => {
-            preChecks[preCheckIndex] = { ...preChecks[preCheckIndex], ...values };
-            setPreChecks(preChecks);
-        },
-        [preChecks, setPreChecks],
-    );
-
-    const updatePreCheckRecords = useCallback(
-        (preCheckIndex: number, preCheckRecordIndex: number, values: object = {}) => {
-            const records = preChecks[preCheckIndex].record_types;
-            records[preCheckRecordIndex] = { ...records[preCheckRecordIndex], ...values };
-            preChecks[preCheckIndex] = { ...preChecks[preCheckIndex], record_types: records };
-            setPreChecks(preChecks);
-        },
-        [preChecks, setPreChecks],
-    );
-
-    const handleDragEnd = useCallback(
-        (event) => {
-            const { active, over } = event;
-
-            if (active.id !== over.id) {
-                const items = preChecks.map((preCheck) => preCheck.uid);
-                const oldIndex = items.indexOf(active.id);
-                const newIndex = items.indexOf(over.id);
-
-                setPreChecks(arrayMove(preChecks, oldIndex, newIndex));
+    const findContainer = useCallback(
+        (id: string) => {
+            if (preChecks.map((item) => item.uid).includes(id.toString())) {
+                return id;
             }
+
+            return preChecks.find((item) =>
+                item.record_types.map((type) => type.record_type_key).includes(id.toString()),
+            )?.uid;
         },
-        [preChecks, setPreChecks],
+        [preChecks],
+    );
+
+    const onDragEnd = useCallback(
+        ({ active, over }) => {
+            if (preChecks.map((item) => item.uid).includes(over?.id.toString())) {
+                setPreChecks((items) => {
+                    const activeIndex = items.findIndex((item) => item.uid == active.id);
+                    const overIndex = items.findIndex((item) => item.uid == over.id);
+
+                    return arrayMove(items, activeIndex, overIndex);
+                });
+            }
+
+            const overContainerId = findContainer(over?.id);
+            const overContainerIndex = preChecks.findIndex((item) => item.uid == overContainerId);
+
+            const activeContainerId = findContainer(active.id);
+            const activeContainerIndex = preChecks.findIndex((item) => item.uid == activeContainerId);
+
+            if (!activeContainerId || over?.id == null) {
+                setActiveId(null);
+                return;
+            }
+
+            if (overContainerId) {
+                const activeIndex = preChecks[activeContainerIndex].record_types?.findIndex(
+                    (type: PreCheckRecord) => type.record_type_key == active?.id,
+                );
+
+                const overIndex = preChecks[overContainerIndex].record_types?.findIndex(
+                    (type: PreCheckRecord) => type.record_type_key == over?.id,
+                );
+
+                if (activeIndex !== overIndex) {
+                    setPreChecks((items) => {
+                        items[overContainerIndex] = {
+                            ...items[overContainerIndex],
+                            record_types: arrayMove(items[overContainerIndex].record_types, activeIndex, overIndex),
+                        };
+
+                        return [...items];
+                    });
+                }
+            }
+
+            setActiveId(null);
+        },
+        [findContainer, preChecks, setPreChecks],
+    );
+
+    const onDragCancel = useCallback(() => {
+        if (clonedItems) {
+            setPreChecks(clonedItems);
+        }
+
+        setActiveId(null);
+        setClonedItems(null);
+    }, [clonedItems, setPreChecks]);
+
+    const onDragStart = useCallback(
+        ({ active }) => {
+            setActiveId(active.id);
+            setClonedItems(preChecks);
+        },
+        [preChecks],
+    );
+
+    const onDragOver = useCallback(
+        ({ active, over }) => {
+            const overId = over?.id;
+
+            // sorting containers
+            if (overId == null || preChecks.find((item) => item.uid === active.id)) {
+                return;
+            }
+
+            const overContainerId = findContainer(overId);
+            const activeContainerId = findContainer(active.id);
+
+            if (!overContainerId || !activeContainerId || activeContainerId === overContainerId) {
+                return;
+            }
+
+            setPreChecks((preChecks) => {
+                const activeItems = preChecks.find((item) => item.uid == activeContainerId)?.record_types;
+                const activeIndex = activeItems.findIndex((type) => type.record_type_key == active.id.toString());
+
+                const overItems = preChecks.find((item) => item.uid == overContainerId)?.record_types;
+                const overIndex = overItems.findIndex((type) => type.record_type_key == over.id.toString());
+
+                let newIndex: number;
+
+                if (preChecks.map((item) => item.uid).includes(overId.toString())) {
+                    newIndex = overItems.length + 1;
+                } else {
+                    const isBelowOverItem =
+                        over &&
+                        active.rect.current.translated &&
+                        active.rect.current.translated.top > over.rect.top + over.rect.height;
+
+                    const modifier = isBelowOverItem ? 1 : 0;
+
+                    newIndex = overIndex >= 0 ? overIndex + modifier : overItems.length + 1;
+                }
+
+                recentlyMovedToNewContainer.current = true;
+
+                const overContainer = preChecks.find((item) => item.uid == overContainerId);
+                const activeContainer = preChecks.find((item) => item.uid == activeContainerId);
+                const activeContainerItem = activeContainer.record_types[activeIndex];
+
+                activeContainer.record_types = activeContainer.record_types.filter(
+                    (type) => type.record_type_key !== active.id.toString(),
+                );
+
+                overContainer.record_types = [
+                    ...overItems.slice(0, newIndex),
+                    activeContainerItem,
+                    ...overItems.slice(newIndex, overContainer.record_types.length),
+                ];
+
+                return [...preChecks];
+            });
+        },
+        [findContainer, preChecks, setPreChecks],
+    );
+
+    const collisionDetectionStrategy: CollisionDetection = useCallback(
+        (args) => {
+            if (activeId && preChecks.map((item) => item.uid).includes(activeId?.toString())) {
+                return closestCenter({
+                    ...args,
+                    droppableContainers: args.droppableContainers.filter((container) =>
+                        preChecks.map((item) => item.uid).includes(container.id?.toString()),
+                    ),
+                });
+            }
+
+            // Start by finding any intersecting droppable
+            const pointerIntersections = pointerWithin(args);
+            // If there are droppables intersecting with the pointer, return those
+            const intersections = pointerIntersections.length > 0 ? pointerIntersections : rectIntersection(args);
+
+            let overId = getFirstCollision(intersections, 'id');
+
+            if (overId != null) {
+                if (preChecks.map((item) => item.uid).includes(overId?.toString())) {
+                    const containerItems = preChecks.find((item) => item.uid == overId?.toString()).record_types;
+
+                    // If a container is matched and it contains items (columns 'A', 'B', 'C')
+                    if (containerItems.length > 0) {
+                        // Return the closest droppable within that container
+                        overId = closestCenter({
+                            ...args,
+                            droppableContainers: args.droppableContainers.filter(
+                                (container) =>
+                                    container.id !== overId &&
+                                    containerItems
+                                        .map((type) => type.record_type_key)
+                                        .includes(container.id?.toString()),
+                            ),
+                        })[0]?.id;
+                    }
+                }
+
+                lastOverId.current = overId?.toString();
+
+                return [{ id: overId }];
+            }
+
+            // When a draggable item moves to a new container, the layout may shift
+            // and the `overId` may become `null`. We manually set the cached `lastOverId`
+            // to the id of the draggable item that was moved to the new container, otherwise
+            // the previous `overId` will be returned which can cause items to incorrectly shift positions
+            if (recentlyMovedToNewContainer.current) {
+                lastOverId.current = activeId;
+            }
+
+            // If no droppable is matched, return the last match
+            return lastOverId.current ? [{ id: lastOverId.current }] : [];
+        },
+        [activeId, preChecks],
     );
 
     return (
-        <Fragment>
-            <div className="block block-pre-checks-blocks-editor">
-                <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-                    <SortableContext
-                        items={(preChecks || []).map((preCheck) => preCheck.uid)}
-                        strategy={verticalListSortingStrategy}>
-                        {preChecks?.map((preCheck, preCheckKey) => (
-                            <div className="pre-check-item" key={preCheckKey} ref={setNodeRef} style={style}>
-                                <div className="pre-check-item-header">
-                                    <div className="pre-check-item-header-drag">
-                                        <em className="mdi mdi-drag-vertical" {...attributes} {...listeners}></em>
-                                    </div>
+        <div className="block block-pre-checks-blocks-editor">
+            <DndContext
+                sensors={sensors}
+                collisionDetection={collisionDetectionStrategy}
+                measuring={{ droppable: { strategy: MeasuringStrategy.Always } }}
+                onDragStart={onDragStart}
+                onDragOver={onDragOver}
+                onDragEnd={onDragEnd}
+                onDragCancel={onDragCancel}>
+                <SortableContext
+                    id={'preChecks'}
+                    items={(preChecks || []).map((preCheck) => preCheck.uid)}
+                    strategy={verticalListSortingStrategy}>
+                    {preChecks?.map((preCheck, index) => (
+                        <PreCheckStepEditorItem
+                            key={preCheck.uid}
+                            preCheck={preCheck}
+                            preCheckIndex={index}
+                            unCollapsed={unCollapsed}
+                            setUnCollapsed={setUnCollapsed}
+                            preChecks={preChecks}
+                            setPreChecks={setPreChecks}
+                            errors={errors}
+                            removePreCheck={removePreCheck}
+                            isSortingContainer={isSortingContainer}
+                        />
+                    ))}
+                </SortableContext>
+            </DndContext>
 
-                                    <div className="pre-check-item-header-title">
-                                        {preCheck.title && (
-                                            <Fragment>
-                                                <span>{preCheck.title}</span>
-                                                <span className="text-muted">
-                                                    {` (${preCheck.record_types.length} criteria)`}
-                                                </span>
-                                            </Fragment>
-                                        )}
-                                        {!preCheck.title && <span>{!preCheck.id ? 'New step' : 'Edit step'}</span>}
-
-                                        {preCheck.default == true && (
-                                            <span className="text-muted">
-                                                &nbsp;
-                                                <em className="mdi mdi-lock-outline" />
-                                            </span>
-                                        )}
-                                    </div>
-
-                                    <div className="pre-check-item-header-actions">
-                                        {unCollapsedPreChecks.indexOf(preCheckKey) != -1 && (
-                                            <div
-                                                className="button button-default button-sm"
-                                                onClick={() => collapse(preCheckKey)}>
-                                                <em className="mdi mdi-arrow-collapse-vertical icon-start"></em>
-                                                Inklappen
-                                            </div>
-                                        )}
-
-                                        {unCollapsedPreChecks.indexOf(preCheckKey) == -1 && (
-                                            <div
-                                                className="button button-primary button-sm"
-                                                onClick={() => unCollapse(preCheckKey)}>
-                                                <em className="mdi mdi-arrow-expand-vertical icon-start"></em>
-                                                Uitklappen
-                                            </div>
-                                        )}
-
-                                        {!preCheck.default && (
-                                            <div
-                                                className="button button-danger button-sm"
-                                                onClick={() => removePreCheck(preCheckKey)}>
-                                                <em className="mdi mdi-trash-can-outline icon-start"></em>
-                                                Stap verwijderen
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
-
-                                {unCollapsedPreChecks.indexOf(preCheckKey) != -1 && (
-                                    <div className="pre-check-item-body">
-                                        <div className="form">
-                                            <div className="pre-check-item-body-content">
-                                                <div className="row">
-                                                    <div className="form-group col col-lg-6 col-xs-12">
-                                                        <label className="form-label">Korte titel</label>
-                                                        <input
-                                                            className="form-control"
-                                                            type="text"
-                                                            defaultValue={preCheck.title_short}
-                                                            onChange={(e) =>
-                                                                updatePreChecks(preCheckKey, {
-                                                                    title_short: e.target.value,
-                                                                })
-                                                            }
-                                                            placeholder="Title..."
-                                                        />
-                                                        <div className="form-hint">Max. 30 tekens</div>
-
-                                                        {errors && (
-                                                            <FormError
-                                                                error={errors[`pre_checks.${preCheckKey}.title_short`]}
-                                                            />
-                                                        )}
-                                                    </div>
-
-                                                    <div className="form-group col col-lg-6 col-xs-12">
-                                                        <label className="form-label form-label-required">Titel</label>
-                                                        <input
-                                                            className="form-control"
-                                                            type="text"
-                                                            defaultValue={preCheck.title}
-                                                            onChange={(e) =>
-                                                                updatePreChecks(preCheckKey, {
-                                                                    title: e.target.value,
-                                                                })
-                                                            }
-                                                            placeholder="Title..."
-                                                        />
-                                                        <div className="form-hint">Max. 100 tekens</div>
-
-                                                        {errors && (
-                                                            <FormError
-                                                                error={errors[`pre_checks.${preCheckKey}.title`]}
-                                                            />
-                                                        )}
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div className="pre-check-item-body-records">
-                                                <div className="block-records-title">
-                                                    Criteria ({preCheck.record_types.length})
-                                                </div>
-
-                                                <div className="pre-check-item-body-records-items">
-                                                    {preCheck.record_types.map((record, recordKey) => (
-                                                        <div
-                                                            className="pre-check-item pre-check-item-record"
-                                                            key={recordKey}>
-                                                            <div className="pre-check-item-header" key={recordKey}>
-                                                                <div className="pre-check-item-header-drag">
-                                                                    <em className="mdi mdi-drag-vertical" />
-                                                                </div>
-
-                                                                <div className="pre-check-item-header-title">
-                                                                    <span>
-                                                                        {record.title
-                                                                            ? record.title + ':'
-                                                                            : 'Geen titel:'}
-                                                                    </span>
-                                                                    &nbsp;
-                                                                    <span className="text-muted">
-                                                                        {`${record.record_type.name} (${record?.funds.length} fonds(en))`}
-                                                                    </span>
-                                                                </div>
-
-                                                                <div className="pre-check-item-header-actions">
-                                                                    {!isCollapsedRecord(preCheckKey, recordKey) && (
-                                                                        <div
-                                                                            className="button button-default button-sm"
-                                                                            onClick={() =>
-                                                                                collapseRecord(preCheckKey, recordKey)
-                                                                            }>
-                                                                            <em className="mdi mdi-arrow-collapse-vertical icon-start"></em>
-                                                                            Inklappen
-                                                                        </div>
-                                                                    )}
-
-                                                                    {isCollapsedRecord(preCheckKey, recordKey) && (
-                                                                        <div
-                                                                            className="button button-primary button-sm"
-                                                                            onClick={() =>
-                                                                                unCollapseRecord(preCheckKey, recordKey)
-                                                                            }>
-                                                                            <em className="mdi mdi-arrow-expand-vertical icon-start" />
-                                                                            Uitklappen
-                                                                        </div>
-                                                                    )}
-                                                                </div>
-                                                            </div>
-
-                                                            {!isCollapsedRecord(preCheckKey, recordKey) && (
-                                                                <div className="pre-check-item-body">
-                                                                    <div className="pre-check-item-body-content">
-                                                                        <div className="row">
-                                                                            <div className="form-group col col-lg-6 col-xs-12">
-                                                                                <label className="form-label form-label-required">
-                                                                                    Korte titel
-                                                                                </label>
-                                                                                <input
-                                                                                    type="text"
-                                                                                    className="form-control"
-                                                                                    defaultValue={record.title_short}
-                                                                                    placeholder="Title..."
-                                                                                    onChange={(e) =>
-                                                                                        updatePreCheckRecords(
-                                                                                            preCheckKey,
-                                                                                            recordKey,
-                                                                                            {
-                                                                                                title_short:
-                                                                                                    e.target.value,
-                                                                                            },
-                                                                                        )
-                                                                                    }
-                                                                                />
-                                                                                <div className="form-hint">
-                                                                                    Max. 40 tekens
-                                                                                </div>
-
-                                                                                {errors && (
-                                                                                    <FormError
-                                                                                        error={
-                                                                                            errors[
-                                                                                                `pre_checks.${preCheckKey}.record_types.${recordKey}.title_short`
-                                                                                            ]
-                                                                                        }
-                                                                                    />
-                                                                                )}
-                                                                            </div>
-
-                                                                            <div className="form-group col col-lg-6 col-xs-12">
-                                                                                <label className="form-label form-label-required">
-                                                                                    Titel
-                                                                                </label>
-                                                                                <input
-                                                                                    className="form-control"
-                                                                                    type="text"
-                                                                                    defaultValue={record.title}
-                                                                                    placeholder="Title..."
-                                                                                    onChange={(e) =>
-                                                                                        updatePreCheckRecords(
-                                                                                            preCheckKey,
-                                                                                            recordKey,
-                                                                                            {
-                                                                                                title: e.target.value,
-                                                                                            },
-                                                                                        )
-                                                                                    }
-                                                                                />
-                                                                                <div className="form-hint">
-                                                                                    Max. 100 tekens
-                                                                                </div>
-
-                                                                                {errors && (
-                                                                                    <FormError
-                                                                                        error={
-                                                                                            errors[
-                                                                                                `pre_checks.${preCheckKey}.record_types.${recordKey}.title`
-                                                                                            ]
-                                                                                        }
-                                                                                    />
-                                                                                )}
-                                                                            </div>
-                                                                        </div>
-
-                                                                        <div className="row">
-                                                                            <div className="col col-lg-12">
-                                                                                <div className="form-group">
-                                                                                    <label className="form-label form-label-required">
-                                                                                        Omschrijving
-                                                                                    </label>
-                                                                                    <textarea
-                                                                                        className="form-control"
-                                                                                        value={record.description || ''}
-                                                                                        placeholder="Omschrijving..."
-                                                                                        onChange={(e) => {
-                                                                                            updatePreCheckRecords(
-                                                                                                preCheckKey,
-                                                                                                recordKey,
-                                                                                                {
-                                                                                                    description:
-                                                                                                        e.target.value,
-                                                                                                },
-                                                                                            );
-                                                                                        }}
-                                                                                    />
-                                                                                    <div className="form-hint">
-                                                                                        Max. 1000 tekens
-                                                                                    </div>
-
-                                                                                    {errors && (
-                                                                                        <FormError
-                                                                                            error={
-                                                                                                errors[
-                                                                                                    `pre_checks.${preCheckKey}.record_types.${recordKey}.description`
-                                                                                                ]
-                                                                                            }
-                                                                                        />
-                                                                                    )}
-                                                                                </div>
-
-                                                                                <PreCheckRecordSettings
-                                                                                    preChecks={preChecks}
-                                                                                    preCheckKey={preCheckKey}
-                                                                                    recordKey={recordKey}
-                                                                                    onUpdate={updatePreCheckRecords}
-                                                                                    errors={errors}
-                                                                                />
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            )}
-                                                        </div>
-                                                    ))}
-
-                                                    {!preCheck.record_types.length && (
-                                                        <div className="pre-check-item-body-records-empty">
-                                                            <div className="pre-check-item-body-records-empty-img">
-                                                                <img
-                                                                    src={'undefined./assets/img/icon-drag.svg'}
-                                                                    alt={''}
-                                                                />
-                                                            </div>
-                                                            <div className="pre-check-item-body-records-empty-title">
-                                                                Criteria hier slepen en neerzetten
-                                                            </div>
-                                                        </div>
-                                                    )}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                )}
-                            </div>
-                        ))}
-                    </SortableContext>
-                </DndContext>
-
-                <div className="pre-check-actions">
-                    <div className="button button-primary" onClick={() => addPreCheck()}>
-                        <em className="mdi mdi-plus-circle icon-start" />
-                        Stap toevoegen
-                    </div>
+            <div className="pre-check-actions">
+                <div className="button button-primary" onClick={addPreCheck}>
+                    <em className="mdi mdi-plus-circle icon-start" />
+                    Stap toevoegen
                 </div>
             </div>
-        </Fragment>
+        </div>
     );
 }

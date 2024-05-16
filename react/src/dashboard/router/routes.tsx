@@ -124,7 +124,6 @@ router.state('organization-funds', <WIP />, {
 
 router.state('pre-check', <PreCheck />, {
     path: `/organizations/:organizationId/pre-check`,
-    fallbackState: 'organizations',
 });
 
 router.state('external-validators', <WIP title={'External validators'} />, {
