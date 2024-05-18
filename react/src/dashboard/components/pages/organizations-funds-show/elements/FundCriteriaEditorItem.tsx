@@ -1,5 +1,4 @@
 import React, { Fragment, useCallback, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import Organization from '../../../../props/models/Organization';
 import RecordType from '../../../../props/models/RecordType';
 import { hasPermission } from '../../../../helpers/utils';
@@ -17,6 +16,7 @@ import ModalDangerZone from '../../../modals/ModalDangerZone';
 import DatePickerControl from '../../../elements/forms/controls/DatePickerControl';
 import CheckboxControl from '../../../elements/forms/controls/CheckboxControl';
 import { uniqueId } from 'lodash';
+import useTranslate from '../../../../hooks/useTranslate';
 
 export default function FundCriteriaEditorItem({
     fund,
@@ -43,8 +43,7 @@ export default function FundCriteriaEditorItem({
     validatorOrganizations: Array<Organization>;
     saveCriterionRef?: React.MutableRefObject<() => Promise<boolean>>;
 }) {
-    const { t } = useTranslation();
-
+    const translate = useTranslate();
     const openModal = useOpenModal();
 
     const fundService = useFundService();
@@ -58,6 +57,7 @@ export default function FundCriteriaEditorItem({
     const [recordType, setRecordType] = useState<Partial<RecordType>>(
         recordTypes?.find((type) => type.key == criterion?.record_type?.key) || recordTypes[0],
     );
+
     const [criterionPrepared, setCriterionPrepared] = useState<Partial<FundCriterion>>(null);
     const [disabledControls] = useState<boolean>(!isEditable || !hasPermission(organization, 'manage_funds'));
 
@@ -118,9 +118,7 @@ export default function FundCriteriaEditorItem({
                     description={criterion.description}
                     description_html={criterion.description_html}
                     validateCriteria={validateCriteria}
-                    onSubmit={(res) => {
-                        setCriterion({ ...criterion, ...res });
-                    }}
+                    onSubmit={(res) => setCriterion({ ...criterion, ...res })}
                 />
             ));
         },
@@ -130,7 +128,6 @@ export default function FundCriteriaEditorItem({
     const makeTitle = useCallback(
         (criterion: Partial<FundCriterion>) => {
             const type = recordTypes.find((item) => item.key === criterion?.record_type?.key);
-
             const currency_types = ['net_worth', 'base_salary', 'income_level'];
 
             const valueName =
@@ -214,12 +211,7 @@ export default function FundCriteriaEditorItem({
             ];
 
             criterion.new_validator = 0;
-            criterion.validators_available = [
-                {
-                    id: 0,
-                    validator_organization: { name: 'Selecteer' },
-                },
-            ].concat(
+            criterion.validators_available = [{ id: 0, validator_organization: { name: 'Selecteer' } }].concat(
                 validatorOrganizations.filter((validatorOrganization) => {
                     return !criterion.external_validators
                         .map((external) => external.organization_validator_id)
@@ -257,18 +249,18 @@ export default function FundCriteriaEditorItem({
                     openModal((modal) => (
                         <ModalDangerZone
                             modal={modal}
-                            title={t('modals.danger_zone.remove_external_validators.title')}
-                            description={t('modals.danger_zone.remove_external_validators.description')}
+                            title={translate('modals.danger_zone.remove_external_validators.title')}
+                            description={translate('modals.danger_zone.remove_external_validators.description')}
                             buttonCancel={{
                                 onClick: modal.close,
-                                text: t('modals.danger_zone.remove_external_validators.buttons.cancel'),
+                                text: translate('modals.danger_zone.remove_external_validators.buttons.cancel'),
                             }}
                             buttonSubmit={{
                                 onClick: () => {
                                     modal.close();
                                     deleteValidator();
                                 },
-                                text: t('modals.danger_zone.remove_external_validators.buttons.confirm'),
+                                text: translate('modals.danger_zone.remove_external_validators.buttons.confirm'),
                             }}
                         />
                     ));
@@ -277,7 +269,7 @@ export default function FundCriteriaEditorItem({
                 }
             }
         },
-        [openModal, prepareCriteria, t],
+        [openModal, prepareCriteria, translate],
     );
 
     const cancelAddExternalValidator = useCallback(
@@ -415,14 +407,14 @@ export default function FundCriteriaEditorItem({
                     {!criterion?.is_editing && (
                         <div className="button button-default" onClick={() => criterionEdit(criterion)}>
                             <em className="mdi mdi-pencil icon-start" />
-                            {t('components.fund_criteria_editor_item.buttons.edit')}
+                            {translate('components.fund_criteria_editor_item.buttons.edit')}
                         </div>
                     )}
 
                     {criterion?.is_editing && (
                         <div className="button button-default" onClick={() => cancelCriterion(criterion)}>
                             <em className="mdi mdi-close icon-start" />
-                            {t('components.fund_criteria_editor_item.buttons.cancel')}
+                            {translate('components.fund_criteria_editor_item.buttons.cancel')}
                         </div>
                     )}
 
@@ -432,7 +424,7 @@ export default function FundCriteriaEditorItem({
                             onClick={() => removeCriterion()}
                             disabled={disabledControls || criterion?.is_editing}>
                             <em className="mdi mdi-delete-outline icon-start" />
-                            {t('components.fund_criteria_editor_item.buttons.edit')}
+                            {translate('components.fund_criteria_editor_item.buttons.edit')}
                         </button>
                     )}
                 </div>
@@ -586,7 +578,7 @@ export default function FundCriteriaEditorItem({
                                     <CheckboxControl
                                         className={`${disabledControls ? 'disabled' : ''}`}
                                         id={`criterion_${blockId}_attachments`}
-                                        title={t('components.fund_criteria_editor_item.allow_attachments')}
+                                        title={translate('components.fund_criteria_editor_item.allow_attachments')}
                                         checked={criterionPrepared.show_attachment}
                                         disabled={disabledControls}
                                         onChange={() => {
@@ -604,7 +596,7 @@ export default function FundCriteriaEditorItem({
                                         id={`criterion_${blockId}_optional`}
                                         checked={criterionPrepared.optional}
                                         disabled={disabledControls}
-                                        title={t('components.fund_criteria_editor_item.optional')}
+                                        title={translate('components.fund_criteria_editor_item.optional')}
                                         onChange={() => {
                                             setCriterion({ ...criterion, optional: !criterionPrepared.optional });
                                         }}
@@ -859,7 +851,9 @@ export default function FundCriteriaEditorItem({
                                             className="button button-primary"
                                             onClick={() => addExternalValidator(criterion)}>
                                             <em className="mdi mdi-plus-circle icon-start" />
-                                            {t('components.fund_criteria_editor_item.buttons.add_external_validator')}
+                                            {translate(
+                                                'components.fund_criteria_editor_item.buttons.add_external_validator',
+                                            )}
                                         </div>
                                     )}
                             </div>

@@ -9,44 +9,31 @@ import { useFundService } from '../../../services/FundService';
 import usePushDanger from '../../../hooks/usePushDanger';
 import { ResponseError } from '../../../props/ApiResponses';
 import StateNavLink from '../../../modules/state_router/StateNavLink';
-import { useTranslation } from 'react-i18next';
 import SelectControl from '../../elements/select-control/SelectControl';
 import SelectControlOptions from '../../elements/select-control/templates/SelectControlOptions';
-import Auth2FAForm from './elements/Auth2FAForm';
+import OrganizationsFundsSecurityAuth2FAForm from './elements/OrganizationsFundsSecurityAuth2FAForm';
 import LoadingCard from '../../elements/loading-card/LoadingCard';
+import useTranslate from '../../../hooks/useTranslate';
 
 export default function OrganizationsFundsSecurity() {
-    const { t } = useTranslation();
-
-    const pushSuccess = usePushSuccess();
-    const pushDanger = usePushDanger();
-    const setProgress = useSetProgress();
+    const fundId = parseInt(useParams().fundId);
     const activeOrganization = useActiveOrganization();
+
+    const translate = useTranslate();
+    const pushDanger = usePushDanger();
+    const pushSuccess = usePushSuccess();
+    const setProgress = useSetProgress();
 
     const fundService = useFundService();
 
     const [fund, setFund] = useState<Fund>(null);
     const [global2FA, setGlobal2FA] = useState(null);
 
-    const fund_id = parseInt(useParams().fundId);
-
     const [auth2FARequiredOptions] = useState([
-        {
-            value: 'global',
-            name: 'Gebruik standaard instelling',
-        },
-        {
-            value: 'optional',
-            name: 'Optioneel',
-        },
-        {
-            value: 'restrict_features',
-            name: '2FA vereisen voor geselecteerde functies',
-        },
-        {
-            value: 'required',
-            name: '2FA vereisen om in te loggen',
-        },
+        { value: 'global', name: 'Gebruik standaard instelling' },
+        { value: 'optional', name: 'Optioneel' },
+        { value: 'restrict_features', name: '2FA vereisen voor geselecteerde functies' },
+        { value: 'required', name: '2FA vereisen om in te loggen' },
     ]);
 
     const form = useFormBuilder<{
@@ -59,10 +46,8 @@ export default function OrganizationsFundsSecurity() {
         setProgress(0);
 
         fundService
-            .update(activeOrganization.id, fund_id, values)
-            .then(() => {
-                pushSuccess('Opgeslagen!');
-            })
+            .update(activeOrganization.id, fundId, values)
+            .then(() => pushSuccess('Opgeslagen!'))
             .catch((err: ResponseError) => {
                 pushDanger('Mislukt!', err.data?.message || 'Onbekende foutmelding.');
                 form.setErrors(err.data.errors);
@@ -79,13 +64,13 @@ export default function OrganizationsFundsSecurity() {
         setProgress(0);
 
         fundService
-            .read(activeOrganization.id, fund_id)
+            .read(activeOrganization.id, fundId)
             .then((res) => {
                 setFund(res.data.data);
                 setGlobal2FA(res.data.data?.organization_funds_2fa);
             })
             .finally(() => setProgress(100));
-    }, [activeOrganization.id, fundService, fund_id, setProgress]);
+    }, [activeOrganization.id, fundService, fundId, setProgress]);
 
     useEffect(() => {
         fetchFund();
@@ -109,21 +94,18 @@ export default function OrganizationsFundsSecurity() {
 
     return (
         <Fragment>
-            {activeOrganization && (
-                <div className="block block-breadcrumbs">
-                    <StateNavLink
-                        className="breadcrumb-item"
-                        name={'organization-funds'}
-                        params={{ organizationId: activeOrganization.id }}>
-                        Fondsen
-                    </StateNavLink>
-                    {fund ? (
-                        <div className="breadcrumb-item active">{fund.name}</div>
-                    ) : (
-                        <div className="breadcrumb-item active">{t('funds_edit.header.title_add')}</div>
-                    )}
+            <div className="block block-breadcrumbs">
+                <StateNavLink
+                    className="breadcrumb-item"
+                    name={'organization-funds'}
+                    activeExact={true}
+                    params={{ organizationId: activeOrganization.id }}>
+                    Fondsen
+                </StateNavLink>
+                <div className="breadcrumb-item active">
+                    {fund ? fund.name : translate('funds_edit.header.title_add')}
                 </div>
-            )}
+            </div>
 
             <div className="card">
                 <form className="form" onSubmit={form.submit}>
@@ -173,20 +155,21 @@ export default function OrganizationsFundsSecurity() {
                                     </div>
                                 )}
 
-                                <Auth2FAForm
-                                    formValues={form.values}
-                                    setFormValues={updateForm}
-                                    formErrors={form.errors}
-                                    disabled={false}
-                                    show={form.values?.auth_2fa_policy != 'global'}
-                                />
-                                <Auth2FAForm
-                                    formValues={global2FA}
-                                    setFormValues={() => null}
-                                    formErrors={form.errors}
-                                    disabled={true}
-                                    show={form.values?.auth_2fa_policy == 'global'}
-                                />
+                                {form.values?.auth_2fa_policy != 'global' ? (
+                                    <OrganizationsFundsSecurityAuth2FAForm
+                                        formValues={form.values}
+                                        setFormValues={form.update}
+                                        formErrors={form.errors}
+                                        disabled={false}
+                                    />
+                                ) : (
+                                    <OrganizationsFundsSecurityAuth2FAForm
+                                        formValues={global2FA}
+                                        setFormValues={() => null}
+                                        formErrors={form.errors}
+                                        disabled={true}
+                                    />
+                                )}
                             </div>
                         </div>
                     </div>
@@ -200,7 +183,7 @@ export default function OrganizationsFundsSecurity() {
                                 Annuleer
                             </StateNavLink>
                             <button type="submit" className="button button-primary">
-                                Bevestig
+                                Bevestigen
                             </button>
                         </div>
                     </div>

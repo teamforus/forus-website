@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { ModalState } from '../../modules/modals/context/ModalContext';
-import { useTranslation } from 'react-i18next';
 import FormError from '../elements/forms/errors/FormError';
 import useFormBuilder from '../../hooks/useFormBuilder';
 import Fund from '../../props/models/Fund';
@@ -12,20 +11,21 @@ import useSetProgress from '../../hooks/useSetProgress';
 import useFundProviderInvitationsService from '../../services/useFundProviderInvitationsService';
 import { ResponseError } from '../../props/ApiResponses';
 import FundProviderInvitation from '../../props/models/FundProviderInvitation';
+import useTranslate from '../../hooks/useTranslate';
 
 export default function ModalFundInviteProviders({
-    modal,
     fund,
+    modal,
     onSubmit,
 }: {
-    modal: ModalState;
     fund: Fund;
+    modal: ModalState;
     onSubmit?: (res: Array<FundProviderInvitation>) => void;
 }) {
-    const { t } = useTranslation();
-
     const activeOrganization = useActiveOrganization();
+
     const setProgress = useSetProgress();
+    const translate = useTranslate();
 
     const fundService = useFundService();
     const fundProviderInvitationsService = useFundProviderInvitationsService();
@@ -42,12 +42,10 @@ export default function ModalFundInviteProviders({
                 onSubmit(res.data.data);
                 modal.close();
             })
-            .catch((res: ResponseError) => {
-                form.setErrors(res.data.errors);
-            })
+            .catch((err: ResponseError) => form.setErrors(err.data.errors))
             .finally(() => {
-                form.setIsLocked(false);
                 setProgress(100);
+                form.setIsLocked(false);
             });
     });
 
@@ -57,12 +55,8 @@ export default function ModalFundInviteProviders({
         setProgress(0);
 
         fundService
-            .list(activeOrganization.id, {
-                with_archived: 1,
-            })
-            .then((res) => {
-                setFunds(res.data.data.filter((fundItem) => fundItem.id != fund.id));
-            })
+            .list(activeOrganization.id, { with_archived: 1 })
+            .then((res) => setFunds(res.data.data.filter((item) => item.id != fund.id)))
             .finally(() => setProgress(100));
     }, [activeOrganization.id, fund.id, fundService, setProgress]);
 
@@ -72,9 +66,7 @@ export default function ModalFundInviteProviders({
 
     useEffect(() => {
         if (funds.length) {
-            updateForm({
-                fund_id: funds[0]?.id,
-            });
+            updateForm({ fund_id: funds[0]?.id });
         }
     }, [updateForm, fund, funds]);
 
@@ -128,7 +120,7 @@ export default function ModalFundInviteProviders({
 
                     <div className="modal-footer text-center">
                         <button className="button button-default" type="button" onClick={modal.close}>
-                            {t('modals.modal_fund_criteria_description.buttons.close')}
+                            {translate('modals.modal_fund_criteria_description.buttons.close')}
                         </button>
                         <button className="button button-primary" type="submit">
                             Bevestig

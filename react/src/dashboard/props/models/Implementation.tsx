@@ -6,7 +6,6 @@ export default interface Implementation {
     organization_id?: number;
     has_provider_terms_page: boolean;
     url_webshop?: string;
-    logo: string;
     pre_check_enabled: boolean;
     pre_check_url?: string;
     pre_check_title: string;

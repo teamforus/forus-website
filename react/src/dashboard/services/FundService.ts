@@ -4,7 +4,7 @@ import ApiRequestService from './ApiRequestService';
 import Fund from '../props/models/Fund';
 import Product from '../props/models/Product';
 import FundTopUpTransaction from '../props/models/FundTopUpTransaction';
-import Identity from '../props/models/Identity';
+import Identity from '../props/models/Sponsor/Identity';
 import FundCriterion from '../props/models/FundCriterion';
 import { ExportFieldProp } from '../components/modals/ModalExportDataSelect';
 import Papa from 'papaparse';

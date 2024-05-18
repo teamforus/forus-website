@@ -54,16 +54,12 @@ export default interface Fund {
     implementation?: Implementation;
     type_locale: string;
     requester_count: number;
-    showMenu: boolean;
     criteria: Array<FundCriterion>;
     criteria_editable: boolean;
     provider_organizations_count: number;
     provider_employees_count: number;
     is_configured: boolean;
     sponsor_count: number;
-    canInviteProviders: boolean;
-    providersDescription: string;
-    canAccessFund: boolean;
     auth_2fa_policy?: 'global' | 'optional' | 'required' | 'restrict_features';
     auth_2fa_remember_ip?: boolean;
     auth_2fa_restrict_emails?: boolean;
@@ -78,7 +74,6 @@ export default interface Fund {
         auth_2fa_restrict_reimbursements?: boolean;
         auth_2fa_restrict_bi_connections?: boolean;
     };
-    topUpInProgress?: boolean;
     balance_provider: string;
     allow_fund_requests?: boolean;
     allow_prevalidations?: boolean;

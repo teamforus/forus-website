@@ -3,5 +3,4 @@ export default interface Faq {
     title: string;
     description: string;
     description_html?: string;
-    uid?: string;
 }

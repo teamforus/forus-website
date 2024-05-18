@@ -1,28 +1,26 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { ModalState } from '../../modules/modals/context/ModalContext';
-import { classList } from '../../helpers/utils';
 import { ResponseError } from '../../props/ApiResponses';
 import usePushDanger from '../../hooks/usePushDanger';
 import Fund from '../../props/models/Fund';
 import { useFundService } from '../../services/FundService';
 import useActiveOrganization from '../../hooks/useActiveOrganization';
-import { useTranslation } from 'react-i18next';
 import { useClipboardService } from '../../services/ClipboardService';
 import usePushSuccess from '../../hooks/usePushSuccess';
+import useTranslate from '../../hooks/useTranslate';
 
 export default function ModalFundTopUp({
-    modal,
-    className,
     fund,
+    modal,
     onClose,
+    className,
 }: {
-    modal: ModalState;
-    className?: string;
     fund: Fund;
+    modal: ModalState;
     onClose: () => void;
+    className?: string;
 }) {
-    const { t } = useTranslation();
-
+    const translate = useTranslate();
     const pushDanger = usePushDanger();
     const pushSuccess = usePushSuccess();
     const activeOrganization = useActiveOrganization();
@@ -41,9 +39,7 @@ export default function ModalFundTopUp({
 
     const copyToClipboard = useCallback(
         (value: string) => {
-            clipboardService.copy(value).then(() => {
-                pushSuccess('Copied to clipboard.');
-            });
+            clipboardService.copy(value).then(() => pushSuccess('Copied to clipboard.'));
         },
         [clipboardService, pushSuccess],
     );
@@ -54,29 +50,20 @@ export default function ModalFundTopUp({
             .then((res) => {
                 setTopUpCode(res.data.data.code);
                 setTopUpIban(res.data.data.iban);
-
                 setLoaded(true);
             })
             .catch((err: ResponseError) => {
                 pushDanger(err.data.message);
-                document.location.reload();
                 closeModal();
             });
     }, [activeOrganization.id, closeModal, fund.id, fundService, modal, pushDanger]);
 
     return (
-        <div
-            className={classList([
-                'modal',
-                'modal-md',
-                'modal-animated',
-                modal.loading ? 'modal-loading' : null,
-                className,
-            ])}>
+        <div className={`modal modal-md modal-animated ${modal.loading ? 'modal-loading' : ''} ${className}`}>
             <div className="modal-backdrop" onClick={closeModal} />
             <form className="modal-window form">
                 <div className="modal-close mdi mdi-close" onClick={closeModal} role="button" />
-                <div className="modal-header">{t('modal_funds_add.header.title')}</div>
+                <div className="modal-header">{translate('modal_funds_add.header.title')}</div>
 
                 <div className="modal-body">
                     <div className="modal-section">
@@ -85,22 +72,22 @@ export default function ModalFundTopUp({
                                 <p className="text-center text-muted">Even geduld a.u.b.</p>
                             ) : (
                                 <p>
-                                    {t('modal_funds_add.labels.payment')}
+                                    {translate('modal_funds_add.labels.payment')}
                                     <a
                                         className="text-primary"
                                         onClick={() => copyToClipboard(topUpIban)}
-                                        title={t('modal_funds_add.labels.copy')}>
+                                        title={translate('modal_funds_add.labels.copy')}>
                                         {topUpIban}
                                     </a>
                                     <br />
-                                    {t('modal_funds_add.labels.addcode')}
+                                    {translate('modal_funds_add.labels.addcode')}
                                     <a
                                         className="text-primary"
                                         onClick={() => copyToClipboard(topUpCode)}
-                                        title={t('modal_funds_add.labels.copy')}>
+                                        title={translate('modal_funds_add.labels.copy')}>
                                         {topUpCode}
                                     </a>
-                                    {t('modal_funds_add.labels.description')}
+                                    {translate('modal_funds_add.labels.description')}
                                 </p>
                             )}
                         </div>
@@ -109,7 +96,7 @@ export default function ModalFundTopUp({
 
                 <div className="modal-footer text-center">
                     <button type="button" className="button button-primary" onClick={closeModal}>
-                        {t('modal_funds_add.buttons.close')}
+                        {translate('modal_funds_add.buttons.close')}
                     </button>
                 </div>
             </form>

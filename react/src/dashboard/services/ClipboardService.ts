@@ -17,7 +17,7 @@ export class ClipboardService {
                     resolve();
                 })
                 .catch((err) => {
-                    console.log(err);
+                    console.error(err);
                 });
         });
     }

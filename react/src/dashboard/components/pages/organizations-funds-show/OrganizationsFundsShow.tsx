@@ -1,15 +1,14 @@
-import React, { Fragment, useCallback, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
 import StateNavLink from '../../../modules/state_router/StateNavLink';
 import useActiveOrganization from '../../../hooks/useActiveOrganization';
 import Fund from '../../../props/models/Fund';
 import { useFundService } from '../../../services/FundService';
-import { NavLink, useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import LoadingCard from '../../elements/loading-card/LoadingCard';
 import { hasPermission } from '../../../helpers/utils';
 import ModalNotification from '../../modals/ModalNotification';
 import useOpenModal from '../../../hooks/useOpenModal';
-import { getStateRouteUrl } from '../../../modules/state_router/Router';
+import { useNavigateState } from '../../../modules/state_router/Router';
 import TranslateHtml from '../../elements/translate-html/TranslateHtml';
 import FundCriteriaEditor from './elements/FundCriteriaEditor';
 import { useOrganizationService } from '../../../services/OrganizationService';
@@ -27,7 +26,7 @@ import FundTopUpTransaction from '../../../props/models/FundTopUpTransaction';
 import Paginator from '../../../modules/paginator/components/Paginator';
 import EmptyCard from '../../elements/empty-card/EmptyCard';
 import Implementation from '../../../props/models/Implementation';
-import Identity from '../../../props/models/Identity';
+import Identity from '../../../props/models/Sponsor/Identity';
 import ModalFundInviteProviders from '../../modals/ModalFundInviteProviders';
 import usePushSuccess from '../../../hooks/usePushSuccess';
 import DatePickerControl from '../../elements/forms/controls/DatePickerControl';
@@ -36,14 +35,20 @@ import TableRowActions from '../../elements/tables/TableRowActions';
 import useFundIdentitiesExportService from '../../../services/exports/useFundIdentitiesExportService';
 import FundCriterion from '../../../props/models/FundCriterion';
 import usePushDanger from '../../../hooks/usePushDanger';
+import useAssetUrl from '../../../hooks/useAssetUrl';
+import useTranslate from '../../../hooks/useTranslate';
+import useSetProgress from '../../../hooks/useSetProgress';
 
 export default function OrganizationsFundsShow() {
-    const { t } = useTranslation();
+    const fundId = useParams().fundId;
 
-    const pushDanger = usePushDanger();
-    const pushSuccess = usePushSuccess();
+    const assetUrl = useAssetUrl();
     const openModal = useOpenModal();
-    const navigate = useNavigate();
+    const translate = useTranslate();
+    const pushDanger = usePushDanger();
+    const setProgress = useSetProgress();
+    const pushSuccess = usePushSuccess();
+    const navigateState = useNavigateState();
     const activeOrganization = useActiveOrganization();
 
     const fundService = useFundService();
@@ -62,7 +67,7 @@ export default function OrganizationsFundsShow() {
     const [identitiesWithoutEmail, setIdentitiesWithoutEmail] = useState<number>(0);
     const [lastQueryImplementations, setLastQueryImplementations] = useState<string>('');
     const [identities, setIdentities] = useState<PaginationData<Identity>>(null);
-    const [shownImplementationMenus, setShownImplementationMenus] = useState<Array<number>>([]);
+    const [shownImplementationMenuId, setShownImplementationMenuId] = useState<number>(null);
     const [implementations, setImplementations] = useState<PaginationData<Implementation>>(null);
     const [topUpTransactions, setTopUpTransactions] = useState<PaginationData<FundTopUpTransaction>>(null);
     const [validatorOrganizations, setValidatorOrganizations] = useState<PaginationData<Organization>>(null);
@@ -70,8 +75,6 @@ export default function OrganizationsFundsShow() {
     const [topUpPaginationPerPageKey] = useState('fund_top_up_per_page');
     const [implementationPaginationPerPageKey] = useState('fund_implementation_per_page');
     const [identitiesPaginationPerPageKey] = useState('fund_identities_per_page');
-
-    const fund_id = useParams().fundId;
 
     const topUpTransactionFilters = useFilter({
         q: '',
@@ -83,6 +86,7 @@ export default function OrganizationsFundsShow() {
     });
 
     const implementationsFilters = useFilter({
+        q: '',
         per_page: paginatorService.getPerPage(implementationPaginationPerPageKey),
     });
 
@@ -90,95 +94,107 @@ export default function OrganizationsFundsShow() {
         per_page: paginatorService.getPerPage(identitiesPaginationPerPageKey),
     });
 
-    const fundTransform = useCallback(
-        (fund: Fund) => {
-            return {
-                ...fund,
-                canAccessFund: fund.state != 'closed',
-                canInviteProviders: hasPermission(activeOrganization, 'manage_funds') && fund.state != 'closed',
-                providersDescription: [
-                    `${fund.provider_organizations_count}`,
-                    `(${fund.provider_employees_count} ${t('fund_card_sponsor.labels.employees')})`,
-                ].join(' '),
-            };
-        },
-        [activeOrganization, t],
-    );
+    const canInviteProviders = useMemo(() => {
+        return hasPermission(activeOrganization, 'manage_funds') && fund?.state != 'closed';
+    }, [activeOrganization, fund?.state]);
+
+    const providersDescription = useMemo(() => {
+        return [
+            `${fund?.provider_organizations_count}`,
+            `(${fund?.provider_employees_count} ${translate('fund_card_sponsor.labels.employees')})`,
+        ].join(' ');
+    }, [fund?.provider_employees_count, fund?.provider_organizations_count, translate]);
+
+    const canAccessFund = useMemo(() => {
+        return fund?.state != 'closed';
+    }, [fund]);
 
     const transformImplementations = useCallback(() => {
-        setLastQueryImplementations(implementationsFilters.activeValues.q);
+        const { q = '', per_page } = implementationsFilters.activeValues;
+        const links = { active: false, label: '', url: '' };
+
+        setLastQueryImplementations(q);
 
         if (
-            !implementationsFilters.activeValues.q ||
-            fund.implementation.name?.toLowerCase().includes(implementationsFilters.activeValues.q?.toLowerCase())
+            fund?.implementation &&
+            (!q || fund?.implementation?.name?.toLowerCase().includes(q?.toLowerCase().trim()))
         ) {
             setImplementations({
                 data: [fund.implementation],
-                meta: {
-                    total: 1,
-                    current_page: 1,
-                    per_page: implementationsFilters.activeValues.per_page,
-                    from: 1,
-                    to: 1,
-                    last_page: 1,
-                    path: '',
-                    links: { active: false, label: '', url: '' },
-                },
+                meta: { total: 1, current_page: 1, per_page, from: 1, to: 1, last_page: 1, path: '', links },
             });
         } else {
             setImplementations({
                 data: [],
-                meta: {
-                    total: 0,
-                    current_page: 1,
-                    per_page: implementationsFilters.activeValues.per_page,
-                    from: 0,
-                    to: 0,
-                    last_page: 1,
-                    path: '',
-                    links: { active: false, label: '', url: '' },
-                },
+                meta: { total: 0, current_page: 1, per_page, from: 0, to: 0, last_page: 1, path: '', links },
             });
         }
-    }, [implementationsFilters.activeValues.q, implementationsFilters.activeValues.per_page, fund?.implementation]);
+    }, [implementationsFilters.activeValues, fund?.implementation]);
 
     const fetchFund = useCallback(() => {
-        fundService.read(activeOrganization.id, parseInt(fund_id), { stats: 'budget' }).then((res) => {
-            setFund(fundTransform(res.data.data));
-        });
-    }, [fundService, activeOrganization.id, fund_id, fundTransform]);
+        setProgress(0);
+
+        fundService
+            .read(activeOrganization.id, parseInt(fundId), { stats: 'budget' })
+            .then((res) => setFund(res.data.data))
+            .finally(() => setProgress(100));
+    }, [setProgress, fundService, activeOrganization.id, fundId]);
 
     const fetchTopUps = useCallback(() => {
+        if (!fund?.is_configured) {
+            setLastQueryTopUpTransactions(topUpTransactionFilters.activeValues.q);
+            return;
+        }
+
+        setProgress(0);
+
         fundService
-            .listTopUpTransactions(activeOrganization.id, parseInt(fund_id), topUpTransactionFilters.activeValues)
+            .listTopUpTransactions(activeOrganization.id, parseInt(fundId), topUpTransactionFilters.activeValues)
             .then((res) => {
                 setTopUpTransactions(res.data);
                 setLastQueryTopUpTransactions(topUpTransactionFilters.activeValues.q);
-            });
-    }, [fundService, activeOrganization.id, fund_id, topUpTransactionFilters.activeValues]);
+            })
+            .finally(() => setProgress(100));
+    }, [
+        fund?.is_configured,
+        setProgress,
+        fundService,
+        activeOrganization.id,
+        fundId,
+        topUpTransactionFilters.activeValues,
+    ]);
 
     const fetchIdentities = useCallback(() => {
+        setProgress(0);
+
         fundService
-            .listIdentities(activeOrganization.id, parseInt(fund_id), identitiesFilters.activeValues)
+            .listIdentities(activeOrganization.id, parseInt(fundId), identitiesFilters.activeValues)
             .then((res) => {
                 setIdentities(res.data);
                 setIdentitiesActive(res.data.meta.counts['active']);
                 setIdentitiesWithoutEmail(res.data.meta.counts['without_email']);
                 setLastQueryIdentities(identitiesFilters.activeValues.q);
-            });
-    }, [fundService, activeOrganization.id, fund_id, identitiesFilters.activeValues]);
+            })
+            .finally(() => setProgress(100));
+    }, [setProgress, fundService, activeOrganization.id, fundId, identitiesFilters.activeValues]);
 
     const fetchValidatorOrganizations = useCallback(() => {
-        organizationService.readListValidators(activeOrganization.id, { per_page: 100 }).then((res) => {
-            setValidatorOrganizations(res.data);
-        });
-    }, [activeOrganization.id, organizationService]);
+        setProgress(0);
+
+        organizationService
+            .readListValidators(activeOrganization.id, { per_page: 100 })
+            .then((res) => setValidatorOrganizations(res.data))
+            .finally(() => setProgress(100));
+    }, [activeOrganization.id, organizationService, setProgress]);
 
     const fetchRecordTypes = useCallback(() => {
-        recordTypeService.list().then((res) => {
-            setRecordTypes(res.data);
-        });
-    }, [recordTypeService]);
+        setProgress(0);
+
+        recordTypeService
+            .list()
+            .then((res) => setRecordTypes(res.data))
+            .finally(() => setProgress(100));
+    }, [recordTypeService, setProgress]);
 
     const exportIdentities = useCallback(() => {
         fundIdentitiesExportService.exportData(activeOrganization.id, fund.id, identitiesFilters.activeValues);
@@ -186,39 +202,42 @@ export default function OrganizationsFundsShow() {
 
     const saveCriteria = useCallback(
         (criteria: Array<FundCriterion>) => {
+            setProgress(0);
+
             fundService
                 .updateCriteria(fund.organization_id, fund.id, criteria)
                 .then((res) => {
                     fund.criteria = Object.assign(fund.criteria, res.data.data.criteria);
                     pushSuccess('Opgeslagen!');
                 })
-                .catch((err: ResponseError) => pushDanger(err.data.message || 'Error!'));
+                .catch((err: ResponseError) => pushDanger(err.data.message || 'Error!'))
+                .finally(() => setProgress(100));
         },
-        [fund, fundService, pushDanger, pushSuccess],
+        [fund, fundService, pushDanger, pushSuccess, setProgress],
     );
 
     const inviteProvider = useCallback(
         (fund: Fund) => {
-            if (fund.canInviteProviders) {
-                openModal((modal) => (
-                    <ModalFundInviteProviders
-                        fund={fund}
-                        modal={modal}
-                        onSubmit={(res) => {
-                            pushSuccess(
-                                'Aanbieders uitgenodigd!',
-                                `${res.length} uitnodigingen verstuurt naar aanbieders!`,
-                            );
-
-                            setTimeout(() => {
-                                document.location.reload();
-                            }, 2000);
-                        }}
-                    />
-                ));
+            if (!canInviteProviders) {
+                return;
             }
+
+            openModal((modal) => (
+                <ModalFundInviteProviders
+                    fund={fund}
+                    modal={modal}
+                    onSubmit={(res) => {
+                        pushSuccess(
+                            'Aanbieders uitgenodigd!',
+                            `${res.length} uitnodigingen verstuurt naar aanbieders!`,
+                        );
+
+                        setTimeout(() => document.location.reload(), 2000);
+                    }}
+                />
+            ));
         },
-        [openModal, pushSuccess],
+        [openModal, pushSuccess, canInviteProviders],
     );
 
     const deleteFund = useCallback(
@@ -226,36 +245,40 @@ export default function OrganizationsFundsShow() {
             openModal((modal) => (
                 <ModalNotification
                     modal={modal}
-                    title={t('fund_card_sponsor.confirm_delete.title')}
-                    description={t('fund_card_sponsor.confirm_delete.description')}
+                    title={translate('fund_card_sponsor.confirm_delete.title')}
+                    description={translate('fund_card_sponsor.confirm_delete.description')}
                     buttonSubmit={{
                         onClick: () => {
-                            fundService.destroy(activeOrganization.id, fund.id).then(() => {
-                                navigate(
-                                    getStateRouteUrl('organization-funds', { organizationId: activeOrganization.id }),
+                            fundService
+                                .destroy(activeOrganization.id, fund.id)
+                                .then(() =>
+                                    navigateState('organization-funds', { organizationId: activeOrganization.id }),
                                 );
-                            });
                         },
                     }}
                 />
             ));
         },
-        [activeOrganization.id, fundService, navigate, openModal, t],
+        [activeOrganization.id, fundService, navigateState, openModal, translate],
     );
 
     useEffect(() => {
         if (viewType == 'top_ups') {
             fetchTopUps();
         }
+    }, [viewType, fetchTopUps]);
 
+    useEffect(() => {
         if (viewType == 'implementations') {
             transformImplementations();
         }
+    }, [viewType, transformImplementations]);
 
+    useEffect(() => {
         if (viewType == 'identities') {
             fetchIdentities();
         }
-    }, [transformImplementations, fetchTopUps, viewType, fetchIdentities]);
+    }, [viewType, fetchIdentities]);
 
     useEffect(() => {
         fetchRecordTypes();
@@ -279,8 +302,9 @@ export default function OrganizationsFundsShow() {
                 <StateNavLink
                     className="breadcrumb-item"
                     name="organization-funds"
+                    activeExact={true}
                     params={{ organizationId: activeOrganization.id }}>
-                    {t('page_state_titles.funds')}
+                    {translate('page_state_titles.funds')}
                 </StateNavLink>
 
                 <div className="breadcrumb-item active">{fund.name}</div>
@@ -303,19 +327,19 @@ export default function OrganizationsFundsShow() {
                                     <div className="fund-name">{fund.name}</div>
                                     {fund.state == 'active' && (
                                         <div className="tag tag-success tag-sm">
-                                            {t('components.organization_funds.states.active')}
+                                            {translate('components.organization_funds.states.active')}
                                         </div>
                                     )}
 
                                     {fund.state == 'paused' && (
                                         <div className="tag tag-warning tag-sm">
-                                            {t('components.organization_funds.states.paused')}
+                                            {translate('components.organization_funds.states.paused')}
                                         </div>
                                     )}
 
                                     {fund.state == 'closed' && (
                                         <div className="tag tag-default tag-sm">
-                                            {t('components.organization_funds.states.closed')}
+                                            {translate('components.organization_funds.states.closed')}
                                         </div>
                                     )}
                                 </div>
@@ -333,7 +357,7 @@ export default function OrganizationsFundsShow() {
                                             name="funds-security"
                                             params={{ organizationId: activeOrganization.id, fundId: fund.id }}>
                                             <em className="mdi mdi-security icon-start" />
-                                            {t('fund_card_sponsor.buttons.security')}
+                                            {translate('fund_card_sponsor.buttons.security')}
                                         </StateNavLink>
                                     )}
 
@@ -364,7 +388,7 @@ export default function OrganizationsFundsShow() {
                     <div className="flex-row">
                         <div className="flex-col">
                             <div className="card-title">
-                                {t(`funds_show.labels.base_card.header.${viewGeneralType}`)}
+                                {translate(`funds_show.labels.base_card.header.${viewGeneralType}`)}
                             </div>
                         </div>
 
@@ -457,16 +481,14 @@ export default function OrganizationsFundsShow() {
                     <div className="card-section card-section-warning">
                         <div className="card-block card-block-keyvalue card-block-keyvalue-horizontal row">
                             <a className="keyvalue-item col col-lg-3">
-                                <div className="keyvalue-key">{t('fund_card_sponsor.labels.your_employees')}</div>
+                                <div className="keyvalue-key">
+                                    {translate('fund_card_sponsor.labels.your_employees')}
+                                </div>
                                 <div
                                     className="keyvalue-value"
-                                    onClick={() =>
-                                        navigate(
-                                            getStateRouteUrl('employees', {
-                                                organizationId: fund.organization_id,
-                                            }),
-                                        )
-                                    }>
+                                    onClick={() => {
+                                        navigateState('employees', { organizationId: fund.organization_id });
+                                    }}>
                                     <span>{fund.sponsor_count}</span>
                                     <span className="icon mdi mdi-account-multiple-plus" />
                                 </div>
@@ -474,32 +496,27 @@ export default function OrganizationsFundsShow() {
 
                             <div
                                 className={`keyvalue-item col col-lg-3 ${
-                                    !fund.canInviteProviders ? 'keyvalue-item-disabled' : ''
+                                    !canInviteProviders ? 'keyvalue-item-disabled' : ''
                                 }`}
                                 onClick={() => inviteProvider(fund)}>
-                                <div className="keyvalue-key">{t('fund_card_sponsor.labels.providers')}</div>
+                                <div className="keyvalue-key">{translate('fund_card_sponsor.labels.providers')}</div>
                                 <div className="keyvalue-value">
-                                    <span>{fund.providersDescription}</span>
+                                    <span>{providersDescription}</span>
                                     <em className="icon mdi mdi-account-multiple-plus" />
                                 </div>
                             </div>
 
                             <a
                                 className={`keyvalue-item col col-lg-3 ${
-                                    !fund.canAccessFund ? 'keyvalue-item-disabled' : ''
+                                    !canAccessFund ? 'keyvalue-item-disabled' : ''
                                 }`}
-                                onClick={() =>
-                                    navigate(
-                                        getStateRouteUrl('csv-validation', {
-                                            fundId: fund.organization_id,
-                                        }),
-                                    )
-                                }>
-                                <div className="keyvalue-key">{t('fund_card_sponsor.labels.applicants')}</div>
+                                onClick={() => {
+                                    navigateState('csv-validation', { fundId: fund.organization_id });
+                                }}>
+                                <div className="keyvalue-key">{translate('fund_card_sponsor.labels.applicants')}</div>
                                 <div className="keyvalue-value">
                                     <span>{fund.requester_count}</span>
-
-                                    {fund.canAccessFund && <span className="icon mdi mdi-account-multiple-plus" />}
+                                    {canAccessFund && <span className="icon mdi mdi-account-multiple-plus" />}
                                 </div>
                             </a>
                         </div>
@@ -507,32 +524,39 @@ export default function OrganizationsFundsShow() {
                 )}
 
                 {viewGeneralType == 'statistics' && (
-                    <div className="card-section card-section-primary">
-                        <div className="card-block card-block-keyvalue card-block-keyvalue-horizontal row">
-                            <div className="keyvalue-item col col-lg-3">
-                                <div className="keyvalue-key">Gestort</div>
-                                <div className="keyvalue-value">
-                                    {currencyFormat(parseInt(fund.budget.total.toString()))}
-                                </div>
-                            </div>
+                    <Fragment>
+                        {fund.budget ? (
+                            <div className="card-section card-section-primary">
+                                <div className="card-block card-block-keyvalue card-block-keyvalue-horizontal row">
+                                    <div className="keyvalue-item col col-lg-3">
+                                        <div className="keyvalue-key">Gestort</div>
+                                        <div className="keyvalue-value">
+                                            {currencyFormat(parseInt(fund.budget.total.toString()))}
+                                        </div>
+                                    </div>
 
-                            <div className="keyvalue-item col col-lg-3">
-                                <div className="keyvalue-key">Gebruikt</div>
-                                <div className="keyvalue-value">
-                                    {currencyFormat(parseInt(fund.budget.used.toString()))}
-                                </div>
-                            </div>
+                                    <div className="keyvalue-item col col-lg-3">
+                                        <div className="keyvalue-key">Gebruikt</div>
+                                        <div className="keyvalue-value">
+                                            {currencyFormat(parseInt(fund.budget.used.toString()))}
+                                        </div>
+                                    </div>
 
-                            <div className="keyvalue-item col col-lg-3">
-                                <div className="keyvalue-key">Resterend</div>
-                                <div className="keyvalue-value">
-                                    {currencyFormat(
-                                        parseInt(fund.budget.total.toString()) - parseInt(fund.budget.used.toString()),
-                                    )}
+                                    <div className="keyvalue-item col col-lg-3">
+                                        <div className="keyvalue-key">Resterend</div>
+                                        <div className="keyvalue-value">
+                                            {currencyFormat(
+                                                parseInt(fund.budget.total.toString()) -
+                                                    parseInt(fund.budget.used.toString()),
+                                            )}
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
+                        ) : (
+                            <EmptyCard title={'Geen statistieken'} type={'card-section'} />
+                        )}
+                    </Fragment>
                 )}
             </div>
 
@@ -542,11 +566,15 @@ export default function OrganizationsFundsShow() {
                         <div className="flex-grow">
                             <div className="flex-col">
                                 <div className="card-title">
-                                    {t(`funds_show.titles.${viewType}`)}
+                                    {translate(`funds_show.titles.${viewType}`)}
 
-                                    {viewType == 'top_ups' && <span>&nbsp;{topUpTransactions?.meta?.total}</span>}
-                                    {viewType == 'implementations' && <span>&nbsp;{implementations?.meta?.total}</span>}
-                                    {viewType == 'identities' && <span>&nbsp;{identities?.meta?.total}</span>}
+                                    {viewType == 'top_ups' && (
+                                        <span>&nbsp;({topUpTransactions?.meta?.total || 0})</span>
+                                    )}
+                                    {viewType == 'implementations' && (
+                                        <span>&nbsp;({implementations?.meta?.total || 0})</span>
+                                    )}
+                                    {viewType == 'identities' && <span>&nbsp;({identities?.meta?.total || 0})</span>}
                                 </div>
                             </div>
                         </div>
@@ -593,7 +621,7 @@ export default function OrganizationsFundsShow() {
                                                     <div
                                                         className="button button-text"
                                                         onClick={() => topUpTransactionFilters.resetFilters()}>
-                                                        <em className="mdi mdi-close icon-start"></em>
+                                                        <em className="mdi mdi-close icon-start" />
                                                         Wis filters
                                                     </div>
                                                 )}
@@ -629,7 +657,7 @@ export default function OrganizationsFundsShow() {
                                                                 <div className="form">
                                                                     <FilterItemToggle
                                                                         show={true}
-                                                                        label={t(
+                                                                        label={translate(
                                                                             'funds_show.top_up_table.filters.search',
                                                                         )}>
                                                                         <input
@@ -642,14 +670,14 @@ export default function OrganizationsFundsShow() {
                                                                                     q: e.target.value,
                                                                                 })
                                                                             }
-                                                                            placeholder={t(
+                                                                            placeholder={translate(
                                                                                 'funds_show.top_up_table.filters.search',
                                                                             )}
                                                                         />
                                                                     </FilterItemToggle>
 
                                                                     <FilterItemToggle
-                                                                        label={t(
+                                                                        label={translate(
                                                                             'funds_show.top_up_table.filters.amount',
                                                                         )}>
                                                                         <div className="row">
@@ -667,7 +695,7 @@ export default function OrganizationsFundsShow() {
                                                                                             amount_min: e.target.value,
                                                                                         })
                                                                                     }
-                                                                                    placeholder={t(
+                                                                                    placeholder={translate(
                                                                                         'funds_show.top_up_table.filters.amount_min',
                                                                                     )}
                                                                                 />
@@ -687,7 +715,7 @@ export default function OrganizationsFundsShow() {
                                                                                             amount_max: e.target.value,
                                                                                         })
                                                                                     }
-                                                                                    placeholder={t(
+                                                                                    placeholder={translate(
                                                                                         'transactions.labels.amount_max',
                                                                                     )}
                                                                                 />
@@ -696,14 +724,14 @@ export default function OrganizationsFundsShow() {
                                                                     </FilterItemToggle>
 
                                                                     <FilterItemToggle
-                                                                        label={t(
+                                                                        label={translate(
                                                                             'funds_show.top_up_table.filters.from',
                                                                         )}>
                                                                         <DatePickerControl
                                                                             value={dateParse(
                                                                                 topUpTransactionFilters.values.from,
                                                                             )}
-                                                                            placeholder={t('dd-MM-yyyy')}
+                                                                            placeholder={translate('dd-MM-yyyy')}
                                                                             onChange={(from: Date) => {
                                                                                 topUpTransactionFilters.update({
                                                                                     from: dateFormat(from),
@@ -713,12 +741,14 @@ export default function OrganizationsFundsShow() {
                                                                     </FilterItemToggle>
 
                                                                     <FilterItemToggle
-                                                                        label={t('funds_show.top_up_table.filters.to')}>
+                                                                        label={translate(
+                                                                            'funds_show.top_up_table.filters.to',
+                                                                        )}>
                                                                         <DatePickerControl
                                                                             value={dateParse(
                                                                                 topUpTransactionFilters.values.to,
                                                                             )}
-                                                                            placeholder={t('dd-MM-yyyy')}
+                                                                            placeholder={translate('dd-MM-yyyy')}
                                                                             onChange={(to: Date) => {
                                                                                 topUpTransactionFilters.update({
                                                                                     to: dateFormat(to),
@@ -788,7 +818,7 @@ export default function OrganizationsFundsShow() {
                                                                 <div className="form">
                                                                     <FilterItemToggle
                                                                         show={true}
-                                                                        label={t(
+                                                                        label={translate(
                                                                             'funds_show.implementations_table.filters.search',
                                                                         )}>
                                                                         <input
@@ -799,7 +829,7 @@ export default function OrganizationsFundsShow() {
                                                                                     q: e.target.value,
                                                                                 })
                                                                             }
-                                                                            placeholder={t(
+                                                                            placeholder={translate(
                                                                                 'funds_show.implementations_table.filters.search',
                                                                             )}
                                                                         />
@@ -866,7 +896,7 @@ export default function OrganizationsFundsShow() {
                                                                 <div className="form">
                                                                     <FilterItemToggle
                                                                         show={true}
-                                                                        label={t(
+                                                                        label={translate(
                                                                             'funds_show.top_up_table.filters.search',
                                                                         )}>
                                                                         <input
@@ -877,7 +907,7 @@ export default function OrganizationsFundsShow() {
                                                                                     q: e.target.value,
                                                                                 })
                                                                             }
-                                                                            placeholder={t(
+                                                                            placeholder={translate(
                                                                                 'funds_show.top_up_table.filters.search',
                                                                             )}
                                                                         />
@@ -889,9 +919,12 @@ export default function OrganizationsFundsShow() {
                                                                             onClick={() => exportIdentities()}>
                                                                             <em className="mdi mdi-download icon-start" />
                                                                             <span>
-                                                                                {t('components.dropdown.export', {
-                                                                                    total: identities.meta.total,
-                                                                                })}
+                                                                                {translate(
+                                                                                    'components.dropdown.export',
+                                                                                    {
+                                                                                        total: identities.meta.total,
+                                                                                    },
+                                                                                )}
                                                                             </span>
                                                                         </button>
                                                                     </div>
@@ -917,266 +950,288 @@ export default function OrganizationsFundsShow() {
                     </div>
                 </div>
 
-                {viewType == 'top_ups' && topUpTransactions?.meta?.total > 0 && (
-                    <div className="card-section card-section-padless">
-                        <div className="table-wrapper">
-                            <table className="table">
-                                <thead>
-                                    <tr>
-                                        <ThSortable
-                                            filter={topUpTransactionFilters}
-                                            label={t('funds_show.top_up_table.columns.code')}
-                                            value="code"
-                                        />
-                                        <ThSortable
-                                            filter={topUpTransactionFilters}
-                                            label={t('funds_show.top_up_table.columns.iban')}
-                                            value="iban"
-                                        />
-                                        <ThSortable
-                                            filter={topUpTransactionFilters}
-                                            label={t('funds_show.top_up_table.columns.amount')}
-                                            value="amount"
-                                        />
-                                        <ThSortable
-                                            className="text-right"
-                                            filter={topUpTransactionFilters}
-                                            label={t('funds_show.top_up_table.columns.date')}
-                                            value="created_at"
-                                        />
-                                    </tr>
-                                </thead>
+                {viewType == 'top_ups' && (
+                    <Fragment>
+                        {topUpTransactions?.meta?.total > 0 ? (
+                            <div className="card-section card-section-padless">
+                                <div className="table-wrapper">
+                                    <table className="table">
+                                        <thead>
+                                            <tr>
+                                                <ThSortable
+                                                    filter={topUpTransactionFilters}
+                                                    label={translate('funds_show.top_up_table.columns.code')}
+                                                    value="code"
+                                                />
+                                                <ThSortable
+                                                    filter={topUpTransactionFilters}
+                                                    label={translate('funds_show.top_up_table.columns.iban')}
+                                                    value="iban"
+                                                />
+                                                <ThSortable
+                                                    filter={topUpTransactionFilters}
+                                                    label={translate('funds_show.top_up_table.columns.amount')}
+                                                    value="amount"
+                                                />
+                                                <ThSortable
+                                                    className="text-right"
+                                                    filter={topUpTransactionFilters}
+                                                    label={translate('funds_show.top_up_table.columns.date')}
+                                                    value="created_at"
+                                                />
+                                            </tr>
+                                        </thead>
 
-                                <tbody>
-                                    {topUpTransactions.data.map((top_up_transaction: FundTopUpTransaction) => (
-                                        <tr key={top_up_transaction.id}>
-                                            <td>{top_up_transaction.code}</td>
-                                            <td className={!top_up_transaction.iban ? 'text-muted' : ''}>
-                                                {top_up_transaction.iban || 'Geen IBAN'}
-                                            </td>
-                                            <td>{top_up_transaction.amount_locale}</td>
-                                            <td className="text-right">{top_up_transaction.created_at_locale}</td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                )}
+                                        <tbody>
+                                            {topUpTransactions.data.map((top_up_transaction: FundTopUpTransaction) => (
+                                                <tr key={top_up_transaction.id}>
+                                                    <td>{top_up_transaction.code}</td>
+                                                    <td className={!top_up_transaction.iban ? 'text-muted' : ''}>
+                                                        {top_up_transaction.iban || 'Geen IBAN'}
+                                                    </td>
+                                                    <td>{top_up_transaction.amount_locale}</td>
+                                                    <td className="text-right">
+                                                        {top_up_transaction.created_at_locale}
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        ) : (
+                            <EmptyCard
+                                title="No top-ups"
+                                type={'card-section'}
+                                description={
+                                    lastQueryTopUpTransactions
+                                        ? `Could not find any top-ups for "${lastQueryTopUpTransactions}"`
+                                        : null
+                                }
+                            />
+                        )}
 
-                {viewType == 'top_ups' && topUpTransactions && topUpTransactions.meta.total > 0 && (
-                    <div className={'card-section card-section-narrow'}>
-                        <Paginator
-                            meta={topUpTransactions.meta}
-                            filters={topUpTransactionFilters.activeValues}
-                            updateFilters={topUpTransactionFilters.update}
-                        />
-                    </div>
-                )}
-
-                {viewType == 'top_ups' && topUpTransactions?.meta?.total == 0 && (
-                    <EmptyCard
-                        title="No top-ups"
-                        description={
-                            lastQueryTopUpTransactions
-                                ? 'Could not find any top-ups for ' + lastQueryTopUpTransactions
-                                : 'No top-ups'
-                        }
-                    />
+                        {topUpTransactions && (
+                            <div
+                                className={'card-section card-section-narrow'}
+                                hidden={topUpTransactions?.meta?.total < 2}>
+                                <Paginator
+                                    meta={topUpTransactions.meta}
+                                    filters={topUpTransactionFilters.activeValues}
+                                    updateFilters={topUpTransactionFilters.update}
+                                />
+                            </div>
+                        )}
+                    </Fragment>
                 )}
 
                 {viewType == 'implementations' && (
-                    <div className="card-section card-section-padless">
-                        <div className="table-wrapper">
-                            <table className="table">
-                                <thead>
-                                    <tr>
-                                        <th className="td-narrow">Afbeelding</th>
-                                        <th>Naam</th>
-                                        <th>Status</th>
-                                        <th>Acties</th>
-                                    </tr>
-                                </thead>
+                    <Fragment>
+                        {implementations?.meta?.total > 0 ? (
+                            <div className="card-section card-section-padless">
+                                <div className="table-wrapper">
+                                    <table className="table">
+                                        <thead>
+                                            <tr>
+                                                <th className="td-narrow">Afbeelding</th>
+                                                <th>Naam</th>
+                                                <th>Status</th>
+                                                <th>Acties</th>
+                                            </tr>
+                                        </thead>
 
-                                <tbody>
-                                    {implementations?.data?.map((implementation: Implementation) => (
-                                        <tr key={implementation?.id}>
-                                            <td className="td-narrow">
-                                                <img
-                                                    className="td-media"
-                                                    src={
-                                                        implementation?.logo ||
-                                                        './assets/img/placeholders/organization-thumbnail.png'
-                                                    }
-                                                    alt={''}></img>
-                                            </td>
-                                            <td>{implementation?.name}</td>
-                                            {fund.state == 'active' && (
-                                                <td>
-                                                    <div className="label label-success">Zichtbaar</div>
-                                                </td>
-                                            )}
-                                            {fund.state != 'active' && (
-                                                <td>
-                                                    <div className="label label-success">Onzichtbaar</div>
-                                                </td>
-                                            )}
+                                        <tbody>
+                                            {implementations?.data?.map((implementation) => (
+                                                <tr key={implementation?.id}>
+                                                    <td className="td-narrow">
+                                                        <img
+                                                            className="td-media"
+                                                            src={assetUrl(
+                                                                '/assets/img/placeholders/organization-thumbnail.png',
+                                                            )}
+                                                            alt={''}></img>
+                                                    </td>
+                                                    <td>{implementation?.name}</td>
+                                                    {fund.state == 'active' && (
+                                                        <td>
+                                                            <div className="label label-success">Zichtbaar</div>
+                                                        </td>
+                                                    )}
+                                                    {fund.state != 'active' && (
+                                                        <td>
+                                                            <div className="label label-success">Onzichtbaar</div>
+                                                        </td>
+                                                    )}
 
-                                            <td className="td-narrow text-right">
-                                                <TableRowActions
-                                                    actions={shownImplementationMenus}
-                                                    setActions={(actions: Array<number>) =>
-                                                        setShownImplementationMenus(actions)
-                                                    }
-                                                    modelItem={implementation}>
-                                                    <div className="dropdown dropdown-actions">
-                                                        <a
-                                                            className="dropdown-item"
-                                                            target="_blank"
-                                                            href={implementation?.url_webshop + 'funds/' + fund.id}
-                                                            rel="noreferrer">
-                                                            <em className="mdi mdi-open-in-new icon-start" /> Bekijk op
-                                                            webshop
-                                                        </a>
+                                                    <td className="td-narrow text-right">
+                                                        <TableRowActions
+                                                            activeId={shownImplementationMenuId}
+                                                            setActiveId={setShownImplementationMenuId}
+                                                            id={implementation.id}>
+                                                            <div className="dropdown dropdown-actions">
+                                                                <a
+                                                                    className="dropdown-item"
+                                                                    target="_blank"
+                                                                    href={
+                                                                        implementation?.url_webshop + 'funds/' + fund.id
+                                                                    }
+                                                                    rel="noreferrer">
+                                                                    <em className="mdi mdi-open-in-new icon-start" />{' '}
+                                                                    Bekijk op webshop
+                                                                </a>
 
-                                                        {hasPermission(
-                                                            activeOrganization,
-                                                            'manage_implementation_cms',
-                                                        ) && (
-                                                            <NavLink
-                                                                className="dropdown-item"
-                                                                to={getStateRouteUrl('implementation-view', {
-                                                                    organizationId: fund.organization_id,
-                                                                    id: implementation?.id,
-                                                                })}>
-                                                                <div className="mdi mdi-store-outline icon-start" />
-                                                                Ga naar CMS
-                                                            </NavLink>
-                                                        )}
-                                                    </div>
-                                                </TableRowActions>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                )}
-
-                {viewType == 'implementations' && implementations && (
-                    <div className="card-section card-section-narrow">
-                        <Paginator
-                            meta={implementations.meta}
-                            filters={implementationsFilters.activeValues}
-                            updateFilters={implementationsFilters.update}
-                        />
-                    </div>
-                )}
-
-                {viewType == 'implementations' && implementations?.meta?.total == 0 && (
-                    <EmptyCard
-                        title="No webshops"
-                        description={
-                            lastQueryImplementations
-                                ? 'Could not find any webshops for ' + lastQueryImplementations
-                                : ''
-                        }
-                    />
-                )}
-
-                {viewType == 'identities' && identities?.meta?.total > 0 && (
-                    <div className="card-section card-section-padless">
-                        <div className="table-wrapper">
-                            <table className="table">
-                                <thead>
-                                    <tr>
-                                        <ThSortable filter={identitiesFilters} label={'ID'} value="id" />
-                                        <ThSortable filter={identitiesFilters} label={'E-mail'} value="email" />
-                                        <ThSortable
-                                            filter={identitiesFilters}
-                                            label={'Totaal aantal vouchers'}
-                                            value="count_vouchers"
-                                        />
-                                        <ThSortable
-                                            filter={identitiesFilters}
-                                            label={'Actieve vouchers'}
-                                            value="count_vouchers_active"
-                                        />
-                                        <ThSortable
-                                            filter={identitiesFilters}
-                                            label={'Actieve vouchers met saldo'}
-                                            value="count_vouchers_active_with_balance"
-                                        />
-                                        <th className="nowrap text-right">{t('identities.labels.actions')}</th>
-                                    </tr>
-                                </thead>
-
-                                <tbody>
-                                    {identities.data.map((identity: Identity, index: number) => (
-                                        <tr key={index}>
-                                            <td>{identity.id}</td>
-                                            <td>{identity.email}</td>
-                                            <td>{identity.count_vouchers}</td>
-                                            <td>{identity.count_vouchers_active}</td>
-                                            <td>{identity.count_vouchers_active_with_balance}</td>
-                                            <td>
-                                                <NavLink
-                                                    className="button button-primary button-sm pull-right"
-                                                    to={getStateRouteUrl('identities-show', {
-                                                        organizationId: fund.organization_id,
-                                                        id: identity.id,
-                                                        fundId: fund.id,
-                                                    })}>
-                                                    <div className="icon-start mdi mdi-eye-outline"></div>
-                                                    Bekijken
-                                                </NavLink>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                )}
-
-                {viewType == 'identities' && identities?.meta?.total == 0 && (
-                    <EmptyCard
-                        title={'Geen gebruikers gevonden'}
-                        description={lastQueryIdentities ? 'Geen gebruikers gevonden voor ' + lastQueryIdentities : ''}
-                    />
-                )}
-
-                {viewType == 'identities' && identities && identities?.meta.total > 0 && (
-                    <div className="card-section card-section-narrow">
-                        <Paginator
-                            meta={identities.meta}
-                            filters={identitiesFilters.activeValues}
-                            updateFilters={identitiesFilters.update}
-                        />
-                    </div>
-                )}
-
-                {viewType == 'identities' && identities && identities.meta.total > 0 && (
-                    <div className="card-section card-section-primary">
-                        <div className="card-block card-block-keyvalue card-block-keyvalue-horizontal row">
-                            <div className="keyvalue-item col col-lg-4">
-                                <div className="keyvalue-key">Aanvragers met vouchers</div>
-                                <div className="keyvalue-value">
-                                    <span>{identitiesActive}</span>
-                                    <span className="icon mdi mdi-account-multiple-outline" />
+                                                                {hasPermission(
+                                                                    activeOrganization,
+                                                                    'manage_implementation_cms',
+                                                                ) && (
+                                                                    <StateNavLink
+                                                                        name={'implementation-view'}
+                                                                        params={{
+                                                                            organizationId: fund.organization_id,
+                                                                            id: implementation?.id,
+                                                                        }}
+                                                                        className="dropdown-item">
+                                                                        <em className="mdi mdi-store-outline icon-start" />
+                                                                        Ga naar CMS
+                                                                    </StateNavLink>
+                                                                )}
+                                                            </div>
+                                                        </TableRowActions>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
+                        ) : (
+                            <EmptyCard
+                                title="No webshops"
+                                type={'card-section'}
+                                description={
+                                    lastQueryImplementations
+                                        ? `Could not find any webshops for "${lastQueryImplementations}"`
+                                        : null
+                                }
+                            />
+                        )}
 
-                            <div className="keyvalue-item col col-lg-4">
-                                <div className="keyvalue-key">Aanvragers zonder e-mailadres</div>
-                                <div className="keyvalue-value">
-                                    <span>{identitiesWithoutEmail}</span>
-                                    <span className="icon mdi mdi-email-off-outline" />
+                        {implementations && (
+                            <div
+                                className="card-section card-section-narrow"
+                                hidden={implementations?.meta?.last_page < 2}>
+                                <Paginator
+                                    meta={implementations.meta}
+                                    filters={implementationsFilters.activeValues}
+                                    updateFilters={implementationsFilters.update}
+                                />
+                            </div>
+                        )}
+                    </Fragment>
+                )}
+
+                {viewType == 'identities' && (
+                    <Fragment>
+                        {identities?.meta?.total > 0 ? (
+                            <div className="card-section card-section-padless">
+                                <div className="table-wrapper">
+                                    <table className="table">
+                                        <thead>
+                                            <tr>
+                                                <ThSortable filter={identitiesFilters} label={'ID'} value="id" />
+                                                <ThSortable filter={identitiesFilters} label={'E-mail'} value="email" />
+                                                <ThSortable
+                                                    filter={identitiesFilters}
+                                                    label={'Totaal aantal vouchers'}
+                                                    value="count_vouchers"
+                                                />
+                                                <ThSortable
+                                                    filter={identitiesFilters}
+                                                    label={'Actieve vouchers'}
+                                                    value="count_vouchers_active"
+                                                />
+                                                <ThSortable
+                                                    filter={identitiesFilters}
+                                                    label={'Actieve vouchers met saldo'}
+                                                    value="count_vouchers_active_with_balance"
+                                                />
+                                                <th className="nowrap text-right">
+                                                    {translate('identities.labels.actions')}
+                                                </th>
+                                            </tr>
+                                        </thead>
+
+                                        <tbody>
+                                            {identities.data.map((identity: Identity, index: number) => (
+                                                <tr key={index}>
+                                                    <td>{identity.id}</td>
+                                                    <td>{identity.email}</td>
+                                                    <td>{identity.count_vouchers}</td>
+                                                    <td>{identity.count_vouchers_active}</td>
+                                                    <td>{identity.count_vouchers_active_with_balance}</td>
+                                                    <td>
+                                                        <StateNavLink
+                                                            className="button button-primary button-sm pull-right"
+                                                            name={'identities-show'}
+                                                            params={{
+                                                                organizationId: fund.organization_id,
+                                                                id: identity.id,
+                                                                fundId: fund.id,
+                                                            }}>
+                                                            <em className="icon-start mdi mdi-eye-outline" />
+                                                            Bekijken
+                                                        </StateNavLink>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
-                        </div>
-                    </div>
+                        ) : (
+                            <EmptyCard
+                                title={'Geen gebruikers gevonden'}
+                                type={'card-section'}
+                                description={
+                                    lastQueryIdentities
+                                        ? `Geen gebruikers gevonden voor "${lastQueryIdentities}"`
+                                        : null
+                                }
+                            />
+                        )}
+
+                        {identities?.meta && (
+                            <div className="card-section card-section-narrow" hidden={identities.meta.total < 2}>
+                                <Paginator
+                                    meta={identities.meta}
+                                    filters={identitiesFilters.activeValues}
+                                    updateFilters={identitiesFilters.update}
+                                />
+                            </div>
+                        )}
+
+                        {identities?.meta?.total > 0 && (
+                            <div className="card-section card-section-primary">
+                                <div className="card-block card-block-keyvalue card-block-keyvalue-horizontal row">
+                                    <div className="keyvalue-item col col-lg-4">
+                                        <div className="keyvalue-key">Aanvragers met vouchers</div>
+                                        <div className="keyvalue-value">
+                                            <span>{identitiesActive}</span>
+                                            <span className="icon mdi mdi-account-multiple-outline" />
+                                        </div>
+                                    </div>
+
+                                    <div className="keyvalue-item col col-lg-4">
+                                        <div className="keyvalue-key">Aanvragers zonder e-mailadres</div>
+                                        <div className="keyvalue-value">
+                                            <span>{identitiesWithoutEmail}</span>
+                                            <span className="icon mdi mdi-email-off-outline" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    </Fragment>
                 )}
             </div>
         </Fragment>

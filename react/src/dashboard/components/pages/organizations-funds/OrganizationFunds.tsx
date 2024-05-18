@@ -1,5 +1,4 @@
 import React, { Fragment, useCallback, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { PaginationData, ResponseError } from '../../../props/ApiResponses';
 import Fund from '../../../props/models/Fund';
 import useActiveOrganization from '../../../hooks/useActiveOrganization';
@@ -22,37 +21,41 @@ import usePushSuccess from '../../../hooks/usePushSuccess';
 import usePushDanger from '../../../hooks/usePushDanger';
 import ModalDangerZone from '../../modals/ModalDangerZone';
 import useOpenModal from '../../../hooks/useOpenModal';
-import { StringParam, useQueryParams } from 'use-query-params';
+import { StringParam, useQueryParams, withDefault } from 'use-query-params';
 import Paginator from '../../../modules/paginator/components/Paginator';
 import EmptyCard from '../../elements/empty-card/EmptyCard';
-import { getStateRouteUrl } from '../../../modules/state_router/Router';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { useNavigateState } from '../../../modules/state_router/Router';
 import ModalFundTopUp from '../../modals/ModalFundTopUp';
+import useTranslate from '../../../hooks/useTranslate';
+import useAssetUrl from '../../../hooks/useAssetUrl';
 
 export default function OrganizationFunds() {
-    const { t } = useTranslation();
-
+    const translate = useTranslate();
     const pushDanger = usePushDanger();
     const setProgress = useSetProgress();
     const pushSuccess = usePushSuccess();
+    const assetUrl = useAssetUrl();
     const openModal = useOpenModal();
-    const navigate = useNavigate();
+    const navigateState = useNavigateState();
     const activeOrganization = useActiveOrganization();
 
     const fundService = useFundService();
     const paginatorService = usePaginatorService();
     const implementationService = useImplementationService();
 
+    const [loading, setLoading] = useState(false);
     const [paginatorKey] = useState<string>('organization_funds');
-    const [shownFundMenus, setShownFundMenus] = useState<Array<number>>([]);
+    const [shownFundMenuId, setShownFundMenuId] = useState<number>(null);
     const [funds, setFunds] = useState<PaginationData<Fund>>(null);
     const [implementations, setImplementations] = useState<Array<Partial<Implementation>>>(null);
 
+    const [topUpInProgress, setTopUpInProgress] = useState(false);
+
     const [statesOptions] = useState([
         { key: null, name: 'Alle' },
-        { key: 'active', name: t(`components.organization_funds.states.active`) },
-        { key: 'paused', name: t(`components.organization_funds.states.paused`) },
-        { key: 'closed', name: t(`components.organization_funds.states.closed`) },
+        { key: 'active', name: translate(`components.organization_funds.states.active`) },
+        { key: 'paused', name: translate(`components.organization_funds.states.paused`) },
+        { key: 'closed', name: translate(`components.organization_funds.states.closed`) },
     ]);
 
     const [stateLabels] = useState({
@@ -61,9 +64,10 @@ export default function OrganizationFunds() {
         closed: 'label-default',
     });
 
-    const [{ funds_type }, setQueryParams] = useQueryParams({
-        funds_type: StringParam,
-    });
+    const [{ funds_type }, setQueryParams] = useQueryParams(
+        { funds_type: withDefault(StringParam, 'active') },
+        { removeDefaultsFromUrl: true },
+    );
 
     const filter = useFilter({
         q: '',
@@ -75,6 +79,7 @@ export default function OrganizationFunds() {
 
     const fetchFunds = useCallback(() => {
         setProgress(0);
+        setLoading(true);
 
         fundService
             .list(activeOrganization.id, {
@@ -85,31 +90,35 @@ export default function OrganizationFunds() {
                 archived: funds_type == 'archived' ? 1 : 0,
                 per_page: filter.activeValues.per_page,
             })
-            .then((res) => {
-                setFunds(res.data);
-            })
-            .finally(() => setProgress(100));
+            .then((res) => setFunds(res.data))
+            .finally(() => {
+                setProgress(100);
+                setLoading(false);
+            });
     }, [activeOrganization.id, filter.activeValues, fundService, funds_type, setProgress]);
 
     const fetchImplementations = useCallback(() => {
+        setProgress(0);
+
         implementationService
             .list(activeOrganization.id, { per_page: 100 })
-            .then((res) => setImplementations([{ id: null, name: 'Alle implementaties...' }, ...res.data.data]));
-    }, [activeOrganization.id, implementationService]);
+            .then((res) => setImplementations([{ id: null, name: 'Alle implementaties...' }, ...res.data.data]))
+            .finally(() => setProgress(100));
+    }, [activeOrganization.id, implementationService, setProgress]);
 
     const askConfirmation = useCallback(
         (type: string, onConfirm: () => void) => {
             openModal((modal) => (
                 <ModalDangerZone
                     modal={modal}
-                    title={t(`modals.danger_zone.${type}.title`)}
-                    description={t(`modals.danger_zone.${type}.description`)}
+                    title={translate(`modals.danger_zone.${type}.title`)}
+                    description={translate(`modals.danger_zone.${type}.description`)}
                     buttonCancel={{
-                        text: t(`modals.danger_zone.${type}.buttons.cancel`),
+                        text: translate(`modals.danger_zone.${type}.buttons.cancel`),
                         onClick: modal.close,
                     }}
                     buttonSubmit={{
-                        text: t(`modals.danger_zone.${type}.buttons.confirm`),
+                        text: translate(`modals.danger_zone.${type}.buttons.confirm`),
                         onClick: () => {
                             onConfirm();
                             modal.close();
@@ -118,22 +127,25 @@ export default function OrganizationFunds() {
                 />
             ));
         },
-        [openModal, t],
+        [openModal, translate],
     );
 
     const archiveFund = useCallback(
         (fund: Fund) => {
             askConfirmation('archive_fund', () => {
-                fundService.archive(fund.organization_id, fund.id).then(
-                    () => {
+                setProgress(0);
+
+                fundService
+                    .archive(fund.organization_id, fund.id)
+                    .then(() => {
                         setQueryParams({ funds_type: 'archived' });
                         pushSuccess('Opgeslagen!');
-                    },
-                    (err: ResponseError) => pushDanger(err.data.message || 'Error!'),
-                );
+                    })
+                    .catch((err: ResponseError) => pushDanger(err.data.message || 'Error!'))
+                    .finally(() => setProgress(100));
             });
         },
-        [askConfirmation, fundService, pushDanger, pushSuccess, setQueryParams],
+        [askConfirmation, fundService, pushDanger, pushSuccess, setProgress, setQueryParams],
     );
 
     const restoreFund = useCallback(
@@ -142,43 +154,34 @@ export default function OrganizationFunds() {
             e?.preventDefault();
 
             askConfirmation('restore_fund', () => {
-                fundService.unarchive(fund.organization_id, fund.id).then(
-                    () => {
+                setProgress(0);
+
+                fundService
+                    .unarchive(fund.organization_id, fund.id)
+                    .then(() => {
                         setQueryParams({ funds_type: 'active' });
                         pushSuccess('Opgeslagen!');
-                    },
-                    (err: ResponseError) => pushDanger(err.data.message || 'Error!'),
-                );
+                    })
+                    .catch((err: ResponseError) => pushDanger(err.data.message || 'Error!'))
+                    .finally(() => setProgress(100));
             });
         },
-        [askConfirmation, fundService, pushDanger, pushSuccess, setQueryParams],
-    );
-
-    const setTopUpInProgress = useCallback(
-        (fund: Fund, inProgress = false) => {
-            fund.topUpInProgress = inProgress;
-            setFunds({ ...funds });
-        },
-        [funds],
+        [askConfirmation, fundService, pushDanger, pushSuccess, setProgress, setQueryParams],
     );
 
     const topUpModal = useCallback(
         (fund: Fund) => {
-            if (!fund.topUpInProgress) {
-                setTopUpInProgress(fund, true);
-
-                openModal((modal) => (
-                    <ModalFundTopUp
-                        modal={modal}
-                        fund={fund}
-                        onClose={() => {
-                            setTopUpInProgress(fund, false);
-                        }}
-                    />
-                ));
+            if (topUpInProgress) {
+                return;
             }
+
+            setTopUpInProgress(true);
+
+            openModal((modal) => (
+                <ModalFundTopUp modal={modal} fund={fund} onClose={() => setTopUpInProgress(false)} />
+            ));
         },
-        [openModal, setTopUpInProgress],
+        [openModal, topUpInProgress],
     );
 
     useEffect(() => {
@@ -189,388 +192,370 @@ export default function OrganizationFunds() {
         fetchImplementations();
     }, [fetchImplementations]);
 
-    useEffect(() => {
-        if (!funds_type) {
-            setQueryParams({ funds_type: 'active' });
-        }
-    }, [funds_type, setQueryParams]);
-
     if (!funds) {
         return <LoadingCard />;
     }
 
     return (
-        <>
-            <div className="card">
-                <div className="card-header">
-                    <div className="flex-row">
-                        <div className="flex-col flex-grow">
-                            <div className="card-title" data-dusk="fundsTitle">
-                                <span>{t('components.organization_funds.title')}</span>
-                                <span className="span-count">{funds.meta.total}</span>
-                            </div>
+        <div className="card">
+            <div className="card-header">
+                <div className="flex-row">
+                    <div className="flex-col flex-grow">
+                        <div className="card-title" data-dusk="fundsTitle">
+                            <span>{translate('components.organization_funds.title')}</span>
+                            <span className="span-count">{funds.meta.total}</span>
                         </div>
+                    </div>
 
-                        <div className="flex">
-                            <div className="block block-inline-filters">
-                                {hasPermission(activeOrganization, 'manage_funds') && (
+                    <div className="flex">
+                        <div className="block block-inline-filters">
+                            {hasPermission(activeOrganization, 'manage_funds') && (
+                                <StateNavLink
+                                    name={'funds-create'}
+                                    params={{ organizationId: activeOrganization.id }}
+                                    className="button button-primary button-sm">
+                                    <em className="mdi mdi-plus-circle icon-start" />
+                                    {translate('components.organization_funds.buttons.add')}
+                                </StateNavLink>
+                            )}
+
+                            {activeOrganization.allow_2fa_restrictions &&
+                                hasPermission(activeOrganization, 'manage_organization') && (
                                     <StateNavLink
-                                        name={'funds-create'}
+                                        name={'organization-security'}
+                                        query={{ view_type: 'funds' }}
                                         params={{ organizationId: activeOrganization.id }}
-                                        className="button button-primary button-sm">
-                                        <em className="mdi mdi-plus-circle icon-start" />
-                                        {t('components.organization_funds.buttons.add')}
+                                        className="button button-default button-sm">
+                                        <em className="mdi mdi-security icon-start" />
+                                        {translate('components.organization_funds.buttons.security')}
                                     </StateNavLink>
                                 )}
 
-                                {activeOrganization.allow_2fa_restrictions &&
-                                    hasPermission(activeOrganization, 'manage_organization') && (
-                                        <NavLink
-                                            className="button button-default button-sm"
-                                            to={
-                                                getStateRouteUrl('organization-security', {
-                                                    organizationId: activeOrganization.id,
-                                                }) + '?view_type=funds'
-                                            }>
-                                            <em className="mdi mdi-security icon-start" />
-                                            {t('components.organization_funds.buttons.security')}
-                                        </NavLink>
-                                    )}
+                            <div className="form">
+                                <div className="flex">
+                                    <div>
+                                        <div className="block block-label-tabs">
+                                            <div className="label-tab-set">
+                                                <div
+                                                    onClick={() => setQueryParams({ funds_type: 'active' })}
+                                                    className={`label-tab label-tab-sm ${
+                                                        funds_type == 'active' ? 'active' : ''
+                                                    }`}>
+                                                    Lopend ({funds.meta.unarchived_funds_total})
+                                                </div>
 
-                                <div className="form">
-                                    <div className="flex">
-                                        <div>
-                                            <div className="block block-label-tabs">
-                                                <div className="label-tab-set">
-                                                    <div
-                                                        onClick={() => setQueryParams({ funds_type: 'active' })}
-                                                        className={`label-tab label-tab-sm ${
-                                                            funds_type == 'active' ? 'active' : ''
-                                                        }`}>
-                                                        Lopend ({funds.meta.unarchived_funds_total})
-                                                    </div>
-
-                                                    <div
-                                                        onClick={() => setQueryParams({ funds_type: 'archived' })}
-                                                        className={`label-tab label-tab-sm ${
-                                                            funds_type == 'archived' ? 'active' : ''
-                                                        }`}>
-                                                        Archief ({funds.meta.archived_funds_total})
-                                                    </div>
+                                                <div
+                                                    onClick={() => setQueryParams({ funds_type: 'archived' })}
+                                                    className={`label-tab label-tab-sm ${
+                                                        funds_type == 'archived' ? 'active' : ''
+                                                    }`}>
+                                                    Archief ({funds.meta.archived_funds_total})
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
+                            </div>
 
-                                <div className="flex">
-                                    {filter.show && (
-                                        <div className="button button-text" onClick={filter.resetFilters}>
-                                            <em className="mdi mdi-close icon-start" />
-                                            Wis filters
+                            <div className="flex">
+                                {filter.show && (
+                                    <div className="button button-text" onClick={filter.resetFilters}>
+                                        <em className="mdi mdi-close icon-start" />
+                                        Wis filters
+                                    </div>
+                                )}
+
+                                {!filter.show && (
+                                    <div className="form">
+                                        <div className="form-group">
+                                            <input
+                                                type="text"
+                                                className="form-control"
+                                                placeholder="Zoeken"
+                                                value={filter.values.q}
+                                                onChange={(e) => filter.update({ q: e.target.value })}
+                                            />
                                         </div>
-                                    )}
+                                    </div>
+                                )}
 
-                                    {!filter.show && (
-                                        <div className="form">
-                                            <div className="form-group">
-                                                <input
-                                                    type="text"
-                                                    className="form-control"
-                                                    placeholder="Zoeken"
-                                                    value={filter.values.q}
-                                                    onChange={(e) => filter.update({ q: e.target.value })}
-                                                />
-                                            </div>
-                                        </div>
-                                    )}
-
-                                    <ClickOutside className="form" onClickOutside={() => filter.setShow(false)}>
-                                        <div className="inline-filters-dropdown pull-right">
-                                            {filter.show && (
-                                                <div className="inline-filters-dropdown-content">
-                                                    <div className="arrow-box bg-dim">
-                                                        <div className="arrow" />
-                                                    </div>
-
-                                                    <div className="form">
-                                                        <FilterItemToggle
-                                                            show={true}
-                                                            label={t('components.organization_funds.filters.search')}>
-                                                            <input
-                                                                className="form-control"
-                                                                value={filter.values.q}
-                                                                onChange={(e) => filter.update({ q: e.target.value })}
-                                                                placeholder={t(
-                                                                    'components.organization_funds.filters.search',
-                                                                )}
-                                                            />
-                                                        </FilterItemToggle>
-
-                                                        <FilterItemToggle
-                                                            label={t('components.organization_funds.filters.state')}>
-                                                            <SelectControl
-                                                                className="form-control"
-                                                                propKey={'key'}
-                                                                allowSearch={false}
-                                                                value={filter.values.state}
-                                                                options={statesOptions}
-                                                                optionsComponent={SelectControlOptions}
-                                                                onChange={(state: string) => filter.update({ state })}
-                                                            />
-                                                        </FilterItemToggle>
-
-                                                        <FilterItemToggle
-                                                            label={t(
-                                                                'components.organization_funds.filters.implementation',
-                                                            )}>
-                                                            <SelectControl
-                                                                className="form-control"
-                                                                propKey={'id'}
-                                                                allowSearch={false}
-                                                                value={filter.values.implementation_id}
-                                                                options={implementations}
-                                                                optionsComponent={SelectControlOptions}
-                                                                onChange={(implementation_id: string) =>
-                                                                    filter.update({ implementation_id })
-                                                                }
-                                                            />
-                                                        </FilterItemToggle>
-                                                    </div>
+                                <ClickOutside className="form" onClickOutside={() => filter.setShow(false)}>
+                                    <div className="inline-filters-dropdown pull-right">
+                                        {filter.show && (
+                                            <div className="inline-filters-dropdown-content">
+                                                <div className="arrow-box bg-dim">
+                                                    <div className="arrow" />
                                                 </div>
-                                            )}
 
-                                            <div
-                                                className="button button-default button-icon"
-                                                onClick={() => filter.setShow(!filter.show)}>
-                                                <em className="mdi mdi-filter-outline" />
+                                                <div className="form">
+                                                    <FilterItemToggle
+                                                        show={true}
+                                                        label={translate(
+                                                            'components.organization_funds.filters.search',
+                                                        )}>
+                                                        <input
+                                                            className="form-control"
+                                                            value={filter.values.q}
+                                                            onChange={(e) => filter.update({ q: e.target.value })}
+                                                            placeholder={translate(
+                                                                'components.organization_funds.filters.search',
+                                                            )}
+                                                        />
+                                                    </FilterItemToggle>
+
+                                                    <FilterItemToggle
+                                                        label={translate(
+                                                            'components.organization_funds.filters.state',
+                                                        )}>
+                                                        <SelectControl
+                                                            className="form-control"
+                                                            propKey={'key'}
+                                                            allowSearch={false}
+                                                            value={filter.values.state}
+                                                            options={statesOptions}
+                                                            optionsComponent={SelectControlOptions}
+                                                            onChange={(state: string) => filter.update({ state })}
+                                                        />
+                                                    </FilterItemToggle>
+
+                                                    <FilterItemToggle
+                                                        label={translate(
+                                                            'components.organization_funds.filters.implementation',
+                                                        )}>
+                                                        <SelectControl
+                                                            className="form-control"
+                                                            propKey={'id'}
+                                                            allowSearch={false}
+                                                            value={filter.values.implementation_id}
+                                                            options={implementations}
+                                                            optionsComponent={SelectControlOptions}
+                                                            onChange={(implementation_id: string) =>
+                                                                filter.update({ implementation_id })
+                                                            }
+                                                        />
+                                                    </FilterItemToggle>
+                                                </div>
                                             </div>
+                                        )}
+
+                                        <div
+                                            className="button button-default button-icon"
+                                            onClick={() => filter.setShow(!filter.show)}>
+                                            <em className="mdi mdi-filter-outline" />
                                         </div>
-                                    </ClickOutside>
-                                </div>
+                                    </div>
+                                </ClickOutside>
                             </div>
                         </div>
                     </div>
                 </div>
-
-                {funds.meta.total > 0 && (
-                    <div className="card-section">
-                        <div className="card-block card-block-table">
-                            <div className="table-wrapper">
-                                <table className="table">
-                                    <thead>
-                                        <tr>
-                                            <th>{t('components.organization_funds.labels.name')}</th>
-                                            <th>{t('components.organization_funds.labels.implementation')}</th>
-                                            {funds_type == 'active' && (
-                                                <Fragment>
-                                                    <th>{t('components.organization_funds.labels.remaining')}</th>
-                                                    <th>{t('components.organization_funds.labels.requester_count')}</th>
-                                                </Fragment>
-                                            )}
-                                            <th>{t('components.organization_funds.labels.status')}</th>
-                                            <th className="th-narrow text-right">
-                                                {t('components.organization_funds.labels.actions')}
-                                            </th>
-                                        </tr>
-                                    </thead>
-
-                                    <tbody>
-                                        {funds.data.map((fund) => (
-                                            <tr
-                                                key={fund.id}
-                                                onClick={() =>
-                                                    navigate(
-                                                        getStateRouteUrl('funds-show', {
-                                                            organizationId: activeOrganization.id,
-                                                            fundId: fund.id,
-                                                        }),
-                                                    )
-                                                }>
-                                                <td style={{ cursor: 'pointer' }}>
-                                                    <div className="td-entity-main">
-                                                        <div className="td-entity-main-media">
-                                                            <img
-                                                                className="td-media td-media-sm td-media-round"
-                                                                src={
-                                                                    fund.logo?.sizes.thumbnail ||
-                                                                    './assets/img/placeholders/fund-thumbnail.png'
-                                                                }
-                                                                alt={''}
-                                                            />
-                                                        </div>
-
-                                                        <div className="td-entity-main-content">
-                                                            <div
-                                                                className="text-strong text-primary"
-                                                                title={fund.name || '-'}>
-                                                                {strLimit(fund.name, 50)}
-                                                            </div>
-                                                            <div className="text-muted-dark">{fund.type_locale}</div>
-                                                        </div>
-                                                    </div>
-                                                </td>
-
-                                                <td
-                                                    className="text-strong text-muted-dark"
-                                                    style={{ cursor: 'pointer' }}>
-                                                    {fund.implementation?.name}
-                                                </td>
-
-                                                {!fund.archived && (
-                                                    <td style={{ cursor: 'pointer' }}>
-                                                        {currencyFormat(
-                                                            parseFloat(fund.budget?.total) -
-                                                                parseFloat(fund.budget?.used),
-                                                        )}
-                                                    </td>
-                                                )}
-
-                                                {!fund.archived && (
-                                                    <td
-                                                        className="text-strong text-muted-dark"
-                                                        style={{ cursor: 'pointer' }}>
-                                                        {fund.requester_count}
-                                                    </td>
-                                                )}
-
-                                                <td>
-                                                    {!fund.archived && stateLabels[fund.state] && (
-                                                        <span className={`label ${stateLabels[fund.state] || ''}`}>
-                                                            {t(`components.organization_funds.states.${fund.state}`)}
-                                                        </span>
-                                                    )}
-
-                                                    {fund.archived && (
-                                                        <span className="label label-default">
-                                                            {t('components.organization_funds.states.archived')}
-                                                        </span>
-                                                    )}
-                                                </td>
-
-                                                <td className="td-narrow text-right">
-                                                    {!fund.archived && (
-                                                        <TableRowActions
-                                                            actions={shownFundMenus}
-                                                            setActions={(actions: Array<number>) =>
-                                                                setShownFundMenus(actions)
-                                                            }
-                                                            modelItem={fund}>
-                                                            <div className="dropdown dropdown-actions">
-                                                                <NavLink
-                                                                    className="dropdown-item"
-                                                                    to={getStateRouteUrl('funds-show', {
-                                                                        organizationId: activeOrganization.id,
-                                                                        fundId: fund.id,
-                                                                    })}>
-                                                                    <em className="mdi mdi-eye icon-start" /> Bekijken
-                                                                </NavLink>
-
-                                                                <NavLink
-                                                                    className="dropdown-item"
-                                                                    to={getStateRouteUrl('funds-edit', {
-                                                                        organizationId: activeOrganization.id,
-                                                                        fundId: fund.id,
-                                                                    })}>
-                                                                    <em className="mdi mdi-pencil icon-start" />
-                                                                    Bewerken
-                                                                </NavLink>
-
-                                                                <NavLink
-                                                                    className="dropdown-item"
-                                                                    to={getStateRouteUrl('funds-security', {
-                                                                        organizationId: activeOrganization.id,
-                                                                        fundId: fund.id,
-                                                                    })}>
-                                                                    <em className="mdi mdi-security icon-start" />
-                                                                    Beveiliging
-                                                                </NavLink>
-
-                                                                {fund.balance_provider == 'top_ups' &&
-                                                                    fund.key &&
-                                                                    fund.state != 'closed' && (
-                                                                        <a
-                                                                            className={`dropdown-item ${
-                                                                                !fund.organization.has_bank_connection
-                                                                                    ? 'disabled'
-                                                                                    : ''
-                                                                            }`}
-                                                                            onClick={() => topUpModal(fund)}>
-                                                                            <em className="mdi mdi-plus-circle icon-start" />
-                                                                            Budget toevoegen
-                                                                        </a>
-                                                                    )}
-
-                                                                <a
-                                                                    className={`dropdown-item ${
-                                                                        fund.key && fund.state != 'closed'
-                                                                            ? 'disabled'
-                                                                            : ''
-                                                                    }`}
-                                                                    onClick={() => archiveFund(fund)}>
-                                                                    <em className="mdi mdi-download-box-outline icon-start" />
-                                                                    {t('components.organization_funds.buttons.archive')}
-                                                                </a>
-                                                            </div>
-                                                        </TableRowActions>
-                                                    )}
-
-                                                    {fund.archived &&
-                                                        hasPermission(activeOrganization, 'manage_funds') && (
-                                                            <button
-                                                                className="button button-primary"
-                                                                onClick={(e) => restoreFund(e, fund)}>
-                                                                <em className="mdi mdi-lock-reset icon-start" />
-                                                                {t('components.organization_funds.buttons.restore')}
-                                                            </button>
-                                                        )}
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                )}
-
-                {funds.meta.total == 0 && (
-                    <div className="card-section">
-                        <div className="block block-empty text-center">
-                            <div className="empty-title">Geen fondsen gevonden</div>
-                        </div>
-                    </div>
-                )}
-
-                {funds.meta && (
-                    <div className="card-section">
-                        <Paginator
-                            meta={funds.meta}
-                            filters={filter.values}
-                            updateFilters={filter.update}
-                            perPageKey={paginatorKey}
-                        />
-                    </div>
-                )}
             </div>
 
-            {funds?.data.length == 0 && (
-                <Fragment>
-                    {hasPermission(activeOrganization, 'manage_funds') ? (
-                        <EmptyCard
-                            description={'Je hebt momenteel geen fondsen.'}
-                            button={{
-                                text: 'Fonds toevoegen',
-                                to: getStateRouteUrl('funds-create', {
-                                    organizationId: activeOrganization.id,
-                                }),
-                            }}
-                        />
-                    ) : (
-                        <EmptyCard description={'Je hebt momenteel geen fondsen.'} />
-                    )}
-                </Fragment>
+            {!loading && funds.meta.total > 0 && (
+                <div className="card-section">
+                    <div className="card-block card-block-table">
+                        <div className="table-wrapper">
+                            <table className="table">
+                                <thead>
+                                    <tr>
+                                        <th>{translate('components.organization_funds.labels.name')}</th>
+                                        <th>{translate('components.organization_funds.labels.implementation')}</th>
+                                        {funds_type == 'active' && (
+                                            <Fragment>
+                                                <th>{translate('components.organization_funds.labels.remaining')}</th>
+                                                <th>
+                                                    {translate('components.organization_funds.labels.requester_count')}
+                                                </th>
+                                            </Fragment>
+                                        )}
+
+                                        <th>{translate('components.organization_funds.labels.status')}</th>
+                                        <th className="th-narrow text-right">
+                                            {translate('components.organization_funds.labels.actions')}
+                                        </th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    {funds.data.map((fund) => (
+                                        <tr
+                                            key={fund.id}
+                                            className={'cursor-pointer'}
+                                            onClick={() =>
+                                                navigateState('funds-show', {
+                                                    organizationId: activeOrganization.id,
+                                                    fundId: fund.id,
+                                                })
+                                            }>
+                                            <td>
+                                                <div className="td-entity-main">
+                                                    <div className="td-entity-main-media">
+                                                        <img
+                                                            className="td-media td-media-sm td-media-round"
+                                                            src={
+                                                                fund.logo?.sizes.thumbnail ||
+                                                                assetUrl('/assets/img/placeholders/fund-thumbnail.png')
+                                                            }
+                                                            alt={''}
+                                                        />
+                                                    </div>
+
+                                                    <div className="td-entity-main-content">
+                                                        <div
+                                                            className="text-strong text-primary"
+                                                            title={fund.name || '-'}>
+                                                            {strLimit(fund.name, 50)}
+                                                        </div>
+                                                        <div className="text-muted-dark">{fund.type_locale}</div>
+                                                    </div>
+                                                </div>
+                                            </td>
+
+                                            <td className="text-strong text-muted-dark">{fund.implementation?.name}</td>
+
+                                            {funds_type == 'active' && (
+                                                <Fragment>
+                                                    <td>
+                                                        {currencyFormat(
+                                                            (parseFloat(fund.budget?.total) || 0) -
+                                                                (parseFloat(fund.budget?.used) || 0),
+                                                        )}
+                                                    </td>
+
+                                                    <td className="text-strong text-muted-dark">
+                                                        {fund.requester_count}
+                                                    </td>
+                                                </Fragment>
+                                            )}
+
+                                            <td>
+                                                {!fund.archived && stateLabels[fund.state] && (
+                                                    <span className={`label ${stateLabels[fund.state] || ''}`}>
+                                                        {translate(
+                                                            `components.organization_funds.states.${fund.state}`,
+                                                        )}
+                                                    </span>
+                                                )}
+
+                                                {fund.archived && (
+                                                    <span className="label label-default">
+                                                        {translate('components.organization_funds.states.archived')}
+                                                    </span>
+                                                )}
+                                            </td>
+
+                                            <td className="td-narrow text-right">
+                                                {!fund.archived ? (
+                                                    <TableRowActions
+                                                        activeId={shownFundMenuId}
+                                                        setActiveId={setShownFundMenuId}
+                                                        id={fund.id}>
+                                                        <div className="dropdown dropdown-actions">
+                                                            <StateNavLink
+                                                                name={'funds-show'}
+                                                                params={{
+                                                                    organizationId: activeOrganization.id,
+                                                                    fundId: fund.id,
+                                                                }}
+                                                                className="dropdown-item">
+                                                                <em className="mdi mdi-eye icon-start" /> Bekijken
+                                                            </StateNavLink>
+
+                                                            <StateNavLink
+                                                                name={'funds-edit'}
+                                                                className="dropdown-item"
+                                                                params={{
+                                                                    organizationId: activeOrganization.id,
+                                                                    fundId: fund.id,
+                                                                }}>
+                                                                <em className="mdi mdi-pencil icon-start" />
+                                                                Bewerken
+                                                            </StateNavLink>
+
+                                                            <StateNavLink
+                                                                className="dropdown-item"
+                                                                name={'funds-security'}
+                                                                params={{
+                                                                    organizationId: activeOrganization.id,
+                                                                    fundId: fund.id,
+                                                                }}>
+                                                                <em className="mdi mdi-security icon-start" />
+                                                                Beveiliging
+                                                            </StateNavLink>
+
+                                                            {fund.balance_provider == 'top_ups' &&
+                                                                fund.key &&
+                                                                fund.state != 'closed' && (
+                                                                    <a
+                                                                        className={`dropdown-item ${
+                                                                            !fund.organization.has_bank_connection
+                                                                                ? 'disabled'
+                                                                                : ''
+                                                                        }`}
+                                                                        onClick={() => {
+                                                                            topUpModal(fund);
+                                                                            setShownFundMenuId(null);
+                                                                        }}>
+                                                                        <em className="mdi mdi-plus-circle icon-start" />
+                                                                        Budget toevoegen
+                                                                    </a>
+                                                                )}
+
+                                                            <a
+                                                                className={`dropdown-item ${
+                                                                    fund.key && fund.state != 'closed' ? 'disabled' : ''
+                                                                }`}
+                                                                onClick={() => {
+                                                                    archiveFund(fund);
+                                                                    setShownFundMenuId(null);
+                                                                }}>
+                                                                <em className="mdi mdi-download-box-outline icon-start" />
+                                                                {translate(
+                                                                    'components.organization_funds.buttons.archive',
+                                                                )}
+                                                            </a>
+                                                        </div>
+                                                    </TableRowActions>
+                                                ) : (
+                                                    hasPermission(activeOrganization, 'manage_funds') && (
+                                                        <button
+                                                            className="button button-primary"
+                                                            onClick={(e) => restoreFund(e, fund)}>
+                                                            <em className="mdi mdi-lock-reset icon-start" />
+                                                            {translate('components.organization_funds.buttons.restore')}
+                                                        </button>
+                                                    )
+                                                )}
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             )}
-        </>
+
+            {!loading && funds.meta.total == 0 && <EmptyCard type={'card-section'} title={'Geen fondsen gevonden'} />}
+
+            {!loading && funds.meta && (
+                <div className="card-section" hidden={funds.meta.last_page < 2}>
+                    <Paginator
+                        meta={funds.meta}
+                        filters={filter.values}
+                        updateFilters={filter.update}
+                        perPageKey={paginatorKey}
+                    />
+                </div>
+            )}
+
+            {loading && (
+                <div className="card-section">
+                    <div className="card-loading">
+                        <div className="mdi mdi-loading mdi-spin" />
+                    </div>
+                </div>
+            )}
+        </div>
     );
 }

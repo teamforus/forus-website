@@ -38,7 +38,6 @@ export default interface Voucher {
         name: string;
         logo: Media;
     }>;
-    showTooltip?: boolean;
     note?: string;
     in_use?: boolean;
     first_use_date_locale?: string | null;

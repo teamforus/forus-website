@@ -12,7 +12,7 @@ import { mainContext } from '../../../contexts/MainContext';
 import useSetProgress from '../../../hooks/useSetProgress';
 import CheckboxControl from '../../elements/forms/controls/CheckboxControl';
 import { authContext } from '../../../contexts/AuthContext';
-import { StringParam, useQueryParams } from 'use-query-params';
+import { StringParam, useQueryParam } from 'use-query-params';
 
 export default function OrganizationsSecurity() {
     const activeOrganization = useActiveOrganization();
@@ -24,47 +24,24 @@ export default function OrganizationsSecurity() {
     const pushSuccess = usePushSuccess();
     const setProgress = useSetProgress();
 
-    const [{ view_type }, setQueryParams] = useQueryParams({
-        view_type: StringParam,
+    const [viewType = 'employees', setViewType] = useQueryParam('view_type', StringParam, {
+        removeDefaultsFromUrl: true,
     });
 
-    const [viewType, setViewType] = useState(view_type || 'employees');
-
     const [auth2FARequiredOptions] = useState([
-        {
-            value: 'optional',
-            name: 'Optioneel',
-        },
-        {
-            value: 'required',
-            name: 'Verplicht',
-        },
+        { value: 'optional', name: 'Optioneel' },
+        { value: 'required', name: 'Verplicht' },
     ]);
 
     const [auth2FARememberIpOptions] = useState([
-        {
-            value: 0,
-            name: 'Altijd bevestiging vereisen met 2FA',
-        },
-        {
-            value: 1,
-            name: 'Als IP-adres in de afgelopen 48 uur gebruikt, geen 2FA vereisen.',
-        },
+        { value: 0, name: 'Altijd bevestiging vereisen met 2FA' },
+        { value: 1, name: 'Als IP-adres in de afgelopen 48 uur gebruikt, geen 2FA vereisen.' },
     ]);
 
     const [auth2FAFundsRequiredOptions] = useState([
-        {
-            value: 'optional',
-            name: 'Optioneel',
-        },
-        {
-            value: 'restrict_features',
-            name: '2FA vereisen voor geselecteerde functies',
-        },
-        {
-            value: 'required',
-            name: '2FA vereisen om in te loggen',
-        },
+        { value: 'optional', name: 'Optioneel' },
+        { value: 'restrict_features', name: '2FA vereisen voor geselecteerde functies' },
+        { value: 'required', name: '2FA vereisen om in te loggen' },
     ]);
 
     const form = useFormBuilder(
@@ -76,6 +53,7 @@ export default function OrganizationsSecurity() {
             auth_2fa_funds_restrict_emails: activeOrganization.auth_2fa_funds_restrict_emails,
             auth_2fa_funds_restrict_auth_sessions: activeOrganization.auth_2fa_funds_restrict_auth_sessions,
             auth_2fa_funds_restrict_reimbursements: activeOrganization.auth_2fa_funds_restrict_reimbursements,
+            auth_2fa_restrict_bi_connections: activeOrganization.auth_2fa_restrict_bi_connections,
         },
         () => {
             setProgress(0);
@@ -131,20 +109,14 @@ export default function OrganizationsSecurity() {
                                                             className={`label-tab label-tab-sm ${
                                                                 viewType == 'employees' ? 'active' : ''
                                                             }`}
-                                                            onClick={() => {
-                                                                setViewType('employees');
-                                                                setQueryParams({ view_type: 'employees' });
-                                                            }}>
+                                                            onClick={() => setViewType('employees')}>
                                                             Medewerkers
                                                         </div>
                                                         <div
                                                             className={`label-tab label-tab-sm ${
                                                                 viewType == 'funds' ? 'active' : ''
                                                             }`}
-                                                            onClick={() => {
-                                                                setViewType('funds');
-                                                                setQueryParams({ view_type: 'funds' });
-                                                            }}>
+                                                            onClick={() => setViewType('funds')}>
                                                             Fondsen
                                                         </div>
                                                     </div>
@@ -178,6 +150,7 @@ export default function OrganizationsSecurity() {
                                             </div>
                                             <FormError error={form.errors.auth_2fa_policy} />
                                         </div>
+
                                         {form.values.auth_2fa_policy == 'required' && (
                                             <div className="form-group form-group-inline">
                                                 <label className="form-label">Onthoud IP-adres</label>
@@ -197,6 +170,21 @@ export default function OrganizationsSecurity() {
                                                 <FormError error={form.errors.auth_2fa_remember_ip} />
                                             </div>
                                         )}
+
+                                        <div className="form-group form-group-inline">
+                                            <label className="form-label">Restrict features</label>
+                                            <div className="form-offset">
+                                                <div>
+                                                    <CheckboxControl
+                                                        title={'BI tools'}
+                                                        checked={form.values.auth_2fa_restrict_bi_connections}
+                                                        onChange={(_, checked) =>
+                                                            form.update({ auth_2fa_restrict_bi_connections: checked })
+                                                        }
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -226,6 +214,7 @@ export default function OrganizationsSecurity() {
                                             </div>
                                             <FormError error={form.errors?.auth_2fa_funds_policy} />
                                         </div>
+
                                         {form.values.auth_2fa_funds_policy == 'required' && (
                                             <div className="form-group form-group-inline">
                                                 <label className="form-label">Onthoud IP-adres</label>
@@ -248,7 +237,7 @@ export default function OrganizationsSecurity() {
 
                                         {form.values.auth_2fa_funds_policy == 'restrict_features' && (
                                             <div className="form-group form-group-inline">
-                                                <label className="form-label">&nbsp;</label>
+                                                <label className="form-label">Verplicht instellen voor</label>
                                                 <div className="form-offset">
                                                     <div>
                                                         <CheckboxControl

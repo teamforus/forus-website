@@ -1,60 +1,57 @@
 import React from 'react';
 import { ModalState } from '../../modules/modals/context/ModalContext';
-import { useTranslation } from 'react-i18next';
 import FormError from '../elements/forms/errors/FormError';
 import useFormBuilder from '../../hooks/useFormBuilder';
 import FundCriterion from '../../props/models/FundCriterion';
 import { ResponseError } from '../../props/ApiResponses';
 import MarkdownEditor from '../elements/forms/markdown-editor/MarkdownEditor';
+import useTranslate from '../../hooks/useTranslate';
 
 export default function ModalFundCriteriaDescriptionEdit({
     modal,
-    criterion,
     title,
+    criterion,
     description,
     description_html,
     validateCriteria,
     onSubmit,
 }: {
     modal: ModalState;
-    criterion: FundCriterion;
     title: string;
+    criterion: FundCriterion;
     description: string;
     description_html: string;
     validateCriteria: (criterion: FundCriterion) => Promise<Array<unknown>>;
     onSubmit?: (res: { title: string; description: string }) => void;
 }) {
-    const { t } = useTranslation();
+    const translate = useTranslate();
 
     const form = useFormBuilder(
         {
-            ...{ title: title, description: description, description_html: description_html },
+            title: title,
+            description: description,
+            description_html: description_html,
         },
-        (res) => {
-            validateCriteria(
-                Object.assign(JSON.parse(JSON.stringify(criterion)), {
-                    title: form.values.title,
-                    description: form.values.description,
-                }),
-            )
+        (values) => {
+            validateCriteria({
+                ...criterion,
+                title: form.values.title,
+                description: form.values.description,
+            })
                 .then(() => {
-                    onSubmit(res);
+                    onSubmit(values);
                     modal.close();
                 })
-                .catch((res: ResponseError) => {
-                    if (
-                        Object.keys(res.data.errors).filter((key) => {
-                            return key.endsWith('.title') || key.endsWith('.description');
-                        }).length > 0
-                    ) {
-                        form.setErrors(res.data.errors);
+                .catch((err: ResponseError) => {
+                    const errorKeys = Object.keys(err.data.errors);
+
+                    if (errorKeys.filter((key) => key.endsWith('.title') || key.endsWith('.description')).length > 0) {
+                        form.setErrors(err.data.errors);
                     } else {
                         modal.close();
                     }
                 })
-                .finally(() => {
-                    form.setIsLocked(false);
-                });
+                .finally(() => form.setIsLocked(false));
         },
     );
 
@@ -66,13 +63,13 @@ export default function ModalFundCriteriaDescriptionEdit({
                 <form className="form" onSubmit={form.submit}>
                     <a className="mdi mdi-close modal-close" onClick={modal.close} role="button" />
 
-                    <div className="modal-header">{t('modals.modal_fund_criteria_description.title')}</div>
+                    <div className="modal-header">{translate('modals.modal_fund_criteria_description.title')}</div>
 
                     <div className="modal-body">
                         <div className="modal-section">
                             <div className="form-group">
                                 <label className="form-label">
-                                    {t('modals.modal_fund_criteria_description.labels.title')}
+                                    {translate('modals.modal_fund_criteria_description.labels.title')}
                                 </label>
 
                                 <input
@@ -87,7 +84,7 @@ export default function ModalFundCriteriaDescriptionEdit({
 
                             <div className="form-group">
                                 <label className="form-label">
-                                    {t('modals.modal_fund_criteria_description.labels.description')}
+                                    {translate('modals.modal_fund_criteria_description.labels.description')}
                                 </label>
 
                                 <MarkdownEditor
@@ -102,10 +99,10 @@ export default function ModalFundCriteriaDescriptionEdit({
 
                     <div className="modal-footer text-center">
                         <button className="button button-default" type="button" onClick={modal.close}>
-                            {t('modals.modal_fund_criteria_description.buttons.close')}
+                            {translate('modals.modal_fund_criteria_description.buttons.close')}
                         </button>
                         <button className="button button-primary" type="submit">
-                            {t('modals.modal_fund_criteria_description.buttons.save')}
+                            {translate('modals.modal_fund_criteria_description.buttons.save')}
                         </button>
                     </div>
                 </form>

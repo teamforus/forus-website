@@ -1,11 +1,11 @@
 import React, { createRef, MutableRefObject, useCallback, useEffect, useRef, useState } from 'react';
 import Fund from '../../../../props/models/Fund';
-import { useTranslation } from 'react-i18next';
 import Organization from '../../../../props/models/Organization';
 import RecordType from '../../../../props/models/RecordType';
 import { hasPermission } from '../../../../helpers/utils';
 import FundCriteriaEditorItem from './FundCriteriaEditorItem';
 import FundCriterion from '../../../../props/models/FundCriterion';
+import useTranslate from '../../../../hooks/useTranslate';
 
 export default function FundCriteriaEditor({
     fund,
@@ -30,12 +30,13 @@ export default function FundCriteriaEditor({
     validatorOrganizations: Array<Organization>;
     saveCriteriaRef?: MutableRefObject<() => Promise<unknown>>;
 }) {
-    const { t } = useTranslation();
+    const translate = useTranslate();
 
-    const $element = useRef<HTMLDivElement>(null);
     const [criterionBlocksRefs, setCriterionBlocksRef] = useState<Array<MutableRefObject<() => Promise<boolean>>>>([]);
     const [isEditing, setIsEditing] = useState<boolean>(false);
     const [deletedItemsCount, setDeleteItemsCount] = useState<number>(0);
+
+    const elementRef = useRef<HTMLDivElement>(null);
 
     const updateOnEditFlag = useCallback(() => {
         setIsEditing(criteria.filter((criterion) => criterion?.is_editing).length > 0);
@@ -72,7 +73,7 @@ export default function FundCriteriaEditor({
                     resolve(false);
 
                     setTimeout(() => {
-                        const errors = $($element.current).find('.form-error');
+                        const errors = $(elementRef.current).find('.form-error');
 
                         if (errors.length) {
                             window.scrollTo(0, Math.max(0, errors.offset().top - 100));
@@ -112,52 +113,42 @@ export default function FundCriteriaEditor({
     }, [saveCriteria, saveCriteriaRef]);
 
     return (
-        <>
-            <div className="block block-criteria-editor">
-                {criteria.map((criterion, index) => {
-                    return (
-                        <FundCriteriaEditorItem
-                            key={index}
-                            fund={fund}
-                            recordTypes={[
-                                {
-                                    key: null,
-                                    name: 'Select',
-                                },
-                                ...recordTypes,
-                            ]}
-                            isEditable={isEditable}
-                            organization={organization}
-                            criterion={criterion}
-                            onEditCriteria={updateOnEditFlag}
-                            onEditCancelCriteria={updateOnEditFlag}
-                            setCriterion={(_criterion) => {
-                                criteria[index] = { ...criterion, ..._criterion };
-                                setCriteria([...criteria]);
-                            }}
-                            onDeleteCriteria={onDelete}
-                            validatorOrganizations={validatorOrganizations}
-                            saveCriterionRef={criterionBlocksRefs[index]}
-                        />
-                    );
-                })}
+        <div className="block block-criteria-editor">
+            {criteria.map((criterion, index) => (
+                <FundCriteriaEditorItem
+                    key={index}
+                    fund={fund}
+                    recordTypes={[{ key: null, name: 'Select' }, ...recordTypes]}
+                    isEditable={isEditable}
+                    organization={organization}
+                    criterion={criterion}
+                    onEditCriteria={updateOnEditFlag}
+                    onEditCancelCriteria={updateOnEditFlag}
+                    setCriterion={(_criterion) => {
+                        criteria[index] = { ...criterion, ..._criterion };
+                        setCriteria([...criteria]);
+                    }}
+                    onDeleteCriteria={onDelete}
+                    validatorOrganizations={validatorOrganizations}
+                    saveCriterionRef={criterionBlocksRefs[index]}
+                />
+            ))}
 
-                <div className="criteria-editor-actions">
-                    {isEditable && hasPermission(organization, 'manage_funds') && (
-                        <div className="button button-primary" onClick={() => addCriteria()}>
-                            <em className="mdi mdi-plus-circle icon-start" />
-                            {t('components.fund_criteria_editor.buttons.add_criteria')}
-                        </div>
-                    )}
+            <div className="criteria-editor-actions">
+                {isEditable && hasPermission(organization, 'manage_funds') && (
+                    <div className="button button-primary" onClick={() => addCriteria()}>
+                        <em className="mdi mdi-plus-circle icon-start" />
+                        {translate('components.fund_criteria_editor.buttons.add_criteria')}
+                    </div>
+                )}
 
-                    {saveButton && (isEditing || deletedItemsCount > 0) && (
-                        <div className="button button-primary pull-right" onClick={() => saveCriteria()}>
-                            <em className="mdi mdi-content-save icon-start" />
-                            {t('components.fund_criteria_editor.buttons.save')}
-                        </div>
-                    )}
-                </div>
+                {saveButton && (isEditing || deletedItemsCount > 0) && (
+                    <div className="button button-primary pull-right" onClick={() => saveCriteria()}>
+                        <em className="mdi mdi-content-save icon-start" />
+                        {translate('components.fund_criteria_editor.buttons.save')}
+                    </div>
+                )}
             </div>
-        </>
+        </div>
     );
 }
