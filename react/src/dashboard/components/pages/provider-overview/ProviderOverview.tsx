@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import useProviderFundService from '../../../services/ProviderFundService';
 import useActiveOrganization from '../../../hooks/useActiveOrganization';
 import FundProvider from '../../../props/models/FundProvider';
@@ -36,6 +36,10 @@ export default function ProviderOverview() {
             !fund.dismissed
         );
     }, []);
+
+    const disableProductAdd = useMemo(() => {
+        return appConfigs.products_hard_limit > 0 && productsTotal >= appConfigs.products_hard_limit;
+    }, [appConfigs.products_hard_limit, productsTotal]);
 
     useEffect(() => {
         setProgress(0);
@@ -85,18 +89,17 @@ export default function ProviderOverview() {
                                         <div className="chart-value_value">{productsTotal}</div>
                                         <div className="chart-value_label"> Producten of diensten</div>
                                     </div>
-                                    {productsTotal < appConfigs.products_hard_limit && (
-                                        <div className="chart-action">
-                                            <StateNavLink
-                                                name={'products-create'}
-                                                params={{ organizationId: activeOrganization.id }}
-                                                className="button button-primary"
-                                                id="add_product">
-                                                <em className="mdi mdi-plus-circle icon-start" />
-                                                Toevoegen
-                                            </StateNavLink>
-                                        </div>
-                                    )}
+                                    <div className="chart-action">
+                                        <StateNavLink
+                                            name={'products-create'}
+                                            params={{ organizationId: activeOrganization.id }}
+                                            className={`button button-primary ${disableProductAdd ? 'disabled' : ''}`}
+                                            id="add_product"
+                                            disabled={disableProductAdd}>
+                                            <em className="mdi mdi-plus-circle icon-start" />
+                                            Toevoegen
+                                        </StateNavLink>
+                                    </div>
                                 </div>
                             </div>
                         </div>

@@ -109,26 +109,24 @@ export default function Products() {
                     </div>
                     <div className="form">
                         <div className="block block-inline-filters">
-                            {(products.meta.total_provider as number) < maxProductCount && (
-                                <button
-                                    type={'button'}
-                                    className="button button-primary button-sm"
-                                    onClick={() => addProduct()}
-                                    id="add_product"
-                                    disabled={
-                                        maxProductCount > 0 &&
-                                        (products.meta.total_provider as number) >= maxProductSoftLimit
-                                    }>
-                                    <em className="mdi mdi-plus-circle icon-start" />
-                                    {t('products.add')}
-                                    {maxProductCount > 0 &&
-                                        (products.meta.total_provider as number) >= maxProductSoftLimit && (
-                                            <span>
-                                                {products.meta.total_provider} / {maxProductSoftLimit}
-                                            </span>
-                                        )}
-                                </button>
-                            )}
+                            <button
+                                type={'button'}
+                                className="button button-primary button-sm"
+                                onClick={() => addProduct()}
+                                id="add_product"
+                                disabled={
+                                    maxProductCount > 0 && (products.meta.total_provider as number) >= maxProductCount
+                                }>
+                                <em className="mdi mdi-plus-circle icon-start" />
+                                {t('products.add')}
+                                {maxProductCount > 0 &&
+                                    (products.meta.total_provider as number) >= maxProductSoftLimit && (
+                                        <span>
+                                            {products.meta.total_provider} / {maxProductCount}
+                                        </span>
+                                    )}
+                            </button>
+
                             <div className="form">
                                 <div>
                                     <div className="block block-label-tabs">
