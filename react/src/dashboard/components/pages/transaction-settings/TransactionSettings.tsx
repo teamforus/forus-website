@@ -22,7 +22,7 @@ export default function TransactionSettings() {
         bank_transaction_id: '#12345',
         bank_transaction_date: '2024-01-01',
         bank_transaction_time: '00:00:00',
-        bank_reservation_number: '#54321',
+        bank_reservation_number: '#12345678',
         bank_branch_number: '112233445566',
         bank_branch_id: '6789',
         bank_branch_name: 'Voorbeeld van een vestigingsnaam',
@@ -181,14 +181,14 @@ export default function TransactionSettings() {
                                                     <li className="block-info-list-item">
                                                         Transactiedatum:
                                                         <span className="block-info-list-item-value">
-                                                            {testData.bank_transaction_date} • 12 karakters
+                                                            {testData.bank_transaction_date} • 10 karakters
                                                         </span>
                                                     </li>
 
                                                     <li className="block-info-list-item">
                                                         Transactietijd:
                                                         <span className="block-info-list-item-value">
-                                                            {testData.bank_transaction_time} • 12 karakters
+                                                            {testData.bank_transaction_time} • 8 karakters
                                                         </span>
                                                     </li>
 
