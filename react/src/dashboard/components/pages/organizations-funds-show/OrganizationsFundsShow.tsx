@@ -10,7 +10,7 @@ import ModalNotification from '../../modals/ModalNotification';
 import useOpenModal from '../../../hooks/useOpenModal';
 import { useNavigateState } from '../../../modules/state_router/Router';
 import TranslateHtml from '../../elements/translate-html/TranslateHtml';
-import FundCriteriaEditor from './elements/FundCriteriaEditor';
+import FundCriteriaEditor, { FundCriterionLocal } from '../../elements/fund-criteria-editor/FundCriteriaEditor';
 import { useOrganizationService } from '../../../services/OrganizationService';
 import Organization from '../../../props/models/Organization';
 import { PaginationData, ResponseError } from '../../../props/ApiResponses';
@@ -33,7 +33,6 @@ import DatePickerControl from '../../elements/forms/controls/DatePickerControl';
 import { dateFormat, dateParse } from '../../../helpers/dates';
 import TableRowActions from '../../elements/tables/TableRowActions';
 import useFundIdentitiesExportService from '../../../services/exports/useFundIdentitiesExportService';
-import FundCriterion from '../../../props/models/FundCriterion';
 import usePushDanger from '../../../hooks/usePushDanger';
 import useAssetUrl from '../../../hooks/useAssetUrl';
 import useTranslate from '../../../hooks/useTranslate';
@@ -201,7 +200,7 @@ export default function OrganizationsFundsShow() {
     }, [activeOrganization.id, fund?.id, fundIdentitiesExportService, identitiesFilters.activeValues]);
 
     const saveCriteria = useCallback(
-        (criteria: Array<FundCriterion>) => {
+        (criteria: Array<FundCriterionLocal>) => {
             setProgress(0);
 
             fundService

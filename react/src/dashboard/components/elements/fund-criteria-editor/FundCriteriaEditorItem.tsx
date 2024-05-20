@@ -1,22 +1,23 @@
 import React, { Fragment, useCallback, useEffect, useState } from 'react';
-import Organization from '../../../../props/models/Organization';
-import RecordType from '../../../../props/models/RecordType';
-import { hasPermission } from '../../../../helpers/utils';
-import SelectControlOptions from '../../../elements/select-control/templates/SelectControlOptions';
-import SelectControl from '../../../elements/select-control/SelectControl';
-import FormError from '../../../elements/forms/errors/FormError';
-import { ResponseError } from '../../../../props/ApiResponses';
-import FundCriterion from '../../../../props/models/FundCriterion';
-import Fund from '../../../../props/models/Fund';
-import useOpenModal from '../../../../hooks/useOpenModal';
-import ModalFundCriteriaDescriptionEdit from '../../../modals/ModalFundCriteriaDescriptionEdit';
-import { useFundService } from '../../../../services/FundService';
-import { currencyFormat } from '../../../../helpers/string';
-import ModalDangerZone from '../../../modals/ModalDangerZone';
-import DatePickerControl from '../../../elements/forms/controls/DatePickerControl';
-import CheckboxControl from '../../../elements/forms/controls/CheckboxControl';
+import Organization from '../../../props/models/Organization';
+import RecordType from '../../../props/models/RecordType';
+import { hasPermission } from '../../../helpers/utils';
+import SelectControlOptions from '../select-control/templates/SelectControlOptions';
+import SelectControl from '../select-control/SelectControl';
+import FormError from '../forms/errors/FormError';
+import { ResponseError } from '../../../props/ApiResponses';
+import FundCriterion from '../../../props/models/FundCriterion';
+import Fund from '../../../props/models/Fund';
+import useOpenModal from '../../../hooks/useOpenModal';
+import ModalFundCriteriaDescriptionEdit from '../../modals/ModalFundCriteriaDescriptionEdit';
+import { useFundService } from '../../../services/FundService';
+import { currencyFormat } from '../../../helpers/string';
+import ModalDangerZone from '../../modals/ModalDangerZone';
+import DatePickerControl from '../forms/controls/DatePickerControl';
+import CheckboxControl from '../forms/controls/CheckboxControl';
 import { uniqueId } from 'lodash';
-import useTranslate from '../../../../hooks/useTranslate';
+import useTranslate from '../../../hooks/useTranslate';
+import { FundCriterionLocal, FundCriterionOrganization } from './FundCriteriaEditor';
 
 export default function FundCriteriaEditorItem({
     fund,
@@ -33,14 +34,14 @@ export default function FundCriteriaEditorItem({
 }: {
     fund: Fund;
     organization: Organization;
-    criterion: FundCriterion;
+    criterion: FundCriterionLocal;
     isEditable: boolean;
     recordTypes: Array<Partial<RecordType>>;
-    setCriterion: (criteria: Partial<FundCriterion>) => void;
-    onDeleteCriteria: (criterion: FundCriterion) => void;
+    setCriterion: (criteria: Partial<FundCriterionLocal>) => void;
+    onDeleteCriteria: (criterion: Partial<FundCriterion>) => void;
     onEditCriteria: () => void;
     onEditCancelCriteria: () => void;
-    validatorOrganizations: Array<Organization>;
+    validatorOrganizations: Array<FundCriterionOrganization>;
     saveCriterionRef?: React.MutableRefObject<() => Promise<boolean>>;
 }) {
     const translate = useTranslate();
@@ -58,11 +59,11 @@ export default function FundCriteriaEditorItem({
         recordTypes?.find((type) => type.key == criterion?.record_type?.key) || recordTypes[0],
     );
 
-    const [criterionPrepared, setCriterionPrepared] = useState<Partial<FundCriterion>>(null);
+    const [criterionPrepared, setCriterionPrepared] = useState<Partial<FundCriterionLocal>>(null);
     const [disabledControls] = useState<boolean>(!isEditable || !hasPermission(organization, 'manage_funds'));
 
     const validateCriteria = useCallback(
-        (criterion: FundCriterion) => {
+        (criterion: FundCriterionLocal) => {
             return fundService.criterionValidate(organization.id, fund?.id, [
                 Object.assign(JSON.parse(JSON.stringify(criterion)), {
                     validators: criterion.external_validators.map((validator) => {
@@ -126,7 +127,7 @@ export default function FundCriteriaEditorItem({
     );
 
     const makeTitle = useCallback(
-        (criterion: Partial<FundCriterion>) => {
+        (criterion: FundCriterionLocal) => {
             const type = recordTypes.find((item) => item.key === criterion?.record_type?.key);
             const currency_types = ['net_worth', 'base_salary', 'income_level'];
 
@@ -161,7 +162,7 @@ export default function FundCriteriaEditorItem({
     );
 
     const criterionEdit = useCallback(
-        (criterion: FundCriterion) => {
+        (criterion: Partial<FundCriterionLocal>) => {
             setCriterion({ ...criterion, is_editing: true });
             onEditCriteria();
         },
@@ -173,7 +174,7 @@ export default function FundCriteriaEditorItem({
     }, [criterion, onDeleteCriteria]);
 
     const cancelCriterion = useCallback(
-        (criterion: FundCriterion) => {
+        (criterion: Partial<FundCriterionLocal>) => {
             if (criterion.is_new) {
                 removeCriterion();
             } else {
@@ -185,7 +186,7 @@ export default function FundCriteriaEditorItem({
     );
 
     const prepareCriteria = useCallback(
-        (criterion: Partial<FundCriterion>) => {
+        (criterion: FundCriterionLocal) => {
             if (!criterion) {
                 return;
             }
@@ -211,7 +212,9 @@ export default function FundCriteriaEditorItem({
             ];
 
             criterion.new_validator = 0;
-            criterion.validators_available = [{ id: 0, validator_organization: { name: 'Selecteer' } }].concat(
+            criterion.validators_available = [
+                { id: 0, validator_organization: { name: 'Selecteer' } } as FundCriterionOrganization,
+            ].concat(
                 validatorOrganizations.filter((validatorOrganization) => {
                     return !criterion.external_validators
                         .map((external) => external.organization_validator_id)
@@ -225,14 +228,14 @@ export default function FundCriteriaEditorItem({
     );
 
     const addExternalValidator = useCallback(
-        (criterion: FundCriterion) => {
+        (criterion: Partial<FundCriterionLocal>) => {
             setCriterion({ ...criterion, show_external_validators_form: true });
         },
         [setCriterion],
     );
 
     const removeExternalValidator = useCallback(
-        (criterion: FundCriterion, validator_id: number) => {
+        (criterion: FundCriterionLocal, validator_id: number) => {
             const validator = criterion.external_validators.filter(
                 (validator) => validator.organization_validator_id == validator_id,
             )[0];
@@ -273,14 +276,14 @@ export default function FundCriteriaEditorItem({
     );
 
     const cancelAddExternalValidator = useCallback(
-        (criterion: FundCriterion) => {
+        (criterion: Partial<FundCriterionLocal>) => {
             setCriterion({ ...criterion, show_external_validators_form: false, new_validator: 0 });
         },
         [setCriterion],
     );
 
     const pushExternalValidator = useCallback(
-        (criterion: FundCriterion) => {
+        (criterion: FundCriterionLocal) => {
             const organization_validator = criterion.validators_available.find((validator) => {
                 return validator.id == criterion.new_validator;
             });
@@ -305,17 +308,20 @@ export default function FundCriteriaEditorItem({
         [cancelAddExternalValidator, prepareCriteria],
     );
 
-    const criterionToValidations = useCallback((criterion: FundCriterion, recordType: Partial<RecordType>) => {
-        return recordType?.type !== 'date'
-            ? {
-                  min: criterion?.min ? parseInt(criterion?.min) : null,
-                  max: criterion?.max ? parseInt(criterion?.max) : null,
-              }
-            : {
-                  min: criterion?.min,
-                  max: criterion?.max,
-              };
-    }, []);
+    const criterionToValidations = useCallback(
+        (criterion: Partial<FundCriterionLocal>, recordType: Partial<RecordType>) => {
+            return recordType?.type !== 'date'
+                ? {
+                      min: criterion?.min ? parseInt(criterion?.min) : null,
+                      max: criterion?.max ? parseInt(criterion?.max) : null,
+                  }
+                : {
+                      min: criterion?.min,
+                      max: criterion?.max,
+                  };
+        },
+        [],
+    );
 
     const prepareData = useCallback(() => {
         const { values, operators, validations } = recordTypes.reduce(
@@ -443,7 +449,7 @@ export default function FundCriteriaEditorItem({
                                     </div>
                                 )}
 
-                                {criterionPrepared.validators_models.map((validator: Organization) => (
+                                {criterionPrepared.validators_models.map((validator) => (
                                     <div className="criterion-organization active" key={validator.id}>
                                         <div className="criterion-organization-icon">
                                             <div
@@ -520,7 +526,7 @@ export default function FundCriteriaEditorItem({
                                                         disabled={disabledControls}
                                                         onChange={(e) => {
                                                             values[recordType.key] = e.target.value;
-                                                            setValues(values);
+                                                            setValues({ ...values });
                                                         }}
                                                     />
                                                 )}
@@ -541,7 +547,7 @@ export default function FundCriteriaEditorItem({
                                                             disabled={disabledControls}
                                                             onChange={(value: string) => {
                                                                 values[recordType.key] = value;
-                                                                setValues(values);
+                                                                setValues({ ...values });
                                                             }}
                                                         />
                                                     </div>
@@ -553,7 +559,7 @@ export default function FundCriteriaEditorItem({
                                                     placeholder={'Kies een datum'}
                                                     onChange={(value: Date) => {
                                                         values[recordType.key] = value;
-                                                        setValues(values);
+                                                        setValues({ ...values });
                                                     }}
                                                 />
                                             )}
@@ -628,7 +634,7 @@ export default function FundCriteriaEditorItem({
                                                     disabled={disabledControls}
                                                     onChange={(e) => {
                                                         validations[recordType.key].min = parseInt(e.target.value);
-                                                        setValidations(validations);
+                                                        setValidations({ ...validations });
                                                     }}
                                                 />
                                             )}
@@ -639,7 +645,7 @@ export default function FundCriteriaEditorItem({
                                                     disabled={disabledControls}
                                                     onChange={(date) => {
                                                         validations[recordType.key].min = date;
-                                                        setValidations(validations);
+                                                        setValidations({ ...validations });
                                                     }}
                                                 />
                                             )}
@@ -661,7 +667,7 @@ export default function FundCriteriaEditorItem({
                                                     disabled={disabledControls}
                                                     onChange={(e) => {
                                                         validations[recordType.key].max = parseInt(e.target.value);
-                                                        setValidations(validations);
+                                                        setValidations({ ...validations });
                                                     }}
                                                 />
                                             )}
@@ -672,7 +678,7 @@ export default function FundCriteriaEditorItem({
                                                     placeholder={'yyyy-MM-dd'}
                                                     onChange={(date) => {
                                                         validations[recordType.key].max = date;
-                                                        setValidations(validations);
+                                                        setValidations({ ...validations });
                                                     }}
                                                 />
                                             )}
@@ -730,36 +736,29 @@ export default function FundCriteriaEditorItem({
                                             <div className="flex-col">
                                                 {criterionPrepared.validators_list[0].length > 0 && (
                                                     <div className="criterion-organizations">
-                                                        {criterionPrepared.validators_list[0].map(
-                                                            (validator: Organization) => (
-                                                                <div
-                                                                    className="criterion-organization"
-                                                                    key={validator.id}>
-                                                                    <div className="criterion-organization-icon">
-                                                                        <div
-                                                                            className={`mdi mdi-shield-check ${
-                                                                                !validator.accepted ? 'text-muted' : ''
-                                                                            }`}
-                                                                        />
-                                                                    </div>
-
-                                                                    <div className="criterion-organization-name">
-                                                                        {validator.validator_organization.name}
-                                                                    </div>
-
+                                                        {criterionPrepared.validators_list[0].map((validator) => (
+                                                            <div className="criterion-organization" key={validator.id}>
+                                                                <div className="criterion-organization-icon">
                                                                     <div
-                                                                        className="criterion-organization-actions"
-                                                                        onClick={() =>
-                                                                            removeExternalValidator(
-                                                                                criterion,
-                                                                                validator.id,
-                                                                            )
-                                                                        }>
-                                                                        <div className="mdi mdi-close" />
-                                                                    </div>
+                                                                        className={`mdi mdi-shield-check ${
+                                                                            !validator.accepted ? 'text-muted' : ''
+                                                                        }`}
+                                                                    />
                                                                 </div>
-                                                            ),
-                                                        )}
+
+                                                                <div className="criterion-organization-name">
+                                                                    {validator.validator_organization.name}
+                                                                </div>
+
+                                                                <div
+                                                                    className="criterion-organization-actions"
+                                                                    onClick={() =>
+                                                                        removeExternalValidator(criterion, validator.id)
+                                                                    }>
+                                                                    <div className="mdi mdi-close" />
+                                                                </div>
+                                                            </div>
+                                                        ))}
                                                     </div>
                                                 )}
                                             </div>
@@ -767,36 +766,29 @@ export default function FundCriteriaEditorItem({
                                             <div className="flex-col">
                                                 {criterionPrepared.validators_list[1].length > 0 && (
                                                     <div className="criterion-organizations">
-                                                        {criterionPrepared.validators_list[1].map(
-                                                            (validator: Organization) => (
-                                                                <div
-                                                                    className="criterion-organization"
-                                                                    key={validator.id}>
-                                                                    <div className="criterion-organization-icon">
-                                                                        <div
-                                                                            className={`mdi mdi-shield-check ${
-                                                                                !validator.accepted ? 'text-muted' : ''
-                                                                            }`}
-                                                                        />
-                                                                    </div>
-
-                                                                    <div className="criterion-organization-name">
-                                                                        {validator.validator_organization.name}
-                                                                    </div>
-
+                                                        {criterionPrepared.validators_list[1].map((validator) => (
+                                                            <div className="criterion-organization" key={validator.id}>
+                                                                <div className="criterion-organization-icon">
                                                                     <div
-                                                                        className="criterion-organization-actions"
-                                                                        onClick={() =>
-                                                                            removeExternalValidator(
-                                                                                criterion,
-                                                                                validator.id,
-                                                                            )
-                                                                        }>
-                                                                        <div className="mdi mdi-close" />
-                                                                    </div>
+                                                                        className={`mdi mdi-shield-check ${
+                                                                            !validator.accepted ? 'text-muted' : ''
+                                                                        }`}
+                                                                    />
                                                                 </div>
-                                                            ),
-                                                        )}
+
+                                                                <div className="criterion-organization-name">
+                                                                    {validator.validator_organization.name}
+                                                                </div>
+
+                                                                <div
+                                                                    className="criterion-organization-actions"
+                                                                    onClick={() =>
+                                                                        removeExternalValidator(criterion, validator.id)
+                                                                    }>
+                                                                    <div className="mdi mdi-close" />
+                                                                </div>
+                                                            </div>
+                                                        ))}
                                                     </div>
                                                 )}
                                             </div>

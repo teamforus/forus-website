@@ -31,7 +31,7 @@ import { parseInt, sortBy, uniqueId } from 'lodash';
 import { useRecordTypeService } from '../../../services/RecordTypeService';
 import { useEmployeeService } from '../../../services/EmployeeService';
 import FundCriterion from '../../../props/models/FundCriterion';
-import FundCriteriaEditor from '../organizations-funds-show/elements/FundCriteriaEditor';
+import FundCriteriaEditor from '../../elements/fund-criteria-editor/FundCriteriaEditor';
 import Organization from '../../../props/models/Organization';
 import { useOrganizationService } from '../../../services/OrganizationService';
 import FundConfigContactInfoEditor from './elements/FundConfigContactInfoEditor';

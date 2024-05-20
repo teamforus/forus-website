@@ -1,10 +1,10 @@
 import Organization from './Organization';
 import Media from './Media';
 import Implementation from './Implementation';
-import FundCriterion from './FundCriterion';
 import Tag from './Tag';
 import Faq from './Faq';
 import FundFormula from '../../../webshop/props/models/FundFormula';
+import { FundCriterionLocal } from '../../components/elements/fund-criteria-editor/FundCriteriaEditor';
 
 interface FundVoucherStatistics {
     active_vouchers_amount?: string;
@@ -54,7 +54,7 @@ export default interface Fund {
     implementation?: Implementation;
     type_locale: string;
     requester_count: number;
-    criteria: Array<FundCriterion>;
+    criteria: Array<FundCriterionLocal>;
     criteria_editable: boolean;
     provider_organizations_count: number;
     provider_employees_count: number;

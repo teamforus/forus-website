@@ -1,11 +1,39 @@
 import React, { createRef, MutableRefObject, useCallback, useEffect, useRef, useState } from 'react';
-import Fund from '../../../../props/models/Fund';
-import Organization from '../../../../props/models/Organization';
-import RecordType from '../../../../props/models/RecordType';
-import { hasPermission } from '../../../../helpers/utils';
+import Fund from '../../../props/models/Fund';
+import Organization from '../../../props/models/Organization';
+import RecordType from '../../../props/models/RecordType';
+import { hasPermission } from '../../../helpers/utils';
 import FundCriteriaEditorItem from './FundCriteriaEditorItem';
-import FundCriterion from '../../../../props/models/FundCriterion';
-import useTranslate from '../../../../hooks/useTranslate';
+import FundCriterion from '../../../props/models/FundCriterion';
+import useTranslate from '../../../hooks/useTranslate';
+
+export type FundCriterionOrganization = Organization & {
+    accepted?: boolean;
+    validator_organization?: FundCriterionOrganization;
+    validator_organization_id?: number;
+};
+
+export type FundCriterionLocal = FundCriterion & {
+    is_editing?: boolean;
+    show_external_validators_form?: boolean;
+    new_validator?: number;
+    is_new?: boolean;
+    header?: string;
+    external_validators: Array<{
+        accepted: boolean;
+        organization_id: number;
+        organization_validator_id: number;
+    }>;
+    validators_models?: Array<FundCriterionOrganization>;
+    validators_available?: Array<{
+        id: number;
+        validator_organization_id?: number;
+        validator_organization?: { name: string };
+    }>;
+    validators?: Array<Array<FundCriterionOrganization>>;
+    validators_list?: Array<Array<FundCriterionOrganization>>;
+    use_external_validators?: boolean;
+};
 
 export default function FundCriteriaEditor({
     fund,
@@ -21,12 +49,12 @@ export default function FundCriteriaEditor({
 }: {
     fund: Fund;
     organization: Organization;
-    criteria: Array<FundCriterion>;
-    setCriteria: (criteria: Array<FundCriterion>) => void;
+    criteria: Array<FundCriterionLocal>;
+    setCriteria: (criteria: Array<FundCriterionLocal>) => void;
     isEditable: boolean;
     recordTypes: Array<Partial<RecordType>>;
     saveButton?: boolean;
-    onSaveCriteria?: (criteria: Array<FundCriterion>) => void;
+    onSaveCriteria?: (criteria: Array<FundCriterionLocal>) => void;
     validatorOrganizations: Array<Organization>;
     saveCriteriaRef?: MutableRefObject<() => Promise<unknown>>;
 }) {
@@ -85,7 +113,7 @@ export default function FundCriteriaEditor({
     }, [criteria, criterionBlocksRefs, onSaveCriteria, setCriteria, updateOnEditFlag]);
 
     const onDelete = useCallback(
-        (criterion: FundCriterion) => {
+        (criterion: FundCriterionLocal) => {
             const index = criteria.indexOf(criterion);
 
             if (index != -1) {
@@ -93,7 +121,7 @@ export default function FundCriteriaEditor({
                 criteria.splice(index, 1);
             } else {
                 criteria.splice(
-                    criteria.findIndex((item: FundCriterion) => item.is_new),
+                    criteria.findIndex((item) => item.is_new),
                     1,
                 );
             }
