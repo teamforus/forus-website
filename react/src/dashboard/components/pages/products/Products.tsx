@@ -1,8 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import useActiveOrganization from '../../../hooks/useActiveOrganization';
-import { useTranslation } from 'react-i18next';
 import LoadingCard from '../../elements/loading-card/LoadingCard';
-import { useNavigateState } from '../../../modules/state_router/Router';
 import useAssetUrl from '../../../hooks/useAssetUrl';
 import useSetProgress from '../../../hooks/useSetProgress';
 import useProductService from '../../../services/ProductService';
@@ -17,26 +15,40 @@ import StateNavLink from '../../../modules/state_router/StateNavLink';
 import Paginator from '../../../modules/paginator/components/Paginator';
 import ModalNotification from '../../modals/ModalNotification';
 import usePaginatorService from '../../../modules/paginator/services/usePaginatorService';
+import useTranslate from '../../../hooks/useTranslate';
+
+type ProductsDataLocal = PaginationData<
+    Product,
+    { total_archived: number; total_provider: number; total_sponsor: number }
+>;
 
 export default function Products() {
     const activeOrganization = useActiveOrganization();
-    const { t } = useTranslation();
+
     const assetUrl = useAssetUrl();
+    const translate = useTranslate();
 
     const productService = useProductService();
     const paginatorService = usePaginatorService();
 
-    const setProgress = useSetProgress();
-    const appConfigs = useAppConfigs();
     const openModal = useOpenModal();
-    const navigateState = useNavigateState();
+    const appConfigs = useAppConfigs();
+    const setProgress = useSetProgress();
 
     const [loading, setLoading] = useState(false);
-    const [products, setProducts] = useState<PaginationData<Product>>(null);
-
+    const [products, setProducts] = useState<ProductsDataLocal>(null);
     const [paginatorKey] = useState('products');
-    const maxProductCount = useMemo(() => appConfigs?.products_hard_limit, [appConfigs]);
+
+    const maxProductHardLimit = useMemo(() => appConfigs?.products_hard_limit, [appConfigs]);
     const maxProductSoftLimit = useMemo(() => appConfigs?.products_soft_limit, [appConfigs]);
+
+    const productHardLimitReached = useMemo(() => {
+        return maxProductHardLimit > 0 && products?.meta?.total_provider >= maxProductHardLimit;
+    }, [maxProductHardLimit, products?.meta?.total_provider]);
+
+    const productSoftLimitReached = useMemo(() => {
+        return maxProductSoftLimit > 0 && products?.meta?.total_provider >= maxProductSoftLimit;
+    }, [maxProductSoftLimit, products?.meta?.total_provider]);
 
     const filter = useFilter({
         q: '',
@@ -44,23 +56,14 @@ export default function Products() {
         per_page: paginatorService.getPerPage(paginatorKey),
     });
 
-    const addProduct = useCallback(
-        function () {
-            if (!maxProductCount || products.meta.total < maxProductCount) {
-                navigateState('products-create', { organizationId: activeOrganization.id });
-            }
-        },
-        [activeOrganization.id, maxProductCount, navigateState, products?.meta.total],
-    );
-
     const deleteProduct = useCallback(
         function (product) {
             openModal((modal) => (
                 <ModalNotification
                     modal={modal}
                     icon={'product-create'}
-                    title={t('products.confirm_delete.title')}
-                    description={t('products.confirm_delete.description')}
+                    title={translate('products.confirm_delete.title')}
+                    description={translate('products.confirm_delete.description')}
                     buttonSubmit={{
                         onClick: () => {
                             modal.close();
@@ -72,7 +75,7 @@ export default function Products() {
                 />
             ));
         },
-        [productService, openModal, t],
+        [productService, openModal, translate],
     );
 
     const fetchProducts = useCallback(() => {
@@ -103,29 +106,26 @@ export default function Products() {
                     <div className="flex flex-grow">
                         <div className="flex-col">
                             <div className="card-title">
-                                {t('products.offers')} ({products.meta.total})
+                                {translate('products.offers')} ({products.meta.total})
                             </div>
                         </div>
                     </div>
                     <div className="form">
                         <div className="block block-inline-filters">
-                            <button
-                                type={'button'}
-                                className="button button-primary button-sm"
-                                onClick={() => addProduct()}
+                            <StateNavLink
+                                name={'products-create'}
+                                params={{ organizationId: activeOrganization.id }}
+                                className={`button button-primary button-sm ${
+                                    productHardLimitReached ? 'disabled' : ''
+                                }`}
                                 id="add_product"
-                                disabled={
-                                    maxProductCount > 0 && (products.meta.total_provider as number) >= maxProductCount
-                                }>
+                                disabled={productHardLimitReached}>
                                 <em className="mdi mdi-plus-circle icon-start" />
-                                {t('products.add')}
-                                {maxProductCount > 0 &&
-                                    (products.meta.total_provider as number) >= maxProductSoftLimit && (
-                                        <span>
-                                            {products.meta.total_provider} / {maxProductCount}
-                                        </span>
-                                    )}
-                            </button>
+                                {translate('products.add')}
+                                {productSoftLimitReached
+                                    ? ` (${products.meta.total_provider} / ${maxProductHardLimit})`
+                                    : ``}
+                            </StateNavLink>
 
                             <div className="form">
                                 <div>
@@ -164,7 +164,7 @@ export default function Products() {
                                         value={filter.values.q}
                                         onChange={(e) => filter.update({ q: e.target.value })}
                                         data-dusk="searchTransaction"
-                                        placeholder={t('transactions.labels.search')}
+                                        placeholder={translate('transactions.labels.search')}
                                     />
                                 </div>
                             </div>
@@ -188,7 +188,7 @@ export default function Products() {
                                     <ThSortable
                                         className="th-narrow nowrap"
                                         filter={filter}
-                                        label={t('products.labels.id')}
+                                        label={translate('products.labels.id')}
                                         value="id"
                                     />
 
@@ -196,47 +196,49 @@ export default function Products() {
                                         disabled={true}
                                         className="th-narrow nowrap"
                                         filter={filter}
-                                        label={t('products.labels.photo')}
+                                        label={translate('products.labels.photo')}
                                         value="photo"
                                     />
 
                                     <ThSortable
                                         className={'nowrap'}
                                         filter={filter}
-                                        label={t('products.labels.name')}
+                                        label={translate('products.labels.name')}
                                         value="name"
                                     />
 
                                     <ThSortable
                                         className={'nowrap'}
                                         filter={filter}
-                                        label={t('products.labels.stock_amount')}
+                                        label={translate('products.labels.stock_amount')}
                                         value="stock_amount"
                                     />
 
                                     <ThSortable
                                         className={'nowrap'}
                                         filter={filter}
-                                        label={t('products.labels.price')}
+                                        label={translate('products.labels.price')}
                                         value="price"
                                     />
 
                                     <ThSortable
                                         className={'nowrap'}
                                         filter={filter}
-                                        label={t('products.labels.expire_at')}
+                                        label={translate('products.labels.expire_at')}
                                         value="expire_at"
                                     />
 
                                     <ThSortable
                                         className={'nowrap'}
                                         filter={filter}
-                                        label={t('products.labels.expired')}
+                                        label={translate('products.labels.expired')}
                                         value="expire_at"
                                     />
 
                                     {filter.values.source != 'archive' && (
-                                        <th className="text-right nowrap th-narrow">{t('products.labels.actions')}</th>
+                                        <th className="text-right nowrap th-narrow">
+                                            {translate('products.labels.actions')}
+                                        </th>
                                     )}
                                 </tr>
                                 {products?.data.map((product) => (
@@ -271,7 +273,7 @@ export default function Products() {
                                         </td>
 
                                         {product.unlimited_stock ? (
-                                            <td>{t('product_edit.labels.unlimited')}</td>
+                                            <td>{translate('product_edit.labels.unlimited')}</td>
                                         ) : (
                                             <td>{product.stock_amount}</td>
                                         )}

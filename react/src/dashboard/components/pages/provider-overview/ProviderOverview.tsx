@@ -29,6 +29,14 @@ export default function ProviderOverview() {
     const [employeesTotal, setEmployeesTotal] = useState(null);
     const [transactionsTotal, setTransactionsTotal] = useState(null);
 
+    const productHardLimitReached = useMemo(() => {
+        return appConfigs?.products_hard_limit > 0 && productsTotal >= appConfigs?.products_hard_limit;
+    }, [appConfigs?.products_hard_limit, productsTotal]);
+
+    const productSoftLimitReached = useMemo(() => {
+        return appConfigs?.products_soft_limit > 0 && productsTotal >= appConfigs?.products_soft_limit;
+    }, [appConfigs?.products_soft_limit, productsTotal]);
+
     const isActive = useCallback((fund: FundProvider) => {
         return (
             (fund.allow_budget || fund.allow_products || fund.allow_some_products) &&
@@ -36,10 +44,6 @@ export default function ProviderOverview() {
             !fund.dismissed
         );
     }, []);
-
-    const disableProductAdd = useMemo(() => {
-        return appConfigs.products_hard_limit > 0 && productsTotal >= appConfigs.products_hard_limit;
-    }, [appConfigs.products_hard_limit, productsTotal]);
 
     useEffect(() => {
         setProgress(0);
@@ -93,11 +97,16 @@ export default function ProviderOverview() {
                                         <StateNavLink
                                             name={'products-create'}
                                             params={{ organizationId: activeOrganization.id }}
-                                            className={`button button-primary ${disableProductAdd ? 'disabled' : ''}`}
+                                            className={`button button-primary ${
+                                                productHardLimitReached ? 'disabled' : ''
+                                            }`}
                                             id="add_product"
-                                            disabled={disableProductAdd}>
+                                            disabled={productHardLimitReached}>
                                             <em className="mdi mdi-plus-circle icon-start" />
                                             Toevoegen
+                                            {productSoftLimitReached
+                                                ? ` (${productsTotal} / ${appConfigs?.products_hard_limit})`
+                                                : ``}
                                         </StateNavLink>
                                     </div>
                                 </div>
