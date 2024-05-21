@@ -54,6 +54,7 @@ import Features from '../components/pages/features/Features';
 import Feature from '../components/pages/feature/Feature';
 import EventLogs from '../components/pages/eventLogs/EventLogs';
 import ReimbursementCategories from '../components/pages/reimbursement-categories/ReimbursementCategories';
+import ThrowError from '../components/pages_system/ThrowError';
 
 const router = new RouterBuilder();
 
@@ -353,6 +354,11 @@ router.state('home', <Home />, {
 
 router.state('not-found', <NotFound />, {
     path: `/not-found`,
+    protected: false,
+});
+
+router.state('throw', <ThrowError />, {
+    path: `/throw`,
     protected: false,
 });
 

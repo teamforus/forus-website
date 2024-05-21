@@ -1,18 +1,18 @@
 import React, { useEffect, useRef } from 'react';
-import * as pdfJsLib from 'pdfjs-dist';
 
-export default function PdfPreview({ rawPdfFile }: { rawPdfFile?: Blob }) {
+export default function PdfPreview({ rawPdfFile, className = '' }: { rawPdfFile?: Blob; className?: string }) {
     const element = useRef(null);
 
     useEffect(() => {
         new Response(rawPdfFile).arrayBuffer().then((data) => {
             // Asynchronous download of PDF
-            const loadingTask = pdfJsLib.getDocument({ data });
+            const loadingTask = window['pdfjsDist'].getDocument({ data });
+
             let currPage = 1;
             let numPages = null;
 
             loadingTask.promise.then(
-                function (pdf) {
+                function (pdf: { numPages: number; getPage: (arg0: number) => Promise<any> }) {
                     // Fetch the first page
                     numPages = pdf.numPages;
 
@@ -53,5 +53,5 @@ export default function PdfPreview({ rawPdfFile }: { rawPdfFile?: Blob }) {
         });
     }, [rawPdfFile]);
 
-    return <div className="block block-pdf-preview" ref={element} />;
+    return <div className={className} ref={element} />;
 }

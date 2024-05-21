@@ -5,7 +5,10 @@ import Implementation from './Implementation';
 export default interface Fund {
     id: number;
     name?: string;
+    key?: string;
     logo?: Media;
+    description?: string;
+    description_short?: string;
     organization_id: number;
     organization?: Organization;
     products_count_all?: number;
@@ -23,5 +26,20 @@ export default interface Fund {
     allow_direct_payments?: boolean;
     archived?: boolean;
     expired?: boolean;
+    request_btn_text?: string;
+    external_link_url?: string;
+    external_link_text?: string;
+    description_html?: string;
+    description_position?: 'before' | 'after' | 'replace';
     implementation?: Implementation;
+    faq: Array<{
+        id: number;
+        title: string;
+        description: string;
+        description_html: string;
+    }>;
+    faq_title?: string;
+    allow_reimbursements?: boolean;
+    allow_physical_cards?: boolean;
+    allow_blocking_vouchers?: boolean;
 }

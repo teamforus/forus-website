@@ -1,19 +1,26 @@
-const path = require('path');
-
+const fs = require('fs');
+const _path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CompressionPlugin = require('compression-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const { DefinePlugin, ProvidePlugin } = require('webpack');
 const timestamp = new Date().getTime();
 const isDevServer = process.env.WEBPACK_SERVE;
 const CopyPlugin = require('copy-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
-const { fronts, enableOnly = null } = require('./env.js');
-
-const configs = Object.keys(fronts)
-    .filter((key) => !enableOnly || enableOnly.includes(key))
-    .map((key) => ({ out: key, ...fronts[key] }));
+const envData = require('./env.js');
+const { info: logInfo } = console;
 
 module.exports = (env, argv) => {
+    const { fronts, enableOnly = null, httpsKey = null, httpsCert = null, buildGzipFiles = false } = envData;
+    const cliEnableOnly = env.only?.split(',') || null;
+
+    const configs = Object.keys(fronts)
+        .filter((key) => !(cliEnableOnly || enableOnly) || (cliEnableOnly || enableOnly).includes(key))
+        .map((key) => ({ out: key, ...fronts[key] }));
+
+    logInfo(`Building fronts:\n${configs?.map((config) => `   - ${config?.out}`)?.join('\n')}\n`);
+
     const { mode = 'development' } = argv;
     const distPath = 'dist';
     const scriptPath = `app-${timestamp}.js`;
@@ -35,6 +42,7 @@ module.exports = (env, argv) => {
                 script: webPath(`/${scriptPath}`),
                 base: webPath(`/`),
                 favicon: webPath(`/assets/img/favicon.ico`),
+                disable_indexing: item.config?.disable_indexing,
                 libs: {
                     summernote: {
                         js: webPath(`/assets/dist/js/summernote.${timestamp}.min.js`),
@@ -47,12 +55,21 @@ module.exports = (env, argv) => {
                         css: webPath(`/assets/dist/css/materialdesignicons.min.css`),
                     },
                 },
-                env_data: { ...item, webRoot: (isDevServer ? item.out : webRoot).replace(/^\/+/, '') },
+                env_data: {
+                    ...item,
+                    client_key: item.client_key_api || item.client_key,
+                    client_skin: item.client_key,
+                    webRoot: (isDevServer ? item.out : webRoot).replace(/^\/+/, ''),
+                },
             },
             filename: item.out + '/index.html',
             inject: false,
         });
     });
+
+    const resolvePath = (path) => {
+        return _path.resolve(__dirname, path);
+    };
 
     const copyPlugins = configs.map((item) => {
         const isDashboard = ['sponsor', 'provider', 'validator'].includes(item.client_type);
@@ -63,81 +80,71 @@ module.exports = (env, argv) => {
                 {
                     context: `../assets/forus-${platform}/resources/_${platform}-common/assets`,
                     from: `**/**.*`,
-                    to: path.resolve(__dirname, `${distPath}/${item.out}/assets`),
+                    to: resolvePath(`${distPath}/${item.out}/assets`),
                     noErrorOnMissing: true,
-                    force: true,
                 },
                 {
                     context: `../assets/forus-${platform}/resources/${platform}-${item.client_key}/assets`,
                     from: `**/**.*`,
-                    to: path.resolve(__dirname, `${distPath}/${item.out}/assets`),
+                    to: resolvePath(`${distPath}/${item.out}/assets`),
                     noErrorOnMissing: true,
                     force: true,
                 },
                 {
-                    from: path.resolve(__dirname, `./node_modules/pdfjs-dist/build/pdf.worker.js`),
-                    to: path.resolve(__dirname, `${distPath}/${item.out}/app-${timestamp}.worker.js`),
+                    from: resolvePath(`./node_modules/summernote/dist/summernote-lite.min.js`),
+                    to: resolvePath(`${distPath}/${item.out}/assets/dist/js/summernote.${timestamp}.min.js`),
                 },
                 {
-                    from: path.resolve(__dirname, `./node_modules/summernote/dist/summernote-lite.min.js`),
-                    to: path.resolve(
-                        __dirname,
-                        `${distPath}/${item.out}/assets/dist/js/summernote.${timestamp}.min.js`,
-                    ),
+                    from: resolvePath(`./node_modules/summernote/dist/summernote-lite.min.css`),
+                    to: resolvePath(`${distPath}/${item.out}/assets/dist/js/summernote.${timestamp}.min.css`),
                 },
                 {
-                    from: path.resolve(__dirname, `./node_modules/summernote/dist/summernote-lite.min.js`),
-                    to: path.resolve(
-                        __dirname,
-                        `${distPath}/${item.out}/assets/dist/js/summernote.${timestamp}.min.js`,
-                    ),
+                    from: resolvePath(`./node_modules/jquery/dist/jquery.min.js`),
+                    to: resolvePath(`${distPath}/${item.out}/assets/dist/js/jquery.${timestamp}.min.js`),
                 },
                 {
-                    from: path.resolve(__dirname, `./node_modules/summernote/dist/summernote-lite.min.css`),
-                    to: path.resolve(
-                        __dirname,
-                        `${distPath}/${item.out}/assets/dist/js/summernote.${timestamp}.min.css`,
-                    ),
+                    from: resolvePath(`./node_modules/@mdi/font/fonts`),
+                    to: resolvePath(`${distPath}/${item.out}/assets/dist/fonts`),
                 },
                 {
-                    from: path.resolve(__dirname, `./node_modules/jquery/dist/jquery.min.js`),
-                    to: path.resolve(__dirname, `${distPath}/${item.out}/assets/dist/js/jquery.${timestamp}.min.js`),
-                },
-                {
-                    from: path.resolve(__dirname, `./node_modules/@mdi/font/fonts`),
-                    to: path.resolve(__dirname, `${distPath}/${item.out}/assets/dist/fonts`),
-                },
-                {
-                    from: path.resolve(__dirname, `./node_modules/@mdi/font/css/materialdesignicons.min.css`),
-                    to: path.resolve(__dirname, `${distPath}/${item.out}/assets/dist/css/materialdesignicons.min.css`),
+                    from: resolvePath(`./node_modules/@mdi/font/css/materialdesignicons.min.css`),
+                    to: resolvePath(`${distPath}/${item.out}/assets/dist/css/materialdesignicons.min.css`),
                 },
             ],
-            options: {
-                concurrency: 100,
-            },
         });
     });
 
     return {
         mode: mode,
-        context: path.resolve(__dirname, 'react/src'),
+        context: resolvePath('react/src'),
 
         devServer: {
             static: {
-                directory: path.resolve(__dirname, `${distPath}`),
+                directory: resolvePath(`${distPath}`),
             },
             devMiddleware: {
                 writeToDisk: true,
             },
             historyApiFallback: true,
             compress: true,
+            allowedHosts: 'all',
+            server:
+                httpsKey && httpsCert
+                    ? {
+                          type: 'https',
+                          options: {
+                              key: fs.readFileSync(httpsKey),
+                              cert: fs.readFileSync(httpsCert),
+                          },
+                      }
+                    : undefined,
             port: 5000,
         },
 
         entry: entry,
 
         output: {
-            path: path.resolve(__dirname, distPath),
+            path: resolvePath(distPath),
             publicPath: '/',
             filename: `[name]/${scriptPath}`,
         },
@@ -168,31 +175,19 @@ module.exports = (env, argv) => {
                 {
                     test: /\.svg$/i,
                     issuer: /\.[jt]sx?$/,
-                    use: ['@svgr/webpack'],
+                    use: [{ loader: '@svgr/webpack', options: { svgo: false } }],
                 },
                 {
                     test: /\.s[ac]ss$/i,
                     use: [
-                        {
-                            // Creates `style` nodes from JS strings
-                            loader: 'style-loader',
-                            options: {
-                                esModule: false,
-                            },
-                        },
-                        {
-                            // Translates CSS into CommonJS
-                            loader: 'css-loader',
-                            options: {
-                                url: false,
-                                sourceMap: true,
-                            },
-                        },
+                        // MiniCssExtractPlugin.loader,
+                        // Creates `style` nodes from JS strings
+                        { loader: 'style-loader', options: { esModule: true /*, injectType: 'linkTag'*/ } },
+                        // Translates CSS into CommonJS
+                        { loader: 'css-loader', options: { url: false, sourceMap: true } },
                         /*{
                             loader: 'resolve-url-loader',
-                            options: {
-                                webpackImporter: false,
-                            },
+                            options: { webpackImporter: false },
                         },*/
                         {
                             // Compiles Sass to CSS
@@ -203,9 +198,7 @@ module.exports = (env, argv) => {
                                 additionalData: '$buildReact: true;',
                                 webpackImporter: true,
                                 warnRuleAsWarning: false,
-                                sassOptions: {
-                                    quietDeps: true,
-                                },
+                                sassOptions: { quietDeps: true },
                             },
                         },
                     ],
@@ -244,9 +237,10 @@ module.exports = (env, argv) => {
             ...outPlugins,
             new CleanWebpackPlugin(),
             ...copyPlugins,
+            buildGzipFiles ? new CompressionPlugin({ algorithm: 'gzip', test: /\.js(\?.*)?$/i }) : null,
             new DefinePlugin({ __REACT_DEVTOOLS_GLOBAL_HOOK__: '({ isDisabled: true })' }),
             new ProvidePlugin({ React: 'react' }),
-        ],
+        ].filter((plugin) => plugin),
 
         optimization: {
             minimize: mode !== 'development',

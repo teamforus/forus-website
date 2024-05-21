@@ -14,21 +14,16 @@ export default function ClickOutside(props: {
     children: ReactNode;
     id?: string;
     role?: string;
+    dataDusk?: string;
 }) {
-    const ref = useRef(null);
+    const ref = useRef<HTMLDivElement>(null);
     const [body] = useState(document.querySelector('body'));
 
     const clickHandler = useCallback(
         (e) => {
-            let targetElement = e.target;
-
-            do {
-                if (targetElement === ref.current) {
-                    return;
-                }
-
-                targetElement = targetElement.parentNode;
-            } while (targetElement);
+            if (ref.current.contains(e.target) || !document.contains(e.target)) {
+                return;
+            }
 
             if (typeof props.onClickOutside === 'function') {
                 props.onClickOutside(e);
@@ -53,6 +48,7 @@ export default function ClickOutside(props: {
             onClick={props.onClick}
             onContextMenu={props.onContextMenu}
             ref={ref}
+            data-dusk={props.dataDusk}
             style={props.style || {}}
             onKeyDown={props.onKeyDown}
             onScroll={props.onScroll}

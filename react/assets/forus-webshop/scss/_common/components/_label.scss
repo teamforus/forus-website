@@ -5,6 +5,7 @@
     border-radius: var(--border-radius);
     cursor: default;
     height: fit-content;
+    width: fit-content;
     border: 1px solid transparent;
 
     .mdi {
@@ -100,6 +101,12 @@
     &.label-dark {
         background: #303030;
         color: #fff;
+    }
+
+    &.label-dark-outline {
+        background: #fff;
+        border-color: #303030;
+        color: #303030;
     }
 
     &.label-sm {
