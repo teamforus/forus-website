@@ -348,7 +348,11 @@ export default function Transactions() {
         fetchFunds({}).then((funds) => setFunds([{ id: null, name: 'Selecteer fond' }, ...funds]));
     }, [fetchFunds]);
 
-    if ((viewType.key === 'transactions' && !transactions) || (viewType.key === 'bulks' && !transactionBulks)) {
+    if (
+        (viewType.key === 'transactions' && !transactions) ||
+        (viewType.key === 'bulks' && !transactionBulks) ||
+        !funds
+    ) {
         return <LoadingCard />;
     }
 
