@@ -26,7 +26,7 @@ export default function ProviderFinancialTable({ externalFilters }: { externalFi
     const organizationService = useOrganizationService();
 
     const [paginatorKey] = useState('provider_finances');
-    const [showTransaction, setShowTransaction] = useState(null);
+    const [showTransactions, setShowTransactions] = useState([]);
     const [providersFinances, setProvidersFinances] = useState<PaginationData<ProviderFinancialLocal>>(null);
 
     const filter = useFilter({
@@ -55,11 +55,27 @@ export default function ProviderFinancialTable({ externalFilters }: { externalFi
         pushDanger,
     ]);
 
+    const toggleTransactionsTable = useCallback(
+        (provider: ProviderFinancialLocal) => {
+            const index = showTransactions.indexOf(provider.id);
+            const list = [...showTransactions];
+
+            if (index !== -1) {
+                list.splice(index, 1);
+            } else {
+                list.push(provider.id);
+            }
+
+            setShowTransactions(list);
+        },
+        [showTransactions],
+    );
+
     const fetchProviderFinances = useCallback(() => {
         organizationService
             .financeProviders(activeOrganization.id, { ...externalFilters, ...filter.activeValues })
             .then((res) => {
-                setShowTransaction(null);
+                setShowTransactions([]);
 
                 setProvidersFinances({
                     ...res.data,
@@ -136,13 +152,7 @@ export default function ProviderFinancialTable({ externalFilters }: { externalFi
                                                         {provider.nr_transactions > 0 && (
                                                             <button
                                                                 className="button button-primary"
-                                                                onClick={() =>
-                                                                    setShowTransaction(
-                                                                        showTransaction === provider.id
-                                                                            ? null
-                                                                            : provider.id,
-                                                                    )
-                                                                }>
+                                                                onClick={() => toggleTransactionsTable(provider)}>
                                                                 <em className="mdi mdi-cash-multiple icon-start" />
                                                                 <span>Transacties</span>
                                                             </button>
@@ -150,7 +160,7 @@ export default function ProviderFinancialTable({ externalFilters }: { externalFi
                                                     </td>
                                                 </tr>
 
-                                                {showTransaction === provider.id && (
+                                                {showTransactions.includes(provider.id) && (
                                                     <tr>
                                                         <td className="td-paddless" colSpan={5}>
                                                             <ProviderFinancialTablesTransactions
