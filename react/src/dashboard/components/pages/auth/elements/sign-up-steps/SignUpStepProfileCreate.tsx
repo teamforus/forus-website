@@ -1,4 +1,4 @@
-import React, { Fragment, useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import useAssetUrl from '../../../../../hooks/useAssetUrl';
 import UIControlText from '../../../../elements/forms/ui-controls/UIControlText';
 import FormError from '../../../../elements/forms/errors/FormError';
@@ -38,6 +38,10 @@ export default function SignUpStepProfileCreate({ panelType }: { panelType: 'spo
             const resolveErrors = (err: ResponseError) => {
                 formSignUp.setIsLocked(false);
                 formSignUp.setErrors(err.data.errors);
+
+                if (err.response.status === 429) {
+                    formSignUp.setErrors({ email: 'Too many requests. Please try again later.' });
+                }
             };
 
             return identityService.validateEmail(values).then((res) => {
@@ -117,7 +121,7 @@ export default function SignUpStepProfileCreate({ panelType }: { panelType: 'spo
                                         placeholder={'e-mail@e-mail.nl'}
                                     />
                                     <FormError
-                                        error={formSignUp.errors.email || formSignUp.errors['records.primary_email']}
+                                        error={formSignUp.errors?.email || formSignUp.errors?.['records.primary_email']}
                                     />
                                 </div>
                             </div>
@@ -153,7 +157,7 @@ export default function SignUpStepProfileCreate({ panelType }: { panelType: 'spo
                         <div className="sign_up-pane-auth-content">
                             {translate(`sign_up_${panelType}.app.description_top`)
                                 ?.split('\n')
-                                ?.map((line, index) => (
+                                ?.map((line: string, index: number) => (
                                     <div key={index} className="sign_up-pane-text">
                                         {line}
                                     </div>
@@ -173,7 +177,7 @@ export default function SignUpStepProfileCreate({ panelType }: { panelType: 'spo
 
                             {translate(`sign_up_${panelType}.app.description_bottom`)
                                 ?.split('\n')
-                                ?.map((line, index) => (
+                                ?.map((line: string, index: number) => (
                                     <div key={index} className="sign_up-pane-text">
                                         {line}
                                     </div>
