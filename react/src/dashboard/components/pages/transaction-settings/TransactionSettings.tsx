@@ -20,8 +20,9 @@ export default function TransactionSettings() {
 
     const [testData] = useState({
         bank_transaction_id: '#12345',
-        bank_transaction_date: '2024-01-01 00:00:00',
-        bank_reservation_number: '#54321',
+        bank_transaction_date: '2024-01-01',
+        bank_transaction_time: '00:00:00',
+        bank_reservation_number: '#12345678',
         bank_branch_number: '112233445566',
         bank_branch_id: '6789',
         bank_branch_name: 'Voorbeeld van een vestigingsnaam',
@@ -41,6 +42,7 @@ export default function TransactionSettings() {
         return [
             form.values.bank_transaction_id ? testData.bank_transaction_id : null,
             form.values.bank_transaction_date ? testData.bank_transaction_date : null,
+            form.values.bank_transaction_time ? testData.bank_transaction_time : null,
             form.values.bank_reservation_number ? testData.bank_reservation_number : null,
             form.values.bank_branch_number ? testData.bank_branch_number : null,
             form.values.bank_branch_id ? testData.bank_branch_id : null,
@@ -49,7 +51,7 @@ export default function TransactionSettings() {
             form.values.bank_note ? testData.bank_note : null,
         ]
             .filter((value) => value)
-            .join(' - ');
+            .join(' | ');
     }, [testData, form.values]);
 
     return (
@@ -77,6 +79,12 @@ export default function TransactionSettings() {
                                             title="Transactie Datum"
                                             checked={!!form.values?.bank_transaction_date}
                                             onChange={(e) => form.update({ bank_transaction_date: e.target.checked })}
+                                        />
+                                        <CheckboxControl
+                                            id="bank_transaction_time"
+                                            title="Transactie Tijd"
+                                            checked={!!form.values?.bank_transaction_time}
+                                            onChange={(e) => form.update({ bank_transaction_time: e.target.checked })}
                                         />
                                         <CheckboxControl
                                             id="bank_reservation_number"
@@ -173,7 +181,14 @@ export default function TransactionSettings() {
                                                     <li className="block-info-list-item">
                                                         Transactiedatum:
                                                         <span className="block-info-list-item-value">
-                                                            {testData.bank_transaction_date} • 12 karakters
+                                                            {testData.bank_transaction_date} • 10 karakters
+                                                        </span>
+                                                    </li>
+
+                                                    <li className="block-info-list-item">
+                                                        Transactietijd:
+                                                        <span className="block-info-list-item-value">
+                                                            {testData.bank_transaction_time} • 8 karakters
                                                         </span>
                                                     </li>
 
