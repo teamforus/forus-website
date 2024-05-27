@@ -624,7 +624,13 @@
                     }
 
                     .showcase-filters-title {
+                        display: flex;
+                        white-space: pre-wrap;
                         margin: 0 0 15px;
+
+                        .showcase-filters-title-count {
+                            align-self: center;
+                        }
                     }
 
                     .showcase-filters-block {
