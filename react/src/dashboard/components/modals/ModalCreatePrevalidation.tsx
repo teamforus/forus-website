@@ -89,9 +89,20 @@ export default function ModalCreatePrevalidation({
         (values) => {
             setProgress(0);
 
+            const dateValues = {};
+            for (const valueKey in values) {
+                if (recordTypesByKey[valueKey]?.type == 'date') {
+                    dateValues[valueKey] = dateFormat(dateParse(values[valueKey]), 'dd-MM-yyyy');
+                }
+            }
+
             prevalidationService
                 .submit(
-                    { ...values, ...(eligibleKey && eligibleKeyValue ? { [eligibleKey]: eligibleKeyValue } : {}) },
+                    {
+                        ...values,
+                        ...dateValues,
+                        ...(eligibleKey && eligibleKeyValue ? { [eligibleKey]: eligibleKeyValue } : {}),
+                    },
                     fund.id,
                 )
                 .then((res) => {
@@ -218,7 +229,7 @@ export default function ModalCreatePrevalidation({
                                                         recordTypesByKey[fundRecord].type == 'date' && (
                                                             <DatePickerControl
                                                                 value={dateParse(form.values[fundRecord])}
-                                                                dateFormat="dd-MM-jjjj"
+                                                                dateFormat="dd-MM-yyyy"
                                                                 placeholder={recordTypesByKey[fundRecord]?.name}
                                                                 onChange={(date) => {
                                                                     form.update({ [fundRecord]: dateFormat(date) });
@@ -241,9 +252,8 @@ export default function ModalCreatePrevalidation({
                                                         )}
 
                                                     {recordTypesByKey &&
-                                                        recordTypesByKey[fundRecord] &&
                                                         !['number', 'select', 'bool', 'date'].includes(
-                                                            recordTypesByKey[fundRecord].type,
+                                                            recordTypesByKey[fundRecord]?.type,
                                                         ) && (
                                                             <input
                                                                 type="string"

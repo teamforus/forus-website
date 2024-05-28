@@ -151,6 +151,10 @@ export default function CSVUpload({
 
     const uploadFile = useCallback(
         async (file: File) => {
+            if (file?.name.indexOf('.csv') != file?.name.length - 4) {
+                return setCsvErrors('Kies eerst een .csv bestand.');
+            }
+
             const results = await parseCsvFile(file);
 
             if (!results) {
