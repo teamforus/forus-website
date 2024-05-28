@@ -40,7 +40,7 @@ export default function SignUpStepProfileCreate({ panelType }: { panelType: 'spo
                 formSignUp.setErrors(err.data.errors);
 
                 if (err.response.status === 429) {
-                    formSignUp.setErrors({ email: 'Too many requests. Please try again later.' });
+                    formSignUp.setErrors({ email: err?.data?.message });
                 }
             };
 

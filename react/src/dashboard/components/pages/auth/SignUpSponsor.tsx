@@ -145,6 +145,7 @@ export default function SignUpSponsor() {
                 </div>
 
                 <h2 className="block-title">{translate('sign_up_sponsor.header.main_header')}</h2>
+                <pre>step {JSON.stringify(step, null, 2)}</pre>
 
                 {step == STEP_INFO_GENERAL && (
                     <Fragment>
