@@ -26,7 +26,7 @@ export default function ProviderFinancialTable({ externalFilters }: { externalFi
     const organizationService = useOrganizationService();
 
     const [paginatorKey] = useState('provider_finances');
-    const [showTransactions, setShowTransactions] = useState([]);
+    const [showTransactions, setShowTransactions] = useState<Array<string>>([]);
     const [providersFinances, setProvidersFinances] = useState<PaginationData<ProviderFinancialLocal>>(null);
 
     const filter = useFilter({
@@ -55,21 +55,13 @@ export default function ProviderFinancialTable({ externalFilters }: { externalFi
         pushDanger,
     ]);
 
-    const toggleTransactionsTable = useCallback(
-        (provider: ProviderFinancialLocal) => {
-            const index = showTransactions.indexOf(provider.id);
-            const list = [...showTransactions];
+    const toggleTransactionsTable = useCallback((id: string) => {
+        setShowTransactions((list) => {
+            list.includes(id) ? list.splice(list.indexOf(id), 1) : list.push(id);
 
-            if (index !== -1) {
-                list.splice(index, 1);
-            } else {
-                list.push(provider.id);
-            }
-
-            setShowTransactions(list);
-        },
-        [showTransactions],
-    );
+            return [...list];
+        });
+    }, []);
 
     const fetchProviderFinances = useCallback(() => {
         organizationService
@@ -152,7 +144,7 @@ export default function ProviderFinancialTable({ externalFilters }: { externalFi
                                                         {provider.nr_transactions > 0 && (
                                                             <button
                                                                 className="button button-primary"
-                                                                onClick={() => toggleTransactionsTable(provider)}>
+                                                                onClick={() => toggleTransactionsTable(provider.id)}>
                                                                 <em className="mdi mdi-cash-multiple icon-start" />
                                                                 <span>Transacties</span>
                                                             </button>
