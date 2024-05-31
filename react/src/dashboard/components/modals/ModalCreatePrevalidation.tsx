@@ -55,7 +55,9 @@ export default function ModalCreatePrevalidation({
 
     const recordTypesAvailable = useMemo(() => {
         return recordTypes
-            .filter((type) => type.key != 'primary_email' && !prevalidationRecords?.includes(type?.key))
+            .filter((type) => {
+                return type.criteria && type.key != 'primary_email' && !prevalidationRecords?.includes(type?.key);
+            })
             .filter((record) => record.key !== eligibleKey);
     }, [eligibleKey, prevalidationRecords, recordTypes]);
 
@@ -90,6 +92,7 @@ export default function ModalCreatePrevalidation({
             setProgress(0);
 
             const dateValues = {};
+
             for (const valueKey in values) {
                 if (recordTypesByKey[valueKey]?.type == 'date') {
                     dateValues[valueKey] = dateFormat(dateParse(values[valueKey]), 'dd-MM-yyyy');
@@ -177,7 +180,11 @@ export default function ModalCreatePrevalidation({
                                                     )}
                                                 </strong>
                                                 <div className="datalist-value text-primary text-right">
-                                                    {form.values[fundRecord]}
+                                                    {form.values[fundRecord] ? (
+                                                        form.values[fundRecord]
+                                                    ) : (
+                                                        <span className={'text-muted'}>-</span>
+                                                    )}
                                                 </div>
                                             </div>
                                         ))}
@@ -252,8 +259,9 @@ export default function ModalCreatePrevalidation({
                                                         )}
 
                                                     {recordTypesByKey &&
+                                                        recordTypesByKey[fundRecord] &&
                                                         !['number', 'select', 'bool', 'date'].includes(
-                                                            recordTypesByKey[fundRecord]?.type,
+                                                            recordTypesByKey[fundRecord].type,
                                                         ) && (
                                                             <input
                                                                 type="string"
