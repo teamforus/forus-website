@@ -247,7 +247,7 @@ export default function FundRequestStepCriteria({
                                 id={`criterion_${criterion.id}`}
                                 placeholder={`Uw ${criterion?.record_type?.name}`}
                                 onChangeValue={(value) => {
-                                    setCriterion(criterion.id, { input_value: (value || 0).toString() });
+                                    setCriterion(criterion.id, { input_value: (value || '').toString() });
                                 }}
                             />
                         )}
@@ -274,7 +274,7 @@ export default function FundRequestStepCriteria({
                                 id={`criterion_${criterion.id}`}
                                 placeholder={`Uw ${criterion?.record_type?.name}`}
                                 onChangeValue={(value) => {
-                                    setCriterion(criterion.id, { input_value: (value || 0).toString() });
+                                    setCriterion(criterion.id, { input_value: (value || '').toString() });
                                 }}
                             />
                         )}
