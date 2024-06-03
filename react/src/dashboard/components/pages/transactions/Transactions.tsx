@@ -125,7 +125,7 @@ export default function Transactions() {
             order_by: 'created_at',
             order_dir: 'desc',
         },
-        ['q', 'amount_min', 'amount_max', 'quantity_min', 'quantity_max'],
+        ['q', 'amount_min', 'amount_max', 'transfer_in_min', 'transfer_in_max'],
     );
 
     const bulkFilter = useFilter(
@@ -219,10 +219,14 @@ export default function Transactions() {
                 organization={activeOrganization}
                 onCreated={() => {
                     fetchTransactions(filter.activeValues).then((res) => setTransactions(res.data));
+
+                    if (isSponsor && activeOrganization?.has_bank_connection) {
+                        updateHasPendingBulking();
+                    }
                 }}
             />
         ));
-    }, [activeOrganization, fetchTransactions, filter.activeValues, openModal]);
+    }, [activeOrganization, fetchTransactions, filter.activeValues, isSponsor, openModal, updateHasPendingBulking]);
 
     const confirmDangerAction = useCallback(
         (title, description_text, cancelButton = 'Annuleren', confirmButton = 'Bevestigen') => {
@@ -536,11 +540,11 @@ export default function Transactions() {
                                                     min={0}
                                                     type="number"
                                                     value={filter.values.transfer_in_min || ''}
-                                                    onChange={(e) =>
-                                                        filter.update({
-                                                            transfer_in_min: e.target.value,
-                                                        })
-                                                    }
+                                                    onChange={(e) => {
+                                                        if (!e.target.value || parseInt(e.target.value) >= 0) {
+                                                            filter.update({ transfer_in_min: e.target.value });
+                                                        }
+                                                    }}
                                                     placeholder={t('transactions.labels.transfer_in_min')}
                                                 />
                                             </div>
@@ -550,11 +554,11 @@ export default function Transactions() {
                                                     min={0}
                                                     type="number"
                                                     value={filter.values.transfer_in_max || ''}
-                                                    onChange={(e) =>
-                                                        filter.update({
-                                                            transfer_in_max: e.target.value,
-                                                        })
-                                                    }
+                                                    onChange={(e) => {
+                                                        if (!e.target.value || parseInt(e.target.value) <= 14) {
+                                                            filter.update({ transfer_in_max: e.target.value });
+                                                        }
+                                                    }}
                                                     placeholder={t('transactions.labels.transfer_in_max')}
                                                 />
                                             </div>
