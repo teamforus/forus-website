@@ -227,14 +227,6 @@
         }
     }
 
-    @media screen and (max-width: 600px) {
-        &.block-profile {
-            .profile-aside {
-                display: none;
-            }
-        }
-    }
-
     @media screen and (max-width: 1000px) {
         &.block-profile {
             .profile-aside,
