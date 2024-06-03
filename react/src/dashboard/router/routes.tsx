@@ -57,6 +57,7 @@ import FinancialDashboard from '../components/pages/financial-dashboard/Financia
 import FinancialDashboardOverview from '../components/pages/financial-dashboard-overview/FinancialDashboardOverview';
 import TransactionBulksView from '../components/pages/transaction-bulks-view/TransactionBulksView';
 import ReimbursementCategories from '../components/pages/reimbursement-categories/ReimbursementCategories';
+import BiConnection from '../components/pages/bi-connection/BiConnection';
 import ThrowError from '../components/pages_system/ThrowError';
 
 const router = new RouterBuilder();
@@ -195,7 +196,7 @@ router.state('organization-logs', <EventLogs />, {
     fallbackState: 'organizations',
 });
 
-router.state('bi-connection', <WIP title={'BI Connection'} />, {
+router.state('bi-connection', <BiConnection />, {
     path: `/organizations/:organizationId/bi-connection`,
     fallbackState: 'organizations',
 });
