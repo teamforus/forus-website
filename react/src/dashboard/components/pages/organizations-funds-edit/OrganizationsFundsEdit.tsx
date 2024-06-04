@@ -77,7 +77,7 @@ export default function OrganizationsFundsEdit() {
     const [validatorOrganizations, setValidatorOrganizations] = useState<PaginationData<Organization>>(null);
     const [fundStates] = useState(fundService.getStates());
     const faqEditorBlock = useRef<() => Promise<boolean>>();
-    const criteriaBlockRef = useRef<() => Promise<boolean>>();
+    const criteriaBlockRef = useRef<() => Promise<Array<FundCriterion> | null>>();
 
     const [fundTypes] = useState([
         { value: 'budget', name: 'Waardebon' },
@@ -214,7 +214,17 @@ export default function OrganizationsFundsEdit() {
 
             if (appConfigs.organizations.funds.criteria && !form.values.external_page) {
                 try {
-                    await criteriaBlockRef.current();
+                    const criteria = await criteriaBlockRef.current();
+
+                    if (criteria != null) {
+                        data.criteria = criteria.map((item: FundCriterion) => ({
+                            ...item,
+                            validators:
+                                item.external_validators?.map((validator) => validator.organization_validator_id) || [],
+                        }));
+                    } else {
+                        return form.setIsLocked(false);
+                    }
                 } catch (e) {
                     return form.setIsLocked(false);
                 }
@@ -233,7 +243,6 @@ export default function OrganizationsFundsEdit() {
                         ...data,
                         faq: faq,
                         media_uid: (fundPhoto ? await storeMedia(fundPhoto) : null)?.uid,
-                        criteria: form.values.criteria,
                     })
                     .then(() => {
                         navigateState('funds-show', { organizationId: activeOrganization.id, fundId: fundId });
@@ -243,7 +252,7 @@ export default function OrganizationsFundsEdit() {
                     .finally(() => form.setIsLocked(false));
             } else {
                 return fundService
-                    .store(activeOrganization.id, { ...data, faq: faq, criteria: form.values.criteria })
+                    .store(activeOrganization.id, { ...data, faq: faq })
                     .then(() => {
                         navigateState('organization-funds', { organizationId: activeOrganization.id });
                         pushSuccess('Gelukt!', 'Het fonds is aangemaakt!');
@@ -413,7 +422,7 @@ export default function OrganizationsFundsEdit() {
         }
     }, [updateForm, fund, getApplicationMethodKey]);
 
-    if (fundId && !fund) {
+    if (!recordTypes || (fundId && !fund)) {
         return <LoadingCard />;
     }
 

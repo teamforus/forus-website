@@ -101,11 +101,7 @@ export class FundService<T = Fund> {
         return this.apiRequest.post(`${this.prefix}/${company_id}/funds/${fund_id}/unarchive`);
     }
 
-    public criterionValidate(
-        company_id: number,
-        fund_id: number,
-        criteria: Array<FundCriterion>,
-    ): Promise<Array<unknown>> {
+    public criterionValidate(company_id: number, fund_id: number, criteria: Array<object>): Promise<Array<unknown>> {
         const path = fund_id
             ? `${this.prefix}/${company_id}/funds/${fund_id}/criteria/validate`
             : `${this.prefix}/${company_id}/funds/criteria/validate`;

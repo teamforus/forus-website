@@ -1,4 +1,4 @@
-import React, { createRef, MutableRefObject, useCallback, useEffect, useRef, useState } from 'react';
+import React, { createRef, MutableRefObject, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Fund from '../../../props/models/Fund';
 import Organization from '../../../props/models/Organization';
 import RecordType from '../../../props/models/RecordType';
@@ -6,33 +6,21 @@ import { hasPermission } from '../../../helpers/utils';
 import FundCriteriaEditorItem from './FundCriteriaEditorItem';
 import FundCriterion from '../../../props/models/FundCriterion';
 import useTranslate from '../../../hooks/useTranslate';
+import { uniqueId } from 'lodash';
 
 export type FundCriterionOrganization = Organization & {
+    name: string;
     accepted?: boolean;
     validator_organization?: FundCriterionOrganization;
     validator_organization_id?: number;
 };
 
-export type FundCriterionLocal = FundCriterion & {
-    is_editing?: boolean;
-    show_external_validators_form?: boolean;
-    new_validator?: number;
-    is_new?: boolean;
-    header?: string;
-    external_validators: Array<{
-        accepted: boolean;
-        organization_id: number;
-        organization_validator_id: number;
-    }>;
-    validators_models?: Array<FundCriterionOrganization>;
-    validators_available?: Array<{
-        id: number;
-        validator_organization_id?: number;
-        validator_organization?: { name: string };
-    }>;
-    validators?: Array<Array<FundCriterionOrganization>>;
-    validators_list?: Array<Array<FundCriterionOrganization>>;
-    use_external_validators?: boolean;
+export type CriteriaEditorItem = {
+    uid?: string;
+    isNew?: boolean;
+    isEditing?: boolean;
+    saveRef?: React.MutableRefObject<() => Promise<boolean>>;
+    item: FundCriterion;
 };
 
 export default function FundCriteriaEditor({
@@ -49,90 +37,124 @@ export default function FundCriteriaEditor({
 }: {
     fund: Fund;
     organization: Organization;
-    criteria: Array<FundCriterionLocal>;
-    setCriteria: (criteria: Array<FundCriterionLocal>) => void;
+    criteria: Array<FundCriterion>;
+    setCriteria: (criteria: Array<FundCriterion>) => void;
     isEditable: boolean;
-    recordTypes: Array<Partial<RecordType>>;
+    recordTypes: Array<RecordType>;
     saveButton?: boolean;
-    onSaveCriteria?: (criteria: Array<FundCriterionLocal>) => void;
+    onSaveCriteria?: (criteria: Array<FundCriterion>) => void;
     validatorOrganizations: Array<Organization>;
-    saveCriteriaRef?: MutableRefObject<() => Promise<unknown>>;
+    saveCriteriaRef?: MutableRefObject<() => Promise<Array<FundCriterion>> | null>;
 }) {
     const translate = useTranslate();
 
-    const [criterionBlocksRefs, setCriterionBlocksRef] = useState<Array<MutableRefObject<() => Promise<boolean>>>>([]);
-    const [isEditing, setIsEditing] = useState<boolean>(false);
     const [deletedItemsCount, setDeleteItemsCount] = useState<number>(0);
-
     const elementRef = useRef<HTMLDivElement>(null);
+    const [criteriaList, setCriteriaList] = useState<Array<CriteriaEditorItem>>(null);
 
-    const updateOnEditFlag = useCallback(() => {
-        setIsEditing(criteria.filter((criterion) => criterion?.is_editing).length > 0);
-    }, [criteria]);
+    const recordTypesList = useMemo(() => {
+        return [{ key: null, name: 'Select' }, ...recordTypes];
+    }, [recordTypes]);
+
+    const modified = useMemo(() => {
+        return criteriaList?.filter((item) => item?.isEditing)?.length > 0;
+    }, [criteriaList]);
 
     const addCriteria = useCallback(() => {
-        criteria.push({
-            is_new: true,
-            is_editing: true,
-            show_attachment: false,
-            external_validators: [],
-            record_type_key: null,
-            operator: null,
-            value: null,
-            optional: false,
-        });
-        setCriteria([...criteria]);
-
-        updateOnEditFlag();
-    }, [criteria, setCriteria, updateOnEditFlag]);
+        setCriteriaList((criteriaList) => [
+            ...criteriaList,
+            {
+                uid: uniqueId(),
+                isNew: true,
+                isEditing: true,
+                saveRef: createRef<() => Promise<boolean>>(),
+                item: {
+                    show_attachment: false,
+                    external_validators: [],
+                    record_type_key: null,
+                    operator: null,
+                    value: null,
+                    optional: false,
+                },
+            },
+        ]);
+    }, []);
 
     const saveCriteria = useCallback(() => {
-        return new Promise((resolve) => {
-            Promise.all(criteria.map((criterion, index) => criterionBlocksRefs[index].current())).then((result) => {
-                updateOnEditFlag();
+        const promises = criteriaList.map((item) => item.saveRef.current());
 
-                if (result.filter((result) => !result).length === 0) {
-                    resolve(true);
-                    setCriteria([...criteria]);
-                    if (onSaveCriteria) {
-                        onSaveCriteria(criteria);
-                    }
-                } else {
-                    resolve(false);
+        return new Promise<Array<FundCriterion> | null>((resolve) => {
+            Promise.all(promises).then((result) => {
+                const errors = result.reduce((list, valid, index) => {
+                    return valid ? [...list] : [...list, index];
+                }, []);
 
-                    setTimeout(() => {
-                        const errors = $(elementRef.current).find('.form-error');
+                if (errors.length === 0) {
+                    setCriteriaList((list) => [
+                        ...list.map((item) => ({
+                            ...item,
+                            isNew: false,
+                            isEditing: false,
+                        })),
+                    ]);
 
-                        if (errors.length) {
-                            window.scrollTo(0, Math.max(0, errors.offset().top - 100));
-                        }
-                    }, 250);
+                    const criteria = criteriaList.map(({ item }) => item);
+
+                    setCriteria(criteria);
+                    onSaveCriteria?.(criteria);
+
+                    resolve(criteria);
+                    return;
                 }
+
+                resolve(null);
+
+                setCriteriaList((list) => {
+                    errors.forEach((index) => {
+                        list[index].isEditing = true;
+                    });
+
+                    return [...list];
+                });
+
+                setTimeout(() => {
+                    elementRef?.current?.querySelector('.form-error')?.scrollIntoView();
+                }, 250);
             });
         });
-    }, [criteria, criterionBlocksRefs, onSaveCriteria, setCriteria, updateOnEditFlag]);
+    }, [criteriaList, onSaveCriteria, setCriteria]);
 
     const onDelete = useCallback(
-        (criterion: FundCriterionLocal) => {
-            const index = criteria.indexOf(criterion);
+        (index: number) => {
+            const criterion = criteriaList[index];
+            const criterionIndex = criteria.indexOf(criterion?.item);
 
-            if (index != -1) {
-                setDeleteItemsCount(deletedItemsCount + 1);
-                criteria.splice(index, 1);
-            } else {
-                criteria.splice(
-                    criteria.findIndex((item) => item.is_new),
-                    1,
-                );
+            if (criterionIndex !== -1) {
+                criteria.splice(criterionIndex, 1);
+                setCriteria([...criteria]);
             }
-            setCriteria([...criteria]);
+
+            if (index !== -1) {
+                criteriaList.splice(index, 1);
+                setCriteriaList([...criteriaList]);
+            }
+
+            setDeleteItemsCount((count) => count + 1);
         },
-        [criteria, deletedItemsCount, setCriteria],
+        [criteria, criteriaList, setCriteria],
     );
 
     useEffect(() => {
-        setCriterionBlocksRef([...new Array(criteria.length)].map(() => createRef<() => Promise<boolean>>()));
-    }, [criteria.length]);
+        setCriteriaList((criteriaList) => {
+            return criteria.map((criterion) => {
+                const preValue = criteriaList?.find((item) => item.item == criterion);
+
+                return preValue
+                    ? { ...preValue }
+                    : { uid: uniqueId(), item: criterion, saveRef: createRef<() => Promise<boolean>>() };
+            });
+        });
+    }, [criteria]);
 
     useEffect(() => {
         if (saveCriteriaRef) {
@@ -141,37 +163,45 @@ export default function FundCriteriaEditor({
     }, [saveCriteria, saveCriteriaRef]);
 
     return (
-        <div className="block block-criteria-editor">
-            {criteria.map((criterion, index) => (
+        <div className="block block-criteria-editor" ref={elementRef}>
+            {criteriaList?.map((item, index) => (
                 <FundCriteriaEditorItem
-                    key={index}
+                    key={item.uid}
                     fund={fund}
-                    recordTypes={[{ key: null, name: 'Select' }, ...recordTypes]}
+                    recordTypes={recordTypesList}
                     isEditable={isEditable}
                     organization={organization}
-                    criterion={criterion}
-                    onEditCriteria={updateOnEditFlag}
-                    onEditCancelCriteria={updateOnEditFlag}
-                    setCriterion={(_criterion) => {
-                        criteria[index] = { ...criterion, ..._criterion };
-                        setCriteria([...criteria]);
+                    criterion={item.item}
+                    isNew={item.isNew}
+                    isEditing={item.isEditing}
+                    setIsEditing={(isEditing: boolean) => {
+                        setCriteriaList((list) => {
+                            list[index].isEditing = isEditing;
+                            return [...list];
+                        });
                     }}
-                    onDeleteCriteria={onDelete}
+                    setCriterion={(_criterion) => {
+                        setCriteriaList((list) => {
+                            list[index].item = { ...list[index].item, ..._criterion };
+                            return [...list];
+                        });
+                    }}
+                    onDeleteCriteria={() => onDelete(index)}
                     validatorOrganizations={validatorOrganizations}
-                    saveCriterionRef={criterionBlocksRefs[index]}
+                    saveCriterionRef={item.saveRef}
                 />
             ))}
 
             <div className="criteria-editor-actions">
                 {isEditable && hasPermission(organization, 'manage_funds') && (
-                    <div className="button button-primary" onClick={() => addCriteria()}>
+                    <div className="button button-primary" onClick={addCriteria}>
                         <em className="mdi mdi-plus-circle icon-start" />
                         {translate('components.fund_criteria_editor.buttons.add_criteria')}
                     </div>
                 )}
 
-                {saveButton && (isEditing || deletedItemsCount > 0) && (
-                    <div className="button button-primary pull-right" onClick={() => saveCriteria()}>
+                {saveButton && (modified || deletedItemsCount > 0) && (
+                    <div className="button button-primary pull-right" onClick={saveCriteria}>
                         <em className="mdi mdi-content-save icon-start" />
                         {translate('components.fund_criteria_editor.buttons.save')}
                     </div>

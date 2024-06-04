@@ -1,4 +1,5 @@
 import RecordType from './RecordType';
+import FundCriterionExternalValidator from './FundCriterionExternalValidator';
 
 export default interface FundCriterion {
     id?: number;
@@ -15,4 +16,5 @@ export default interface FundCriterion {
     value?: string;
     has_record?: boolean;
     is_valid?: boolean;
+    external_validators?: Array<FundCriterionExternalValidator>;
 }

@@ -141,7 +141,7 @@ export class OrganizationService<T = Organization> {
         return this.apiRequest.get(`${this.prefix}/${id}/external-funds`, data);
     }
 
-    public externalFundUpdate(id: number, fund_id: number, data = {}): Promise<ApiResponse<T>> {
+    public externalFundUpdate(id: number, fund_id: number, data: object = {}): Promise<ApiResponse<T>> {
         return this.apiRequest.patch(`${this.prefix}/${id}/external-funds/${fund_id}`, data);
     }
 
