@@ -224,7 +224,7 @@ export default function ImplementationsView() {
                                                                 <StateNavLink
                                                                     name={'fund-backoffice-edit'}
                                                                     params={{
-                                                                        id: fund.id,
+                                                                        fundId: fund.id,
                                                                         organizationId: activeOrganization.id,
                                                                     }}
                                                                     className={`button button-default`}>
@@ -236,7 +236,7 @@ export default function ImplementationsView() {
                                                             <StateNavLink
                                                                 name={'funds-show'}
                                                                 params={{
-                                                                    id: fund.id,
+                                                                    fundId: fund.id,
                                                                     organizationId: activeOrganization.id,
                                                                 }}
                                                                 className={`button button-primary`}>

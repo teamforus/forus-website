@@ -2,6 +2,8 @@ import Office from './Office';
 import Organization from './Organization';
 import Media from './Media';
 import ProductCategory from './ProductCategory';
+import Fund from './Fund';
+import Voucher from './Voucher';
 
 export default interface Product {
     id: number;
@@ -29,27 +31,26 @@ export default interface Product {
     deleted_at?: string;
     deleted_at_locale?: string;
     deleted: boolean;
-    funds: Array<{
-        id: number;
-        name: string;
-        logo: Media;
-        type: 'budget' | 'subsidies' | 'external';
-        organization: {
-            id: number;
-            name: string;
-        };
-        end_at: string;
-        end_at_locale: string;
-        reservations_enabled: boolean;
-        reservation_extra_payments_enabled: boolean;
-        fund_id?: number;
-        limit_total?: number;
-        limit_available?: number;
-        limit_per_identity?: number;
-        limit_total_unlimited: boolean;
-        price?: string;
-        price_locale?: string;
-    }>;
+    funds: Array<
+        Fund & {
+            organization: {
+                id: number;
+                name: string;
+            };
+            end_at: string;
+            end_at_locale: string;
+            reservations_enabled: boolean;
+            reservation_extra_payments_enabled: boolean;
+            fund_id?: number;
+            limit_total?: number;
+            limit_available?: number;
+            limit_per_identity?: number;
+            limit_total_unlimited: boolean;
+            price?: string;
+            price_locale?: string;
+            vouchers?: Array<Voucher>;
+        }
+    >;
     offices: Array<Office>;
     product_category: ProductCategory;
     bookmarked: boolean;

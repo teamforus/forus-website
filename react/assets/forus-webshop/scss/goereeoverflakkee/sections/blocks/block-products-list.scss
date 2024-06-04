@@ -1,13 +1,4 @@
 &.block-products-list {
-    .product-item {
-        .product-content {
-            .product-details {
-                .product-name {
-                    font: 500 18px/27px var(--base-font);
-                    color: var(--htc);
-                    margin-bottom: 10px;
-                }
-            }
-        }
-    }
+    --products-title-color: #2E82A4;
+    --products-text-color: #2D3748;
 }

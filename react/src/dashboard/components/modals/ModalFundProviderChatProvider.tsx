@@ -160,7 +160,7 @@ export default function ModalFundProviderChatProvider({
                         Annuleer
                     </button>
                     <button type={'submit'} className="button button-primary button-sm">
-                        Bevestig
+                        Bevestigen
                     </button>
                 </div>
             </form>

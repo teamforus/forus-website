@@ -277,8 +277,8 @@ export default function ImplementationsCms() {
                     title: '',
                     description: '',
                     expire_at: null,
-                    expire: !!implementation.announcement.expire_at,
-                    ...(implementation.announcement || {}),
+                    expire: !!implementation.announcement?.expire_at,
+                    ...(implementation?.announcement || {}),
                 },
             };
 

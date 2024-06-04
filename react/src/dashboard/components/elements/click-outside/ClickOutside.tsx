@@ -14,6 +14,7 @@ export default function ClickOutside(props: {
     children: ReactNode;
     id?: string;
     role?: string;
+    dataDusk?: string;
 }) {
     const ref = useRef(null);
     const [body] = useState(document.querySelector('body'));
@@ -53,6 +54,7 @@ export default function ClickOutside(props: {
             onClick={props.onClick}
             onContextMenu={props.onContextMenu}
             ref={ref}
+            data-dusk={props.dataDusk}
             style={props.style || {}}
             onKeyDown={props.onKeyDown}
             onScroll={props.onScroll}

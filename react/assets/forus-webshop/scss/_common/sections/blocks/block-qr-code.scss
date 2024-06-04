@@ -1,0 +1,40 @@
+.block.block-qr-code {
+    width: 100%;
+    padding-bottom: 20px;
+
+    .qr_code {
+        width: 280px;
+        height: 280px;
+        padding: 20px;
+        background: #fff;
+        margin: auto;
+        border-radius: 15px;
+        box-shadow: 0 5px 35px rgba(0, 0, 0, 0.075);
+
+        img,
+        canvas {
+            display: block;
+            width: 100%;
+        }
+    }
+
+    &.block-qr-code-fit {
+        width: 100%;
+
+        .qr_code {
+            width: 100%;
+            height: auto;
+            border: 1px solid var(--border-color);
+        }
+
+        &:last-child {
+            padding-bottom: 0;
+        }
+
+        @media screen and (max-width: 1700px) {
+            .qr_code {
+                max-width: 250px;
+            }
+        }
+    }
+}

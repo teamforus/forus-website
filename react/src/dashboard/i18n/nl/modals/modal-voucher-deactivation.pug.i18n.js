@@ -13,7 +13,7 @@ module.exports = {
     },
     buttons: {
         cancel: 'Annuleer',
-        submit: 'Bevestig',
+        submit: 'Bevestigen',
     },
     danger_zone: {
         title: 'Let op! Weet u zeker dat u dit tegoed wilt deactiveren?',

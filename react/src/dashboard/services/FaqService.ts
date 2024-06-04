@@ -1,12 +1,13 @@
-import { ResponseSimple } from '../props/ApiResponses';
 import { useState } from 'react';
 import ApiRequestService from './ApiRequestService';
+import { ApiResponseSingle } from '../props/ApiResponses';
+import Faq from '../props/models/Faq';
 
-export class FaqService {
+export class FaqService<T = Faq> {
     /**
      * @param apiRequest
      */
-    public constructor(protected apiRequest: ApiRequestService = new ApiRequestService()) {}
+    public constructor(protected apiRequest: ApiRequestService<T> = new ApiRequestService<T>()) {}
 
     /**
      * Url prefix
@@ -16,12 +17,13 @@ export class FaqService {
     public prefix = '/platform/organizations';
 
     /**
-     * Validate
+     * Fetch list
      */
-    public faqValidate(organizationId: number, data: object): Promise<ResponseSimple<null>> {
-        return this.apiRequest.post(`${this.prefix}/${organizationId}/faq/validate`, data);
+    public faqValidate(organization_id: number, faq: object): Promise<ApiResponseSingle<T>> {
+        return this.apiRequest.post(`${this.prefix}/${organization_id}/faq/validate`, { faq });
     }
 }
-export default function useFaqService(): FaqService {
+
+export function useFaqService(): FaqService {
     return useState(new FaqService())[0];
 }

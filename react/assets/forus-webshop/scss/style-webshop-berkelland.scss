@@ -1,0 +1,40 @@
+@import "berkelland/vars";
+@import "_common/webshop";
+
+// SHAME
+@import "berkelland/includes/shame";
+
+// LAYOUTS
+@import "berkelland/layout/header";
+
+// COMPONENTS
+@import "berkelland/components/buttons";
+
+// SECTIONS
+@import "berkelland/sections/faq";
+@import "berkelland/sections/steps";
+@import "berkelland/sections/vouchers";
+
+// BLOCKS
+@import "berkelland/sections/blocks/map";
+@import "berkelland/sections/blocks/products";
+@import "berkelland/sections/blocks/profile";
+@import "berkelland/sections/blocks/shops_map";
+@import "berkelland/sections/blocks/transactions";
+@import "berkelland/sections/blocks/voucher";
+@import "berkelland/sections/blocks/vouchers";
+
+.page {
+    display: flex;
+    flex-direction: column;
+
+    &.page-voucher {
+        & > .section.section-products {
+            order: 2;
+        }
+
+        & > .block.block-map_card {
+            order: 1;
+        }
+    }
+}

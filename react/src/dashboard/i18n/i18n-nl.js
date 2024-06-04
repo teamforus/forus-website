@@ -343,7 +343,7 @@ module.exports = {
     // FINANCIAL DASHBOARD = financial-dashboard-transaction.pug
     financial_dashboard: {
         header: {
-            title: "Financieel statistieken",
+            title: "Financiele statistieken",
         },
         labels: {
             product: "Fietsen, Computers",
@@ -392,7 +392,7 @@ module.exports = {
             used: "Uitgaven",
             left: "Restant",
             total_percentage: "Totaal percentage",
-            total_count: "Totaalaantal",
+            total_count: "Totaal aantal",
             product_vouchers: "Aanbiedingsvouchers"
         },
         buttons: {
@@ -467,7 +467,7 @@ module.exports = {
             explanation: "Plaats hier de informatie voor inwoners. Deze tekst staat op de uitleg pagina. De algemene tekst is zichtbaar als beide opties uit staan.",
             accessibility: "Plaats een link naar de toegankelijkheidsverklaring of vul een eigen tekst in. De algemene tekst is zichtbaar als beide opties uit staan.",
             terms_and_conditions: "Wanneer dit veld leeg gelaten wordt, worden de standaard blokken van de pagina weergegeven.",
-        
+
             footer_contact_details: "Vul hier de contactinformatie van uw organisatie in. De tekst staat in de footer op de homepagina.",
             footer_opening_times: "Vul hier de openingstijden van uw organisatie in. De tekst staat in de footer op de homepagina.",
         },
@@ -554,6 +554,7 @@ module.exports = {
             base_card: {
                 header: {
                     description: "Beschrijving",
+                    formulas: "Rekenregels",
                     statistics: "Statistieken",
                     criteria: "Voorwaarden",
                 },
@@ -767,7 +768,7 @@ module.exports = {
         },
         buttons: {
             cancel: "Annuleren",
-            create: "Bevestig",
+            create: "Bevestigen",
             save_location: "Vestiging opslaan",
             add_location: "Voeg nog een vestiging toe",
             edit_location: "Wijzigen",
@@ -837,7 +838,7 @@ module.exports = {
         },
         buttons: {
             cancel: "Annuleren",
-            confirm: "Bevestig",
+            confirm: "Bevestigen",
             close: "Sluit"
         },
         errors: {
@@ -1081,7 +1082,7 @@ module.exports = {
             step_2: 'Ik heb al een profiel',
             step_3: 'Inloggen met Autorisatie code',
             no_app: 'Ik kan nu nog geen app gebruiken >',
-            create_profile: 'Bevestig',
+            create_profile: 'Bevestigen',
         },
         no_app: {
             enter_email: 'U heeft de Me-app nodig om betalingen te ontvangen.',
@@ -1119,7 +1120,7 @@ module.exports = {
             labels: {
                 employee_add_header: "Bevestig uitnodiging",
                 employee_add_message: "Wilt u medewerker met het e-mailadres <strong class='text-primary'>{{email}}</strong> uitnodigen? <br>Deze medewerker zal hier over een e-mail ontvangen.",
-                accept: "Bevestig",
+                accept: "Bevestigen",
                 cancel: "Annuleer"
             }
         },
@@ -1219,7 +1220,7 @@ module.exports = {
             step_2: 'Ik heb al een profiel',
             step_3: 'Inloggen met Autorisatie code',
             no_app: 'Ik kan nu nog geen app gebruiken >',
-            create_profile: 'Bevestig',
+            create_profile: 'Bevestigen',
         },
         no_app: {
             enter_email: 'Vul uw e-mail adres in om verder te gaan',
@@ -1346,7 +1347,7 @@ module.exports = {
             step_2: 'Ik heb al een profiel',
             step_3: 'Inloggen met Autorisatie code',
             no_app: 'Ik kan nu nog geen app gebruiken >',
-            create_profile: 'Bevestig',
+            create_profile: 'Bevestigen',
         },
         no_app: {
             enter_email: 'Vul uw e-mailadres in om verder te gaan',
@@ -1540,7 +1541,7 @@ module.exports = {
             note: "Notite",
             actions: "Acties",
         },
-    
+
         buttons: {
             add_new: 'Nieuwe aanmaken',
         },

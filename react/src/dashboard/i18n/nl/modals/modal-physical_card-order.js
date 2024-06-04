@@ -39,7 +39,7 @@ module.exports = {
         request_new_card: {
             order_by_email: 'Per post bestellen',
             cancel: 'Annuleer',
-            confirm: 'Bevestig',
+            confirm: 'Bevestigen',
         },
     }
 }

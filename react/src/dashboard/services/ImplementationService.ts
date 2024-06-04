@@ -1,5 +1,5 @@
-import ApiResponse, { ApiResponseSingle } from '../props/ApiResponses';
 import { useState } from 'react';
+import ApiResponse, { ApiResponseSingle } from '../props/ApiResponses';
 import ApiRequestService from './ApiRequestService';
 import Implementation from '../props/models/Implementation';
 
@@ -72,6 +72,7 @@ export class ImplementationService<T = Implementation> {
         return this.apiRequest.patch(`${this.prefix}/${organizationId}/implementations/${id}/pre-check-banner`, data);
     }
 }
+
 export default function useImplementationService(): ImplementationService {
     return useState(new ImplementationService())[0];
 }

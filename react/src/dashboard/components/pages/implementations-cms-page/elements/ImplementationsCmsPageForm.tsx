@@ -20,7 +20,7 @@ import MarkdownEditor from '../../../elements/forms/markdown-editor/MarkdownEdit
 import ImplementationsBlockEditor from './ImplementationsBlockEditor';
 import { uniq } from 'lodash';
 import ImplementationsFaqEditor from './ImplementationsFaqEditor';
-import useFaqService from '../../../../services/FaqService';
+import { useFaqService } from '../../../../services/FaqService';
 import { useNavigate } from 'react-router-dom';
 import { getStateRouteUrl } from '../../../../modules/state_router/Router';
 

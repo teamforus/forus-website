@@ -47,4 +47,11 @@ export default interface Implementation {
     show_voucher_map?: string;
     show_product_map?: string;
     pages: Array<ImplementationPage>;
+    pre_check_enabled: boolean;
+    pre_check_title: string;
+    pre_check_description: string;
+    pre_check_banner_state: string;
+    pre_check_banner_label: string;
+    pre_check_banner_description: string;
+    pre_check_banner_title: string;
 }

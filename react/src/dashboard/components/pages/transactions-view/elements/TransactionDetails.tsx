@@ -125,7 +125,7 @@ export default function TransactionDetails({
                             <div className="flex flex-grow" />
                         </div>
                     </div>
-                    {transaction.notes.length != 0 && (
+                    {transaction.notes && transaction.notes.length != 0 && (
                         <div className="card-section">
                             <div className="card-block card-block-notes">
                                 {transaction.notes.map((note) => (
@@ -258,6 +258,14 @@ export default function TransactionDetails({
                                     </div>
                                     <div className="keyvalue-value">{transaction.created_at_locale}</div>
                                 </div>
+                                {isSponsor && (
+                                    <div className="keyvalue-item">
+                                        <div className="keyvalue-key">
+                                            {t('financial_dashboard_transaction.labels.date_non_cancelable')}
+                                        </div>
+                                        <div className="keyvalue-value">{transaction.non_cancelable_at_locale}</div>
+                                    </div>
+                                )}
                                 <div className="keyvalue-item">
                                     <div className="keyvalue-key">Status</div>
                                     <div className="keyvalue-value">
