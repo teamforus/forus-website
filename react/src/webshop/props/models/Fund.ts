@@ -15,7 +15,6 @@ export default interface Fund extends FundBase {
     auto_validation?: boolean;
     bsn_confirmation_time?: number;
     criteria?: Array<FundCriterion>;
-    formulas?: Array<FundFormula>;
     auth_2fa_policy?: 'global' | 'optional' | 'required' | 'restrict_features';
     auth_2fa_remember_ip: boolean;
     auth_2fa_restrict_emails: boolean;

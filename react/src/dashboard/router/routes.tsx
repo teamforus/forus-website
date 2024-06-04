@@ -53,6 +53,8 @@ import ExtraPaymentsView from '../components/pages/extra-payments-view/ExtraPaym
 import Features from '../components/pages/features/Features';
 import Feature from '../components/pages/feature/Feature';
 import EventLogs from '../components/pages/eventLogs/EventLogs';
+import FinancialDashboard from '../components/pages/financial-dashboard/FinancialDashboard';
+import FinancialDashboardOverview from '../components/pages/financial-dashboard-overview/FinancialDashboardOverview';
 import TransactionBulksView from '../components/pages/transaction-bulks-view/TransactionBulksView';
 import ReimbursementCategories from '../components/pages/reimbursement-categories/ReimbursementCategories';
 import ThrowError from '../components/pages_system/ThrowError';
@@ -137,14 +139,12 @@ router.state('bank-connections', <BankConnections />, {
     path: `/organizations/:organizationId/bank-connections`,
 });
 
-router.state('financial-dashboard', <WIP title={'Financial dashboard'} />, {
+router.state('financial-dashboard', <FinancialDashboard />, {
     path: `/organizations/:organizationId/financial-dashboard`,
-    fallbackState: 'organizations',
 });
 
-router.state('financial-dashboard-overview', <WIP title={'Financial dashboard overview'} />, {
+router.state('financial-dashboard-overview', <FinancialDashboardOverview />, {
     path: `/organizations/:organizationId/financial-dashboard-overview`,
-    fallbackState: 'organizations',
 });
 
 router.state('vouchers', <WIP title={'Vouchers'} />, {
