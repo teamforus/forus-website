@@ -25,6 +25,7 @@ import { uniqueId } from 'lodash';
 import useSetProgress from '../../../hooks/useSetProgress';
 import useTranslate from '../../../hooks/useTranslate';
 import useAssetUrl from '../../../hooks/useAssetUrl';
+import StateNavLink from '../../../modules/state_router/StateNavLink';
 
 export default function PreCheck() {
     const activeOrganization = useActiveOrganization();
@@ -139,13 +140,17 @@ export default function PreCheck() {
                 await mediaService.delete(implementation.pre_check_banner.uid);
             }
 
-            return await mediaService
-                .store('pre_check_banner', mediaFile)
-                .then((res) => res.data?.data)
-                .catch((err: ResponseError) => {
-                    pushDanger('Mislukt!', err.data?.message || 'Onbekende foutmelding!');
-                    return null;
-                });
+            if (mediaFile) {
+                return await mediaService
+                    .store('pre_check_banner', mediaFile)
+                    .then((res) => res.data?.data)
+                    .catch((err: ResponseError) => {
+                        pushDanger('Mislukt!', err.data?.message || 'Onbekende foutmelding!');
+                        return null;
+                    });
+            }
+
+            return null;
         },
         [deleteMedia, implementation?.pre_check_banner?.uid, mediaService, pushDanger],
     );
@@ -489,7 +494,9 @@ export default function PreCheck() {
                             </div>
 
                             <div className="form-group">
-                                <div className="form-label">{translate('funds_pre_check.labels.title')}</div>
+                                <div className="form-label form-label-required">
+                                    {translate('funds_pre_check.labels.title')}
+                                </div>
                                 <div className="form-offset">
                                     <input
                                         className={'form-control r-n'}
@@ -502,7 +509,9 @@ export default function PreCheck() {
                             </div>
 
                             <div className="form-group">
-                                <div className="form-label">{translate('funds_pre_check.labels.description')}</div>
+                                <div className="form-label form-label-required">
+                                    {translate('funds_pre_check.labels.description')}
+                                </div>
                                 <div className="form-offset">
                                     <textarea
                                         className={'form-control r-n'}
@@ -544,9 +553,9 @@ export default function PreCheck() {
 
                         <div className="card-section">
                             <div className="text-right">
-                                <button className="button button-default" type="button" id="cancel">
+                                <StateNavLink id="cancel" name={'organizations'} className={'button button-default'}>
                                     {translate('funds_edit.buttons.cancel')}
-                                </button>
+                                </StateNavLink>
 
                                 <button className="button button-primary" type="submit">
                                     {translate('funds_edit.buttons.confirm')}
