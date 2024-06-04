@@ -287,6 +287,7 @@ export default function ModalReservationUpload({
     }, [fileService, productReservationService]);
 
     const reset = useCallback(function () {
+        setIsValid(false);
         setData(null);
         setCsvFile(null);
     }, []);

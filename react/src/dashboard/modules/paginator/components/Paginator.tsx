@@ -48,9 +48,9 @@ export default function Paginator({
 
     const setPage = useCallback(
         (page) => {
-            updateFilters({ ...filters, page });
+            updateFilters({ page });
         },
-        [filters, updateFilters],
+        [updateFilters],
     );
 
     const onChangePerPage = useCallback(
