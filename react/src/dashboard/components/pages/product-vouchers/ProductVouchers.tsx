@@ -22,7 +22,7 @@ import FilterItemToggle from '../../elements/tables/elements/FilterItemToggle';
 import { useFundService } from '../../../services/FundService';
 import useVoucherService from '../../../services/VoucherService';
 import Implementation from '../../../props/models/Implementation';
-import { useImplementationService } from '../../../services/ImplementationService';
+import useImplementationService from '../../../services/ImplementationService';
 import useVoucherExportService from '../../../services/exports/useVoucherExportService';
 import DatePickerControl from '../../elements/forms/controls/DatePickerControl';
 import { dateFormat, dateParse } from '../../../helpers/dates';
@@ -50,7 +50,7 @@ export default function ProductVouchers() {
     const [paginatorKey] = useState<string>('product-vouchers');
     const [loading, setLoading] = useState<boolean>(true);
     const [funds, setFunds] = useState<Array<Partial<Fund>>>([]);
-    const [shownVoucherMenus, setShownVoucherMenus] = useState<Array<number>>([]);
+    const [shownVoucherMenuId, setShownVoucherMenuId] = useState<number>(null);
     const [vouchers, setVouchers] = useState<PaginationData<Voucher>>(null);
     const [implementations, setImplementations] = useState<Array<Partial<Implementation>>>(null);
 
@@ -84,14 +84,7 @@ export default function ProductVouchers() {
 
     const fetchFunds = useCallback(() => {
         fundService.list(activeOrganization.id, { per_page: 100, configured: 1 }).then((res) => {
-            const data = res.data.data;
-
-            data.unshift({
-                id: null,
-                name: 'Alle fondsen',
-            });
-
-            setFunds(data);
+            setFunds([{ id: null, name: 'Alle fondsen' }, ...res.data.data]);
         });
     }, [activeOrganization.id, fundService]);
 
@@ -175,7 +168,7 @@ export default function ProductVouchers() {
             e.stopPropagation();
             e.preventDefault();
 
-            setShownVoucherMenus([]);
+            setShownVoucherMenuId(null);
 
             openModal((modal) => (
                 <ModalVoucherQRCode
@@ -834,23 +827,19 @@ export default function ProductVouchers() {
                                                         <td>
                                                             <div
                                                                 className={`actions ${
-                                                                    shownVoucherMenus.indexOf(voucher.id) != -1
-                                                                        ? 'active'
-                                                                        : ''
+                                                                    shownVoucherMenuId == voucher.id ? 'active' : ''
                                                                 }`}>
                                                                 <TableRowActions
-                                                                    actions={shownVoucherMenus}
-                                                                    setActions={(actions: Array<number>) =>
-                                                                        setShownVoucherMenus(actions)
-                                                                    }
-                                                                    modelItem={voucher}>
+                                                                    id={voucher.id}
+                                                                    activeId={shownVoucherMenuId}
+                                                                    setActiveId={setShownVoucherMenuId}>
                                                                     <div className="dropdown dropdown-actions">
                                                                         <StateNavLink
                                                                             className="dropdown-item"
                                                                             name={'vouchers-show'}
                                                                             params={{
-                                                                                organizationId: activeOrganization.id,
                                                                                 id: voucher.id,
+                                                                                organizationId: activeOrganization.id,
                                                                             }}>
                                                                             <em className={'mdi mdi-eye icon-start'} />
                                                                             Bekijken

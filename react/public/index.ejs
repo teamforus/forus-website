@@ -6,6 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#000000" />
     <meta name="description" content="Forus test app" />
+    <% if (disable_indexing) { %>
+    <meta name="robots" content="noindex">
+    <% } %>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:300,400,400i,500,600,700">
     <link href="<%= libs.mdi.css %>" rel="stylesheet">
     <link href="<%= libs.summernote.css %>" rel="stylesheet">

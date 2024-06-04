@@ -1,6 +1,5 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 import { ModalState } from '../../modules/modals/context/ModalContext';
-import { classList } from '../../helpers/utils';
 import { useTranslation } from 'react-i18next';
 import { chunk } from 'lodash';
 import CheckboxControl from '../elements/forms/controls/CheckboxControl';
@@ -18,23 +17,17 @@ export type ExportFieldProp = {
 export type ExportSectionProp = {
     type: 'radio' | 'checkbox';
     key: string;
+    title: string;
     value?: string;
     fields: Array<ExportFieldProp>;
     fieldsPerRow?: number;
-    title: string;
     collapsable?: boolean;
     selectAll?: boolean;
     collapsed?: boolean;
 };
 
 type ExportSectionPropLocal = ExportSectionProp & {
-    fieldsView: Array<
-        Array<{
-            key: string;
-            name: string;
-            selected: boolean;
-        }>
-    >;
+    fieldsView: Array<Array<{ key: string; name: string; selected: boolean }>>;
     value?: string;
     collapsed: boolean;
     selected: Array<ExportFieldProp>;
@@ -46,7 +39,7 @@ export default function ModalExportDataSelect({
     className,
     description,
     sections,
-    required,
+    required = true,
     onSuccess,
 }: {
     modal: ModalState;
@@ -58,46 +51,35 @@ export default function ModalExportDataSelect({
     onSuccess: (values: object) => void;
 }) {
     const { t } = useTranslation();
-
-    const [isValid, setIsValid] = React.useState(false);
     const [localSections, setLocalSections] = React.useState<Array<ExportSectionPropLocal>>(null);
 
-    const updateIsValid = useCallback(
-        (localSections) => {
-            const checkboxSections = localSections?.filter(
-                (section: ExportSectionPropLocal) => section.type === 'checkbox',
-            );
-            const checkboxSectionsChecked = checkboxSections?.filter(
-                (section: ExportSectionPropLocal) => section.selected.length > 0,
-            );
+    const isValid = useMemo(() => {
+        const checkboxSections = localSections?.filter(
+            (section: ExportSectionPropLocal) => section.type === 'checkbox',
+        );
 
-            setIsValid(!required || !checkboxSections?.length || checkboxSectionsChecked?.length);
-        },
-        [required],
-    );
+        const checkboxSectionsChecked = checkboxSections?.filter(
+            (section: ExportSectionPropLocal) => section.selected.length > 0,
+        );
 
-    const updateSelectedFields = useCallback(
-        (localSections, section: ExportSectionPropLocal, checkUpdateIsValid = true) => {
-            section.selected = section.fields.filter((field: ExportFieldProp) => field.selected);
-            section.selectAll = section.selected.length === section.fields.length;
+        return !required || !checkboxSections?.length || checkboxSectionsChecked?.length;
+    }, [localSections, required]);
 
-            if (checkUpdateIsValid) {
-                updateIsValid(localSections);
-            }
+    const updateSelectedFields = useCallback((section: ExportSectionPropLocal) => {
+        section.selected = section.fields.filter((field: ExportFieldProp) => field.selected);
+        section.selectAll = section.selected.length === section.fields.length;
 
-            return section;
-        },
-        [updateIsValid],
-    );
+        return section;
+    }, []);
 
     const toggleAllFields = useCallback(
         (section: ExportSectionPropLocal, checked: boolean) => {
             section.selectAll = checked;
             section.fieldsView.forEach((row) => row.forEach((field) => (field.selected = section.selectAll)));
 
-            setLocalSections([...localSections]);
+            setLocalSections(localSections.map(updateSelectedFields));
         },
-        [localSections],
+        [localSections, updateSelectedFields],
     );
 
     const collapseSection = useCallback(
@@ -149,23 +131,11 @@ export default function ModalExportDataSelect({
             return section;
         });
 
-        const localSections2 = localSections.map((section: ExportSectionPropLocal) =>
-            updateSelectedFields(localSections, section, false),
-        );
-
-        setLocalSections(localSections2);
-        updateIsValid(localSections2);
-    }, [sections, updateIsValid, updateSelectedFields]);
+        setLocalSections(localSections.map(updateSelectedFields));
+    }, [sections, updateSelectedFields]);
 
     return (
-        <div
-            className={classList([
-                'modal',
-                'modal-md',
-                'modal-animated',
-                modal.loading ? 'modal-loading' : null,
-                className,
-            ])}>
+        <div className={`modal modal-md modal-animated ${modal.loading ? 'modal-loading' : ''} ${className}`}>
             <div className="modal-backdrop" onClick={modal.close} />
             <form
                 className="modal-window form"
@@ -231,6 +201,7 @@ export default function ModalExportDataSelect({
                                                                         title={field.name}
                                                                         onChange={() => {
                                                                             field.selected = !field.selected;
+                                                                            updateSelectedFields(section);
                                                                             setLocalSections([...localSections]);
                                                                         }}
                                                                     />
@@ -256,6 +227,7 @@ export default function ModalExportDataSelect({
                                                         value={field.value}
                                                         onChange={(e) => {
                                                             section.value = e.target.value;
+                                                            updateSelectedFields(section);
                                                             setLocalSections([...localSections]);
                                                         }}
                                                     />

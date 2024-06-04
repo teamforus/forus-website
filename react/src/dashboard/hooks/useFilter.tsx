@@ -61,5 +61,13 @@ export default function useFilter<T = FilterModel>(
         prevFilters.current = values;
     }, [values]);
 
-    return { show, setShow, values, activeValues, update, resetFilters, touch };
+    return {
+        show,
+        setShow,
+        values,
+        activeValues,
+        update,
+        resetFilters,
+        touch,
+    };
 }

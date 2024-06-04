@@ -5,7 +5,7 @@ import { ResponseErrorData } from '../../../../props/ApiResponses';
 import DatePickerControl from '../../../elements/forms/controls/DatePickerControl';
 import { dateFormat, dateParse } from '../../../../helpers/dates';
 import FormError from '../../../elements/forms/errors/FormError';
-import useRecordTypeService from '../../../../services/RecordTypeService';
+import { useRecordTypeService } from '../../../../services/RecordTypeService';
 import SelectControl from '../../../elements/select-control/SelectControl';
 import SelectControlOptions from '../../../elements/select-control/templates/SelectControlOptions';
 
@@ -23,7 +23,7 @@ export default function VoucherRecordsEditor({
     const recordTypeService = useRecordTypeService();
 
     const [record, setRecord] = useState(null);
-    const [recordOptionsAll, setRecordOptionsAll] = useState(records);
+    const [recordOptionsAll, setRecordOptionsAll] = useState(null);
     const [recordOptions, setRecordOptions] = useState(null);
     const [showRecordSelector, setShowRecordSelector] = useState<boolean>(false);
     const [showVoucherAddBlock, setShowVoucherAddBlock] = useState<number | boolean>(true);

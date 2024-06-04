@@ -8,7 +8,7 @@ import SelectControlOptions from '../elements/select-control/templates/SelectCon
 import FormError from '../elements/forms/errors/FormError';
 import Voucher from '../../props/models/Voucher';
 import Organization from '../../props/models/Organization';
-import useRecordTypeService from '../../services/RecordTypeService';
+import { useRecordTypeService } from '../../services/RecordTypeService';
 import RecordType from '../../props/models/RecordType';
 import useVoucherRecordService from '../../services/VoucherRecordService';
 import usePushDanger from '../../hooks/usePushDanger';

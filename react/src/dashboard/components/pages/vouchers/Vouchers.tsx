@@ -22,7 +22,7 @@ import FilterItemToggle from '../../elements/tables/elements/FilterItemToggle';
 import { useFundService } from '../../../services/FundService';
 import useVoucherService from '../../../services/VoucherService';
 import Implementation from '../../../props/models/Implementation';
-import { useImplementationService } from '../../../services/ImplementationService';
+import useImplementationService from '../../../services/ImplementationService';
 import useVoucherExportService from '../../../services/exports/useVoucherExportService';
 import DatePickerControl from '../../elements/forms/controls/DatePickerControl';
 import { dateFormat, dateParse } from '../../../helpers/dates';
@@ -55,7 +55,7 @@ export default function Vouchers() {
 
     const [paginatorKey] = useState<string>('vouchers');
     const [loading, setLoading] = useState<boolean>(true);
-    const [funds, setFunds] = useState<Array<Fund>>(null);
+    const [funds, setFunds] = useState<Array<Partial<Fund>>>(null);
     const [columnKeys, setColumnKeys] = useState<Array<string>>(null);
     const [tooltips, setTooltips] = useState<
         Array<{
@@ -64,7 +64,7 @@ export default function Vouchers() {
             description: string;
         }>
     >(null);
-    const [shownVoucherMenus, setShownVoucherMenus] = useState<Array<number>>([]);
+    const [shownVoucherMenuId, setShownVoucherMenuId] = useState<number>(null);
     const [activeTooltipKey, setActiveTooltipKey] = useState<string>(null);
     const [showTableConfig, setShowTableConfig] = useState<boolean>(false);
     const [tableConfigCategory, setTableConfigCategory] = useState<string>('tooltips');
@@ -119,12 +119,7 @@ export default function Vouchers() {
 
     const fetchFunds = useCallback(() => {
         fundService.list(activeOrganization.id, { per_page: 100, configured: 1 }).then((res) => {
-            const data = res.data.data;
-
-            data.unshift({
-                id: null,
-                name: 'Alle fondsen',
-            });
+            const data = [{ id: null, name: 'Alle fondsen' }, ...res.data.data];
 
             setFunds(data);
             setFundsById(data.reduce((val, item) => ({ ...val, [item.id]: item }), {}));
@@ -261,7 +256,7 @@ export default function Vouchers() {
             e.stopPropagation();
             e.preventDefault();
 
-            setShownVoucherMenus([]);
+            setShownVoucherMenuId(null);
 
             openModal((modal) => (
                 <ModalVoucherQRCode
@@ -999,16 +994,12 @@ export default function Vouchers() {
                                                         <td>
                                                             <div
                                                                 className={`actions${
-                                                                    shownVoucherMenus.indexOf(voucher.id) != -1
-                                                                        ? ' active'
-                                                                        : ''
+                                                                    shownVoucherMenuId == voucher.id ? 'active' : ''
                                                                 }`}>
                                                                 <TableRowActions
-                                                                    actions={shownVoucherMenus}
-                                                                    setActions={(actions: Array<number>) =>
-                                                                        setShownVoucherMenus(actions)
-                                                                    }
-                                                                    modelItem={voucher}>
+                                                                    id={voucher.id}
+                                                                    activeId={shownVoucherMenuId}
+                                                                    setActiveId={setShownVoucherMenuId}>
                                                                     <div className="dropdown dropdown-actions">
                                                                         <StateNavLink
                                                                             className="dropdown-item"

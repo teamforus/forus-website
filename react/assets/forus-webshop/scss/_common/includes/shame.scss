@@ -55,7 +55,9 @@ html {
 }
 
 [ng-click],
-[ui-sref] {
+[ui-sref],
+.clickable,
+.state-nav-link {
     cursor: pointer;
 
     * {
@@ -130,87 +132,7 @@ ui-view {
     min-height: 85vh;
 }
 
-.app-instruction {
-    text-align: center;
-
-    .step-item {
-        padding: 0px 80px 20px;
-        position: relative;
-        width: 400px;
-        margin: 0 auto;
-        display: inline-block;
-
-        .step-title {
-            font: 700 24px/30px var(--base-font);
-            margin: 0 0 0;
-        }
-
-        .step-description {
-            font: 500 15px/24px var(--base-font);
-            margin: 0 0 10px;
-
-            a {
-                font: 400 16px/22px var(--base-font);
-                text-decoration: underline;
-                color: #2B2BFF;
-            }
-        }
-
-        img {
-            display: block;
-            margin: auto;
-
-            &:not(.line-item) {
-                width:200px;
-                border-radius: 5px;
-                box-shadow: 0 5px 35px rgba(0, 0, 0, 0.1);
-                position: relative;
-                z-index: 1;
-            }
-
-            &.line-item {
-                position: absolute;
-                top: 200px;
-                left: calc(100% - 80px);
-                min-width: 70px;
-                z-index: 2;
-            }
-        }
-
-        .app-title {
-            font: 500 14px/24px var(--base-font);
-            padding: 5px 0 15px 0;
-            text-align: center;
-        }
-
-    }
-
-    .divider-img {
-        margin: 0 0 5px;
-
-        img {
-            display: block;
-            width: 100%;
-        }
-    }
-}
-
 @media screen and (max-width: 1500px) {
-    .app-instruction {
-        .step-item {
-            padding: 0px 0px 20px;
-            width: 25%;
-            
-            img {
-                &.line-item {
-                    top: 140px;
-                    width: 170px;
-                    left: calc(100% - 85px);
-                }
-            }
-        }
-    }
-
     .base-card .card-body {
         min-height: 160px;
     }
@@ -250,33 +172,6 @@ ui-view {
             max-width: 100% !important;
             max-height: 100% !important;
             display: block !important;
-        }
-    }
-
-    .app-instruction {
-        .divider-img {
-            width: auto;
-            padding-top: 10px;
-            margin: 0 -25px 10px;
-
-            img {
-                display: none;
-            }
-        }
-
-        .step-item {
-            width: 50%;
-            padding: 0 20px;
-            vertical-align: top;
-
-            .app-title {
-                font-size: 13px;
-                margin: 0 -30px;
-            }
-
-            img {
-                display: none;
-            }
         }
     }
 }

@@ -15,6 +15,7 @@ import { LoadingBarProvider } from './modules/loading_bar/context/LoadingBarCont
 import ApiRequestService from './services/ApiRequestService';
 import StateHashPrefixRedirect from './modules/state_router/StateHashPrefixRedirect';
 import { ToastsProvider } from './modules/toasts/context/ToastsContext';
+import AwsRumScript from './modules/aws_rum/AwsRumScript';
 
 i18n.use(initReactI18next)
     .init({
@@ -86,6 +87,7 @@ export default function Dashboard({ envData }: { envData: EnvDataProp }): React.
                     </LoadingBarProvider>
                 </RouterSelector>
             </ToastsProvider>
+            <AwsRumScript awsRum={envData.config?.aws_rum} />
         </PushNotificationsProvider>
     );
 }

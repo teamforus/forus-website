@@ -46,6 +46,7 @@ import SignUpAvailableFunds from './elements/SignUpAvailableFunds';
 import useFilter from '../../../hooks/useFilter';
 import useDemoTransactionService from '../../../services/DemoTransactionService';
 import { uniq } from 'lodash';
+import useAppConfigs from '../../../hooks/useAppConfigs';
 
 type OfficeLocal = Office & { edit?: boolean };
 
@@ -53,6 +54,7 @@ export default function SignUpProvider() {
     const { t } = useTranslation();
     const isMobile = window.innerWidth < 1000;
     const envData = useEnvData();
+    const appConfigs = useAppConfigs();
 
     const [printDebug] = useState(false);
 
@@ -1738,7 +1740,7 @@ export default function SignUpProvider() {
                                                 </div>
                                                 <div className="office-map">
                                                     <div className="office-map-content">
-                                                        <GoogleMap mapPointers={[office]} />
+                                                        <GoogleMap mapPointers={[office]} appConfigs={appConfigs} />
                                                     </div>
                                                     <div className="office-actions">
                                                         <a

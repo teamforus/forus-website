@@ -22,7 +22,7 @@ interface AuthMemoProps {
     setIdentityEmployee?: React.Dispatch<Employee>;
     isSignedIn?: boolean;
     setToken?: (token: string) => void;
-    updateIdentity?: () => void;
+    updateIdentity?: () => Promise<{ identity: Identity; identity2FAState: Identity2FAState }>;
 }
 
 const authContext = createContext<AuthMemoProps>(null);
@@ -52,16 +52,38 @@ const AuthProvider = ({ children }: { children: React.ReactElement }) => {
         setIdentityEmployee(null);
     }, []);
 
-    const updateIdentity = useCallback(() => {
-        authService.identity().then((res) => {
-            setIdentity(res.data);
-            setIdentityEmployee(null);
-        });
+    const fetchIdentity = useCallback(async () => {
+        const identity = token
+            ? await authService
+                  .identity()
+                  .then((res) => res.data)
+                  .catch(() => null)
+            : null;
 
-        identity2FAService.status().then((res) => {
-            setIdentity2FAState(res.data.data);
-        });
-    }, [authService, identity2FAService]);
+        setIdentity(identity);
+
+        return identity;
+    }, [authService, token]);
+
+    const fetchIdentity2FA = useCallback(async () => {
+        const identity2FAState = token
+            ? await identity2FAService
+                  .status()
+                  .then((res) => res.data.data)
+                  .catch(() => null)
+            : null;
+
+        setIdentity2FAState(identity2FAState);
+
+        return identity2FAState;
+    }, [identity2FAService, token]);
+
+    const updateIdentity = useCallback(async () => {
+        const identity = await fetchIdentity();
+        const identity2FAState = await fetchIdentity2FA();
+
+        return { identity, identity2FAState };
+    }, [fetchIdentity, fetchIdentity2FA]);
 
     useEffect(() => {
         localStorage.active_account = token;
@@ -69,7 +91,7 @@ const AuthProvider = ({ children }: { children: React.ReactElement }) => {
 
     useEffect(() => {
         if (token && !identity) {
-            updateIdentity();
+            updateIdentity().then();
             return;
         }
 
@@ -88,7 +110,9 @@ const AuthProvider = ({ children }: { children: React.ReactElement }) => {
             setProgress(100);
 
             if (data.detail.data.error === '2fa') {
-                return navigate(getStateRouteUrl('auth-2fa'));
+                setIdentity(null);
+                fetchIdentity2FA().then(() => navigate(getStateRouteUrl('auth-2fa')));
+                return;
             }
 
             return navigate(getStateRouteUrl('sign-out'));
@@ -97,7 +121,7 @@ const AuthProvider = ({ children }: { children: React.ReactElement }) => {
         events.subscribe('api-response:401', callback);
 
         return () => events.unsubscribe('api-response:401', callback);
-    }, [navigate, setProgress]);
+    }, [fetchIdentity2FA, navigate, setProgress]);
 
     return (
         <Provider
