@@ -41,4 +41,5 @@ export default interface Voucher {
     product?: Product;
     is_external: boolean;
     limit_multiplier?: number;
+    identity_address?: string;
 }

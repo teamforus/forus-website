@@ -27,6 +27,7 @@ export default function VoucherRecords({ voucher, organization }: { voucher: Vou
 
     const [paginatorKey] = useState('voucher-records');
     const [records, setRecords] = useState<PaginationData<VoucherRecord>>(null);
+    const [existingRecordTypes, setExistingRecordTypes] = useState<Array<string>>([]);
 
     const filter = useFilter({
         q: '',
@@ -39,6 +40,10 @@ export default function VoucherRecords({ voucher, organization }: { voucher: Vou
         voucherRecordService.list(organization.id, voucher.id, filter.activeValues).then((res) => {
             setRecords(res.data);
         });
+
+        voucherRecordService.list(organization.id, voucher.id, { per_page: 100 }).then((res) => {
+            setExistingRecordTypes(res.data.data.map((record) => record.record_type_key));
+        });
     }, [filter.activeValues, organization.id, voucher.id, voucherRecordService]);
 
     const editRecord = useCallback(
@@ -49,11 +54,12 @@ export default function VoucherRecords({ voucher, organization }: { voucher: Vou
                     voucher={voucher}
                     record={record}
                     organization={organization}
-                    onClose={() => (record: VoucherRecord) => record ? fetchRecords() : null}
+                    existingRecordTypes={existingRecordTypes}
+                    onClose={(record: VoucherRecord) => (record ? fetchRecords() : null)}
                 />
             ));
         },
-        [fetchRecords, openModal, organization, voucher],
+        [existingRecordTypes, fetchRecords, openModal, organization, voucher],
     );
 
     const deleteRecord = useCallback(
@@ -73,6 +79,7 @@ export default function VoucherRecords({ voucher, organization }: { voucher: Vou
                                 fetchRecords();
                                 pushSuccess('Verwijderd!', 'Eigenschap is verwijderd!');
                             });
+                            modal.close();
                         },
                         text: t('modals.danger_zone.remove_voucher_record.buttons.confirm'),
                     }}

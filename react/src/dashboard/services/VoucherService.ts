@@ -1,4 +1,4 @@
-import ApiResponse, { ApiResponseSingle, ResponseSimple } from '../props/ApiResponses';
+import ApiResponse, { ApiResponseSingle } from '../props/ApiResponses';
 import { useState } from 'react';
 import ApiRequestService from './ApiRequestService';
 import Voucher from '../props/models/Voucher';
@@ -19,13 +19,6 @@ export class VoucherService<T = Voucher> {
      * @param data
      */
     public prefix = '/platform/organizations';
-
-    /**
-     * Url prefix
-     *
-     * @param data
-     */
-    public prefixPublic = '/platform';
 
     /**
      * Fetch list
@@ -108,7 +101,10 @@ export class VoucherService<T = Voucher> {
         );
     }
 
-    public export(organizationId: number, filters = {}): Promise<ResponseSimple<ArrayBuffer>> {
+    public export(
+        organizationId: number,
+        filters = {},
+    ): Promise<{ data: { data: Array<Voucher>; files: { csv: string; zip: string }; name: string } }> {
         return this.apiRequest.get(`${this.prefix}/${organizationId}/sponsor/vouchers/export`, filters);
     }
 

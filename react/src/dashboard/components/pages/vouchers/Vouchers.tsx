@@ -149,7 +149,7 @@ export default function Vouchers() {
         openModal((modal) => (
             <ModalFundSelect
                 modal={modal}
-                fund_id={filter.activeValues.fund_id}
+                fund_id={filter.activeValues.fund_id || funds.filter((fund) => fund.id)?.[0].id}
                 funds={funds.filter((fund) => fund.id)}
                 onSelect={(fund) => {
                     openModal((modal) => (
@@ -165,30 +165,36 @@ export default function Vouchers() {
             <ModalFundSelect
                 modal={modal}
                 fund_id={filter.activeValues.fund_id}
-                funds={funds.filter((fund) => fund.id)}
-                onSelect={() => {
+                funds={funds}
+                onSelect={(fund) => {
                     openModal((modal) => (
                         <ModalVouchersUpload
                             modal={modal}
-                            fund_id={filter.activeValues.fund_id}
-                            funds={funds.filter((fund) => fund.id)}
-                            onCreated={() => null}
+                            fund={fund}
+                            funds={!fund.id ? funds : funds.filter((fund) => fund.id)}
+                            organization={activeOrganization}
+                            onCompleted={() => fetchVouchers()}
                         />
                     ));
                 }}
             />
         ));
-    }, [filter.activeValues?.fund_id, funds, openModal]);
+    }, [activeOrganization, fetchVouchers, filter.activeValues.fund_id, funds, openModal]);
 
     const exportVouchers = useCallback(() => {
-        voucherExportService.exportData(activeOrganization.id, {
-            ...filter.activeValues,
-            per_page: null,
-        });
-    }, [activeOrganization.id, filter.activeValues, voucherExportService]);
+        voucherExportService.exportData(
+            activeOrganization.id,
+            fundsById[filter.activeValues.fund_id]?.allow_voucher_records,
+            {
+                ...filter.activeValues,
+                per_page: null,
+            },
+        );
+    }, [activeOrganization.id, filter.activeValues, fundsById, voucherExportService]);
 
     const showTooltip = useCallback(
-        (target) => {
+        (e: React.MouseEvent, target: Voucher) => {
+            e.stopPropagation();
             vouchers.data.forEach((voucher) => (voucher.showTooltip = voucher == target));
             setVouchers({ data: vouchers.data, meta: vouchers.meta });
         },
@@ -261,12 +267,13 @@ export default function Vouchers() {
                 <ModalVoucherQRCode
                     modal={modal}
                     voucher={voucher}
+                    organization={activeOrganization}
                     onSent={() => fetchVouchers()}
                     onAssigned={() => fetchVouchers()}
                 />
             ));
         },
-        [fetchVouchers, openModal],
+        [activeOrganization, fetchVouchers, openModal],
     );
 
     useEffect(() => {
@@ -395,7 +402,7 @@ export default function Vouchers() {
                                                             className="form-control"
                                                             propKey={'value'}
                                                             allowSearch={false}
-                                                            value={filter.values.granted}
+                                                            value={filter.values.granted || ''}
                                                             options={grantedOptions}
                                                             optionsComponent={SelectControlOptions}
                                                             onChange={(granted: number) => filter.update({ granted })}
@@ -516,7 +523,7 @@ export default function Vouchers() {
                                                             <div className="col col-sm-6">
                                                                 <input
                                                                     type="number"
-                                                                    value={filter.values.amount_available_min}
+                                                                    value={filter.values.amount_available_min || ''}
                                                                     placeholder={t(
                                                                         'vouchers.labels.amount_available_min',
                                                                     )}
@@ -531,7 +538,7 @@ export default function Vouchers() {
                                                             <div className="col col-sm-6">
                                                                 <input
                                                                     type="number"
-                                                                    value={filter.values.amount_available_max}
+                                                                    value={filter.values.amount_available_max || ''}
                                                                     placeholder={t(
                                                                         'vouchers.labels.amount_available_min',
                                                                     )}
@@ -591,7 +598,7 @@ export default function Vouchers() {
                                                         />
                                                     </FilterItemToggle>
 
-                                                    <FilterItemToggle label={t('reimbursements.labels.has_payouts')}>
+                                                    <FilterItemToggle label={t('vouchers.labels.has_payouts')}>
                                                         <SelectControl
                                                             className="form-control"
                                                             propKey={'value'}
@@ -661,6 +668,8 @@ export default function Vouchers() {
                                                             {t(column.label)}
                                                         </th>
                                                     ))}
+
+                                                    <th>&nbsp;</th>
                                                 </tr>
                                             </thead>
 
@@ -743,22 +752,17 @@ export default function Vouchers() {
                                                                         className={`td-icon mdi mdi-information block block-tooltip-details pull-left ${
                                                                             voucher.showTooltip ? 'active' : ''
                                                                         }`}
-                                                                        onClick={() => showTooltip(voucher)}>
+                                                                        onClick={(e) => showTooltip(e, voucher)}>
                                                                         {voucher.showTooltip && (
                                                                             <ClickOutside
                                                                                 className="tooltip-content"
                                                                                 onClickOutside={() =>
                                                                                     hideTooltip(voucher)
                                                                                 }>
-                                                                                <div className="tooltip-content">
-                                                                                    <div
-                                                                                        className="tooltip-text"
-                                                                                        title={voucher.note}>
-                                                                                        {strLimit(
-                                                                                            voucher.note || '-',
-                                                                                            128,
-                                                                                        )}
-                                                                                    </div>
+                                                                                <div
+                                                                                    className="tooltip-text"
+                                                                                    title={voucher.note}>
+                                                                                    {strLimit(voucher.note || '-', 128)}
                                                                                 </div>
                                                                             </ClickOutside>
                                                                         )}
@@ -796,11 +800,11 @@ export default function Vouchers() {
                                                         {columnKeys.includes('expire_at') && (
                                                             <td>
                                                                 <div className="text-medium text-primary">
-                                                                    {voucher.expire_at_locale.split(' - ')[0]}
+                                                                    {voucher.expire_at_locale.split(',')[0]}
                                                                 </div>
 
                                                                 <div className="text-strong text-md text-muted-dark">
-                                                                    {voucher.expire_at_locale.split(' - ')[1]}
+                                                                    {voucher.expire_at_locale.split(',')[1]}
                                                                 </div>
                                                             </td>
                                                         )}
@@ -828,7 +832,10 @@ export default function Vouchers() {
                                                                                 </div>
                                                                             </Fragment>
                                                                         ) : (
-                                                                            <em className="mdi mdi-close" />
+                                                                            <Fragment>
+                                                                                <em className="mdi mdi-close" />
+                                                                                {t('product_vouchers.labels.no')}
+                                                                            </Fragment>
                                                                         )}
                                                                     </div>
                                                                 </div>
@@ -960,6 +967,8 @@ export default function Vouchers() {
                                                                 </div>
                                                             </td>
                                                         )}
+
+                                                        <td />
                                                     </tr>
                                                 ))}
                                             </tbody>
@@ -973,9 +982,9 @@ export default function Vouchers() {
                                                     <th>
                                                         <div className="table-th-actions">
                                                             <div
-                                                                className={`table-th-action ${
+                                                                className={`table-th-action${
                                                                     showTableConfig && tableConfigCategory == 'tooltips'
-                                                                        ? 'active'
+                                                                        ? ' active'
                                                                         : ''
                                                                 }`}
                                                                 onClick={() => displayTableConfig('tooltips')}>
@@ -989,9 +998,9 @@ export default function Vouchers() {
                                                     <tr data-dusk={`voucherItem${voucher.id}`} key={index}>
                                                         <td>
                                                             <div
-                                                                className={`actions ${
+                                                                className={`actions${
                                                                     shownVoucherMenus.indexOf(voucher.id) != -1
-                                                                        ? 'active'
+                                                                        ? ' active'
                                                                         : ''
                                                                 }`}>
                                                                 <TableRowActions

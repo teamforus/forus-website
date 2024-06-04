@@ -28,4 +28,8 @@ export default interface Fund {
     allow_voucher_top_ups?: boolean;
     allow_physical_cards?: boolean;
     limit_per_voucher?: number;
+    limit_sum_vouchers?: number;
+    allow_reimbursements?: boolean;
+    limit_voucher_top_up_amount?: string;
+    limit_voucher_total_amount?: string;
 }

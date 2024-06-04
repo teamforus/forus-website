@@ -170,6 +170,8 @@ export default function ModalVoucherCreate({
         },
     );
 
+    const { update: formUpdate } = form;
+
     const confirmEmailSkip = useCallback(
         (existingEmails, onConfirm = () => null, onCancel = () => null) => {
             const items = existingEmails.map((email: string) => ({ value: email }));
@@ -220,13 +222,13 @@ export default function ModalVoucherCreate({
 
     useEffect(() => {
         if (assignType.key !== 'bsn') {
-            form.update({ email: null });
+            formUpdate({ email: null });
         }
 
         if (assignType.key !== 'email') {
-            form.update({ email: null });
+            formUpdate({ email: null });
         }
-    }, [assignType.key, form]);
+    }, [assignType.key, formUpdate]);
 
     return (
         <div
@@ -338,7 +340,7 @@ export default function ModalVoucherCreate({
                                         )}
 
                                         <div className="form-group form-group-inline form-group-inline-lg">
-                                            <div className="form-label form-label-required">
+                                            <div className="form-label">
                                                 {t('modals.modal_voucher_create.labels.expire_at')}
                                             </div>
                                             <div className="form-offset">
@@ -358,7 +360,7 @@ export default function ModalVoucherCreate({
                                         {fund.type === 'subsidies' && (
                                             <div className="form-group form-group-inline form-group-inline-lg">
                                                 <div className="form-label form-label-required">
-                                                    t{'modals.modal_voucher_create.labels.limit_multiplier'}
+                                                    {t('modals.modal_voucher_create.labels.limit_multiplier')}
                                                 </div>
                                                 <div className="form-offset">
                                                     <input
@@ -402,7 +404,9 @@ export default function ModalVoucherCreate({
                                     <div
                                         className="modal-fields-group-title"
                                         onClick={() => setShowRecordFields(!showRecordFields)}>
-                                        <em className={`mdi ${showRecordFields ? 'mdi-menu-down' : 'mdi-menu-up'}`} />
+                                        <em
+                                            className={`mdi ${showRecordFields ? 'mdi-menu-down' : 'mdi-menu-right'}`}
+                                        />
                                         Persoonlijke eigenschappen
                                     </div>
 
@@ -410,7 +414,7 @@ export default function ModalVoucherCreate({
                                         <div className="modal-fields-list">
                                             <VoucherRecordsEditor
                                                 records={form.values.records}
-                                                setRecords={() => null}
+                                                setRecords={(records) => formUpdate({ records })}
                                                 errors={form.errors}
                                             />
                                         </div>

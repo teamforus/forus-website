@@ -6,6 +6,8 @@ import DatePickerControl from '../../../elements/forms/controls/DatePickerContro
 import { dateFormat, dateParse } from '../../../../helpers/dates';
 import FormError from '../../../elements/forms/errors/FormError';
 import useRecordTypeService from '../../../../services/RecordTypeService';
+import SelectControl from '../../../elements/select-control/SelectControl';
+import SelectControlOptions from '../../../elements/select-control/templates/SelectControlOptions';
 
 export default function VoucherRecordsEditor({
     records,
@@ -59,6 +61,7 @@ export default function VoucherRecordsEditor({
         recordTypeService.list({ vouchers: 1 }).then((res) => {
             setRecordOptions(res.data);
             setRecordOptionsAll(res.data);
+            setRecord(res.data?.[0].key);
         });
     }, [recordTypeService]);
 
@@ -68,7 +71,7 @@ export default function VoucherRecordsEditor({
 
     return (
         <div className="block block-voucher-records-editor form">
-            {records.length && (
+            {records.length > 0 && (
                 <div className="block-voucher-record-list">
                     {records.map((record, index) => (
                         <div key={index} className="form-group form-group-inline form-group-inline-lg">
@@ -79,6 +82,7 @@ export default function VoucherRecordsEditor({
                                         {record.key != 'birth_date' ? (
                                             <input
                                                 type="text"
+                                                className="form-control"
                                                 value={record.value}
                                                 placeholder={record.name}
                                                 onChange={(e) => {
@@ -118,7 +122,29 @@ export default function VoucherRecordsEditor({
 
             {showVoucherAddBlock && (
                 <div className="block-voucher-record-add">
-                    <div className="form-group form-group-inline form-group-inline-lg"></div>
+                    <div className="form-group form-group-inline form-group-inline-lg">
+                        <div className="form-label">Selecteer eigenschap</div>
+                        {!showRecordSelector ? (
+                            <div className="button button-primary" onClick={() => setShowRecordSelector(true)}>
+                                <em className="mdi mdi-plus icon-start" />
+                                Eigenschap toevoegen
+                            </div>
+                        ) : (
+                            <SelectControl
+                                className="form-control"
+                                propKey={'key'}
+                                allowSearch={false}
+                                options={recordOptions}
+                                value={record}
+                                onChange={(recordKey: string) => {
+                                    console.log('record: ', record);
+                                    console.log('recordKey: ', recordKey);
+                                    setRecord(recordKey);
+                                }}
+                                optionsComponent={SelectControlOptions}
+                            />
+                        )}
+                    </div>
 
                     {showRecordSelector && (
                         <div className="form-group form-group-inline form-group-inline-lg">

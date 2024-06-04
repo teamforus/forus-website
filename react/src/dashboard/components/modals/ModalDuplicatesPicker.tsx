@@ -192,7 +192,7 @@ export default function ModalDuplicatesPicker({
                                                 <span>{item.value}</span>
                                             </td>
 
-                                            {item?.columns?.map((column, index) => (
+                                            {Object.values(item?.columns)?.map((column, index) => (
                                                 <td key={index}>{column}</td>
                                             ))}
 

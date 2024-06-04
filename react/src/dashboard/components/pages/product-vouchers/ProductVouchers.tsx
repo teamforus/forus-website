@@ -114,7 +114,7 @@ export default function ProductVouchers() {
             <ModalFundSelect
                 modal={modal}
                 fund_id={filter.activeValues.fund_id}
-                funds={funds.filter((fund) => fund.id)}
+                funds={funds}
                 onSelect={(fund) => {
                     openModal((modal) => (
                         <ModalVoucherCreate modal={modal} fund={fund} onCreated={() => fetchVouchers()} />
@@ -129,20 +129,21 @@ export default function ProductVouchers() {
             <ModalFundSelect
                 modal={modal}
                 fund_id={filter.activeValues.fund_id}
-                funds={funds.filter((fund) => fund.id)}
-                onSelect={() => {
+                funds={funds}
+                onSelect={(fund) => {
                     openModal((modal) => (
                         <ModalVouchersUpload
                             modal={modal}
-                            fund_id={filter.activeValues.fund_id}
-                            funds={funds.filter((fund) => fund.id)}
-                            onCreated={() => null}
+                            fund={fund}
+                            funds={!fund.id ? funds : funds.filter((fund) => fund.id)}
+                            organization={activeOrganization}
+                            onCompleted={() => fetchVouchers()}
                         />
                     ));
                 }}
             />
         ));
-    }, [filter.activeValues?.fund_id, funds, openModal]);
+    }, [activeOrganization, fetchVouchers, filter.activeValues.fund_id, funds, openModal]);
 
     const fetchImplementations = useCallback(() => {
         implementationService
@@ -180,12 +181,13 @@ export default function ProductVouchers() {
                 <ModalVoucherQRCode
                     modal={modal}
                     voucher={voucher}
+                    organization={activeOrganization}
                     onSent={() => fetchVouchers()}
                     onAssigned={() => fetchVouchers()}
                 />
             ));
         },
-        [fetchVouchers, openModal],
+        [activeOrganization, fetchVouchers, openModal],
     );
 
     useEffect(() => {
@@ -267,7 +269,7 @@ export default function ProductVouchers() {
                                             <input
                                                 type="text"
                                                 className="form-control"
-                                                value={filter.values.q}
+                                                value={filter.values.q || ''}
                                                 data-dusk="searchVoucher"
                                                 placeholder={t('vouchers.labels.search')}
                                                 onChange={(e) => filter.update({ q: e.target.value })}
@@ -289,7 +291,7 @@ export default function ProductVouchers() {
                                                         <input
                                                             className="form-control"
                                                             data-dusk="searchReimbursement"
-                                                            value={filter.values.q}
+                                                            value={filter.values.q || ''}
                                                             onChange={(e) => filter.update({ q: e.target.value })}
                                                             placeholder={t('vouchers.labels.search')}
                                                         />
@@ -462,12 +464,12 @@ export default function ProductVouchers() {
                                                         />
                                                     </FilterItemToggle>
 
-                                                    <FilterItemToggle label={t('reimbursements.labels.has_payouts')}>
+                                                    <FilterItemToggle label={t('vouchers.labels.has_payouts')}>
                                                         <SelectControl
                                                             className="form-control"
                                                             propKey={'value'}
                                                             allowSearch={false}
-                                                            value={filter.values.has_payouts}
+                                                            value={filter.values.has_payouts || ''}
                                                             options={hasPayoutsOptions}
                                                             optionsComponent={SelectControlOptions}
                                                             onChange={(has_payouts: string) =>
@@ -648,11 +650,11 @@ export default function ProductVouchers() {
 
                                                         <td>
                                                             <div className="text-medium text-primary">
-                                                                {voucher.expire_at_locale.split(' - ')[0]}
+                                                                {voucher.expire_at_locale.split(',')[0]}
                                                             </div>
 
                                                             <div className="text-strong text-md text-muted-dark">
-                                                                {voucher.expire_at_locale.split(' - ')[1]}
+                                                                {voucher.expire_at_locale.split(',')[1]}
                                                             </div>
                                                         </td>
 
@@ -678,7 +680,10 @@ export default function ProductVouchers() {
                                                                             </div>
                                                                         </Fragment>
                                                                     ) : (
-                                                                        <em className="mdi mdi-close" />
+                                                                        <Fragment>
+                                                                            <em className="mdi mdi-close" />
+                                                                            {t('product_vouchers.labels.no')}
+                                                                        </Fragment>
                                                                     )}
                                                                 </div>
                                                             </div>

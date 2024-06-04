@@ -2,7 +2,6 @@ import React from 'react';
 import { ModalState } from '../../modules/modals/context/ModalContext';
 import { classList } from '../../helpers/utils';
 import useFormBuilder from '../../hooks/useFormBuilder';
-import useSetProgress from '../../hooks/useSetProgress';
 import Voucher from '../../props/models/Voucher';
 import { useTranslation } from 'react-i18next';
 import FormError from '../elements/forms/errors/FormError';
@@ -20,11 +19,7 @@ export default function ModalVoucherActivate({
 }) {
     const { t } = useTranslation();
 
-    const setProgress = useSetProgress();
-
     const form = useFormBuilder({ note: '' }, async (values) => {
-        setProgress(0);
-
         onSubmit(values);
         modal.close();
     });
@@ -42,6 +37,9 @@ export default function ModalVoucherActivate({
 
             <form className="modal-window">
                 <a className="mdi mdi-close modal-close" onClick={modal.close} role="button" />
+                <div className="modal-icon modal-icon-primary">
+                    <i className="mdi mdi-message-alert-outline" />
+                </div>
 
                 <div className="modal-body form">
                     <div className="modal-section modal-section-pad">

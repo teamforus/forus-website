@@ -7,7 +7,7 @@ import Voucher from '../../../props/models/Voucher';
 import { currencyFormat, strLimit } from '../../../helpers/string';
 import useEnvData from '../../../hooks/useEnvData';
 import useOpenModal from '../../../hooks/useOpenModal';
-import ModalVoucherTransaction from '../../modals/ModalVoucherTransaction';
+import ModalVoucherTransaction from '../../modals/ModalVoucherTransaction/ModalVoucherTransaction';
 import Fund from '../../../props/models/Fund';
 import ModalVoucherDeactivation from '../../modals/ModalVoucherDeactivation';
 import ModalVoucherActivate from '../../modals/ModalVoucherActivate';
@@ -23,10 +23,12 @@ import NumericControl from '../../elements/forms/controls/NumericControl';
 import useSetProgress from '../../../hooks/useSetProgress';
 import usePushSuccess from '../../../hooks/usePushSuccess';
 import usePushDanger from '../../../hooks/usePushDanger';
-import { ResponseError } from '../../../props/ApiResponses';
+import { ApiResponseSingle, ResponseError } from '../../../props/ApiResponses';
 import VoucherRecords from './elements/VoucherRecords';
 import VoucherTransactions from './elements/VoucherTransactions';
 import useFilter from '../../../hooks/useFilter';
+import EventLogsTable from '../../elements/tables/EventLogsTable';
+import ModalOrderPhysicalCard from '../../modals/ModalOrderPhysicalCard';
 
 export default function VouchersViewComponent() {
     const { t } = useTranslation();
@@ -102,19 +104,57 @@ export default function VouchersViewComponent() {
         ));
     }, [activeOrganization, fetchVoucher, openModal, voucher]);
 
+    const onStateChanged = useCallback(
+        (promise, action = 'deactivation') => {
+            promise
+                .then((res: ApiResponseSingle<Voucher>) => {
+                    setVoucher(res.data.data);
+
+                    switch (action) {
+                        case 'deactivation':
+                            pushSuccess('Gelukt!', 'Voucher gedeactiveerd');
+                            break;
+                        case 'activation':
+                            pushSuccess('Gelukt!', 'Voucher geactiveerd');
+                            break;
+                    }
+                })
+                .catch((res: ResponseError) => {
+                    const data = res.data;
+                    const message = data.errors ? (Object.values(data.errors)[0] || [data.message])[0] : data.message;
+
+                    pushDanger('Error!', message);
+                })
+                .finally(() => setProgress(100));
+        },
+        [pushDanger, pushSuccess, setProgress],
+    );
+
     const deactivateVoucher = useCallback(() => {
         openModal((modal) => (
             <ModalVoucherDeactivation
                 modal={modal}
                 voucher={voucher}
-                onSubmit={() => fetchVoucher()}
+                onSubmit={(data) => {
+                    setProgress(0);
+                    onStateChanged(voucherService.deactivate(activeOrganization.id, voucher.id, data));
+                }}
             />
         ));
-    }, [activeOrganization, fetchVoucher, openModal, voucher]);
+    }, [activeOrganization.id, onStateChanged, openModal, setProgress, voucher, voucherService]);
 
     const activateVoucher = useCallback(() => {
-        openModal((modal) => <ModalVoucherActivate modal={modal} voucher={voucher} onSubmit={() => fetchVoucher()} />);
-    }, [fetchVoucher, openModal, voucher]);
+        openModal((modal) => (
+            <ModalVoucherActivate
+                modal={modal}
+                voucher={voucher}
+                onSubmit={(data) => {
+                    setProgress(0);
+                    onStateChanged(voucherService.activate(activeOrganization.id, voucher.id, data), 'activation');
+                }}
+            />
+        ));
+    }, [activeOrganization.id, onStateChanged, openModal, setProgress, voucher, voucherService]);
 
     const addPhysicalCard = useCallback(() => {
         openModal((modal) => (
@@ -122,8 +162,6 @@ export default function VouchersViewComponent() {
                 modal={modal}
                 voucher={voucher}
                 organization={activeOrganization}
-                onSent={() => fetchVoucher()}
-                onAssigned={() => fetchVoucher()}
                 onAttached={() => fetchVoucher()}
             />
         ));
@@ -146,6 +184,7 @@ export default function VouchersViewComponent() {
                             .then(() => {
                                 fetchVoucher();
                             });
+                        modal.close();
                     },
                     text: t('modals.modal_voucher_physical_card.delete_card.confirmButton'),
                 }}
@@ -163,19 +202,22 @@ export default function VouchersViewComponent() {
     ]);
 
     const orderPhysicalCard = useCallback(() => {
-        openModal((modal) => <ModalVoucherActivate modal={modal} voucher={voucher} onSubmit={() => null} />);
-    }, [openModal, voucher]);
+        openModal((modal) => (
+            <ModalOrderPhysicalCard modal={modal} voucher={voucher} onRequested={() => fetchVoucher()} />
+        ));
+    }, [fetchVoucher, openModal, voucher]);
 
     const showQrCode = useCallback(() => {
         openModal((modal) => (
             <ModalVoucherQRCode
                 modal={modal}
                 voucher={voucher}
+                organization={activeOrganization}
                 onSent={() => fetchVoucher()}
                 onAssigned={() => fetchVoucher()}
             />
         ));
-    }, [fetchVoucher, openModal, voucher]);
+    }, [activeOrganization, fetchVoucher, openModal, voucher]);
 
     const submitLimitMultiplier = useCallback(
         (value, prevValue) => {
@@ -392,6 +434,18 @@ export default function VouchersViewComponent() {
                                         {!voucher.expired &&
                                             !voucher.is_granted &&
                                             voucher.state === 'pending' &&
+                                            !voucher.is_external && (
+                                                <div
+                                                    className="button button-primary button-sm"
+                                                    onClick={() => showQrCode()}>
+                                                    <em className="mdi mdi-clipboard-account icon-start " />
+                                                    {t('vouchers.buttons.activate')}
+                                                </div>
+                                            )}
+
+                                        {!voucher.is_granted &&
+                                            !voucher.expired &&
+                                            voucher.state === 'active' &&
                                             !voucher.is_external && (
                                                 <div
                                                     className="button button-primary button-sm"
@@ -639,6 +693,13 @@ export default function VouchersViewComponent() {
             {voucher.fund.allow_voucher_records && (
                 <VoucherRecords voucher={voucher} organization={activeOrganization} />
             )}
+
+            <EventLogsTable
+                loggable={['voucher']}
+                loggableId={voucher.id}
+                organization={activeOrganization}
+                hideFilterDropdown={true}
+            />
 
             {voucher.note && (
                 <div className="card">

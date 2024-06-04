@@ -20,23 +20,57 @@ export default function useMakeExporterService() {
     ]);
 
     const makeSections = useCallback(
-        (fields: Array<ExportFieldProp>): Array<ExportSectionProp> => [
-            {
-                type: 'radio',
-                key: 'data_format',
-                fields: dataFormats,
-                value: 'csv',
-                title: 'Kies bestandsformaat',
-            },
-            {
-                type: 'checkbox',
-                key: 'fields',
-                fields,
-                fieldsPerRow: 3,
-                selectAll: true,
-                title: 'Kies inbegrepen velden',
-            },
-        ],
+        (
+            fields: Array<ExportFieldProp>,
+            record_fields = [],
+            qr_formats: Array<ExportFieldProp> = null,
+        ): Array<ExportSectionProp> => {
+            const sections: Array<ExportSectionProp> = [];
+
+            sections.push(
+                {
+                    type: 'radio',
+                    key: 'data_format',
+                    fields: dataFormats,
+                    value: 'csv',
+                    title: 'Kies bestandsformaat',
+                },
+                {
+                    type: 'checkbox',
+                    key: 'fields',
+                    fields,
+                    fieldsPerRow: 3,
+                    selectAll: true,
+                    title: 'Kies inbegrepen velden',
+                    collapsable: true,
+                },
+            );
+
+            if (record_fields.length) {
+                sections.push({
+                    type: 'checkbox',
+                    key: 'extra_fields',
+                    fields: record_fields,
+                    fieldsPerRow: 3,
+                    selectAll: true,
+                    title: 'Persoonlijke eigenschappen',
+                    collapsable: true,
+                    collapsed: true,
+                });
+            }
+
+            if (qr_formats.length) {
+                sections.push({
+                    type: 'radio',
+                    key: 'qr_format',
+                    fields: qr_formats,
+                    value: 'null',
+                    title: 'QR-codes bijvoegen',
+                });
+            }
+
+            return sections;
+        },
         [dataFormats],
     );
 

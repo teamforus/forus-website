@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import ApiRequestService from './ApiRequestService';
 import PhysicalCard from '../props/models/PhysicalCard';
-import {ApiResponseSingle} from "../props/ApiResponses";
+import { ApiResponseSingle } from '../props/ApiResponses';
 
 export class PhysicalCardService<T = PhysicalCard> {
     /**

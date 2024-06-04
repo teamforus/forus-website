@@ -1,35 +1,39 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import useSetProgress from '../../../../hooks/useSetProgress';
-import { PaginationData } from '../../../../props/ApiResponses';
-import Paginator from '../../../../modules/paginator/components/Paginator';
-import ThSortable from '../../../elements/tables/ThSortable';
-import LoadingCard from '../../../elements/loading-card/LoadingCard';
-import FilterItemToggle from '../../../elements/tables/elements/FilterItemToggle';
-import CardHeaderFilter from '../../../elements/tables/elements/CardHeaderFilter';
-import { useEventLogService } from '../../../../services/EventLogService';
-import EventLog from '../../../../props/models/EventLog';
-import { hasPermission } from '../../../../helpers/utils';
-import useAppConfigs from '../../../../hooks/useAppConfigs';
-import Organization from '../../../../props/models/Organization';
-import ClickOutside from '../../../elements/click-outside/ClickOutside';
-import { strLimit } from '../../../../helpers/string';
-import useFilter from '../../../../hooks/useFilter';
-import usePaginatorService from '../../../../modules/paginator/services/usePaginatorService';
+import useSetProgress from '../../../hooks/useSetProgress';
+import { PaginationData } from '../../../props/ApiResponses';
+import Paginator from '../../../modules/paginator/components/Paginator';
+import ThSortable from './ThSortable';
+import LoadingCard from '../loading-card/LoadingCard';
+import FilterItemToggle from './elements/FilterItemToggle';
+import CardHeaderFilter from './elements/CardHeaderFilter';
+import { useEventLogService } from '../../../services/EventLogService';
+import EventLog from '../../../props/models/EventLog';
+import { hasPermission } from '../../../helpers/utils';
+import useAppConfigs from '../../../hooks/useAppConfigs';
+import Organization from '../../../props/models/Organization';
+import ClickOutside from '../click-outside/ClickOutside';
+import { strLimit } from '../../../helpers/string';
+import useFilter from '../../../hooks/useFilter';
+import usePaginatorService from '../../../modules/paginator/services/usePaginatorService';
 
 export default function EventLogsTable({
     organization,
     loggable,
+    loggableId = null,
     perPageKey = 'event_logs',
     title,
     hideFilterForm,
+    hideFilterDropdown,
     hideEntity,
 }: {
     organization: Organization;
     loggable: Array<string>;
+    loggableId?: number;
     perPageKey?: string;
     title?: string;
     hideFilterForm?: boolean;
+    hideFilterDropdown?: boolean;
     hideEntity?: boolean;
 }) {
     const { t } = useTranslation();
@@ -56,6 +60,7 @@ export default function EventLogsTable({
     const filter = useFilter({
         q: '',
         loggable: loggable,
+        loggable_id: loggableId,
         per_page: paginatorService.getPerPage(perPageKey),
         order_by: 'created_at',
         order_dir: 'desc',
@@ -147,41 +152,46 @@ export default function EventLogsTable({
                                     </div>
                                 )}
 
-                                <CardHeaderFilter filter={filter}>
-                                    <FilterItemToggle label={t('event_logs.labels.search')} show={true}>
-                                        <input
-                                            className="form-control"
-                                            value={filter.values.q}
-                                            onChange={(e) => filter.update({ q: e.target.value })}
-                                            placeholder={t('event_logs.labels.search')}
-                                        />
-                                    </FilterItemToggle>
+                                {!hideFilterDropdown && (
+                                    <CardHeaderFilter filter={filter}>
+                                        <FilterItemToggle label={t('event_logs.labels.search')} show={true}>
+                                            <input
+                                                className="form-control"
+                                                value={filter.values.q}
+                                                onChange={(e) => filter.update({ q: e.target.value })}
+                                                placeholder={t('event_logs.labels.search')}
+                                            />
+                                        </FilterItemToggle>
 
-                                    <FilterItemToggle label={t('event_logs.labels.entities')}>
-                                        {loggables.map((loggable) => (
-                                            <div key={loggable.key}>
-                                                <label
-                                                    className="checkbox checkbox-narrow"
-                                                    htmlFor={'checkbox_' + loggable.key}>
-                                                    <input
-                                                        onChange={(e) => selectLoggable(loggable.key, e.target.checked)}
-                                                        id={'checkbox_' + loggable.key}
-                                                        type="checkbox"
-                                                        checked={
-                                                            filter.activeValues.loggable.indexOf(loggable.key) !== -1
-                                                        }
-                                                    />
-                                                    <div className="checkbox-label">
-                                                        <div className="checkbox-box">
-                                                            <div className="mdi mdi-check"></div>
+                                        <FilterItemToggle label={t('event_logs.labels.entities')}>
+                                            {loggables.map((loggable) => (
+                                                <div key={loggable.key}>
+                                                    <label
+                                                        className="checkbox checkbox-narrow"
+                                                        htmlFor={'checkbox_' + loggable.key}>
+                                                        <input
+                                                            onChange={(e) =>
+                                                                selectLoggable(loggable.key, e.target.checked)
+                                                            }
+                                                            id={'checkbox_' + loggable.key}
+                                                            type="checkbox"
+                                                            checked={
+                                                                filter.activeValues.loggable.indexOf(loggable.key) !==
+                                                                -1
+                                                            }
+                                                        />
+                                                        <div className="checkbox-label">
+                                                            <div className="checkbox-box">
+                                                                <div className="mdi mdi-check"></div>
+                                                            </div>
+                                                            {loggable.title}
                                                         </div>
-                                                        {loggable.title}
-                                                    </div>
-                                                </label>
-                                            </div>
-                                        ))}
-                                    </FilterItemToggle>
-                                </CardHeaderFilter>
+                                                    </label>
+                                                </div>
+                                            ))}
+                                        </FilterItemToggle>
+                                    </CardHeaderFilter>
+                                )}
                             </div>
                         </div>
                     )}

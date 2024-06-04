@@ -12,13 +12,13 @@ export default function ModalFundSelect({
     modal,
     className,
     funds,
-    fund_id,
+    fund_id = null,
     onSelect,
 }: {
     modal: ModalState;
     className?: string;
     funds: Array<Partial<Fund>>;
-    fund_id: number;
+    fund_id?: number;
     onSelect: (fund: Partial<Fund>) => void;
 }) {
     const setProgress = useSetProgress();
@@ -59,7 +59,7 @@ export default function ModalFundSelect({
                                     onChange={(fund_id: number) => form.update({ fund_id })}
                                 />
                             </div>
-                            <FormError error={form.errors.assign_by_type} />
+                            <FormError error={form.errors?.fund_id} />
                         </div>
                     </div>
                 </div>
