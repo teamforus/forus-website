@@ -177,6 +177,8 @@ export default function Vouchers() {
     }, [activeOrganization, fetchVouchers, filter.activeValues.fund_id, funds, openModal]);
 
     const exportVouchers = useCallback(() => {
+        filter.setShow(false);
+
         voucherExportService.exportData(
             activeOrganization.id,
             fundsById[filter.activeValues.fund_id]?.allow_voucher_records,
@@ -185,7 +187,7 @@ export default function Vouchers() {
                 per_page: null,
             },
         );
-    }, [activeOrganization.id, filter.activeValues, fundsById, voucherExportService]);
+    }, [activeOrganization.id, filter, fundsById, voucherExportService]);
 
     const showTooltip = useCallback(
         (e: React.MouseEvent, target: Voucher) => {
@@ -671,6 +673,7 @@ export default function Vouchers() {
                                             <tbody>
                                                 {vouchers.data.map((voucher) => (
                                                     <tr
+                                                        className="cursor-pointer"
                                                         key={voucher.id}
                                                         data-dusk={'voucherItem' + voucher.id}
                                                         onClick={() =>
@@ -733,11 +736,7 @@ export default function Vouchers() {
                                                         )}
 
                                                         {columnKeys.includes('amount') && (
-                                                            <td>
-                                                                <div className="text-md text-muted-dark text-medium">
-                                                                    {currencyFormat(parseFloat(voucher.amount_total))}
-                                                                </div>
-                                                            </td>
+                                                            <td>{currencyFormat(parseFloat(voucher.amount_total))}</td>
                                                         )}
 
                                                         {columnKeys.includes('note') && (
@@ -977,9 +976,9 @@ export default function Vouchers() {
                                                     <th>
                                                         <div className="table-th-actions">
                                                             <div
-                                                                className={`table-th-action${
+                                                                className={`table-th-action ${
                                                                     showTableConfig && tableConfigCategory == 'tooltips'
-                                                                        ? ' active'
+                                                                        ? 'active'
                                                                         : ''
                                                                 }`}
                                                                 onClick={() => displayTableConfig('tooltips')}>
@@ -993,7 +992,7 @@ export default function Vouchers() {
                                                     <tr data-dusk={`voucherItem${voucher.id}`} key={index}>
                                                         <td>
                                                             <div
-                                                                className={`actions${
+                                                                className={`actions ${
                                                                     shownVoucherMenuId == voucher.id ? 'active' : ''
                                                                 }`}>
                                                                 <TableRowActions

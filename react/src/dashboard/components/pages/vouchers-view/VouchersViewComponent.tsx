@@ -5,7 +5,6 @@ import LoadingCard from '../../elements/loading-card/LoadingCard';
 import StateNavLink from '../../../modules/state_router/StateNavLink';
 import Voucher from '../../../props/models/Voucher';
 import { currencyFormat, strLimit } from '../../../helpers/string';
-import useEnvData from '../../../hooks/useEnvData';
 import useOpenModal from '../../../hooks/useOpenModal';
 import ModalVoucherTransaction from '../../modals/ModalVoucherTransaction/ModalVoucherTransaction';
 import Fund from '../../../props/models/Fund';
@@ -34,12 +33,10 @@ export default function VouchersViewComponent() {
     const { t } = useTranslation();
     const { id } = useParams();
 
-    const envData = useEnvData();
     const openModal = useOpenModal();
     const setProgress = useSetProgress();
     const pushSuccess = usePushSuccess();
     const pushDanger = usePushDanger();
-    const panelType = envData.client_type;
     const activeOrganization = useActiveOrganization();
 
     const voucherService = useVoucherService();
@@ -310,15 +307,6 @@ export default function VouchersViewComponent() {
                         params={{ organizationId: activeOrganization.id }}
                         className="breadcrumb-item">
                         Aanbiedingsvouchers
-                    </StateNavLink>
-                )}
-
-                {panelType == 'sponsor' && (
-                    <StateNavLink
-                        name={'vouchers'}
-                        params={{ organizationId: activeOrganization.id }}
-                        className="breadcrumb-item">
-                        {voucher.fund.name}
                     </StateNavLink>
                 )}
 
@@ -695,6 +683,7 @@ export default function VouchersViewComponent() {
             )}
 
             <EventLogsTable
+                title={'Geschiedenis'}
                 loggable={['voucher']}
                 loggableId={voucher.id}
                 organization={activeOrganization}

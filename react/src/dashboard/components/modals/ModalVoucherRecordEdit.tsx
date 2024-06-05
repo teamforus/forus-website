@@ -108,8 +108,8 @@ export default function ModalVoucherRecordEdit({
         <div
             className={classList([
                 'modal',
+                'modal-md',
                 'modal-animated',
-                'modal-voucher-create',
                 modal.loading ? 'modal-loading' : null,
                 className,
             ])}>
@@ -121,57 +121,75 @@ export default function ModalVoucherRecordEdit({
 
                 <div className="modal-body modal-body-visible">
                     <div className="modal-section">
-                        <div className="form-group">
-                            <div className="form-label form-label-required">Soort eigenschap</div>
-                            <div className="form-offset">
-                                <SelectControl
-                                    className="form-control"
-                                    value={form.values.record_type_key}
-                                    propKey={'key'}
-                                    options={recordTypes}
-                                    allowSearch={false}
-                                    optionsComponent={SelectControlOptions}
-                                    disabled={!!record || (recordTypes.length == 1 && recordTypes[0].key == null)}
-                                    onChange={(record_type_key: string) => {
-                                        form.update({ record_type_key: record_type_key });
-                                    }}
-                                />
+                        <div className="row">
+                            <div className="col-lg-10 col-offset-lg-1">
+                                <div className="form-group">
+                                    <div className="form-label form-label-required">Soort eigenschap</div>
+                                    <div className="form-offset">
+                                        <SelectControl
+                                            className="form-control"
+                                            value={form.values.record_type_key}
+                                            propKey={'key'}
+                                            options={recordTypes}
+                                            allowSearch={false}
+                                            optionsComponent={SelectControlOptions}
+                                            disabled={
+                                                !!record || (recordTypes.length == 1 && recordTypes[0].key == null)
+                                            }
+                                            onChange={(record_type_key: string) => {
+                                                form.update({ record_type_key: record_type_key });
+                                            }}
+                                        />
+                                    </div>
+                                    <FormError error={form.errors?.record_type_key} />
+                                </div>
+
+                                <div className="form-group">
+                                    <div className="form-label form-label-required">Eigenschap</div>
+
+                                    {form.values.record_type_key != 'birth_date' ? (
+                                        <input
+                                            type="text"
+                                            className="form-control"
+                                            value={form.values.value}
+                                            placeholder="Value"
+                                            onChange={(e) => form.update({ value: e.target.value })}
+                                        />
+                                    ) : (
+                                        <DatePickerControl
+                                            value={dateParse(form.values.value)}
+                                            placeholder={'yyyy-MM-dd'}
+                                            onChange={(value: Date) => {
+                                                form.update({ value: dateFormat(value) });
+                                            }}
+                                        />
+                                    )}
+                                    <FormError error={form.errors?.value} />
+                                </div>
+
+                                <div className="form-group">
+                                    <div className="form-label">Notitie</div>
+                                    <textarea
+                                        placeholder="Note"
+                                        className="form-control r-n"
+                                        value={form.values.note}
+                                        onChange={(e) => form.update({ note: e.target.value })}
+                                    />
+
+                                    <FormError error={form.errors?.note} />
+                                </div>
+
+                                <div className="form-group">
+                                    <div className="form-label" />
+                                    <div className="form-offset">
+                                        <div className="block block-info">
+                                            <em className="mdi mdi-information block-info-icon" />
+                                            Controleer de gegevens. Na het aanmaken van het tegoed kan het niet worden
+                                            verwijderd.
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <FormError error={form.errors?.record_type_key} />
-                        </div>
-
-                        <div className="form-group">
-                            <div className="form-label form-label-required">Eigenschap</div>
-
-                            {form.values.record_type_key != 'birth_date' ? (
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    value={form.values.value}
-                                    onChange={(e) => form.update({ value: e.target.value })}
-                                />
-                            ) : (
-                                <DatePickerControl
-                                    value={dateParse(form.values.value)}
-                                    placeholder={'yyyy-MM-dd'}
-                                    onChange={(value: Date) => {
-                                        form.update({ value: dateFormat(value) });
-                                    }}
-                                />
-                            )}
-                            <FormError error={form.errors?.value} />
-                        </div>
-
-                        <div className="form-group">
-                            <div className="form-label">Notitie</div>
-                            <textarea
-                                placeholder="Note"
-                                className="form-control r-n"
-                                value={form.values.note}
-                                onChange={(e) => form.update({ note: e.target.value })}
-                            />
-
-                            <FormError error={form.errors?.note} />
                         </div>
                     </div>
                 </div>

@@ -145,6 +145,8 @@ export default function ProductVouchers() {
     }, [activeOrganization.id, implementationService]);
 
     const exportVouchers = useCallback(() => {
+        filter.setShow(false);
+
         voucherExportService.exportData(activeOrganization.id, {
             ...filter.activeValues,
             per_page: null,
@@ -529,6 +531,7 @@ export default function ProductVouchers() {
                                             <tbody>
                                                 {vouchers.data.map((voucher) => (
                                                     <tr
+                                                        className="cursor-pointer"
                                                         key={voucher.id}
                                                         data-dusk={'voucherItem' + voucher.id}
                                                         onClick={() =>
