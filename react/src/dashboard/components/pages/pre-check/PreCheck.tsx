@@ -358,13 +358,11 @@ export default function PreCheck() {
                                         </label>
                                         <input
                                             className="form-control r-n"
-                                            placeholder="Title"
+                                            placeholder={translate('funds_pre_check.labels.title')}
                                             value={preCheckForm.values.pre_check_title || ''}
-                                            onChange={(e) =>
-                                                preCheckForm.update({
-                                                    pre_check_title: e?.target.value,
-                                                })
-                                            }
+                                            onChange={(e) => {
+                                                preCheckForm.update({ pre_check_title: e?.target.value });
+                                            }}
                                         />
                                         <FormError error={preCheckForm.errors?.pre_check_title} />
                                         <div className="form-hint">Max. 50 tekens</div>
@@ -377,9 +375,9 @@ export default function PreCheck() {
                                         <textarea
                                             className="form-control r-n"
                                             value={preCheckForm.values.pre_check_description || ''}
-                                            onChange={(e) =>
-                                                preCheckForm.update({ pre_check_description: e.target.value })
-                                            }
+                                            onChange={(e) => {
+                                                preCheckForm.update({ pre_check_description: e.target.value });
+                                            }}
                                             placeholder="Voeg omschrijving toe"
                                         />
                                         <FormError error={preCheckForm.errors?.pre_check_description} />
@@ -485,9 +483,9 @@ export default function PreCheck() {
                                         options={bannerStates}
                                         optionsComponent={SelectControlOptions}
                                         value={bannerForm.values.pre_check_banner_state}
-                                        onChange={(pre_check_banner_state: string) =>
-                                            bannerForm.update({ pre_check_banner_state })
-                                        }
+                                        onChange={(pre_check_banner_state: string) => {
+                                            bannerForm.update({ pre_check_banner_state });
+                                        }}
                                     />
                                     <FormError error={bannerForm.errors?.pre_check_banner_state} />
                                 </div>
@@ -502,7 +500,9 @@ export default function PreCheck() {
                                         className={'form-control r-n'}
                                         placeholder={translate('funds_pre_check.labels.title')}
                                         value={bannerForm.values.pre_check_banner_title || ''}
-                                        onChange={(e) => bannerForm.update({ pre_check_banner_title: e.target.value })}
+                                        onChange={(e) => {
+                                            bannerForm.update({ pre_check_banner_title: e.target.value });
+                                        }}
                                     />
                                     <FormError error={bannerForm.errors?.pre_check_banner_title} />
                                 </div>
@@ -517,9 +517,9 @@ export default function PreCheck() {
                                         className={'form-control r-n'}
                                         placeholder={translate('funds_pre_check.labels.description')}
                                         value={bannerForm.values.pre_check_banner_description || ''}
-                                        onChange={(e) =>
-                                            bannerForm.update({ pre_check_banner_description: e.target.value })
-                                        }
+                                        onChange={(e) => {
+                                            bannerForm.update({ pre_check_banner_description: e.target.value });
+                                        }}
                                     />
                                     <FormError error={bannerForm.errors?.pre_check_banner_description} />
                                 </div>
@@ -532,7 +532,9 @@ export default function PreCheck() {
                                         className={'form-control r-n'}
                                         placeholder={translate('funds_pre_check.labels.label')}
                                         value={bannerForm.values.pre_check_banner_label || ''}
-                                        onChange={(e) => bannerForm.update({ pre_check_banner_label: e.target.value })}
+                                        onChange={(e) => {
+                                            bannerForm.update({ pre_check_banner_label: e.target.value });
+                                        }}
                                     />
                                     <FormError error={bannerForm.errors?.pre_check_banner_label} />
                                 </div>
