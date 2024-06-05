@@ -1,51 +1,34 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import useActiveOrganization from '../../../../hooks/useActiveOrganization';
-import { useTranslation } from 'react-i18next';
 import LoadingCard from '../../../elements/loading-card/LoadingCard';
 import usePushSuccess from '../../../../hooks/usePushSuccess';
 import usePushDanger from '../../../../hooks/usePushDanger';
 import StateNavLink from '../../../../modules/state_router/StateNavLink';
 import { ResponseError } from '../../../../props/ApiResponses';
-import { useNavigate, useParams } from 'react-router-dom';
 import useOpenModal from '../../../../hooks/useOpenModal';
 import ModalNotification from '../../../modals/ModalNotification';
 import useImplementationPageService from '../../../../services/ImplementationPageService';
-import Implementation, { ImplementationPageType } from '../../../../props/models/Implementation';
+import Implementation from '../../../../props/models/Implementation';
 import ThSortable from '../../../elements/tables/ThSortable';
 import ImplementationPage from '../../../../props/models/ImplementationPage';
-import { getStateRouteUrl } from '../../../../modules/state_router/Router';
-
-type ImplementationPageLocal = ImplementationPage & {
-    page_type_data: ImplementationPageType;
-};
+import useTranslate from '../../../../hooks/useTranslate';
+import { keyBy } from 'lodash';
 
 export default function ImplementationsCmsPages({ implementation }: { implementation: Implementation }) {
-    const { id } = useParams();
-
-    const { t } = useTranslation();
-    const navigate = useNavigate();
+    const translate = useTranslate();
     const openModal = useOpenModal();
     const pushDanger = usePushDanger();
     const pushSuccess = usePushSuccess();
-    const activeOrganization = useActiveOrganization();
 
     const implementationPageService = useImplementationPageService();
 
-    const [pages, setPages] = useState<Array<ImplementationPageLocal>>(null);
+    const [pagesByKey, setPagesByKey] = useState<{ [key: string]: ImplementationPage }>(null);
 
     const fetchPages = useCallback(() => {
         implementationPageService
-            .list(activeOrganization.id, parseInt(id))
-            .then((res) => {
-                const list = implementation.page_types.map((page_type_data) => {
-                    const page = res.data.data.find((page) => page?.page_type == page_type_data.key) || {};
-                    return { ...page, page_type_data };
-                });
-
-                setPages(list);
-            })
+            .list(implementation.organization_id, implementation.id)
+            .then((res) => setPagesByKey(keyBy(res.data.data, 'page_type')))
             .catch((res: ResponseError) => pushDanger('Mislukt!', res.data.message));
-    }, [activeOrganization.id, id, implementation?.page_types, implementationPageService, pushDanger]);
+    }, [implementation, implementationPageService, pushDanger]);
 
     const deletePage = useCallback(
         (page) => {
@@ -69,38 +52,25 @@ export default function ImplementationsCmsPages({ implementation }: { implementa
                                 .catch((res: ResponseError) => pushDanger('Mislukt!', res.data.message));
                         },
                     }}
-                    buttonCancel={{
-                        onClick: () => modal.close(),
-                    }}
+                    buttonCancel={{ onClick: () => modal.close() }}
                 />
             ));
         },
         [fetchPages, implementationPageService, openModal, pushDanger, pushSuccess],
     );
 
-    const goToPageCreate = useCallback(
-        (type) => {
-            navigate({
-                pathname: getStateRouteUrl('implementations-cms-page-create', {
-                    organizationId: activeOrganization.id,
-                    implementationId: implementation.id,
-                }),
-                search: `?type=${type}`,
-            });
-        },
-        [navigate],
-    );
+    useEffect(() => {
+        fetchPages();
+    }, [fetchPages]);
 
-    useEffect(() => fetchPages(), [fetchPages]);
-
-    if (!pages) {
+    if (!pagesByKey) {
         return <LoadingCard />;
     }
 
     return (
         <div className="card">
             <div className="card-header">
-                <div className="card-title">{t('implementation_edit.implementations_table.title')}</div>
+                <div className="card-title">{translate('implementation_edit.implementations_table.title')}</div>
             </div>
             <div className="card-section">
                 <div className="card-block card-block-table">
@@ -116,34 +86,27 @@ export default function ImplementationsCmsPages({ implementation }: { implementa
                                     <ThSortable className="th-narrow text-right" label="Opties" />
                                 </tr>
 
-                                {pages.map((page) => (
-                                    <tr key={page.page_type_data.key}>
-                                        <td>{t(`implementation_edit.labels.${page.page_type_data.key}`)}</td>
-                                        {page.page_type_data.type === 'static' && (
-                                            <td className="text-muted">Standaard pagina</td>
-                                        )}
+                                {implementation.page_types.map((pageType) => (
+                                    <tr key={pageType.key}>
+                                        <td>{translate(`implementation_edit.labels.${pageType.key}`)}</td>
+                                        {pageType.type === 'static' && <td className="text-muted">Standaard pagina</td>}
+                                        {pageType.type === 'extra' && <td className="text-muted">Optionele pagina</td>}
+                                        {pageType.type === 'element' && <td className="text-muted">Pagina element</td>}
 
-                                        {page.page_type_data.type === 'extra' && (
-                                            <td className="text-muted">Optionele pagina</td>
-                                        )}
-
-                                        {page.page_type_data.type === 'element' && (
-                                            <td className="text-muted">Pagina element</td>
-                                        )}
-
-                                        {page.page_type_data.blocks ? (
-                                            <td>{page.blocks?.length || 'None'}</td>
+                                        {pageType.blocks ? (
+                                            <td>{pagesByKey?.[pageType.key]?.blocks?.length || 'None'}</td>
                                         ) : (
                                             <td className="text-muted">Niet beschikbaar</td>
                                         )}
 
-                                        <td>{page.state == 'public' ? 'Ja' : 'Nee'}</td>
+                                        <td>{pagesByKey?.[pageType.key]?.state == 'public' ? 'Ja' : 'Nee'}</td>
                                         <td>
-                                            {(page.id && page.state === 'public') ||
-                                            page.page_type_data.type == 'static' ? (
+                                            {(pagesByKey?.[pageType.key]?.id &&
+                                                pagesByKey?.[pageType.key]?.state === 'public') ||
+                                            pageType.type == 'static' ? (
                                                 <a
                                                     className="button button-sm button-text"
-                                                    href={page.page_type_data.webshop_url}
+                                                    href={pageType.webshop_url}
                                                     rel="noreferrer"
                                                     target="_blank">
                                                     Bekijk
@@ -155,32 +118,40 @@ export default function ImplementationsCmsPages({ implementation }: { implementa
                                         </td>
                                         <td className="td-narrow text-right">
                                             <div className="flex">
-                                                {page.id ? (
+                                                {pagesByKey?.[pageType.key]?.id ? (
                                                     <StateNavLink
                                                         name={'implementations-cms-page-edit'}
                                                         params={{
-                                                            organizationId: activeOrganization.id,
+                                                            id: pagesByKey?.[pageType.key]?.id,
                                                             implementationId: implementation.id,
-                                                            id: page.id,
+                                                            organizationId: implementation.organization_id,
                                                         }}
                                                         className="button button-sm button-default">
                                                         <em className="mdi mdi-pen icon-start" />
-                                                        {t('implementation_edit.implementations_table.labels.edit')}
+                                                        {translate(
+                                                            'implementation_edit.implementations_table.labels.edit',
+                                                        )}
                                                     </StateNavLink>
                                                 ) : (
-                                                    <button
-                                                        type="button"
-                                                        onClick={() => goToPageCreate(page.page_type_data.key)}
+                                                    <StateNavLink
+                                                        name={'implementations-cms-page-create'}
+                                                        params={{
+                                                            organizationId: implementation.organization_id,
+                                                            implementationId: implementation.id,
+                                                        }}
+                                                        query={{ type: pageType.key }}
                                                         className="button button-sm button-primary">
                                                         <em className="mdi mdi-plus icon-start" />
-                                                        {t('implementation_edit.implementations_table.labels.edit')}
-                                                    </button>
+                                                        {translate(
+                                                            'implementation_edit.implementations_table.labels.edit',
+                                                        )}
+                                                    </StateNavLink>
                                                 )}
 
                                                 <button
                                                     className="button button-danger button-icon"
-                                                    disabled={!page.id}
-                                                    onClick={() => deletePage(page)}>
+                                                    disabled={!pagesByKey?.[pageType.key]?.id}
+                                                    onClick={() => deletePage(pagesByKey?.[pageType.key])}>
                                                     <em className="icon-start mdi mdi-delete" />
                                                 </button>
                                             </div>

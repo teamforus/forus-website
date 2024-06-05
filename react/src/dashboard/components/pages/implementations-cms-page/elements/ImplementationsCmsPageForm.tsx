@@ -1,53 +1,60 @@
-import React, { Fragment, useCallback, useMemo, useState } from 'react';
+import React, { Fragment, useEffect, useMemo, useRef, useState } from 'react';
 import useActiveOrganization from '../../../../hooks/useActiveOrganization';
-import { useTranslation } from 'react-i18next';
 import useFormBuilder from '../../../../hooks/useFormBuilder';
 import usePushSuccess from '../../../../hooks/usePushSuccess';
 import usePushDanger from '../../../../hooks/usePushDanger';
 import StateNavLink from '../../../../modules/state_router/StateNavLink';
 import FormError from '../../../elements/forms/errors/FormError';
 import useSetProgress from '../../../../hooks/useSetProgress';
-import { ResponseError } from '../../../../props/ApiResponses';
+import { ApiResponseSingle, ResponseError, ResponseErrorData } from '../../../../props/ApiResponses';
 import Implementation from '../../../../props/models/Implementation';
-import ImplementationPage, {
-    ImplementationPageBlock,
-    ImplementationPageFaq,
-} from '../../../../props/models/ImplementationPage';
+import ImplementationPage from '../../../../props/models/ImplementationPage';
+import ImplementationPageBlock from '../../../../props/models/ImplementationPageBlock';
 import useImplementationPageService from '../../../../services/ImplementationPageService';
 import SelectControlOptions from '../../../elements/select-control/templates/SelectControlOptions';
 import SelectControl from '../../../elements/select-control/SelectControl';
 import MarkdownEditor from '../../../elements/forms/markdown-editor/MarkdownEditor';
 import ImplementationsBlockEditor from './ImplementationsBlockEditor';
-import { uniq } from 'lodash';
-import ImplementationsFaqEditor from './ImplementationsFaqEditor';
-import { useFaqService } from '../../../../services/FaqService';
-import { useNavigate } from 'react-router-dom';
-import { getStateRouteUrl } from '../../../../modules/state_router/Router';
+import { useNavigateState } from '../../../../modules/state_router/Router';
+import useTranslate from '../../../../hooks/useTranslate';
+import FaqEditor from '../../../elements/faq-editor-funds/FaqEditor';
+import Faq from '../../../../props/models/Faq';
+import { uniqueId } from 'lodash';
+import LoadingCard from '../../../elements/loading-card/LoadingCard';
 
 export default function ImplementationsCmsPageForm({
-    implementation,
-    page_type,
     page,
+    pageType,
+    implementation,
 }: {
-    implementation: Implementation;
-    page_type: string;
     page?: ImplementationPage;
+    pageType: string;
+    implementation: Implementation;
 }) {
-    const { t } = useTranslation();
-    const navigate = useNavigate();
+    const translate = useTranslate();
     const pushDanger = usePushDanger();
     const pushSuccess = usePushSuccess();
     const setProgress = useSetProgress();
+    const navigateState = useNavigateState();
     const activeOrganization = useActiveOrganization();
 
-    const faqService = useFaqService();
     const implementationPageService = useImplementationPageService();
+
+    const [faq, setFaq] = useState<Array<Faq & { uid: string }>>(
+        page?.faq?.map((item) => ({ ...item, uid: uniqueId() })) || [],
+    );
+
+    const [blocks, setBlocks] = useState<Array<ImplementationPageBlock>>(page?.blocks || []);
+
+    const faqEditorValidateRef = useRef<() => Promise<boolean>>();
+    const blockEditorValidateRef = useRef<() => Promise<boolean>>();
 
     const [showInfoBlockType, setShowInfoBlockType] = useState(false);
     const [showInfoBlockTypePosition, setShowInfoBlockTypePosition] = useState(false);
+
     const pageTypeConfig = useMemo(
-        () => implementation.page_types.find((type) => type.key === page_type),
-        [implementation.page_types, page_type],
+        () => implementation.page_types.find((type) => type.key === pageType),
+        [implementation.page_types, pageType],
     );
 
     const [states] = useState([
@@ -72,22 +79,11 @@ export default function ImplementationsCmsPageForm({
         { value: 'after', name: 'Na de standaard content tonen' },
     ]);
 
-    const mapFaqFakeId = useCallback((faqs: Array<ImplementationPageFaq>) => {
-        return faqs.map((faq) => {
-            if (faq.id && faq.id.toString().startsWith('sortable_')) {
-                delete faq.id;
-            }
-
-            return faq;
-        });
-    }, []);
-
     const form = useFormBuilder<{
         state?: string;
         external?: boolean;
         page_type?: string;
         blocks?: Array<ImplementationPageBlock>;
-        faq?: Array<ImplementationPageFaq>;
         description?: string;
         external_url?: string;
         blocks_per_row?: number;
@@ -100,129 +96,68 @@ export default function ImplementationsCmsPageForm({
             ? implementationPageService.apiResourceToForm(page)
             : {
                   blocks: [],
-                  faq: [],
                   state: states[0].value,
                   external: types[0].value,
-                  page_type: page_type,
+                  page_type: pageType,
                   blocks_per_row: blocksPerRow[0].value,
                   description_position: descriptionPositions[0]?.value,
               },
-        (values) => {
-            const submit = () => {
-                setProgress(0);
+        async (values) => {
+            const data = { ...values, blocks, faq };
 
-                const promise = page
-                    ? implementationPageService.update(activeOrganization.id, implementation.id, page.id, values)
-                    : implementationPageService.store(activeOrganization.id, implementation.id, values);
+            try {
+                await faqEditorValidateRef.current();
+                await blockEditorValidateRef.current();
+            } catch (e) {
+                pushDanger('Error!', typeof e == 'string' ? e : e.message || '');
+                return form.setIsLocked(false);
+            }
 
-                promise
-                    .then((res) => {
-                        if (!page) {
-                            return navigate(
-                                getStateRouteUrl('implementations-cms-page-edit', {
-                                    organizationId: implementation.organization_id,
-                                    implementationId: implementation.id,
-                                    id: res.data.data.id,
-                                }),
-                            );
-                        }
+            setProgress(0);
 
-                        form.update(implementationPageService.apiResourceToForm(res.data.data));
-                        form.setErrors({});
-                        pushSuccess('Opgeslagen!');
-                    })
-                    .catch((err: ResponseError) => {
-                        form.setErrors(err.data.errors);
-                        pushDanger('Mislukt!', err.data.message);
-                    })
-                    .finally(() => {
-                        setProgress(100);
-                        form.setIsLocked(false);
-                    });
-            };
+            const promise: Promise<ApiResponseSingle<ImplementationPage>> = page
+                ? implementationPageService.update(activeOrganization.id, implementation.id, page.id, data)
+                : implementationPageService.store(activeOrganization.id, implementation.id, data);
 
-            form.setErrors({});
+            promise
+                .then((res) => {
+                    if (!page) {
+                        return navigateState('implementations-cms-page-edit', {
+                            organizationId: implementation.organization_id,
+                            implementationId: implementation.id,
+                            id: res.data.data.id,
+                        });
+                    }
 
-            Promise.all([validateBlocks(), validateFaqs()])
-                .then(() => submit())
-                .catch((error: string) => {
-                    pushDanger('Error!', error);
+                    form.update(implementationPageService.apiResourceToForm(res.data.data));
+                    form.setErrors({});
+                    pushSuccess('Opgeslagen!');
+                })
+                .catch((err: ResponseError) => {
+                    form.setErrors(err.data.errors);
+                    pushDanger('Mislukt!', err.data.message);
+                })
+                .finally(() => {
+                    setProgress(100);
                     form.setIsLocked(false);
                 });
         },
     );
 
-    const { update } = form;
+    useEffect(() => {
+        if (!pageTypeConfig) {
+            pushDanger('Mislukt!', 'Ongeldig paginatype.');
 
-    const expendByIndex = useCallback(
-        (index, values, key) => {
-            const list = Array.isArray(index) ? index : [index];
+            return navigateState('implementations-cms', {
+                id: implementation.id,
+                organizationId: activeOrganization.id,
+            });
+        }
+    }, [activeOrganization?.id, implementation.id, navigateState, pageTypeConfig, pushDanger]);
 
-            for (let i = 0; i < list.length; i++) {
-                values[list[i]].collapsed = true;
-            }
-
-            update({ [key]: values });
-        },
-        [update],
-    );
-
-    const processValidationErrors = useCallback(
-        (res: ResponseError, values, key) => {
-            const { errors } = res.data;
-
-            if (errors && typeof errors == 'object') {
-                form.setErrors((prevState) => ({
-                    ...prevState,
-                    ...errors,
-                }));
-
-                expendByIndex(
-                    uniq(
-                        Object.keys(errors).map((error) => {
-                            return error.split('.')[1] || null;
-                        }),
-                    ).filter((rowIndex) => !isNaN(parseInt(rowIndex))),
-                    values,
-                    key,
-                );
-            }
-        },
-        [expendByIndex, form],
-    );
-
-    const validateBlocks = useCallback(() => {
-        const data = { blocks: form.values.blocks };
-        const { id, organization_id } = implementation;
-
-        return new Promise((resolve, reject) => {
-            implementationPageService
-                .validateBlocks(organization_id, id, data)
-                .then((res) => resolve(res.data))
-                .catch((res: ResponseError) => {
-                    processValidationErrors(res, [...form.values.blocks], 'blocks');
-                    reject(
-                        res.status == 422
-                            ? t('components.implementation_block_editor.fix_validation_errors')
-                            : res.data.message,
-                    );
-                });
-        });
-    }, [form.values?.blocks, implementation, implementationPageService, processValidationErrors, t]);
-
-    const validateFaqs = useCallback(() => {
-        return new Promise((resolve, reject) => {
-            const faq = mapFaqFakeId([...form.values.faq]);
-
-            faqService
-                .faqValidate(implementation.organization_id, { faq })
-                .then((res) => resolve(res.data))
-                .catch((res: ResponseError) => {
-                    processValidationErrors(res, [...form.values.faq], 'faq');
-                    reject(res.status == 422 ? t('components.faq_editor.fix_validation_errors') : res.data.message);
-                });
-        });
-    }, [faqService, form.values?.faq, implementation.organization_id, mapFaqFakeId, processValidationErrors, t]);
+    if (!pageTypeConfig) {
+        return <LoadingCard />;
+    }
 
     return (
         <Fragment>
@@ -230,28 +165,31 @@ export default function ImplementationsCmsPageForm({
                 <StateNavLink
                     name={'implementations'}
                     params={{ organizationId: activeOrganization.id }}
+                    activeExact={true}
                     className="breadcrumb-item">
                     Webshops
                 </StateNavLink>
                 <StateNavLink
                     name={'implementations-view'}
                     params={{ organizationId: activeOrganization.id, id: implementation.id }}
+                    activeExact={true}
                     className="breadcrumb-item">
                     {implementation.name}
                 </StateNavLink>
                 <StateNavLink
                     name={'implementations-cms'}
                     params={{ organizationId: activeOrganization.id, id: implementation.id }}
+                    activeExact={true}
                     className="breadcrumb-item">
                     Content Management System
                 </StateNavLink>
-                <div className="breadcrumb-item active">{t(`implementation_edit.labels.${page_type}`)}</div>
+                <div className="breadcrumb-item active">{translate(`implementation_edit.labels.${pageType}`)}</div>
             </div>
 
             <div className="card">
                 <form className="form" onSubmit={form.submit}>
                     <div className="card-header flex-row">
-                        <div className="card-title">{t(`implementation_edit.labels.${page_type}`)}</div>
+                        <div className="card-title">{translate(`implementation_edit.labels.${pageType}`)}</div>
                         <div className="flex flex-grow flex-end">
                             {(page?.state == 'public' || pageTypeConfig.type === 'static') && (
                                 <a
@@ -260,12 +198,12 @@ export default function ImplementationsCmsPageForm({
                                     rel="noreferrer"
                                     target="_blank">
                                     Bekijk pagina
-                                    <div className="mdi mdi-open-in-new icon-end"></div>
+                                    <em className="mdi mdi-open-in-new icon-end" />
                                 </a>
                             )}
 
                             <button className="button button-primary button-sm" type="submit">
-                                {t('funds_edit.buttons.confirm')}
+                                {translate('funds_edit.buttons.confirm')}
                             </button>
                         </div>
                     </div>
@@ -280,9 +218,7 @@ export default function ImplementationsCmsPageForm({
                                             className="form-control"
                                             propKey={'value'}
                                             value={form.values?.state}
-                                            onChange={(state: string) => {
-                                                form.update({ state });
-                                            }}
+                                            onChange={(state: string) => form.update({ state })}
                                             options={states}
                                             optionsComponent={SelectControlOptions}
                                         />
@@ -300,9 +236,7 @@ export default function ImplementationsCmsPageForm({
                                                         className="form-control"
                                                         propKey={'value'}
                                                         value={form.values?.external}
-                                                        onChange={(external: boolean) => {
-                                                            form.update({ external });
-                                                        }}
+                                                        onChange={(external: boolean) => form.update({ external })}
                                                         options={types}
                                                         optionsComponent={SelectControlOptions}
                                                     />
@@ -345,7 +279,7 @@ export default function ImplementationsCmsPageForm({
                                             id="external_url"
                                             type="text"
                                             className="form-control"
-                                            placeholder={t(`implementation_edit.placeholders.${page_type}`)}
+                                            placeholder={translate(`implementation_edit.placeholders.${pageType}`)}
                                             value={form.values?.external_url || ''}
                                             onChange={(e) => form.update({ external_url: e.target.value })}
                                         />
@@ -354,7 +288,7 @@ export default function ImplementationsCmsPageForm({
                                 ) : (
                                     <div className="form-group form-group-inline form-group-inline-xl tooltipped">
                                         <label className="form-label">
-                                            {t(`implementation_edit.labels.${page_type}`)}
+                                            {translate(`implementation_edit.labels.${pageType}`)}
                                         </label>
                                         <div className="form-offset">
                                             <MarkdownEditor
@@ -403,7 +337,9 @@ export default function ImplementationsCmsPageForm({
                                                     <div className="info-box-icon mdi mdi-information" />
                                                     <div className="info-box-content">
                                                         <div className="block block-markdown">
-                                                            <p>{t(`implementation_edit.tooltips.${page_type}`)}</p>
+                                                            <p>
+                                                                {translate(`implementation_edit.tooltips.${pageType}`)}
+                                                            </p>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -423,11 +359,15 @@ export default function ImplementationsCmsPageForm({
                                 <label className="form-label">Blokken</label>
 
                                 <ImplementationsBlockEditor
-                                    blocks={form.values?.blocks}
-                                    onChange={(blocks) => form.update({ blocks })}
+                                    blocks={blocks}
+                                    setBlocks={setBlocks}
                                     errors={form.errors}
+                                    setErrors={(errors: ResponseErrorData) => form.setErrors(errors)}
+                                    createFaqRef={faqEditorValidateRef}
+                                    implementation={implementation}
                                 />
                             </div>
+
                             <div className="row">
                                 <div className="col col-lg-9">
                                     <div className="form-group form-group-inline form-group-inline-xl">
@@ -436,9 +376,7 @@ export default function ImplementationsCmsPageForm({
                                             className="form-control"
                                             propKey={'value'}
                                             value={form.values?.blocks_per_row}
-                                            onChange={(blocks_per_row: number) => {
-                                                form.update({ blocks_per_row });
-                                            }}
+                                            onChange={(blocks_per_row: number) => form.update({ blocks_per_row })}
                                             options={blocksPerRow}
                                             optionsComponent={SelectControlOptions}
                                         />
@@ -453,10 +391,13 @@ export default function ImplementationsCmsPageForm({
                             <div className="form-group form-group-inline form-group-inline-xl">
                                 <label className="form-label">Veel gestelde vragen</label>
                                 <div className="form-offset">
-                                    <ImplementationsFaqEditor
-                                        faqs={form.values?.faq}
-                                        onChange={(faq) => form.update({ faq })}
-                                        errors={form.errors}
+                                    <FaqEditor
+                                        faq={faq}
+                                        setFaq={setFaq}
+                                        organization={activeOrganization}
+                                        errors={form?.errors}
+                                        setErrors={(errors: ResponseErrorData) => form.setErrors(errors)}
+                                        createFaqRef={blockEditorValidateRef}
                                     />
                                 </div>
                             </div>
@@ -468,14 +409,14 @@ export default function ImplementationsCmsPageForm({
                             <StateNavLink
                                 name={'implementations-cms'}
                                 params={{
-                                    organizationId: activeOrganization.id,
                                     id: implementation.id,
+                                    organizationId: activeOrganization.id,
                                 }}
                                 className="button button-default">
-                                {t('funds_edit.buttons.cancel')}
+                                {translate('funds_edit.buttons.cancel')}
                             </StateNavLink>
                             <button className="button button-primary" type="submit">
-                                {t('funds_edit.buttons.confirm')}
+                                {translate('funds_edit.buttons.confirm')}
                             </button>
                         </div>
                     </div>

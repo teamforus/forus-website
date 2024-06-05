@@ -1,6 +1,5 @@
 import React, { useMemo } from 'react';
 import { ModalState } from '../../modules/modals/context/ModalContext';
-import { classList } from '../../helpers/utils';
 import Organization from '../../props/models/Organization';
 import useFormBuilder from '../../hooks/useFormBuilder';
 import FormError from '../elements/forms/errors/FormError';
@@ -13,28 +12,28 @@ import Implementation from '../../props/models/Implementation';
 import useImplementationSocialMediaService from '../../services/ImplementationSocialMediaService';
 import usePushSuccess from '../../hooks/usePushSuccess';
 import usePushDanger from '../../hooks/usePushDanger';
+import useSetProgress from '../../hooks/useSetProgress';
 
 export default function ModalSocialMediaEdit({
     modal,
-    socialMedia,
-    className,
     onSubmit,
+    className,
     usedTypes,
-    cancelButton,
+    socialMedia,
     organization,
     implementation,
 }: {
     modal: ModalState;
-    socialMedia?: ImplementationSocialMedia;
-    className?: string;
     onSubmit?: () => void;
+    className?: string;
     usedTypes: Array<string>;
-    cancelButton?: ModalButton;
+    socialMedia?: ImplementationSocialMedia;
     organization: Organization;
     implementation: Implementation;
 }) {
     const pushDanger = usePushDanger();
     const pushSuccess = usePushSuccess();
+    const setProgress = useSetProgress();
 
     const implementationSocialMediaService = useImplementationSocialMediaService();
 
@@ -58,6 +57,8 @@ export default function ModalSocialMediaEdit({
             title: socialMedia?.title || '',
         },
         (values) => {
+            setProgress(0);
+
             const promise = socialMedia
                 ? implementationSocialMediaService.update(organization.id, implementation.id, socialMedia.id, values)
                 : implementationSocialMediaService.store(organization.id, implementation.id, values);
@@ -72,20 +73,18 @@ export default function ModalSocialMediaEdit({
                     pushDanger('Error!', res?.data?.message);
                     form.setErrors(res.data.errors);
                 })
-                .finally(() => form.setIsLocked(false));
+                .finally(() => {
+                    form.setIsLocked(false);
+                    setProgress(100);
+                });
         },
     );
 
     return (
         <div
-            className={classList([
-                'modal',
-                'modal-md',
-                'modal-animated',
-                'modal-notification',
-                modal.loading ? 'modal-loading' : null,
-                className,
-            ])}>
+            className={`modal modal-md modal-animated modal-notification ${modal.loading ? 'modal-loading' : ''} ${
+                className || ''
+            }`}>
             <div className="modal-backdrop" onClick={modal.close} />
             <form className="modal-window form" onSubmit={form.submit}>
                 <div className="modal-close mdi mdi-close" onClick={modal.close} />
@@ -141,7 +140,7 @@ export default function ModalSocialMediaEdit({
                 </div>
 
                 <div className="modal-footer text-center">
-                    <ModalButton type="default" button={{ onClick: modal.close, ...cancelButton }} text={'Sluiten'} />
+                    <ModalButton type="default" button={{ onClick: modal.close }} text={'Sluiten'} />
                     <ModalButton type="primary" button={{ onClick: form.submit }} text={'Bevestigen'} submit={true} />
                 </div>
             </form>

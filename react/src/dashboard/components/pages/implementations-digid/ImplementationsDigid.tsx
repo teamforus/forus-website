@@ -1,6 +1,5 @@
 import React, { Fragment, useCallback, useEffect, useState } from 'react';
 import useActiveOrganization from '../../../hooks/useActiveOrganization';
-import { useTranslation } from 'react-i18next';
 import LoadingCard from '../../elements/loading-card/LoadingCard';
 import useFormBuilder from '../../../hooks/useFormBuilder';
 import usePushSuccess from '../../../hooks/usePushSuccess';
@@ -10,18 +9,19 @@ import FormError from '../../elements/forms/errors/FormError';
 import useSetProgress from '../../../hooks/useSetProgress';
 import { ResponseError } from '../../../props/ApiResponses';
 import useImplementationService from '../../../services/ImplementationService';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import Implementation from '../../../props/models/Implementation';
-import { getStateRouteUrl } from '../../../modules/state_router/Router';
+import { useNavigateState } from '../../../modules/state_router/Router';
+import useTranslate from '../../../hooks/useTranslate';
 
 export default function ImplementationsDigid() {
     const { id } = useParams();
 
-    const { t } = useTranslation();
-    const navigate = useNavigate();
+    const translate = useTranslate();
     const pushDanger = usePushDanger();
     const pushSuccess = usePushSuccess();
     const setProgress = useSetProgress();
+    const navigateState = useNavigateState();
     const activeOrganization = useActiveOrganization();
 
     const implementationService = useImplementationService();
@@ -69,14 +69,16 @@ export default function ImplementationsDigid() {
             .then((res) => setImplementation(res.data.data))
             .catch((res: ResponseError) => {
                 if (res.status === 403) {
-                    return navigate(getStateRouteUrl('implementations', { organizationId: activeOrganization.id }));
+                    return navigateState('implementations', { organizationId: activeOrganization.id });
                 }
 
                 pushDanger('Mislukt!', res.data.message);
             });
-    }, [implementationService, activeOrganization.id, id, pushDanger, navigate]);
+    }, [implementationService, activeOrganization.id, id, pushDanger, navigateState]);
 
-    useEffect(() => fetchImplementation(), [fetchImplementation]);
+    useEffect(() => {
+        fetchImplementation();
+    }, [fetchImplementation]);
 
     useEffect(() => {
         if (implementation) {
@@ -99,12 +101,14 @@ export default function ImplementationsDigid() {
                 <StateNavLink
                     name={'implementations'}
                     params={{ organizationId: activeOrganization.id }}
+                    activeExact={true}
                     className="breadcrumb-item">
                     Webshops
                 </StateNavLink>
                 <StateNavLink
                     name={'implementations-view'}
                     params={{ organizationId: activeOrganization.id, id: implementation.id }}
+                    activeExact={true}
                     className="breadcrumb-item">
                     {implementation.name}
                 </StateNavLink>
@@ -136,12 +140,12 @@ export default function ImplementationsDigid() {
                                     <FormError error={form.errors.digid_app_id} />
                                 </div>
                                 <div className="form-group form-group-inline">
-                                    <label className="form-label" htmlFor="digid_shared_secret">
+                                    <label className="form-label form-label-required" htmlFor="digid_shared_secret">
                                         Sleutelcode
                                     </label>
                                     <input
                                         id="digid_shared_secret"
-                                        type="text"
+                                        type="password"
                                         className="form-control"
                                         placeholder="Bijv. 56CC-0EDF-E57C-960D-K524-LWFZ"
                                         disabled={form.values?.digid_enabled}
@@ -190,12 +194,12 @@ export default function ImplementationsDigid() {
                         <div className="button-group flex-center">
                             <StateNavLink
                                 name={'implementations-view'}
-                                params={{ organizationId: activeOrganization.id, id: implementation.id }}
+                                params={{ id: implementation.id, organizationId: activeOrganization.id }}
                                 className="button button-default">
-                                {t('funds_edit.buttons.cancel')}
+                                {translate('funds_edit.buttons.cancel')}
                             </StateNavLink>
                             <button className="button button-primary" type="submit">
-                                {t('funds_edit.buttons.confirm')}
+                                {translate('funds_edit.buttons.confirm')}
                             </button>
                         </div>
                     </div>

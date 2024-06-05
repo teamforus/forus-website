@@ -53,7 +53,7 @@ export class FundService<T = Fund> {
      * Backoffice update
      */
     public backofficeUpdate(company_id: number, id: number, data: object): Promise<ApiResponseSingle<T>> {
-        return this.apiRequest.patch(`${this.prefix + company_id}/funds/${id}/backoffice`, data);
+        return this.apiRequest.patch(`${this.prefix}/${company_id}/funds/${id}/backoffice`, data);
     }
 
     /**
@@ -63,7 +63,7 @@ export class FundService<T = Fund> {
         company_id: number,
         id: number,
     ): Promise<ResponseSimple<{ state: string; response_code: number }>> {
-        return this.apiRequest.post(`${this.prefix + company_id}/funds/${id}/backoffice-test`);
+        return this.apiRequest.post(`${this.prefix}/${company_id}/funds/${id}/backoffice-test`);
     }
 
     public delete(company_id: number, data: object = {}): Promise<null> {

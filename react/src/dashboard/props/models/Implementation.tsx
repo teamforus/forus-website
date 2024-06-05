@@ -2,15 +2,6 @@ import Media from './Media';
 import Announcement from './Announcement';
 import ImplementationPage from './ImplementationPage';
 
-export interface ImplementationPageType {
-    key: string;
-    type: string;
-    blocks: boolean;
-    faq: boolean;
-    webshop_url: string;
-    description_position_configurable: boolean;
-}
-
 export default interface Implementation {
     id: number;
     name: string;
@@ -38,7 +29,14 @@ export default interface Implementation {
     banner?: Media;
     pre_check_banner?: Media;
     announcement?: Announcement;
-    page_types?: Array<ImplementationPageType>;
+    page_types?: Array<{
+        key: string;
+        type: string;
+        blocks: boolean;
+        faq: boolean;
+        webshop_url: string;
+        description_position_configurable: boolean;
+    }>;
     show_home_map?: string;
     show_home_products?: string;
     show_provider_map?: string;
