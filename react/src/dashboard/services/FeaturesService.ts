@@ -100,17 +100,11 @@ export class FeatureService {
                 labels: ['Aanvragen', 'Integratie'],
             },
             {
-                key: 'external_funds',
-                name: 'Informatief fonds',
-                description: 'Alle beschikbare fondsen op één plek.',
-                overview_description: 'Zet alle beschikbare fondsen op één plek.',
-                labels: ['Communicatie', 'Toegankelijkheid'],
-            },
-            {
-                key: 'voucher_top_up',
-                name: 'Tegoed opwaarderen',
-                description: 'Handmatig opwaarderen van tegoeden.',
-                overview_description: 'Waardeer handmatig tegoeden op.',
+                key: 'subsidy_funds',
+                name: 'Product fonds',
+                description: 'Een digitaal tegoed voor een specifiek product of dienst. ',
+                overview_description:
+                    'Voorzie deelnemers van een digitaal tegoed voor een specifiek product of dienst.',
                 labels: ['Financieel'],
             },
             {
@@ -122,11 +116,17 @@ export class FeatureService {
                 labels: ['Financieel'],
             },
             {
-                key: 'subsidy_funds',
-                name: 'Product fonds',
-                description: 'Een digitaal tegoed voor een specifiek product of dienst. ',
-                overview_description:
-                    'Voorzie deelnemers van een digitaal tegoed voor een specifiek product of dienst.',
+                key: 'external_funds',
+                name: 'Informatief fonds',
+                description: 'Alle beschikbare fondsen op één plek.',
+                overview_description: 'Zet alle beschikbare fondsen op één plek.',
+                labels: ['Communicatie', 'Toegankelijkheid'],
+            },
+            {
+                key: 'voucher_top_up',
+                name: 'Tegoed opwaarderen',
+                description: 'Handmatig opwaarderen van tegoeden.',
+                overview_description: 'Waardeer handmatig tegoeden op.',
                 labels: ['Financieel'],
             },
         ];
@@ -176,13 +176,17 @@ export class FeatureService {
                 physical_cards: ['bi_tools', 'auth_2_fa'],
                 voucher_records: ['auth_2_fa', 'digid'],
                 email_connection: ['bi_tools', 'auth_2_fa'],
-                external_funds: ['budget_funds', 'email_connection'],
-                voucher_top_up: ['voucher_records', 'external_funds'],
-                budget_funds: ['subsidy_funds', 'email_connection'],
+                external_funds: ['budget_funds', 'subsidy_funds'],
+                voucher_top_up: ['voucher_records', 'budget_funds'],
+                budget_funds: ['subsidy_funds', 'external_funds'],
                 subsidy_funds: ['budget_funds', 'external_funds'],
             }[feature] || [];
 
-        return this.list().filter((feature) => additionalFeatures.includes(feature.key));
+        return additionalFeatures.reduce((list: Array<OrganizationFeature>, item: string) => {
+            const el = this.list().find((feature) => item === feature.key);
+
+            return el ? [...list, el] : list;
+        }, []);
     }
 }
 export function useFeatureService(): FeatureService {
