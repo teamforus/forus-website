@@ -23,6 +23,8 @@ export default function SelectControlOptionsCountryCodes<T>({
 }: SelectControlOptionsProp<T>) {
     const [controlId] = useState('select_control_' + uniqueId());
     const input = useRef(null);
+    const selectorRef = useRef<HTMLDivElement>(null);
+    const placeholderRef = useRef<HTMLLabelElement>(null);
 
     return (
         <div
@@ -31,11 +33,27 @@ export default function SelectControlOptionsCountryCodes<T>({
             aria-haspopup="listbox"
             aria-expanded={showOptions}
             aria-labelledby={controlId}
-            aria-controls={`${controlId}_options`}>
+            aria-controls={`${controlId}_options`}
+            ref={selectorRef}
+            onKeyDown={(e) => {
+                if (e.key == 'Enter') {
+                    placeholderRef?.current?.click();
+                }
+
+                if (e.key == 'Escape') {
+                    setShowOptions(false);
+                }
+            }}
+            onBlur={(e) => {
+                if (showOptions && !e.currentTarget.contains(e.relatedTarget)) {
+                    selectorRef?.current?.focus();
+                }
+            }}>
             <div className={['select-control-input', showOptions ? 'options' : ''].filter((item) => item).join(' ')}>
                 {/* Placeholder */}
                 <label
                     htmlFor={controlId}
+                    ref={placeholderRef}
                     className="select-control-search form-control"
                     onClick={searchOption}
                     title={placeholderValue || placeholder}>

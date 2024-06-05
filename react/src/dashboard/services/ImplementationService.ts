@@ -1,5 +1,5 @@
-import ApiResponse, { ApiResponseSingle } from '../props/ApiResponses';
 import { useState } from 'react';
+import ApiResponse, { ApiResponseSingle } from '../props/ApiResponses';
 import ApiRequestService from './ApiRequestService';
 import Implementation from '../props/models/Implementation';
 
@@ -43,7 +43,36 @@ export class ImplementationService<T = Implementation> {
     public updateEmailBranding(organizationId: number, id: number, data: object): Promise<ApiResponseSingle<T>> {
         return this.apiRequest.patch(`${this.prefix}/${organizationId}/implementations/${id}/email-branding`, data);
     }
+
+    /**
+     * Update cms by id
+     */
+    public updateCMS(organizationId: number, id: number, data: object): Promise<ApiResponseSingle<T>> {
+        return this.apiRequest.patch(`${this.prefix}/${organizationId}/implementations/${id}/cms`, data);
+    }
+
+    /**
+     * Update digid by id
+     */
+    public updateDigiD(organizationId: number, id: number, data: object): Promise<ApiResponseSingle<T>> {
+        return this.apiRequest.patch(`${this.prefix}/${organizationId}/implementations/${id}/digid`, data);
+    }
+
+    /**
+     * Update email by id
+     */
+    public updateEmail(organizationId: number, id: number, data: object): Promise<ApiResponseSingle<T>> {
+        return this.apiRequest.patch(`${this.prefix}/${organizationId}/implementations/${id}/email`, data);
+    }
+
+    /**
+     * Update pre-check banner by id
+     */
+    public updatePreCheckBanner(organizationId: number, id: number, data: object): Promise<ApiResponseSingle<T>> {
+        return this.apiRequest.patch(`${this.prefix}/${organizationId}/implementations/${id}/pre-check-banner`, data);
+    }
 }
+
 export default function useImplementationService(): ImplementationService {
     return useState(new ImplementationService())[0];
 }

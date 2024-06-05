@@ -37,6 +37,12 @@
     text-overflow: ellipsis;
 }
 
+@mixin ellipsis_inline {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
 @mixin visible_on_hover($item, $timeout: .3s) {
     #{$item}, #{$item} * {
         opacity: 0;

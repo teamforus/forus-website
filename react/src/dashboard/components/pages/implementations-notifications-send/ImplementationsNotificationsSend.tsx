@@ -5,7 +5,7 @@ import usePushSuccess from '../../../hooks/usePushSuccess';
 import usePushDanger from '../../../hooks/usePushDanger';
 import StateNavLink from '../../../modules/state_router/StateNavLink';
 import useSetProgress from '../../../hooks/useSetProgress';
-import { ResponseError } from '../../../props/ApiResponses';
+import { PaginationData, ResponseError } from '../../../props/ApiResponses';
 import useImplementationService from '../../../services/ImplementationService';
 import { useNavigate, useParams } from 'react-router-dom';
 import Implementation from '../../../props/models/Implementation';
@@ -17,9 +17,9 @@ import ThSortable from '../../elements/tables/ThSortable';
 import useFilter from '../../../hooks/useFilter';
 import usePaginatorService from '../../../modules/paginator/services/usePaginatorService';
 import Paginator from '../../../modules/paginator/components/Paginator';
-import Identity from '../../../props/models/Identity';
+import Identity from '../../../props/models/Sponsor/Identity';
 import Fund from '../../../props/models/Fund';
-import { PaginationIdentitiesData, useFundService } from '../../../services/FundService';
+import { useFundService } from '../../../services/FundService';
 import useImplementationNotificationService from '../../../services/ImplementationNotificationService';
 import ModalDangerZone from '../../modals/ModalDangerZone';
 import { useTranslation } from 'react-i18next';
@@ -50,7 +50,12 @@ export default function ImplementationsNotificationsSend() {
     const [errors, setErrors] = useState(null);
     const [editing, setEditing] = useState(false);
     const [template, setTemplate] = useState(null);
-    const [identities, setIdentities] = useState<PaginationIdentitiesData<Identity>>(null);
+
+    const [identities, setIdentities] =
+        useState<PaginationData<Identity, { counts: { active: number; selected: number; without_email: number } }>>(
+            null,
+        );
+
     const [submitting, setSubmitting] = useState(false);
     const [perPageKey] = useState('notification_identities');
     const [previewSent, setPreviewSent] = useState(false);

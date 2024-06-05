@@ -27,8 +27,14 @@ pre.code {
 
 // angularjsand ui-router directives
 [ui-sref],
-[ng-click] {
+[ng-click],
+.clickable {
     cursor: pointer;
+}
+
+.cursor-pointer,
+.cursor-pointer * {
+    cursor: pointer !important;
 }
 
 // angularjs translate elements
