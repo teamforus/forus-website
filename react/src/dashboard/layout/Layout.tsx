@@ -10,12 +10,11 @@ import { LayoutType } from '../modules/state_router/RouterProps';
 import useAuthIdentity from '../hooks/useAuthIdentity';
 import useActiveOrganization from '../hooks/useActiveOrganization';
 import { Libraries, LoadScript } from '@react-google-maps/api';
-import useEnvData from '../hooks/useEnvData';
+import EnvDataProp from '../../props/EnvData';
 
-export const Layout = ({ children }: { children: React.ReactElement }) => {
+export const Layout = ({ envData, children }: { envData: EnvDataProp; children: React.ReactElement }) => {
     const { modals } = useContext(modalsContext);
     const { route } = useStateRoutes();
-    const envData = useEnvData();
 
     const layout = route?.state?.layout;
     const authIdentity = useAuthIdentity();

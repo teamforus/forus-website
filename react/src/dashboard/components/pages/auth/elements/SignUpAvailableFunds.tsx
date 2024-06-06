@@ -19,7 +19,7 @@ export default function SignUpAvailableFunds({
     onApply,
 }: {
     organization: Organization;
-    externalFilters?: { fund_id?: number; organization_id?: number; tag?: string };
+    externalFilters?: { fund_id?: number; organization_id?: number | string; tag?: string };
     onApply: () => void;
 }) {
     const { t } = useTranslation();
@@ -115,7 +115,7 @@ export default function SignUpAvailableFunds({
                                     className="form-control"
                                     value={filter.values.organization_id}
                                     onChange={(e) => {
-                                        filter.update({ organization_id: parseInt(e.target.value) });
+                                        filter.update({ organization_id: parseInt(e.target.value) || '' });
                                     }}>
                                     {organizations.map((organization) => (
                                         <option key={organization.id} value={organization.id}>
@@ -191,6 +191,7 @@ export default function SignUpAvailableFunds({
                             }`}>
                             <div className="card-block-checkbox">
                                 <UIControlCheckbox
+                                    className="ui-control-checkbox-primary"
                                     checked={selected.includes(fund.id)}
                                     onChange={(e) => toggle(e, fund)}
                                 />

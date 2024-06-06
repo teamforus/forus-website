@@ -92,7 +92,7 @@ export default function SignUpProvider() {
     const [orgMediaFile, setOrgMediaFile] = useState(null);
     const [progressStorage] = useState(new ProgressStorage('validator-sign_up'));
 
-    const [offices, setOffices] = useState<Array<OfficeLocal>>(null);
+    const [offices, setOffices] = useState<Array<OfficeLocal>>([]);
     const [employees, setEmployees] = useState<Array<Employee>>(null);
     const [organization, setOrganization] = useState(null);
     const [hasApp, setHasApp] = useState(true);
@@ -108,7 +108,7 @@ export default function SignUpProvider() {
     const [selectedOption, setSelectedOption] = useState(undefined);
 
     const [organizationsList, setOrganizationsList] = useState<Array<Organization>>(null);
-    const [loggedWithApp, setLoggedWithApp] = useState(true);
+    const [loggedWithApp, setLoggedWithApp] = useState(false);
 
     const [INFO_STEPS] = useState(2);
 
@@ -275,18 +275,17 @@ export default function SignUpProvider() {
             openModal((modal) => (
                 <ModalNotification
                     modal={modal}
-                    title={'Medewerker toevoegen'}
-                    className={'modal-md'}
+                    title={'Bevestig uitnodiging'}
                     description={[
-                        'Wilt u de medewerker met het volgende e-mailadres toevoegen aan uw organisatie?',
-                        `E-mailadres: ${employeeForm.values.email}`,
+                        `Wilt u medewerker met het e-mailadres <strong class='text-primary'>${employeeForm.values.email}</strong> uitnodigen?`,
+                        `Deze medewerker zal hier over een e-mail ontvangen.`,
                     ]}
                     buttonCancel={{
-                        text: 'Annuleren',
+                        text: 'Annuleer',
                         onClick: () => modal.close(),
                     }}
                     buttonSubmit={{
-                        text: 'Toevoegen',
+                        text: 'Bevestigen',
                         onClick: () => {
                             modal.close();
                             employeeForm.submit();
@@ -712,6 +711,10 @@ export default function SignUpProvider() {
         }
 
         const step = progressStorage.get('step');
+
+        if (authToken && step == 'STEP_CREATE_PROFILE') {
+            return goToStep(organizations?.length > 0 ? 'STEP_SELECT_ORGANIZATION' : 'STEP_ORGANIZATION_ADD');
+        }
 
         if (!STEPS_AVAILABLE.includes(step)) {
             return goToStep('STEP_INFO_GENERAL');
@@ -1584,7 +1587,7 @@ export default function SignUpProvider() {
                                                 <div className="row">
                                                     <div className="col col-md-8 col-xs-12">
                                                         <UIControlText
-                                                            value={formOrganization.values.website}
+                                                            value={formOrganization.values.website || ''}
                                                             onChange={(e) =>
                                                                 formOrganization.update({ website: e.target.value })
                                                             }
@@ -1838,7 +1841,10 @@ export default function SignUpProvider() {
                         <div className="sign_up-pane">
                             <div className="sign_up-pane-header">{t('sign_up_provider.header.title_step_7')}</div>
                             <div className="sign_up-pane-body">
-                                <div className="sign_up-pane-text">{t('sign_up_provider.header.subtitle_step_7')}</div>
+                                <div
+                                    className="sign_up-pane-text"
+                                    dangerouslySetInnerHTML={{ __html: t('sign_up_provider.header.subtitle_step_7') }}
+                                />
                             </div>
                             <div className="sign_up-pane-body">
                                 <div className="sign_up-employees">

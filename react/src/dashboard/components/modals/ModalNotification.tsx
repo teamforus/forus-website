@@ -54,7 +54,7 @@ export default function ModalNotification({
                             {description && (
                                 <div className="modal-text">
                                     {(Array.isArray(description) ? description : [description]).map((value, index) => (
-                                        <div key={index}>{value}</div>
+                                        <div dangerouslySetInnerHTML={{ __html: value }} key={index} />
                                     ))}
                                 </div>
                             )}

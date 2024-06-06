@@ -278,6 +278,14 @@
                 }
             }
 
+            .table-pagination {
+                .form {
+                    margin-bottom: 0;
+                    display: flex;
+                    flex-grow: 1;
+                }
+            }
+
             .sign_up-pane-section {
                 border-bottom: 1px solid #ebedf0;
                 display: flex;
