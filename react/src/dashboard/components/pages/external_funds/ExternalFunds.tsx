@@ -73,7 +73,7 @@ export default function ExternalFunds() {
     );
 
     const updateFundAcceptance = useCallback(
-        (fund) => {
+        (fund: ExternalFund) => {
             setProgress(0);
 
             organizationService

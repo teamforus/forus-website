@@ -37,13 +37,15 @@ export default function MarkdownEditor({
     extendedOptions = false,
     bindEditor = null,
     onChange = null,
+    onUpdatedRaw,
+    insertTextRef,
 }: {
     value: string;
     bindEditor?: CallableFunction;
     modal?: string;
     buttons?: Array<{ key: string; handler: CallableFunction; iconKey: string; icon: string }>;
     alignment?: string;
-    onUpdatedRaw?: string;
+    onUpdatedRaw?: (data: { data: { content?: string; content_html?: string } }) => void;
     disabled?: boolean;
     placeholder?: string;
     allowLists?: boolean;
@@ -52,6 +54,7 @@ export default function MarkdownEditor({
     extendedOptions?: boolean;
     onChange: (value: string) => void;
     onMediaUploaded?: (value: { media_uid: string }) => void;
+    insertTextRef?: React.MutableRefObject<(text: string) => void>;
 }) {
     const $element = useRef<HTMLDivElement>(null);
     const $theEditor = useRef<HTMLTextAreaElement>(null);
@@ -206,7 +209,7 @@ export default function MarkdownEditor({
                         const _buttons = buttons || [];
 
                         context.invoke('editor.saveRange');
-                        _buttons.forEach((button) => (button.key == type ? button.handler($theEditor, button) : null));
+                        _buttons.forEach((button) => (button.key == type ? button.handler(getEditor(), button) : null));
 
                         if (type === 'customLink') {
                             const linkInfo = context.invoke('editor.getLinkInfo');
@@ -260,7 +263,7 @@ export default function MarkdownEditor({
                 return button.render(); // return button as jquery object
             };
         },
-        [buttons, getCustomLink],
+        [buttons, getCustomLink, getEditor],
     );
 
     const CmsCodeMarkdown = useCallback(() => {
@@ -400,6 +403,7 @@ export default function MarkdownEditor({
 
                     onChangeRef.current(value);
                     markdownValueRef.current = value;
+                    onUpdatedRaw && onUpdatedRaw({ data: { content: value, content_html } });
                 },
                 onPaste: (e: Event & { originalEvent: ClipboardEvent }) => {
                     e.preventDefault();
@@ -421,6 +425,7 @@ export default function MarkdownEditor({
         CmsCodeMarkdown,
         initialized,
         getEditor,
+        onUpdatedRaw,
     ]);
 
     useEffect(() => {
@@ -446,6 +451,12 @@ export default function MarkdownEditor({
     useEffect(() => {
         getEditor().summernote('code', value);
     }, [value, getEditor]);
+
+    useEffect(() => {
+        if (insertTextRef) {
+            insertTextRef.current = insertText;
+        }
+    }, [insertText, insertTextRef]);
 
     return (
         <div

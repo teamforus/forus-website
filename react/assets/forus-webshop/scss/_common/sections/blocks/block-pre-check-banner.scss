@@ -8,12 +8,12 @@
 
     .pre-check-banner-media {
         display: flex;
-        display: grid;
-        width: 45%;
+        flex: 0 0 45%;
 
         img {
             width: 100%;
             display: block;
+            object-fit: cover;
         }
     }
 
@@ -62,6 +62,7 @@
 
     @media screen and (max-width: 1000px) {
         grid-template-columns: 1fr;
+        flex-direction: column;
 
         .pre-check-banner-media {
             width: 100%;

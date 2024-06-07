@@ -13,7 +13,7 @@ import CardHeaderFilter from '../../elements/tables/elements/CardHeaderFilter';
 import FilterItemToggle from '../../elements/tables/elements/FilterItemToggle';
 import SelectControlOptions from '../../elements/select-control/templates/SelectControlOptions';
 import SelectControl from '../../elements/select-control/SelectControl';
-import { useImplementationService } from '../../../services/ImplementationService';
+import useImplementationService from '../../../services/ImplementationService';
 import Implementation from '../../../props/models/Implementation';
 import Fund from '../../../props/models/Fund';
 import { useFundService } from '../../../services/FundService';

@@ -1,18 +1,31 @@
 module.exports = {
-    title: "BI integratie",
+    title: 'BI integratie',
     labels: {
-        url: "URL",
-        header: "Header",
-        disabled: "Uitgeschakeld",
-        parameter: "URL-parameter",
-        auth_type: "Authentificatietype",
-        header_key: "Header tag",
-        header_name: "Naam van de header",
-        parameter_key: "API sleutel",
+        ip: 'IP adres',
+        url: 'URL',
+        header: 'Header',
+        enabled: 'Status',
+        option_enabled: 'Ingeschakeld',
+        option_disabled: 'Uitgeschakeld',
+        parameter: 'URL-parameter',
+        data_types: 'Exportgegevens selecteren',
+        header_key: 'Hoofdertag',
+        header_name: 'Naam van de header',
+        expiration_period: 'Vervalperiode',
+        token_placeholder: 'Een toegangstoken wordt gegenereerd zodra de instellingen zijn opgeslagen.',
+    },
+    expiration_periods: {
+        '24_hour': '24 uur',
+        '1_week': '1 week',
+        '1_month': '1 maand',
+    },
+    tabs: {
+        settings: 'BI-toegang',
+        security: 'Beveiliging',
     },
     buttons: {
-        cancel: "Annuleren",
-        submit: "Bevestigen",
-        generate_new_key: "Vernieuwen"
-    }
+        cancel: 'Annuleren',
+        submit: 'Bevestigen',
+        generate_new_key: 'Vernieuwen',
+    },
 };

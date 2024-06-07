@@ -4,26 +4,27 @@ import FormSetter from '../types/FormSetter';
 import FormSubmitter from '../types/FormSubmitter';
 import FormBuilder from '../types/FormBuilder';
 
-export default function useFormBuilder<T = FormValuesModel>(
+export default function useFormBuilder<T = FormValuesModel, D = unknown>(
     initialValues: T | null,
-    onSubmit: FormSubmitter<T> | false,
+    onSubmit: FormSubmitter<T, D> | false,
 ): FormBuilder<T> {
-    const [values, setValues] = useState<T | null>(initialValues);
+    const [initValues] = useState(initialValues);
+    const [values, setValues] = useState<T | null>(initValues);
     const [isLocked, setIsLocked] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [state, setState] = useState<'pending' | 'error' | 'success' | string>('pending');
     const [errors, setErrors] = useState<{ [key: string]: Array<string> }>({});
 
     const reset = useCallback(() => {
-        setValues(initialValues);
+        setValues(initValues);
         setState('pending');
         setErrors({});
         setIsLoading(false);
         setIsLocked(false);
-    }, [initialValues]);
+    }, [initValues]);
 
-    const submit = useCallback<(e?: FormEvent<HTMLFormElement>) => void>(
-        (e = null): void => {
+    const submit = useCallback<(e?: FormEvent<HTMLFormElement>, data?: D) => void>(
+        (e = null, data): void => {
             e?.preventDefault();
 
             if (isLocked || !onSubmit) {
@@ -33,7 +34,7 @@ export default function useFormBuilder<T = FormValuesModel>(
             setIsLocked(true);
             setIsLoading(true);
 
-            const result = onSubmit(values, e);
+            const result = onSubmit(values, e, data);
 
             if (result) {
                 result.finally(() => setIsLoading(false));

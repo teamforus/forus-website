@@ -7,6 +7,7 @@ import ExternalFund from '../props/models/ExternalFund';
 import Product from '../props/models/Product';
 import OrganizationFeatureStatuses from './types/OrganizationFeatureStatuses';
 import FundProvider from '../props/models/FundProvider';
+import { ProviderFinancial } from '../components/pages/financial-dashboard/types/FinancialStatisticTypes';
 
 export class OrganizationService<T = Organization> {
     /**
@@ -111,7 +112,7 @@ export class OrganizationService<T = Organization> {
         });
     }
 
-    public readListValidators(id: number, data: object = {}) {
+    public readListValidators(id: number, data: object = {}): Promise<ApiResponse<T>> {
         return this.apiRequest.get(`${this.prefix}/${id}/validators`, data);
     }
 
@@ -141,7 +142,7 @@ export class OrganizationService<T = Organization> {
         return this.apiRequest.get(`${this.prefix}/${id}/external-funds`, data);
     }
 
-    public externalFundUpdate(id: number, fund_id: number, data = {}): Promise<ApiResponse<T>> {
+    public externalFundUpdate(id: number, fund_id: number, data: object = {}): Promise<ApiResponse<T>> {
         return this.apiRequest.patch(`${this.prefix}/${id}/external-funds/${fund_id}`, data);
     }
 
@@ -163,12 +164,14 @@ export class OrganizationService<T = Organization> {
         });
     }
 
-    public financeProviders(id: number, data = {}): Promise<ApiResponse<T>> {
+    public financeProviders(id: number, data = {}): Promise<ApiResponse<ProviderFinancial>> {
         return this.apiRequest.get(`${this.prefix}/${id}/sponsor/providers/finances`, data);
     }
 
-    public financeProvidersExport(id: number, data = {}): Promise<ApiResponse<T>> {
-        return this.apiRequest.get(`${this.prefix}/${id}/sponsor/providers/finances-export`, data);
+    public financeProvidersExport(id: number, data = {}): Promise<ResponseSimple<ArrayBuffer>> {
+        return this.apiRequest.get(`${this.prefix}/${id}/sponsor/providers/finances-export`, data, {
+            responseType: 'arraybuffer',
+        });
     }
 
     public sponsorProducts(id: number, provider_organization_id: number, data = {}): Promise<ApiResponse<Product>> {

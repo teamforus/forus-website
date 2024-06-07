@@ -35,7 +35,7 @@ export default function SubsidyFundSponsorProducts({
     const organizationService = useOrganizationService();
 
     const [products, setProducts] = useState<PaginationData<ProductLocal>>(null);
-    const [menuDropdown, setMenuDropdown] = useState([]);
+    const [shownProductMenuId, setShownProductMenuId] = useState<number>(null);
 
     const filter = useFilter({ q: '', per_page: 15 });
 
@@ -200,9 +200,9 @@ export default function SubsidyFundSponsorProducts({
                                             )}
 
                                             <TableRowActions
-                                                actions={menuDropdown}
-                                                setActions={(res) => setMenuDropdown(res)}
-                                                modelItem={product}>
+                                                activeId={shownProductMenuId}
+                                                setActiveId={setShownProductMenuId}
+                                                id={product.id}>
                                                 <div className="dropdown dropdown-actions">
                                                     <NavLink
                                                         className="dropdown-item"

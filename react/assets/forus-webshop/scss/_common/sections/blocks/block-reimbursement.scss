@@ -194,6 +194,27 @@
                 flex-basis: 100%;
                 margin: 0 0 20px;
             }
+
+            .reimbursement-props {
+                border: 1px solid var(--border-color);
+                padding: 12px;
+                border-radius: var(--border-radius);
+
+                .reimbursement-prop {
+                    flex-direction: column;
+                    margin-bottom: 10px;
+
+                    .reimbursement-prop-label {
+                        font: 600 11px/16px var(--base-font);
+                        color: var(--form-label-color);
+                    }
+
+                    .reimbursement-prop-value {
+                        font: 600 12px/18px var(--base-font);
+                        color: var(--form-control-color);
+                    }
+                }
+            }
         }
     }
 }

@@ -71,11 +71,13 @@ export default interface Organization {
     auth_2fa_funds_restrict_emails: boolean;
     auth_2fa_funds_restrict_auth_sessions: boolean;
     auth_2fa_funds_restrict_reimbursements: boolean;
+    auth_2fa_restrict_bi_connections: boolean;
     tags: Array<Tag>;
     logo?: Media;
     business_type: BusinessType;
     permissions?: Array<string>;
     offices_count: number;
+    offices: Array<Office>;
     can_view_provider_extra_payments?: boolean;
     allow_extra_payments_by_sponsor?: boolean;
     allow_provider_extra_payments?: boolean;

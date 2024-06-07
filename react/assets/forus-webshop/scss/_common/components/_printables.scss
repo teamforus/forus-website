@@ -1,13 +1,15 @@
 body {
     &.printable-only {
         @media screen {
-            &>printables-root {
+            &>printables-root,
+            &>#root>.printables-root {
                 display: none;
             }
         }
 
         @media print {
-            &>*:not(printables-root) {
+            &>#root>*:not(.printables-root),
+            &>*:not(printables-root, #root) {
                 display: none !important;
             }
         }
@@ -40,7 +42,7 @@ body {
                     top: 10px;
                     right: 10px;
                     width: 80px;
-                    
+
                     img {
                         width: 100%;
                     }
@@ -51,22 +53,22 @@ body {
                     text-align: center;
                     margin-bottom: 10px;
                 }
-    
+
                 .printable-description {
                     font: 400 12px var(--base-font);
                     text-align: center;
                     margin-bottom: 20px;
                 }
-    
+
                 .block-qr-code {
                     margin: 0 auto 20px;
-    
+
                     .qr_code {
                         margin: 0 auto;
                         width: 240px;
                         height: auto;
                     }
-    
+
                     img, canvas {
                         padding: 10px;
                         margin: 0 auto;
