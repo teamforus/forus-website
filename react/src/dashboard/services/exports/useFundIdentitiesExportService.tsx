@@ -7,9 +7,9 @@ import useMakeExporterService from './useMakeExporterService';
 import { useFundService } from '../FundService';
 
 export default function useFundIdentitiesExportService() {
+    const openModal = useOpenModal();
     const pushDanger = usePushDanger();
     const setProgress = useSetProgress();
-    const openModal = useOpenModal();
 
     const fundService = useFundService();
     const { makeSections, saveExportedData } = useMakeExporterService();

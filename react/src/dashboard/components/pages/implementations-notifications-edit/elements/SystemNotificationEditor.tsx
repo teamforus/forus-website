@@ -1,5 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import React, { useCallback, useMemo, useState } from 'react';
 import ToggleControl from '../../../elements/forms/controls/ToggleControl';
 import useImplementationNotificationService from '../../../../services/ImplementationNotificationService';
 import { keyBy } from 'lodash';
@@ -12,118 +11,115 @@ import SelectControlOptions from '../../../elements/select-control/templates/Sel
 import SystemNotificationTemplateEditor from './SystemNotificationTemplateEditor';
 import Fund from '../../../../props/models/Fund';
 import LoadingCard from '../../../elements/loading-card/LoadingCard';
+import useTranslate from '../../../../hooks/useTranslate';
+import useSetProgress from '../../../../hooks/useSetProgress';
 
 export default function SystemNotificationEditor({
     funds,
     implementation,
     organization,
     notification,
-    onChange,
+    setNotifications,
 }: {
-    funds: Array<Fund>;
+    funds: Array<Partial<Fund>>;
     implementation: Implementation;
     organization: Organization;
     notification: SystemNotification;
-    onChange: (notification: SystemNotification) => void;
+    setNotifications: React.Dispatch<React.SetStateAction<SystemNotification>>;
 }) {
-    const { t } = useTranslation();
-
+    const translate = useTranslate();
     const pushSuccess = usePushSuccess();
+    const setProgress = useSetProgress();
 
     const implementationNotificationsService = useImplementationNotificationService();
 
-    const [fund, setFund] = useState(null);
-    const [state, setState] = useState(null);
-    const [templates, setTemplates] = useState(null);
+    const [fund, setFund] = useState<Partial<Fund>>(funds[0]);
 
-    const [notificationToggleLabel] = useState({
+    const [notificationToggleLabels] = useState({
         disabled: `Uitgezet, alle kanalen zijn uitgezet.`,
         enabled_all: 'Aangezet, alle kanalen zijn aangezet.',
         enabled_partial: 'Aangezet, sommige kanalen staan afzonderlijk uit.',
     });
 
-    const toggleSwitched = useCallback(() => {
-        const data = { enable_all: !notification.enable_all };
-        const hasDisabledChannels = implementationNotificationsService.notificationHasDisabledChannels(notification);
-
-        const message = data.enable_all
-            ? hasDisabledChannels
-                ? notificationToggleLabel.enabled_partial
-                : notificationToggleLabel.enabled_all
-            : notificationToggleLabel.disabled;
-
-        implementationNotificationsService
-            .update(organization.id, implementation.id, notification.id, data)
-            .then((res) => {
-                onChange(res.data.data);
-                pushSuccess('Opgeslagen', message);
-            });
-    }, [
-        onChange,
-        pushSuccess,
-        notification,
-        organization.id,
-        implementation.id,
-        implementationNotificationsService,
-        notificationToggleLabel.disabled,
-        notificationToggleLabel.enabled_all,
-        notificationToggleLabel.enabled_partial,
-    ]);
-
-    const getTemplatesByFund = useCallback(() => {
-        return keyBy(
-            implementationNotificationsService.templatesToFront(
-                notification.templates.filter((template) => {
-                    return template.fund_id == fund?.id;
-                }),
-            ),
-            'type',
-        );
-    }, [fund?.id, implementationNotificationsService, notification.templates]);
-
-    const getTemplatesByImplementation = useCallback(() => {
-        return keyBy(
-            implementationNotificationsService.templatesToFront(
-                notification.templates.filter((template) => {
-                    return !template.fund_id;
-                }),
-            ),
-            'type',
-        );
-    }, [implementationNotificationsService, notification.templates]);
-
-    const getDefaultTemplates = useCallback(() => {
-        return keyBy(implementationNotificationsService.templatesToFront(notification.templates_default), 'type');
-    }, [implementationNotificationsService, notification.templates_default]);
-
-    const updateTemplates = useCallback(() => {
+    const templates = useMemo(() => {
         const channels: {
             mail?: boolean;
             push?: boolean;
             database?: boolean;
         } = notification.channels.reduce((obj, channel) => ({ ...obj, [channel]: true }), {});
 
-        const templatesDefault = getDefaultTemplates();
-        const templatesImplementation = getTemplatesByImplementation();
-        const templatesFund = fund?.id ? getTemplatesByFund() : null;
+        const templatesFund = fund?.id
+            ? implementationNotificationsService.templatesToFront(
+                  notification.templates.filter((template) => template.fund_id == fund?.id),
+              )
+            : [];
 
-        const templates = {
-            mail: channels.mail ? templatesFund?.mail || templatesImplementation?.mail || templatesDefault.mail : null,
-            push: channels.push ? templatesFund?.push || templatesImplementation?.push || templatesDefault.push : null,
+        const templatesImplementation = implementationNotificationsService.templatesToFront(
+            notification.templates.filter((template) => !template.fund_id),
+        );
+
+        const templatesDefault = implementationNotificationsService.templatesToFront(notification.templates_default);
+
+        return {
+            mail: channels.mail
+                ? keyBy(templatesFund, 'type')?.mail ||
+                  keyBy(templatesImplementation, 'type')?.mail ||
+                  keyBy(templatesDefault, 'type')?.mail
+                : null,
+            push: channels.push
+                ? keyBy(templatesFund, 'type')?.push ||
+                  keyBy(templatesImplementation, 'type')?.push ||
+                  keyBy(templatesDefault, 'type')?.push
+                : null,
             database: channels.database
-                ? templatesFund?.database || templatesImplementation.database || templatesDefault.database
+                ? keyBy(templatesFund, 'type')?.database ||
+                  keyBy(templatesImplementation, 'type')?.database ||
+                  keyBy(templatesDefault, 'type').database
                 : null,
         };
+    }, [
+        fund.id,
+        implementationNotificationsService,
+        notification.channels,
+        notification.templates,
+        notification.templates_default,
+    ]);
 
-        setTemplates(templates);
-    }, [fund, getDefaultTemplates, getTemplatesByFund, getTemplatesByImplementation, notification.channels]);
+    const state = useMemo(() => {
+        return implementationNotificationsService.notificationToStateLabel(notification);
+    }, [implementationNotificationsService, notification]);
 
-    useEffect(() => updateTemplates(), [updateTemplates]);
+    const toggleSwitched = useCallback(() => {
+        setProgress(0);
 
-    useEffect(
-        () => setState(implementationNotificationsService.notificationToStateLabel(notification)),
-        [implementationNotificationsService, notification],
-    );
+        const data = { enable_all: !notification.enable_all };
+        const hasDisabledChannels = implementationNotificationsService.notificationHasDisabledChannels(notification);
+
+        const message = data.enable_all
+            ? hasDisabledChannels
+                ? notificationToggleLabels.enabled_partial
+                : notificationToggleLabels.enabled_all
+            : notificationToggleLabels.disabled;
+
+        implementationNotificationsService
+            .update(organization.id, implementation.id, notification.id, data)
+            .then((res) => {
+                setNotifications(res.data.data);
+                pushSuccess('Opgeslagen', message);
+            })
+            .finally(() => setProgress(100));
+    }, [
+        setNotifications,
+        setProgress,
+        pushSuccess,
+        notification,
+        organization.id,
+        implementation.id,
+        implementationNotificationsService,
+        notificationToggleLabels.disabled,
+        notificationToggleLabels.enabled_all,
+        notificationToggleLabels.enabled_partial,
+    ]);
 
     if (!templates || !notification) {
         return <LoadingCard />;
@@ -138,7 +134,7 @@ export default function SystemNotificationEditor({
                             <div className={`card-title ${notification.enable_all ? '' : 'text-muted-dark'}`}>
                                 <em className="mdi mdi-web" />
                                 <span>{notification.title}</span>
-                                <span>{t(`system_notifications.notifications.${notification.key}.title`)}</span>
+                                <span>{translate(`system_notifications.notifications.${notification.key}.title`)}</span>
                             </div>
                         </div>
 
@@ -148,8 +144,8 @@ export default function SystemNotificationEditor({
                                     id={'enable_all'}
                                     className="form-toggle-danger"
                                     checked={notification.enable_all}
-                                    title={notification.enable_all ? '' : notificationToggleLabel.disabled}
-                                    onChange={() => toggleSwitched()}
+                                    title={notification.enable_all ? '' : notificationToggleLabels.disabled}
+                                    onChange={toggleSwitched}
                                     labelRight={false}
                                 />
                             </div>
@@ -169,12 +165,9 @@ export default function SystemNotificationEditor({
                                         <SelectControl
                                             className="form-control"
                                             placeholder="Kies een fonds"
-                                            propKey={'id'}
-                                            options={[{ id: null, name: 'Alle fondsen' }, ...funds]}
-                                            value={fund?.id}
-                                            onChange={(value?: number) =>
-                                                setFund(funds.filter((item) => item.id === value)[0])
-                                            }
+                                            options={funds}
+                                            value={fund}
+                                            onChange={(fund: Partial<Fund>) => setFund(fund)}
                                             optionsComponent={SelectControlOptions}
                                         />
                                     </div>
@@ -208,7 +201,7 @@ export default function SystemNotificationEditor({
                                 <div className="text-strong">Beschrijving</div>
                             </div>
                             <div className="keyvalue-value">
-                                {t(`system_notifications.notifications.${notification.key}.description`)}
+                                {translate(`system_notifications.notifications.${notification.key}.description`)}
                             </div>
                         </div>
                         <div className="keyvalue-item">
@@ -230,7 +223,7 @@ export default function SystemNotificationEditor({
                 organization={organization}
                 notification={notification}
                 template={templates.mail}
-                onChange={(data) => onChange({ ...notification, ...data })}
+                onChange={(data) => setNotifications({ ...notification, ...data })}
             />
 
             {templates.push && (
@@ -241,7 +234,7 @@ export default function SystemNotificationEditor({
                     fund={fund}
                     notification={notification}
                     template={templates.push}
-                    onChange={(data) => onChange({ ...notification, ...data })}
+                    onChange={(data) => setNotifications({ ...notification, ...data })}
                 />
             )}
 
@@ -253,7 +246,7 @@ export default function SystemNotificationEditor({
                     fund={fund}
                     notification={notification}
                     template={templates.database}
-                    onChange={(data) => onChange({ ...notification, ...data })}
+                    onChange={(data) => setNotifications({ ...notification, ...data })}
                 />
             )}
         </div>

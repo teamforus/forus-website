@@ -38,7 +38,7 @@ export default function MarkdownEditor({
     bindEditor = null,
     onChange = null,
     onUpdatedRaw,
-    insertTextValue,
+    insertTextRef,
 }: {
     value: string;
     bindEditor?: CallableFunction;
@@ -54,7 +54,7 @@ export default function MarkdownEditor({
     extendedOptions?: boolean;
     onChange: (value: string) => void;
     onMediaUploaded?: (value: { media_uid: string }) => void;
-    insertTextValue?: string;
+    insertTextRef?: React.MutableRefObject<(text: string) => void>;
 }) {
     const $element = useRef<HTMLDivElement>(null);
     const $theEditor = useRef<HTMLTextAreaElement>(null);
@@ -263,7 +263,7 @@ export default function MarkdownEditor({
                 return button.render(); // return button as jquery object
             };
         },
-        [buttons, getCustomLink],
+        [buttons, getCustomLink, getEditor],
     );
 
     const CmsCodeMarkdown = useCallback(() => {
@@ -453,10 +453,10 @@ export default function MarkdownEditor({
     }, [value, getEditor]);
 
     useEffect(() => {
-        if (insertTextValue && insertTextValue !== '') {
-            insertText(insertTextValue);
+        if (insertTextRef) {
+            insertTextRef.current = insertText;
         }
-    }, [insertText, insertTextValue]);
+    }, [insertText, insertTextRef]);
 
     return (
         <div

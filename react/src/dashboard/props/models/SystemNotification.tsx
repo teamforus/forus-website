@@ -1,14 +1,4 @@
-export interface NotificationTemplate {
-    id?: number;
-    key?: string;
-    type?: string;
-    title?: string;
-    formal?: boolean;
-    fund_id?: number;
-    content?: string;
-    content_html?: string;
-    implementation_id?: number;
-}
+import NotificationTemplate from './NotificationTemplate';
 
 export default interface SystemNotification {
     id?: number;
@@ -23,7 +13,7 @@ export default interface SystemNotification {
     enable_push?: boolean;
     enable_database?: boolean;
     variables?: Array<string>;
-    channels?: Array<string>;
+    channels?: Array<'database' | 'mail' | 'push'>;
     templates?: Array<NotificationTemplate>;
     templates_default?: Array<NotificationTemplate>;
 }

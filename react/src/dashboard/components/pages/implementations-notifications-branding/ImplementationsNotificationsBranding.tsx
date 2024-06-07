@@ -1,6 +1,5 @@
 import React, { Fragment, useCallback, useEffect, useState } from 'react';
 import useActiveOrganization from '../../../hooks/useActiveOrganization';
-import { useTranslation } from 'react-i18next';
 import LoadingCard from '../../elements/loading-card/LoadingCard';
 import usePushDanger from '../../../hooks/usePushDanger';
 import StateNavLink from '../../../modules/state_router/StateNavLink';
@@ -16,16 +15,18 @@ import Media from '../../../props/models/Media';
 import { useMediaService } from '../../../services/MediaService';
 import useSetProgress from '../../../hooks/useSetProgress';
 import usePushSuccess from '../../../hooks/usePushSuccess';
-import { useNavigate, useParams } from 'react-router-dom';
-import { getStateRouteUrl } from '../../../modules/state_router/Router';
+import { useParams } from 'react-router-dom';
+import { useNavigateState } from '../../../modules/state_router/Router';
+import useTranslate from '../../../hooks/useTranslate';
 
 export default function ImplementationsNotificationsBranding() {
     const { id } = useParams();
-    const { t } = useTranslation();
-    const navigate = useNavigate();
+
+    const translate = useTranslate();
     const pushDanger = usePushDanger();
     const pushSuccess = usePushSuccess();
     const setProgress = useSetProgress();
+    const navigateState = useNavigateState();
     const activeOrganization = useActiveOrganization();
 
     const mediaService = useMediaService();
@@ -36,7 +37,7 @@ export default function ImplementationsNotificationsBranding() {
     const [implementation, setImplementation] = useState<Implementation>(null);
 
     const uploadMedia = useCallback(() => {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve) => {
             if (!media && !mediaFile && implementation.email_logo) {
                 return mediaService.delete(implementation.email_logo.uid).then(() => resolve(null));
             }
@@ -54,10 +55,13 @@ export default function ImplementationsNotificationsBranding() {
                     setMediaFile(null);
                     resolve(res.data.data.uid);
                 })
-                .catch(reject)
+                .catch((err: ResponseError) => {
+                    resolve(null);
+                    pushDanger('Mislukt!', err.data.message);
+                })
                 .finally(() => setProgress(100));
         });
-    }, [implementation?.email_logo, media, mediaFile, mediaService, setProgress]);
+    }, [implementation?.email_logo, media, mediaFile, mediaService, pushDanger, setProgress]);
 
     const form = useFormBuilder(
         {
@@ -66,40 +70,35 @@ export default function ImplementationsNotificationsBranding() {
             email_signature: '',
             email_signature_html: '',
         },
-        (values) => {
-            uploadMedia().then((uid?: string) => {
-                setProgress(0);
+        async (values) => {
+            const uid = await uploadMedia();
 
-                const email_color = values.email_color ? values.email_color.toUpperCase().trim() : null;
-                const email_signature = values.email_signature ? values.email_signature.trim() : null;
+            setProgress(0);
 
-                const data = {
-                    email_color: email_color && email_color != implementation.email_color_default ? email_color : null,
-                    email_signature:
-                        email_signature && email_signature != implementation.email_signature_default
-                            ? email_signature
-                            : null,
-                    ...(uid ? { email_logo_uid: uid } : {}),
-                };
+            const email_color = values.email_color ? values.email_color.toUpperCase().trim() : null;
+            const email_signature = values.email_signature ? values.email_signature.trim() : null;
 
-                implementationService
-                    .updateEmailBranding(activeOrganization.id, implementation.id, data)
-                    .then(() => {
-                        pushSuccess('Gelukt!', 'De aanpassingen zijn opgeslagen!');
+            const data = {
+                email_color: email_color && email_color != implementation.email_color_default ? email_color : null,
+                email_signature:
+                    email_signature && email_signature != implementation.email_signature_default
+                        ? email_signature
+                        : null,
+                ...(uid ? { email_logo_uid: uid } : {}),
+            };
 
-                        navigate(
-                            getStateRouteUrl('implementation-notifications', {
-                                organizationId: activeOrganization.id,
-                            }),
-                        );
-                    })
-                    .catch((err: ResponseError) => {
-                        form.setIsLocked(false);
-                        form.setErrors(err.data.errors);
-                        pushDanger('Mislukt!', 'Er zijn een aantal problemen opgetreden, probeer het opnieuw!');
-                    })
-                    .finally(() => setProgress(100));
-            });
+            implementationService
+                .updateEmailBranding(activeOrganization.id, implementation.id, data)
+                .then(() => {
+                    pushSuccess('Gelukt!', 'De aanpassingen zijn opgeslagen!');
+                    navigateState('implementation-notifications', { organizationId: activeOrganization.id });
+                })
+                .catch((err: ResponseError) => {
+                    form.setIsLocked(false);
+                    form.setErrors(err.data.errors);
+                    pushDanger('Mislukt!', 'Er zijn een aantal problemen opgetreden, probeer het opnieuw!');
+                })
+                .finally(() => setProgress(100));
         },
     );
 
@@ -112,11 +111,10 @@ export default function ImplementationsNotificationsBranding() {
             .catch((res: ResponseError) => pushDanger('Mislukt!', res.data.message));
     }, [implementationService, activeOrganization.id, id, pushDanger]);
 
-    useEffect(() => fetchImplementation(), [fetchImplementation]);
-
     useEffect(() => {
         if (implementation) {
             const { email_color, email_signature, email_color_default } = implementation;
+
             setMedia(implementation.email_logo);
 
             updateForm({
@@ -126,6 +124,10 @@ export default function ImplementationsNotificationsBranding() {
             });
         }
     }, [implementation, updateForm]);
+
+    useEffect(() => {
+        fetchImplementation();
+    }, [fetchImplementation]);
 
     if (!implementation) {
         return <LoadingCard />;
@@ -137,17 +139,15 @@ export default function ImplementationsNotificationsBranding() {
                 <div className="flex flex-horizontal">
                     <div className="flex flex-grow flex-vertical flex-center">
                         <div>
-                            Handtekening en huisstijl
-                            <Tooltip text={t('system_notifications.header.tooltip')} />
+                            Handtekening en huisstijl&nbsp;
+                            <Tooltip text={translate('system_notifications.header.tooltip')} />
                         </div>
                     </div>
                     <div className="flex">
                         <div className="button-group">
                             <StateNavLink
                                 name={'implementation-notifications'}
-                                params={{
-                                    organizationId: activeOrganization.id,
-                                }}
+                                params={{ organizationId: activeOrganization.id }}
                                 className="button button-text">
                                 <em className="mdi mdi-chevron-left icon-start" />
                                 Terug
@@ -210,7 +210,7 @@ export default function ImplementationsNotificationsBranding() {
                                             />
 
                                             <div className="form-hint">
-                                                {t('system_notifications.hints.maxlen', {
+                                                {translate('system_notifications.hints.maxlen', {
                                                     attribute: 'handtekening',
                                                     size: 4096,
                                                 })}
@@ -228,9 +228,7 @@ export default function ImplementationsNotificationsBranding() {
                             <StateNavLink
                                 className="button button-default"
                                 name={'implementation-notifications'}
-                                params={{
-                                    organizationId: activeOrganization.id,
-                                }}>
+                                params={{ organizationId: activeOrganization.id }}>
                                 Annuleren
                             </StateNavLink>
 

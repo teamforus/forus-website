@@ -5,11 +5,11 @@ import usePushSuccess from '../../../hooks/usePushSuccess';
 import usePushDanger from '../../../hooks/usePushDanger';
 import StateNavLink from '../../../modules/state_router/StateNavLink';
 import useSetProgress from '../../../hooks/useSetProgress';
-import { PaginationData, ResponseError } from '../../../props/ApiResponses';
+import { PaginationData, ResponseError, ResponseErrorData } from '../../../props/ApiResponses';
 import useImplementationService from '../../../services/ImplementationService';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import Implementation from '../../../props/models/Implementation';
-import { getStateRouteUrl } from '../../../modules/state_router/Router';
+import { getStateRouteUrl, useNavigateState } from '../../../modules/state_router/Router';
 import { hasPermission } from '../../../helpers/utils';
 import SelectControlOptions from '../../elements/select-control/templates/SelectControlOptions';
 import SelectControl from '../../elements/select-control/SelectControl';
@@ -22,22 +22,22 @@ import Fund from '../../../props/models/Fund';
 import { useFundService } from '../../../services/FundService';
 import useImplementationNotificationService from '../../../services/ImplementationNotificationService';
 import ModalDangerZone from '../../modals/ModalDangerZone';
-import { useTranslation } from 'react-i18next';
 import useOpenModal from '../../../hooks/useOpenModal';
 import SystemNotificationTemplateEditor from '../implementations-notifications-edit/elements/SystemNotificationTemplateEditor';
 import SystemNotification from '../../../props/models/SystemNotification';
 import useFundIdentitiesExportService from '../../../services/exports/useFundIdentitiesExportService';
+import useTranslate from '../../../hooks/useTranslate';
 
 export default function ImplementationsNotificationsSend() {
     const { id } = useParams();
-    const { t } = useTranslation();
+    const activeOrganization = useActiveOrganization();
 
-    const navigate = useNavigate();
+    const openModal = useOpenModal();
+    const translate = useTranslate();
     const pushDanger = usePushDanger();
     const pushSuccess = usePushSuccess();
     const setProgress = useSetProgress();
-    const openModal = useOpenModal();
-    const activeOrganization = useActiveOrganization();
+    const navigateState = useNavigateState();
 
     const paginatorService = usePaginatorService();
     const implementationService = useImplementationService();
@@ -47,9 +47,8 @@ export default function ImplementationsNotificationsSend() {
 
     const [fund, setFund] = useState<Fund>(null);
     const [funds, setFunds] = useState<Array<Fund>>(null);
-    const [errors, setErrors] = useState(null);
+    const [errors, setErrors] = useState<ResponseErrorData>(null);
     const [editing, setEditing] = useState(false);
-    const [template, setTemplate] = useState(null);
 
     const [identities, setIdentities] =
         useState<PaginationData<Identity, { counts: { active: number; selected: number; without_email: number } }>>(
@@ -84,6 +83,10 @@ export default function ImplementationsNotificationsSend() {
                 ':webshop_button',
             ].join('\n'),
         ),
+    );
+
+    const [template, setTemplate] = useState(
+        notification.templates_default.find((template) => template.type === 'mail'),
     );
 
     const [identityTargets] = useState([
@@ -126,12 +129,12 @@ export default function ImplementationsNotificationsSend() {
             const templates = item?.templates || notification?.templates_default;
             const templateItem = templates.find((item) => item.type === 'mail');
 
-            setTemplate({
+            setTemplate((template) => ({
                 ...template,
                 ...templateItem,
-            });
+            }));
         },
-        [notification?.templates_default, template],
+        [notification?.templates_default],
     );
 
     const askConfirmation = useCallback(
@@ -148,16 +151,19 @@ export default function ImplementationsNotificationsSend() {
             openModal((modal) => (
                 <ModalDangerZone
                     modal={modal}
-                    title={t('modals.danger_zone.confirm_custom_sponsor_email_notification.title')}
-                    description={t(`modals.danger_zone.confirm_custom_sponsor_email_notification.${descriptionKey}`, {
-                        identity_count: identities.meta.counts.selected,
-                    })}
+                    title={translate('modals.danger_zone.confirm_custom_sponsor_email_notification.title')}
+                    description={translate(
+                        `modals.danger_zone.confirm_custom_sponsor_email_notification.${descriptionKey}`,
+                        {
+                            identity_count: identities.meta.counts.selected,
+                        },
+                    )}
                     buttonCancel={{
-                        text: t('modals.danger_zone.confirm_custom_sponsor_email_notification.buttons.cancel'),
+                        text: translate('modals.danger_zone.confirm_custom_sponsor_email_notification.buttons.cancel'),
                         onClick: () => modal.close(),
                     }}
                     buttonSubmit={{
-                        text: t('modals.danger_zone.confirm_custom_sponsor_email_notification.buttons.confirm'),
+                        text: translate('modals.danger_zone.confirm_custom_sponsor_email_notification.buttons.confirm'),
                         onClick: () => {
                             modal.close();
                             onConfirm();
@@ -166,7 +172,7 @@ export default function ImplementationsNotificationsSend() {
                 />
             ));
         },
-        [identities?.meta?.counts?.selected, openModal, t],
+        [identities?.meta?.counts?.selected, openModal, translate],
     );
 
     const askConfirmationToMyself = useCallback(
@@ -174,14 +180,16 @@ export default function ImplementationsNotificationsSend() {
             openModal((modal) => (
                 <ModalDangerZone
                     modal={modal}
-                    title={t('modals.danger_zone.confirm_custom_sponsor_email_notification.title_self')}
-                    description={t('modals.danger_zone.confirm_custom_sponsor_email_notification.description_self')}
+                    title={translate('modals.danger_zone.confirm_custom_sponsor_email_notification.title_self')}
+                    description={translate(
+                        'modals.danger_zone.confirm_custom_sponsor_email_notification.description_self',
+                    )}
                     buttonCancel={{
-                        text: t('modals.danger_zone.confirm_custom_sponsor_email_notification.buttons.cancel'),
+                        text: translate('modals.danger_zone.confirm_custom_sponsor_email_notification.buttons.cancel'),
                         onClick: () => modal.close(),
                     }}
                     buttonSubmit={{
-                        text: t('modals.danger_zone.confirm_custom_sponsor_email_notification.buttons.confirm'),
+                        text: translate('modals.danger_zone.confirm_custom_sponsor_email_notification.buttons.confirm'),
                         onClick: () => {
                             modal.close();
                             onConfirm();
@@ -190,7 +198,7 @@ export default function ImplementationsNotificationsSend() {
                 />
             ));
         },
-        [openModal, t],
+        [openModal, translate],
     );
 
     const onError = useCallback(
@@ -226,7 +234,7 @@ export default function ImplementationsNotificationsSend() {
                     content: implementationNotificationsService.labelsToVars(template.content),
                 })
                 .then(() => {
-                    navigate(
+                    navigateState(
                         getStateRouteUrl('implementation-notifications', {
                             organizationId: activeOrganization.id,
                             implementationId: implementation.id,
@@ -246,7 +254,7 @@ export default function ImplementationsNotificationsSend() {
     }, [
         onError,
         fund?.id,
-        navigate,
+        navigateState,
         submitting,
         fundService,
         pushSuccess,
@@ -315,7 +323,7 @@ export default function ImplementationsNotificationsSend() {
             .read(activeOrganization.id, parseInt(id))
             .then((res) => {
                 if (!activeOrganization.allow_custom_fund_notifications) {
-                    navigate(
+                    navigateState(
                         getStateRouteUrl('implementation-notifications', {
                             organizationId: activeOrganization.id,
                             implementationId: res.data.data.id,
@@ -328,7 +336,7 @@ export default function ImplementationsNotificationsSend() {
             .catch((res: ResponseError) => pushDanger('Mislukt!', res.data.message));
     }, [
         id,
-        navigate,
+        navigateState,
         pushDanger,
         implementationService,
         activeOrganization.id,
@@ -363,14 +371,7 @@ export default function ImplementationsNotificationsSend() {
     useEffect(() => fetchFunds(), [fetchFunds]);
     useEffect(() => fetchImplementation(), [fetchImplementation]);
     useEffect(() => fetchFundIdentities(), [fetchFundIdentities]);
-    useEffect(() => fetchFundIdentities(), [fetchFundIdentities]);
     useEffect(() => updateVariableValues(), [updateVariableValues]);
-
-    useEffect(() => {
-        if (notification) {
-            setTemplate(notification.templates_default.find((template) => template.type === 'mail'));
-        }
-    }, [notification]);
 
     if (!implementation || !fund) {
         return <LoadingCard />;
@@ -667,7 +668,7 @@ export default function ImplementationsNotificationsSend() {
                                     name={'implementation-notifications'}
                                     params={{ organizationId: activeOrganization.id }}
                                     className="button button-default">
-                                    <div className="mdi mdi-close icon-start" />
+                                    <em className="mdi mdi-close icon-start" />
                                     Annuleren
                                 </StateNavLink>
 
@@ -677,9 +678,9 @@ export default function ImplementationsNotificationsSend() {
                                     onClick={() => sendToMyself()}
                                     disabled={submittingToSelf || submitting}>
                                     {submittingToSelf ? (
-                                        <div className="mdi mdi-loading mdi-spin icon-start" />
+                                        <em className="mdi mdi-loading mdi-spin icon-start" />
                                     ) : (
-                                        <div className="mdi mdi-account-arrow-right-outline icon-start" />
+                                        <em className="mdi mdi-account-arrow-right-outline icon-start" />
                                     )}
                                     Verstuur een test e-mail naar jezelf
                                 </button>
@@ -689,9 +690,9 @@ export default function ImplementationsNotificationsSend() {
                                     onClick={() => submit()}
                                     disabled={!previewSent || submittingToSelf || submitting}>
                                     {submitting ? (
-                                        <div className="mdi mdi-loading mdi-spin icon-start" />
+                                        <em className="mdi mdi-loading mdi-spin icon-start" />
                                     ) : (
-                                        <div className="mdi mdi-send-outline icon-start" />
+                                        <em className="mdi mdi-send-outline icon-start" />
                                     )}
                                     Versturen
                                 </button>

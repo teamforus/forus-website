@@ -1,12 +1,14 @@
 import ApiResponse, { ApiResponseSingle } from '../props/ApiResponses';
 import { useState } from 'react';
 import ApiRequestService from './ApiRequestService';
-import SystemNotification, { NotificationTemplate } from '../props/models/SystemNotification';
+import SystemNotification from '../props/models/SystemNotification';
+import NotificationTemplate from '../props/models/NotificationTemplate';
 import { QRCodeSVG } from 'qrcode.react';
 import variables from './constants/notification_templates/variables.json';
 import React from 'react';
 import { useMarkdownService } from './MarkdownService';
 import { renderToString } from 'react-dom/server';
+import Implementation from '../props/models/Implementation';
 
 export class ImplementationNotificationService<T = SystemNotification> {
     /**
@@ -118,7 +120,7 @@ export class ImplementationNotificationService<T = SystemNotification> {
         return data.reduce((template, value) => template.replaceAll(value.from, value.to), template);
     }
 
-    public labelsToBlocks(template: string, implementation = null) {
+    public labelsToBlocks(template: string, implementation: Implementation = null) {
         const { email_signature, email_signature_default } = implementation;
         const { email_color, email_color_default } = implementation;
         const { email_logo, email_logo_default } = implementation;
@@ -126,15 +128,6 @@ export class ImplementationNotificationService<T = SystemNotification> {
         const logo = implementation ? (email_logo ? email_logo : email_logo_default) : null;
         const color = implementation ? (email_color ? email_color : email_color_default) : null;
         const signature = implementation ? (email_signature ? email_signature : email_signature_default) : null;
-
-        const logo_url = logo ? logo.sizes.large : null;
-
-        const qrCodeValue = JSON.stringify({
-            type: 'voucher',
-            value: '0xbfeb14d52b8f8fb8b95d377a21c2260f33bf2362',
-        });
-
-        const qrCode = renderToString(<QRCodeSVG value={qrCodeValue} level={'M'} size={300} />);
 
         return template
             .replaceAll(
@@ -149,10 +142,25 @@ export class ImplementationNotificationService<T = SystemNotification> {
             )
             .replaceAll(
                 '[email_logo]',
-                '<img style="width: 300px; display: block; margin: 0 auto;" src="' + logo_url + '" alt="email_logo"/>',
+                renderToString(
+                    <img
+                        src={logo?.sizes?.large || ''}
+                        alt={'email_logo'}
+                        style={{ width: '300px', display: 'block', margin: '0 auto' }}
+                    />,
+                ),
             )
             .replaceAll('[email_signature]', signature)
-            .replaceAll('[qr_code]', qrCode);
+            .replaceAll(
+                '[qr_code]',
+                renderToString(
+                    <QRCodeSVG
+                        value={JSON.stringify({ type: 'voucher', value: '0xbfeb14d52b8f8fb8b95d377a21c2260f33bf2362' })}
+                        level={'M'}
+                        size={300}
+                    />,
+                ),
+            );
     }
 
     public templatesToFront(templates: Array<NotificationTemplate>) {

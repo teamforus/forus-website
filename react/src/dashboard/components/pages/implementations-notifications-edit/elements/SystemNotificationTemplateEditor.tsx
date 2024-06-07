@@ -1,14 +1,12 @@
 import React, { Fragment, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import FormError from '../../../elements/forms/errors/FormError';
 import MarkdownEditor from '../../../elements/forms/markdown-editor/MarkdownEditor';
 import ToggleControl from '../../../elements/forms/controls/ToggleControl';
 import useImplementationNotificationService from '../../../../services/ImplementationNotificationService';
-import { uniqueId } from 'lodash';
 import Implementation from '../../../../props/models/Implementation';
 import usePushSuccess from '../../../../hooks/usePushSuccess';
 import Organization from '../../../../props/models/Organization';
-import SystemNotification, { NotificationTemplate } from '../../../../props/models/SystemNotification';
+import SystemNotification from '../../../../props/models/SystemNotification';
 import Fund from '../../../../props/models/Fund';
 import usePushDanger from '../../../../hooks/usePushDanger';
 import useFormBuilder from '../../../../hooks/useFormBuilder';
@@ -19,6 +17,10 @@ import variablesMap from '../../../../services/constants/notification_templates/
 import variablesMapLabels from '../../../../services/constants/notification_templates/variables_labels.json';
 import LoadingCard from '../../../elements/loading-card/LoadingCard';
 import { ResponseError, ResponseErrorData } from '../../../../props/ApiResponses';
+import useTranslate from '../../../../hooks/useTranslate';
+import NotificationTemplate from '../../../../props/models/NotificationTemplate';
+import { uniqueId } from 'lodash';
+import useSetProgress from '../../../../hooks/useSetProgress';
 
 type Variables = { [key: string]: string };
 
@@ -36,7 +38,7 @@ export default function SystemNotificationTemplateEditor({
     variableValues,
 }: {
     type: string;
-    fund?: Fund;
+    fund?: Partial<Fund>;
     errors?: ResponseErrorData;
     compose?: boolean;
     onChange: (notification: SystemNotification) => void;
@@ -47,11 +49,11 @@ export default function SystemNotificationTemplateEditor({
     onEditUpdated?: (editing: boolean) => void;
     variableValues?: Variables;
 }) {
-    const { t } = useTranslation();
-
-    const pushSuccess = usePushSuccess();
-    const pushDanger = usePushDanger();
+    const translate = useTranslate();
     const openModal = useOpenModal();
+    const pushDanger = usePushDanger();
+    const pushSuccess = usePushSuccess();
+    const setProgress = useSetProgress();
 
     const implementationNotificationsService = useImplementationNotificationService();
 
@@ -61,11 +63,11 @@ export default function SystemNotificationTemplateEditor({
     const [markdownRaw, setMarkdownRaw] = useState(null);
     const [titlePreview, setTitlePreview] = useState(null);
     const [contentPreview, setContentPreview] = useState(null);
-    const [insertMarkdownText, setInsertMarkdownText] = useState(null);
+    const insertMarkdownTextRef = useRef<(text: string) => void>(null);
 
     const [header] = useState({
-        icon: t(`system_notifications.types.${type}.icon`),
-        title: t(`system_notifications.types.${type}.title`),
+        icon: translate(`system_notifications.types.${type}.icon`),
+        title: translate(`system_notifications.types.${type}.title`),
     });
 
     const [disabledNotes] = useState({
@@ -145,16 +147,16 @@ export default function SystemNotificationTemplateEditor({
         updateTemplate(data);
     });
 
-    const { update } = form;
+    const { update: formUpdate } = form;
 
     const editTemplate = useCallback(() => {
         const { formal, title, content, content_html } = template;
         const data = { formal, title, content, content_html };
 
-        update(data);
+        formUpdate(data);
         setEdit(true);
         onEditUpdated && onEditUpdated(true);
-    }, [onEditUpdated, template, update]);
+    }, [onEditUpdated, template, formUpdate]);
 
     const cancelTemplateEdit = useCallback(() => {
         setEdit(false);
@@ -175,6 +177,8 @@ export default function SystemNotificationTemplateEditor({
                 return;
             }
 
+            setProgress(0);
+
             implementationNotificationsService
                 .update(organization.id, implementation.id, notification.id, data)
                 .then((res) => {
@@ -193,7 +197,10 @@ export default function SystemNotificationTemplateEditor({
 
                     pushDanger('Fout!', 'Er is iets fout gegaan.');
                 })
-                .finally(() => form.setIsLocked(false));
+                .finally(() => {
+                    form.setIsLocked(false);
+                    setProgress(100);
+                });
         },
         [
             form,
@@ -201,6 +208,7 @@ export default function SystemNotificationTemplateEditor({
             onChange,
             pushDanger,
             pushSuccess,
+            setProgress,
             markdownRaw,
             header.title,
             organization.id,
@@ -212,17 +220,17 @@ export default function SystemNotificationTemplateEditor({
     );
 
     const addVariable = useCallback(
-        (fieldType, variable) => {
+        (fieldType: 'title' | 'content', variable: { key: string }) => {
             const input = fieldType === 'title' ? titleInputRef.current : descriptionInputRef.current;
 
             // markdown editor
             if (fieldType == 'content' && type == 'mail') {
-                setInsertMarkdownText(variable.key);
+                insertMarkdownTextRef.current?.(variable.key);
             } else {
-                insertAtCursor(input, variable.key).then(() => update({ [fieldType]: input.value }));
+                insertAtCursor(input, variable.key).then(() => formUpdate({ [fieldType]: input.value }));
             }
         },
-        [insertAtCursor, type, update],
+        [insertAtCursor, type, formUpdate],
     );
 
     const resetToDefault = useCallback(() => {
@@ -469,7 +477,7 @@ export default function SystemNotificationTemplateEditor({
                                     <FormError error={formErrors?.subject} />
 
                                     <div className="form-hint">
-                                        {t('system_notifications.hints.maxlen', {
+                                        {translate('system_notifications.hints.maxlen', {
                                             attribute: 'onderwerp',
                                             size: type == 'push' ? 40 : 140,
                                         })}
@@ -536,7 +544,7 @@ export default function SystemNotificationTemplateEditor({
                                             <FormError error={formErrors?.content} />
 
                                             <div className="form-hint">
-                                                {t('system_notifications.hints.maxlen', {
+                                                {translate('system_notifications.hints.maxlen', {
                                                     attribute: 'bericht',
                                                     size: type == 'push' ? 170 : 400,
                                                 })}
@@ -567,19 +575,19 @@ export default function SystemNotificationTemplateEditor({
                                         <MarkdownEditor
                                             value={form.values.content_html || ''}
                                             onChange={(content) => form.update({ content })}
-                                            onUpdatedRaw={(data) =>
-                                                setMarkdownRaw({ content_html: data.data.content_html })
-                                            }
+                                            onUpdatedRaw={(data) => {
+                                                setMarkdownRaw({ content_html: data.data.content_html });
+                                            }}
                                             allowLists={false}
                                             allowPreview={!compose}
                                             buttons={editorButtons}
-                                            insertTextValue={insertMarkdownText}
+                                            insertTextRef={insertMarkdownTextRef}
                                         />
 
                                         <FormError error={formErrors?.content} />
 
                                         <div className="form-hint">
-                                            {t('system_notifications.hints.maxlen', {
+                                            {translate('system_notifications.hints.maxlen', {
                                                 attribute: 'bericht',
                                                 size: 16384,
                                             })}

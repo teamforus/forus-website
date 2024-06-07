@@ -146,10 +146,6 @@ router.state('fund-backoffice-edit', <FundBackofficeEdit />, {
     fallbackState: 'organizations',
 });
 
-router.state('pre-check', <WIP title={'Pre-check'} />, {
-    path: `/organizations/:organizationId/pre-check`,
-});
-
 router.state('funds-show', <OrganizationsFundsShow />, {
     path: `/organizations/:organizationId/funds/:fundId`,
     fallbackState: 'organizations',

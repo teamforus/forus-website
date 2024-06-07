@@ -2,19 +2,6 @@ import React, { useMemo } from 'react';
 import Tooltip from '../../tooltip/Tooltip';
 import { uniqueId } from 'lodash';
 
-interface ToggleProps {
-    id?: string;
-    title?: string;
-    tooltip?: string;
-    checked: boolean;
-    value?: string;
-    disabled?: boolean;
-    onChange: (e: React.ChangeEvent<HTMLInputElement>, checked?: boolean) => void;
-    className?: string;
-    customElement?: React.ReactElement;
-    labelRight?: boolean;
-}
-
 export default function ToggleControl({
     id,
     title,
@@ -26,8 +13,19 @@ export default function ToggleControl({
     className,
     customElement,
     labelRight = true,
-}: ToggleProps) {
-    const formId = useMemo(() => (id ? id : `toggle_control_${uniqueId()}`), [id]);
+}: {
+    id?: string;
+    title?: string;
+    tooltip?: string;
+    checked: boolean;
+    value?: string;
+    disabled?: boolean;
+    onChange: (e: React.ChangeEvent<HTMLInputElement>, checked?: boolean) => void;
+    className?: string;
+    customElement?: React.ReactElement;
+    labelRight?: boolean;
+}) {
+    const formId = useMemo(() => (id ? id : uniqueId('toggle_control_')), [id]);
 
     return (
         <label
@@ -44,7 +42,7 @@ export default function ToggleControl({
             <div className="form-toggle-inner flex-end">
                 {labelRight && (
                     <div className="toggle-input">
-                        <div className="toggle-input-dot"></div>
+                        <div className="toggle-input-dot" />
                     </div>
                 )}
 
@@ -56,7 +54,7 @@ export default function ToggleControl({
 
                 {!labelRight && (
                     <div className="toggle-input">
-                        <div className="toggle-input-dot"></div>
+                        <div className="toggle-input-dot" />
                     </div>
                 )}
             </div>

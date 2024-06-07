@@ -1,6 +1,5 @@
-import React, { Fragment, useCallback, useEffect, useState } from 'react';
+import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
 import useActiveOrganization from '../../../hooks/useActiveOrganization';
-import { useTranslation } from 'react-i18next';
 import LoadingCard from '../../elements/loading-card/LoadingCard';
 import usePushDanger from '../../../hooks/usePushDanger';
 import StateNavLink from '../../../modules/state_router/StateNavLink';
@@ -11,42 +10,22 @@ import Tooltip from '../../elements/tooltip/Tooltip';
 import { groupBy } from 'lodash';
 import useImplementationNotificationService from '../../../services/ImplementationNotificationService';
 import SystemNotification from '../../../props/models/SystemNotification';
-
-type NotificationGroup = {
-    group: string;
-    groupLabel: string;
-    notifications: Array<
-        SystemNotification & {
-            title: string;
-            description: string;
-            state: {
-                state: string;
-                stateLabel: string;
-            };
-            icons: Array<{
-                icon: string;
-                color: string;
-                tooltip: {
-                    heading: string;
-                    text: string;
-                };
-            }>;
-        }
-    >;
-};
+import useTranslate from '../../../hooks/useTranslate';
+import EmptyCard from '../../elements/empty-card/EmptyCard';
 
 export default function ImplementationsNotifications() {
-    const { t } = useTranslation();
-    const pushDanger = usePushDanger();
     const activeOrganization = useActiveOrganization();
+
+    const translate = useTranslate();
+    const pushDanger = usePushDanger();
 
     const implementationService = useImplementationService();
     const implementationNotificationsService = useImplementationNotificationService();
 
+    const [channels] = useState<Array<'mail' | 'push' | 'database'>>(['mail', 'push', 'database']);
     const [implementation, setImplementation] = useState<Implementation>(null);
     const [implementations, setImplementations] = useState<PaginationData<Implementation>>(null);
     const [notifications, setNotifications] = useState<PaginationData<SystemNotification>>(null);
-    const [notificationGroups, setNotificationGroups] = useState<Array<NotificationGroup>>(null);
 
     const [groupLabels] = useState({
         requester_fund_request: 'Deelnemers aanvraag en beoordeling',
@@ -59,21 +38,46 @@ export default function ImplementationsNotifications() {
         other: 'Overig',
     });
 
-    const notificationIconColor = useCallback((notification: SystemNotification, type: string) => {
-        const templateChanged = notification.templates.filter((item) => item.type == type).length > 0;
-
-        if (!notification.channels.includes(type)) {
-            return 'text-muted-light';
+    const notificationGroups = useMemo(() => {
+        if (!notifications) {
+            return null;
         }
 
-        if (!notification.enable_all || !notification['enable_' + type]) {
-            return 'text-danger-dark';
-        }
+        const groupOrder = Object.keys(groupLabels);
 
-        return templateChanged ? 'text-primary-dark' : 'text-success-dark';
-    }, []);
+        const list = notifications.data.map((notification) => ({
+            ...notification,
+            state: implementationNotificationsService.notificationToStateLabel(notification),
+            title: translate(`system_notifications.notifications.${notification.key}.title`),
+            description: translate(`system_notifications.notifications.${notification.key}.description`),
+        }));
 
-    const notificationIcon = useCallback((notification: SystemNotification, type: string) => {
+        const grouped = groupBy(list, 'group');
+
+        return Object.keys(grouped)
+            .map((group) => ({ group, groupLabel: groupLabels[group], notifications: grouped[group] }))
+            .map((item) => ({ ...item, notifications: item.notifications.sort((a, b) => a.order - b.order) }))
+            .sort((a, b) => groupOrder.indexOf(a.group) - groupOrder.indexOf(b.group));
+    }, [translate, groupLabels, notifications, implementationNotificationsService]);
+
+    const notificationIconColor = useCallback(
+        (notification: SystemNotification, type: 'database' | 'mail' | 'push') => {
+            const templateChanged = notification.templates.filter((item) => item.type == type).length > 0;
+
+            if (!notification.channels.includes(type)) {
+                return 'text-muted-light';
+            }
+
+            if (!notification.enable_all || !notification['enable_' + type]) {
+                return 'text-danger-dark';
+            }
+
+            return templateChanged ? 'text-primary-dark' : 'text-success-dark';
+        },
+        [],
+    );
+
+    const notificationIcon = useCallback((notification: SystemNotification, type: 'database' | 'mail' | 'push') => {
         const iconOff = {
             mail: 'email-off-outline',
             push: 'cellphone-off',
@@ -94,24 +98,26 @@ export default function ImplementationsNotifications() {
     }, []);
 
     const notificationIconTooltip = useCallback(
-        (notification: SystemNotification, type: string) => {
-            const heading = t(`system_notifications.types.${type}.title`);
+        (notification: SystemNotification, type: 'database' | 'mail' | 'push') => {
+            const heading = translate(`system_notifications.types.${type}.title`);
             const templateChanged = notification.templates.filter((item) => item.type == type).length > 0;
 
             if (!notification.channels.includes(type)) {
-                return { heading, text: t(`system_notifications.tooltips.channel_not_available`) };
+                return { heading, text: translate(`system_notifications.tooltips.channel_not_available`) };
             }
 
-            if (!notification.enable_all || !notification['enable_' + type]) {
-                return { heading, text: t(`system_notifications.tooltips.disabled_by_you`) };
+            if (!notification.enable_all || !notification[`enable_${type}`]) {
+                return { heading, text: translate(`system_notifications.tooltips.disabled_by_you`) };
             }
 
             return {
                 heading,
-                text: t('system_notifications.tooltips.' + (templateChanged ? 'enabled_edited' : 'enabled_default')),
+                text: translate(
+                    'system_notifications.tooltips.' + (templateChanged ? 'enabled_edited' : 'enabled_default'),
+                ),
             };
         },
-        [t],
+        [translate],
     );
 
     const fetchImplementationNotifications = useCallback(() => {
@@ -131,43 +137,6 @@ export default function ImplementationsNotifications() {
         [fetchImplementationNotifications],
     );
 
-    const mapNotifications = useCallback(
-        (notifications: Array<SystemNotification>) => {
-            const groupOrder = Object.keys(groupLabels);
-
-            const list = notifications.map((notification) => {
-                const title = t('system_notifications.notifications.' + notification.key + '.title');
-                const description = t('system_notifications.notifications.' + notification.key + '.description');
-                const state = implementationNotificationsService.notificationToStateLabel(notification);
-
-                const icons = ['mail', 'push', 'database'].map((type) => ({
-                    icon: notificationIcon(notification, type),
-                    color: notificationIconColor(notification, type),
-                    tooltip: notificationIconTooltip(notification, type),
-                }));
-
-                return { ...notification, state, title, description, icons };
-            });
-
-            const grouped = groupBy(list, 'group');
-
-            const groups = Object.keys(grouped)
-                .map((group) => ({ group, groupLabel: groupLabels[group], notifications: grouped[group] }))
-                .map((item) => ({ ...item, notifications: item.notifications.sort((a, b) => a.order - b.order) }))
-                .sort((a, b) => groupOrder.indexOf(a.group) - groupOrder.indexOf(b.group));
-
-            setNotificationGroups(groups);
-        },
-        [
-            t,
-            groupLabels,
-            notificationIcon,
-            notificationIconColor,
-            notificationIconTooltip,
-            implementationNotificationsService,
-        ],
-    );
-
     const fetchImplementations = useCallback(() => {
         implementationService
             .list(activeOrganization.id)
@@ -175,19 +144,15 @@ export default function ImplementationsNotifications() {
             .catch((res: ResponseError) => pushDanger('Mislukt!', res.data.message));
     }, [implementationService, activeOrganization.id, pushDanger]);
 
-    useEffect(() => fetchImplementations(), [fetchImplementations]);
+    useEffect(() => {
+        fetchImplementations();
+    }, [fetchImplementations]);
 
     useEffect(() => {
         if (implementations && implementations.meta.total > 0) {
             selectImplementation(implementations.data[0]);
         }
     }, [implementations, selectImplementation]);
-
-    useEffect(() => {
-        if (notifications) {
-            mapNotifications(notifications.data);
-        }
-    }, [mapNotifications, notifications]);
 
     if (!implementations || !notificationGroups) {
         return <LoadingCard />;
@@ -197,7 +162,7 @@ export default function ImplementationsNotifications() {
         <Fragment>
             {implementations.data.length > 1 && (
                 <Fragment>
-                    <div className="card-heading">{t('system_notifications.header.title')}</div>
+                    <div className="card-heading">{translate('system_notifications.header.title')}</div>
 
                     <div className="block block-choose-organization">
                         {implementations.data.map((item) => (
@@ -226,7 +191,7 @@ export default function ImplementationsNotifications() {
                         <div className="flex flex-grow flex-vertical flex-center">
                             <div>
                                 Systeemberichten
-                                <Tooltip text={t('system_notifications.header.tooltip')} />
+                                <Tooltip text={translate('system_notifications.header.tooltip')} />
                             </div>
                         </div>
                         <div className="flex">
@@ -235,8 +200,8 @@ export default function ImplementationsNotifications() {
                                     <StateNavLink
                                         name={'implementation-notifications-send'}
                                         params={{
-                                            organizationId: activeOrganization.id,
                                             id: implementation.id,
+                                            organizationId: activeOrganization.id,
                                         }}
                                         className="button button-default">
                                         <em className="mdi mdi-email-outline icon-start" />
@@ -247,8 +212,8 @@ export default function ImplementationsNotifications() {
                                 <StateNavLink
                                     name={'implementation-notifications-branding'}
                                     params={{
-                                        organizationId: activeOrganization.id,
                                         id: implementation.id,
+                                        organizationId: activeOrganization.id,
                                     }}
                                     className="button button-primary">
                                     <em className="mdi mdi-cog-outline icon-start" />
@@ -293,16 +258,29 @@ export default function ImplementationsNotifications() {
                                                 </td>
                                                 <td className="nowrap">
                                                     <div className="td-icons">
-                                                        {notification.icons.map((icon, index) => (
+                                                        {channels.map((channel, index) => (
                                                             <em
                                                                 key={index}
-                                                                className={`block block-tooltip-details block-tooltip-hover mdi mdi-${icon.icon} ${icon.color}`}>
+                                                                className={`block block-tooltip-details block-tooltip-hover mdi mdi-${notificationIcon(
+                                                                    notification,
+                                                                    channel,
+                                                                )} ${notificationIconColor(notification, channel)}`}>
                                                                 <div className="tooltip-content tooltip-content-fit tooltip-content-ghost">
                                                                     <div className="tooltip-heading text-left">
-                                                                        {icon.tooltip.heading}
+                                                                        {
+                                                                            notificationIconTooltip(
+                                                                                notification,
+                                                                                channel,
+                                                                            ).heading
+                                                                        }
                                                                     </div>
                                                                     <div className="tooltip-text text-left">
-                                                                        {icon.tooltip.text}
+                                                                        {
+                                                                            notificationIconTooltip(
+                                                                                notification,
+                                                                                channel,
+                                                                            ).text
+                                                                        }
                                                                     </div>
                                                                 </div>
                                                             </em>
@@ -349,14 +327,11 @@ export default function ImplementationsNotifications() {
             ))}
 
             {implementations?.meta.total == 0 && (
-                <div className="card-section">
-                    <div className="block block-empty text-center">
-                        <div className="empty-title">
-                            De systeemberichten zijn niet beschikbaar, omdat er geen webshop configuratie is voor deze
-                            organisatie.
-                        </div>
-                    </div>
-                </div>
+                <EmptyCard
+                    title={
+                        'De systeemberichten zijn niet beschikbaar, omdat er geen webshop configuratie is voor deze organisatie.'
+                    }
+                />
             )}
         </Fragment>
     );
