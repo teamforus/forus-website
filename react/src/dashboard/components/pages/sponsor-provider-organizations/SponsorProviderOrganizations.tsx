@@ -1,7 +1,6 @@
 import React, { Fragment, useCallback, useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { getStateRouteUrl } from '../../../modules/state_router/Router';
-import useFilter from '../../../hooks/useFilter';
 import { useFileService } from '../../../services/FileService';
 import { PaginationData, ResponseError } from '../../../props/ApiResponses';
 import LoadingCard from '../../elements/loading-card/LoadingCard';
@@ -18,17 +17,18 @@ import Implementation from '../../../props/models/Implementation';
 import Fund from '../../../props/models/Fund';
 import { useFundService } from '../../../services/FundService';
 import { useOrganizationService } from '../../../services/OrganizationService';
-import { useTranslation } from 'react-i18next';
 import useFundUnsubscribeService from '../../../services/FundUnsubscribeService';
 import { SponsorProviderOrganization } from '../../../props/models/Organization';
-import ProviderTable from './elements/ProviderTable';
+import ProvidersTable from './elements/ProvidersTable';
 import ModalExportTypeLegacy from '../../modals/ModalExportTypeLegacy';
 import { format } from 'date-fns';
 import useSetProgress from '../../../hooks/useSetProgress';
-import { NumberParam, StringParam, useQueryParams, withDefault } from 'use-query-params';
+import { NumberParam, StringParam, createEnumParam } from 'use-query-params';
+import useTranslate from '../../../hooks/useTranslate';
+import useFilterNext from '../../../modules/filter_next/useFilterNext';
 
 export default function SponsorProviderOrganizations() {
-    const { t } = useTranslation();
+    const translate = useTranslate();
 
     const openModal = useOpenModal();
     const pushDanger = usePushDanger();
@@ -51,58 +51,80 @@ export default function SponsorProviderOrganizations() {
     const [requestsExpired, setRequestsExpired] = useState(null);
     const [requestsPending, setRequestsPending] = useState(null);
 
-    const NullableNumberParam = withDefault(NumberParam, null);
-    const [params, setQueryParams] = useQueryParams({
-        q: StringParam,
-        order_by: StringParam,
-        fund_id: NullableNumberParam,
-        allow_budget: NullableNumberParam,
-        has_products: NullableNumberParam,
-        allow_products: NullableNumberParam,
-        implementation_id: NullableNumberParam,
-        allow_extra_payments: NullableNumberParam,
-    });
-
     const [orderByOptions] = useState([
         { value: 'application_date', name: 'Nieuwste eerst' },
         { value: 'name', name: 'Naam aflopend' },
     ]);
 
-    const filter = useFilter({
-        q: params.q || '',
-        fund_id: params.fund_id,
-        order_by: params.order_by || orderByOptions[0].value,
-        per_page: paginatorService.getPerPage(paginatorKey),
-        allow_budget: params.allow_budget,
-        has_products: params.has_products,
-        allow_products: params.allow_products,
-        implementation_id: params.implementation_id,
-        allow_extra_payments: params.allow_extra_payments,
-    });
+    const [filterValues, filterActiveValues, filterUpdate, filter] = useFilterNext<{
+        q?: string;
+        page?: number;
+        fund_id?: number;
+        per_page?: number;
+        order_by?: string;
+        allow_budget?: '0' | '1';
+        has_products?: '0' | '1';
+        allow_products?: '0' | '1' | '-1';
+        implementation_id?: number;
+        allow_extra_payments?: '0' | '1';
+    }>(
+        {
+            q: '',
+            page: 1,
+            fund_id: null,
+            order_by: orderByOptions[0].value,
+            per_page: paginatorService.getPerPage(paginatorKey),
+            allow_budget: null,
+            has_products: null,
+            allow_products: null,
+            implementation_id: null,
+            allow_extra_payments: null,
+        },
+        {
+            queryParamsRemoveDefault: true,
+            queryParams: {
+                q: StringParam,
+                page: NumberParam,
+                per_page: NumberParam,
+                order_by: StringParam,
+                fund_id: NumberParam,
+                allow_budget: createEnumParam(['0', '1']),
+                has_products: createEnumParam(['0', '1']),
+                allow_products: createEnumParam(['0', '1', '-1']),
+                implementation_id: NumberParam,
+                allow_extra_payments: createEnumParam(['0', '1']),
+            },
+        },
+    );
 
     const fetchImplementations = useCallback(() => {
+        setProgress(0);
+
         implementationService
             .list(activeOrganization.id, { per_page: 100 })
             .then((res) => setImplementations([{ id: null, name: 'Alle implementaties' }, ...res.data.data]))
-            .catch((err: ResponseError) => pushDanger('Mislukt!', err.data.message));
-    }, [activeOrganization.id, implementationService, pushDanger]);
+            .catch((err: ResponseError) => pushDanger('Mislukt!', err.data.message))
+            .finally(() => setProgress(100));
+    }, [activeOrganization.id, implementationService, pushDanger, setProgress]);
 
     const fetchFunds = useCallback(() => {
+        setProgress(0);
+
         fundService
             .list(activeOrganization.id, { per_page: 100 })
             .then((res) => setFunds([{ id: null, name: 'Alle fondsen' }, ...res.data.data]))
-            .catch((err: ResponseError) => pushDanger('Mislukt!', err.data.message));
-    }, [activeOrganization.id, fundService, pushDanger]);
+            .catch((err: ResponseError) => pushDanger('Mislukt!', err.data.message))
+            .finally(() => setProgress(100));
+    }, [activeOrganization.id, fundService, pushDanger, setProgress]);
 
     const fetchProviderOrganizations = useCallback(() => {
         setProgress(0);
-        setQueryParams({ ...filter.activeValues });
 
         const query = {
-            ...filter.activeValues,
+            ...filterActiveValues,
             ...{
-                order_dir: filter.activeValues.order_by == 'name' ? 'asc' : 'desc',
-                allow_products: filter.activeValues.allow_products === -1 ? 'some' : filter.activeValues.allow_products,
+                order_dir: filterActiveValues.order_by == 'name' ? 'asc' : 'desc',
+                allow_products: filterActiveValues.allow_products === '-1' ? 'some' : filterActiveValues.allow_products,
             },
         };
 
@@ -111,9 +133,11 @@ export default function SponsorProviderOrganizations() {
             .then((res) => setProviderOrganizations(res.data))
             .catch((err: ResponseError) => pushDanger('Mislukt!', err.data.message))
             .finally(() => setProgress(100));
-    }, [activeOrganization.id, filter.activeValues, organizationService, pushDanger, setProgress, setQueryParams]);
+    }, [activeOrganization.id, filterActiveValues, organizationService, pushDanger, setProgress]);
 
     const fetchFundUnsubscribes = useCallback(() => {
+        setProgress(0);
+
         fundUnsubscribeService
             .listSponsor(activeOrganization.id, { per_page: 1000 })
             .then((res) => {
@@ -121,13 +145,14 @@ export default function SponsorProviderOrganizations() {
                 setRequestsExpired(res.data.data.filter((item) => item.state == 'overdue').length);
                 setRequestsPending(res.data.data.filter((item) => item.state == 'pending').length);
             })
-            .catch((err: ResponseError) => pushDanger('Mislukt!', err.data.message));
-    }, [activeOrganization.id, fundUnsubscribeService, pushDanger]);
+            .catch((err: ResponseError) => pushDanger('Mislukt!', err.data.message))
+            .finally(() => setProgress(100));
+    }, [activeOrganization.id, fundUnsubscribeService, pushDanger, setProgress]);
 
     const doExport = useCallback(
         (exportType: string) => {
             organizationService
-                .providerOrganizationsExport(activeOrganization.id, { ...filter.activeValues, export_type: exportType })
+                .providerOrganizationsExport(activeOrganization.id, { ...filterActiveValues, export_type: exportType })
                 .then((res) => {
                     const dateTime = format(new Date(), 'yyyy-MM-dd HH:mm:ss');
                     const fileName = `providers_${activeOrganization.id}_${dateTime}.${exportType}`;
@@ -136,24 +161,28 @@ export default function SponsorProviderOrganizations() {
                 })
                 .catch((err: ResponseError) => pushDanger('Mislukt!', err.data.message));
         },
-        [pushDanger, fileService, filter.activeValues, activeOrganization, organizationService],
+        [pushDanger, fileService, filterActiveValues, activeOrganization, organizationService],
     );
 
     const exportList = useCallback(() => {
-        openModal((modal) => (
-            <ModalExportTypeLegacy
-                modal={modal}
-                onSubmit={(exportType) => {
-                    doExport(exportType);
-                }}
-            />
-        ));
+        openModal((modal) => <ModalExportTypeLegacy modal={modal} onSubmit={doExport} />);
     }, [doExport, openModal]);
 
-    useEffect(() => fetchFunds(), [fetchFunds]);
-    useEffect(() => fetchImplementations(), [fetchImplementations]);
-    useEffect(() => fetchFundUnsubscribes(), [fetchFundUnsubscribes]);
-    useEffect(() => fetchProviderOrganizations(), [fetchProviderOrganizations]);
+    useEffect(() => {
+        fetchFunds();
+    }, [fetchFunds]);
+
+    useEffect(() => {
+        fetchImplementations();
+    }, [fetchImplementations]);
+
+    useEffect(() => {
+        fetchFundUnsubscribes();
+    }, [fetchFundUnsubscribes]);
+
+    useEffect(() => {
+        fetchProviderOrganizations();
+    }, [fetchProviderOrganizations]);
 
     if (!funds || !implementations || !providerOrganizations) {
         return <LoadingCard />;
@@ -211,7 +240,7 @@ export default function SponsorProviderOrganizations() {
                     <div className="flex">
                         <div className="flex flex-grow">
                             <div className="card-title">
-                                {t('provider_organizations.header.title')}
+                                {translate('provider_organizations.header.title')}
                                 &nbsp;
                                 <span className="span-count">{providerOrganizations.meta.total}</span>
                             </div>
@@ -219,7 +248,7 @@ export default function SponsorProviderOrganizations() {
                         <div className="flex-row">
                             <div className="block block-inline-filters">
                                 {filter.show && (
-                                    <div className="button button-text" onClick={() => filter.resetFilters()}>
+                                    <div className="button button-text" onClick={filter.resetFilters}>
                                         <em className="mdi mdi-close icon-start" />
                                         Wis filter
                                     </div>
@@ -234,9 +263,9 @@ export default function SponsorProviderOrganizations() {
                                                     options={orderByOptions}
                                                     propKey={'value'}
                                                     allowSearch={false}
-                                                    value={filter.values.order_by}
+                                                    value={filterValues.order_by}
                                                     optionsComponent={SelectControlOptions}
-                                                    onChange={(order_by: string) => filter.update({ order_by })}
+                                                    onChange={(order_by: string) => filterUpdate({ order_by })}
                                                 />
                                             </div>
                                         </div>
@@ -244,9 +273,9 @@ export default function SponsorProviderOrganizations() {
                                         <div className="form-group">
                                             <input
                                                 className="form-control"
-                                                value={filter.values.q}
-                                                onChange={(e) => filter.update({ q: e.target.value })}
-                                                placeholder={t('event_logs.labels.search')}
+                                                value={filterValues.q}
+                                                onChange={(e) => filterUpdate({ q: e.target.value })}
+                                                placeholder={translate('event_logs.labels.search')}
                                             />
                                         </div>
                                     </div>
@@ -260,9 +289,9 @@ export default function SponsorProviderOrganizations() {
                                                     id="allow_budget_yes"
                                                     type="radio"
                                                     name="allow_budget"
-                                                    onChange={() => filter.update({ allow_budget: 1 })}
+                                                    onChange={() => filterUpdate({ allow_budget: '1' })}
                                                     defaultValue={1}
-                                                    checked={filter.values.allow_budget === 1}
+                                                    checked={filterValues.allow_budget === '1'}
                                                 />
                                                 <label className="radio-label" htmlFor="allow_budget_yes">
                                                     <div className="radio-circle" />
@@ -274,9 +303,9 @@ export default function SponsorProviderOrganizations() {
                                                     id="allow_budget_no"
                                                     type="radio"
                                                     name="allow_budget"
-                                                    onChange={() => filter.update({ allow_budget: 0 })}
+                                                    onChange={() => filterUpdate({ allow_budget: '0' })}
                                                     defaultValue={0}
-                                                    checked={filter.values.allow_budget === 0}
+                                                    checked={filterValues.allow_budget === '0'}
                                                 />
                                                 <label className="radio-label" htmlFor="allow_budget_no">
                                                     <div className="radio-circle" />
@@ -288,9 +317,9 @@ export default function SponsorProviderOrganizations() {
                                                     id="allow_budget_all"
                                                     type="radio"
                                                     name="allow_budget"
-                                                    onChange={() => filter.update({ allow_budget: null })}
+                                                    onChange={() => filterUpdate({ allow_budget: null })}
                                                     defaultValue={null}
-                                                    checked={filter.values.allow_budget === null}
+                                                    checked={filterValues.allow_budget === null}
                                                 />
                                                 <label className="radio-label" htmlFor="allow_budget_all">
                                                     <div className="radio-circle" />
@@ -306,9 +335,9 @@ export default function SponsorProviderOrganizations() {
                                                 id="allow_products_yes"
                                                 type="radio"
                                                 name="allow_products"
-                                                onChange={() => filter.update({ allow_products: 1 })}
+                                                onChange={() => filterUpdate({ allow_products: '1' })}
                                                 defaultValue={1}
-                                                checked={filter.values.allow_products === 1}
+                                                checked={filterValues.allow_products === '1'}
                                             />
                                             <label className="radio-label" htmlFor="allow_products_yes">
                                                 <div className="radio-circle" />
@@ -320,9 +349,9 @@ export default function SponsorProviderOrganizations() {
                                                 id="allow_products_some"
                                                 type="radio"
                                                 name="allow_products"
-                                                onChange={() => filter.update({ allow_products: -1 })}
+                                                onChange={() => filterUpdate({ allow_products: '-1' })}
                                                 defaultValue={-1}
-                                                checked={filter.values.allow_products === -1}
+                                                checked={filterValues.allow_products === '-1'}
                                             />
                                             <label className="radio-label" htmlFor="allow_products_some">
                                                 <div className="radio-circle" />
@@ -334,9 +363,9 @@ export default function SponsorProviderOrganizations() {
                                                 id="allow_products_no"
                                                 type="radio"
                                                 name="allow_products"
-                                                onChange={() => filter.update({ allow_products: 0 })}
+                                                onChange={() => filterUpdate({ allow_products: '0' })}
                                                 defaultValue={0}
-                                                checked={filter.values.allow_products === 0}
+                                                checked={filterValues.allow_products === '0'}
                                             />
                                             <label className="radio-label" htmlFor="allow_products_no">
                                                 <div className="radio-circle" />
@@ -348,9 +377,9 @@ export default function SponsorProviderOrganizations() {
                                                 id="allow_products_all"
                                                 type="radio"
                                                 name="allow_products"
-                                                onChange={() => filter.update({ allow_products: null })}
+                                                onChange={() => filterUpdate({ allow_products: null })}
                                                 defaultValue={null}
-                                                checked={filter.values.allow_products === null}
+                                                checked={filterValues.allow_products === null}
                                             />
                                             <label className="radio-label" htmlFor="allow_products_all">
                                                 <div className="radio-circle" />
@@ -365,9 +394,9 @@ export default function SponsorProviderOrganizations() {
                                                 id="has_products_yes"
                                                 type="radio"
                                                 name="has_products"
-                                                onChange={() => filter.update({ has_products: 1 })}
+                                                onChange={() => filterUpdate({ has_products: '1' })}
                                                 defaultValue={1}
-                                                checked={filter.values.has_products === 1}
+                                                checked={filterValues.has_products === '1'}
                                             />
                                             <label className="radio-label" htmlFor="has_products_yes">
                                                 <div className="radio-circle" />
@@ -379,9 +408,9 @@ export default function SponsorProviderOrganizations() {
                                                 id="has_products_no"
                                                 type="radio"
                                                 name="has_products"
-                                                onChange={() => filter.update({ has_products: 0 })}
+                                                onChange={() => filterUpdate({ has_products: '0' })}
                                                 defaultValue={0}
-                                                checked={filter.values.has_products === 0}
+                                                checked={filterValues.has_products === '0'}
                                             />
                                             <label className="radio-label" htmlFor="has_products_no">
                                                 <div className="radio-circle" />
@@ -393,9 +422,9 @@ export default function SponsorProviderOrganizations() {
                                                 id="has_products_all"
                                                 type="radio"
                                                 name="has_products"
-                                                onChange={() => filter.update({ has_products: null })}
+                                                onChange={() => filterUpdate({ has_products: null })}
                                                 defaultValue={null}
-                                                checked={filter.values.has_products === null}
+                                                checked={filterValues.has_products === null}
                                             />
                                             <label className="radio-label" htmlFor="has_products_all">
                                                 <div className="radio-circle" />
@@ -410,9 +439,9 @@ export default function SponsorProviderOrganizations() {
                                                 id="allow_extra_payments_yes"
                                                 type="radio"
                                                 name="allow_extra_payments"
-                                                onChange={() => filter.update({ allow_extra_payments: 1 })}
+                                                onChange={() => filterUpdate({ allow_extra_payments: '1' })}
                                                 defaultValue={1}
-                                                checked={filter.values.allow_extra_payments === 1}
+                                                checked={filterValues.allow_extra_payments === '1'}
                                             />
                                             <label className="radio-label" htmlFor="allow_extra_payments_yes">
                                                 <div className="radio-circle" />
@@ -424,9 +453,9 @@ export default function SponsorProviderOrganizations() {
                                                 id="allow_extra_payments_no"
                                                 type="radio"
                                                 name="allow_extra_payments"
-                                                onChange={() => filter.update({ allow_extra_payments: 0 })}
+                                                onChange={() => filterUpdate({ allow_extra_payments: '0' })}
                                                 defaultValue={0}
-                                                checked={filter.values.allow_extra_payments === 0}
+                                                checked={filterValues.allow_extra_payments === '0'}
                                             />
                                             <label className="radio-label" htmlFor="allow_extra_payments_no">
                                                 <div className="radio-circle" />
@@ -438,9 +467,9 @@ export default function SponsorProviderOrganizations() {
                                                 id="allow_extra_payments_all"
                                                 type="radio"
                                                 name="allow_extra_payments"
-                                                onChange={() => filter.update({ allow_extra_payments: null })}
+                                                onChange={() => filterUpdate({ allow_extra_payments: null })}
                                                 defaultValue={null}
-                                                checked={filter.values.allow_extra_payments === null}
+                                                checked={filterValues.allow_extra_payments === null}
                                             />
                                             <label className="radio-label" htmlFor="allow_extra_payments_all">
                                                 <div className="radio-circle" />
@@ -456,8 +485,8 @@ export default function SponsorProviderOrganizations() {
                                             propKey={'id'}
                                             allowSearch={false}
                                             optionsComponent={SelectControlOptions}
-                                            value={filter.values.fund_id}
-                                            onChange={(fund_id: number) => filter.update({ fund_id })}
+                                            value={filterValues.fund_id}
+                                            onChange={(fund_id: number) => filterUpdate({ fund_id })}
                                         />
                                     </FilterItemToggle>
 
@@ -468,10 +497,10 @@ export default function SponsorProviderOrganizations() {
                                             propKey={'id'}
                                             allowSearch={false}
                                             optionsComponent={SelectControlOptions}
-                                            value={filter.values.implementation_id}
-                                            onChange={(implementation_id: number) =>
-                                                filter.update({ implementation_id })
-                                            }
+                                            value={filterValues.implementation_id}
+                                            onChange={(implementation_id: number) => {
+                                                filterUpdate({ implementation_id });
+                                            }}
                                         />
                                     </FilterItemToggle>
 
@@ -482,7 +511,7 @@ export default function SponsorProviderOrganizations() {
                                                 disabled={providerOrganizations.meta.total == 0}
                                                 onClick={() => exportList()}>
                                                 <em className="mdi mdi-download icon-start" />
-                                                {t('components.dropdown.export', {
+                                                {translate('components.dropdown.export', {
                                                     total: providerOrganizations.meta.total,
                                                 })}
                                             </button>
@@ -494,7 +523,7 @@ export default function SponsorProviderOrganizations() {
                     </div>
                 </div>
 
-                <ProviderTable
+                <ProvidersTable
                     providers={providerOrganizations}
                     organization={activeOrganization}
                     paginatorKey={paginatorKey}

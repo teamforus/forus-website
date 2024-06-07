@@ -1,7 +1,6 @@
 import React, { Fragment, useCallback, useEffect, useState } from 'react';
 import useActiveOrganization from '../../../hooks/useActiveOrganization';
 import { ResponseError } from '../../../props/ApiResponses';
-import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 import usePushDanger from '../../../hooks/usePushDanger';
 import useSetProgress from '../../../hooks/useSetProgress';
@@ -17,10 +16,12 @@ import BudgetFundSponsorProducts from './elements/BudgetFundSponsorProducts';
 import BudgetFundProducts from './elements/BudgetFundProducts';
 import SubsidyFundProducts from './elements/SubsidyFundProducts';
 import Fund from '../../../props/models/Fund';
+import useTranslate from '../../../hooks/useTranslate';
 
 export default function FundProvider() {
-    const { t } = useTranslation();
     const { fundId, id } = useParams();
+
+    const translate = useTranslate();
     const pushDanger = usePushDanger();
     const pushSuccess = usePushSuccess();
     const setProgress = useSetProgress();
@@ -30,10 +31,10 @@ export default function FundProvider() {
 
     const [fund, setFund] = useState<Fund>(null);
     const [fundProvider, setFundProvider] = useState<FundProvider>(null);
-    const [submittingAllow, setSubmittingAllow] = useState(null);
+    const [submittingAllow, setSubmittingAllow] = useState<boolean>(null);
 
     const updateFundProviderAllow = useCallback(
-        (query: object) => {
+        (query: { allow_extra_payments: boolean }) => {
             setSubmittingAllow(true);
 
             fundService
@@ -68,8 +69,13 @@ export default function FundProvider() {
             .finally(() => setProgress(100));
     }, [fundId, fundService, pushDanger, setProgress]);
 
-    useEffect(() => fetchFund(), [fetchFund]);
-    useEffect(() => fetchFundProvider(), [fetchFundProvider]);
+    useEffect(() => {
+        fetchFund();
+    }, [fetchFund]);
+
+    useEffect(() => {
+        fetchFundProvider();
+    }, [fetchFundProvider]);
 
     if (!fund || !fundProvider) {
         return <LoadingCard />;
@@ -81,15 +87,14 @@ export default function FundProvider() {
                 <StateNavLink
                     name={'sponsor-provider-organizations'}
                     params={{ organizationId: activeOrganization.id }}
+                    activeExact={true}
                     className="breadcrumb-item">
-                    {t('page_state_titles.organization-providers')}
+                    {translate('page_state_titles.organization-providers')}
                 </StateNavLink>
                 <StateNavLink
                     name={'sponsor-provider-organization'}
-                    params={{
-                        organizationId: activeOrganization.id,
-                        id: fundProvider.organization.id,
-                    }}
+                    params={{ id: fundProvider.organization.id, organizationId: activeOrganization.id }}
+                    activeExact={true}
                     className="breadcrumb-item">
                     {fundProvider.organization.name}
                 </StateNavLink>
@@ -99,7 +104,7 @@ export default function FundProvider() {
             <ProviderOrganizationOverview
                 organization={fundProvider.organization}
                 fundProvider={fundProvider}
-                onChange={(data) => setFundProvider(data)}
+                setFundProvider={(data) => setFundProvider(data)}
             />
 
             {activeOrganization.allow_provider_extra_payments && (
@@ -155,6 +160,7 @@ export default function FundProvider() {
                             </div>
                         </div>
                     </div>
+
                     <div className="card-footer card-footer-warning card-footer-sm">
                         <div className="card-title">
                             <div className="text-small">

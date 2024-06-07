@@ -33,13 +33,13 @@ import { strLimit } from '../../../../helpers/string';
 
 export default function ProductsForm({
     organization,
-    fund_provider,
-    source_id,
+    fundProvider,
+    sourceId,
     id,
 }: {
     organization: Organization;
-    fund_provider?: FundProvider;
-    source_id?: number;
+    fundProvider?: FundProvider;
+    sourceId?: number;
     id?: number;
 }) {
     const { t } = useTranslation();
@@ -190,9 +190,9 @@ export default function ProductsForm({
         (id) => {
             setProgress(0);
 
-            if (fund_provider) {
+            if (fundProvider) {
                 fundService
-                    .getProviderProduct(organization.id, fund_provider.fund_id, fund_provider.id, id)
+                    .getProviderProduct(organization.id, fundProvider.fund_id, fundProvider.id, id)
                     .then((res) => setProduct(res.data.data))
                     .catch(() => navigateState('products', { organizationId: organization.id }))
                     .finally(() => setProgress(100));
@@ -204,7 +204,7 @@ export default function ProductsForm({
                     .finally(() => setProgress(100));
             }
         },
-        [setProgress, fund_provider, fundService, organization.id, navigateState, productService],
+        [setProgress, fundProvider, fundService, organization.id, navigateState, productService],
     );
 
     const fetchSourceProduct = useCallback(
@@ -212,11 +212,11 @@ export default function ProductsForm({
             setProgress(0);
 
             fundService
-                .getProviderProduct(organization.id, fund_provider.fund_id, fund_provider.id, id)
+                .getProviderProduct(organization.id, fundProvider.fund_id, fundProvider.id, id)
                 .then((res) => setSourceProduct(res.data.data))
                 .finally(() => setProgress(100));
         },
-        [fundService, organization, setProgress, fund_provider],
+        [fundService, organization, setProgress, fundProvider],
     );
 
     const fetchProducts = useCallback(() => {
@@ -281,23 +281,23 @@ export default function ProductsForm({
             if (product) {
                 const updateValues = { ...valueData, total_amount: values.sold_amount + values.stock_amount };
 
-                if (!fund_provider) {
+                if (!fundProvider) {
                     promise = productService.update(organization.id, product.id, updateValues);
                 } else {
                     promise = organizationService.sponsorProductUpdate(
                         organization.id,
-                        fund_provider.organization_id,
+                        fundProvider.organization_id,
                         product.id,
                         updateValues,
                     );
                 }
             } else {
-                if (!fund_provider) {
+                if (!fundProvider) {
                     promise = productService.store(organization.id, valueData);
                 } else {
                     promise = organizationService.sponsorStoreProduct(
                         organization.id,
-                        fund_provider.organization_id,
+                        fundProvider.organization_id,
                         valueData,
                     );
                 }
@@ -307,19 +307,19 @@ export default function ProductsForm({
                 .then((res: ApiResponseSingle<Product>) => {
                     pushSuccess('Gelukt!');
 
-                    if (!fund_provider) {
+                    if (!fundProvider) {
                         return navigateState('products', { organizationId: organization.id });
                     }
 
-                    if (fund_provider.fund.type === 'subsidies') {
+                    if (fundProvider.fund.type === 'subsidies') {
                         navigateState(product ? 'fund-provider-product' : 'fund-provider-product-subsidy-edit', {
                             id: res.data.data.id,
-                            fundId: fund_provider.fund_id,
-                            organizationId: fund_provider.fund.organization_id,
-                            fundProviderId: fund_provider.id,
+                            fundId: fundProvider.fund_id,
+                            organizationId: fundProvider.fund.organization_id,
+                            fundProviderId: fundProvider.id,
                         });
                     } else {
-                        goToFundProvider(fund_provider);
+                        goToFundProvider(fundProvider);
                     }
                 })
                 .catch((err: ResponseError) => {
@@ -404,12 +404,12 @@ export default function ProductsForm({
     );
 
     const cancel = useCallback(() => {
-        if (fund_provider) {
-            goToFundProvider(fund_provider);
+        if (fundProvider) {
+            goToFundProvider(fundProvider);
         } else {
             navigateState('products', { organizationId: organization.id });
         }
-    }, [fund_provider, goToFundProvider, navigateState, organization?.id]);
+    }, [fundProvider, goToFundProvider, navigateState, organization?.id]);
 
     useEffect(() => {
         const { reservations_budget_enabled, reservations_subsidy_enabled } = organization;
@@ -443,19 +443,19 @@ export default function ProductsForm({
             fetchProduct(id);
         }
 
-        if (source_id) {
-            fetchSourceProduct(source_id);
+        if (sourceId) {
+            fetchSourceProduct(sourceId);
         }
-    }, [id, source_id, fetchProduct, fetchSourceProduct]);
+    }, [id, sourceId, fetchProduct, fetchSourceProduct]);
 
     useEffect(() => {
-        if (id && !source_id && product) {
+        if (id && !sourceId && product) {
             fetchProducts();
         }
-    }, [fetchProducts, id, source_id, product]);
+    }, [fetchProducts, id, sourceId, product]);
 
     useEffect(() => {
-        if ((id && !product) || (source_id && !sourceProduct)) {
+        if ((id && !product) || (sourceId && !sourceProduct)) {
             return;
         }
 
@@ -487,15 +487,15 @@ export default function ProductsForm({
                       reservation_policy: 'global',
                   },
         );
-    }, [product, sourceProduct, updateForm, productService, id, source_id, organization]);
+    }, [product, sourceProduct, updateForm, productService, id, sourceId, organization]);
 
-    if (!organization || (id && !product) || (source_id && !sourceProduct) || !form.values) {
+    if (!organization || (id && !product) || (sourceId && !sourceProduct) || !form.values) {
         return <LoadingCard />;
     }
 
     return (
         <Fragment>
-            {fund_provider ? (
+            {fundProvider ? (
                 <div className="block block-breadcrumbs">
                     <StateNavLink
                         name={'sponsor-provider-organizations'}
@@ -506,21 +506,21 @@ export default function ProductsForm({
                     <StateNavLink
                         name={'sponsor-provider-organization'}
                         params={{
-                            id: fund_provider.organization.id,
+                            id: fundProvider.organization.id,
                             organizationId: organization.id,
                         }}
                         className="breadcrumb-item">
-                        {strLimit(fund_provider.organization.name, 40)}
+                        {strLimit(fundProvider.organization.name, 40)}
                     </StateNavLink>
                     <StateNavLink
                         name={'fund-provider'}
                         params={{
-                            id: fund_provider.id,
-                            fundId: fund_provider.fund.id,
+                            id: fundProvider.id,
+                            fundId: fundProvider.fund.id,
                             organizationId: organization.id,
                         }}
                         className="breadcrumb-item">
-                        {strLimit(fund_provider.fund.name, 40)}
+                        {strLimit(fundProvider.fund.name, 40)}
                     </StateNavLink>
                     <div className="breadcrumb-item active">{id ? strLimit(product.name, 40) : 'Voeg aanbod toe'}</div>
                 </div>

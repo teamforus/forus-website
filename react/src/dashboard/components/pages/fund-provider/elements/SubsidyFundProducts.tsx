@@ -1,9 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { PaginationData, ResponseError } from '../../../../props/ApiResponses';
-import { NavLink } from 'react-router-dom';
 import usePushDanger from '../../../../hooks/usePushDanger';
 import FundProvider from '../../../../props/models/FundProvider';
-import { getStateRouteUrl } from '../../../../modules/state_router/Router';
 import Organization from '../../../../props/models/Organization';
 import useFilter from '../../../../hooks/useFilter';
 import Paginator from '../../../../modules/paginator/components/Paginator';
@@ -13,13 +11,16 @@ import LoadingCard from '../../../elements/loading-card/LoadingCard';
 import { useFundService } from '../../../../services/FundService';
 import useUpdateProduct from '../hooks/useUpdateProduct';
 import TableRowActions from '../../../elements/tables/TableRowActions';
+import StateNavLink from '../../../../modules/state_router/StateNavLink';
+import EmptyCard from '../../../elements/empty-card/EmptyCard';
 
 type ProductLocal = Product & {
     allowed: boolean;
     active_deal: DealHistory;
 };
 
-export default function SubsidyFundProducts({
+export default function
+({
     fundProvider,
     organization,
     onChange,
@@ -120,125 +121,125 @@ export default function SubsidyFundProducts({
                 </div>
             )}
 
-            <div className="card-section card-section-padless">
-                <div className="table-wrapper">
-                    <table className="table">
-                        <tbody>
-                            <tr>
-                                <th className="td-narrow">Afbeelding</th>
-                                <th>Naam</th>
-                                <th>Aantal</th>
-                                <th>Bijdrage</th>
-                                <th>Prijs</th>
-                                <th />
-                            </tr>
-                            {products.data.map((product) => (
-                                <tr key={product.id}>
-                                    <td className="td-narrow">
-                                        <img
-                                            className="td-media"
-                                            src={
-                                                product.photo
-                                                    ? product.photo.sizes.small
-                                                    : './assets/img/placeholders/product-small.png'
-                                            }
-                                            alt={product.name}
-                                        />
-                                    </td>
-                                    <td>{product.name}</td>
-                                    {product.unlimited_stock ? <td>Ongelimiteerd</td> : <td>{product.stock_amount}</td>}
-                                    <td>{product.active_deal ? product.active_deal.amount_locale : '-'}</td>
-                                    <td className="nowrap">{product.price_locale}</td>
+            {products.meta.total > 0 ? (
+                <div className="card-section card-section-padless">
+                    <div className="table-wrapper">
+                        <table className="table">
+                            <tbody>
+                                <tr>
+                                    <th className="td-narrow">Afbeelding</th>
+                                    <th>Naam</th>
+                                    <th>Aantal</th>
+                                    <th>Bijdrage</th>
+                                    <th>Prijs</th>
+                                    <th />
+                                </tr>
+                                {products.data.map((product) => (
+                                    <tr key={product.id}>
+                                        <td className="td-narrow">
+                                            <img
+                                                className="td-media"
+                                                src={
+                                                    product.photo
+                                                        ? product.photo.sizes.small
+                                                        : './assets/img/placeholders/product-small.png'
+                                                }
+                                                alt={product.name}
+                                            />
+                                        </td>
+                                        <td>{product.name}</td>
+                                        {product.unlimited_stock ? (
+                                            <td>Ongelimiteerd</td>
+                                        ) : (
+                                            <td>{product.stock_amount}</td>
+                                        )}
+                                        <td>{product.active_deal ? product.active_deal.amount_locale : '-'}</td>
+                                        <td className="nowrap">{product.price_locale}</td>
 
-                                    <td className="td-narrow text-right">
-                                        <div className="button-group flex-end">
-                                            {product.is_available && product.allowed && (
-                                                <div className="flex flex-center">
-                                                    <div className="flex-self-center">
-                                                        <div className="tag tag-success nowrap flex">
-                                                            Subsidie actief
-                                                            <em
-                                                                className="mdi mdi-close icon-end clickable"
-                                                                onClick={() => disableProviderProduct(product)}
-                                                            />
+                                        <td className="td-narrow text-right">
+                                            <div className="button-group flex-end">
+                                                {product.is_available && product.allowed && (
+                                                    <div className="flex flex-center">
+                                                        <div className="flex-self-center">
+                                                            <div className="tag tag-success nowrap flex">
+                                                                Subsidie actief
+                                                                <em
+                                                                    className="mdi mdi-close icon-end clickable"
+                                                                    onClick={() => disableProviderProduct(product)}
+                                                                />
+                                                            </div>
+                                                            <div className="hidden" />
                                                         </div>
-                                                        <div className="hidden" />
                                                     </div>
-                                                </div>
-                                            )}
+                                                )}
 
-                                            {!product.is_available && (
-                                                <div className="flex flex-center">
-                                                    <div className="flex-self-center">
-                                                        <div className="tag tag-text nowrap">Niet beschikbaar</div>
-                                                        <div className="hidden" />
+                                                {!product.is_available && (
+                                                    <div className="flex flex-center">
+                                                        <div className="flex-self-center">
+                                                            <div className="tag tag-text nowrap">Niet beschikbaar</div>
+                                                            <div className="hidden" />
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            )}
+                                                )}
 
-                                            {product.is_available && !product.allowed && (
-                                                <NavLink
-                                                    className="button button-primary button-sm nowrap"
-                                                    to={getStateRouteUrl('fund-provider-product-subsidy-edit', {
-                                                        id: product.id,
-                                                        fundId: fundProvider.fund_id,
-                                                        fundProviderId: fundProvider.id,
-                                                        organizationId: organization.id,
-                                                    })}>
-                                                    <em className="mdi mdi-play icon-start" />
-                                                    Start subsidie
-                                                </NavLink>
-                                            )}
-
-                                            <TableRowActions
-                                                activeId={shownProductMenuId}
-                                                setActiveId={setShownProductMenuId}
-                                                id={product.id}>
-                                                <div className="dropdown dropdown-actions">
-                                                    <NavLink
-                                                        className="dropdown-item"
-                                                        to={getStateRouteUrl('fund-provider-product', {
+                                                {product.is_available && !product.allowed && (
+                                                    <StateNavLink
+                                                        name={'fund-provider-product-subsidy-edit'}
+                                                        params={{
                                                             id: product.id,
                                                             fundId: fundProvider.fund_id,
                                                             fundProviderId: fundProvider.id,
                                                             organizationId: organization.id,
-                                                        })}>
-                                                        Bekijken
-                                                    </NavLink>
+                                                        }}
+                                                        className="button button-primary button-sm nowrap">
+                                                        <em className="mdi mdi-play icon-start" />
+                                                        Start subsidie
+                                                    </StateNavLink>
+                                                )}
 
-                                                    {organization.manage_provider_products && (
-                                                        <NavLink
-                                                            className="dropdown-item"
-                                                            to={getStateRouteUrl(
-                                                                'fund-provider-product-create',
-                                                                {
+                                                <TableRowActions
+                                                    activeId={shownProductMenuId}
+                                                    setActiveId={setShownProductMenuId}
+                                                    id={product.id}>
+                                                    <div className="dropdown dropdown-actions">
+                                                        <StateNavLink
+                                                            name={'fund-provider-product'}
+                                                            params={{
+                                                                id: product.id,
+                                                                fundId: fundProvider.fund_id,
+                                                                fundProviderId: fundProvider.id,
+                                                                organizationId: organization.id,
+                                                            }}
+                                                            className="dropdown-item">
+                                                            Bekijken
+                                                        </StateNavLink>
+
+                                                        {organization.manage_provider_products && (
+                                                            <StateNavLink
+                                                                name={'fund-provider-product-create'}
+                                                                params={{
                                                                     fundId: fundProvider.fund_id,
                                                                     source: product.id,
                                                                     fundProviderId: fundProvider.id,
                                                                     organizationId: organization.id,
-                                                                },
-                                                                { source_id: product.id },
-                                                            )}>
-                                                            Kopieren
-                                                        </NavLink>
-                                                    )}
-                                                </div>
-                                            </TableRowActions>
-                                        </div>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            {products.meta.total == 0 && (
-                <div className="card-section">
-                    <div className="block block-empty text-center">
-                        <div className="empty-title">Geen aanbiedingen</div>
+                                                                }}
+                                                                query={{ source_id: product.id }}
+                                                                className="dropdown-item">
+                                                                Kopieren
+                                                            </StateNavLink>
+                                                        )}
+                                                    </div>
+                                                </TableRowActions>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
                     </div>
                 </div>
+            ) : (
+                <EmptyCard title={'Geen aanbiedingen'} type={'card-section'} />
             )}
 
             {products.meta && (

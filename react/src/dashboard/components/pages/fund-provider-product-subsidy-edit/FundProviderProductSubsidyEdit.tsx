@@ -1,12 +1,11 @@
 import React, { Fragment, useCallback, useEffect, useState } from 'react';
 import useActiveOrganization from '../../../hooks/useActiveOrganization';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import Product, { DealHistory } from '../../../props/models/Product';
 import StateNavLink from '../../../modules/state_router/StateNavLink';
 import LoadingCard from '../../elements/loading-card/LoadingCard';
-import { useTranslation } from 'react-i18next';
 import { ResponseError } from '../../../props/ApiResponses';
-import { getStateRouteUrl } from '../../../modules/state_router/Router';
+import { useNavigateState } from '../../../modules/state_router/Router';
 import usePushSuccess from '../../../hooks/usePushSuccess';
 import usePushDanger from '../../../hooks/usePushDanger';
 import { currencyFormat, strLimit } from '../../../helpers/string';
@@ -15,22 +14,19 @@ import useSetProgress from '../../../hooks/useSetProgress';
 import { useFundService } from '../../../services/FundService';
 import Fund from '../../../props/models/Fund';
 import FundProvider from '../../../props/models/FundProvider';
-import { NumberParam, useQueryParams } from 'use-query-params';
+import { NumberParam, useQueryParam } from 'use-query-params';
 import FundProviderProductEditor from '../fund-provider-product-view/elements/FundProviderProductEditor';
+import useTranslate from '../../../hooks/useTranslate';
 
 export default function FundProviderProductSubsidyEdit() {
     const { id, fundId, fundProviderId } = useParams();
+    const activeOrganization = useActiveOrganization();
 
-    const [{ deal_id }] = useQueryParams({
-        deal_id: NumberParam,
-    });
-
-    const { t } = useTranslation();
-    const navigate = useNavigate();
+    const translate = useTranslate();
     const pushDanger = usePushDanger();
     const pushSuccess = usePushSuccess();
     const setProgress = useSetProgress();
-    const activeOrganization = useActiveOrganization();
+    const navigateState = useNavigateState();
 
     const fundService = useFundService();
 
@@ -41,46 +37,39 @@ export default function FundProviderProductSubsidyEdit() {
     const [product, setProduct] = useState<Product>(null);
     const [fundProvider, setFundProvider] = useState<FundProvider>(null);
 
-    const fetchProduct = useCallback(async () => {
-        try {
-            const res = await fundService.getProviderProduct(
-                activeOrganization.id,
-                parseInt(fundId),
-                parseInt(fundProviderId),
-                parseInt(id),
-            );
+    const [dealId] = useQueryParam('deal_id', NumberParam);
 
-            return setProduct(res.data.data);
-        } catch (res) {
-            return pushDanger('Mislukt!', res.data.message);
-        }
-    }, [fundService, activeOrganization.id, fundId, fundProviderId, id, pushDanger]);
+    const fetchProduct = useCallback(() => {
+        setProgress(0);
+
+        fundService
+            .getProviderProduct(activeOrganization.id, parseInt(fundId), parseInt(fundProviderId), parseInt(id))
+            .then((res) => setProduct(res.data.data))
+            .catch((err: ResponseError) => pushDanger('Mislukt!', err.data.message))
+            .finally(() => setProgress(100));
+    }, [fundService, activeOrganization.id, fundId, fundProviderId, id, pushDanger, setProgress]);
 
     const onCancel = useCallback(() => {
-        navigate(
-            getStateRouteUrl('fund-provider-product', {
-                id: product.id,
-                fundId: fund.id,
-                fundProviderId: fundProvider.id,
-                organizationId: activeOrganization.id,
-            }),
-        );
-    }, [activeOrganization.id, fund?.id, fundProvider?.id, navigate, product?.id]);
+        navigateState('fund-provider-product', {
+            id: product.id,
+            fundId: fund.id,
+            fundProviderId: fundProvider.id,
+            organizationId: activeOrganization.id,
+        });
+    }, [navigateState, activeOrganization.id, fund?.id, fundProvider?.id, product?.id]);
 
     const onUpdate = useCallback(
         (fundProvider: FundProvider) => {
             pushSuccess('Het aanbod is goedgekeurd.');
 
-            navigate(
-                getStateRouteUrl('fund-provider-product', {
-                    id: product.id,
-                    fundId: fund.id,
-                    fundProviderId: fundProvider.id,
-                    organizationId: activeOrganization.id,
-                }),
-            );
+            navigateState('fund-provider-product', {
+                id: product.id,
+                fundId: fund.id,
+                fundProviderId: fundProvider.id,
+                organizationId: activeOrganization.id,
+            });
         },
-        [activeOrganization.id, fund?.id, navigate, product?.id, pushSuccess],
+        [activeOrganization.id, fund?.id, navigateState, product?.id, pushSuccess],
     );
 
     const fetchFundProvider = useCallback(() => {
@@ -103,33 +92,36 @@ export default function FundProviderProductSubsidyEdit() {
             .finally(() => setProgress(100));
     }, [fundId, fundService, pushDanger, setProgress]);
 
-    useEffect(() => fetchFund(), [fetchFund]);
-    useEffect(() => fetchFundProvider(), [fetchFundProvider]);
+    useEffect(() => {
+        fetchFund();
+    }, [fetchFund]);
+
+    useEffect(() => {
+        fetchFundProvider();
+    }, [fetchFundProvider]);
 
     useEffect(() => {
         if (fundProvider) {
-            fetchProduct().then((r) => r);
+            fetchProduct();
         }
     }, [fetchProduct, fundProvider]);
 
     useEffect(() => {
         if (product && fund) {
-            const deal = product.deals_history.find((deal) => (deal_id ? deal.id == deal_id : deal.active)) || null;
+            const deal = product.deals_history.find((deal) => (dealId ? deal.id == dealId : deal.active)) || null;
 
-            if ((deal_id && !deal) || fund.type !== 'subsidies') {
-                return navigate(
-                    getStateRouteUrl('fund-provider', {
-                        id: fundProvider.id,
-                        fundId: fund.id,
-                        organizationId: activeOrganization.id,
-                    }),
-                );
+            if ((dealId && !deal) || fund.type !== 'subsidies') {
+                return navigateState('fund-provider', {
+                    id: fundProvider.id,
+                    fundId: fund.id,
+                    organizationId: activeOrganization.id,
+                });
             }
 
             setDeal(deal);
-            setReadOnly(!!deal_id || fundProvider.products.indexOf(product.id) !== -1);
+            setReadOnly(!!dealId || fundProvider.products.includes(product.id));
         }
-    }, [activeOrganization.id, deal_id, fund, fundProvider?.id, fundProvider?.products, navigate, product]);
+    }, [activeOrganization.id, dealId, fund, fundProvider?.id, fundProvider?.products, navigateState, product]);
 
     if (!product || !fund || !fundProvider) {
         return <LoadingCard />;
@@ -142,7 +134,7 @@ export default function FundProviderProductSubsidyEdit() {
                     name={'sponsor-provider-organizations'}
                     params={{ organizationId: activeOrganization.id }}
                     className="breadcrumb-item">
-                    {t('page_state_titles.organization-providers')}
+                    {translate('page_state_titles.organization-providers')}
                 </StateNavLink>
                 <StateNavLink
                     name={'sponsor-provider-organization'}

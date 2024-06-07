@@ -1,6 +1,4 @@
 import React from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
-import { getStateRouteUrl } from '../../../../modules/state_router/Router';
 import { strLimit } from '../../../../helpers/string';
 import Paginator from '../../../../modules/paginator/components/Paginator';
 import { PaginationData } from '../../../../props/ApiResponses';
@@ -8,8 +6,9 @@ import Organization from '../../../../props/models/Organization';
 import FilterScope from '../../../../types/FilterScope';
 import FilterModel from '../../../../types/FilterModel';
 import FundProvider from '../../../../props/models/FundProvider';
+import StateNavLink from '../../../../modules/state_router/StateNavLink';
 
-export default function FundProviderTable({
+export default function ProvidersTableItemFunds({
     filter,
     organization,
     fundProviders,
@@ -18,8 +17,6 @@ export default function FundProviderTable({
     organization: Organization;
     fundProviders: PaginationData<FundProvider>;
 }) {
-    const navigate = useNavigate();
-
     return (
         <tr>
             <td className="td-paddless" colSpan={5}>
@@ -34,17 +31,16 @@ export default function FundProviderTable({
                         </thead>
                         <tbody>
                             {fundProviders.data.map((fundProvider) => (
-                                <tr
+                                <StateNavLink
+                                    name={'fund-provider'}
+                                    params={{
+                                        id: fundProvider.id,
+                                        fundId: fundProvider.fund_id,
+                                        organizationId: organization.id,
+                                    }}
                                     key={fundProvider.id}
-                                    onClick={() =>
-                                        navigate(
-                                            getStateRouteUrl('fund-provider', {
-                                                id: fundProvider.id,
-                                                fundId: fundProvider.fund_id,
-                                                organizationId: organization.id,
-                                            }),
-                                        )
-                                    }>
+                                    className={'clickable'}
+                                    customElement={'tr'}>
                                     <td>
                                         <div className="td-collapsable">
                                             <div className="collapsable-icon">
@@ -83,18 +79,19 @@ export default function FundProviderTable({
                                         </div>
                                     </td>
                                     <td className="td-narrow text-right">
-                                        <NavLink
-                                            to={getStateRouteUrl('fund-provider', {
+                                        <StateNavLink
+                                            name={'fund-provider'}
+                                            params={{
                                                 id: fundProvider.id,
                                                 fundId: fundProvider.fund_id,
                                                 organizationId: organization.id,
-                                            })}
+                                            }}
                                             className="button button-default button-sm nowrap">
                                             <em className="mdi mdi-eye-outline icon-start" />
                                             Bekijk aanbod
-                                        </NavLink>
+                                        </StateNavLink>
                                     </td>
-                                </tr>
+                                </StateNavLink>
                             ))}
                         </tbody>
                         <tbody>

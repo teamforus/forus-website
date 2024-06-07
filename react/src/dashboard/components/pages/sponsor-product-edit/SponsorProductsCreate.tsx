@@ -7,14 +7,12 @@ import { useFundService } from '../../../services/FundService';
 import usePushDanger from '../../../hooks/usePushDanger';
 import useSetProgress from '../../../hooks/useSetProgress';
 import LoadingCard from '../../elements/loading-card/LoadingCard';
-import { NumberParam, useQueryParams } from 'use-query-params';
+import { NumberParam, useQueryParam } from 'use-query-params';
 
 export default function SponsorProductsCreate() {
     const { fundId, fundProviderId } = useParams();
 
-    const [{ source_id }] = useQueryParams({
-        source_id: NumberParam,
-    });
+    const [sourceId] = useQueryParam('source_id', NumberParam);
 
     const pushDanger = usePushDanger();
     const setProgress = useSetProgress();
@@ -33,11 +31,13 @@ export default function SponsorProductsCreate() {
             .finally(() => setProgress(100));
     }, [setProgress, fundService, activeOrganization.id, fundId, fundProviderId, pushDanger]);
 
-    useEffect(() => fetchFundProvider(), [fetchFundProvider]);
+    useEffect(() => {
+        fetchFundProvider();
+    }, [fetchFundProvider]);
 
     if (!fundProvider) {
         return <LoadingCard />;
     }
 
-    return <ProductsForm organization={activeOrganization} fund_provider={fundProvider} source_id={source_id} />;
+    return <ProductsForm organization={activeOrganization} fundProvider={fundProvider} sourceId={sourceId} />;
 }

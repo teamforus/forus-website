@@ -2,7 +2,6 @@ import React, { Fragment, useCallback, useEffect, useState } from 'react';
 import useActiveOrganization from '../../../hooks/useActiveOrganization';
 import useFilter from '../../../hooks/useFilter';
 import { PaginationData, ResponseError } from '../../../props/ApiResponses';
-import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 import usePushDanger from '../../../hooks/usePushDanger';
 import useSetProgress from '../../../hooks/useSetProgress';
@@ -15,10 +14,13 @@ import LoadingCard from '../../elements/loading-card/LoadingCard';
 import ProviderOrganizationOverview from './elements/ProviderOrganizationOverview';
 import { SponsorProviderOrganization } from '../../../props/models/Organization';
 import { strLimit } from '../../../helpers/string';
+import useTranslate from '../../../hooks/useTranslate';
+import EmptyCard from '../../elements/empty-card/EmptyCard';
 
 export default function SponsorProviderOrganization() {
-    const { t } = useTranslation();
     const { id } = useParams();
+
+    const translate = useTranslate();
     const pushDanger = usePushDanger();
     const setProgress = useSetProgress();
     const activeOrganization = useActiveOrganization();
@@ -59,8 +61,13 @@ export default function SponsorProviderOrganization() {
             .finally(() => setProgress(100));
     }, [activeOrganization.id, id, organizationService, pushDanger, setProgress]);
 
-    useEffect(() => fetchFundProviders(), [fetchFundProviders]);
-    useEffect(() => fetchProviderOrganization(), [fetchProviderOrganization]);
+    useEffect(() => {
+        fetchFundProviders();
+    }, [fetchFundProviders]);
+
+    useEffect(() => {
+        fetchProviderOrganization();
+    }, [fetchProviderOrganization]);
 
     if (!providerOrganization || !fundProviders) {
         return <LoadingCard />;
@@ -72,8 +79,9 @@ export default function SponsorProviderOrganization() {
                 <StateNavLink
                     name={'sponsor-provider-organizations'}
                     params={{ organizationId: activeOrganization.id }}
+                    activeExact={true}
                     className="breadcrumb-item">
-                    {t('page_state_titles.organization-providers')}
+                    {translate('page_state_titles.organization-providers')}
                 </StateNavLink>
                 <div className="breadcrumb-item active">{providerOrganization.name}</div>
             </div>
@@ -104,6 +112,7 @@ export default function SponsorProviderOrganization() {
                         </div>
                     </div>
                 </div>
+
                 <div className="card-section card-section-padless">
                     <div className="table-wrapper">
                         <table className="table form">
@@ -119,9 +128,9 @@ export default function SponsorProviderOrganization() {
                                 </tr>
                                 {fundProviders.data.map((fundProvider, index) => (
                                     <FundProviderTableItem
+                                        key={fundProvider.id}
                                         fundProvider={fundProvider}
                                         organization={activeOrganization}
-                                        key={fundProvider.id}
                                         onChange={(data) => updateFundProviderInList(data, index)}
                                     />
                                 ))}
@@ -130,13 +139,7 @@ export default function SponsorProviderOrganization() {
                     </div>
                 </div>
 
-                {fundProviders.meta.total == 0 && (
-                    <div className="card-section">
-                        <div className="block block-empty text-center">
-                            <div className="empty-title">Geen aanmeldingen</div>
-                        </div>
-                    </div>
-                )}
+                {fundProviders.meta.total == 0 && <EmptyCard type={'card-section'} title={'Geen aanmeldingen'} />}
 
                 {fundProviders.meta && (
                     <div className="card-section card-section-narrow">
@@ -169,32 +172,33 @@ export default function SponsorProviderOrganization() {
                 <div className="card-header">
                     <div className="card-title">Vestigingen</div>
                 </div>
-                <div className="card-section card-section-padless">
-                    <div className="table-wrapper">
-                        <table className="table">
-                            <tbody>
-                                <tr>
-                                    <th>Adres</th>
-                                    <th className="text-right">Telefoonnummer</th>
-                                </tr>
 
-                                {providerOrganization.offices.map((office) => (
-                                    <tr key={office.id}>
-                                        <td className={!office.address ? 'text-muted' : ''}>
-                                            {office.address || 'n.v.t.'}
-                                        </td>
-                                        <td className={`text-right ${!office.phone ? 'text-muted' : ''}`}>
-                                            {office.phone || 'n.v.t.'}
-                                        </td>
+                {providerOrganization.offices.length > 0 ? (
+                    <div className="card-section card-section-padless">
+                        <div className="table-wrapper">
+                            <table className="table">
+                                <tbody>
+                                    <tr>
+                                        <th>Adres</th>
+                                        <th className="text-right">Telefoonnummer</th>
                                     </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
 
-                {providerOrganization.offices.length === 0 && (
-                    <div className="card-section text-center">Geen vestigingen</div>
+                                    {providerOrganization.offices.map((office) => (
+                                        <tr key={office.id}>
+                                            <td className={!office.address ? 'text-muted' : ''}>
+                                                {office.address || 'n.v.t.'}
+                                            </td>
+                                            <td className={`text-right ${!office.phone ? 'text-muted' : ''}`}>
+                                                {office.phone || 'n.v.t.'}
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                ) : (
+                    <EmptyCard type={'card-section'} title={'Geen vestigingen'} />
                 )}
             </div>
 
@@ -202,30 +206,31 @@ export default function SponsorProviderOrganization() {
                 <div className="card-header">
                     <div className="card-title">Medewerkers</div>
                 </div>
-                <div className="card-section card-section-padless">
-                    <div className="table-wrapper">
-                        <table className="table">
-                            <tbody>
-                                <tr>
-                                    <th>E-Mailadres</th>
-                                </tr>
 
-                                {providerOrganization.employees.map((employee) => (
-                                    <tr key={employee.id}>
-                                        {employee.email ? (
-                                            <td>{employee.email}</td>
-                                        ) : (
-                                            <td>{strLimit(employee.identity_address, 32)}</td>
-                                        )}
+                {providerOrganization.employees.length > 0 ? (
+                    <div className="card-section card-section-padless">
+                        <div className="table-wrapper">
+                            <table className="table">
+                                <tbody>
+                                    <tr>
+                                        <th>E-Mailadres</th>
                                     </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
 
-                {providerOrganization.employees.length === 0 && (
-                    <div className="card-section text-center">Geen vestigingen</div>
+                                    {providerOrganization.employees.map((employee) => (
+                                        <tr key={employee.id}>
+                                            {employee.email ? (
+                                                <td>{employee.email}</td>
+                                            ) : (
+                                                <td>{strLimit(employee.identity_address, 32)}</td>
+                                            )}
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                ) : (
+                    <EmptyCard type={'card-section'} title={'Geen medewerkers'} />
                 )}
             </div>
         </Fragment>

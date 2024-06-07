@@ -1,26 +1,24 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
-import { getStateRouteUrl } from '../../../../modules/state_router/Router';
 import { strLimit } from '../../../../helpers/string';
 import { PaginationData, ResponseError } from '../../../../props/ApiResponses';
 import Organization, { SponsorProviderOrganization } from '../../../../props/models/Organization';
-import FundProviderTable from './FundProviderTable';
-import { useTranslation } from 'react-i18next';
+import ProvidersTableItemFunds from './ProvidersTableItemFunds';
 import { useOrganizationService } from '../../../../services/OrganizationService';
 import usePushDanger from '../../../../hooks/usePushDanger';
 import useFilter from '../../../../hooks/useFilter';
 import FundProvider from '../../../../props/models/FundProvider';
 import useSetProgress from '../../../../hooks/useSetProgress';
+import useTranslate from '../../../../hooks/useTranslate';
+import StateNavLink from '../../../../modules/state_router/StateNavLink';
 
-export default function ProviderTableItem({
+export default function ProvidersTableItem({
     organization,
     providerOrganization,
 }: {
     organization: Organization;
     providerOrganization: SponsorProviderOrganization;
 }) {
-    const { t } = useTranslation();
-    const navigate = useNavigate();
+    const translate = useTranslate();
     const pushDanger = usePushDanger();
     const setProgress = useSetProgress();
 
@@ -49,15 +47,14 @@ export default function ProviderTableItem({
 
     return (
         <tbody>
-            <tr
-                onClick={() =>
-                    navigate(
-                        getStateRouteUrl('sponsor-provider-organization', {
-                            id: providerOrganization.id,
-                            organizationId: organization.id,
-                        }),
-                    )
-                }>
+            <StateNavLink
+                name={'sponsor-provider-organization'}
+                className={'clickable'}
+                customElement={'tr'}
+                params={{
+                    id: providerOrganization.id,
+                    organizationId: organization.id,
+                }}>
                 <td
                     onClick={(e) => {
                         e?.preventDefault();
@@ -92,20 +89,21 @@ export default function ProviderTableItem({
                 <td>{providerOrganization.products_count}</td>
                 <td>{providerOrganization.funds.length}</td>
                 <td className="text-right">
-                    <NavLink
-                        to={getStateRouteUrl('sponsor-provider-organization', {
+                    <StateNavLink
+                        name={'sponsor-provider-organization'}
+                        params={{
                             id: providerOrganization.id,
                             organizationId: organization.id,
-                        })}
+                        }}
                         className="button button-primary button-sm">
                         <em className="mdi mdi-eye-outline icon-start" />
-                        {t('provider_organizations.buttons.view')}
-                    </NavLink>
+                        {translate('provider_organizations.buttons.view')}
+                    </StateNavLink>
                 </td>
-            </tr>
+            </StateNavLink>
 
             {showFundProviders && fundProviders && (
-                <FundProviderTable organization={organization} fundProviders={fundProviders} filter={filter} />
+                <ProvidersTableItemFunds organization={organization} fundProviders={fundProviders} filter={filter} />
             )}
         </tbody>
     );

@@ -1,9 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { PaginationData, ResponseError } from '../../../../props/ApiResponses';
-import { NavLink } from 'react-router-dom';
 import usePushDanger from '../../../../hooks/usePushDanger';
 import FundProvider from '../../../../props/models/FundProvider';
-import { getStateRouteUrl } from '../../../../modules/state_router/Router';
 import Organization from '../../../../props/models/Organization';
 import useFilter from '../../../../hooks/useFilter';
 import Paginator from '../../../../modules/paginator/components/Paginator';
@@ -13,6 +11,9 @@ import LoadingCard from '../../../elements/loading-card/LoadingCard';
 import { useFundService } from '../../../../services/FundService';
 import TableRowActions from '../../../elements/tables/TableRowActions';
 import useUpdateProduct from '../hooks/useUpdateProduct';
+import useAssetUrl from '../../../../hooks/useAssetUrl';
+import StateNavLink from '../../../../modules/state_router/StateNavLink';
+import EmptyCard from '../../../elements/empty-card/EmptyCard';
 
 type ProductLocal = Product & {
     allowed: boolean;
@@ -27,6 +28,7 @@ export default function BudgetFundProducts({
     organization: Organization;
     onChange: (data: FundProvider) => void;
 }) {
+    const assetUrl = useAssetUrl();
     const pushDanger = usePushDanger();
     const setProgress = useSetProgress();
     const { updateProduct } = useUpdateProduct();
@@ -119,45 +121,49 @@ export default function BudgetFundProducts({
                 </div>
             )}
 
-            <div className="card-section card-section-padless">
-                <div className="table-wrapper">
-                    <table className="table">
-                        <tbody>
-                            <tr>
-                                <th className="td-narrow">Afbeelding</th>
-                                <th>Naam</th>
-                                <th>Aantal</th>
-                                <th>Prijs</th>
-                                <th>Geaccepteerd</th>
-                                <th />
-                            </tr>
-                            {products.data.map((product) => (
-                                <tr key={product.id}>
-                                    <td className="td-narrow">
-                                        <img
-                                            className="td-media"
-                                            src={
-                                                product.photo
-                                                    ? product.photo.sizes.small
-                                                    : './assets/img/placeholders/product-small.png'
-                                            }
-                                            alt={product.name}
-                                        />
-                                    </td>
-                                    <td>{product.name}</td>
-                                    {product.unlimited_stock ? <td>Ongelimiteerd</td> : <td>{product.stock_amount}</td>}
-                                    <td className="nowrap">{product.price_locale}</td>
-
-                                    <td className="td-narrow">
-                                        <div className="form pull-right">
-                                            <label
-                                                className={`form-toggle ${
-                                                    fundProvider.state == 'accepted'
-                                                        ? fundProvider.allow_products
-                                                            ? 'form-toggle-active'
-                                                            : ''
-                                                        : 'form-toggle-off'
+            {products.meta.total > 0 ? (
+                <div className="card-section card-section-padless">
+                    <div className="table-wrapper">
+                        <table className="table">
+                            <tbody>
+                                <tr>
+                                    <th className="td-narrow">Afbeelding</th>
+                                    <th>Naam</th>
+                                    <th>Aantal</th>
+                                    <th>Prijs</th>
+                                    <th>Geaccepteerd</th>
+                                    <th />
+                                </tr>
+                                {products.data.map((product) => (
+                                    <tr key={product.id}>
+                                        <td className="td-narrow">
+                                            <img
+                                                className="td-media"
+                                                src={
+                                                    product?.photo?.sizes?.small ||
+                                                    assetUrl('/assets/img/placeholders/product-small.png')
                                                 }
+                                                alt={product.name}
+                                            />
+                                        </td>
+                                        <td>{product.name}</td>
+                                        {product.unlimited_stock ? (
+                                            <td>Ongelimiteerd</td>
+                                        ) : (
+                                            <td>{product.stock_amount}</td>
+                                        )}
+                                        <td className="nowrap">{product.price_locale}</td>
+
+                                        <td className="td-narrow">
+                                            <div className="form pull-right">
+                                                <label
+                                                    className={`form-toggle ${
+                                                        fundProvider.state == 'accepted'
+                                                            ? fundProvider.allow_products
+                                                                ? 'form-toggle-active'
+                                                                : ''
+                                                            : 'form-toggle-off'
+                                                    }
                                             ${
                                                 fundProvider.state !== 'accepted' ||
                                                 fundProvider.allow_products ||
@@ -165,71 +171,67 @@ export default function BudgetFundProducts({
                                                     ? 'form-toggle-disabled'
                                                     : ''
                                             }`}
-                                                htmlFor={`product_${product.id}_enabled`}>
-                                                <input
-                                                    type="checkbox"
-                                                    id={`product_${product.id}_enabled`}
-                                                    checked={product.allowed}
-                                                    onChange={(e) => updateAllowBudgetItem(product, e.target.checked)}
-                                                />
-                                                <div className="form-toggle-inner">
-                                                    <div className="toggle-input">
-                                                        <div className="toggle-input-dot" />
+                                                    htmlFor={`product_${product.id}_enabled`}>
+                                                    <input
+                                                        type="checkbox"
+                                                        id={`product_${product.id}_enabled`}
+                                                        checked={product.allowed}
+                                                        onChange={(e) =>
+                                                            updateAllowBudgetItem(product, e.target.checked)
+                                                        }
+                                                    />
+                                                    <div className="form-toggle-inner">
+                                                        <div className="toggle-input">
+                                                            <div className="toggle-input-dot" />
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            </label>
-                                        </div>
-                                    </td>
+                                                </label>
+                                            </div>
+                                        </td>
 
-                                    <td className="td-narrow text-right">
-                                        <div className="button-group flex-end">
-                                            <TableRowActions
-                                                activeId={shownProductMenuId}
-                                                setActiveId={setShownProductMenuId}
-                                                id={product.id}>
-                                                <div className="dropdown dropdown-actions">
-                                                    <NavLink
-                                                        className="dropdown-item"
-                                                        to={getStateRouteUrl('fund-provider-product', {
-                                                            id: product.id,
-                                                            fundId: fundProvider.fund_id,
-                                                            fundProviderId: fundProvider.id,
-                                                            organizationId: organization.id,
-                                                        })}>
-                                                        Bekijken
-                                                    </NavLink>
+                                        <td className="td-narrow text-right">
+                                            <div className="button-group flex-end">
+                                                <TableRowActions
+                                                    activeId={shownProductMenuId}
+                                                    setActiveId={setShownProductMenuId}
+                                                    id={product.id}>
+                                                    <div className="dropdown dropdown-actions">
+                                                        <StateNavLink
+                                                            className="dropdown-item"
+                                                            name={'fund-provider-product'}
+                                                            params={{
+                                                                id: product.id,
+                                                                fundId: fundProvider.fund_id,
+                                                                fundProviderId: fundProvider.id,
+                                                                organizationId: organization.id,
+                                                            }}>
+                                                            Bekijken
+                                                        </StateNavLink>
 
-                                                    <NavLink
-                                                        className="dropdown-item"
-                                                        to={getStateRouteUrl(
-                                                            'fund-provider-product-create',
-                                                            {
+                                                        <StateNavLink
+                                                            className="dropdown-item"
+                                                            name={'fund-provider-product-create'}
+                                                            params={{
                                                                 source: product.id,
                                                                 fundId: fundProvider.fund_id,
                                                                 fundProviderId: fundProvider.id,
                                                                 organizationId: organization.id,
-                                                            },
-                                                            { source_id: product.id },
-                                                        )}>
-                                                        Kopieren
-                                                    </NavLink>
-                                                </div>
-                                            </TableRowActions>
-                                        </div>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            {products.meta.total == 0 && (
-                <div className="card-section">
-                    <div className="block block-empty text-center">
-                        <div className="empty-title">Geen aanbiedingen</div>
+                                                            }}
+                                                            query={{ source_id: product.id }}>
+                                                            Kopieren
+                                                        </StateNavLink>
+                                                    </div>
+                                                </TableRowActions>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
                     </div>
                 </div>
+            ) : (
+                <EmptyCard title={'Geen aanbiedingen'} type={'card-section'} />
             )}
 
             {products.meta && (

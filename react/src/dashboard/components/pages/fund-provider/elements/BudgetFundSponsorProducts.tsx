@@ -1,9 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { PaginationData, ResponseError } from '../../../../props/ApiResponses';
-import { NavLink } from 'react-router-dom';
 import usePushDanger from '../../../../hooks/usePushDanger';
 import FundProvider from '../../../../props/models/FundProvider';
-import { getStateRouteUrl } from '../../../../modules/state_router/Router';
 import Organization from '../../../../props/models/Organization';
 import useFilter from '../../../../hooks/useFilter';
 import Paginator from '../../../../modules/paginator/components/Paginator';
@@ -13,6 +11,7 @@ import useSetProgress from '../../../../hooks/useSetProgress';
 import LoadingCard from '../../../elements/loading-card/LoadingCard';
 import TableRowActions from '../../../elements/tables/TableRowActions';
 import useUpdateProduct from '../hooks/useUpdateProduct';
+import StateNavLink from '../../../../modules/state_router/StateNavLink';
 
 type ProductLocal = Product & {
     allowed: boolean;
@@ -86,7 +85,9 @@ export default function BudgetFundSponsorProducts({
         [deleteProduct, fetchProducts, fundProvider, organization],
     );
 
-    useEffect(() => fetchProducts(), [fetchProducts]);
+    useEffect(() => {
+        fetchProducts();
+    }, [fetchProducts]);
 
     if (!products) {
         return <LoadingCard />;
@@ -98,16 +99,17 @@ export default function BudgetFundSponsorProducts({
                 <div className="row">
                     <div className="col-lg-8 flex">
                         <div className="card-title">Aanbod in beheer van {organization.name}</div>
-                        <NavLink
-                            className="button button-text button-text button-text-muted"
-                            to={getStateRouteUrl('fund-provider-product-create', {
+                        <StateNavLink
+                            name={'fund-provider-product-create'}
+                            params={{
                                 fundId: fundProvider.fund_id,
                                 fundProviderId: fundProvider.id,
                                 organizationId: organization.id,
-                            })}>
+                            }}
+                            className="button button-text button-text button-text-muted">
                             <em className="mdi mdi-plus-circle icon-start" />
                             Voeg een aanbod toe
-                        </NavLink>
+                        </StateNavLink>
                     </div>
                     <div className="col-lg-4">
                         <div className="card-header-drown">
@@ -206,42 +208,42 @@ export default function BudgetFundSponsorProducts({
                                                 setActiveId={setShownProductMenuId}
                                                 id={product.id}>
                                                 <div className="dropdown dropdown-actions">
-                                                    <NavLink
-                                                        className="dropdown-item"
-                                                        to={getStateRouteUrl('fund-provider-product', {
+                                                    <StateNavLink
+                                                        name={'fund-provider-product'}
+                                                        params={{
                                                             id: product.id,
                                                             fundId: fundProvider.fund_id,
                                                             fundProviderId: fundProvider.id,
                                                             organizationId: organization.id,
-                                                        })}>
+                                                        }}
+                                                        className="dropdown-item">
                                                         Bekijken
-                                                    </NavLink>
+                                                    </StateNavLink>
 
-                                                    <NavLink
+                                                    <StateNavLink
                                                         className="dropdown-item"
-                                                        to={getStateRouteUrl(
-                                                            'fund-provider-product-create',
-                                                            {
-                                                                fundId: fundProvider.fund_id,
-                                                                source: product.id,
-                                                                fundProviderId: fundProvider.id,
-                                                                organizationId: organization.id,
-                                                            },
-                                                            { source_id: product.id },
-                                                        )}>
+                                                        name={'fund-provider-product-create'}
+                                                        params={{
+                                                            fundId: fundProvider.fund_id,
+                                                            source: product.id,
+                                                            fundProviderId: fundProvider.id,
+                                                            organizationId: organization.id,
+                                                        }}
+                                                        query={{ source_id: product.id }}>
                                                         Kopieren
-                                                    </NavLink>
+                                                    </StateNavLink>
 
-                                                    <NavLink
+                                                    <StateNavLink
                                                         className="dropdown-item"
-                                                        to={getStateRouteUrl('fund-provider-product-edit', {
+                                                        name={'fund-provider-product-edit'}
+                                                        params={{
                                                             id: product.id,
                                                             fundId: fundProvider.fund_id,
                                                             fundProviderId: fundProvider.id,
                                                             organizationId: organization.id,
-                                                        })}>
+                                                        }}>
                                                         Bewerken
-                                                    </NavLink>
+                                                    </StateNavLink>
 
                                                     <a
                                                         className="dropdown-item"

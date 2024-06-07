@@ -8,7 +8,14 @@ export default function useConfirmFundProviderUpdate() {
     const confirmAcceptBudgetFundProvider = useConfirmAcceptBudgetFundProvider();
 
     return useCallback(
-        (fundProvider: FundProvider, state: string) => {
+        (
+            fundProvider: FundProvider,
+            state: 'accepted' | 'rejected',
+        ): Promise<{
+            state: string;
+            allow_budget?: boolean;
+            allow_products?: boolean;
+        }> => {
             if (state === 'rejected' || fundProvider.fund.type === 'subsidies') {
                 return confirmFundProviderUpdateState(state);
             }

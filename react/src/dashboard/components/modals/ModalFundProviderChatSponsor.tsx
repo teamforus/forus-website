@@ -11,35 +11,37 @@ import Fund from '../../props/models/Fund';
 import FundProvider from '../../props/models/FundProvider';
 import useFundProviderChatService from '../../services/FundProviderChatService';
 import Product from '../../props/models/Product';
+import { ResponseError } from '../../props/ApiResponses';
+import usePushDanger from '../../hooks/usePushDanger';
+import useSetProgress from '../../hooks/useSetProgress';
 
 export default function ModalFundProviderChatSponsor({
     modal,
-    className,
     chat,
     fund,
     product,
+    className,
     organization,
     fundProvider,
-    onClose,
 }: {
     modal: ModalState;
-    className?: string;
     chat: FundProviderChat;
     fund: Fund;
     product: Product;
+    className?: string;
     organization: Organization;
     fundProvider: FundProvider;
-    onClose: () => void;
 }) {
-    const [updateInterval] = useState(10000);
     const envData = useEnvData();
-    const panelType = envData.client_type;
+
+    const pushDanger = usePushDanger();
+    const setProgress = useSetProgress();
+
     const fundProviderChatService = useFundProviderChatService();
 
+    const [updateInterval] = useState(10000);
     const [messages, setMessages] = useState(null);
-
     const [timeoutValue, setTimeoutValue] = useState(null);
-    const [intervalValue, setIntervalValue] = useState(null);
 
     const chatRootRef = useRef<HTMLDivElement>(null);
 
@@ -52,15 +54,14 @@ export default function ModalFundProviderChatSponsor({
         const autoScrollThreshold = chatRoot.scrollHeight - threshold;
 
         if (forceScroll || fullHeight >= autoScrollThreshold) {
-            chatRoot.scrollTo({
-                top: chatRoot.scrollHeight,
-                behavior: 'auto',
-            });
+            chatRoot.scrollTo({ top: chatRoot.scrollHeight, behavior: 'auto' });
         }
     };
 
     const loadMessages = useCallback(
-        (forceScroll) => {
+        (forceScroll: boolean) => {
+            setProgress(0);
+
             fundProviderChatService
                 .listMessages(organization.id, fund.id, fundProvider.id, chat.id, {
                     per_page: 100,
@@ -69,9 +70,12 @@ export default function ModalFundProviderChatSponsor({
                     setMessages(Object.values(groupBy(res.data.data, 'date')));
                     setTimeoutValue(setTimeout(() => scrollTheChat(forceScroll), 50));
                 })
-                .catch((e) => console.log(e));
+                .catch((res: ResponseError) => {
+                    pushDanger('Mislukt!', res.data.message);
+                })
+                .finally(() => setProgress(100));
         },
-        [fundProviderChatService, organization.id, fund.id, fundProvider.id, chat.id],
+        [fundProviderChatService, organization.id, fund.id, fundProvider.id, chat.id, pushDanger, setProgress],
     );
 
     const form = useFormBuilder(
@@ -92,23 +96,29 @@ export default function ModalFundProviderChatSponsor({
         },
     );
 
-    const closeModal = useCallback(() => {
-        modal.close();
-        clearInterval(intervalValue);
-        clearTimeout(timeoutValue);
-        onClose();
-    }, [intervalValue, onClose, timeoutValue, modal]);
+    useEffect(() => {
+        return () => {
+            timeoutValue ? window.clearTimeout(timeoutValue) : null;
+        };
+    }, [timeoutValue]);
 
     useEffect(() => {
         loadMessages(true);
-        setIntervalValue(setInterval(() => loadMessages(false), updateInterval));
+
+        const interval = window.setInterval(() => {
+            loadMessages(false);
+        }, updateInterval);
+
+        return () => {
+            interval ? window.clearInterval(interval) : null;
+        };
     }, [loadMessages, updateInterval]);
 
     return (
         <div className={`modal modal-md modal-animated ${modal.loading ? 'modal-loading' : ''} ${className}`}>
-            <div className="modal-backdrop" onClick={closeModal} />
+            <div className="modal-backdrop" onClick={modal.close} />
             <form className="modal-window form" onSubmit={form.submit}>
-                <div className="modal-close mdi mdi-close" onClick={closeModal} />
+                <div className="modal-close mdi mdi-close" onClick={modal.close} />
                 <div className="modal-header">Chat met {product.organization.name}</div>
                 <div className="modal-body form">
                     <div className="modal-section modal-section-light modal-section-sm">
@@ -119,6 +129,7 @@ export default function ModalFundProviderChatSponsor({
                                         <div className="chat-timeline">
                                             <div className="chat-timeline-value">{messages?.[0]?.date}</div>
                                         </div>
+
                                         {messages?.map((message) => (
                                             <div
                                                 key={message.id}
@@ -126,7 +137,7 @@ export default function ModalFundProviderChatSponsor({
                                                     'chat-message-' +
                                                     (message.counterpart == 'system'
                                                         ? 'system'
-                                                        : panelType != message.counterpart
+                                                        : envData.client_type != message.counterpart
                                                         ? 'in'
                                                         : 'out')
                                                 }`}>
@@ -153,7 +164,7 @@ export default function ModalFundProviderChatSponsor({
                     </div>
                 </div>
                 <div className="modal-footer text-center">
-                    <button type={'button'} className="button button-default button-sm" onClick={() => closeModal()}>
+                    <button type={'button'} className="button button-default button-sm" onClick={modal.close}>
                         Annuleer
                     </button>
                     <button type={'submit'} className="button button-primary button-sm">

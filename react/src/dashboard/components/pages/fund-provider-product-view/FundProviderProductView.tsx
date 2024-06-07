@@ -1,12 +1,10 @@
 import React, { Fragment, useCallback, useEffect, useState } from 'react';
 import useActiveOrganization from '../../../hooks/useActiveOrganization';
-import { NavLink, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import Product, { DealHistory } from '../../../props/models/Product';
 import StateNavLink from '../../../modules/state_router/StateNavLink';
 import LoadingCard from '../../elements/loading-card/LoadingCard';
-import { useTranslation } from 'react-i18next';
 import { ResponseError } from '../../../props/ApiResponses';
-import { getStateRouteUrl } from '../../../modules/state_router/Router';
 import FundProviderChat from '../../../props/models/FundProviderChat';
 import useOpenModal from '../../../hooks/useOpenModal';
 import usePushSuccess from '../../../hooks/usePushSuccess';
@@ -23,6 +21,8 @@ import FundProvider from '../../../props/models/FundProvider';
 import useFundProviderChatService from '../../../services/FundProviderChatService';
 import ModalFundProviderChatSponsor from '../../modals/ModalFundProviderChatSponsor';
 import ModalFundProviderChatMessage from '../../modals/ModalFundProviderChatMessage';
+import useTranslate from '../../../hooks/useTranslate';
+import useAssetUrl from '../../../hooks/useAssetUrl';
 
 type ProductLocal = Product & {
     allowed?: boolean;
@@ -32,7 +32,8 @@ type ProductLocal = Product & {
 export default function FundProviderProductView() {
     const { id, fundId, fundProviderId } = useParams();
 
-    const { t } = useTranslation();
+    const assetUrl = useAssetUrl();
+    const translate = useTranslate();
     const openModal = useOpenModal();
     const pushDanger = usePushDanger();
     const pushSuccess = usePushSuccess();
@@ -196,17 +197,19 @@ export default function FundProviderProductView() {
             return;
         }
 
-        openModal((modal) => (
-            <ModalFundProviderChatSponsor
-                modal={modal}
-                fund={fund}
-                product={product}
-                chat={fundProviderProductChat}
-                organization={activeOrganization}
-                fundProvider={fundProvider}
-                onClose={() => fetchChat()}
-            />
-        ));
+        openModal(
+            (modal) => (
+                <ModalFundProviderChatSponsor
+                    modal={modal}
+                    fund={fund}
+                    product={product}
+                    chat={fundProviderProductChat}
+                    organization={activeOrganization}
+                    fundProvider={fundProvider}
+                />
+            ),
+            { onClosed: fetchChat },
+        );
     }, [activeOrganization, fetchChat, fund, fundProvider, fundProviderProductChat, openModal, product]);
 
     const makeChat = useCallback(() => {
@@ -246,9 +249,17 @@ export default function FundProviderProductView() {
             .finally(() => setProgress(100));
     }, [fundId, fundService, pushDanger, setProgress]);
 
-    useEffect(() => fetchFund(), [fetchFund]);
-    useEffect(() => fetchChat(), [fetchChat]);
-    useEffect(() => fetchFundProvider(), [fetchFundProvider]);
+    useEffect(() => {
+        fetchFund();
+    }, [fetchFund]);
+
+    useEffect(() => {
+        fetchChat();
+    }, [fetchChat]);
+
+    useEffect(() => {
+        fetchFundProvider();
+    }, [fetchFundProvider]);
 
     useEffect(() => {
         if (fundProvider) {
@@ -266,25 +277,21 @@ export default function FundProviderProductView() {
                 <StateNavLink
                     name={'sponsor-provider-organizations'}
                     params={{ organizationId: activeOrganization.id }}
+                    activeExact={true}
                     className="breadcrumb-item">
-                    {t('page_state_titles.organization-providers')}
+                    {translate('page_state_titles.organization-providers')}
                 </StateNavLink>
                 <StateNavLink
                     name={'sponsor-provider-organization'}
-                    params={{
-                        id: fundProvider.organization.id,
-                        organizationId: activeOrganization.id,
-                    }}
+                    params={{ id: fundProvider.organization.id, organizationId: activeOrganization.id }}
+                    activeExact={true}
                     className="breadcrumb-item">
                     {strLimit(fundProvider.organization.name, 40)}
                 </StateNavLink>
                 <StateNavLink
                     name={'fund-provider'}
-                    params={{
-                        id: fundProvider.id,
-                        fundId: fund.id,
-                        organizationId: activeOrganization.id,
-                    }}
+                    params={{ id: fundProvider.id, fundId: fund.id, organizationId: activeOrganization.id }}
+                    activeExact={true}
                     className="breadcrumb-item">
                     {strLimit(fundProvider.fund.name, 40)}
                 </StateNavLink>
@@ -296,7 +303,7 @@ export default function FundProviderProductView() {
                     <div className="product-media">
                         <img
                             className="product-media-img"
-                            src={product.photo?.sizes?.small || './assets/img/placeholders/product-small.png'}
+                            src={product.photo?.sizes?.small || assetUrl('/assets/img/placeholders/product-small.png')}
                             alt={product.name}
                         />
                     </div>
@@ -304,17 +311,19 @@ export default function FundProviderProductView() {
                         <div className="product-name">{product.name}</div>
                         <div className="product-properties">
                             <div className="product-property">
-                                <div className="product-property-label">{t('product_edit.labels.expire')}</div>
+                                <div className="product-property-label">{translate('product_edit.labels.expire')}</div>
                                 <div className="product-property-value">
                                     {product.expire_at ? product.expire_at_locale : 'Onbeperkt'}
                                 </div>
                             </div>
                             <div className="product-property">
-                                <div className="product-property-label">{t('product_edit.labels.sold')}</div>
+                                <div className="product-property-label">{translate('product_edit.labels.sold')}</div>
                                 <div className="product-property-value">{product.sold_amount}</div>
                             </div>
                             <div className="product-property">
-                                <div className="product-property-label">{t('product_edit.labels.reserved')}</div>
+                                <div className="product-property-label">
+                                    {translate('product_edit.labels.reserved')}
+                                </div>
                                 <div className="product-property-value">{product.reserved_amount}</div>
                             </div>
                         </div>
@@ -347,17 +356,18 @@ export default function FundProviderProductView() {
                         {fundProvider.fund.type == 'subsidies' && (
                             <div className="flex flex-end">
                                 {product.is_available && !product.allowed && (
-                                    <NavLink
-                                        className="button button-primary button-sm nowrap"
-                                        to={getStateRouteUrl('fund-provider-product-subsidy-edit', {
+                                    <StateNavLink
+                                        name={'fund-provider-product-subsidy-edit'}
+                                        params={{
                                             id: product.id,
                                             fundId: fundProvider.fund_id,
                                             fundProviderId: fundProvider.id,
                                             organizationId: activeOrganization.id,
-                                        })}>
+                                        }}
+                                        className="button button-primary button-sm nowrap">
                                         <em className="mdi mdi-play icon-start" />
                                         Start subsidie
-                                    </NavLink>
+                                    </StateNavLink>
                                 )}
 
                                 {product.is_available && product.allowed && (
@@ -389,17 +399,18 @@ export default function FundProviderProductView() {
                             )}
 
                             {product.sponsor_organization_id === activeOrganization.id && !fundProviderProductChat && (
-                                <NavLink
+                                <StateNavLink
                                     className="button button-primary"
-                                    to={getStateRouteUrl('fund-provider-product-edit', {
+                                    name={'fund-provider-product-edit'}
+                                    params={{
                                         id: product.id,
                                         fundId: fundProvider.fund_id,
                                         fundProviderId: fundProvider.id,
                                         organizationId: activeOrganization.id,
-                                    })}>
+                                    }}>
                                     <em className="mdi mdi-pencil icon-start" />
                                     Bewerken
-                                </NavLink>
+                                </StateNavLink>
                             )}
                         </div>
                         {!product.sponsor_organization && fundProviderProductChat && (
@@ -585,21 +596,19 @@ export default function FundProviderProductView() {
                                                             )}
 
                                                             {fund.type == 'subsidies' && (
-                                                                <NavLink
-                                                                    className="button button-default button-sm"
-                                                                    to={getStateRouteUrl(
-                                                                        'fund-provider-product-subsidy-edit',
-                                                                        {
-                                                                            id: product.id,
-                                                                            fundId: fundProvider.fund_id,
-                                                                            fundProviderId: fundProvider.id,
-                                                                            organizationId: activeOrganization.id,
-                                                                        },
-                                                                        { deal_id: item.id },
-                                                                    )}>
+                                                                <StateNavLink
+                                                                    name="fund-provider-product-subsidy-edit"
+                                                                    params={{
+                                                                        id: product.id,
+                                                                        fundId: fundProvider.fund_id,
+                                                                        fundProviderId: fundProvider.id,
+                                                                        organizationId: activeOrganization.id,
+                                                                    }}
+                                                                    query={{ deal_id: item.id }}
+                                                                    className="button button-default button-sm">
                                                                     <em className="mdi mdi-eye-outline icon-start" />
                                                                     Bekijk
-                                                                </NavLink>
+                                                                </StateNavLink>
                                                             )}
                                                         </div>
                                                     </td>

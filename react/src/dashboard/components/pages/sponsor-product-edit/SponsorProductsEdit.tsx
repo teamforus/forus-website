@@ -27,13 +27,13 @@ export default function SponsorProductsEdit() {
             .finally(() => setProgress(100));
     }, [setProgress, fundService, activeOrganization.id, fundId, fundProviderId, pushDanger]);
 
-    useEffect(() => fetchFundProvider(), [fetchFundProvider]);
+    useEffect(() => {
+        fetchFundProvider();
+    }, [fetchFundProvider]);
 
     if (!fundProvider) {
         return <LoadingCard />;
     }
 
-    return (
-        <ProductsForm organization={activeOrganization} fund_provider={fundProvider} id={id ? parseInt(id) : null} />
-    );
+    return <ProductsForm organization={activeOrganization} fundProvider={fundProvider} id={id ? parseInt(id) : null} />;
 }

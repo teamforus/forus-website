@@ -2,15 +2,19 @@ import React, { useCallback } from 'react';
 import useOpenModal from '../../../../hooks/useOpenModal';
 import ModalExportDataSelect from '../../../modals/ModalExportDataSelect';
 import FundProvider from '../../../../props/models/FundProvider';
-import { useTranslation } from 'react-i18next';
+import useTranslate from '../../../../hooks/useTranslate';
 
 export default function useConfirmAcceptBudgetFundProvider() {
-    const { t } = useTranslation();
+    const translate = useTranslate();
     const openModal = useOpenModal();
 
     return useCallback(
-        (fundProvider: FundProvider): Promise<object> => {
-            return new Promise<object>((resolve) => {
+        (fundProvider: FundProvider) => {
+            return new Promise<{
+                state: string;
+                allow_budget: boolean;
+                allow_products: boolean;
+            }>((resolve) => {
                 const state = 'accepted';
 
                 const fields = [
@@ -35,8 +39,10 @@ export default function useConfirmAcceptBudgetFundProvider() {
                 openModal((modal) => (
                     <ModalExportDataSelect
                         modal={modal}
-                        title={t(`modals.danger_zone.sponsor_provider_organization_state.${state}.title`)}
-                        description={t(`modals.danger_zone.sponsor_provider_organization_state.${state}.description`)}
+                        title={translate(`modals.danger_zone.sponsor_provider_organization_state.${state}.title`)}
+                        description={translate(
+                            `modals.danger_zone.sponsor_provider_organization_state.${state}.description`,
+                        )}
                         required={false}
                         sections={[
                             {
@@ -45,7 +51,9 @@ export default function useConfirmAcceptBudgetFundProvider() {
                                 fields: fields,
                                 fieldsPerRow: 2,
                                 selectAll: false,
-                                title: t(`modals.danger_zone.sponsor_provider_organization_state.${state}.options`),
+                                title: translate(
+                                    `modals.danger_zone.sponsor_provider_organization_state.${state}.options`,
+                                ),
                             },
                         ]}
                         onSuccess={(data: { fields: Array<string> }) => {
@@ -60,6 +68,6 @@ export default function useConfirmAcceptBudgetFundProvider() {
                 ));
             });
         },
-        [openModal, t],
+        [openModal, translate],
     );
 }

@@ -8,6 +8,7 @@ import FundProvider from '../../../../props/models/FundProvider';
 import { getStateRouteUrl } from '../../../../modules/state_router/Router';
 import Organization from '../../../../props/models/Organization';
 import useConfirmFundProviderUpdate from '../hooks/useConfirmFundProviderUpdate';
+import useAssetUrl from '../../../../hooks/useAssetUrl';
 
 export default function FundProviderTableItem({
     fundProvider,
@@ -18,8 +19,9 @@ export default function FundProviderTableItem({
     organization: Organization;
     onChange: (data: FundProvider) => void;
 }) {
-    const pushDanger = usePushDanger();
     const pushSuccess = usePushSuccess();
+    const assetUrl = useAssetUrl();
+    const pushDanger = usePushDanger();
     const confirmFundProviderUpdate = useConfirmFundProviderUpdate();
 
     const fundService = useFundService();
@@ -28,9 +30,12 @@ export default function FundProviderTableItem({
     const [submittingExcluded, setSubmittingExcluded] = useState(false);
 
     const updateProvider = useCallback(
-        (fundProvider: FundProvider, query: object) => {
-            return fundService
-                .updateProvider(fundProvider.fund.organization_id, fundProvider.fund.id, fundProvider.id, query)
+        async (
+            fundProvider: FundProvider,
+            data: { state?: string; allow_budget?: boolean; allow_products?: boolean; excluded?: boolean },
+        ) => {
+            return await fundService
+                .updateProvider(fundProvider.fund.organization_id, fundProvider.fund.id, fundProvider.id, data)
                 .then((res) => {
                     pushSuccess('Opgeslagen!');
                     onChange(res.data.data);
@@ -41,7 +46,7 @@ export default function FundProviderTableItem({
     );
 
     const updateFundProviderExcluded = useCallback(
-        (fundProvider: FundProvider, data: object) => {
+        (fundProvider: FundProvider, data: { excluded?: boolean }) => {
             setSubmittingExcluded(true);
             updateProvider(fundProvider, data).finally(() => setSubmittingExcluded(false));
         },
@@ -66,7 +71,10 @@ export default function FundProviderTableItem({
             <td className="td-narrow">
                 <img
                     className="td-media"
-                    src={fundProvider.fund.logo?.sizes?.thumbnail || './assets/img/placeholders/fund-thumbnail.png'}
+                    src={
+                        fundProvider.fund.logo?.sizes?.thumbnail ||
+                        assetUrl('/assets/img/placeholders/fund-thumbnail.png')
+                    }
                     alt={fundProvider.fund.name}
                 />
             </td>
@@ -117,7 +125,7 @@ export default function FundProviderTableItem({
                         {fundProvider.state == 'rejected' && <div className="text-strong">Nee</div>}
 
                         <div>
-                            {fundProvider.state == 'rejected' && <span className="mdi mdi-backup-restore"> </span>}
+                            {fundProvider.state == 'rejected' && <em className="mdi mdi-backup-restore" />}
 
                             {['accepted', 'rejected'].includes(fundProvider.state) && (
                                 <Fragment>
@@ -176,7 +184,7 @@ export default function FundProviderTableItem({
                             className="button button-sm button-danger button-icon"
                             onClick={() => updateFundProviderState(fundProvider, false)}
                             disabled={submittingState}>
-                            <div className={`mdi ${submittingState ? 'mdi-loading mdi-spin' : 'mdi-close'}`} />
+                            <em className={`mdi ${submittingState ? 'mdi-loading mdi-spin' : 'mdi-close'}`} />
                         </button>
                     )}
 
@@ -187,7 +195,7 @@ export default function FundProviderTableItem({
                             className="button button-sm button-primary button-icon"
                             onClick={() => updateFundProviderState(fundProvider, true)}
                             disabled={submittingState}>
-                            <div className={`mdi ${submittingState ? 'mdi-loading mdi-spin' : 'mdi-check'}`} />
+                            <em className={`mdi ${submittingState ? 'mdi-loading mdi-spin' : 'mdi-check'}`} />
                         </button>
                     )}
 

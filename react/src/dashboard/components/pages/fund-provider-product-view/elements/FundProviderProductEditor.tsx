@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
 import Tooltip from '../../../elements/tooltip/Tooltip';
 import FormError from '../../../elements/forms/errors/FormError';
 import useFormBuilder from '../../../../hooks/useFormBuilder';
@@ -10,6 +9,7 @@ import Product, { DealHistory } from '../../../../props/models/Product';
 import Fund from '../../../../props/models/Fund';
 import FundProvider from '../../../../props/models/FundProvider';
 import { useFundService } from '../../../../services/FundService';
+import useTranslate from '../../../../hooks/useTranslate';
 
 export default function FundProviderProductEditor({
     deal,
@@ -30,7 +30,7 @@ export default function FundProviderProductEditor({
     fundProvider: FundProvider;
     onValuesChange?: (values: object) => void;
 }) {
-    const { t } = useTranslation();
+    const translate = useTranslate();
 
     const fundService = useFundService();
 
@@ -140,14 +140,14 @@ export default function FundProviderProductEditor({
                                                 <input
                                                     className="form-control"
                                                     required={true}
-                                                    value={form.values.limit_total}
-                                                    onChange={(e) =>
+                                                    value={form.values.limit_total || ''}
+                                                    onChange={(e) => {
                                                         form.update({
                                                             limit_total: e.target.value
                                                                 ? parseFloat(e.target.value)
                                                                 : null,
-                                                        })
-                                                    }
+                                                        });
+                                                    }}
                                                     type="number"
                                                     placeholder="Totaal aanbod"
                                                     min={1}
@@ -168,9 +168,9 @@ export default function FundProviderProductEditor({
                                                     <input
                                                         type="checkbox"
                                                         checked={form.values.limit_total_unlimited}
-                                                        onChange={(e) =>
-                                                            form.update({ limit_total_unlimited: e.target.checked })
-                                                        }
+                                                        onChange={(e) => {
+                                                            form.update({ limit_total_unlimited: e.target.checked });
+                                                        }}
                                                         id="unlimited_stock_subsidy"
                                                     />
                                                     <div className="checkbox-label">
@@ -195,7 +195,7 @@ export default function FundProviderProductEditor({
                                             <input
                                                 className="form-control"
                                                 required={true}
-                                                value={form.values.limit_per_identity}
+                                                value={form.values.limit_per_identity || ''}
                                                 onChange={(e) =>
                                                     form.update({
                                                         limit_per_identity: e.target.value
@@ -264,7 +264,7 @@ export default function FundProviderProductEditor({
                                                         />
                                                         <div className="checkbox-label">
                                                             <div className="checkbox-box">
-                                                                <div className="mdi mdi-check" />
+                                                                <em className="mdi mdi-check" />
                                                             </div>
                                                             Volledige bijdrage
                                                         </div>
@@ -290,7 +290,7 @@ export default function FundProviderProductEditor({
                                             <div className="col col-lg-6 col-xs-12">
                                                 <DatePickerControl
                                                     value={dateParse(form.values.expire_at)}
-                                                    placeholder={t('jjjj-MM-dd')}
+                                                    placeholder={translate('jjjj-MM-dd')}
                                                     onChange={(date) => form.update({ expire_at: dateFormat(date) })}
                                                 />
                                                 <FormError error={form.errors['enable_products.0.expire_at']} />
@@ -302,9 +302,9 @@ export default function FundProviderProductEditor({
                                                 <input
                                                     type="checkbox"
                                                     checked={form.values.expires_with_fund}
-                                                    onChange={(e) =>
-                                                        form.update({ expires_with_fund: e.target.checked })
-                                                    }
+                                                    onChange={(e) => {
+                                                        form.update({ expires_with_fund: e.target.checked });
+                                                    }}
                                                     id="expires_with_fund"
                                                 />
                                                 <div className="checkbox-label">
@@ -336,11 +336,11 @@ export default function FundProviderProductEditor({
                 </div>
                 <div className="card-section card-section-primary">
                     <div className="text-center">
-                        <a className="button button-default" onClick={() => onCancel()}>
-                            {t('product_edit.buttons.cancel')}
+                        <a className="button button-default" onClick={onCancel}>
+                            {translate('product_edit.buttons.cancel')}
                         </a>
                         <button className="button button-primary" type="submit">
-                            {t('product_edit.buttons.confirm')}
+                            {translate('product_edit.buttons.confirm')}
                         </button>
                     </div>
                 </div>

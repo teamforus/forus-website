@@ -11,7 +11,6 @@ export default function useStopActionConfirmation() {
                 <ModalDangerZone
                     modal={modal}
                     title="De publicatie van het aanbod wordt van de website verwijderd"
-                    description_title="Subsidie stoppen"
                     description_text={
                         'Hierna kan er van dit aanbod geen gebruik meer worden gemaakt.\n' +
                         'De gebruikte tegoeden blijven bewaard. ' +

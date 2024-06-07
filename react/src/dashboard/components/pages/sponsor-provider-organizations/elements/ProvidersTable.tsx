@@ -3,23 +3,24 @@ import Paginator from '../../../../modules/paginator/components/Paginator';
 import { PaginationData } from '../../../../props/ApiResponses';
 import Organization, { SponsorProviderOrganization } from '../../../../props/models/Organization';
 import ThSortable from '../../../elements/tables/ThSortable';
-import { useTranslation } from 'react-i18next';
 import FilterModel from '../../../../types/FilterModel';
 import FilterScope from '../../../../types/FilterScope';
-import ProviderTableItem from './ProviderTableItem';
+import ProvidersTableItem from './ProvidersTableItem';
+import useTranslate from '../../../../hooks/useTranslate';
+import EmptyCard from '../../../elements/empty-card/EmptyCard';
 
-export default function ProviderTable({
-    organization,
-    providers,
-    paginatorKey,
+export default function ProvidersTable({
     filter,
+    providers,
+    organization,
+    paginatorKey,
 }: {
-    organization: Organization;
-    providers: PaginationData<SponsorProviderOrganization>;
-    paginatorKey: string;
     filter: FilterScope<FilterModel>;
+    providers: PaginationData<SponsorProviderOrganization>;
+    organization: Organization;
+    paginatorKey: string;
 }) {
-    const { t } = useTranslation();
+    const translate = useTranslate();
 
     return (
         <Fragment>
@@ -30,19 +31,21 @@ export default function ProviderTable({
                             <table className="table">
                                 <tbody>
                                     <tr>
-                                        <ThSortable label={t('provider_organizations.labels.organization_name')} />
-                                        <ThSortable label={t('provider_organizations.labels.last_active')} />
-                                        <ThSortable label={t('provider_organizations.labels.product_count')} />
-                                        <ThSortable label={t('provider_organizations.labels.funds_count')} />
+                                        <ThSortable
+                                            label={translate('provider_organizations.labels.organization_name')}
+                                        />
+                                        <ThSortable label={translate('provider_organizations.labels.last_active')} />
+                                        <ThSortable label={translate('provider_organizations.labels.product_count')} />
+                                        <ThSortable label={translate('provider_organizations.labels.funds_count')} />
                                         <ThSortable
                                             className="text-right"
-                                            label={t('provider_organizations.labels.actions')}
+                                            label={translate('provider_organizations.labels.actions')}
                                         />
                                     </tr>
                                 </tbody>
 
                                 {providers.data.map((providerOrganization) => (
-                                    <ProviderTableItem
+                                    <ProvidersTableItem
                                         key={providerOrganization.id}
                                         organization={organization}
                                         providerOrganization={providerOrganization}
@@ -55,11 +58,7 @@ export default function ProviderTable({
             )}
 
             {providers.meta.total == 0 && (
-                <div className="card-section">
-                    <div className="block block-empty text-center">
-                        <div className="empty-title">Geen logboeken gevonden</div>
-                    </div>
-                </div>
+                <EmptyCard title={'Je hebt nog geen verzoeken van aanbieders'} type={'card-section'} />
             )}
 
             {providers.meta && (

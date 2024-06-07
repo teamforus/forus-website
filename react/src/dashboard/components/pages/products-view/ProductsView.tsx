@@ -179,10 +179,8 @@ export default function ProductsView() {
             <div className="block block-breadcrumbs">
                 <StateNavLink
                     name={'offices'}
-                    params={{
-                        organizationId: activeOrganization.id,
-                        id: product.id,
-                    }}
+                    params={{ id: product.id, organizationId: activeOrganization.id }}
+                    activeExact={true}
                     className="breadcrumb-item">
                     {product.organization.name}
                 </StateNavLink>
@@ -194,11 +192,7 @@ export default function ProductsView() {
                         <img
                             className="product-media-img"
                             alt={product.name}
-                            src={
-                                product.photo
-                                    ? product.photo.sizes.small
-                                    : assetUrl('/assets/img/placeholders/product-small.png')
-                            }
+                            src={product?.photo?.sizes?.small || assetUrl('/assets/img/placeholders/product-small.png')}
                         />
                     </div>
                     <div className="product-details">

@@ -8,6 +8,7 @@ import FormError from '../elements/forms/errors/FormError';
 import Fund from '../../props/models/Fund';
 import FundProvider from '../../props/models/FundProvider';
 import useFundProviderChatService from '../../services/FundProviderChatService';
+import { ResponseError } from '../../props/ApiResponses';
 
 export default function ModalFundProviderChatMessage({
     modal,
@@ -40,7 +41,7 @@ export default function ModalFundProviderChatMessage({
                     onSubmit(res.data.data);
                     modal.close();
                 })
-                .catch((err) => {
+                .catch((err: ResponseError) => {
                     form.setIsLocked(false);
 
                     if (err.status === 422) {
@@ -61,7 +62,8 @@ export default function ModalFundProviderChatMessage({
                 <div className="modal-icon">
                     <div className="mdi mdi-message-text-outline" />
                 </div>
-                <div className="modal-body form">
+
+                <div className="modal-body">
                     <div className="modal-section modal-section-pad">
                         <div className="text-center">
                             <div className="modal-heading">Aanpassingsverzoek</div>
