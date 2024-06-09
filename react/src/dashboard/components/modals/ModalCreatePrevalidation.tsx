@@ -341,7 +341,7 @@ export default function ModalCreatePrevalidation({
                             {prevalidationPrimaryKey && (
                                 <Fragment>
                                     <div className="modal-heading text-center">
-                                        {prevalidationPrimaryKey.name}:
+                                        {prevalidationPrimaryKey.name || prevalidationPrimaryKey.key}:
                                         <div className="text-primary">{prevalidationPrimaryKey.value}</div>
                                     </div>
 
