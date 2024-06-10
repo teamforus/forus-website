@@ -45,6 +45,17 @@ import Media from '../../../props/models/Media';
 import RecordType from '../../../props/models/RecordType';
 import FaqEditor from '../../elements/faq-editor-funds/FaqEditor';
 
+type ApplicationMethodProp = {
+    key?: string;
+    name?: string;
+    default_button_text?: string;
+    configs?: {
+        allow_fund_requests: number;
+        allow_prevalidations: number;
+        allow_direct_requests: number;
+    };
+};
+
 export default function OrganizationsFundsEdit() {
     const [fundId] = useState(useParams().fundId);
 
@@ -78,6 +89,7 @@ export default function OrganizationsFundsEdit() {
     const [fundStates] = useState(fundService.getStates());
     const faqEditorBlock = useRef<() => Promise<boolean>>();
     const criteriaBlockRef = useRef<() => Promise<Array<FundCriterion> | null>>();
+    const [endDateMin] = useState(new Date(new Date().getFullYear() + 1, new Date().getMonth(), 1));
 
     const [fundTypes] = useState([
         { value: 'budget', name: 'Waardebon' },
@@ -150,6 +162,13 @@ export default function OrganizationsFundsEdit() {
         [mediaService, pushDanger],
     );
 
+    const findApplicationMethod = useCallback(
+        (key: string): ApplicationMethodProp => {
+            return applicationMethods.filter((method) => method.key == key)[0] || {};
+        },
+        [applicationMethods],
+    );
+
     const form = useFormBuilder<{
         name?: string;
         state?: string;
@@ -192,6 +211,7 @@ export default function OrganizationsFundsEdit() {
             criteria: [],
             default_validator_employee_id: null,
             application_method: 'application_form',
+            request_btn_text: findApplicationMethod('application_form').default_button_text,
             state: fundStates[0].value,
 
             // contact information
@@ -243,6 +263,7 @@ export default function OrganizationsFundsEdit() {
                         ...data,
                         faq: faq,
                         media_uid: (fundPhoto ? await storeMedia(fundPhoto) : null)?.uid,
+                        ...(findApplicationMethod(values.application_method).configs || {}),
                     })
                     .then(() => {
                         navigateState('funds-show', { organizationId: activeOrganization.id, fundId: fundId });
@@ -301,6 +322,18 @@ export default function OrganizationsFundsEdit() {
                 .finally(() => setProgress(100));
         },
         [activeOrganization.id, fundService, setProgress],
+    );
+
+    const onMethodChange = useCallback(
+        (value: string, prevValue: string) => {
+            const method = findApplicationMethod(value);
+            const preMethod = findApplicationMethod(prevValue);
+
+            if (preMethod.default_button_text == form.values.request_btn_text) {
+                form.update({ request_btn_text: method.default_button_text });
+            }
+        },
+        [findApplicationMethod, form],
     );
 
     const fetchValidatorEmployees = useCallback(() => {
@@ -385,8 +418,10 @@ export default function OrganizationsFundsEdit() {
     }, [fund?.allow_fund_requests, fund?.allow_prevalidations]);
 
     useEffect(() => {
-        fetchTags();
-    }, [fetchTags]);
+        if (fundId) {
+            fetchTags();
+        }
+    }, [fetchTags, fundId]);
 
     useEffect(() => {
         fetchProducts();
@@ -725,6 +760,7 @@ export default function OrganizationsFundsEdit() {
                                             }
                                             onChange={(application_method: string) => {
                                                 form.update({ application_method });
+                                                onMethodChange(application_method, form.values.application_method);
                                             }}
                                         />
                                     </div>
@@ -738,7 +774,7 @@ export default function OrganizationsFundsEdit() {
                                         <input
                                             className="form-control"
                                             type="text"
-                                            defaultValue={form.values.request_btn_text}
+                                            value={form.values.request_btn_text}
                                             placeholder="Aanvragen"
                                             onChange={(e) => {
                                                 form.update({
@@ -901,6 +937,8 @@ export default function OrganizationsFundsEdit() {
                                 <DatePickerControl
                                     value={dateParse(form.values.end_date)}
                                     dateFormat="dd-MM-yyyy"
+                                    maxYear={new Date().getFullYear() + 10}
+                                    dateMin={endDateMin}
                                     placeholder={translate('dd-MM-yyyy')}
                                     disabled={
                                         form.values.state != 'waiting' ||

@@ -51,9 +51,9 @@ export default function OrganizationsFundsShow() {
     const viewTypes = useMemo<Array<{ key: 'top_ups' | 'identities' | 'implementations'; name: string }>>(
         () => [
             ...(fund?.is_configured
-                ? [{ key: 'top_ups' as 'top_ups' | 'identities' | 'implementations', name: 'Webshop' }]
+                ? [{ key: 'top_ups' as 'top_ups' | 'identities' | 'implementations', name: 'Bekijk aanvullingen' }]
                 : []),
-            { key: 'implementations', name: 'Bekijk aanvullingen' },
+            { key: 'implementations', name: 'Webshop' },
             { key: 'identities', name: 'Aanvragers' },
         ],
         [fund?.is_configured],
