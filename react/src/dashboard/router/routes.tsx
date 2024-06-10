@@ -57,6 +57,7 @@ import FinancialDashboard from '../components/pages/financial-dashboard/Financia
 import FinancialDashboardOverview from '../components/pages/financial-dashboard-overview/FinancialDashboardOverview';
 import TransactionBulksView from '../components/pages/transaction-bulks-view/TransactionBulksView';
 import ReimbursementCategories from '../components/pages/reimbursement-categories/ReimbursementCategories';
+import PreCheck from '../components/pages/pre-check/PreCheck';
 import BiConnection from '../components/pages/bi-connection/BiConnection';
 import ThrowError from '../components/pages_system/ThrowError';
 
@@ -121,9 +122,8 @@ router.state('organization-funds', <WIP />, {
     fallbackState: 'organizations',
 });
 
-router.state('pre-check', <WIP title={'Pre-check'} />, {
+router.state('pre-check', <PreCheck />, {
     path: `/organizations/:organizationId/pre-check`,
-    fallbackState: 'organizations',
 });
 
 router.state('external-validators', <WIP title={'External validators'} />, {
