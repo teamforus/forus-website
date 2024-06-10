@@ -1,6 +1,7 @@
 import Organization from './Organization';
 import Media from './Media';
 import Implementation from './Implementation';
+import FundCriterion from './FundCriterion';
 import FundFormula from '../../../webshop/props/models/FundFormula';
 
 interface FundVoucherStatistics {
@@ -49,6 +50,10 @@ export default interface Fund {
     description_html?: string;
     description_position?: 'before' | 'after' | 'replace';
     implementation?: Implementation;
+    csv_primary_key: string;
+    csv_required_keys: Array<string>;
+    criteria: Array<FundCriterion>;
+    formulas?: Array<FundFormula>;
     budget?: FundVoucherStatistics & {
         used_active_vouchers?: string;
         used_active_vouchers_locale?: string;
@@ -62,7 +67,6 @@ export default interface Fund {
         transaction_costs_locale?: string;
     };
     product_vouchers: FundVoucherStatistics;
-    formulas?: Array<FundFormula>;
     faq: Array<{
         id: number;
         title: string;

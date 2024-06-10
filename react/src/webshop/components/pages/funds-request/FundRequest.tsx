@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import FundCriterion from '../../../props/models/FundCriterion';
 import Fund from '../../../props/models/Fund';
 import { useFundRequestService } from '../../../services/FundRequestService';
 import { ResponseError } from '../../../../dashboard/props/ApiResponses';
@@ -37,6 +36,7 @@ import BlockShowcase from '../../elements/block-showcase/BlockShowcase';
 import useFetchAuthIdentity from '../../../hooks/useFetchAuthIdentity';
 import useSetProgress from '../../../../dashboard/hooks/useSetProgress';
 import BlockLoader from '../../elements/block-loader/BlockLoader';
+import FundCriterion from '../../../../dashboard/props/models/FundCriterion';
 
 export type LocalCriterion = FundCriterion & {
     input_value?: string;
