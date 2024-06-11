@@ -106,13 +106,8 @@ export default function ImplementationsCmsPageForm({
             const data = { ...values, blocks, faq };
 
             try {
-                if (faqEditorValidateRef.current) {
-                    await faqEditorValidateRef.current();
-                }
-
-                if (blockEditorValidateRef.current) {
-                    await blockEditorValidateRef.current();
-                }
+                await faqEditorValidateRef.current?.();
+                await blockEditorValidateRef.current?.();
             } catch (e) {
                 pushDanger('Error!', typeof e == 'string' ? e : e.message || '');
                 return form.setIsLocked(false);
