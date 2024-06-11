@@ -69,6 +69,17 @@ import ReimbursementCategories from '../components/pages/reimbursement-categorie
 import Vouchers from '../components/pages/vouchers/Vouchers';
 import VouchersViewComponent from '../components/pages/vouchers-view/VouchersViewComponent';
 import ProductVouchers from '../components/pages/product-vouchers/ProductVouchers';
+import SponsorProviderOrganizations from '../components/pages/sponsor-provider-organizations/SponsorProviderOrganizations';
+import SponsorProviderOrganization from '../components/pages/sponsor-provider-organization/SponsorProviderOrganization';
+import FundProvider from '../components/pages/fund-provider/FundProvider';
+import SponsorProductsCreate from '../components/pages/sponsor-product-edit/SponsorProductsCreate';
+import SponsorProductsEdit from '../components/pages/sponsor-product-edit/SponsorProductsEdit';
+import FundProviderProductView from '../components/pages/fund-provider-product-view/FundProviderProductView';
+import FundProviderProductSubsidyEdit from '../components/pages/fund-provider-product-subsidy-edit/FundProviderProductSubsidyEdit';
+import ImplementationsNotifications from '../components/pages/implementations-notifications/ImplementationsNotifications';
+import ImplementationsNotificationsSend from '../components/pages/implementations-notifications-send/ImplementationsNotificationsSend';
+import ImplementationsNotificationsEdit from '../components/pages/implementations-notifications-edit/ImplementationsNotificationsEdit';
+import ImplementationsNotificationsBranding from '../components/pages/implementations-notifications-branding/ImplementationsNotificationsBranding';
 import OrganizationFunds from '../components/pages/organizations-funds/OrganizationFunds';
 import OrganizationsFundsShow from '../components/pages/organizations-funds-show/OrganizationsFundsShow';
 import OrganizationsFundsEdit from '../components/pages/organizations-funds-edit/OrganizationsFundsEdit';
@@ -145,10 +156,6 @@ router.state('fund-backoffice-edit', <FundBackofficeEdit />, {
     fallbackState: 'organizations',
 });
 
-router.state('pre-check', <WIP title={'Pre-check'} />, {
-    path: `/organizations/:organizationId/pre-check`,
-});
-
 router.state('funds-show', <OrganizationsFundsShow />, {
     path: `/organizations/:organizationId/funds/:fundId`,
     fallbackState: 'organizations',
@@ -183,8 +190,38 @@ router.state('external-validators', <WIP title={'External validators'} />, {
     fallbackState: 'organizations',
 });
 
-router.state('sponsor-provider-organizations', <WIP title={'Provider organizations'} />, {
+router.state('sponsor-provider-organizations', <SponsorProviderOrganizations />, {
     path: `/organizations/:organizationId/providers`,
+    fallbackState: 'organizations',
+});
+
+router.state('sponsor-provider-organization', <SponsorProviderOrganization />, {
+    path: `/organizations/:organizationId/providers/:id`,
+    fallbackState: 'organizations',
+});
+
+router.state('fund-provider', <FundProvider />, {
+    path: `/organizations/:organizationId/funds/:fundId/providers/:id`,
+    fallbackState: 'organizations',
+});
+
+router.state('fund-provider-product-create', <SponsorProductsCreate />, {
+    path: `/organizations/:organizationId/funds/:fundId/providers/:fundProviderId/products/create`,
+    fallbackState: 'organizations',
+});
+
+router.state('fund-provider-product', <FundProviderProductView />, {
+    path: `/organizations/:organizationId/funds/:fundId/providers/:fundProviderId/products/:id`,
+    fallbackState: 'organizations',
+});
+
+router.state('fund-provider-product-edit', <SponsorProductsEdit />, {
+    path: `/organizations/:organizationId/funds/:fundId/providers/:fundProviderId/products/:id/edit`,
+    fallbackState: 'organizations',
+});
+
+router.state('fund-provider-product-subsidy-edit', <FundProviderProductSubsidyEdit />, {
+    path: `/organizations/:organizationId/funds/:fundId/providers/:fundProviderId/products/:id/subsidy`,
     fallbackState: 'organizations',
 });
 
@@ -283,13 +320,23 @@ router.state('implementations-social-media', <ImplementationsSocialMedia />, {
     fallbackState: 'organizations',
 });
 
-router.state('implementation-notifications', <WIP title={'Implementation notifications'} />, {
+router.state('implementation-notifications', <ImplementationsNotifications />, {
     path: `/organizations/:organizationId/implementation-notifications`,
     fallbackState: 'organizations',
 });
 
-router.state('implementation-view', <WIP title={'Implementation view'} />, {
-    path: `/organizations/:organizationId/implementation/:id`,
+router.state('implementation-notifications-send', <ImplementationsNotificationsSend />, {
+    path: `/organizations/:organizationId/implementations/:id/implementation-notifications/send`,
+    fallbackState: 'organizations',
+});
+
+router.state('implementation-notifications-edit', <ImplementationsNotificationsEdit />, {
+    path: `/organizations/:organizationId/implementations/:implementationId/implementation-notifications/:id`,
+    fallbackState: 'organizations',
+});
+
+router.state('implementation-notifications-branding', <ImplementationsNotificationsBranding />, {
+    path: `/organizations/:organizationId/implementations/:id/notifications-branding`,
     fallbackState: 'organizations',
 });
 

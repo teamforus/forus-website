@@ -58,6 +58,7 @@ export default interface Fund {
     limit_sum_vouchers?: number;
     limit_voucher_top_up_amount?: string;
     limit_voucher_total_amount?: string;
+    type_locale?: string;
     backoffice?: {
         backoffice_enabled?: boolean;
         backoffice_url?: string;
@@ -67,7 +68,6 @@ export default interface Fund {
         backoffice_ineligible_policy?: string;
         backoffice_ineligible_redirect_url?: string;
     };
-    type_locale: string;
     requester_count: number;
     criteria: Array<FundCriterion>;
     criteria_editable: boolean;

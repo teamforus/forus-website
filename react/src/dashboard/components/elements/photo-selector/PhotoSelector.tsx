@@ -1,32 +1,10 @@
 import React, { useCallback, useState, useRef, Fragment, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
 import ModalPhotoUploader from '../../modals/ModalPhotoUploader';
 import { uniqueId } from 'lodash';
 import useOpenModal from '../../../hooks/useOpenModal';
 import useAssetUrl from '../../../hooks/useAssetUrl';
-import Media from '../../../props/models/Media';
-
-export interface TemplateData {
-    overlay_type: string;
-    overlay_enabled: boolean;
-    overlay_opacity: string;
-    auto_text_color: boolean;
-    header_text_color: string;
-    mediaLoading: boolean;
-    opacityOptions: Array<{
-        value: string;
-        label: string;
-    }>;
-    headerTextColors: Array<{
-        value: string;
-        label: string;
-    }>;
-    patterns: Array<{
-        value: string;
-        label: string;
-    }>;
-    media?: Media;
-}
+import useTranslate from '../../../hooks/useTranslate';
+import PhotoSelectorData from './types/PhotoSelectorData';
 
 export default function PhotoSelector({
     id,
@@ -35,6 +13,7 @@ export default function PhotoSelector({
     description,
     disabled,
     thumbnail,
+    defaultThumbnail,
     template = 'default',
     templateData,
     updateTemplateData,
@@ -47,20 +26,21 @@ export default function PhotoSelector({
     description?: string;
     disabled?: boolean;
     thumbnail?: string;
-    template?: 'default' | 'photo-selector-sign_up' | 'photo-selector-banner';
-    templateData?: TemplateData;
-    updateTemplateData?: (data: TemplateData) => void;
+    defaultThumbnail?: string;
+    template?: 'default' | 'photo-selector-sign_up' | 'photo-selector-notifications' | 'photo-selector-banner';
+    templateData?: PhotoSelectorData;
+    updateTemplateData?: React.Dispatch<React.SetStateAction<PhotoSelectorData>>;
     selectPhoto: (file: Blob) => void;
     resetPhoto?: () => void;
 }) {
     const [selectorId] = useState(uniqueId());
 
-    const { t } = useTranslation();
+    const translate = useTranslate();
     const [thumbnailValue, setThumbnailValue] = useState(thumbnail);
     const inputRef = useRef<HTMLInputElement>(null);
 
-    const openModal = useOpenModal();
     const assetUrl = useAssetUrl();
+    const openModal = useOpenModal();
 
     const onPhotoChange = useCallback(
         (e) => {
@@ -84,7 +64,9 @@ export default function PhotoSelector({
         [openModal, selectPhoto, type],
     );
 
-    useEffect(() => setThumbnailValue(thumbnail), [thumbnail]);
+    useEffect(() => {
+        setThumbnailValue(thumbnail);
+    }, [thumbnail]);
 
     if (template == 'default') {
         return (
@@ -94,7 +76,7 @@ export default function PhotoSelector({
                 </label>
                 <div className="photo-details">
                     <input type="file" hidden={true} accept={'image/*'} ref={inputRef} onChange={onPhotoChange} />
-                    <div className="photo-label">{label || t('photo_selector.labels.image')}</div>
+                    <div className="photo-label">{label || translate('photo_selector.labels.image')}</div>
                     {description && <div className="photo-description">{description}</div>}
 
                     <button
@@ -104,7 +86,7 @@ export default function PhotoSelector({
                         disabled={disabled}
                         onClick={() => inputRef.current?.click()}>
                         <em className="mdi mdi-upload icon-start" />
-                        {t('photo_selector.buttons.change')}
+                        {translate('photo_selector.buttons.change')}
                     </button>
                 </div>
             </div>
@@ -119,7 +101,7 @@ export default function PhotoSelector({
                     <img src={thumbnailValue || assetUrl('/assets/img/placeholders/photo-selector.svg')} alt="" />
                 </label>
                 <div className="photo-details">
-                    <div className="photo-label">{label ? label : t('photo_selector.labels.image')}</div>
+                    <div className="photo-label">{label ? label : translate('photo_selector.labels.image')}</div>
                     <button
                         id={id ? id : `photo_selector_${selectorId}`}
                         type={'button'}
@@ -142,12 +124,64 @@ export default function PhotoSelector({
         );
     }
 
+    if (template == 'photo-selector-notifications') {
+        return (
+            <div className="block block-photo-selector-notifications">
+                <label
+                    htmlFor={id ? id : `photo_selector_${selectorId}`}
+                    className="photo-selector-notifications-media">
+                    <input type="file" hidden={true} accept={'image/*'} ref={inputRef} onChange={onPhotoChange} />
+                    <img
+                        src={
+                            thumbnailValue ||
+                            defaultThumbnail ||
+                            assetUrl('/assets/img/placeholders/photo-selector.svg')
+                        }
+                        alt=""
+                    />
+                </label>
+
+                <div className="photo-details">
+                    <div className="photo-selector-notifications-hint">
+                        De afbeelding dient vierkant te zijn met een afmeting van bijvoorbeeld 400x400px.
+                        <br />
+                        Toegestaande formaten: JPG, PNG
+                    </div>
+                    <div className="button-group">
+                        <button
+                            id={id ? id : `photo_selector_${selectorId}`}
+                            type={'button'}
+                            className="button button-primary button-sm"
+                            disabled={disabled}
+                            onClick={() => inputRef.current?.click()}>
+                            <i className="icon-start mdi mdi-upload" />
+                            Afbeelding uploaden
+                        </button>
+
+                        {thumbnailValue && (
+                            <button
+                                className="button button-default button-sm"
+                                onClick={() => {
+                                    setThumbnailValue(null);
+                                    resetPhoto();
+                                }}>
+                                <i className="icon-start mdi mdi-refresh" />
+                                Reset
+                            </button>
+                        )}
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
     if (template === 'photo-selector-banner') {
         return (
             <div
                 className="block block-banner-picker"
                 style={{
-                    backgroundImage: 'url(' + (thumbnailValue || './assets/img/placeholders/photo-selector.svg') + ')',
+                    backgroundImage:
+                        'url(' + (thumbnailValue || assetUrl('/assets/img/placeholders/photo-selector.svg')) + ')',
                 }}>
                 {templateData.overlay_enabled && (
                     <div
@@ -157,10 +191,8 @@ export default function PhotoSelector({
                         style={{
                             backgroundImage:
                                 templateData.overlay_type !== 'color'
-                                    ? `url(${assetUrl(
-                                          '/assets/img/banner-patterns/' + templateData.overlay_type + '.svg',
-                                      )})`
-                                    : 'url()',
+                                    ? `url(${assetUrl(`/assets/img/banner-patterns/${templateData.overlay_type}.svg`)})`
+                                    : 'none',
                             opacity: parseFloat(templateData.overlay_opacity) / 100,
                         }}
                     />
@@ -174,12 +206,9 @@ export default function PhotoSelector({
                                     type="checkbox"
                                     id="auto_text_color"
                                     checked={templateData.auto_text_color}
-                                    onChange={(e) =>
-                                        updateTemplateData({
-                                            ...templateData,
-                                            auto_text_color: e.target.checked,
-                                        })
-                                    }
+                                    onChange={(e) => {
+                                        updateTemplateData({ ...templateData, auto_text_color: e.target.checked });
+                                    }}
                                 />
                                 <label className="checkbox-label" htmlFor="auto_text_color">
                                     <div className="checkbox-box">
@@ -194,12 +223,9 @@ export default function PhotoSelector({
                                     type="checkbox"
                                     id="overlay_enabled"
                                     checked={templateData.overlay_enabled}
-                                    onChange={(e) =>
-                                        updateTemplateData({
-                                            ...templateData,
-                                            overlay_enabled: e.target.checked,
-                                        })
-                                    }
+                                    onChange={(e) => {
+                                        updateTemplateData({ ...templateData, overlay_enabled: e.target.checked });
+                                    }}
                                 />
                                 <label className="checkbox-label" htmlFor="overlay_enabled">
                                     <div className="checkbox-box">
@@ -218,12 +244,9 @@ export default function PhotoSelector({
                                 <select
                                     className="picker-select-input"
                                     value={templateData.header_text_color}
-                                    onChange={(e) =>
-                                        updateTemplateData({
-                                            ...templateData,
-                                            header_text_color: e.target.value,
-                                        })
-                                    }>
+                                    onChange={(e) => {
+                                        updateTemplateData({ ...templateData, header_text_color: e.target.value });
+                                    }}>
                                     {templateData.headerTextColors.map((option) => (
                                         <option key={option.value} value={option.value}>
                                             {option.label}
@@ -242,12 +265,9 @@ export default function PhotoSelector({
                                     <select
                                         className="picker-select-input"
                                         value={templateData.overlay_type}
-                                        onChange={(e) =>
-                                            updateTemplateData({
-                                                ...templateData,
-                                                overlay_type: e.target.value,
-                                            })
-                                        }>
+                                        onChange={(e) => {
+                                            updateTemplateData({ ...templateData, overlay_type: e.target.value });
+                                        }}>
                                         {templateData.patterns.map((option) => (
                                             <option key={option.value} value={option.value}>
                                                 {option.label}
@@ -262,12 +282,9 @@ export default function PhotoSelector({
                                     <select
                                         className="picker-select-input"
                                         value={templateData.overlay_opacity}
-                                        onChange={(e) =>
-                                            updateTemplateData({
-                                                ...templateData,
-                                                overlay_opacity: e.target.value,
-                                            })
-                                        }>
+                                        onChange={(e) => {
+                                            updateTemplateData({ ...templateData, overlay_opacity: e.target.value });
+                                        }}>
                                         {templateData.opacityOptions.map((option) => (
                                             <option key={option.value} value={option.value}>
                                                 {option.label}
@@ -301,6 +318,7 @@ export default function PhotoSelector({
                                     <span>Upload hoofdfoto</span>
                                 )}
                             </div>
+
                             <button
                                 type={'button'}
                                 className="button button-default"
@@ -310,7 +328,7 @@ export default function PhotoSelector({
                             </button>
 
                             {templateData.media && (
-                                <button type={'button'} className="button button-default" onClick={() => resetPhoto()}>
+                                <button type={'button'} className="button button-default" onClick={resetPhoto}>
                                     Ongedaan maken
                                 </button>
                             )}
@@ -321,5 +339,5 @@ export default function PhotoSelector({
         );
     }
 
-    return <></>;
+    return null;
 }

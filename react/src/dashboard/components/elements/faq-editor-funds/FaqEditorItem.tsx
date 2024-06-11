@@ -41,7 +41,10 @@ export default function FaqEditorItem({
             <div className="question-header">
                 <em className="mdi mdi-dots-vertical question-drag" {...attributes} {...listeners}></em>
 
-                <div className={`question-icon ${isCollapsed && (!faqItem.title || !faqItem.description)}`}>
+                <div
+                    className={`question-icon ${
+                        isCollapsed && (!faqItem.title || !faqItem.description) ? 'text-danger' : ''
+                    }`}>
                     <em className="mdi mdi-frequently-asked-questions" />
                 </div>
 
@@ -58,20 +61,20 @@ export default function FaqEditorItem({
                         <div
                             className="button button-default button-sm"
                             onClick={() => setUnCollapsedList((list) => list.filter((item) => item !== faqItem.uid))}>
-                            <em className="mdi mdi-arrow-collapse-vertical icon-start"></em>
+                            <em className="mdi mdi-arrow-collapse-vertical icon-start" />
                             {translate('components.faq_editor.item.buttons.collapse')}
                         </div>
                     ) : (
                         <div
                             className="button button-primary button-sm"
                             onClick={() => setUnCollapsedList((list) => [...list, faqItem.uid])}>
-                            <em className="mdi mdi-arrow-expand-vertical icon-start"></em>
+                            <em className="mdi mdi-arrow-expand-vertical icon-start" />
                             {translate('components.faq_editor.item.buttons.expand')}
                         </div>
                     )}
 
                     <div className="button button-danger button-sm" onClick={onDelete}>
-                        <em className="mdi mdi-trash-can-outline icon-start"></em>
+                        <em className="mdi mdi-trash-can-outline icon-start" />
                         {translate('components.faq_editor.item.buttons.delete')}
                     </div>
                 </div>
@@ -96,7 +99,7 @@ export default function FaqEditorItem({
                         <div className="form-group">
                             <label className="form-label form-label-required">Antwoord</label>
                             <MarkdownEditor
-                                value={faqItem.description_html || faqItem.description || ''}
+                                value={faqItem.description_html}
                                 onChange={(description) => onChange({ description: description })}
                                 extendedOptions={true}
                                 placeholder={translate('organization_edit.labels.description')}

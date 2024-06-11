@@ -481,6 +481,7 @@
                 }
             }
 
+            &.clickable:hover,
             &[ng-click]:hover,
             &[ui-sref]:hover {
                 td,

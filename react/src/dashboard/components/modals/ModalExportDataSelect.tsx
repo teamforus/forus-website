@@ -9,7 +9,7 @@ export type ExportFieldProp = {
     name?: string;
     value: string;
     icon: string;
-    selected?: string;
+    selected?: boolean;
     label: string;
     is_record_field?: boolean;
 };

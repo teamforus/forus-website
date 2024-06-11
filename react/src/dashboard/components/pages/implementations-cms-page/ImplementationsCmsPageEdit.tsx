@@ -4,18 +4,20 @@ import LoadingCard from '../../elements/loading-card/LoadingCard';
 import usePushDanger from '../../../hooks/usePushDanger';
 import { ResponseError } from '../../../props/ApiResponses';
 import useImplementationService from '../../../services/ImplementationService';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import Implementation from '../../../props/models/Implementation';
 import ImplementationsCmsPageForm from './elements/ImplementationsCmsPageForm';
 import ImplementationPage from '../../../props/models/ImplementationPage';
 import useImplementationPageService from '../../../services/ImplementationPageService';
-import { getStateRouteUrl } from '../../../modules/state_router/Router';
+import { useNavigateState } from '../../../modules/state_router/Router';
+import useSetProgress from '../../../hooks/useSetProgress';
 
 export default function ImplementationsCmsPageEdit() {
     const { implementationId, id } = useParams();
 
-    const navigate = useNavigate();
     const pushDanger = usePushDanger();
+    const setProgress = useSetProgress();
+    const navigateState = useNavigateState();
     const activeOrganization = useActiveOrganization();
 
     const implementationService = useImplementationService();
@@ -25,29 +27,37 @@ export default function ImplementationsCmsPageEdit() {
     const [implementation, setImplementation] = useState<Implementation>(null);
 
     const fetchImplementation = useCallback(() => {
+        setProgress(0);
+
         implementationService
             .read(activeOrganization.id, parseInt(implementationId))
             .then((res) => setImplementation(res.data.data))
-            .catch((res: ResponseError) => {
-                if (res.status === 403) {
-                    return navigate(getStateRouteUrl('implementations', { organizationId: activeOrganization.id }));
+            .catch((err: ResponseError) => {
+                if (err.status === 403) {
+                    return navigateState('implementations', { organizationId: activeOrganization.id });
                 }
 
-                pushDanger('Mislukt!', res.data.message);
-            });
-    }, [activeOrganization.id, implementationId, implementationService, navigate, pushDanger]);
+                pushDanger('Mislukt!', err.data.message);
+            })
+            .finally(() => setProgress(100));
+    }, [activeOrganization.id, implementationId, implementationService, navigateState, pushDanger, setProgress]);
 
     const fetchPage = useCallback(
         (id) => {
+            setProgress(0);
+
             implementationPageService
                 .read(activeOrganization.id, implementation.id, id)
                 .then((res) => setPage(res.data.data))
-                .catch((res: ResponseError) => pushDanger('Mislukt!', res.data.message));
+                .catch((res: ResponseError) => pushDanger('Mislukt!', res.data.message))
+                .finally(() => setProgress(100));
         },
-        [activeOrganization.id, implementation?.id, implementationPageService, pushDanger],
+        [activeOrganization.id, implementation?.id, implementationPageService, pushDanger, setProgress],
     );
 
-    useEffect(() => fetchImplementation(), [fetchImplementation]);
+    useEffect(() => {
+        fetchImplementation();
+    }, [fetchImplementation]);
 
     useEffect(() => {
         if (implementation) {
@@ -59,5 +69,5 @@ export default function ImplementationsCmsPageEdit() {
         return <LoadingCard />;
     }
 
-    return <ImplementationsCmsPageForm implementation={implementation} page={page} page_type={page.page_type} />;
+    return <ImplementationsCmsPageForm implementation={implementation} page={page} pageType={page.page_type} />;
 }

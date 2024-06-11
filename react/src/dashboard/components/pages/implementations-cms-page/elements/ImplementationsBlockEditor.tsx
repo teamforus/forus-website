@@ -1,5 +1,4 @@
-import React, { Fragment, useCallback, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import React, { Fragment, useCallback, useEffect, useState } from 'react';
 import usePushDanger from '../../../../hooks/usePushDanger';
 import FormError from '../../../elements/forms/errors/FormError';
 import { ResponseError, ResponseErrorData } from '../../../../props/ApiResponses';
@@ -10,27 +9,35 @@ import ModalDangerZone from '../../../modals/ModalDangerZone';
 import useOpenModal from '../../../../hooks/useOpenModal';
 import { useMediaService } from '../../../../services/MediaService';
 import PhotoSelector from '../../../elements/photo-selector/PhotoSelector';
-import { ImplementationPageBlock } from '../../../../props/models/ImplementationPage';
-
-type ImplementationPageBlockLocal = ImplementationPageBlock & {
-    collapsed?: boolean;
-};
+import ImplementationPageBlock from '../../../../props/models/ImplementationPageBlock';
+import useTranslate from '../../../../hooks/useTranslate';
+import { uniq } from 'lodash';
+import useImplementationPageService from '../../../../services/ImplementationPageService';
+import Implementation from '../../../../props/models/Implementation';
 
 export default function ImplementationsBlockEditor({
     blocks,
+    setBlocks,
     errors,
-    onChange,
+    setErrors,
+    createFaqRef,
+    implementation,
 }: {
-    blocks: Array<ImplementationPageBlockLocal>;
+    blocks: Array<ImplementationPageBlock>;
+    setBlocks: React.Dispatch<React.SetStateAction<Array<ImplementationPageBlock>>>;
     errors?: ResponseErrorData;
-    onChange: (blocks: Array<ImplementationPageBlockLocal>) => void;
+    setErrors: (errors: ResponseErrorData) => void;
+    createFaqRef: React.MutableRefObject<() => Promise<boolean>>;
+    implementation: Implementation;
 }) {
-    const { t } = useTranslation();
+    const translate = useTranslate();
     const openModal = useOpenModal();
     const pushDanger = usePushDanger();
 
     const mediaService = useMediaService();
+    const implementationPageService = useImplementationPageService();
 
+    const [expandedIndexes, setExpandedIndexes] = useState([]);
     const [buttonLinkLabelEdited, setButtonLinkLabelEdited] = useState(false);
 
     const [buttonTargets] = useState([
@@ -38,77 +45,95 @@ export default function ImplementationsBlockEditor({
         { value: true, name: 'Nieuw tabblad' },
     ]);
 
-    const updateValue = useCallback(
-        (block: ImplementationPageBlockLocal, key: string, value: string | number | boolean) => {
-            const list = [...blocks];
-            const index = list.indexOf(block);
-            list[index][key] = value;
-            onChange(list);
-        },
-        [blocks, onChange],
-    );
-
-    const onButtonTextChange = useCallback(
-        (block: ImplementationPageBlockLocal) => {
-            if (!buttonLinkLabelEdited) {
-                updateValue(block, 'button_link_label', block.button_text);
-            }
-        },
-        [buttonLinkLabelEdited, updateValue],
-    );
-
     const removeBlock = useCallback(
         (blockIndex: number) => {
             openModal((modal) => (
                 <ModalDangerZone
                     modal={modal}
-                    title={t('modals.danger_zone.remove_implementation_block.title')}
-                    description={t('modals.danger_zone.remove_implementation_block.description')}
+                    title={translate('modals.danger_zone.remove_implementation_block.title')}
+                    description={translate('modals.danger_zone.remove_implementation_block.description')}
                     buttonCancel={{
                         onClick: modal.close,
-                        text: t('modals.danger_zone.remove_implementation_block.buttons.cancel'),
+                        text: translate('modals.danger_zone.remove_implementation_block.buttons.cancel'),
                     }}
                     buttonSubmit={{
                         onClick: () => {
                             modal.close();
                             const list = [...blocks];
                             list.splice(blockIndex, 1);
-                            onChange(list);
+                            setBlocks([...list]);
                         },
-                        text: t('modals.danger_zone.remove_implementation_block.buttons.confirm'),
+                        text: translate('modals.danger_zone.remove_implementation_block.buttons.confirm'),
                     }}
                 />
             ));
         },
-        [blocks, onChange, openModal, t],
+        [blocks, setBlocks, openModal, translate],
     );
 
     const addBlock = useCallback(() => {
-        const list = [...blocks];
+        setBlocks([
+            ...blocks,
+            {
+                label: '',
+                title: '',
+                description: '',
+                button_text: '',
+                button_link: '',
+                button_enabled: false,
+                button_target_blank: true,
+            },
+        ]);
 
-        list.push({
-            label: '',
-            title: '',
-            collapsed: true,
-            description: '',
-            button_text: '',
-            button_link: '',
-            button_enabled: false,
-            button_target_blank: true,
-        });
-
-        onChange(list);
-    }, [blocks, onChange]);
+        setExpandedIndexes((list) => [...list, blocks.length]);
+    }, [blocks, setBlocks]);
 
     const selectBlockImage = useCallback(
-        (mediaFile: Blob, block: ImplementationPageBlockLocal) => {
+        (mediaFile: Blob, index: number) => {
             mediaService
                 .store('implementation_block_media', mediaFile, ['thumbnail', 'public', 'large'])
-                .then((res) => updateValue(block, 'media_uid', res.data.data.uid))
-                .catch((res: ResponseError) => pushDanger('Error!', res.data.message));
+                .then((res) => {
+                    setBlocks((blocks) => {
+                        blocks[index].media_uid = res.data.data.uid;
+                        return [...blocks];
+                    });
+                })
+                .catch((err: ResponseError) => pushDanger('Error!', err.data.message));
         },
-        [mediaService, pushDanger, updateValue],
+        [mediaService, pushDanger, setBlocks],
     );
+
+    const validate = useCallback((): Promise<boolean> => {
+        return new Promise((resolve, reject) => {
+            implementationPageService
+                .validateBlocks(implementation.organization_id, implementation.id, { blocks })
+                .then(() => resolve(true))
+                .catch((err: ResponseError) => {
+                    const { data, status } = err;
+                    const { errors, message } = data;
+
+                    if (errors && typeof errors == 'object') {
+                        setErrors(errors);
+
+                        const errorIndexes = Object.keys(errors)
+                            .map((error) => parseInt(error.split('.')[1] || null))
+                            .filter((item) => Number.isInteger(item));
+
+                        setExpandedIndexes((collapsedList) => uniq([...collapsedList, ...errorIndexes]));
+                    }
+
+                    reject(
+                        status == 422
+                            ? translate('components.implementation_block_editor.fix_validation_errors')
+                            : message,
+                    );
+                });
+        });
+    }, [blocks, implementation.id, implementation.organization_id, implementationPageService, setErrors, translate]);
+
+    useEffect(() => {
+        createFaqRef.current = validate;
+    }, [createFaqRef, validate]);
 
     return (
         <div className="block block-implementation-blocks-editor">
@@ -119,17 +144,21 @@ export default function ImplementationsBlockEditor({
                             {block.title || (!block.id ? 'Nieuwe blok' : 'Blok aanpassen')}
                         </div>
                         <div className="block-actions">
-                            {block.collapsed ? (
+                            {expandedIndexes.includes(index) ? (
                                 <div
                                     className="button button-default button-sm"
-                                    onClick={() => updateValue(block, 'collapsed', false)}>
+                                    onClick={() => {
+                                        setExpandedIndexes(() => expandedIndexes.filter((item) => item !== index));
+                                    }}>
                                     <em className="mdi mdi-arrow-collapse-vertical icon-start" />
                                     Inklappen
                                 </div>
                             ) : (
                                 <div
                                     className="button button-primary button-sm"
-                                    onClick={() => updateValue(block, 'collapsed', true)}>
+                                    onClick={() => {
+                                        setExpandedIndexes(() => uniq([...expandedIndexes, index]));
+                                    }}>
                                     <em className="mdi mdi-arrow-expand-vertical icon-start" />
                                     Uitklappen
                                 </div>
@@ -142,13 +171,13 @@ export default function ImplementationsBlockEditor({
                         </div>
                     </div>
 
-                    {block.collapsed && (
+                    {expandedIndexes.includes(index) && (
                         <div className="block-body">
                             <div className="form">
                                 <div className="form-group">
                                     <PhotoSelector
                                         type={'implementation_block_media'}
-                                        selectPhoto={(file) => selectBlockImage(file, block)}
+                                        selectPhoto={(file) => selectBlockImage(file, index)}
                                         thumbnail={block?.media?.sizes?.thumbnail}
                                     />
                                 </div>
@@ -160,7 +189,12 @@ export default function ImplementationsBlockEditor({
                                         type="text"
                                         value={block.label}
                                         placeholder="Label..."
-                                        onChange={(e) => updateValue(block, 'label', e.target.value)}
+                                        onChange={(e) => {
+                                            setBlocks((blocks) => {
+                                                blocks[index].label = e.target.value;
+                                                return [...blocks];
+                                            });
+                                        }}
                                     />
                                     <div className="form-hint">Max. 200 tekens</div>
                                     <FormError error={errors['blocks.' + index + '.label']} />
@@ -172,7 +206,12 @@ export default function ImplementationsBlockEditor({
                                         className="form-control"
                                         type="text"
                                         value={block.title}
-                                        onChange={(e) => updateValue(block, 'title', e.target.value)}
+                                        onChange={(e) => {
+                                            setBlocks((blocks) => {
+                                                blocks[index].title = e.target.value;
+                                                return [...blocks];
+                                            });
+                                        }}
                                         placeholder="Title..."
                                     />
                                     <div className="form-hint">Max. 200 tekens</div>
@@ -183,7 +222,12 @@ export default function ImplementationsBlockEditor({
                                     <label className="form-label form-label-required">Omschrijving</label>
                                     <MarkdownEditor
                                         value={block.description_html}
-                                        onChange={(value) => updateValue(block, 'description', value)}
+                                        onChange={(value) => {
+                                            setBlocks((blocks) => {
+                                                blocks[index].description = value;
+                                                return [...blocks];
+                                            });
+                                        }}
                                         placeholder="Omschrijving..."
                                     />
                                     <div className="form-hint">Max. 5000 tekens</div>
@@ -201,9 +245,12 @@ export default function ImplementationsBlockEditor({
                                                     type="checkbox"
                                                     id={`button_enabled_${index}`}
                                                     checked={block.button_enabled}
-                                                    onChange={(e) =>
-                                                        updateValue(block, 'button_enabled', e.target.checked)
-                                                    }
+                                                    onChange={(e) => {
+                                                        setBlocks((blocks) => {
+                                                            blocks[index].button_enabled = e.target.checked;
+                                                            return [...blocks];
+                                                        });
+                                                    }}
                                                 />
                                                 <div className="form-toggle-inner flex-end">
                                                     <div className="toggle-input">
@@ -226,8 +273,15 @@ export default function ImplementationsBlockEditor({
                                                 value={block.button_text || ''}
                                                 placeholder="Button Text"
                                                 onChange={(e) => {
-                                                    updateValue(block, 'button_text', e.target.value);
-                                                    onButtonTextChange(block);
+                                                    setBlocks((blocks) => {
+                                                        blocks[index].button_text = e.target.value;
+
+                                                        if (!buttonLinkLabelEdited) {
+                                                            blocks[index].button_link_label = e.target.value;
+                                                        }
+
+                                                        return [...blocks];
+                                                    });
                                                 }}
                                             />
                                             <FormError error={errors['blocks.' + index + '.button_text']} />
@@ -239,7 +293,12 @@ export default function ImplementationsBlockEditor({
                                                 type="text"
                                                 value={block.button_link || ''}
                                                 placeholder="Button Link"
-                                                onChange={(e) => updateValue(block, 'button_link', e.target.value)}
+                                                onChange={(e) => {
+                                                    setBlocks((blocks) => {
+                                                        blocks[index].button_link = e.target.value;
+                                                        return [...blocks];
+                                                    });
+                                                }}
                                             />
                                             <FormError error={errors['blocks.' + index + '.button_link']} />
                                         </div>
@@ -253,9 +312,12 @@ export default function ImplementationsBlockEditor({
                                                     propKey={'value'}
                                                     allowSearch={false}
                                                     value={block.button_target_blank}
-                                                    onChange={(value: boolean) =>
-                                                        updateValue(block, 'button_target_blank', value)
-                                                    }
+                                                    onChange={(value: boolean) => {
+                                                        setBlocks((blocks) => {
+                                                            blocks[index].button_target_blank = value;
+                                                            return [...blocks];
+                                                        });
+                                                    }}
                                                     options={buttonTargets}
                                                     optionsComponent={SelectControlOptions}
                                                 />
@@ -269,8 +331,11 @@ export default function ImplementationsBlockEditor({
                                                 value={block.button_link_label || ''}
                                                 placeholder="Button Link Label"
                                                 onChange={(e) => {
-                                                    updateValue(block, 'button_link_label', e.target.value);
                                                     setButtonLinkLabelEdited(true);
+                                                    setBlocks((blocks) => {
+                                                        blocks[index].button_link_label = e.target.value;
+                                                        return [...blocks];
+                                                    });
                                                 }}
                                             />
                                             <FormError error={errors['blocks.' + index + '.button_link_label']} />
