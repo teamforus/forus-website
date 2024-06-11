@@ -139,11 +139,21 @@ export default function SignUpValidator() {
               ].filter((step) => step)
             : [STEP_INFO_GENERAL, STEP_INFO_DETAILS, STEP_CREATE_PROFILE, STEP_ORGANIZATION_ADD, STEP_SIGNUP_FINISHED];
 
+        if (authToken && step < STEP_SELECT_ORGANIZATION) {
+            return goToStep(organizations?.length > 0 ? STEP_SELECT_ORGANIZATION : STEP_ORGANIZATION_ADD);
+        }
+
         if (stepsAvailable.indexOf(step) === -1) {
             return goToStep(STEP_INFO_GENERAL);
         }
 
         goToStep(step);
+
+        return () => {
+            if (location.hash.indexOf('sign-up') === -1) {
+                progressStorage.clear();
+            }
+        };
     }, [
         STEP_CREATE_PROFILE,
         STEP_INFO_DETAILS,
