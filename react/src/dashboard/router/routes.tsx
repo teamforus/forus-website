@@ -86,6 +86,7 @@ import PreCheck from '../components/pages/pre-check/PreCheck';
 import BiConnection from '../components/pages/bi-connection/BiConnection';
 import ThrowError from '../components/pages_system/ThrowError';
 import Implementations from '../components/pages/implementations/Implementations';
+import SponsorFundUnsubscriptions from '../components/pages/sponsor-fund-unsubscriptions/SponsorFundUnsubscriptions';
 
 const router = new RouterBuilder();
 
@@ -219,6 +220,11 @@ router.state('fund-provider-product-edit', <SponsorProductsEdit />, {
 
 router.state('fund-provider-product-subsidy-edit', <FundProviderProductSubsidyEdit />, {
     path: `/organizations/:organizationId/funds/:fundId/providers/:fundProviderId/products/:id/subsidy`,
+    fallbackState: 'organizations',
+});
+
+router.state('sponsor-fund-unsubscriptions', <SponsorFundUnsubscriptions />, {
+    path: `/organizations/:organizationId/fund-unsubscriptions`,
     fallbackState: 'organizations',
 });
 

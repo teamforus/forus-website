@@ -222,14 +222,10 @@ export default function SponsorProviderOrganizations() {
                                 </div>
                             )}
 
-                            <NavLink
-                                to={getStateRouteUrl('sponsor-fund-unsubscriptions', {
-                                    organizationId: activeOrganization.id,
-                                })}
-                                className="button button-text pull-right">
+                            <div className="button button-text pull-right">
                                 Bekijken
                                 <em className="mdi mdi-arrow-right icon-end" />
-                            </NavLink>
+                            </div>
                         </NavLink>
                     </div>
                 )}
