@@ -51,6 +51,7 @@ export default function ReimbursementsEdit() {
     const [vouchers, setVouchers] = useState<Array<Voucher>>(null);
     const [reimbursement, setReimbursement] = useState<Reimbursement>(null);
     const [skipEmail, setSkipEmail] = useState(false);
+    const [generalErrorMsg, setGeneralErrorMsg] = useState<string>(null);
 
     const form = useFormBuilder<
         {
@@ -105,6 +106,7 @@ export default function ReimbursementsEdit() {
                     form.setErrors(err.data.errors || null);
                     setFiles(setFilesErrors(files, form.errors));
                     pushDanger('Error!', err.data.message);
+                    setGeneralErrorMsg(err.data.message);
                 })
                 .finally(() => setProgress(100));
         },
@@ -294,6 +296,15 @@ export default function ReimbursementsEdit() {
                                     e?.preventDefault();
                                     submit(true);
                                 }}>
+                                {generalErrorMsg && (
+                                    <div className="card-section">
+                                        <div className="form-group">
+                                            <div className="form-error text-center">
+                                                <strong>{generalErrorMsg}</strong>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
                                 <div className="card-section">
                                     <FileUploader
                                         type="reimbursement_proof"
@@ -303,6 +314,7 @@ export default function ReimbursementsEdit() {
                                         cropMedia={true}
                                         multiple={true}
                                         fileListCompact={false}
+                                        isRequired={true}
                                         onFilesChange={({ files }) => setFiles(files)}
                                     />
                                     {form.errors.files && (
@@ -360,7 +372,7 @@ export default function ReimbursementsEdit() {
                                     <div className="row">
                                         <div className="col col-xs-12 col-md-10">
                                             <div className="form-group form-group-inline">
-                                                <label className="form-label" htmlFor="title">
+                                                <label className="form-label form-label-required" htmlFor="title">
                                                     Titel van de declaratie
                                                 </label>
                                                 <input
@@ -376,7 +388,7 @@ export default function ReimbursementsEdit() {
                                                 <FormError error={form.errors.title} />
                                             </div>
                                             <div className="form-group form-group-inline">
-                                                <label className="form-label" htmlFor="amount">
+                                                <label className="form-label form-label-required" htmlFor="amount">
                                                     Bedrag €
                                                 </label>
                                                 <input
@@ -409,7 +421,7 @@ export default function ReimbursementsEdit() {
                                                 <FormError error={form.errors.description} />
                                             </div>
                                             <div className="form-group form-group-inline">
-                                                <label className="form-label" htmlFor="iban">
+                                                <label className="form-label form-label-required" htmlFor="iban">
                                                     IBAN nummer
                                                 </label>
                                                 <input
@@ -425,7 +437,7 @@ export default function ReimbursementsEdit() {
                                                 <FormError error={form.errors.iban} />
                                             </div>
                                             <div className="form-group form-group-inline">
-                                                <label className="form-label" htmlFor="iban_name">
+                                                <label className="form-label form-label-required" htmlFor="iban_name">
                                                     Naam rekeninghouder
                                                 </label>
                                                 <input

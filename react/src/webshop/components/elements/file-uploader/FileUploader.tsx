@@ -53,6 +53,7 @@ export default function FileUploader({
     onFilesChange = null,
     hideButtons = false,
     fileListCompact = false,
+    isRequired = false,
 }: {
     type: 'fund_request_clarification_proof' | 'reimbursement_proof' | 'fund_request_record_proof';
     title?: string;
@@ -65,6 +66,7 @@ export default function FileUploader({
     acceptedFiles?: Array<string>;
     hideButtons?: boolean;
     fileListCompact?: boolean;
+    isRequired?: boolean;
 } & FileItemEventsListener) {
     const fileService = useFileService();
 
@@ -304,7 +306,7 @@ export default function FileUploader({
                     <div className="droparea-icon">
                         <div className="mdi mdi-tray-arrow-up"></div>
                     </div>
-                    <div className="droparea-title">
+                    <div className={`droparea-title ${isRequired ? 'droparea-title-required' : ''}`}>
                         <strong>{title}</strong>
                         <br />
                         <small>of</small>
