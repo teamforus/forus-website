@@ -167,6 +167,7 @@ export default function SystemNotificationEditor({
                                             placeholder="Kies een fonds"
                                             options={funds}
                                             value={fund}
+                                            allowSearch={true}
                                             onChange={(fund: Partial<Fund>) => setFund(fund)}
                                             optionsComponent={SelectControlOptions}
                                         />
