@@ -1,7 +1,7 @@
-import { ResponseSimple } from '../props/ApiResponses';
 import { useState } from 'react';
 import ApiRequestService from './ApiRequestService';
 import RecordType from '../props/models/RecordType';
+import { ResponseSimple } from '../props/ApiResponses';
 
 export class RecordTypeService<T = RecordType> {
     /**

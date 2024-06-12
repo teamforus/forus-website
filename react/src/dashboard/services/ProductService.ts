@@ -27,7 +27,10 @@ export class ProductService<T = Product> {
     /**
      * Fetch list
      */
-    public list(organizationId: number, data: object = {}): Promise<ApiResponse<T>> {
+    public list(
+        organizationId: number,
+        data: object = {},
+    ): Promise<ApiResponse<T, { total_archived: number; total_provider: number; total_sponsor: number }>> {
         return this.apiRequest.get(`${this.prefix}/${organizationId}/products`, data);
     }
 

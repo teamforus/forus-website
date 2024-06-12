@@ -1,8 +1,13 @@
-import ApiResponse, { ApiResponseSingle } from '../props/ApiResponses';
+import ApiResponse, { ApiResponseSingle, ResponseSimple } from '../props/ApiResponses';
 import { useState } from 'react';
 import ApiRequestService from './ApiRequestService';
 import Fund from '../props/models/Fund';
 import Product from '../props/models/Product';
+import Papa from 'papaparse';
+import {
+    ProviderFinancialStatistics,
+    FinancialOverview,
+} from '../components/pages/financial-dashboard/types/FinancialStatisticTypes';
 
 export class FundService<T = Fund> {
     /**
@@ -15,17 +20,36 @@ export class FundService<T = Fund> {
      *
      * @param data
      */
-    public prefix = '/platform/organizations/';
+    public prefix = '/platform/organizations';
+    public prefix_public = '/platform/funds';
 
     /**
      * Fetch list
      */
     public list(company_id: number, data: object = {}): Promise<ApiResponse<T>> {
-        return this.apiRequest.get(`${this.prefix + company_id}/funds`, data);
+        return this.apiRequest.get(`${this.prefix}/${company_id}/funds`, data);
+    }
+
+    public listPublic(data: object = {}): Promise<ResponseSimple<{ data: Array<T> }>> {
+        return this.apiRequest.get(`${this.prefix_public}`, data);
     }
 
     public delete(company_id: number, data: object = {}): Promise<null> {
-        return this.apiRequest.get<null>(`${this.prefix + company_id}/funds`, data);
+        return this.apiRequest.get<null>(`${this.prefix}/${company_id}/funds`, data);
+    }
+
+    public readFinances(company_id: number, data: object = {}): Promise<ResponseSimple<ProviderFinancialStatistics>> {
+        return this.apiRequest.get(`${this.prefix + company_id}/sponsor/finances`, data);
+    }
+
+    public financialOverview(company_id: number, data: object = {}): Promise<ResponseSimple<FinancialOverview>> {
+        return this.apiRequest.get(`${this.prefix + company_id}/sponsor/finances-overview`, data);
+    }
+
+    public financialOverviewExport(company_id: number, data: object = {}): Promise<ResponseSimple<ArrayBuffer>> {
+        return this.apiRequest.get(`${this.prefix + company_id}/sponsor/finances-overview-export`, data, {
+            responseType: 'arraybuffer',
+        });
     }
 
     public getProviderProduct(
@@ -36,9 +60,13 @@ export class FundService<T = Fund> {
         query: object = {},
     ): Promise<ApiResponseSingle<Product>> {
         return this.apiRequest.get(
-            `${this.prefix}${organization_id}/funds/${fund_id}/providers/${provider_id}/products/${product_id}`,
+            `${this.prefix}/${organization_id}/funds/${fund_id}/providers/${provider_id}/products/${product_id}`,
             query,
         );
+    }
+
+    public sampleCSV(fund: Fund): string {
+        return Papa.unparse([fund.csv_required_keys.filter((key) => !key.endsWith('_eligible'))]);
     }
 
     public getLastSelectedFund(funds: Array<Fund> = []): Fund {
