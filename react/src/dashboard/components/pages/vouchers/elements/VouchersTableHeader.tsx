@@ -35,13 +35,13 @@ export default function VouchersTableHeader({
     const openModal = useOpenModal();
 
     const createVoucher = useCallback(
-        (funds: Array<Partial<Fund>>, fund_id?: number, onCreate?: () => void) => {
+        (funds: Array<Partial<Fund>>, fundId?: number, onCreate?: () => void) => {
             const fundsList = funds.filter((fund) => fund.id);
 
             openModal((modal) => (
                 <ModalFundSelect
                     modal={modal}
-                    fund_id={fund_id || fundsList[0].id}
+                    fundId={fundId || fundsList[0].id}
                     funds={fundsList}
                     onSelect={(fund) => {
                         openModal((modal) => (
@@ -60,18 +60,18 @@ export default function VouchersTableHeader({
     );
 
     const uploadVouchers = useCallback(
-        (funds: Array<Partial<Fund>>, fund_id?: number, onCreate?: () => void) => {
+        (funds: Array<Partial<Fund>>, fundId?: number, onCreate?: () => void) => {
             openModal((modal) => (
                 <ModalFundSelect
                     modal={modal}
-                    fund_id={fund_id}
                     funds={funds}
+                    fundId={fundId}
                     onSelect={(fund) => {
                         openModal((modal) => (
                             <ModalVouchersUpload
                                 modal={modal}
                                 fund={fund}
-                                funds={!fund.id ? funds : funds.filter((fund) => fund.id)}
+                                funds={!fund?.id ? funds : funds.filter((item) => item.id === fund?.id)}
                                 organization={organization}
                                 onCompleted={onCreate}
                             />

@@ -3,25 +3,25 @@ import { ModalState } from '../../modules/modals/context/ModalContext';
 import useFormBuilder from '../../hooks/useFormBuilder';
 import Fund from '../../props/models/Fund';
 import SelectControl from '../elements/select-control/SelectControl';
-import SelectControlOptions from '../elements/select-control/templates/SelectControlOptions';
 import FormError from '../elements/forms/errors/FormError';
+import SelectControlOptionsFund from '../elements/select-control/templates/SelectControlOptionsFund';
 
 export default function ModalFundSelect({
     modal,
     funds,
-    fund_id = null,
-    className,
+    fundId = null,
     onSelect,
+    className,
 }: {
     modal: ModalState;
     funds: Array<Partial<Fund>>;
-    fund_id?: number;
-    className?: string;
+    fundId?: number;
     onSelect: (fund: Partial<Fund>) => void;
+    className?: string;
 }) {
     const form = useFormBuilder(
         {
-            fund_id: fund_id ? fund_id : funds[0]?.id,
+            fund_id: fundId ? fundId : funds[0]?.id,
         },
         (values) => {
             onSelect(funds.find((fund) => fund.id === values.fund_id));
@@ -50,7 +50,7 @@ export default function ModalFundSelect({
                                     propKey={'id'}
                                     allowSearch={false}
                                     options={funds}
-                                    optionsComponent={SelectControlOptions}
+                                    optionsComponent={SelectControlOptionsFund}
                                     onChange={(fund_id: number) => form.update({ fund_id })}
                                 />
                             </div>
