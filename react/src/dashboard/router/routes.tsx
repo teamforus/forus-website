@@ -187,7 +187,6 @@ router.state('pre-check', <PreCheck />, {
 
 router.state('external-validators', <ExternalValidators />, {
     path: `/organizations/:organizationId/external-validators`,
-    fallbackState: 'organizations',
 });
 
 router.state('sponsor-provider-organizations', <SponsorProviderOrganizations />, {
