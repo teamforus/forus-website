@@ -47,7 +47,6 @@ import CsvValidationsRedirect from '../components/pages/csv_validations/CsvValid
 import Reimbursements from '../components/pages/reimbursements/Reimbursements';
 import ReimbursementsView from '../components/pages/reimbursements-view/ReimbursementsView';
 import BankConnections from '../components/pages/bank-connections/BankConnections';
-import WIP from '../components/pages_system/WIP';
 import ExtraPayments from '../components/pages/extra-payments/ExtraPayments';
 import ExtraPaymentsView from '../components/pages/extra-payments-view/ExtraPaymentsView';
 import Features from '../components/pages/features/Features';
@@ -89,6 +88,7 @@ import PreCheck from '../components/pages/pre-check/PreCheck';
 import BiConnection from '../components/pages/bi-connection/BiConnection';
 import ThrowError from '../components/pages_system/ThrowError';
 import Implementations from '../components/pages/implementations/Implementations';
+import ExternalValidators from '../components/pages/external-validators/ExternalValidators';
 
 const router = new RouterBuilder();
 
@@ -185,7 +185,7 @@ router.state('pre-check', <PreCheck />, {
     path: `/organizations/:organizationId/pre-check`,
 });
 
-router.state('external-validators', <WIP title={'External validators'} />, {
+router.state('external-validators', <ExternalValidators />, {
     path: `/organizations/:organizationId/external-validators`,
     fallbackState: 'organizations',
 });
