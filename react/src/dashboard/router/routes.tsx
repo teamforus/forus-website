@@ -68,7 +68,7 @@ import TransactionBulksView from '../components/pages/transaction-bulks-view/Tra
 import ReimbursementCategories from '../components/pages/reimbursement-categories/ReimbursementCategories';
 import Vouchers from '../components/pages/vouchers/Vouchers';
 import VouchersViewComponent from '../components/pages/vouchers-view/VouchersViewComponent';
-import ProductVouchers from '../components/pages/product-vouchers/ProductVouchers';
+import ProductVouchers from '../components/pages/vouchers/ProductVouchers';
 import SponsorProviderOrganizations from '../components/pages/sponsor-provider-organizations/SponsorProviderOrganizations';
 import SponsorProviderOrganization from '../components/pages/sponsor-provider-organization/SponsorProviderOrganization';
 import FundProvider from '../components/pages/fund-provider/FundProvider';
@@ -239,7 +239,6 @@ router.state('financial-dashboard-overview', <FinancialDashboardOverview />, {
 
 router.state('vouchers', <Vouchers />, {
     path: `/organizations/:organizationId/vouchers`,
-    fallbackState: 'organizations',
 });
 
 router.state('vouchers-show', <VouchersViewComponent />, {
@@ -249,7 +248,6 @@ router.state('vouchers-show', <VouchersViewComponent />, {
 
 router.state('product-vouchers', <ProductVouchers />, {
     path: `/organizations/:organizationId/product-vouchers`,
-    fallbackState: 'organizations',
 });
 
 router.state('reimbursements', <Reimbursements />, {

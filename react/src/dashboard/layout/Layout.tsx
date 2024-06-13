@@ -12,6 +12,7 @@ import useActiveOrganization from '../hooks/useActiveOrganization';
 import Toasts from '../modules/toasts/components/Toasts';
 import { Libraries, LoadScript } from '@react-google-maps/api';
 import useEnvData from '../hooks/useEnvData';
+import Printable from '../modules/printable/components/Printable';
 
 export const Layout = ({ children }: { children: React.ReactElement }) => {
     const { modals } = useContext(modalsContext);
@@ -64,6 +65,8 @@ export const Layout = ({ children }: { children: React.ReactElement }) => {
                 <PushNotifications />
                 <Toasts />
             </div>
+
+            <Printable />
         </LoadScript>
     );
 };

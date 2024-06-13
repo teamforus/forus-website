@@ -14,6 +14,7 @@ import { fileSize } from '../../helpers/string';
 import useOpenModal from '../../hooks/useOpenModal';
 import ModalDuplicatesPicker from './ModalDuplicatesPicker';
 import useTransactionService from '../../services/TransactionService';
+import CSVProgressBar from '../elements/csv-progress-bar/CSVProgressBar';
 
 export default function ModalVoucherTransactionsUpload({
     modal,
@@ -471,16 +472,7 @@ export default function ModalVoucherTransactionsUpload({
                                             )}
                                         </div>
 
-                                        <div className="csv-progress">
-                                            <div className="csv-progress-state">{progressStatus}</div>
-                                            <div className="csv-progress-bar">
-                                                <div
-                                                    className="csv-progress-bar-stick"
-                                                    style={{ width: `${progressBar}%` }}
-                                                />
-                                            </div>
-                                            <div className="csv-progress-value">{progressBar.toFixed(2) + '%'}</div>
-                                        </div>
+                                        <CSVProgressBar status={progressStatus} progressBar={progressBar} />
                                     </div>
                                 )}
                                 <div className="csv-upload-actions">

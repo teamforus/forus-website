@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function ProgressBar({ progressBar, status }: { progressBar: number; status: string }) {
+export default function CSVProgressBar({ progressBar, status }: { progressBar: number; status: string }) {
     return (
         <div className="csv-progress">
             <div className="csv-progress-state">{status}</div>

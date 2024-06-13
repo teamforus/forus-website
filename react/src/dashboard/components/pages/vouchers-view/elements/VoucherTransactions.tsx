@@ -1,5 +1,4 @@
 import Transaction from '../../../../props/models/Transaction';
-import { useTranslation } from 'react-i18next';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import useEnvData from '../../../../hooks/useEnvData';
 import Paginator from '../../../../modules/paginator/components/Paginator';
@@ -12,31 +11,40 @@ import useTransactionService from '../../../../services/TransactionService';
 import Organization from '../../../../props/models/Organization';
 import { PaginationData } from '../../../../props/ApiResponses';
 import LoadingCard from '../../../elements/loading-card/LoadingCard';
+import useTranslate from '../../../../hooks/useTranslate';
+import useSetProgress from '../../../../hooks/useSetProgress';
+import EmptyCard from '../../../elements/empty-card/EmptyCard';
 
 export default function VoucherTransactions({
+    blockTitle,
     organization,
     filterValues,
-    blockTitle,
 }: {
+    blockTitle: string;
     organization: Organization;
     filterValues: FilterModel;
-    blockTitle: string;
 }) {
-    const { t } = useTranslation();
     const envData = useEnvData();
-
+    const translate = useTranslate();
+    const setProgress = useSetProgress();
     const transactionService = useTransactionService();
 
     const [transactions, setTransactions] = useState<PaginationData<Transaction>>(null);
-    const isSponsor = useMemo(() => envData.client_type == 'sponsor', [envData.client_type]);
+
+    const isSponsor = useMemo(() => {
+        return envData.client_type == 'sponsor';
+    }, [envData.client_type]);
 
     const filter = useFilter(filterValues);
 
     const fetchTransactions = useCallback(() => {
-        transactionService.list(envData.client_type, organization.id, filter.activeValues).then((res) => {
-            setTransactions(res.data);
-        });
-    }, [envData.client_type, filter.activeValues, organization.id, transactionService]);
+        setProgress(100);
+
+        transactionService
+            .list(envData.client_type, organization.id, filter.activeValues)
+            .then((res) => setTransactions(res.data))
+            .finally(() => setProgress(100));
+    }, [envData.client_type, filter.activeValues, organization.id, transactionService, setProgress]);
 
     useEffect(() => {
         fetchTransactions();
@@ -52,7 +60,7 @@ export default function VoucherTransactions({
                 <div className="flex">
                     <div className="flex flex-grow">
                         <div className="card-title">
-                            {(blockTitle || 'Transactions') + ' (' + transactions.meta.total + ')'}
+                            {blockTitle || 'Transactions'} ({transactions.meta.total})
                         </div>
                     </div>
                 </div>
@@ -65,54 +73,62 @@ export default function VoucherTransactions({
                             <table className="table">
                                 <tbody>
                                     <tr>
-                                        <ThSortable filter={filter} label={t('transactions.labels.id')} value="id" />
-                                        <ThSortable filter={filter} label={t('transactions.labels.uid')} value="id" />
                                         <ThSortable
                                             filter={filter}
-                                            label={t('transactions.labels.price')}
+                                            label={translate('transactions.labels.id')}
+                                            value="id"
+                                        />
+                                        <ThSortable
+                                            filter={filter}
+                                            label={translate('transactions.labels.uid')}
+                                            value="id"
+                                        />
+                                        <ThSortable
+                                            filter={filter}
+                                            label={translate('transactions.labels.price')}
                                             value="amount"
                                         />
                                         <ThSortable
                                             filter={filter}
-                                            label={t('transactions.labels.date')}
+                                            label={translate('transactions.labels.date')}
                                             value="created_at"
                                         />
                                         <ThSortable
                                             filter={filter}
-                                            label={t('transactions.labels.fund')}
+                                            label={translate('transactions.labels.fund')}
                                             value="fund_name"
                                         />
                                         <ThSortable
                                             filter={filter}
-                                            label={t('transactions.labels.target')}
+                                            label={translate('transactions.labels.target')}
                                             value="target"
                                         />
                                         {isSponsor && (
                                             <ThSortable
                                                 filter={filter}
-                                                label={t('transactions.labels.provider')}
+                                                label={translate('transactions.labels.provider')}
                                                 value="provider_name"
                                             />
                                         )}
                                         <ThSortable
                                             filter={filter}
-                                            label={t('transactions.labels.product_name')}
+                                            label={translate('transactions.labels.product_name')}
                                             value="product_name"
                                         />
                                         <ThSortable
                                             filter={filter}
-                                            label={t('transactions.labels.status')}
+                                            label={translate('transactions.labels.status')}
                                             value="state"
                                         />
                                         <ThSortable
                                             className="th-narrow text-right"
                                             filter={filter}
-                                            label={t('transactions.labels.action')}
+                                            label={translate('transactions.labels.action')}
                                         />
                                     </tr>
 
-                                    {transactions.data.map((transaction, index: number) => (
-                                        <tr key={index}>
+                                    {transactions.data.map((transaction) => (
+                                        <tr key={transaction.id}>
                                             <td>{transaction.id}</td>
                                             <td title={transaction.uid || '-'}>
                                                 {strLimit(transaction.uid || '-', 25)}
@@ -144,8 +160,8 @@ export default function VoucherTransactions({
                                             {isSponsor && (
                                                 <td
                                                     className={transaction.organization ? '' : 'text-muted'}
-                                                    title={transaction.organization.name || ''}>
-                                                    {strLimit(transaction.organization.name || '-', 25)}
+                                                    title={transaction.organization?.name || ''}>
+                                                    {strLimit(transaction.organization?.name || '-', 25)}
                                                 </td>
                                             )}
                                             <td title={transaction.product?.name || ''}>
@@ -168,8 +184,8 @@ export default function VoucherTransactions({
                                                     name={'transaction'}
                                                     className="button button-sm button-primary button-icon pull-right"
                                                     params={{
-                                                        organizationId: organization.id,
                                                         address: transaction.address,
+                                                        organizationId: organization.id,
                                                     }}>
                                                     <em className="mdi mdi-eye-outline icon-start" />
                                                 </StateNavLink>
@@ -183,17 +199,11 @@ export default function VoucherTransactions({
                 </div>
             )}
 
-            {transactions.meta && transactions.meta.last_page > 1 && (
+            {transactions.meta.total === 0 ? (
+                <EmptyCard title={'Geen transacties gevonden'} type={'card-section'} />
+            ) : (
                 <div className="card-section">
                     <Paginator meta={transactions.meta} filters={filter.activeValues} updateFilters={filter.update} />
-                </div>
-            )}
-
-            {transactions.meta.total == 0 && (
-                <div className="card-section">
-                    <div className="block block-empty text-center">
-                        <div className="empty-title">Geen transacties gevonden</div>
-                    </div>
                 </div>
             )}
         </div>

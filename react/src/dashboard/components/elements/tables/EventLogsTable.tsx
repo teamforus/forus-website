@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import useSetProgress from '../../../hooks/useSetProgress';
 import { PaginationData } from '../../../props/ApiResponses';
 import Paginator from '../../../modules/paginator/components/Paginator';
@@ -16,6 +15,8 @@ import ClickOutside from '../click-outside/ClickOutside';
 import { strLimit } from '../../../helpers/string';
 import useFilter from '../../../hooks/useFilter';
 import usePaginatorService from '../../../modules/paginator/services/usePaginatorService';
+import useTranslate from '../../../hooks/useTranslate';
+import EmptyCard from '../empty-card/EmptyCard';
 
 export default function EventLogsTable({
     organization,
@@ -36,7 +37,7 @@ export default function EventLogsTable({
     hideFilterDropdown?: boolean;
     hideEntity?: boolean;
 }) {
-    const { t } = useTranslation();
+    const translate = useTranslate();
 
     const setProgress = useSetProgress();
     const appConfigs = useAppConfigs();
@@ -146,7 +147,7 @@ export default function EventLogsTable({
                                                 className="form-control"
                                                 value={filter.values.q}
                                                 onChange={(e) => filter.update({ q: e.target.value })}
-                                                placeholder={t('event_logs.labels.search')}
+                                                placeholder={translate('event_logs.labels.search')}
                                             />
                                         </div>
                                     </div>
@@ -154,16 +155,16 @@ export default function EventLogsTable({
 
                                 {!hideFilterDropdown && (
                                     <CardHeaderFilter filter={filter}>
-                                        <FilterItemToggle label={t('event_logs.labels.search')} show={true}>
+                                        <FilterItemToggle label={translate('event_logs.labels.search')} show={true}>
                                             <input
                                                 className="form-control"
                                                 value={filter.values.q}
                                                 onChange={(e) => filter.update({ q: e.target.value })}
-                                                placeholder={t('event_logs.labels.search')}
+                                                placeholder={translate('event_logs.labels.search')}
                                             />
                                         </FilterItemToggle>
 
-                                        <FilterItemToggle label={t('event_logs.labels.entities')}>
+                                        <FilterItemToggle label={translate('event_logs.labels.entities')}>
                                             {loggables.map((loggable) => (
                                                 <div key={loggable.key}>
                                                     <label
@@ -182,7 +183,7 @@ export default function EventLogsTable({
                                                         />
                                                         <div className="checkbox-label">
                                                             <div className="checkbox-box">
-                                                                <div className="mdi mdi-check"></div>
+                                                                <div className="mdi mdi-check" />
                                                             </div>
                                                             {loggable.title}
                                                         </div>
@@ -205,11 +206,11 @@ export default function EventLogsTable({
                             <table className="table">
                                 <tbody>
                                     <tr>
-                                        <ThSortable label={t('event_logs.labels.date')} />
-                                        {!hideEntity && <ThSortable label={t('event_logs.labels.entity')} />}
-                                        <ThSortable label={t('event_logs.labels.action')} />
-                                        <ThSortable label={t('event_logs.labels.author')} />
-                                        <ThSortable label={t('event_logs.labels.note')} />
+                                        <ThSortable label={translate('event_logs.labels.date')} />
+                                        {!hideEntity && <ThSortable label={translate('event_logs.labels.entity')} />}
+                                        <ThSortable label={translate('event_logs.labels.action')} />
+                                        <ThSortable label={translate('event_logs.labels.author')} />
+                                        <ThSortable label={translate('event_logs.labels.note')} />
                                     </tr>
                                     {logs.data.map((log) => (
                                         <tr key={log.id}>
@@ -267,21 +268,15 @@ export default function EventLogsTable({
                 </div>
             )}
 
-            {logs.meta.total == 0 && (
-                <div className="card-section">
-                    <div className="block block-empty text-center">
-                        <div className="empty-title">Geen logboeken gevonden</div>
-                    </div>
-                </div>
-            )}
-
-            {logs.meta && (
+            {logs.meta.total === 0 ? (
+                <EmptyCard title={'Geen logboeken gevonden'} type={'card-section'} />
+            ) : (
                 <div className="card-section">
                     <Paginator
                         meta={logs.meta}
                         filters={filter.values}
-                        updateFilters={filter.update}
                         perPageKey={perPageKey}
+                        updateFilters={filter.update}
                     />
                 </div>
             )}

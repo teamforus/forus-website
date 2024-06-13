@@ -1,12 +1,10 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { ModalState } from '../../modules/modals/context/ModalContext';
-import { classList } from '../../helpers/utils';
 import useSetProgress from '../../hooks/useSetProgress';
 import Fund from '../../props/models/Fund';
-import { useTranslation } from 'react-i18next';
 import { useFileService } from '../../services/FileService';
 import useVoucherService from '../../services/VoucherService';
-import { currencyFormat, fileSize } from '../../helpers/string';
+import { fileSize } from '../../helpers/string';
 import Papa from 'papaparse';
 import { chunk, groupBy, isEmpty, sortBy, uniq, map, countBy } from 'lodash';
 import Organization from '../../props/models/Organization';
@@ -21,7 +19,8 @@ import Product from '../../props/models/Product';
 import useProductService from '../../services/ProductService';
 import ModalDuplicatesPicker from './ModalDuplicatesPicker';
 import useOpenModal from '../../hooks/useOpenModal';
-import ProgressBar from './elements/ProgressBar';
+import CSVProgressBar from '../elements/csv-progress-bar/CSVProgressBar';
+import useTranslate from '../../hooks/useTranslate';
 
 type CSVErrorProp = {
     csvHasBsnWhileNotAllowed?: boolean;
@@ -65,14 +64,13 @@ export default function ModalVouchersUpload({
     organization: Organization;
     onCompleted: () => void;
 }) {
-    const { t } = useTranslation();
-
-    const setProgress = useSetProgress();
-    const pushSuccess = usePushSuccess();
+    const translate = useTranslate();
+    const openModal = useOpenModal();
     const pushDanger = usePushDanger();
+    const pushSuccess = usePushSuccess();
+    const setProgress = useSetProgress();
     const authIdentity = useAuthIdentity();
 
-    const openModal = useOpenModal();
     const fileService = useFileService();
     const helperService = useHelperService();
     const productService = useProductService();
@@ -175,8 +173,8 @@ export default function ModalVouchersUpload({
 
     const validateCsvDataBudget = useCallback(
         (data) => {
-            const fundBudget = fund.limit_sum_vouchers;
-            const csvTotalAmount = data.reduce((sum: number, row: RowDataProp) => sum + (row.amount || 0), 0);
+            const fundBudget = parseFloat(fund.limit_sum_vouchers);
+            const csvTotalAmount: number = data.reduce((sum: number, row: RowDataProp) => sum + (row.amount || 0), 0);
 
             if (fund.type === 'budget') {
                 csvErrors.csvAmountMissing = data.filter((row: RowDataProp) => !row.amount).length > 0;
@@ -186,7 +184,7 @@ export default function ModalVouchersUpload({
 
                 // some vouchers exceed the limit per voucher
                 csvErrors.invalidPerVoucherAmount =
-                    data.filter((row: RowDataProp) => row.amount > fund.limit_per_voucher).length > 0;
+                    data.filter((row: RowDataProp) => row.amount > parseFloat(fund.limit_per_voucher)).length > 0;
             }
 
             // fund vouchers csv shouldn't have product_id field
@@ -468,13 +466,13 @@ export default function ModalVouchersUpload({
 
     const defaultNote = useCallback(
         (row) => {
-            return t('vouchers.csv.default_note' + (row.email ? '' : '_no_email'), {
+            return translate('vouchers.csv.default_note' + (row.email ? '' : '_no_email'), {
                 upload_date: dateFormat(new Date(), 'YYYY-MM-DD'),
                 uploader_email: authIdentity?.email || authIdentity?.address,
                 target_email: row.email || null,
             });
         },
-        [authIdentity?.address, authIdentity?.email, t],
+        [authIdentity?.address, authIdentity?.email, translate],
     );
 
     const showInvalidRows = useCallback(
@@ -825,13 +823,9 @@ export default function ModalVouchersUpload({
 
     return (
         <div
-            className={classList([
-                'modal',
-                'modal-animated',
-                modal.loading || hideModal ? 'modal-loading' : null,
-                isDragOver ? 'is-dragover' : '',
-                className,
-            ])}
+            className={`modal modal-animated ${modal.loading || hideModal ? 'modal-loading' : ''} ${
+                isDragOver ? 'is-dragover' : ''
+            } ${className}`}
             data-dusk="modalVoucherUpload">
             <div className="modal-backdrop" onClick={closeModal} />
             <div className="modal-window">
@@ -868,9 +862,9 @@ export default function ModalVouchersUpload({
                                                 <div className="mdi mdi-upload" />
                                             </div>
                                             <div className="csv-upload-text">
-                                                {t('csv_upload.labels.upload')}
+                                                {translate('csv_upload.labels.upload')}
                                                 <br />
-                                                <span>{t('csv_upload.labels.swipe')}</span>
+                                                <span>{translate('csv_upload.labels.swipe')}</span>
                                             </div>
                                         </div>
                                     )}
@@ -880,7 +874,7 @@ export default function ModalVouchersUpload({
                                                 className="button button-default"
                                                 onClick={() => downloadExampleCsv()}>
                                                 <em className="mdi mdi-file-table-outline icon-start"> </em>
-                                                <span>{t('product_vouchers.buttons.download_csv')}</span>
+                                                <span>{translate('product_vouchers.buttons.download_csv')}</span>
                                             </button>
                                         )}
                                         {csvProgress <= 1 && (
@@ -891,7 +885,7 @@ export default function ModalVouchersUpload({
                                                 }}
                                                 data-dusk="selectFileButton">
                                                 <em className="mdi mdi-upload icon-start"> </em>
-                                                <span>{t('vouchers.buttons.upload_csv')}</span>
+                                                <span>{translate('vouchers.buttons.upload_csv')}</span>
                                             </button>
                                         )}
                                     </div>
@@ -903,7 +897,7 @@ export default function ModalVouchersUpload({
                                                     <div className="mdi mdi-check" data-dusk="successUploadIcon" />
                                                 )}
                                             </div>
-                                            <ProgressBar progressBar={progressBar} status={progressStatus} />
+                                            <CSVProgressBar progressBar={progressBar} status={progressStatus} />
                                         </div>
                                     )}
                                     <div className="csv-upload-actions">
@@ -946,15 +940,15 @@ export default function ModalVouchersUpload({
                                                         {csvErrors.invalidPerVoucherAmount && (
                                                             <div className="form-error">
                                                                 Één of meer tegoeden gaan over het maximale bedrag per
-                                                                tegoed. (limiet is:
-                                                                {currencyFormat(fund.limit_per_voucher)}).
+                                                                tegoed. (limiet is: {fund.limit_per_voucher_locale}).
                                                             </div>
                                                         )}
                                                         {csvErrors.hasInvalidFundIds && (
                                                             <div className="form-error">
                                                                 De kolom `fund_id` in het bulkbestand bevat verkeerde
                                                                 fonds identificatienummers
-                                                                {currencyFormat(fund.limit_per_voucher)}).
+                                                                {csvErrors.hasInvalidFundIdsList}. Deze nummers horen
+                                                                niet bij de door u geselecteerde organisatie.
                                                             </div>
                                                         )}
                                                     </div>
@@ -1015,7 +1009,7 @@ export default function ModalVouchersUpload({
                                                         className="button button-primary"
                                                         onClick={() => uploadToServer()}
                                                         data-dusk="uploadFileButton">
-                                                        {t('csv_upload.buttons.upload')}
+                                                        {translate('csv_upload.buttons.upload')}
                                                     </button>
                                                 )}
                                             </div>
@@ -1032,7 +1026,7 @@ export default function ModalVouchersUpload({
                         onClick={closeModal}
                         id="close"
                         data-dusk="closeModalButton">
-                        {t('modal_funds_add.buttons.close')}
+                        {translate('modal_funds_add.buttons.close')}
                     </button>
                 </div>
             </div>

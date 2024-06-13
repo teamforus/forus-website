@@ -76,6 +76,7 @@ export class FileService<T = File> {
         }));
     }
 
+    // todo: rewrite without later (low prio)
     public base64ToBlob = (b64Data: string, contentType = '', sliceSize = 512) => {
         const byteCharacters = atob(b64Data);
         const byteArrays = [];

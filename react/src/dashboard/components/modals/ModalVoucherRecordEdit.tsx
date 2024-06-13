@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { ModalState } from '../../modules/modals/context/ModalContext';
-import { classList } from '../../helpers/utils';
 import useFormBuilder from '../../hooks/useFormBuilder';
 import useSetProgress from '../../hooks/useSetProgress';
 import SelectControl from '../elements/select-control/SelectControl';
@@ -19,28 +18,27 @@ import DatePickerControl from '../elements/forms/controls/DatePickerControl';
 
 export default function ModalVoucherRecordEdit({
     modal,
-    className,
-    voucher,
-    organization,
     record,
-    existingRecordTypes,
+    voucher,
     onClose,
+    className,
+    organization,
 }: {
     modal: ModalState;
-    className?: string;
-    voucher: Voucher;
-    organization: Organization;
     record: VoucherRecord;
-    existingRecordTypes: Array<string>;
+    voucher: Voucher;
     onClose: (voucherRecord: VoucherRecord) => void;
+    className?: string;
+    organization: Organization;
 }) {
-    const setProgress = useSetProgress();
     const pushDanger = usePushDanger();
     const pushSuccess = usePushSuccess();
+    const setProgress = useSetProgress();
 
     const recordTypeService = useRecordTypeService();
     const voucherRecordService = useVoucherRecordService();
 
+    const [existingRecordTypes, setExistingRecordTypes] = useState<Array<string>>([]);
     const [recordTypes, setRecordTypes] = useState<Array<Partial<RecordType>>>([]);
 
     const form = useFormBuilder(
@@ -55,7 +53,7 @@ export default function ModalVoucherRecordEdit({
                   value: '',
                   record_type_key: recordTypes[0]?.key || null,
               },
-        async (values) => {
+        (values) => {
             const { record_type_key, value, note } = values;
             const data = { record_type_key, value, note };
 
@@ -96,6 +94,20 @@ export default function ModalVoucherRecordEdit({
         });
     }, [existingRecordTypes, record, recordTypeService, setProgress]);
 
+    const fetchExistingRecordTypes = useCallback(() => {
+        setProgress(0);
+
+        voucherRecordService
+            .list(organization.id, voucher.id, { per_page: 100 })
+            .then((res) => setExistingRecordTypes(res.data.data.map((record) => record.record_type_key)))
+            .catch((res) => pushDanger('Mislukt!', res.data.message))
+            .finally(() => setProgress(100));
+    }, [organization.id, setProgress, voucher.id, voucherRecordService, pushDanger]);
+
+    useEffect(() => {
+        fetchExistingRecordTypes();
+    }, [fetchExistingRecordTypes]);
+
     useEffect(() => {
         fetchRecordTypes();
     }, [fetchRecordTypes]);
@@ -105,14 +117,7 @@ export default function ModalVoucherRecordEdit({
     }, [formUpdate, recordTypes]);
 
     return (
-        <div
-            className={classList([
-                'modal',
-                'modal-md',
-                'modal-animated',
-                modal.loading ? 'modal-loading' : null,
-                className,
-            ])}>
+        <div className={`modal modal-md modal-animated ${modal.loading ? 'modal-loading' : ''} ${className}`}>
             <div className="modal-backdrop" onClick={modal.close} />
 
             <form className="modal-window form" onSubmit={form.submit}>
@@ -151,7 +156,7 @@ export default function ModalVoucherRecordEdit({
                                         <input
                                             type="text"
                                             className="form-control"
-                                            value={form.values.value}
+                                            value={form.values.value || ''}
                                             placeholder="Value"
                                             onChange={(e) => form.update({ value: e.target.value })}
                                         />
@@ -159,9 +164,7 @@ export default function ModalVoucherRecordEdit({
                                         <DatePickerControl
                                             value={dateParse(form.values.value)}
                                             placeholder={'yyyy-MM-dd'}
-                                            onChange={(value: Date) => {
-                                                form.update({ value: dateFormat(value) });
-                                            }}
+                                            onChange={(value: Date) => form.update({ value: dateFormat(value) })}
                                         />
                                     )}
                                     <FormError error={form.errors?.value} />
@@ -172,7 +175,7 @@ export default function ModalVoucherRecordEdit({
                                     <textarea
                                         placeholder="Note"
                                         className="form-control r-n"
-                                        value={form.values.note}
+                                        value={form.values.note || ''}
                                         onChange={(e) => form.update({ note: e.target.value })}
                                     />
 

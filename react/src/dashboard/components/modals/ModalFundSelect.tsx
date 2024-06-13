@@ -1,8 +1,6 @@
 import React from 'react';
 import { ModalState } from '../../modules/modals/context/ModalContext';
-import { classList } from '../../helpers/utils';
 import useFormBuilder from '../../hooks/useFormBuilder';
-import useSetProgress from '../../hooks/useSetProgress';
 import Fund from '../../props/models/Fund';
 import SelectControl from '../elements/select-control/SelectControl';
 import SelectControlOptions from '../elements/select-control/templates/SelectControlOptions';
@@ -10,35 +8,32 @@ import FormError from '../elements/forms/errors/FormError';
 
 export default function ModalFundSelect({
     modal,
-    className,
     funds,
     fund_id = null,
+    className,
     onSelect,
 }: {
     modal: ModalState;
-    className?: string;
     funds: Array<Partial<Fund>>;
     fund_id?: number;
+    className?: string;
     onSelect: (fund: Partial<Fund>) => void;
 }) {
-    const setProgress = useSetProgress();
-
-    const form = useFormBuilder({ fund_id: fund_id ? fund_id : funds[0]?.id }, async (values) => {
-        setProgress(0);
-
-        onSelect(funds.find((fund) => fund.id === values.fund_id));
-        modal.close();
-    });
+    const form = useFormBuilder(
+        {
+            fund_id: fund_id ? fund_id : funds[0]?.id,
+        },
+        (values) => {
+            onSelect(funds.find((fund) => fund.id === values.fund_id));
+            modal.close();
+        },
+    );
 
     return (
         <div
-            className={classList([
-                'modal',
-                'modal-animated',
-                'modal-voucher-create',
-                modal.loading ? 'modal-loading' : null,
-                className,
-            ])}>
+            className={`modal modal-animated modal-voucher-create ${
+                modal.loading ? 'modal-loading' : null
+            } ${className}`}>
             <div className="modal-backdrop" onClick={modal.close} />
 
             <form className="modal-window form" onSubmit={form.submit}>
