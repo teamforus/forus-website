@@ -41,7 +41,7 @@ const RouterLayout = ({ envData }: { envData: EnvDataProp }) => {
     }, [setEnvData, envData]);
 
     return (
-        <Layout envData={envData}>
+        <Layout>
             <Routes>
                 {getRoutes().map((route) => (
                     <Route key={route.state.name} path={route.state.path} element={route.element} />

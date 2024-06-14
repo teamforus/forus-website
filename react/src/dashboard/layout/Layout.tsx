@@ -10,11 +10,12 @@ import { LayoutType } from '../modules/state_router/RouterProps';
 import useAuthIdentity from '../hooks/useAuthIdentity';
 import useActiveOrganization from '../hooks/useActiveOrganization';
 import { Libraries, LoadScript } from '@react-google-maps/api';
-import EnvDataProp from '../../props/EnvData';
+import useEnvData from '../hooks/useEnvData';
 
-export const Layout = ({ envData, children }: { envData: EnvDataProp; children: React.ReactElement }) => {
+export const Layout = ({ children }: { children: React.ReactElement }) => {
     const { modals } = useContext(modalsContext);
     const { route } = useStateRoutes();
+    const envData = useEnvData();
 
     const layout = route?.state?.layout;
     const authIdentity = useAuthIdentity();
@@ -30,6 +31,10 @@ export const Layout = ({ envData, children }: { envData: EnvDataProp; children: 
     useEffect(() => {
         pageScrollRef?.current?.scrollTo({ top: 0 });
     }, [route?.pathname]);
+
+    if (!envData?.config) {
+        return null;
+    }
 
     return (
         <LoadScript googleMapsApiKey={envData?.config?.google_maps_api_key} libraries={libraries}>

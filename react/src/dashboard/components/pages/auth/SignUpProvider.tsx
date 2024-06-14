@@ -47,14 +47,17 @@ import useFilter from '../../../hooks/useFilter';
 import useDemoTransactionService from '../../../services/DemoTransactionService';
 import { uniq } from 'lodash';
 import useAppConfigs from '../../../hooks/useAppConfigs';
+import usePushDanger from '../../../hooks/usePushDanger';
 
 type OfficeLocal = Office & { edit?: boolean };
 
 export default function SignUpProvider() {
     const { t } = useTranslation();
-    const isMobile = window.innerWidth < 1000;
     const envData = useEnvData();
+
+    const isMobile = window.innerWidth < 1000;
     const appConfigs = useAppConfigs();
+    const pushDanger = usePushDanger();
 
     const [printDebug] = useState(false);
 
@@ -92,7 +95,7 @@ export default function SignUpProvider() {
     const [orgMediaFile, setOrgMediaFile] = useState(null);
     const [progressStorage] = useState(new ProgressStorage('validator-sign_up'));
 
-    const [offices, setOffices] = useState<Array<OfficeLocal>>([]);
+    const [offices, setOffices] = useState<Array<OfficeLocal>>(null);
     const [employees, setEmployees] = useState<Array<Employee>>(null);
     const [organization, setOrganization] = useState(null);
     const [hasApp, setHasApp] = useState(true);
@@ -276,10 +279,15 @@ export default function SignUpProvider() {
                 <ModalNotification
                     modal={modal}
                     title={'Bevestig uitnodiging'}
-                    description={[
-                        `Wilt u medewerker met het e-mailadres <strong class='text-primary'>${employeeForm.values.email}</strong> uitnodigen?`,
-                        `Deze medewerker zal hier over een e-mail ontvangen.`,
-                    ]}
+                    className={'modal-md'}
+                    description={
+                        <Fragment>
+                            Wilt u medewerker met het e-mailadres{' '}
+                            <strong className="text-primary">{employeeForm.values.email}</strong> uitnodigen?
+                            <br />
+                            Deze medewerker zal hier over een e-mail ontvangen.
+                        </Fragment>
+                    }
                     buttonCancel={{
                         text: 'Annuleer',
                         onClick: () => modal.close(),
@@ -329,19 +337,22 @@ export default function SignUpProvider() {
                         text: 'Verwijderen',
                         onClick: () => {
                             modal.close();
-                            officeService.destroy(office.organization_id, office.id).then(() => {
-                                setOffices((offices) => {
-                                    return offices.filter(
-                                        (_office) => typeof _office.id == 'undefined' || _office.id != office.id,
-                                    );
-                                });
-                            });
+                            officeService
+                                .destroy(office.organization_id, office.id)
+                                .then(() => {
+                                    setOffices((offices) => {
+                                        return offices.filter((_office) => {
+                                            return typeof _office.id == 'undefined' || _office.id != office.id;
+                                        });
+                                    });
+                                })
+                                .catch((err: ResponseError) => pushDanger('Mislukt!', err.data.message));
                         },
                     }}
                 />
             ));
         },
-        [officeService, openModal],
+        [officeService, openModal, pushDanger],
     );
 
     const addOffice = useCallback(() => {
@@ -1818,7 +1829,7 @@ export default function SignUpProvider() {
                                         <button
                                             type={'button'}
                                             className="button button-text button-text-padless"
-                                            disabled={offices?.length <= 0}
+                                            disabled={!offices || offices?.length == 0}
                                             onClick={() => next()}>
                                             {t('sign_up_provider.buttons.next')}
                                             <em className="mdi mdi-chevron-right icon-right" />
@@ -1841,9 +1852,9 @@ export default function SignUpProvider() {
                         <div className="sign_up-pane">
                             <div className="sign_up-pane-header">{t('sign_up_provider.header.title_step_7')}</div>
                             <div className="sign_up-pane-body">
-                                <div
-                                    className="sign_up-pane-text"
-                                    dangerouslySetInnerHTML={{ __html: t('sign_up_provider.header.subtitle_step_7') }}
+                                <TranslateHtml
+                                    component={<div className="sign_up-pane-text" />}
+                                    i18n={'sign_up_provider.header.subtitle_step_7'}
                                 />
                             </div>
                             <div className="sign_up-pane-body">
