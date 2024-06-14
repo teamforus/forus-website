@@ -148,12 +148,6 @@ export default function SignUpValidator() {
         }
 
         goToStep(step);
-
-        return () => {
-            if (location.hash.indexOf('sign-up') === -1) {
-                progressStorage.clear();
-            }
-        };
     }, [
         STEP_CREATE_PROFILE,
         STEP_INFO_DETAILS,
@@ -166,6 +160,10 @@ export default function SignUpValidator() {
         organizations,
         progressStorage,
     ]);
+
+    useEffect(() => {
+        return () => progressStorage.clear();
+    }, [progressStorage]);
 
     return (
         <div className="block block-sign_up">

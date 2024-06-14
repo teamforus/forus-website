@@ -109,7 +109,7 @@ export default function SignUpStepProfileCreate({ panelType }: { panelType: 'spo
                 <div className="sign_up-pane-body">
                     {panelType === 'validator' && (
                         <div className="sign_up-pane-heading">
-                            {translate(`sign_up_${panelType}.header.subtitle_step_3`)}
+                            {translate(`sign_up_validator.header.subtitle_step_3`)}
                         </div>
                     )}
                     <div className="sign_up-pane-text">{translate(`sign_up_${panelType}.labels.terms`)}</div>

@@ -116,12 +116,6 @@ export default function SignUpSponsor() {
         }
 
         goToStep(step);
-
-        return () => {
-            if (location.hash.indexOf('sign-up') === -1) {
-                progressStorage.clear();
-            }
-        };
     }, [
         STEP_CREATE_PROFILE,
         STEP_INFO_GENERAL,
@@ -133,6 +127,10 @@ export default function SignUpSponsor() {
         organizations,
         progressStorage,
     ]);
+
+    useEffect(() => {
+        return () => progressStorage.clear();
+    }, [progressStorage]);
 
     return (
         <div className="block block-sign_up">
