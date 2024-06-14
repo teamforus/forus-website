@@ -1,6 +1,4 @@
 import React, { Fragment, useCallback, useEffect, useState } from 'react';
-import { NavLink } from 'react-router-dom';
-import { getStateRouteUrl } from '../../../modules/state_router/Router';
 import { useFileService } from '../../../services/FileService';
 import { PaginationData, ResponseError } from '../../../props/ApiResponses';
 import LoadingCard from '../../elements/loading-card/LoadingCard';
@@ -26,6 +24,7 @@ import useSetProgress from '../../../hooks/useSetProgress';
 import { NumberParam, StringParam, createEnumParam } from 'use-query-params';
 import useTranslate from '../../../hooks/useTranslate';
 import useFilterNext from '../../../modules/filter_next/useFilterNext';
+import StateNavLink from '../../../modules/state_router/StateNavLink';
 
 export default function SponsorProviderOrganizations() {
     const translate = useTranslate();
@@ -193,13 +192,16 @@ export default function SponsorProviderOrganizations() {
             <div className="card">
                 {requests > 0 && (
                     <div
-                        className={`card-block card-block-requests card-block-requests${
-                            requestsExpired > 0 ? '-danger' : requestsPending > 0 ? '-warning' : ''
+                        className={`card-block card-block-requests ${
+                            requestsExpired > 0
+                                ? 'card-block-requests-danger'
+                                : requestsPending > 0
+                                ? 'card-block-requests-warning'
+                                : ''
                         }`}>
-                        <NavLink
-                            to={getStateRouteUrl('sponsor-fund-unsubscriptions', {
-                                organizationId: activeOrganization.id,
-                            })}
+                        <StateNavLink
+                            name={'sponsor-fund-unsubscriptions'}
+                            params={{ organizationId: activeOrganization.id }}
                             className="card-section flex">
                             {requestsExpired > 0 && (
                                 <div className="card-heading">
@@ -226,7 +228,7 @@ export default function SponsorProviderOrganizations() {
                                 Bekijken
                                 <em className="mdi mdi-arrow-right icon-end" />
                             </div>
-                        </NavLink>
+                        </StateNavLink>
                     </div>
                 )}
             </div>

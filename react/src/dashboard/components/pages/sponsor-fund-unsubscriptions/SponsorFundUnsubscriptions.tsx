@@ -5,28 +5,27 @@ import usePaginatorService from '../../../modules/paginator/services/usePaginato
 import LoadingCard from '../../elements/loading-card/LoadingCard';
 import useSetProgress from '../../../hooks/useSetProgress';
 import usePushDanger from '../../../hooks/usePushDanger';
-import { createEnumParam } from 'use-query-params';
+import { createEnumParam, NumberParam } from 'use-query-params';
 import Paginator from '../../../modules/paginator/components/Paginator';
-import EmptyCard from '../../elements/empty-card/EmptyCard';
-import { getStateRouteUrl } from '../../../modules/state_router/Router';
 import useTranslate from '../../../hooks/useTranslate';
-import { NavLink } from 'react-router-dom';
 import useFundUnsubscribeService from '../../../services/FundUnsubscribeService';
 import FundProviderUnsubscribe from '../../../props/models/FundProviderUnsubscribe';
 import useFilterNext from '../../../modules/filter_next/useFilterNext';
 import SponsorFundUnsubscriptionTableItem from './elements/SponsorFundUnsubscriptionTableItem';
+import LoaderTableCard from '../../elements/loader-table-card/LoaderTableCard';
+import StateNavLink from '../../../modules/state_router/StateNavLink';
 
 export default function SponsorFundUnsubscriptions() {
+    const activeOrganization = useActiveOrganization();
+
     const translate = useTranslate();
     const pushDanger = usePushDanger();
     const setProgress = useSetProgress();
-    const activeOrganization = useActiveOrganization();
 
     const paginatorService = usePaginatorService();
     const fundUnsubscribeService = useFundUnsubscribeService();
 
     const [loading, setLoading] = useState(false);
-    const [noteTooltip, setNoteTooltip] = useState(null);
     const [paginatorKey] = useState('sponsor-fund-unsubscriptions');
     const [fundUnsubscribes, setFundUnsubscribes] = useState<PaginationData<FundProviderUnsubscribe>>(null);
 
@@ -49,7 +48,11 @@ export default function SponsorFundUnsubscriptions() {
         },
         {
             queryParamsRemoveDefault: true,
-            queryParams: { state: createEnumParam(['pending', 'approved', 'canceled']) },
+            queryParams: {
+                page: NumberParam,
+                state: createEnumParam(['pending', 'approved', 'canceled']),
+                per_page: NumberParam,
+            },
         },
     );
 
@@ -67,7 +70,9 @@ export default function SponsorFundUnsubscriptions() {
             });
     }, [activeOrganization.id, filterActiveValues, fundUnsubscribeService, pushDanger, setProgress]);
 
-    useEffect(() => fetchFundUnsubscribes(), [fetchFundUnsubscribes]);
+    useEffect(() => {
+        fetchFundUnsubscribes();
+    }, [fetchFundUnsubscribes]);
 
     if (!fundUnsubscribes) {
         return <LoadingCard />;
@@ -75,23 +80,19 @@ export default function SponsorFundUnsubscriptions() {
 
     return (
         <Fragment>
-            <NavLink
+            <StateNavLink
                 className="button button-text"
-                to={getStateRouteUrl('sponsor-provider-organizations', {
-                    organizationId: activeOrganization.id,
-                })}>
+                name={'sponsor-provider-organizations'}
+                params={{ organizationId: activeOrganization.id }}>
                 <em className="mdi mdi-arrow-left icon-start" />
                 Terug naar de vorige pagina
-            </NavLink>
+            </StateNavLink>
 
             <div className="card">
                 <div className="card-header">
                     <div className="flex">
                         <div className="flex flex-grow">
-                            <div className="card-title">
-                                <span>Afmeldingen</span>
-                                <span className="span-count">{fundUnsubscribes.meta.total}</span>
-                            </div>
+                            <div className="card-title">Afmeldingen ({fundUnsubscribes.meta.total})</div>
                         </div>
 
                         <div className="block block-label-tabs nowrap pull-right">
@@ -111,7 +112,10 @@ export default function SponsorFundUnsubscriptions() {
                     </div>
                 </div>
 
-                {!loading && fundUnsubscribes.meta.total > 0 && (
+                <LoaderTableCard
+                    loading={loading}
+                    empty={fundUnsubscribes.meta.total == 0}
+                    emptyText={'Geen fondsen gevonden'}>
                     <div className="card-section">
                         <div className="card-block card-block-table">
                             <div className="table-wrapper">
@@ -132,11 +136,9 @@ export default function SponsorFundUnsubscriptions() {
                                     <tbody>
                                         {fundUnsubscribes.data.map((unsubscription) => (
                                             <SponsorFundUnsubscriptionTableItem
+                                                key={unsubscription.id}
                                                 unsubscription={unsubscription}
                                                 organization={activeOrganization}
-                                                key={unsubscription.fund_provider.organization.id}
-                                                noteTooltip={noteTooltip}
-                                                setNoteTooltip={setNoteTooltip}
                                             />
                                         ))}
                                     </tbody>
@@ -144,30 +146,18 @@ export default function SponsorFundUnsubscriptions() {
                             </div>
                         </div>
                     </div>
-                )}
 
-                {!loading && fundUnsubscribes.meta.total == 0 && (
-                    <EmptyCard type={'card-section'} title={'Geen fondsen gevonden'} />
-                )}
-
-                {!loading && fundUnsubscribes.meta && (
-                    <div className="card-section" hidden={fundUnsubscribes.meta.last_page < 2}>
-                        <Paginator
-                            meta={fundUnsubscribes.meta}
-                            filters={filterValues}
-                            updateFilters={filtersUpdate}
-                            perPageKey={paginatorKey}
-                        />
-                    </div>
-                )}
-
-                {loading && (
-                    <div className="card-section">
-                        <div className="card-loading">
-                            <div className="mdi mdi-loading mdi-spin" />
+                    {fundUnsubscribes.meta.total > 0 && (
+                        <div className="card-section">
+                            <Paginator
+                                meta={fundUnsubscribes.meta}
+                                filters={filterValues}
+                                updateFilters={filtersUpdate}
+                                perPageKey={paginatorKey}
+                            />
                         </div>
-                    </div>
-                )}
+                    )}
+                </LoaderTableCard>
             </div>
         </Fragment>
     );

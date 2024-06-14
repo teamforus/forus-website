@@ -1,24 +1,19 @@
 import React, { useState } from 'react';
 import { strLimit } from '../../../../helpers/string';
 import Organization from '../../../../props/models/Organization';
-import ClickOutside from '../../../elements/click-outside/ClickOutside';
 import FundProviderUnsubscribe from '../../../../props/models/FundProviderUnsubscribe';
 import useAssetUrl from '../../../../hooks/useAssetUrl';
-import { useNavigateState } from '../../../../modules/state_router/Router';
+import StateNavLink from '../../../../modules/state_router/StateNavLink';
+import Tooltip from '../../../elements/tooltip/Tooltip';
 
 export default function SponsorFundUnsubscriptionTableItem({
     organization,
     unsubscription,
-    noteTooltip,
-    setNoteTooltip,
 }: {
     organization: Organization;
     unsubscription: FundProviderUnsubscribe;
-    noteTooltip?: number;
-    setNoteTooltip: (item: number) => void;
 }) {
     const assetUrl = useAssetUrl();
-    const navigateState = useNavigateState();
 
     const [stateClasses] = useState({
         approved: 'success',
@@ -28,15 +23,11 @@ export default function SponsorFundUnsubscriptionTableItem({
     });
 
     return (
-        <tr
-            key={unsubscription.fund_provider.organization.id}
+        <StateNavLink
+            customElement={'tr'}
             className={'cursor-pointer'}
-            onClick={() =>
-                navigateState('sponsor-provider-organization', {
-                    organizationId: organization.id,
-                    id: unsubscription.fund_provider.organization.id,
-                })
-            }>
+            name={'sponsor-provider-organization'}
+            params={{ organizationId: organization.id, id: unsubscription.fund_provider.organization.id }}>
             <td>
                 <div className="td-entity-main">
                     <div className="td-entity-main-media">
@@ -44,7 +35,7 @@ export default function SponsorFundUnsubscriptionTableItem({
                             className="td-media td-media-sm td-media-round"
                             src={
                                 unsubscription.fund_provider.organization.logo?.sizes.thumbnail ||
-                                assetUrl('/assets/img/placeholders/fund-thumbnail.png')
+                                assetUrl('/assets/img/placeholders/organization-thumbnail.png')
                             }
                             alt={''}
                         />
@@ -53,15 +44,15 @@ export default function SponsorFundUnsubscriptionTableItem({
                     <div className="td-entity-main-content">
                         <div
                             className="text-strong text-primary"
-                            title={unsubscription.fund_provider.organization.name || '-'}>
-                            {strLimit(unsubscription.fund_provider.organization.name, 32)}
+                            title={unsubscription.fund_provider?.organization?.name || '-'}>
+                            {strLimit(unsubscription.fund_provider?.organization?.name, 32)}
                         </div>
                     </div>
                 </div>
             </td>
 
-            <td title={unsubscription.fund_provider.fund.name || '-'}>
-                {strLimit(unsubscription.fund_provider.fund.name, 25)}
+            <td title={unsubscription.fund_provider?.fund?.name || '-'}>
+                {strLimit(unsubscription.fund_provider?.fund?.name, 25)}
             </td>
 
             <td className="nowrap">
@@ -69,34 +60,17 @@ export default function SponsorFundUnsubscriptionTableItem({
             </td>
 
             <td title={unsubscription.note}>
-                <div className="flex">
-                    <span>{strLimit(unsubscription.note, 25)}</span>
-                    &nbsp;
-                    {unsubscription.note.length >= 25 && (
-                        <em
-                            className={`td-icon mdi mdi-information block block-tooltip-details ${
-                                noteTooltip === unsubscription.fund_provider.organization.id ? 'active' : ''
-                            }`}
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                setNoteTooltip(unsubscription.fund_provider.organization.id);
-                            }}>
-                            {noteTooltip === unsubscription.fund_provider.organization.id && (
-                                <ClickOutside
-                                    className="tooltip-content"
-                                    onClickOutside={(e) => {
-                                        e.stopPropagation();
-                                        e.preventDefault();
-                                        setNoteTooltip(null);
-                                    }}>
-                                    <div title={unsubscription.note} className="tooltip-text">
-                                        {strLimit(unsubscription.note, 512)}
-                                    </div>
-                                </ClickOutside>
-                            )}
-                        </em>
-                    )}
-                </div>
+                {unsubscription.note ? (
+                    <div className="flex">
+                        {strLimit(unsubscription.note, 25)}
+                        &nbsp;
+                        {unsubscription.note?.length >= 25 && (
+                            <Tooltip type={'primary'} position={'bottom'} text={unsubscription.note} maxLength={1000} />
+                        )}
+                    </div>
+                ) : (
+                    <div className={'text-muted'}>-</div>
+                )}
             </td>
 
             <td className="nowrap">
@@ -112,6 +86,6 @@ export default function SponsorFundUnsubscriptionTableItem({
                     <strong className="text-strong text-md">{unsubscription.unsubscribe_at_locale}</strong>
                 </div>
             </td>
-        </tr>
+        </StateNavLink>
     );
 }
