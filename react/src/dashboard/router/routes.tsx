@@ -134,7 +134,6 @@ router.state('funds-show', <OrganizationsFundsShow />, {
 
 router.state('funds-create', <OrganizationsFundsEdit />, {
     path: `/organizations/:organizationId/funds/create`,
-    fallbackState: 'organizations',
 });
 
 router.state('funds-edit', <OrganizationsFundsEdit />, {

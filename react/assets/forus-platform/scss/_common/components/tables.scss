@@ -481,13 +481,14 @@
                 }
             }
 
-            &.cursor-pointer {
-                &:hover {
-                    td,
-                    th {
-                        background: #f6f8f9;
-                        cursor: pointer;
-                    }
+            &.cursor-pointer:hover,
+            &.clickable:hover,
+            &[ng-click]:hover,
+            &[ui-sref]:hover {
+                td,
+                th {
+                    background: #f6f8f9;
+                    cursor: pointer;
                 }
             }
 

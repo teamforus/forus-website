@@ -45,19 +45,9 @@ import Media from '../../../props/models/Media';
 import RecordType from '../../../props/models/RecordType';
 import FaqEditor from '../../elements/faq-editor-funds/FaqEditor';
 
-type ApplicationMethodProp = {
-    key?: string;
-    name?: string;
-    default_button_text?: string;
-    configs?: {
-        allow_fund_requests: number;
-        allow_prevalidations: number;
-        allow_direct_requests: number;
-    };
-};
-
 export default function OrganizationsFundsEdit() {
-    const [fundId] = useState(useParams().fundId);
+    const { fundId } = useParams();
+    const activeOrganization = useActiveOrganization();
 
     const assetUrl = useAssetUrl();
     const translate = useTranslate();
@@ -66,7 +56,6 @@ export default function OrganizationsFundsEdit() {
     const pushSuccess = usePushSuccess();
     const navigateState = useNavigateState();
     const appConfigs = useAppConfigs();
-    const activeOrganization = useActiveOrganization();
 
     const tagService = useTagService();
     const fundService = useFundService();
@@ -135,6 +124,10 @@ export default function OrganizationsFundsEdit() {
         },
     ]);
 
+    const applicationMethodsByKey = useMemo(() => {
+        return applicationMethods.reduce((list, item) => ({ ...list, [item.key]: item }), {});
+    }, [applicationMethods]);
+
     const validators = useMemo<Array<{ id?: number; email: string }>>(() => {
         return [
             { id: null, email: 'Geen' },
@@ -160,13 +153,6 @@ export default function OrganizationsFundsEdit() {
                 });
         },
         [mediaService, pushDanger],
-    );
-
-    const findApplicationMethod = useCallback(
-        (key: string): ApplicationMethodProp => {
-            return applicationMethods.filter((method) => method.key == key)[0] || {};
-        },
-        [applicationMethods],
     );
 
     const form = useFormBuilder<{
@@ -211,7 +197,7 @@ export default function OrganizationsFundsEdit() {
             criteria: [],
             default_validator_employee_id: null,
             application_method: 'application_form',
-            request_btn_text: findApplicationMethod('application_form').default_button_text,
+            request_btn_text: applicationMethodsByKey['application_form']?.default_button_text,
             state: fundStates[0].value,
 
             // contact information
@@ -263,7 +249,7 @@ export default function OrganizationsFundsEdit() {
                         ...data,
                         faq: faq,
                         media_uid: (fundPhoto ? await storeMedia(fundPhoto) : null)?.uid,
-                        ...(findApplicationMethod(values.application_method).configs || {}),
+                        ...(applicationMethodsByKey[values.application_method]?.configs || {}),
                     })
                     .then(() => {
                         navigateState('funds-show', { organizationId: activeOrganization.id, fundId: fundId });
@@ -326,14 +312,14 @@ export default function OrganizationsFundsEdit() {
 
     const onMethodChange = useCallback(
         (value: string, prevValue: string) => {
-            const method = findApplicationMethod(value);
-            const preMethod = findApplicationMethod(prevValue);
+            const method = applicationMethodsByKey[value];
+            const preMethod = applicationMethodsByKey[prevValue];
 
-            if (preMethod.default_button_text == form.values.request_btn_text) {
-                form.update({ request_btn_text: method.default_button_text });
+            if (preMethod?.default_button_text == form.values.request_btn_text) {
+                form.update({ request_btn_text: method?.default_button_text });
             }
         },
-        [findApplicationMethod, form],
+        [applicationMethodsByKey, form],
     );
 
     const fetchValidatorEmployees = useCallback(() => {
@@ -418,9 +404,7 @@ export default function OrganizationsFundsEdit() {
     }, [fund?.allow_fund_requests, fund?.allow_prevalidations]);
 
     useEffect(() => {
-        if (fundId) {
-            fetchTags();
-        }
+        fundId && fetchTags();
     }, [fetchTags, fundId]);
 
     useEffect(() => {
@@ -508,7 +492,7 @@ export default function OrganizationsFundsEdit() {
                                 </label>
                                 <input
                                     className="form-control"
-                                    defaultValue={form.values.name}
+                                    value={form.values.name || ''}
                                     type="text"
                                     placeholder="Naam"
                                     onChange={(e) => {
@@ -525,7 +509,7 @@ export default function OrganizationsFundsEdit() {
                                         className="form-control r-n"
                                         maxLength={500}
                                         placeholder="Omschrijving"
-                                        defaultValue={form.values.description_short}
+                                        value={form.values.description_short || ''}
                                         onChange={(e) => {
                                             form.update({ description_short: e.target.value });
                                         }}
@@ -709,7 +693,7 @@ export default function OrganizationsFundsEdit() {
                                         <input
                                             className="form-control"
                                             placeholder="https://gemeente+1.nl/aanmelden"
-                                            defaultValue={form.values.external_page_url}
+                                            value={form.values.external_page_url || ''}
                                             onChange={(e) => {
                                                 form.update({ external_page_url: e.target.value });
                                             }}
@@ -777,9 +761,7 @@ export default function OrganizationsFundsEdit() {
                                             value={form.values.request_btn_text}
                                             placeholder="Aanvragen"
                                             onChange={(e) => {
-                                                form.update({
-                                                    request_btn_text: e.target.value,
-                                                });
+                                                form.update({ request_btn_text: e.target.value });
                                             }}
                                         />
                                         <FormError error={form.errors?.request_btn_text} />
@@ -801,7 +783,7 @@ export default function OrganizationsFundsEdit() {
                                     <input
                                         className="form-control"
                                         placeholder="Aanvragen"
-                                        defaultValue={form.values.external_link_text}
+                                        value={form.values.external_link_text || ''}
                                         onChange={(e) => {
                                             form.update({ external_link_text: e.target.value });
                                         }}
@@ -817,7 +799,7 @@ export default function OrganizationsFundsEdit() {
                                         <input
                                             className="form-control"
                                             placeholder="https://gemeente+1.nl/aanmelden"
-                                            defaultValue={form.values.external_link_url}
+                                            value={form.values.external_link_url || ''}
                                             onChange={(e) => {
                                                 form.update({ external_link_url: e.target.value });
                                             }}
@@ -858,7 +840,7 @@ export default function OrganizationsFundsEdit() {
                             <input
                                 className="form-control"
                                 placeholder="Veel gestelde vragen"
-                                defaultValue={form.values.faq_title}
+                                value={form.values.faq_title || ''}
                                 onChange={(e) => {
                                     form.update({ faq_title: e.target.value });
                                 }}
@@ -896,9 +878,9 @@ export default function OrganizationsFundsEdit() {
                                             allowSearch={false}
                                             value={form.values.description_position}
                                             options={descriptionPositions}
-                                            onChange={(description_position: string) =>
-                                                form.update({ description_position })
-                                            }
+                                            onChange={(description_position: string) => {
+                                                form.update({ description_position });
+                                            }}
                                         />
                                         <FormError error={form.errors?.description_position} />
                                     </div>
@@ -1127,7 +1109,10 @@ export default function OrganizationsFundsEdit() {
                                     <input
                                         className="form-control"
                                         type="number"
-                                        defaultValue={form.values.notification_amount}
+                                        value={form.values.notification_amount || ''}
+                                        onChange={(e) => {
+                                            form.update({ notification_amount: e.target.value });
+                                        }}
                                         disabled={!hasPermission(activeOrganization, 'manage_funds')}
                                         placeholder={translate('funds_edit.labels.notification_amount')}
                                     />

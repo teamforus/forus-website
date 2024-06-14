@@ -550,7 +550,9 @@ export default function OrganizationFunds() {
 
             {!loading && funds.meta.total == 0 && <EmptyCard type={'card-section'} title={'Geen fondsen gevonden'} />}
 
-            {!loading && funds.meta && (
+            {loading && <LoadingCard type={'section-card'} />}
+
+            {!loading && funds.meta.total > 0 && (
                 <div className="card-section">
                     <Paginator
                         meta={funds.meta}
@@ -558,14 +560,6 @@ export default function OrganizationFunds() {
                         updateFilters={filter.update}
                         perPageKey={paginatorKey}
                     />
-                </div>
-            )}
-
-            {loading && (
-                <div className="card-section">
-                    <div className="card-loading">
-                        <div className="mdi mdi-loading mdi-spin" />
-                    </div>
                 </div>
             )}
         </div>

@@ -1,6 +1,7 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import Fund from '../../../../props/models/Fund';
 import EmptyCard from '../../../elements/empty-card/EmptyCard';
+import TableDateTime from '../../../elements/tables/elements/TableDateTime';
 
 export default function OrganizationsFundsShowFormulasCard({ fund }: { fund: Fund }) {
     return (
@@ -28,24 +29,10 @@ export default function OrganizationsFundsShowFormulasCard({ fund }: { fund: Fun
                                         <td>{formula.amount_locale}</td>
                                         <td>{formula.record_type_name || '-'}</td>
                                         <td>
-                                            <strong className="text-primary">
-                                                {formula.created_at_locale?.split(' - ')[0]}
-                                            </strong>
-                                            <br />
-                                            {formula.created_at_locale?.split(' - ')[1]}
+                                            <TableDateTime value={formula.created_at_locale} />
                                         </td>
                                         <td className="text-right">
-                                            {formula.updated_at_locale ? (
-                                                <Fragment>
-                                                    <strong className="text-primary">
-                                                        {formula.updated_at_locale?.split(' - ')[0]}
-                                                    </strong>
-                                                    <br />
-                                                    {formula.updated_at_locale?.split(' - ')[1]}
-                                                </Fragment>
-                                            ) : (
-                                                <span>-</span>
-                                            )}
+                                            <TableDateTime value={formula.updated_at_locale} />
                                         </td>
                                     </tr>
                                 ))}
