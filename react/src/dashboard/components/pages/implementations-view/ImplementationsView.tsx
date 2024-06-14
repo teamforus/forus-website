@@ -194,42 +194,39 @@ export default function ImplementationsView() {
                                                 </td>
                                                 <td>{fund.name}</td>
                                                 <td>
-                                                    {hasPermission(activeOrganization, 'manage_funds') && (
-                                                        <Fragment>
-                                                            {fund.state == 'active' && (
-                                                                <div className="tag tag-success">
-                                                                    {translate('fund_card_sponsor.status.active')}
-                                                                </div>
-                                                            )}
-                                                            {fund.state == 'paused' && (
-                                                                <div className="tag tag-warning">
-                                                                    {translate('fund_card_sponsor.status.paused')}
-                                                                </div>
-                                                            )}
-                                                            {fund.state == 'closed' && (
-                                                                <div className="tag tag-default">
-                                                                    {translate('fund_card_sponsor.status.closed')}
-                                                                </div>
-                                                            )}
-                                                        </Fragment>
+                                                    {fund.state == 'active' && (
+                                                        <div className="tag tag-success">
+                                                            {translate('fund_card_sponsor.status.active')}
+                                                        </div>
+                                                    )}
+                                                    {fund.state == 'paused' && (
+                                                        <div className="tag tag-warning">
+                                                            {translate('fund_card_sponsor.status.paused')}
+                                                        </div>
+                                                    )}
+                                                    {fund.state == 'closed' && (
+                                                        <div className="tag tag-default">
+                                                            {translate('fund_card_sponsor.status.closed')}
+                                                        </div>
                                                     )}
                                                 </td>
 
                                                 {activeOrganization.backoffice_available && (
                                                     <td>
                                                         <div className="button-group">
-                                                            {fund.key && (
-                                                                <StateNavLink
-                                                                    name={'fund-backoffice-edit'}
-                                                                    params={{
-                                                                        fundId: fund.id,
-                                                                        organizationId: activeOrganization.id,
-                                                                    }}
-                                                                    className={`button button-default`}>
-                                                                    <em className="mdi mdi-cog icon-start" />
-                                                                    Backoffice
-                                                                </StateNavLink>
-                                                            )}
+                                                            {hasPermission(activeOrganization, 'manage_funds') &&
+                                                                fund.key && (
+                                                                    <StateNavLink
+                                                                        name={'fund-backoffice-edit'}
+                                                                        params={{
+                                                                            fundId: fund.id,
+                                                                            organizationId: activeOrganization.id,
+                                                                        }}
+                                                                        className={`button button-default`}>
+                                                                        <em className="mdi mdi-cog icon-start" />
+                                                                        Backoffice
+                                                                    </StateNavLink>
+                                                                )}
 
                                                             <StateNavLink
                                                                 name={'funds-show'}
