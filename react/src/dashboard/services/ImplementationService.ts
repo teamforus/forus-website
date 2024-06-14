@@ -38,6 +38,13 @@ export class ImplementationService<T = Implementation> {
     }
 
     /**
+     * Update email branding
+     */
+    public updateEmailBranding(organizationId: number, id: number, data: object): Promise<ApiResponseSingle<T>> {
+        return this.apiRequest.patch(`${this.prefix}/${organizationId}/implementations/${id}/email-branding`, data);
+    }
+
+    /**
      * Update cms by id
      */
     public updateCMS(organizationId: number, id: number, data: object): Promise<ApiResponseSingle<T>> {
@@ -56,13 +63,6 @@ export class ImplementationService<T = Implementation> {
      */
     public updateEmail(organizationId: number, id: number, data: object): Promise<ApiResponseSingle<T>> {
         return this.apiRequest.patch(`${this.prefix}/${organizationId}/implementations/${id}/email`, data);
-    }
-
-    /**
-     * Update email branding by id
-     */
-    public updateEmailBranding(organizationId: number, id: number, data: object): Promise<ApiResponseSingle<T>> {
-        return this.apiRequest.patch(`${this.prefix}/${organizationId}/implementations/${id}/email-branding`, data);
     }
 
     /**

@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { ModalState } from '../../modules/modals/context/ModalContext';
-import { classList } from '../../helpers/utils';
 import ScrollEnd from '../elements/scroll-end/ScrollEnd';
 import ToggleControl from '../elements/forms/controls/ToggleControl';
 
@@ -146,14 +145,7 @@ export default function ModalDuplicatesPicker({
     }, [list, page, per_page]);
 
     return (
-        <div
-            className={classList([
-                'modal',
-                'modal-xl',
-                'modal-animated',
-                modal.loading ? 'modal-loading' : null,
-                className,
-            ])}>
+        <div className={`modal modal-xl modal-animated ${modal.loading ? 'modal-loading' : ''} ${className || ''}`}>
             <div className="modal-backdrop" onClick={modal.close} />
             <div className="modal-window">
                 <div className="modal-body">
@@ -192,7 +184,7 @@ export default function ModalDuplicatesPicker({
                                                 <span>{item.value}</span>
                                             </td>
 
-                                            {Object.values(item?.columns)?.map((column, index) => (
+                                            {item?.columns?.map((column, index) => (
                                                 <td key={index}>{column}</td>
                                             ))}
 

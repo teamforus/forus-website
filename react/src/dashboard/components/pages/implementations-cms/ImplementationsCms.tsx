@@ -1,6 +1,5 @@
-import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { Fragment, useCallback, useEffect, useState } from 'react';
 import useActiveOrganization from '../../../hooks/useActiveOrganization';
-import { useTranslation } from 'react-i18next';
 import LoadingCard from '../../elements/loading-card/LoadingCard';
 import useFormBuilder from '../../../hooks/useFormBuilder';
 import usePushSuccess from '../../../hooks/usePushSuccess';
@@ -16,18 +15,20 @@ import { useMediaService } from '../../../services/MediaService';
 import ImplementationsCmsPages from './elements/ImplementationsCmsPages';
 import ModalDangerZone from '../../modals/ModalDangerZone';
 import useOpenModal from '../../../hooks/useOpenModal';
-import PhotoSelector, { TemplateData } from '../../elements/photo-selector/PhotoSelector';
+import PhotoSelector from '../../elements/photo-selector/PhotoSelector';
 import MarkdownEditor from '../../elements/forms/markdown-editor/MarkdownEditor';
 import SelectControlOptions from '../../elements/select-control/templates/SelectControlOptions';
 import SelectControl from '../../elements/select-control/SelectControl';
 import DatePickerControl from '../../elements/forms/controls/DatePickerControl';
 import { dateFormat, dateParse } from '../../../helpers/dates';
 import CheckboxControl from '../../elements/forms/controls/CheckboxControl';
+import PhotoSelectorData from '../../elements/photo-selector/types/PhotoSelectorData';
+import useTranslate from '../../../hooks/useTranslate';
 
 export default function ImplementationsCms() {
     const { id } = useParams();
 
-    const { t } = useTranslation();
+    const translate = useTranslate();
     const openModal = useOpenModal();
     const pushDanger = usePushDanger();
     const pushSuccess = usePushSuccess();
@@ -61,7 +62,7 @@ export default function ImplementationsCms() {
             .map((n) => ++n)
             .map((option) => ({
                 value: (option * 10).toString(),
-                label: (10 - option) * 10 + '%',
+                label: `${(10 - option) * 10}%`,
             })),
     );
 
@@ -88,23 +89,20 @@ export default function ImplementationsCms() {
         { value: true, label: 'Ja' },
     ]);
 
-    const bannerMetaDefault = useMemo(
-        () => ({
-            media: null,
-            mediaLoading: false,
-            auto_text_color: true,
-            patterns: bannerPatterns,
-            opacityOptions: bannerOpacityOptions,
-            headerTextColors: headerTextColors,
-            overlay_enabled: false,
-            overlay_type: bannerPatterns[0].value,
-            overlay_opacity: bannerOpacityOptions[4].value,
-            header_text_color: headerTextColors[0].value,
-        }),
-        [bannerOpacityOptions, bannerPatterns, headerTextColors],
-    );
+    const [bannerMetaDefault] = useState({
+        media: null,
+        mediaLoading: false,
+        auto_text_color: true,
+        patterns: bannerPatterns,
+        opacityOptions: bannerOpacityOptions,
+        headerTextColors: headerTextColors,
+        overlay_enabled: false,
+        overlay_type: bannerPatterns[0].value,
+        overlay_opacity: bannerOpacityOptions[4].value,
+        header_text_color: headerTextColors[0].value,
+    });
 
-    const [bannerMeta, setBannerMeta] = useState<TemplateData>(bannerMetaDefault);
+    const [bannerMeta, setBannerMeta] = useState<PhotoSelectorData>(bannerMetaDefault);
 
     const form = useFormBuilder<{
         title?: string;
@@ -196,24 +194,24 @@ export default function ImplementationsCms() {
         submit();
     });
 
-    const { update } = form;
+    const { update: formUpdate } = form;
 
     const selectBanner = useCallback(
         (mediaFile) => {
-            setBannerMeta({ ...bannerMeta, mediaLoading: true });
+            setBannerMeta((meta) => ({ ...meta, mediaLoading: true }));
 
             mediaService
                 .store('implementation_banner', mediaFile, ['thumbnail', 'medium'])
                 .then((res) => {
                     setBannerMedia(res.data.data);
-                    setBannerMeta({ ...bannerMeta, media: res.data.data });
+                    setBannerMeta((meta) => ({ ...meta, media: res.data.data }));
                     setResetMedia(false);
-                    update({ banner_media_uid: res.data.data.uid });
+                    formUpdate({ banner_media_uid: res.data.data.uid });
                 })
                 .catch((res: ResponseError) => pushDanger('Error!', res.data.message))
-                .finally(() => setBannerMeta({ ...bannerMeta, mediaLoading: false }));
+                .finally(() => setBannerMeta((meta) => ({ ...meta, mediaLoading: false })));
         },
-        [bannerMeta, mediaService, pushDanger, update],
+        [mediaService, pushDanger, formUpdate],
     );
 
     const resetBanner = useCallback(() => {
@@ -229,42 +227,35 @@ export default function ImplementationsCms() {
             .catch((res: ResponseError) => pushDanger('Mislukt!', res.data.message));
     }, [activeOrganization.id, implementationService, id, pushDanger]);
 
-    useEffect(() => fetchImplementation(), [fetchImplementation]);
-
     useEffect(() => {
         if (implementation) {
             setInitialCommunicationType(implementation.informal_communication);
             setBannerMedia(implementation.banner);
 
-            let bannerMetaObj = {
+            setBannerMeta({
                 ...bannerMetaDefault,
+
                 media: implementation.banner,
                 overlay_type: implementation.overlay_type,
                 overlay_enabled: implementation.overlay_enabled,
                 overlay_opacity: implementation.overlay_opacity.toString(),
-            };
 
-            if (implementation.header_text_color == 'auto') {
-                bannerMetaObj = {
-                    ...bannerMetaObj,
-                    auto_text_color: true,
-                    header_text_color: implementation.banner
-                        ? implementation.banner.is_dark
-                            ? 'bright'
-                            : 'dark'
-                        : 'dark',
-                };
-            } else {
-                bannerMetaObj = {
-                    ...bannerMetaObj,
-                    auto_text_color: false,
-                    header_text_color: implementation.header_text_color,
-                };
-            }
+                ...(implementation.header_text_color == 'auto'
+                    ? {
+                          auto_text_color: true,
+                          header_text_color: implementation.banner
+                              ? implementation.banner.is_dark
+                                  ? 'bright'
+                                  : 'dark'
+                              : 'dark',
+                      }
+                    : {
+                          auto_text_color: false,
+                          header_text_color: implementation.header_text_color,
+                      }),
+            });
 
-            setBannerMeta(bannerMetaObj);
-
-            const values = {
+            formUpdate({
                 title: implementation.title,
                 description: implementation.description,
                 description_html: implementation.description_html,
@@ -280,11 +271,13 @@ export default function ImplementationsCms() {
                     expire: !!implementation.announcement?.expire_at,
                     ...(implementation?.announcement || {}),
                 },
-            };
-
-            update(values);
+            });
         }
-    }, [update, implementation, announcementTypes, announcementState, bannerMetaDefault]);
+    }, [formUpdate, implementation, announcementTypes, announcementState, bannerMetaDefault]);
+
+    useEffect(() => {
+        fetchImplementation();
+    }, [fetchImplementation]);
 
     if (!implementation) {
         return <LoadingCard />;
@@ -296,12 +289,14 @@ export default function ImplementationsCms() {
                 <StateNavLink
                     name={'implementations'}
                     params={{ organizationId: activeOrganization.id }}
+                    activeExact={true}
                     className="breadcrumb-item">
                     Webshops
                 </StateNavLink>
                 <StateNavLink
                     name={'implementations-view'}
                     params={{ organizationId: activeOrganization.id, id: implementation.id }}
+                    activeExact={true}
                     className="breadcrumb-item">
                     {implementation.name}
                 </StateNavLink>
@@ -312,7 +307,7 @@ export default function ImplementationsCms() {
                 <form className="form" onSubmit={form.submit}>
                     <div className="card-header flex-row">
                         <div className="flex flex-grow">
-                            <div className="card-title">{t('implementation_edit.header.title')}</div>
+                            <div className="card-title">{translate('implementation_edit.header.title')}</div>
                         </div>
                         <div className="flex">
                             <a
@@ -347,7 +342,7 @@ export default function ImplementationsCms() {
                             </StateNavLink>
 
                             <button className="button button-primary button-sm" type="submit">
-                                {t('funds_edit.buttons.confirm')}
+                                {translate('funds_edit.buttons.confirm')}
                             </button>
                         </div>
                     </div>
@@ -359,8 +354,8 @@ export default function ImplementationsCms() {
                             template={'photo-selector-banner'}
                             templateData={bannerMeta}
                             thumbnail={bannerMedia?.sizes?.medium}
-                            resetPhoto={() => resetBanner()}
-                            updateTemplateData={(data) => setBannerMeta(data)}
+                            resetPhoto={resetBanner}
+                            updateTemplateData={setBannerMeta}
                         />
                     </div>
 
@@ -369,7 +364,7 @@ export default function ImplementationsCms() {
                             <div className="col col-lg-9">
                                 <div className="form-group form-group-inline form-group-inline-xl">
                                     <label className="form-label" htmlFor="title">
-                                        {t('implementation_edit.labels.header_title')}
+                                        {translate('implementation_edit.labels.header_title')}
                                     </label>
                                     <input
                                         id="title"
@@ -383,12 +378,13 @@ export default function ImplementationsCms() {
                                 </div>
                                 <div className="form-group form-group-inline form-group-inline-xl">
                                     <label className="form-label" htmlFor="title">
-                                        {t('implementation_edit.labels.header_description')}
+                                        {translate('implementation_edit.labels.header_description')}
                                     </label>
 
                                     <div className="form-offset">
                                         <MarkdownEditor
                                             alignment={form.values?.description_alignment}
+                                            placeholder={'Omschrijving'}
                                             extendedOptions={true}
                                             allowAlignment={true}
                                             value={form.values?.description_html}
@@ -406,7 +402,7 @@ export default function ImplementationsCms() {
                             <div className="col col-lg-9">
                                 <div className="form-group form-group-inline form-group-inline-xl tooltipped">
                                     <label className="form-label" htmlFor="info_url">
-                                        {t('implementation_edit.labels.communication')}
+                                        {translate('implementation_edit.labels.communication')}
                                     </label>
                                     <div className="form-offset">
                                         <div className="form-group-info">
@@ -418,9 +414,9 @@ export default function ImplementationsCms() {
                                                     allowSearch={false}
                                                     options={communicationTypes}
                                                     value={form.values?.informal_communication}
-                                                    onChange={(value?: boolean) =>
-                                                        form.update({ informal_communication: value })
-                                                    }
+                                                    onChange={(value?: boolean) => {
+                                                        form.update({ informal_communication: value });
+                                                    }}
                                                     optionsComponent={SelectControlOptions}
                                                 />
                                             </div>
@@ -462,7 +458,7 @@ export default function ImplementationsCms() {
                             <div className="col col-lg-9">
                                 <div className="form-group form-group-inline form-group-inline-xl tooltipped">
                                     <label className="form-label">
-                                        {t('implementation_edit.labels.announcement_show')}
+                                        {translate('implementation_edit.labels.announcement_show')}
                                     </label>
                                     <div className="form-offset">
                                         <SelectControl
@@ -472,14 +468,11 @@ export default function ImplementationsCms() {
                                             allowSearch={false}
                                             options={announcementState}
                                             value={form.values?.announcement.active}
-                                            onChange={(value?: boolean) =>
+                                            onChange={(value?: boolean) => {
                                                 form.update({
-                                                    announcement: {
-                                                        ...form.values.announcement,
-                                                        active: value,
-                                                    },
-                                                })
-                                            }
+                                                    announcement: { ...form.values.announcement, active: value },
+                                                });
+                                            }}
                                             optionsComponent={SelectControlOptions}
                                         />
                                         <FormError error={form.errors['announcement.active']} />
@@ -490,7 +483,7 @@ export default function ImplementationsCms() {
                                     <Fragment>
                                         <div className="form-group form-group-inline form-group-inline-xl">
                                             <label className="form-label">
-                                                {t('implementation_edit.labels.announcement_type')}
+                                                {translate('implementation_edit.labels.announcement_type')}
                                             </label>
 
                                             <SelectControl
@@ -500,14 +493,11 @@ export default function ImplementationsCms() {
                                                 allowSearch={false}
                                                 options={announcementTypes}
                                                 value={form.values?.announcement.type}
-                                                onChange={(value?: string) =>
+                                                onChange={(value?: string) => {
                                                     form.update({
-                                                        announcement: {
-                                                            ...form.values.announcement,
-                                                            type: value,
-                                                        },
-                                                    })
-                                                }
+                                                        announcement: { ...form.values.announcement, type: value },
+                                                    });
+                                                }}
                                                 optionsComponent={SelectControlOptions}
                                             />
                                             <FormError error={form.errors['announcement.type']} />
@@ -515,7 +505,7 @@ export default function ImplementationsCms() {
 
                                         <div className="form-group form-group-inline form-group-inline-xl">
                                             <label className="form-label" htmlFor="announcement_title">
-                                                {t('implementation_edit.labels.announcement_title')}
+                                                {translate('implementation_edit.labels.announcement_title')}
                                             </label>
                                             <input
                                                 id="announcement_title"
@@ -523,34 +513,35 @@ export default function ImplementationsCms() {
                                                 className="form-control"
                                                 placeholder="Titel"
                                                 value={form.values?.announcement.title || ''}
-                                                onChange={(e) =>
+                                                onChange={(e) => {
                                                     form.update({
                                                         announcement: {
                                                             ...form.values.announcement,
                                                             title: e.target.value,
                                                         },
-                                                    })
-                                                }
+                                                    });
+                                                }}
                                             />
                                             <FormError error={form.errors['announcement.title']} />
                                         </div>
 
                                         <div className="form-group form-group-inline form-group-inline-xl">
                                             <label className="form-label" htmlFor="title">
-                                                {t('implementation_edit.labels.announcement_description')}
+                                                {translate('implementation_edit.labels.announcement_description')}
                                             </label>
 
                                             <div className="form-offset">
                                                 <MarkdownEditor
                                                     value={form.values?.announcement.description_html}
-                                                    onChange={(value) =>
+                                                    placeholder={'Beschrijving'}
+                                                    onChange={(value) => {
                                                         form.update({
                                                             announcement: {
                                                                 ...form.values.announcement,
                                                                 description: value,
                                                             },
-                                                        })
-                                                    }
+                                                        });
+                                                    }}
                                                 />
                                             </div>
                                             <FormError error={form.errors['announcement.description']} />
@@ -558,7 +549,7 @@ export default function ImplementationsCms() {
 
                                         <div className="form-group form-group-inline form-group-inline-xl tooltipped">
                                             <label className="form-label">
-                                                {t('implementation_edit.labels.announcement_expire')}
+                                                {translate('implementation_edit.labels.announcement_expire')}
                                             </label>
 
                                             <SelectControl
@@ -568,7 +559,7 @@ export default function ImplementationsCms() {
                                                 allowSearch={false}
                                                 options={announcementExpireOptions}
                                                 value={form.values?.announcement.expire}
-                                                onChange={(value?: boolean) =>
+                                                onChange={(value?: boolean) => {
                                                     form.update({
                                                         announcement: {
                                                             ...form.values.announcement,
@@ -577,8 +568,8 @@ export default function ImplementationsCms() {
                                                                 ? null
                                                                 : form.values.announcement.expire_at,
                                                         },
-                                                    })
-                                                }
+                                                    });
+                                                }}
                                                 optionsComponent={SelectControlOptions}
                                             />
                                         </div>
@@ -586,21 +577,21 @@ export default function ImplementationsCms() {
                                         {form.values?.announcement.expire && (
                                             <div className="form-group form-group-inline form-group-inline-xl">
                                                 <label className="form-label">
-                                                    {t('implementation_edit.labels.announcement_expire_at')}
+                                                    {translate('implementation_edit.labels.announcement_expire_at')}
                                                 </label>
                                                 <div className="form-offset">
                                                     <DatePickerControl
                                                         dateFormat={'dd-MM-yyyy'}
                                                         value={dateParse(form.values?.announcement.expire_at)}
                                                         placeholder="dd-MM-jjjj"
-                                                        onChange={(value) =>
+                                                        onChange={(value) => {
                                                             form.update({
                                                                 announcement: {
                                                                     ...form.values.announcement,
                                                                     expire_at: dateFormat(value),
                                                                 },
-                                                            })
-                                                        }
+                                                            });
+                                                        }}
                                                     />
                                                     <FormError error={form.errors['announcement.expire_at']} />
                                                 </div>
@@ -609,20 +600,20 @@ export default function ImplementationsCms() {
 
                                         <div className="form-group form-group-inline form-group-inline-xl tooltipped">
                                             <label className="form-label">
-                                                {t('implementation_edit.labels.announcement_replace')}
+                                                {translate('implementation_edit.labels.announcement_replace')}
                                             </label>
                                             <div className="form-offset">
                                                 <CheckboxControl
                                                     title={'Herstel aankondiging indien aanvrager opnieuw inlogt.'}
                                                     checked={form.values?.announcement.replace}
-                                                    onChange={(e) =>
+                                                    onChange={(e) => {
                                                         form.update({
                                                             announcement: {
                                                                 ...form.values.announcement,
                                                                 replace: e.target.checked,
                                                             },
-                                                        })
-                                                    }
+                                                        });
+                                                    }}
                                                 />
                                             </div>
                                         </div>
@@ -637,14 +628,14 @@ export default function ImplementationsCms() {
                             <StateNavLink
                                 name={'implementations-view'}
                                 params={{
-                                    organizationId: activeOrganization.id,
                                     id: implementation.id,
+                                    organizationId: activeOrganization.id,
                                 }}
                                 className="button button-default">
-                                {t('funds_edit.buttons.cancel')}
+                                {translate('funds_edit.buttons.cancel')}
                             </StateNavLink>
                             <button className="button button-primary" type="submit">
-                                {t('funds_edit.buttons.confirm')}
+                                {translate('funds_edit.buttons.confirm')}
                             </button>
                         </div>
                     </div>

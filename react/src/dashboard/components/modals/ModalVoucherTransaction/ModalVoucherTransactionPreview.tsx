@@ -1,12 +1,12 @@
-import React from 'react';
-import { useTranslation } from 'react-i18next';
+import React, { useMemo } from 'react';
 import Reimbursement from '../../../props/models/Reimbursement';
 import Organization from '../../../props/models/Organization';
 import { currencyFormat } from '../../../helpers/string';
+import useTranslate from '../../../hooks/useTranslate';
 
 export default function ModalVoucherTransactionPreview({
     formValues,
-    providersList,
+    providers,
     organization,
     reimbursement,
 }: {
@@ -18,11 +18,15 @@ export default function ModalVoucherTransactionPreview({
         amount?: string;
         iban_source?: string;
     };
-    providersList: object;
+    providers?: Array<Partial<Organization>>;
     organization: Organization;
-    reimbursement: Reimbursement;
+    reimbursement: Partial<Reimbursement>;
 }) {
-    const { t } = useTranslation();
+    const translate = useTranslate();
+
+    const providersById = useMemo(() => {
+        return providers?.reduce((list, item) => ({ ...list, [item.id]: item }), {});
+    }, [providers]);
 
     return (
         <div className="modal-section">
@@ -32,16 +36,18 @@ export default function ModalVoucherTransactionPreview({
                         {formValues.target === 'provider' && (
                             <div className="datalist-row">
                                 <div className="datalist-key text-primary text-right">
-                                    <strong>{t('modals.modal_voucher_transaction.labels.provider')}</strong>
+                                    <strong>{translate('modals.modal_voucher_transaction.labels.provider')}</strong>
                                 </div>
-                                <div className="datalist-value">{providersList[formValues.organization_id].name}</div>
+                                <div className="datalist-value">
+                                    {providersById?.[formValues.organization_id]?.name}
+                                </div>
                             </div>
                         )}
 
                         {formValues.target === 'iban' && (
                             <div className="datalist-row">
                                 <div className="datalist-key text-primary text-right">
-                                    <strong>{t('modals.modal_voucher_transaction.labels.target_iban')}</strong>
+                                    <strong>{translate('modals.modal_voucher_transaction.labels.target_iban')}</strong>
                                 </div>
 
                                 {formValues.iban_source === 'reimbursement' && (
@@ -57,7 +63,7 @@ export default function ModalVoucherTransactionPreview({
                         {formValues.target === 'iban' && (
                             <div className="datalist-row">
                                 <div className="datalist-key text-primary text-right">
-                                    <strong>{t('modals.modal_voucher_transaction.labels.target_name')}</strong>
+                                    <strong>{translate('modals.modal_voucher_transaction.labels.target_name')}</strong>
                                 </div>
 
                                 {formValues.iban_source === 'reimbursement' && (
@@ -72,14 +78,14 @@ export default function ModalVoucherTransactionPreview({
 
                         <div className="datalist-row">
                             <div className="datalist-key text-primary text-right">
-                                <strong>{t('modals.modal_voucher_transaction.labels.organization')}</strong>
+                                <strong>{translate('modals.modal_voucher_transaction.labels.organization')}</strong>
                             </div>
                             <div className="datalist-value">{organization.name}</div>
                         </div>
 
                         <div className="datalist-row">
                             <div className="datalist-key text-primary text-right">
-                                <strong>{t('modals.modal_voucher_transaction.labels.amount')}</strong>
+                                <strong>{translate('modals.modal_voucher_transaction.labels.amount')}</strong>
                             </div>
                             <div className="datalist-value">{currencyFormat(parseFloat(formValues.amount))}</div>
                         </div>

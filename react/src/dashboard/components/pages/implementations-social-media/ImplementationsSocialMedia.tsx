@@ -1,6 +1,5 @@
 import React, { Fragment, useCallback, useEffect, useState } from 'react';
 import useActiveOrganization from '../../../hooks/useActiveOrganization';
-import { useTranslation } from 'react-i18next';
 import LoadingCard from '../../elements/loading-card/LoadingCard';
 import usePushSuccess from '../../../hooks/usePushSuccess';
 import usePushDanger from '../../../hooks/usePushDanger';
@@ -8,9 +7,7 @@ import StateNavLink from '../../../modules/state_router/StateNavLink';
 import useSetProgress from '../../../hooks/useSetProgress';
 import { PaginationData, ResponseError } from '../../../props/ApiResponses';
 import useImplementationService from '../../../services/ImplementationService';
-import { useNavigate, useParams } from 'react-router-dom';
 import Implementation from '../../../props/models/Implementation';
-import useFilter from '../../../hooks/useFilter';
 import Paginator from '../../../modules/paginator/components/Paginator';
 import ThSortable from '../../elements/tables/ThSortable';
 import usePaginatorService from '../../../modules/paginator/services/usePaginatorService';
@@ -19,16 +16,20 @@ import ModalDangerZone from '../../modals/ModalDangerZone';
 import useImplementationSocialMediaService from '../../../services/ImplementationSocialMediaService';
 import ModalSocialMediaEdit from '../../modals/ModalSocialMediaEdit';
 import ImplementationSocialMedia from '../../../props/models/ImplementationSocialMedia';
-import { getStateRouteUrl } from '../../../modules/state_router/Router';
+import { useNavigateState } from '../../../modules/state_router/Router';
+import useTranslate from '../../../hooks/useTranslate';
+import useFilterNext from '../../../modules/filter_next/useFilterNext';
+import { NumberParam } from 'use-query-params';
+import { useParams } from 'react-router-dom';
 
 export default function ImplementationsSocialMedia() {
     const { id } = useParams();
 
-    const { t } = useTranslation();
-    const navigate = useNavigate();
+    const translate = useTranslate();
     const pushDanger = usePushDanger();
     const pushSuccess = usePushSuccess();
     const setProgress = useSetProgress();
+    const navigateState = useNavigateState();
     const openModal = useOpenModal();
     const activeOrganization = useActiveOrganization();
 
@@ -40,37 +41,46 @@ export default function ImplementationsSocialMedia() {
     const [implementation, setImplementation] = useState<Implementation>(null);
     const [socialMedias, setSocialMedias] = useState<PaginationData<ImplementationSocialMedia>>(null);
 
-    const filter = useFilter({
-        q: '',
-        per_page: paginatorService.getPerPage(paginatorKey),
-    });
+    const [filterValues, filterActiveValues, filterUpdate] = useFilterNext<{
+        page?: number;
+        per_page?: number;
+    }>(
+        {
+            page: 1,
+            per_page: paginatorService.getPerPage(paginatorKey),
+        },
+        {
+            queryParams: { page: NumberParam, per_page: NumberParam },
+            queryParamsRemoveDefault: true,
+        },
+    );
 
     const fetchImplementation = useCallback(() => {
         implementationService
             .read(activeOrganization.id, parseInt(id))
             .then((res) => setImplementation(res.data.data))
-            .catch((res: ResponseError) => {
-                if (res.status === 403) {
-                    return navigate(getStateRouteUrl('implementations', { organizationId: activeOrganization.id }));
+            .catch((err: ResponseError) => {
+                if (err.status === 403) {
+                    return navigateState('implementations', { organizationId: activeOrganization.id });
                 }
 
-                pushDanger('Mislukt!', res.data.message);
+                pushDanger('Mislukt!', err.data.message);
             });
-    }, [implementationService, activeOrganization.id, id, pushDanger, navigate]);
+    }, [implementationService, activeOrganization.id, id, pushDanger, navigateState]);
 
     const fetchSocialMedias = useCallback(() => {
         if (implementation) {
             setProgress(0);
 
             implementationSocialMediaService
-                .list(activeOrganization.id, implementation.id, filter.activeValues)
+                .list(activeOrganization.id, implementation.id, filterActiveValues)
                 .then((res) => setSocialMedias(res.data))
                 .catch((res: ResponseError) => pushDanger('Mislukt!', res.data.message))
                 .finally(() => setProgress(100));
         }
     }, [
         activeOrganization.id,
-        filter.activeValues,
+        filterActiveValues,
         implementation,
         implementationSocialMediaService,
         pushDanger,
@@ -98,37 +108,45 @@ export default function ImplementationsSocialMedia() {
             openModal((modal) => (
                 <ModalDangerZone
                     modal={modal}
-                    title={t('modals.danger_zone.remove_implementation_social_media.title')}
-                    description={t('modals.danger_zone.remove_implementation_social_media.description')}
+                    title={translate('modals.danger_zone.remove_implementation_social_media.title')}
+                    description={translate('modals.danger_zone.remove_implementation_social_media.description')}
                     buttonCancel={{
-                        text: t('modals.danger_zone.remove_implementation_social_media.buttons.cancel'),
+                        text: translate('modals.danger_zone.remove_implementation_social_media.buttons.cancel'),
                         onClick: () => modal.close(),
                     }}
                     buttonSubmit={{
-                        text: t('modals.danger_zone.remove_implementation_social_media.buttons.confirm'),
+                        text: translate('modals.danger_zone.remove_implementation_social_media.buttons.confirm'),
                         onClick: () => {
                             modal.close();
+                            setProgress(0);
+
                             implementationSocialMediaService
                                 .destroy(activeOrganization.id, implementation.id, socialMedia.id)
                                 .then(() => {
                                     pushSuccess('Opgeslagen!');
                                     fetchSocialMedias();
                                 })
-                                .catch((res: ResponseError) => pushDanger('Error!', res?.data?.message));
+                                .catch((err: ResponseError) => {
+                                    pushDanger('Error!', err?.data?.message);
+                                })
+                                .finally(() => {
+                                    setProgress(100);
+                                });
                         },
                     }}
                 />
             ));
         },
         [
-            t,
             openModal,
-            pushDanger,
+            translate,
+            setProgress,
+            implementationSocialMediaService,
+            activeOrganization?.id,
+            implementation?.id,
             pushSuccess,
             fetchSocialMedias,
-            implementation?.id,
-            activeOrganization.id,
-            implementationSocialMediaService,
+            pushDanger,
         ],
     );
 
@@ -144,23 +162,26 @@ export default function ImplementationsSocialMedia() {
             <div className="block block-breadcrumbs">
                 <StateNavLink
                     name={'implementations'}
+                    activeExact={true}
                     params={{ organizationId: activeOrganization.id }}
                     className="breadcrumb-item">
                     Webshops
                 </StateNavLink>
                 <StateNavLink
                     name={'implementations-view'}
+                    activeExact={true}
                     params={{ organizationId: activeOrganization.id, id: implementation.id }}
                     className="breadcrumb-item">
                     {implementation.name}
                 </StateNavLink>
                 <StateNavLink
                     name={'implementations-cms'}
+                    activeExact={true}
                     params={{ organizationId: activeOrganization.id, id: implementation.id }}
                     className="breadcrumb-item">
                     Content Management System
                 </StateNavLink>
-                <div className="breadcrumb-item active">{t('implementation_edit.labels.cms_media_links')}</div>
+                <div className="breadcrumb-item active">{translate('implementation_edit.labels.cms_media_links')}</div>
             </div>
 
             <div className="card">
@@ -200,7 +221,7 @@ export default function ImplementationsSocialMedia() {
                                         {socialMedias.data.map((socialMedia) => (
                                             <tr key={socialMedia.id}>
                                                 <td className="td-narrow">
-                                                    <em className={`td-icon text-dark mdi mdi-${socialMedia.type}`} />
+                                                    <div className={`td-icon text-dark mdi mdi-${socialMedia.type}`} />
                                                 </td>
                                                 <td>{socialMedia.type_locale}</td>
                                                 <td>{socialMedia.url}</td>
@@ -241,8 +262,8 @@ export default function ImplementationsSocialMedia() {
                     <div className="card-section">
                         <Paginator
                             meta={socialMedias.meta}
-                            filters={filter.values}
-                            updateFilters={filter.update}
+                            filters={filterValues}
+                            updateFilters={filterUpdate}
                             perPageKey={paginatorKey}
                         />
                     </div>

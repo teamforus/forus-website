@@ -1,7 +1,7 @@
 import React, { Fragment, useCallback, useEffect, useState } from 'react';
 import useImplementationService from '../../../services/ImplementationService';
 import useActiveOrganization from '../../../hooks/useActiveOrganization';
-import { ResponseError } from '../../../props/ApiResponses';
+import { PaginationData, ResponseError } from '../../../props/ApiResponses';
 import usePushDanger from '../../../hooks/usePushDanger';
 import { useNavigate, useParams } from 'react-router-dom';
 import useAssetUrl from '../../../hooks/useAssetUrl';
@@ -12,24 +12,26 @@ import useFilter from '../../../hooks/useFilter';
 import { useFundService } from '../../../services/FundService';
 import Fund from '../../../props/models/Fund';
 import ThSortable from '../../elements/tables/ThSortable';
-import { useTranslation } from 'react-i18next';
 import { getStateRouteUrl } from '../../../modules/state_router/Router';
+import useTranslate from '../../../hooks/useTranslate';
+import EmptyCard from '../../elements/empty-card/EmptyCard';
+import useSetProgress from '../../../hooks/useSetProgress';
 
 export default function ImplementationsView() {
     const { id } = useParams();
 
-    const { t } = useTranslation();
     const navigate = useNavigate();
     const assetUrl = useAssetUrl();
+    const translate = useTranslate();
     const pushDanger = usePushDanger();
+    const setProgress = useSetProgress();
     const activeOrganization = useActiveOrganization();
 
     const fundService = useFundService();
     const implementationService = useImplementationService();
 
     const [implementation, setImplementation] = useState(null);
-    const [funds, setFunds] = useState<Array<Fund>>(null);
-    const [initialFunds, setInitialFunds] = useState<Array<Fund>>(null);
+    const [funds, setFunds] = useState<PaginationData<Fund>>(null);
 
     const filter = useFilter({ q: '' });
 
@@ -47,24 +49,22 @@ export default function ImplementationsView() {
     }, [activeOrganization.id, id, implementationService, navigate, pushDanger]);
 
     const fetchFunds = useCallback(() => {
-        fundService
-            .list(activeOrganization.id, { implementation_id: parseInt(id) })
-            .then((res) => setInitialFunds(res.data.data))
-            .catch((res: ResponseError) => pushDanger('Mislukt!', res.data.message));
-    }, [activeOrganization.id, id, fundService, pushDanger]);
+        setProgress(0);
 
-    useEffect(() => fetchImplementation(), [fetchImplementation]);
-    useEffect(() => fetchFunds(), [fetchFunds]);
+        fundService
+            .list(activeOrganization.id, { implementation_id: parseInt(id), ...filter.activeValues })
+            .then((res) => setFunds(res.data))
+            .catch((res: ResponseError) => pushDanger('Mislukt!', res.data.message))
+            .finally(() => setProgress(100));
+    }, [setProgress, fundService, activeOrganization.id, id, filter.activeValues, pushDanger]);
 
     useEffect(() => {
-        if (initialFunds) {
-            setFunds(
-                initialFunds.filter(
-                    (fund: Fund) => fund.name.toUpperCase().indexOf(filter.activeValues.q.toUpperCase()) != -1,
-                ),
-            );
-        }
-    }, [initialFunds, filter.activeValues]);
+        fetchImplementation();
+    }, [fetchImplementation]);
+
+    useEffect(() => {
+        fetchFunds();
+    }, [fetchFunds]);
 
     if (!implementation || !funds) {
         return <LoadingCard />;
@@ -76,6 +76,7 @@ export default function ImplementationsView() {
                 <StateNavLink
                     name={'implementations'}
                     params={{ organizationId: activeOrganization.id }}
+                    activeExact={true}
                     className="breadcrumb-item">
                     Webshops
                 </StateNavLink>
@@ -109,7 +110,7 @@ export default function ImplementationsView() {
                         {hasPermission(activeOrganization, 'manage_implementation') && (
                             <StateNavLink
                                 name={'implementations-email'}
-                                params={{ id: implementation.id, organizationId: activeOrganization.id }}
+                                params={{ id: implementation.id, organizationId: implementation.organization_id }}
                                 className={`button button-default`}>
                                 <em className="mdi mdi-cog icon-start" />
                                 Email
@@ -119,7 +120,7 @@ export default function ImplementationsView() {
                         {hasPermission(activeOrganization, 'manage_implementation') && (
                             <StateNavLink
                                 name={'implementations-digid'}
-                                params={{ id: implementation.id, organizationId: activeOrganization.id }}
+                                params={{ id: implementation.id, organizationId: implementation.organization_id }}
                                 className={`button button-default`}>
                                 <em className="mdi mdi-cog icon-start" />
                                 DigiD
@@ -129,7 +130,7 @@ export default function ImplementationsView() {
                         {hasPermission(activeOrganization, ['manage_implementation', 'manage_implementation_cms']) && (
                             <StateNavLink
                                 name={'implementations-cms'}
-                                params={{ id: implementation.id, organizationId: activeOrganization.id }}
+                                params={{ id: implementation.id, organizationId: implementation.organization_id }}
                                 className={`button button-primary`}>
                                 <em className="mdi mdi-text-box icon-start" />
                                 CMS
@@ -164,8 +165,8 @@ export default function ImplementationsView() {
                         </div>
                     </div>
                 </div>
-                <div className="card-section">
-                    {funds.length > 0 ? (
+                {funds.meta.total > 0 ? (
+                    <div className="card-section">
                         <div className="card-block card-block-table">
                             <div className="table-wrapper">
                                 <table className="table">
@@ -179,17 +180,14 @@ export default function ImplementationsView() {
                                             )}
                                         </tr>
 
-                                        {funds.map((fund) => (
+                                        {funds.data.map((fund) => (
                                             <tr key={fund.id}>
                                                 <td>
                                                     <img
                                                         className="td-media"
                                                         src={
-                                                            fund.logo
-                                                                ? fund.logo.sizes.thumbnail
-                                                                : assetUrl(
-                                                                      '/assets/img/placeholders/product-thumbnail.png',
-                                                                  )
+                                                            fund?.logo?.sizes?.thumbnail ||
+                                                            assetUrl('/assets/img/placeholders/product-thumbnail.png')
                                                         }
                                                         alt={fund.name}
                                                     />
@@ -200,17 +198,17 @@ export default function ImplementationsView() {
                                                         <Fragment>
                                                             {fund.state == 'active' && (
                                                                 <div className="tag tag-success">
-                                                                    {t('fund_card_sponsor.status.active')}
+                                                                    {translate('fund_card_sponsor.status.active')}
                                                                 </div>
                                                             )}
                                                             {fund.state == 'paused' && (
                                                                 <div className="tag tag-warning">
-                                                                    {t('fund_card_sponsor.status.paused')}
+                                                                    {translate('fund_card_sponsor.status.paused')}
                                                                 </div>
                                                             )}
                                                             {fund.state == 'closed' && (
                                                                 <div className="tag tag-default">
-                                                                    {t('fund_card_sponsor.status.closed')}
+                                                                    {translate('fund_card_sponsor.status.closed')}
                                                                 </div>
                                                             )}
                                                         </Fragment>
@@ -252,14 +250,14 @@ export default function ImplementationsView() {
                                 </table>
                             </div>
                         </div>
-                    ) : (
-                        <div className="card-title text-center">Geen fondsen gekoppeld aan deze implementatie.</div>
-                    )}
-                </div>
+                    </div>
+                ) : (
+                    <EmptyCard type={'card-section'} title={'Geen fondsen gekoppeld aan deze implementatie.'} />
+                )}
 
                 <div className="card-section">
                     <div className="table-pagination">
-                        <div className="table-pagination-counter">{funds.length} resultaten</div>
+                        <div className="table-pagination-counter">{funds.meta.total} resultaten</div>
                     </div>
                 </div>
             </div>

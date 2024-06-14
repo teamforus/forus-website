@@ -202,8 +202,7 @@ export default function OrganizationFunds() {
                 <div className="flex-row">
                     <div className="flex-col flex-grow">
                         <div className="card-title" data-dusk="fundsTitle">
-                            <span>{translate('components.organization_funds.title')}</span>
-                            <span className="span-count">{funds.meta.total}</span>
+                            {translate('components.organization_funds.title')} ({funds.meta.total})
                         </div>
                     </div>
 
@@ -518,9 +517,7 @@ export default function OrganizationFunds() {
                                                             {hasPermission(activeOrganization, 'manage_funds') && (
                                                                 <a
                                                                     className={`dropdown-item ${
-                                                                        fund.key && fund.state != 'closed'
-                                                                            ? 'disabled'
-                                                                            : ''
+                                                                        fund.state != 'closed' ? 'disabled' : ''
                                                                     }`}
                                                                     onClick={() => {
                                                                         archiveFund(fund);

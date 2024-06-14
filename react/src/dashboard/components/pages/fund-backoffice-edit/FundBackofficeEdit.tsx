@@ -1,6 +1,5 @@
-import React, { ChangeEvent, Fragment, useCallback, useEffect, useRef, useState } from 'react';
+import React, { ChangeEvent, Fragment, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import useActiveOrganization from '../../../hooks/useActiveOrganization';
-import { useTranslation } from 'react-i18next';
 import LoadingCard from '../../elements/loading-card/LoadingCard';
 import useFormBuilder from '../../../hooks/useFormBuilder';
 import usePushSuccess from '../../../hooks/usePushSuccess';
@@ -15,21 +14,21 @@ import Fund from '../../../props/models/Fund';
 import Tooltip from '../../elements/tooltip/Tooltip';
 import SelectControlOptions from '../../elements/select-control/templates/SelectControlOptions';
 import SelectControl from '../../elements/select-control/SelectControl';
+import useTranslate from '../../../hooks/useTranslate';
 
 export default function FundBackofficeEdit() {
-    const { id } = useParams();
+    const { fundId } = useParams();
+    const activeOrganization = useActiveOrganization();
 
-    const { t } = useTranslation();
+    const translate = useTranslate();
     const pushDanger = usePushDanger();
     const pushSuccess = usePushSuccess();
     const setProgress = useSetProgress();
-    const activeOrganization = useActiveOrganization();
 
     const fundService = useFundService();
 
     const [fund, setFund] = useState<Fund>(null);
     const [isDirty, setIsDirty] = useState(false);
-    const [isConfigured, setIsConfigured] = useState(false);
     const [showInfoBlock, setShowInfoBlock] = useState(false);
     const [showCertificate, setShowCertificate] = useState(false);
     const [showPolicyInfoBlock, setShowPolicyInfoBlock] = useState(false);
@@ -45,6 +44,15 @@ export default function FundBackofficeEdit() {
         { value: 'fund_request', label: 'Make fund request through platform' },
         { value: 'redirect', label: 'Redirect to URL' },
     ]);
+
+    const isConfigured = useMemo(() => {
+        return (
+            fund?.backoffice &&
+            !!fund.backoffice.backoffice_url &&
+            !!fund.backoffice.backoffice_key &&
+            !!fund.backoffice.backoffice_certificate
+        );
+    }, [fund?.backoffice]);
 
     const form = useFormBuilder<{
         backoffice_enabled: boolean;
@@ -70,13 +78,7 @@ export default function FundBackofficeEdit() {
             fundService
                 .backofficeUpdate(activeOrganization.id, fund.id, values)
                 .then((res) => {
-                    setIsConfigured(
-                        res.data.data.backoffice &&
-                            !!res.data.data.backoffice.backoffice_url &&
-                            !!res.data.data.backoffice.backoffice_key &&
-                            !!res.data.data.backoffice.backoffice_certificate,
-                    );
-
+                    setFund(res.data.data);
                     setIsDirty(false);
 
                     form.update({
@@ -97,13 +99,13 @@ export default function FundBackofficeEdit() {
                     pushDanger('Mislukt!', err.data.message);
                 })
                 .finally(() => {
-                    setProgress(100);
                     form.setIsLocked(false);
+                    setProgress(100);
                 });
         },
     );
 
-    const { update } = form;
+    const { update: formUpdate } = form;
 
     const onFileChange = useCallback(
         (e: ChangeEvent<HTMLInputElement>) => {
@@ -113,12 +115,14 @@ export default function FundBackofficeEdit() {
                 reader.onload = (event) => resolve(event.target.result);
                 reader.onerror = (error) => reject(error);
                 reader.readAsText(e.target.files[0]);
-            }).then((certificate: string) => {
-                update({ backoffice_certificate: certificate });
-                e.target.value = null;
-            }, console.error);
+            })
+                .then((certificate: string) => {
+                    formUpdate({ backoffice_certificate: certificate });
+                    e.target.value = null;
+                })
+                .catch(console.error);
         },
-        [update],
+        [formUpdate],
     );
 
     const selectCertificateFile = useCallback((e) => {
@@ -130,44 +134,43 @@ export default function FundBackofficeEdit() {
 
     const testBackofficeConnection = useCallback(() => {
         fundService
-            .backofficeTest(activeOrganization.id, parseInt(id))
+            .backofficeTest(activeOrganization.id, parseInt(fundId))
             .then((res) => {
                 if (res.data.state === 'success') {
                     pushSuccess('Succes!', 'De API reageert zonder error codes en de authenticatie werkt.');
                 } else {
+                    const defaultError = `De api geeft code \`${res.data.response_code}\` terug, controleer de instellingen.`;
+
                     pushDanger(
                         'Error!',
                         {
                             0: 'De API geeft code `0` terug, wat vaak betekent dat het certificaat verkeerd is.',
                             404: 'De API geeft code `404` terug, controleer de api url.',
                             403: 'De API geeft code `403` terug, wat vaak betekent dat het certificaat of de sleutel verkeerd is.',
-                        }[res.data.response_code] ||
-                            `De api geeft code \`${res.data.response_code}\` terug, controleer de instellingen.`,
+                        }[res.data.response_code] || defaultError,
                     );
                 }
             })
             .catch((res: ResponseError) => pushDanger('Mislukt!', res.data.message));
-    }, [fundService, activeOrganization.id, id, pushSuccess, pushDanger]);
+    }, [fundService, activeOrganization.id, fundId, pushSuccess, pushDanger]);
 
     const fetchImplementation = useCallback(() => {
-        fundService
-            .read(activeOrganization.id, parseInt(id))
-            .then((res) => setFund(res.data.data))
-            .catch((res: ResponseError) => pushDanger('Mislukt!', res.data.message));
-    }, [activeOrganization.id, fundService, pushDanger, id]);
+        setProgress(0);
 
-    useEffect(() => fetchImplementation(), [fetchImplementation]);
+        fundService
+            .read(activeOrganization.id, parseInt(fundId))
+            .then((res) => setFund(res.data.data))
+            .catch((err: ResponseError) => pushDanger('Mislukt!', err.data.message))
+            .finally(() => setProgress(100));
+    }, [setProgress, fundService, activeOrganization.id, fundId, pushDanger]);
+
+    useEffect(() => {
+        fetchImplementation();
+    }, [fetchImplementation]);
 
     useEffect(() => {
         if (fund) {
-            setIsConfigured(
-                fund.backoffice &&
-                    !!fund.backoffice.backoffice_url &&
-                    !!fund.backoffice.backoffice_key &&
-                    !!fund.backoffice.backoffice_certificate,
-            );
-
-            update({
+            formUpdate({
                 backoffice_enabled: fund.backoffice.backoffice_enabled,
                 backoffice_url: fund.backoffice.backoffice_url,
                 backoffice_key: fund.backoffice.backoffice_key,
@@ -177,7 +180,7 @@ export default function FundBackofficeEdit() {
                 backoffice_ineligible_redirect_url: fund.backoffice.backoffice_ineligible_redirect_url,
             });
         }
-    }, [update, fund]);
+    }, [formUpdate, fund]);
 
     if (!fund) {
         return <LoadingCard />;
@@ -189,12 +192,14 @@ export default function FundBackofficeEdit() {
                 <StateNavLink
                     name={'implementations'}
                     params={{ organizationId: activeOrganization.id }}
+                    activeExact={true}
                     className="breadcrumb-item">
                     Webshops
                 </StateNavLink>
                 <StateNavLink
                     name={'implementations-view'}
                     params={{ organizationId: activeOrganization.id, id: fund.implementation.id }}
+                    activeExact={true}
                     className="breadcrumb-item">
                     {fund.name}
                 </StateNavLink>
@@ -208,6 +213,7 @@ export default function FundBackofficeEdit() {
                             <div className="flex flex-grow">
                                 <div className="card-title">Backoffice integratie</div>
                             </div>
+
                             <div className="flex">
                                 <div className="form-group">
                                     {isDirty && (
@@ -227,7 +233,7 @@ export default function FundBackofficeEdit() {
                                         type="button"
                                         onClick={() => testBackofficeConnection()}
                                         disabled={!isConfigured || isDirty}>
-                                        <div className="mdi mdi-connection icon-start" />
+                                        <em className="mdi mdi-connection icon-start" />
                                         Test instellingen
                                     </button>
                                 </div>
@@ -369,9 +375,9 @@ export default function FundBackofficeEdit() {
                                                     allowSearch={false}
                                                     value={form.values?.backoffice_fallback}
                                                     optionsComponent={SelectControlOptions}
-                                                    onChange={(value?: boolean) =>
-                                                        form.update({ backoffice_fallback: value })
-                                                    }
+                                                    onChange={(value?: boolean) => {
+                                                        form.update({ backoffice_fallback: value });
+                                                    }}
                                                 />
                                             </div>
                                             <div className="form-group-info-button">
@@ -422,9 +428,9 @@ export default function FundBackofficeEdit() {
                                                     allowSearch={false}
                                                     value={form.values?.backoffice_ineligible_policy}
                                                     optionsComponent={SelectControlOptions}
-                                                    onChange={(value?: string) =>
-                                                        form.update({ backoffice_ineligible_policy: value })
-                                                    }
+                                                    onChange={(value?: string) => {
+                                                        form.update({ backoffice_ineligible_policy: value });
+                                                    }}
                                                 />
                                             </div>
                                             <div className="form-group-info-button">
@@ -460,9 +466,9 @@ export default function FundBackofficeEdit() {
                                             className="form-control"
                                             placeholder="Bijv. https://gemeente+1.nl"
                                             value={form.values.backoffice_ineligible_redirect_url || ''}
-                                            onChange={(e) =>
-                                                form.update({ backoffice_ineligible_redirect_url: e.target.value })
-                                            }
+                                            onChange={(e) => {
+                                                form.update({ backoffice_ineligible_redirect_url: e.target.value });
+                                            }}
                                         />
                                         <FormError error={form.errors.backoffice_ineligible_redirect_url} />
                                     </div>
@@ -476,14 +482,14 @@ export default function FundBackofficeEdit() {
                             <StateNavLink
                                 name={'implementations-view'}
                                 params={{
-                                    organizationId: activeOrganization.id,
                                     id: fund.implementation.id,
+                                    organizationId: activeOrganization.id,
                                 }}
                                 className="button button-default">
-                                {t('funds_edit.buttons.cancel')}
+                                {translate('funds_edit.buttons.cancel')}
                             </StateNavLink>
                             <button className="button button-primary" type="submit">
-                                {t('funds_edit.buttons.confirm')}
+                                {translate('funds_edit.buttons.confirm')}
                             </button>
                         </div>
                     </div>

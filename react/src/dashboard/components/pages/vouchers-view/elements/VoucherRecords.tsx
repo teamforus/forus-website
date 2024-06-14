@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import Voucher from '../../../../props/models/Voucher';
 import Organization from '../../../../props/models/Organization';
 import useOpenModal from '../../../../hooks/useOpenModal';
@@ -15,19 +14,24 @@ import ThSortable from '../../../elements/tables/ThSortable';
 import ModalDangerZone from '../../../modals/ModalDangerZone';
 import usePushSuccess from '../../../../hooks/usePushSuccess';
 import { hasPermission } from '../../../../helpers/utils';
+import useTranslate from '../../../../hooks/useTranslate';
+import useSetProgress from '../../../../hooks/useSetProgress';
+import usePushDanger from '../../../../hooks/usePushDanger';
+import EmptyCard from '../../../elements/empty-card/EmptyCard';
 
 export default function VoucherRecords({ voucher, organization }: { voucher: Voucher; organization: Organization }) {
-    const { t } = useTranslation();
+    const translate = useTranslate();
 
     const openModal = useOpenModal();
+    const pushDanger = usePushDanger();
     const pushSuccess = usePushSuccess();
+    const setProgress = useSetProgress();
 
     const paginatorService = usePaginatorService();
     const voucherRecordService = useVoucherRecordService();
 
     const [paginatorKey] = useState('voucher-records');
     const [records, setRecords] = useState<PaginationData<VoucherRecord>>(null);
-    const [existingRecordTypes, setExistingRecordTypes] = useState<Array<string>>([]);
 
     const filter = useFilter({
         q: '',
@@ -37,29 +41,28 @@ export default function VoucherRecords({ voucher, organization }: { voucher: Vou
     });
 
     const fetchRecords = useCallback(() => {
-        voucherRecordService.list(organization.id, voucher.id, filter.activeValues).then((res) => {
-            setRecords(res.data);
-        });
+        setProgress(0);
 
-        voucherRecordService.list(organization.id, voucher.id, { per_page: 100 }).then((res) => {
-            setExistingRecordTypes(res.data.data.map((record) => record.record_type_key));
-        });
-    }, [filter.activeValues, organization.id, voucher.id, voucherRecordService]);
+        voucherRecordService
+            .list(organization.id, voucher.id, filter.activeValues)
+            .then((res) => setRecords(res.data))
+            .catch((res) => pushDanger('Mislukt!', res.data.message))
+            .finally(() => setProgress(100));
+    }, [filter.activeValues, organization.id, setProgress, voucher.id, voucherRecordService, pushDanger]);
 
     const editRecord = useCallback(
-        (record = null) => {
+        (record: VoucherRecord = null) => {
             openModal((modal) => (
                 <ModalVoucherRecordEdit
                     modal={modal}
                     voucher={voucher}
                     record={record}
                     organization={organization}
-                    existingRecordTypes={existingRecordTypes}
                     onClose={(record: VoucherRecord) => (record ? fetchRecords() : null)}
                 />
             ));
         },
-        [existingRecordTypes, fetchRecords, openModal, organization, voucher],
+        [fetchRecords, openModal, organization, voucher],
     );
 
     const deleteRecord = useCallback(
@@ -67,26 +70,26 @@ export default function VoucherRecords({ voucher, organization }: { voucher: Vou
             openModal((modal) => (
                 <ModalDangerZone
                     modal={modal}
-                    title={t('modals.danger_zone.remove_voucher_record.title')}
-                    description={t('modals.danger_zone.remove_voucher_record.title')}
+                    title={translate('modals.danger_zone.remove_voucher_record.title')}
+                    description={translate('modals.danger_zone.remove_voucher_record.title')}
                     buttonCancel={{
                         onClick: modal.close,
-                        text: t('modals.danger_zone.remove_voucher_record.buttons.cancel'),
+                        text: translate('modals.danger_zone.remove_voucher_record.buttons.cancel'),
                     }}
                     buttonSubmit={{
                         onClick: () => {
+                            modal.close();
                             voucherRecordService.destroy(organization.id, voucher.id, record.id).then(() => {
                                 fetchRecords();
                                 pushSuccess('Verwijderd!', 'Eigenschap is verwijderd!');
                             });
-                            modal.close();
                         },
-                        text: t('modals.danger_zone.remove_voucher_record.buttons.confirm'),
+                        text: translate('modals.danger_zone.remove_voucher_record.buttons.confirm'),
                     }}
                 />
             ));
         },
-        [fetchRecords, openModal, organization.id, pushSuccess, t, voucher.id, voucherRecordService],
+        [fetchRecords, openModal, organization.id, pushSuccess, translate, voucher.id, voucherRecordService],
     );
 
     useEffect(() => {
@@ -103,7 +106,8 @@ export default function VoucherRecords({ voucher, organization }: { voucher: Vou
                 <div className="flex">
                     <div className="flex flex-grow">
                         <div className="card-title">
-                            {t('voucher_records.header.title') + (records.meta ? ' (' + records.meta.total + ')' : '')}
+                            {translate('voucher_records.header.title')}
+                            {records.meta ? ` (${records.meta.total})` : ''}
                         </div>
                     </div>
                     <div className="flex">
@@ -113,8 +117,8 @@ export default function VoucherRecords({ voucher, organization }: { voucher: Vou
                                     <input
                                         className="form-control"
                                         type="search"
-                                        value={filter.activeValues.q}
-                                        placeholder={t('voucher_records.labels.search')}
+                                        value={filter.values.q}
+                                        placeholder={translate('voucher_records.labels.search')}
                                         onChange={(e) => filter.update({ q: e.target.value })}
                                     />
                                 </div>
@@ -122,14 +126,15 @@ export default function VoucherRecords({ voucher, organization }: { voucher: Vou
 
                             {hasPermission(organization, 'manage_vouchers') && (
                                 <div className="button button-primary button-sm" onClick={() => editRecord()}>
-                                    <div className="mdi mdi-plus-circle icon-start" />
-                                    {t('voucher_records.buttons.add_record')}
+                                    <em className="mdi mdi-plus-circle icon-start" />
+                                    {translate('voucher_records.buttons.add_record')}
                                 </div>
                             )}
                         </div>
                     </div>
                 </div>
             </div>
+
             {records.data.length > 0 && (
                 <div className="card-section">
                     <div className="card-block card-block-table">
@@ -140,36 +145,33 @@ export default function VoucherRecords({ voucher, organization }: { voucher: Vou
                                         <ThSortable
                                             className="th-narrow"
                                             filter={filter}
-                                            label={t('voucher_records.labels.id')}
+                                            label={translate('voucher_records.labels.id')}
                                             value="id"
                                         />
                                         <ThSortable
                                             filter={filter}
-                                            label={t('voucher_records.labels.record_type')}
+                                            label={translate('voucher_records.labels.record_type')}
                                             value="record_type_name"
                                         />
                                         <ThSortable
-                                            className="th-narrow"
                                             filter={filter}
-                                            label={t('voucher_records.labels.value')}
+                                            label={translate('voucher_records.labels.value')}
                                             value="value"
                                         />
                                         <ThSortable
                                             filter={filter}
-                                            label={t('voucher_records.labels.created_at')}
+                                            label={translate('voucher_records.labels.created_at')}
                                             value="created_at"
                                         />
                                         <ThSortable
                                             filter={filter}
-                                            label={t('voucher_records.labels.note')}
+                                            label={translate('voucher_records.labels.note')}
                                             value="note"
                                         />
                                         {hasPermission(organization, 'manage_vouchers') && (
                                             <ThSortable
                                                 className="th-narrow text-right"
-                                                filter={filter}
-                                                label={t('voucher_records.labels.action')}
-                                                value="note"
+                                                label={translate('voucher_records.labels.action')}
                                             />
                                         )}
                                     </tr>
@@ -207,21 +209,17 @@ export default function VoucherRecords({ voucher, organization }: { voucher: Vou
                     </div>
                 </div>
             )}
-            {records.meta && records.meta.last_page > 1 && (
+
+            {records.meta.total == 0 ? (
+                <EmptyCard title={'Geen eigenschappen gevonden'} type={'card-section'} />
+            ) : (
                 <div className="card-section">
                     <Paginator
                         meta={records.meta}
                         filters={filter.values}
-                        updateFilters={filter.update}
                         perPageKey={paginatorKey}
+                        updateFilters={filter.update}
                     />
-                </div>
-            )}
-            {records.meta.total == 0 && (
-                <div className="card-section">
-                    <div className="block block-empty text-center">
-                        <div className="empty-title">Geen eigenschappen gevonden</div>
-                    </div>
                 </div>
             )}
         </div>

@@ -16,6 +16,7 @@ import ApiRequestService from './services/ApiRequestService';
 import StateHashPrefixRedirect from './modules/state_router/StateHashPrefixRedirect';
 import { ToastsProvider } from './modules/toasts/context/ToastsContext';
 import AwsRumScript from './modules/aws_rum/AwsRumScript';
+import { PrintableProvider } from './modules/printable/context/PrintableContext';
 
 i18n.use(initReactI18next)
     .init({
@@ -75,14 +76,16 @@ export default function Dashboard({ envData }: { envData: EnvDataProp }): React.
                 <RouterSelector envData={envData}>
                     <LoadingBarProvider>
                         <AuthProvider>
-                            <MainProvider>
+                            <PrintableProvider>
                                 <ModalsProvider>
-                                    <QueryParamProvider adapter={ReactRouter6Adapter}>
-                                        <StateHashPrefixRedirect />
-                                        <RouterLayout envData={envData} />
-                                    </QueryParamProvider>
+                                    <MainProvider>
+                                        <QueryParamProvider adapter={ReactRouter6Adapter}>
+                                            <StateHashPrefixRedirect />
+                                            <RouterLayout envData={envData} />
+                                        </QueryParamProvider>
+                                    </MainProvider>
                                 </ModalsProvider>
-                            </MainProvider>
+                            </PrintableProvider>
                         </AuthProvider>
                     </LoadingBarProvider>
                 </RouterSelector>

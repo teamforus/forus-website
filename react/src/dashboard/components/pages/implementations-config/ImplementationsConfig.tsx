@@ -1,6 +1,5 @@
 import React, { Fragment, useCallback, useEffect, useState } from 'react';
 import useActiveOrganization from '../../../hooks/useActiveOrganization';
-import { useTranslation } from 'react-i18next';
 import LoadingCard from '../../elements/loading-card/LoadingCard';
 import useFormBuilder from '../../../hooks/useFormBuilder';
 import usePushSuccess from '../../../hooks/usePushSuccess';
@@ -10,24 +9,26 @@ import FormError from '../../elements/forms/errors/FormError';
 import useSetProgress from '../../../hooks/useSetProgress';
 import { ResponseError } from '../../../props/ApiResponses';
 import useImplementationService from '../../../services/ImplementationService';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import Implementation from '../../../props/models/Implementation';
-import { getStateRouteUrl } from '../../../modules/state_router/Router';
+import { useNavigateState } from '../../../modules/state_router/Router';
+import useTranslate from '../../../hooks/useTranslate';
 
 export default function ImplementationsConfig() {
     const { id } = useParams();
 
-    const { t } = useTranslation();
-    const navigate = useNavigate();
+    const translate = useTranslate();
     const pushDanger = usePushDanger();
     const pushSuccess = usePushSuccess();
     const setProgress = useSetProgress();
+    const navigateState = useNavigateState();
     const activeOrganization = useActiveOrganization();
 
     const implementationService = useImplementationService();
 
-    const [implementation, setImplementation] = useState<Implementation>(null);
     const [loaded, setLoaded] = useState(false);
+    const [implementation, setImplementation] = useState<Implementation>(null);
+
     const [configs] = useState([
         { page: 'home', blocks: ['show_home_map', 'show_home_products'] },
         { page: 'providers', blocks: ['show_providers_map'] },
@@ -73,14 +74,16 @@ export default function ImplementationsConfig() {
             .then((res) => setImplementation(res.data.data))
             .catch((res: ResponseError) => {
                 if (res.status === 403) {
-                    return navigate(getStateRouteUrl('implementations', { organizationId: activeOrganization.id }));
+                    return navigateState('implementations', { organizationId: activeOrganization.id });
                 }
 
                 pushDanger('Mislukt!', res.data.message);
             });
-    }, [implementationService, activeOrganization.id, navigate, id, pushDanger]);
+    }, [implementationService, activeOrganization.id, navigateState, id, pushDanger]);
 
-    useEffect(() => fetchImplementation(), [fetchImplementation]);
+    useEffect(() => {
+        fetchImplementation();
+    }, [fetchImplementation]);
 
     useEffect(() => {
         if (implementation) {
@@ -108,18 +111,21 @@ export default function ImplementationsConfig() {
                 <StateNavLink
                     name={'implementations'}
                     params={{ organizationId: activeOrganization.id }}
+                    activeExact={true}
                     className="breadcrumb-item">
                     Webshops
                 </StateNavLink>
                 <StateNavLink
                     name={'implementations-view'}
                     params={{ organizationId: activeOrganization.id, id: implementation.id }}
+                    activeExact={true}
                     className="breadcrumb-item">
                     {implementation.name}
                 </StateNavLink>
                 <StateNavLink
                     name={'implementations-cms'}
                     params={{ organizationId: activeOrganization.id, id: implementation.id }}
+                    activeExact={true}
                     className="breadcrumb-item">
                     Content Management System
                 </StateNavLink>
@@ -130,7 +136,7 @@ export default function ImplementationsConfig() {
                 <form className="form" onSubmit={form.submit}>
                     <div className="card-header flex flex-horizontal">
                         <div className="flex flex-grow">
-                            <div className="card-title">{t('implementation_edit.header.title')}</div>
+                            <div className="card-title">{translate('implementation_edit.header.title')}</div>
                         </div>
                         <div className="flex">
                             <a
@@ -143,14 +149,14 @@ export default function ImplementationsConfig() {
                             </a>
 
                             <button className="button button-primary button-sm" type="submit">
-                                {t('funds_edit.buttons.confirm')}
+                                {translate('funds_edit.buttons.confirm')}
                             </button>
                         </div>
                     </div>
 
                     {configs.map((config) => (
                         <div key={config.page} className="card-section card-section-primary card-section-settings">
-                            <div className="card-title">{t(`implementation_config.pages.${config.page}`)}</div>
+                            <div className="card-title">{translate(`implementation_config.pages.${config.page}`)}</div>
                             <div className="block block-toggles">
                                 <div className="toggle-row">
                                     <div className="row">
@@ -169,7 +175,9 @@ export default function ImplementationsConfig() {
                                                 <div className={`toggle-item ${form.values[block] ? 'active' : ''}`}>
                                                     <div className="toggle-label">
                                                         <div className="flex flex-vertical">
-                                                            <div>{t(`implementation_config.blocks.${block}`)}</div>
+                                                            <div>
+                                                                {translate(`implementation_config.blocks.${block}`)}
+                                                            </div>
                                                             <FormError error={form.errors[block]} />
                                                         </div>
                                                     </div>
@@ -202,15 +210,12 @@ export default function ImplementationsConfig() {
                         <div className="button-group flex-center">
                             <StateNavLink
                                 name={'implementations-cms'}
-                                params={{
-                                    organizationId: activeOrganization.id,
-                                    id: implementation.id,
-                                }}
+                                params={{ id: implementation.id, organizationId: activeOrganization.id }}
                                 className="button button-default">
-                                {t('funds_edit.buttons.cancel')}
+                                {translate('funds_edit.buttons.cancel')}
                             </StateNavLink>
                             <button className="button button-primary" type="submit">
-                                {t('funds_edit.buttons.confirm')}
+                                {translate('funds_edit.buttons.confirm')}
                             </button>
                         </div>
                     </div>
