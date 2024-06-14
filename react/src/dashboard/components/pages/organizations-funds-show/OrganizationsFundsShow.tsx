@@ -19,6 +19,9 @@ import OrganizationsFundsShowTopUpsCard from './elements/OrganizationsFundsShowT
 import OrganizationsFundsShowImplementationsCard from './elements/OrganizationsFundsShowImplementationsCard';
 import OrganizationsFundsShowIdentitiesCard from './elements/OrganizationsFundsShowIdentitiesCard';
 import { createEnumParam, useQueryParam, withDefault } from 'use-query-params';
+import { filter } from 'lodash';
+
+type TabType = 'top_ups' | 'identities' | 'implementations';
 
 export default function OrganizationsFundsShow() {
     const fundId = useParams().fundId;
@@ -39,28 +42,31 @@ export default function OrganizationsFundsShow() {
         { removeDefaultsFromUrl: true },
     );
 
-    const canManageFunds = useMemo(() => hasPermission(activeOrganization, 'manage_funds'), [activeOrganization]);
-    const canViewFinances = useMemo(() => hasPermission(activeOrganization, 'view_finances'), [activeOrganization]);
+    const canManageFunds = useMemo(() => {
+        return hasPermission(activeOrganization, 'manage_funds');
+    }, [activeOrganization]);
 
-    const canViewIdentities = useMemo(
-        () => hasPermission(activeOrganization, ['manage_implementation_notifications', 'manage_vouchers']),
-        [activeOrganization],
-    );
+    const canViewFinances = useMemo(() => {
+        return hasPermission(activeOrganization, 'view_finances');
+    }, [activeOrganization]);
 
-    const canViewImplementation = useMemo(
-        () => hasPermission(activeOrganization, 'manage_implementation'),
-        [activeOrganization],
-    );
+    const canViewIdentities = useMemo(() => {
+        return hasPermission(activeOrganization, ['manage_implementation_notifications', 'manage_vouchers']);
+    }, [activeOrganization]);
+
+    const canViewImplementation = useMemo(() => {
+        return hasPermission(activeOrganization, 'manage_implementation');
+    }, [activeOrganization]);
 
     const availableViewTables = useMemo(() => {
-        return [
+        return filter<TabType>([
             canViewFinances ? 'top_ups' : null,
             canViewIdentities ? 'identities' : null,
             canViewImplementation ? 'implementations' : null,
-        ].filter((item) => item);
+        ]);
     }, [canViewImplementation, canViewFinances, canViewIdentities]);
 
-    const defaultViewTable = useMemo(() => {
+    const defaultViewTable = useMemo<TabType>(() => {
         if (fund?.is_configured && availableViewTables.includes('top_ups')) {
             return 'top_ups';
         }
@@ -78,25 +84,13 @@ export default function OrganizationsFundsShow() {
         { removeDefaultsFromUrl: true },
     );
 
-    const viewTypes = useMemo<Array<{ key: 'top_ups' | 'identities' | 'implementations'; name: string }>>(
-        () => [
-            ...(fund?.is_configured && canViewFinances
-                ? [{ key: 'top_ups' as 'top_ups' | 'identities' | 'implementations', name: 'Webshop' }]
-                : []),
-            ...(canViewImplementation
-                ? [
-                      {
-                          key: 'implementations' as 'top_ups' | 'identities' | 'implementations',
-                          name: 'Bekijk aanvullingen',
-                      },
-                  ]
-                : []),
-            ...(canViewIdentities
-                ? [{ key: 'identities' as 'top_ups' | 'identities' | 'implementations', name: 'Aanvragers' }]
-                : []),
-        ],
-        [canViewImplementation, canViewFinances, canViewIdentities, fund?.is_configured],
-    );
+    const viewTypes = useMemo(() => {
+        return filter<{ key: TabType; name: string }>([
+            fund?.is_configured && canViewFinances ? { key: 'top_ups', name: 'Webshop' } : null,
+            canViewImplementation ? { key: 'implementations', name: 'Bekijk aanvullingen' } : null,
+            canViewIdentities ? { key: 'identities', name: 'Aanvragers' } : null,
+        ]);
+    }, [canViewImplementation, canViewFinances, canViewIdentities, fund?.is_configured]);
 
     const fetchFund = useCallback(() => {
         setProgress(0);
@@ -288,7 +282,6 @@ export default function OrganizationsFundsShow() {
                 {viewType == 'description' && <OrganizationsFundsShowDescriptionCard fund={fund} />}
                 {viewType == 'formulas' && <OrganizationsFundsShowFormulasCard fund={fund} />}
                 {viewType == 'criteria' && <OrganizationsFundsShowCriteriaCard fund={fund} setFund={setFund} />}
-
                 {viewType == 'statistics' && (
                     <OrganizationsFundsShowStatisticsCard fund={fund} organization={activeOrganization} />
                 )}
