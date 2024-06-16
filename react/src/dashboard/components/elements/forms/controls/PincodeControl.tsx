@@ -104,6 +104,7 @@ export default function PincodeControl({
                                         autoComplete="off"
                                         autoCapitalize="off"
                                         spellCheck="false"
+                                        aria-label={'enter your pincode number digits'}
                                         disabled={chars.indexOf(char) < immutableSize}
                                         ref={inputRefs[chars.indexOf(char)]}
                                         value={char.val}
