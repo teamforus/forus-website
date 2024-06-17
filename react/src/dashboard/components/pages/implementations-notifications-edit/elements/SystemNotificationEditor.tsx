@@ -167,6 +167,7 @@ export default function SystemNotificationEditor({
                                             placeholder="Kies een fonds"
                                             options={funds}
                                             value={fund}
+                                            allowSearch={true}
                                             onChange={(fund: Partial<Fund>) => setFund(fund)}
                                             optionsComponent={SelectControlOptions}
                                         />
@@ -216,15 +217,17 @@ export default function SystemNotificationEditor({
                 </div>
             </div>
 
-            <SystemNotificationTemplateEditor
-                type="mail"
-                fund={fund}
-                implementation={implementation}
-                organization={organization}
-                notification={notification}
-                template={templates.mail}
-                onChange={(data) => setNotifications({ ...notification, ...data })}
-            />
+            {templates.mail && (
+                <SystemNotificationTemplateEditor
+                    type="mail"
+                    fund={fund}
+                    implementation={implementation}
+                    organization={organization}
+                    notification={notification}
+                    template={templates.mail}
+                    onChange={(data) => setNotifications({ ...notification, ...data })}
+                />
+            )}
 
             {templates.push && (
                 <SystemNotificationTemplateEditor

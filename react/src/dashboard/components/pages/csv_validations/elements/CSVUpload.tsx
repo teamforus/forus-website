@@ -44,8 +44,8 @@ export default function CSVUpload({
 
     const [data, setData] = useState(null);
 
-    const recordTypeKeys = useMemo(() => {
-        return recordTypes?.map((recordType) => recordType.key);
+    const criteriaRecordTypeKeys = useMemo(() => {
+        return recordTypes?.filter((recordType) => recordType.criteria)?.map((recordType) => recordType.key);
     }, [recordTypes]);
 
     const fundRecordKey = useMemo(() => {
@@ -88,7 +88,7 @@ export default function CSVUpload({
     const filterSelectedFiles = useCallback(
         (files: FileList) => {
             return [...files].filter((file) => {
-                return acceptedFiles.includes('.' + file.name.split('.')[file.name.split('.').length - 1]);
+                return acceptedFiles.filter((type) => file.name.endsWith(type));
             });
         },
         [acceptedFiles],
@@ -151,6 +151,10 @@ export default function CSVUpload({
 
     const uploadFile = useCallback(
         async (file: File) => {
+            if (!file) {
+                return setCsvErrors('Kies eerst een .csv bestand.');
+            }
+
             const results = await parseCsvFile(file);
 
             if (!results) {
@@ -181,7 +185,7 @@ export default function CSVUpload({
             }
 
             const invalidRecordTypes = header.filter((recordTypeKey) => {
-                return recordTypeKeys.indexOf(recordTypeKey) == -1;
+                return criteriaRecordTypeKeys.indexOf(recordTypeKey) == -1;
             });
 
             const missingRecordTypes = fund.csv_required_keys.filter((recordTypeKey: string) => {
@@ -236,7 +240,7 @@ export default function CSVUpload({
             setCsvIsValid(true);
             setCsvProgress(1);
         },
-        [parseCsvFile, fund, fundRecordKey, fundRecordKeyValue, validateFile, reset, recordTypeKeys],
+        [parseCsvFile, fund, fundRecordKey, fundRecordKeyValue, validateFile, reset, criteriaRecordTypeKeys],
     );
 
     const startUploadingToServer = useCallback(

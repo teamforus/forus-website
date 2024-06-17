@@ -86,8 +86,8 @@ export default function OrganizationsFundsShow() {
 
     const viewTypes = useMemo(() => {
         return filter<{ key: TabType; name: string }>([
-            fund?.is_configured && canViewFinances ? { key: 'top_ups', name: 'Webshop' } : null,
-            canViewImplementation ? { key: 'implementations', name: 'Bekijk aanvullingen' } : null,
+            fund?.is_configured && canViewFinances ? { key: 'top_ups', name: 'Bekijk aanvullingen' } : null,
+            canViewImplementation ? { key: 'implementations', name: 'Webshop' } : null,
             canViewIdentities ? { key: 'identities', name: 'Aanvragers' } : null,
         ]);
     }, [canViewImplementation, canViewFinances, canViewIdentities, fund?.is_configured]);

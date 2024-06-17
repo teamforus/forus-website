@@ -471,7 +471,7 @@ export default function FundRequest() {
         }
     }, [autoSubmit, autoSubmitted, step, steps, submitConfirmCriteria]);
 
-    if (!fund) {
+    if (!fund || !vouchers || !fundRequests) {
         return null;
     }
 

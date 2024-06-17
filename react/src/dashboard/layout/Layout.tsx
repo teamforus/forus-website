@@ -34,6 +34,10 @@ export const Layout = ({ children }: { children: React.ReactElement }) => {
         pageScrollRef?.current?.scrollTo({ top: 0 });
     }, [route?.pathname]);
 
+    if (!envData?.config) {
+        return null;
+    }
+
     return (
         <LoadScript googleMapsApiKey={envData?.config?.google_maps_api_key} libraries={libraries}>
             <div

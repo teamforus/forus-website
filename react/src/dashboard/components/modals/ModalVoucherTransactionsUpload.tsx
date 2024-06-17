@@ -390,6 +390,7 @@ export default function ModalVoucherTransactionsUpload({
     }, [fileService, transactionService]);
 
     const reset = useCallback(function () {
+        setIsValid(false);
         setData(null);
         setError(null);
         setCsvFile(null);

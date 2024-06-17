@@ -5,5 +5,6 @@ export default interface FundFormula {
     record_type_key: string;
     type: 'fixed' | 'multiply';
     record_type_name?: string;
+    created_at_locale?: string;
     updated_at_locale?: string;
 }

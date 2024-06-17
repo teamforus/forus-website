@@ -1,6 +1,7 @@
 import React from 'react';
 import Fund from '../../../../props/models/Fund';
 import EmptyCard from '../../../elements/empty-card/EmptyCard';
+import TableDateTime from '../../../elements/tables/elements/TableDateTime';
 
 export default function OrganizationsFundsShowFormulasCard({ fund }: { fund: Fund }) {
     return (
@@ -15,6 +16,7 @@ export default function OrganizationsFundsShowFormulasCard({ fund }: { fund: Fun
                                     <th>Type</th>
                                     <th>Bedrag</th>
                                     <th>Gegeven</th>
+                                    <th>Aangemaakt op</th>
                                     <th className="text-right">Laatste aanpassing</th>
                                 </tr>
                             </thead>
@@ -26,12 +28,11 @@ export default function OrganizationsFundsShowFormulasCard({ fund }: { fund: Fun
                                         <td>{formula.type}</td>
                                         <td>{formula.amount_locale}</td>
                                         <td>{formula.record_type_name || '-'}</td>
+                                        <td>
+                                            <TableDateTime value={formula.created_at_locale} />
+                                        </td>
                                         <td className="text-right">
-                                            <strong className="text-primary">
-                                                {formula.updated_at_locale?.split(' - ')[0]}
-                                            </strong>
-                                            <br />
-                                            {formula.updated_at_locale?.split(' - ')[1]}
+                                            <TableDateTime value={formula.updated_at_locale} />
                                         </td>
                                     </tr>
                                 ))}

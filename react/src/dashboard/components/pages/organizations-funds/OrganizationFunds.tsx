@@ -102,7 +102,7 @@ export default function OrganizationFunds() {
 
         implementationService
             .list(activeOrganization.id, { per_page: 100 })
-            .then((res) => setImplementations([{ id: null, name: 'Alle implementaties...' }, ...res.data.data]))
+            .then((res) => setImplementations([{ id: null, name: 'Alle implementaties' }, ...res.data.data]))
             .finally(() => setProgress(100));
     }, [activeOrganization.id, implementationService, setProgress]);
 
@@ -466,10 +466,11 @@ export default function OrganizationFunds() {
                                                                 <em className="mdi mdi-eye icon-start" /> Bekijken
                                                             </StateNavLink>
 
-                                                            {hasPermission(fund.organization, [
-                                                                'manage_funds',
-                                                                'manage_fund_texts',
-                                                            ]) && (
+                                                            {hasPermission(
+                                                                activeOrganization,
+                                                                ['manage_funds', 'manage_fund_texts'],
+                                                                false,
+                                                            ) && (
                                                                 <StateNavLink
                                                                     name={'funds-edit'}
                                                                     className="dropdown-item"
@@ -482,18 +483,19 @@ export default function OrganizationFunds() {
                                                                 </StateNavLink>
                                                             )}
 
-                                                            {hasPermission(activeOrganization, 'manage_funds') && (
-                                                                <StateNavLink
-                                                                    className="dropdown-item"
-                                                                    name={'funds-security'}
-                                                                    params={{
-                                                                        organizationId: activeOrganization.id,
-                                                                        fundId: fund.id,
-                                                                    }}>
-                                                                    <em className="mdi mdi-security icon-start" />
-                                                                    Beveiliging
-                                                                </StateNavLink>
-                                                            )}
+                                                            {activeOrganization.allow_2fa_restrictions &&
+                                                                hasPermission(activeOrganization, 'manage_funds') && (
+                                                                    <StateNavLink
+                                                                        className="dropdown-item"
+                                                                        name={'funds-security'}
+                                                                        params={{
+                                                                            fundId: fund.id,
+                                                                            organizationId: activeOrganization.id,
+                                                                        }}>
+                                                                        <em className="mdi mdi-security icon-start" />
+                                                                        Beveiliging
+                                                                    </StateNavLink>
+                                                                )}
 
                                                             {hasPermission(activeOrganization, 'view_finances') &&
                                                                 fund.balance_provider == 'top_ups' &&
@@ -553,22 +555,16 @@ export default function OrganizationFunds() {
 
             {!loading && funds.meta.total == 0 && <EmptyCard type={'card-section'} title={'Geen fondsen gevonden'} />}
 
-            {!loading && funds.meta && (
-                <div className="card-section" hidden={funds.meta.last_page < 2}>
+            {loading && <LoadingCard type={'section-card'} />}
+
+            {!loading && funds.meta.total > 0 && (
+                <div className="card-section">
                     <Paginator
                         meta={funds.meta}
                         filters={filter.values}
                         updateFilters={filter.update}
                         perPageKey={paginatorKey}
                     />
-                </div>
-            )}
-
-            {loading && (
-                <div className="card-section">
-                    <div className="card-loading">
-                        <div className="mdi mdi-loading mdi-spin" />
-                    </div>
                 </div>
             )}
         </div>
