@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import useAssetUrl from '../../../../../hooks/useAssetUrl';
 import useTranslate from '../../../../../hooks/useTranslate';
 
@@ -16,7 +16,14 @@ export default function SignUpStepGeneralInfo({
         <div className="sign_up-pane">
             <div className="sign_up-pane-header">{translate(`sign_up_${panelType}.header.title_step_1`)}</div>
 
-            <div className="sign_up-pane-body">
+            <div
+                className={`sign_up-pane-body ${
+                    panelType == 'validator'
+                        ? 'sign_up-pane-body-padless-bottom'
+                        : 'flex flex-vertical flex-vertical-reverse'
+                }`}>
+                <div className="sign_up-pane-text">{translate(`sign_up_${panelType}.header.subtitle_step_1`)}</div>
+
                 <div className="sign_up-pane-media">
                     {panelType === 'sponsor' ? (
                         <img src={assetUrl('/assets/img/sponsor_sign_up_first_step.svg')} alt={''} />
@@ -24,10 +31,6 @@ export default function SignUpStepGeneralInfo({
                         <img src={assetUrl('/assets/img/sign_up_first_step.png')} alt={''} />
                     )}
                 </div>
-
-                {panelType === 'sponsor' && (
-                    <div className="sign_up-pane-text">{translate(`sign_up_${panelType}.header.subtitle_step_1`)}</div>
-                )}
             </div>
 
             <div className="sign_up-pane-footer">

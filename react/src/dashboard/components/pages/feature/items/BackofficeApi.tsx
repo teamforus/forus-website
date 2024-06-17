@@ -56,7 +56,6 @@ export default function BackofficeApi({
 
                         <h3>Belangrijkste voordelen</h3>
 
-                        <p>De koppeling van Beckoffice API met Forus biedt verschillende voordelen:</p>
                         <div className="block block-feature-icons">
                             <div className="block-feature-icons-item">
                                 <div className="block-feature-icon">
@@ -149,8 +148,8 @@ export default function BackofficeApi({
                     <div className="card-info-icon mdi mdi-headset" />
                     <div className="card-info-details">
                         <span>
-                            Mocht u nog vragen hebben of wilt u aanvullende informatie dan kunt u ons bellen op:{' '}
-                            <strong>+31 (0) 85 004 33 87</strong> of contact opnemen via e-mail{' '}
+                            Mocht u vragen hebben of aanvullende informatie willen ontvangen, dan kunt u ons bellen op:{' '}
+                            <strong>+31 (0) 85 004 33 87</strong> of een e-mail sturen naar{' '}
                             <strong>info@forus.io</strong>
                         </span>
                     </div>

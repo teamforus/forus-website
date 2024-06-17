@@ -20,7 +20,10 @@ export default function NotificationPreferenceCard({
             </div>
             <div className="form block block-preferences">
                 {preferences.map((preference) => (
-                    <label key={preference.key} htmlFor={`option_${preference.key}`} className="preference-option">
+                    <label
+                        key={preference.key}
+                        htmlFor={`option_${preference.type}_${preference.key}`}
+                        className="preference-option">
                         <div className="preference-option-details">
                             <div className="card-heading card-heading-padless">
                                 {t(`notification_preferences.types.${preference.key}.title`)}
@@ -34,7 +37,7 @@ export default function NotificationPreferenceCard({
                             <div className="form-toggle">
                                 <input
                                     type="checkbox"
-                                    id={`option_${preference.key}`}
+                                    id={`option_${preference.type}_${preference.key}`}
                                     checked={preference.subscribed}
                                     onChange={(e) => togglePreference(preference, e.target.checked)}
                                 />

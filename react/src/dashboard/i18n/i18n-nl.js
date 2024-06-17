@@ -470,6 +470,7 @@ module.exports = {
 
             footer_contact_details: "Vul hier de contactinformatie van uw organisatie in. De tekst staat in de footer op de homepagina.",
             footer_opening_times: "Vul hier de openingstijden van uw organisatie in. De tekst staat in de footer op de homepagina.",
+            footer_app_info: 'Download de Me-app content tooltip',
         },
         buttons: {
             cancel: "Annuleren",

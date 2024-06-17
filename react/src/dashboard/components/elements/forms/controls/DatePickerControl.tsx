@@ -9,6 +9,7 @@ export default function DatePickerControl({
     disabled,
     placeholder,
     minYear = 1900,
+    maxYear = getYear(new Date()) + 1,
     dateFormat = 'yyyy-MM-dd',
     dateMin,
     dateMax,
@@ -19,12 +20,13 @@ export default function DatePickerControl({
     onChange: (value: Date) => void;
     placeholder?: string;
     minYear?: number;
+    maxYear?: number;
     dateFormat?: string;
     dateMin?: Date;
     dateMax?: Date;
     dateInitial?: Date;
 }) {
-    const years = range(minYear, getYear(new Date()) + 1, 1);
+    const years = range(minYear, maxYear, 1);
     const months = [
         'January',
         'February',
