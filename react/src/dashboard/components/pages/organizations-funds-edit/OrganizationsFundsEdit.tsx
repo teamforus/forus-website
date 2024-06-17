@@ -78,7 +78,6 @@ export default function OrganizationsFundsEdit() {
     const [fundStates] = useState(fundService.getStates());
     const faqEditorBlock = useRef<() => Promise<boolean>>();
     const criteriaBlockRef = useRef<() => Promise<Array<FundCriterion> | null>>();
-    const [endDateMin] = useState(new Date(new Date().getFullYear() + 1, new Date().getMonth(), 1));
 
     const [fundTypes] = useState([
         { value: 'budget', name: 'Waardebon' },
@@ -920,7 +919,6 @@ export default function OrganizationsFundsEdit() {
                                     value={dateParse(form.values.end_date)}
                                     dateFormat="dd-MM-yyyy"
                                     maxYear={new Date().getFullYear() + 10}
-                                    dateMin={endDateMin}
                                     placeholder={translate('dd-MM-yyyy')}
                                     disabled={
                                         form.values.state != 'waiting' ||
