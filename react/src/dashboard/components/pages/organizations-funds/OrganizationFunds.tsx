@@ -102,7 +102,7 @@ export default function OrganizationFunds() {
 
         implementationService
             .list(activeOrganization.id, { per_page: 100 })
-            .then((res) => setImplementations([{ id: null, name: 'Alle implementaties...' }, ...res.data.data]))
+            .then((res) => setImplementations([{ id: null, name: 'Alle implementaties' }, ...res.data.data]))
             .finally(() => setProgress(100));
     }, [activeOrganization.id, implementationService, setProgress]);
 
@@ -202,8 +202,7 @@ export default function OrganizationFunds() {
                 <div className="flex-row">
                     <div className="flex-col flex-grow">
                         <div className="card-title" data-dusk="fundsTitle">
-                            <span>{translate('components.organization_funds.title')}</span>
-                            <span className="span-count">{funds.meta.total}</span>
+                            {translate('components.organization_funds.title')} ({funds.meta.total})
                         </div>
                     </div>
 
@@ -362,7 +361,11 @@ export default function OrganizationFunds() {
                                         <th>{translate('components.organization_funds.labels.implementation')}</th>
                                         {funds_type == 'active' && (
                                             <Fragment>
-                                                <th>{translate('components.organization_funds.labels.remaining')}</th>
+                                                {hasPermission(activeOrganization, 'view_finances') && (
+                                                    <th>
+                                                        {translate('components.organization_funds.labels.remaining')}
+                                                    </th>
+                                                )}
                                                 <th>
                                                     {translate('components.organization_funds.labels.requester_count')}
                                                 </th>
@@ -415,12 +418,14 @@ export default function OrganizationFunds() {
 
                                             {funds_type == 'active' && (
                                                 <Fragment>
-                                                    <td>
-                                                        {currencyFormat(
-                                                            (parseFloat(fund.budget?.total) || 0) -
-                                                                (parseFloat(fund.budget?.used) || 0),
-                                                        )}
-                                                    </td>
+                                                    {hasPermission(activeOrganization, 'view_finances') && (
+                                                        <td>
+                                                            {currencyFormat(
+                                                                (parseFloat(fund.budget?.total) || 0) -
+                                                                    (parseFloat(fund.budget?.used) || 0),
+                                                            )}
+                                                        </td>
+                                                    )}
 
                                                     <td className="text-strong text-muted-dark">
                                                         {fund.requester_count}
@@ -461,29 +466,39 @@ export default function OrganizationFunds() {
                                                                 <em className="mdi mdi-eye icon-start" /> Bekijken
                                                             </StateNavLink>
 
-                                                            <StateNavLink
-                                                                name={'funds-edit'}
-                                                                className="dropdown-item"
-                                                                params={{
-                                                                    organizationId: activeOrganization.id,
-                                                                    fundId: fund.id,
-                                                                }}>
-                                                                <em className="mdi mdi-pencil icon-start" />
-                                                                Bewerken
-                                                            </StateNavLink>
+                                                            {hasPermission(
+                                                                activeOrganization,
+                                                                ['manage_funds', 'manage_fund_texts'],
+                                                                false,
+                                                            ) && (
+                                                                <StateNavLink
+                                                                    name={'funds-edit'}
+                                                                    className="dropdown-item"
+                                                                    params={{
+                                                                        organizationId: activeOrganization.id,
+                                                                        fundId: fund.id,
+                                                                    }}>
+                                                                    <em className="mdi mdi-pencil icon-start" />
+                                                                    Bewerken
+                                                                </StateNavLink>
+                                                            )}
 
-                                                            <StateNavLink
-                                                                className="dropdown-item"
-                                                                name={'funds-security'}
-                                                                params={{
-                                                                    organizationId: activeOrganization.id,
-                                                                    fundId: fund.id,
-                                                                }}>
-                                                                <em className="mdi mdi-security icon-start" />
-                                                                Beveiliging
-                                                            </StateNavLink>
+                                                            {activeOrganization.allow_2fa_restrictions &&
+                                                                hasPermission(activeOrganization, 'manage_funds') && (
+                                                                    <StateNavLink
+                                                                        className="dropdown-item"
+                                                                        name={'funds-security'}
+                                                                        params={{
+                                                                            fundId: fund.id,
+                                                                            organizationId: activeOrganization.id,
+                                                                        }}>
+                                                                        <em className="mdi mdi-security icon-start" />
+                                                                        Beveiliging
+                                                                    </StateNavLink>
+                                                                )}
 
-                                                            {fund.balance_provider == 'top_ups' &&
+                                                            {hasPermission(activeOrganization, 'view_finances') &&
+                                                                fund.balance_provider == 'top_ups' &&
                                                                 fund.key &&
                                                                 fund.state != 'closed' && (
                                                                     <a
@@ -501,19 +516,21 @@ export default function OrganizationFunds() {
                                                                     </a>
                                                                 )}
 
-                                                            <a
-                                                                className={`dropdown-item ${
-                                                                    fund.key && fund.state != 'closed' ? 'disabled' : ''
-                                                                }`}
-                                                                onClick={() => {
-                                                                    archiveFund(fund);
-                                                                    setShownFundMenuId(null);
-                                                                }}>
-                                                                <em className="mdi mdi-download-box-outline icon-start" />
-                                                                {translate(
-                                                                    'components.organization_funds.buttons.archive',
-                                                                )}
-                                                            </a>
+                                                            {hasPermission(activeOrganization, 'manage_funds') && (
+                                                                <a
+                                                                    className={`dropdown-item ${
+                                                                        fund.state != 'closed' ? 'disabled' : ''
+                                                                    }`}
+                                                                    onClick={() => {
+                                                                        archiveFund(fund);
+                                                                        setShownFundMenuId(null);
+                                                                    }}>
+                                                                    <em className="mdi mdi-download-box-outline icon-start" />
+                                                                    {translate(
+                                                                        'components.organization_funds.buttons.archive',
+                                                                    )}
+                                                                </a>
+                                                            )}
                                                         </div>
                                                     </TableRowActions>
                                                 ) : (
@@ -538,22 +555,16 @@ export default function OrganizationFunds() {
 
             {!loading && funds.meta.total == 0 && <EmptyCard type={'card-section'} title={'Geen fondsen gevonden'} />}
 
-            {!loading && funds.meta && (
-                <div className="card-section" hidden={funds.meta.last_page < 2}>
+            {loading && <LoadingCard type={'section-card'} />}
+
+            {!loading && funds.meta.total > 0 && (
+                <div className="card-section">
                     <Paginator
                         meta={funds.meta}
                         filters={filter.values}
                         updateFilters={filter.update}
                         perPageKey={paginatorKey}
                     />
-                </div>
-            )}
-
-            {loading && (
-                <div className="card-section">
-                    <div className="card-loading">
-                        <div className="mdi mdi-loading mdi-spin" />
-                    </div>
                 </div>
             )}
         </div>

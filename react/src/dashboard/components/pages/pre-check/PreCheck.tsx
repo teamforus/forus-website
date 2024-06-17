@@ -25,6 +25,7 @@ import { uniqueId } from 'lodash';
 import useSetProgress from '../../../hooks/useSetProgress';
 import useTranslate from '../../../hooks/useTranslate';
 import useAssetUrl from '../../../hooks/useAssetUrl';
+import StateNavLink from '../../../modules/state_router/StateNavLink';
 
 export default function PreCheck() {
     const activeOrganization = useActiveOrganization();
@@ -139,13 +140,17 @@ export default function PreCheck() {
                 await mediaService.delete(implementation.pre_check_banner.uid);
             }
 
-            return await mediaService
-                .store('pre_check_banner', mediaFile)
-                .then((res) => res.data?.data)
-                .catch((err: ResponseError) => {
-                    pushDanger('Mislukt!', err.data?.message || 'Onbekende foutmelding!');
-                    return null;
-                });
+            if (mediaFile) {
+                return await mediaService
+                    .store('pre_check_banner', mediaFile)
+                    .then((res) => res.data?.data)
+                    .catch((err: ResponseError) => {
+                        pushDanger('Mislukt!', err.data?.message || 'Onbekende foutmelding!');
+                        return null;
+                    });
+            }
+
+            return null;
         },
         [deleteMedia, implementation?.pre_check_banner?.uid, mediaService, pushDanger],
     );
@@ -353,13 +358,11 @@ export default function PreCheck() {
                                         </label>
                                         <input
                                             className="form-control r-n"
-                                            placeholder="Title"
+                                            placeholder={translate('funds_pre_check.labels.title')}
                                             value={preCheckForm.values.pre_check_title || ''}
-                                            onChange={(e) =>
-                                                preCheckForm.update({
-                                                    pre_check_title: e?.target.value,
-                                                })
-                                            }
+                                            onChange={(e) => {
+                                                preCheckForm.update({ pre_check_title: e?.target.value });
+                                            }}
                                         />
                                         <FormError error={preCheckForm.errors?.pre_check_title} />
                                         <div className="form-hint">Max. 50 tekens</div>
@@ -372,9 +375,9 @@ export default function PreCheck() {
                                         <textarea
                                             className="form-control r-n"
                                             value={preCheckForm.values.pre_check_description || ''}
-                                            onChange={(e) =>
-                                                preCheckForm.update({ pre_check_description: e.target.value })
-                                            }
+                                            onChange={(e) => {
+                                                preCheckForm.update({ pre_check_description: e.target.value });
+                                            }}
                                             placeholder="Voeg omschrijving toe"
                                         />
                                         <FormError error={preCheckForm.errors?.pre_check_description} />
@@ -480,37 +483,43 @@ export default function PreCheck() {
                                         options={bannerStates}
                                         optionsComponent={SelectControlOptions}
                                         value={bannerForm.values.pre_check_banner_state}
-                                        onChange={(pre_check_banner_state: string) =>
-                                            bannerForm.update({ pre_check_banner_state })
-                                        }
+                                        onChange={(pre_check_banner_state: string) => {
+                                            bannerForm.update({ pre_check_banner_state });
+                                        }}
                                     />
                                     <FormError error={bannerForm.errors?.pre_check_banner_state} />
                                 </div>
                             </div>
 
                             <div className="form-group">
-                                <div className="form-label">{translate('funds_pre_check.labels.title')}</div>
+                                <div className="form-label form-label-required">
+                                    {translate('funds_pre_check.labels.title')}
+                                </div>
                                 <div className="form-offset">
                                     <input
                                         className={'form-control r-n'}
                                         placeholder={translate('funds_pre_check.labels.title')}
                                         value={bannerForm.values.pre_check_banner_title || ''}
-                                        onChange={(e) => bannerForm.update({ pre_check_banner_title: e.target.value })}
+                                        onChange={(e) => {
+                                            bannerForm.update({ pre_check_banner_title: e.target.value });
+                                        }}
                                     />
                                     <FormError error={bannerForm.errors?.pre_check_banner_title} />
                                 </div>
                             </div>
 
                             <div className="form-group">
-                                <div className="form-label">{translate('funds_pre_check.labels.description')}</div>
+                                <div className="form-label form-label-required">
+                                    {translate('funds_pre_check.labels.description')}
+                                </div>
                                 <div className="form-offset">
                                     <textarea
                                         className={'form-control r-n'}
                                         placeholder={translate('funds_pre_check.labels.description')}
                                         value={bannerForm.values.pre_check_banner_description || ''}
-                                        onChange={(e) =>
-                                            bannerForm.update({ pre_check_banner_description: e.target.value })
-                                        }
+                                        onChange={(e) => {
+                                            bannerForm.update({ pre_check_banner_description: e.target.value });
+                                        }}
                                     />
                                     <FormError error={bannerForm.errors?.pre_check_banner_description} />
                                 </div>
@@ -523,7 +532,9 @@ export default function PreCheck() {
                                         className={'form-control r-n'}
                                         placeholder={translate('funds_pre_check.labels.label')}
                                         value={bannerForm.values.pre_check_banner_label || ''}
-                                        onChange={(e) => bannerForm.update({ pre_check_banner_label: e.target.value })}
+                                        onChange={(e) => {
+                                            bannerForm.update({ pre_check_banner_label: e.target.value });
+                                        }}
                                     />
                                     <FormError error={bannerForm.errors?.pre_check_banner_label} />
                                 </div>
@@ -544,9 +555,9 @@ export default function PreCheck() {
 
                         <div className="card-section">
                             <div className="text-right">
-                                <button className="button button-default" type="button" id="cancel">
+                                <StateNavLink id="cancel" name={'organizations'} className={'button button-default'}>
                                     {translate('funds_edit.buttons.cancel')}
-                                </button>
+                                </StateNavLink>
 
                                 <button className="button button-primary" type="submit">
                                     {translate('funds_edit.buttons.confirm')}

@@ -1,65 +1,43 @@
-import React, { useCallback, useState } from 'react';
-
-interface NumericControlProps {
-    id?: string;
-    minValue?: number;
-    maxValue?: number;
-    value?: number;
-    apply?: boolean;
-    applyText?: string;
-    onChange: (value: number) => void;
-    onSubmit: (value: number) => void;
-}
+import React, { useEffect, useMemo, useState } from 'react';
+import { uniqueId } from 'lodash';
 
 export default function NumericControl({
     id,
+    value,
+    onSubmit,
     minValue,
     maxValue,
-    value,
-    apply,
     applyText,
-    onChange,
-    onSubmit,
-}: NumericControlProps) {
+}: {
+    id?: string;
+    value?: number;
+    minValue?: number;
+    maxValue?: number;
+    applyText?: string;
+    onSubmit: (value: number) => void;
+}) {
     const [viewValue, setViewValue] = useState(value);
+    const elementId = useMemo(() => id || uniqueId('numeric_control_'), [id]);
 
-    const increase = useCallback(() => {
-        if (!apply) {
-            return setViewValue(value + 1);
-        }
-
-        onChange(value + 1);
-    }, [apply, onChange, value]);
-
-    const decrease = useCallback(() => {
-        if (!apply) {
-            return setViewValue(value - 1);
-        }
-
-        onChange(value - 1);
-    }, [apply, onChange, value]);
-
-    const submit = useCallback(() => {
-        if (!apply) {
-            setViewValue(value - 1);
-        }
-
-        onChange(value - 1);
-        onSubmit(value);
-    }, [apply, onChange, onSubmit, value]);
+    useEffect(() => {
+        setViewValue(value);
+    }, [value]);
 
     return (
-        <div className="form-numeric" id={id}>
-            <div className={`form-numeric-btn ${value <= minValue ? 'disabled' : ''}`}>
-                <em className="mdi mdi-minus icon-start" onClick={() => decrease()} />
+        <div className="form-numeric" id={elementId}>
+            <div className={`form-numeric-btn ${viewValue <= minValue ? 'disabled' : ''}`}>
+                <em className="mdi mdi-minus icon-start" onClick={() => setViewValue((viewValue) => viewValue - 1)} />
             </div>
-            <div className="form-numeric-value">{value}</div>
-            <div className={`form-numeric-btn ${value >= maxValue ? 'disabled' : ''}`}>
-                <em className="mdi mdi-plus icon-end" onClick={() => increase()} />
+
+            <div className="form-numeric-value">{viewValue}</div>
+
+            <div className={`form-numeric-btn ${viewValue >= maxValue ? 'disabled' : ''}`}>
+                <em className="mdi mdi-plus icon-end" onClick={() => setViewValue((viewValue) => viewValue + 1)} />
             </div>
-            {apply && viewValue != value && (
+
+            {viewValue != value && (
                 <div className="form-numeric-actions">
-                    <div className="button button-default button-sm" onClick={() => submit()}>
+                    <div className="button button-default button-sm" onClick={() => onSubmit(viewValue)}>
                         {applyText}
                     </div>
                 </div>

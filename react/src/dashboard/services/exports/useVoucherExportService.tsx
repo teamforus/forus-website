@@ -6,7 +6,6 @@ import ModalExportDataSelect, { ExportFieldProp } from '../../components/modals/
 import useMakeExporterService from './useMakeExporterService';
 import useVoucherService from '../VoucherService';
 import { useFileService } from '../FileService';
-import Voucher from '../../props/models/Voucher';
 import JSZip from 'jszip';
 import { uniqueId } from 'lodash';
 import { ResponseError } from '../../props/ApiResponses';
@@ -27,23 +26,23 @@ export default function useVoucherExportService() {
         { value: 'png', label: 'Afbeelding', icon: 'image-outline' },
     ]);
 
-    const makeQrCode = useCallback((qrValue) => {
-        const elementId = '#' + qrValue;
+    const makeQrCode = useCallback((qrValue): string => {
+        const elementId = `#${qrValue}`;
         const $el = document.body.appendChild(document.createElement('div'));
+
         $el.id = elementId;
         $el.style.display = 'none';
 
-        new QRCode(elementId, {
-            text: qrValue,
-        });
+        new QRCode(elementId, { text: JSON.stringify({ type: 'voucher', value: qrValue }) });
 
-        const canvas = document.getElementById(elementId).querySelector('canvas');
-
-        return canvas.toDataURL();
+        return document.getElementById(elementId).querySelector('canvas').toDataURL();
     }, []);
 
     const saveExportedData = useCallback(
-        (res: { data: Array<Voucher>; files: { csv: string; zip: string }; name: string }, qrFormat: string) => {
+        (
+            res: { data: Array<{ name?: string; value?: string }>; files: { csv: string; zip: string }; name: string },
+            qrFormat: string,
+        ) => {
             const fileTypes = {
                 xls: 'application/vnd.ms-excel',
                 csv: 'text/csv',
@@ -74,7 +73,7 @@ export default function useVoucherExportService() {
                         const imagesDirName = `${name}_QR_codes_images`;
                         const imgDirectory = data.length > 0 ? zip.folder(imagesDirName) : null;
 
-                        const promises = data.map(async (voucherData: any, index) => {
+                        const promises = data.map(async (voucherData, index) => {
                             console.info('- making qr file ' + (index + 1) + ' from ' + data.length + '.');
 
                             const imageData = makeQrCode(voucherData.value);
@@ -87,9 +86,10 @@ export default function useVoucherExportService() {
                             .then((data) => {
                                 console.info('- inserting images into .zip archive.');
 
-                                data.forEach((img) =>
-                                    imgDirectory.file(uniqueId() + '.png', img.data, { base64: true }),
-                                );
+                                data.forEach((img) => {
+                                    imgDirectory.file(uniqueId() + '.png', img.data, { base64: true });
+                                });
+
                                 setProgress(80);
 
                                 zip.generateAsync({ type: 'blob' })

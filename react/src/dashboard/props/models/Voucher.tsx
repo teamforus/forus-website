@@ -4,6 +4,7 @@ import Product from './Product';
 import Transaction from './Transaction';
 import Office from './Office';
 import Reservation from './Reservation';
+import PhysicalCard from './PhysicalCard';
 
 export default interface Voucher {
     id: number;
@@ -38,27 +39,28 @@ export default interface Voucher {
         name: string;
         logo: Media;
     }>;
-    showTooltip?: boolean;
     identity_email?: string;
     activation_code?: string;
     identity_bsn?: string;
     relation_bsn?: string;
     client_uid?: string;
-    physical_card?: {
-        id: number;
-        code: string;
-    };
+    physical_card?: PhysicalCard;
     source_locale?: string;
     amount?: string;
+    amount_locale?: string;
     amount_total?: string;
+    amount_total_locale?: string;
     amount_top_up?: string;
+    amount_top_up_locale?: string;
     amount_available?: string;
+    amount_available_locale?: string;
+    amount_spent?: string;
+    amount_spent_locale?: string;
     note?: string;
     expire_at_locale?: string;
     in_use?: boolean;
     first_use_date_locale?: string;
     has_payouts?: boolean;
-    showMenu: boolean;
     is_granted?: boolean;
     is_external: boolean;
     limit_multiplier?: number;
@@ -71,7 +73,6 @@ export default interface Voucher {
         created_at_locale: string;
     }>;
     deactivated?: boolean;
-    amount_locale?: string;
     used: boolean;
     last_transaction_at?: string;
     last_transaction_at_locale?: string;

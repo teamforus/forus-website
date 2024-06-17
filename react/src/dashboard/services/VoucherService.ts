@@ -6,6 +6,7 @@ import Papa from 'papaparse';
 import Product from '../props/models/Product';
 import { ExportFieldProp } from '../components/modals/ModalExportDataSelect';
 import Transaction from '../props/models/Transaction';
+import { ConfigurableTableColumn } from '../components/pages/vouchers/hooks/useConfigurableTable';
 
 export class VoucherService<T = Voucher> {
     /**
@@ -104,7 +105,9 @@ export class VoucherService<T = Voucher> {
     public export(
         organizationId: number,
         filters = {},
-    ): Promise<{ data: { data: Array<Voucher>; files: { csv: string; zip: string }; name: string } }> {
+    ): Promise<{
+        data: { data: Array<{ name?: string; value?: string }>; files: { csv: string; zip: string }; name: string };
+    }> {
         return this.apiRequest.get(`${this.prefix}/${organizationId}/sponsor/vouchers/export`, filters);
     }
 
@@ -182,89 +185,53 @@ export class VoucherService<T = Voucher> {
         ];
     }
 
-    public getColumns() {
+    public getColumns(): Array<ConfigurableTableColumn> {
         return [
             {
                 key: 'id',
                 label: 'vouchers.labels.id',
-                tooltip: {
-                    key: 'id',
-                    title: 'ID / NR',
-                    description: 'vouchers.tooltips.id',
-                },
+                tooltip: { key: 'id', title: 'ID / NR', description: 'vouchers.tooltips.id' },
             },
             {
                 key: 'assigned_to',
                 label: 'vouchers.labels.assigned_to',
-                tooltip: {
-                    key: 'assigned_to',
-                    title: 'Methode',
-                    description: 'vouchers.tooltips.assigned_to',
-                },
+                tooltip: { key: 'assigned_to', title: 'Methode', description: 'vouchers.tooltips.assigned_to' },
             },
             {
                 key: 'source',
                 label: 'vouchers.labels.source',
-                tooltip: {
-                    key: 'source',
-                    title: 'Aangemaakt door',
-                    description: 'vouchers.tooltips.source',
-                },
+                tooltip: { key: 'source', title: 'Aangemaakt door', description: 'vouchers.tooltips.source' },
             },
             {
                 key: 'amount',
                 label: 'vouchers.labels.amount',
-                fundType: 'budget',
-                tooltip: {
-                    key: 'amount',
-                    title: 'Bedrag',
-                    description: 'vouchers.tooltips.amount',
-                },
+                resourceType: 'budget',
+                tooltip: { key: 'amount', title: 'Bedrag', description: 'vouchers.tooltips.amount' },
             },
             {
                 key: 'note',
                 label: 'vouchers.labels.note',
-                tooltip: {
-                    key: 'note',
-                    title: 'Notitie',
-                    description: 'vouchers.tooltips.note',
-                },
+                tooltip: { key: 'note', title: 'Notitie', description: 'vouchers.tooltips.note' },
             },
             {
                 key: 'fund',
                 label: 'vouchers.labels.fund',
-                tooltip: {
-                    key: 'fund',
-                    title: 'Fonds',
-                    description: 'vouchers.tooltips.fund',
-                },
+                tooltip: { key: 'fund', title: 'Fonds', description: 'vouchers.tooltips.fund' },
             },
             {
                 key: 'created_at',
                 label: 'vouchers.labels.created_at',
-                tooltip: {
-                    key: 'created_at',
-                    title: 'Aangemaakt op',
-                    description: 'vouchers.tooltips.created_at',
-                },
+                tooltip: { key: 'created_at', title: 'Aangemaakt op', description: 'vouchers.tooltips.created_at' },
             },
             {
                 key: 'expire_at',
                 label: 'vouchers.labels.expire_at',
-                tooltip: {
-                    key: 'expire_at',
-                    title: 'Geldig tot en met',
-                    description: 'vouchers.tooltips.expire_at',
-                },
+                tooltip: { key: 'expire_at', title: 'Geldig tot en met', description: 'vouchers.tooltips.expire_at' },
             },
             {
                 key: 'in_use',
                 label: 'vouchers.labels.in_use',
-                tooltip: {
-                    key: 'in_use',
-                    title: 'In gebruik',
-                    description: 'tooltips.in_use',
-                },
+                tooltip: { key: 'in_use', title: 'In gebruik', description: 'tooltips.in_use' },
             },
             {
                 key: 'has_payouts',
@@ -278,11 +245,7 @@ export class VoucherService<T = Voucher> {
             {
                 key: 'state',
                 label: 'vouchers.labels.state',
-                tooltip: {
-                    key: 'state',
-                    title: 'Status',
-                    description: 'vouchers.tooltips.state',
-                },
+                tooltip: { key: 'state', title: 'Status', description: 'vouchers.tooltips.state' },
             },
         ];
     }

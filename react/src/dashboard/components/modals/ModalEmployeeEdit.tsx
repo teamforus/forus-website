@@ -30,7 +30,7 @@ export default function ModalEmployeeEdit({
     cancelButton?: ModalButton;
     organization: Organization;
 }) {
-    const [roles, setRoles] = useState([]);
+    const [roles, setRoles] = useState<Array<Role>>([]);
     const roleService = useRoleService();
     const employeeService = useEmployeeService();
     const officeService = useOfficeService();

@@ -88,7 +88,7 @@ export default function ImplementationsNotificationsEdit() {
                     params={{ organizationId: activeOrganization.id }}
                     activeExact={true}
                     className="breadcrumb-item">
-                    Bijbetalingen
+                    Systeemberichten
                 </StateNavLink>
                 <div className="breadcrumb-item active">
                     {translate(`system_notifications.notifications.${notification.key}.title`)}

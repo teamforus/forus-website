@@ -1,62 +1,76 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { ModalState } from '../../modules/modals/context/ModalContext';
-import { classList } from '../../helpers/utils';
 import useFormBuilder from '../../hooks/useFormBuilder';
 import FormError from '../elements/forms/errors/FormError';
 import Voucher from '../../props/models/Voucher';
 import useVoucherService from '../../services/VoucherService';
 import useActiveOrganization from '../../hooks/useActiveOrganization';
 import usePushDanger from '../../hooks/usePushDanger';
-import { useTranslation } from 'react-i18next';
 import QrCode from '../elements/qr-code/QrCode';
 import SelectControl from '../elements/select-control/SelectControl';
-import SelectControlOptions from '../elements/select-control/templates/SelectControlOptions';
 import { ResponseError } from '../../props/ApiResponses';
 import Organization from '../../props/models/Organization';
-import { usePrintableService } from '../../services/PrintableService';
+import useTranslate from '../../hooks/useTranslate';
+import useSetProgress from '../../hooks/useSetProgress';
+import VoucherQrCodePrintable from '../../../webshop/components/printable/VoucherQrCodePrintable';
+import useOpenPrintable from '../../hooks/useOpenPrintable';
+import useAssetUrl from '../../hooks/useAssetUrl';
+import Fund from '../../props/models/Fund';
 
 export default function ModalVoucherQRCode({
+    fund,
     modal,
-    className,
-    voucher,
-    organization,
     onSent,
+    voucher,
+    className,
     onAssigned,
+    organization,
 }: {
+    fund: Partial<Fund>;
     modal: ModalState;
-    className?: string;
+    onSent: (values: Voucher) => void;
     voucher: Voucher;
-    organization: Organization;
-    onSent: (values: object) => void;
+    className?: string;
     onAssigned: (values: object) => void;
+    organization: Organization;
 }) {
-    const { t } = useTranslation();
-
+    const assetUrl = useAssetUrl();
+    const translate = useTranslate();
     const pushDanger = usePushDanger();
+    const setProgress = useSetProgress();
+    const openPrintable = useOpenPrintable();
     const activeOrganization = useActiveOrganization();
 
     const voucherService = useVoucherService();
-    const printableService = usePrintableService();
 
     const [qrCodeValue] = useState<string>(voucher.address);
-    const [voucherActive] = useState<boolean>(voucher.state === 'active');
-    const [assigning, setAssigning] = useState(false);
+    const [isActive] = useState<boolean>(voucher.state === 'active');
+    const [hasActivationCode] = useState<boolean>(!!voucher.activation_code);
+    const [assigning, setAssigning] = useState(!isActive);
     const [success, setSuccess] = useState(false);
-    const [assignTypes, setAssignTypes] = useState([
-        {
-            key: 'email',
-            label: 'E-mailadres',
-        },
-    ]);
-    const [assignType, setAssignType] = useState(assignTypes[0]);
 
-    const form = useFormBuilder(
+    const assignOptions = useMemo(() => {
+        return [
+            !isActive ? { key: 'activate', label: 'Activeren' } : null,
+            !isActive && !hasActivationCode ? { key: 'activation_code', label: 'Create an activation code' } : null,
+            { key: 'email', label: 'E-mailadres' },
+            organization.bsn_enabled ? { key: 'bsn', label: 'BSN' } : null,
+        ].filter((item) => item);
+    }, [organization.bsn_enabled, hasActivationCode, isActive]);
+
+    const [assignType, setAssignType] = useState(assignOptions[0]);
+
+    const form = useFormBuilder<{
+        bsn?: string;
+        email?: string;
+    }>(
         {
-            bsn: '',
-            email: '',
+            bsn: null,
+            email: null,
         },
         async (values) => {
             form.setIsLocked(true);
+            setProgress(0);
 
             (assigning ? assignToIdentity(values) : sendToEmail(values.email))
                 .then((res) => {
@@ -71,6 +85,7 @@ export default function ModalVoucherQRCode({
                 })
                 .finally(() => {
                     form.setIsLocked(false);
+                    setProgress(100);
                 });
         },
     );
@@ -79,19 +94,17 @@ export default function ModalVoucherQRCode({
 
     const goAssigning = useCallback(() => {
         setAssigning(true);
-        delete form.values.email;
-        delete form.values.bsn;
-        updateForm(form.values);
+
         form.setErrors(null);
-    }, [form, updateForm]);
+        form.update({ bsn: null, email: null });
+    }, [form]);
 
     const goSending = useCallback(() => {
         setAssigning(false);
-        delete form.values.email;
-        delete form.values.bsn;
-        updateForm(form.values);
+
         form.setErrors(null);
-    }, [form, updateForm]);
+        form.update({ bsn: null, email: null });
+    }, [form]);
 
     const sendToEmail = useCallback(
         (email: string) => {
@@ -100,18 +113,29 @@ export default function ModalVoucherQRCode({
         [activeOrganization.id, voucher.id, voucherService],
     );
 
-    const printQrCode = useCallback(() => {
-        printableService.open('voucherQrCode', {
-            voucher: voucher,
-            fund: voucher.fund,
-            organization: organization,
-        });
-    }, [organization, printableService, voucher]);
+    const printQrCode = useCallback(
+        (voucher: Voucher) => {
+            openPrintable((printable) => (
+                <VoucherQrCodePrintable
+                    fund={fund}
+                    voucher={voucher}
+                    printable={printable}
+                    webshopUrl={fund.implementation.url_webshop}
+                    organization={organization}
+                    assetUrl={assetUrl}
+                    showConditions={true}
+                />
+            ));
+        },
+        [openPrintable, fund, organization, assetUrl],
+    );
 
     const assignToIdentity = useCallback(
-        (query: object) => {
+        (query: { email?: string; bsn?: string }) => {
             if (assignType.key === 'email' || assignType.key === 'bsn') {
-                return voucherService.assign(activeOrganization.id, voucher.id, query);
+                return voucherService.assign(activeOrganization.id, voucher.id, {
+                    [assignType.key]: query[assignType.key],
+                });
             } else if (assignType.key === 'activate') {
                 return voucherService.activate(activeOrganization.id, voucher.id);
             } else if (assignType.key === 'activation_code') {
@@ -121,51 +145,18 @@ export default function ModalVoucherQRCode({
         [activeOrganization.id, assignType.key, voucher.id, voucherService],
     );
 
-    const onAssignTypeChange = useCallback(() => {
-        const formValues = form.values;
-
+    useEffect(() => {
         if (assignType.key !== 'bsn') {
-            delete formValues.bsn;
+            updateForm({ bsn: null });
         }
 
         if (assignType.key !== 'email') {
-            delete formValues.email;
+            updateForm({ email: null });
         }
-
-        updateForm(formValues);
-    }, [assignType.key, form.values, updateForm]);
-
-    useEffect(() => {
-        const types = assignTypes;
-        if (organization.bsn_enabled) {
-            types.push({
-                key: 'bsn',
-                label: 'BSN',
-            });
-        }
-
-        if (!voucherActive && !voucher.activation_code) {
-            types.unshift({ key: 'activation_code', label: 'Create an activation code' });
-        }
-
-        if (!voucherActive) {
-            types.unshift({ key: 'activate', label: 'Activeren' });
-        }
-
-        setAssigning(!voucherActive);
-        setAssignTypes(types);
-        setAssignType(assignTypes[0]);
-    }, [assignTypes, organization.bsn_enabled, voucher.activation_code, voucherActive]);
+    }, [assignType.key, updateForm]);
 
     return (
-        <div
-            className={classList([
-                'modal',
-                'modal-animated',
-                'modal-voucher_qr',
-                modal.loading ? 'modal-loading' : null,
-                className,
-            ])}>
+        <div className={`modal modal-animated modal-voucher_qr ${modal.loading ? 'modal-loading' : ''} ${className}`}>
             <div className="modal-backdrop" onClick={modal.close} />
 
             {!assigning && !success && (
@@ -175,26 +166,28 @@ export default function ModalVoucherQRCode({
                     <div className="modal-body">
                         <div className="modal-section">
                             <div className="voucher_qr-block">
-                                <div className="voucher_qr-title">{t('modals.modal_voucher_qr_code.title')}</div>
-                                <QrCode value={qrCodeValue} />
+                                <div className="voucher_qr-title">
+                                    {translate('modals.modal_voucher_qr_code.title')}
+                                </div>
+                                <QrCode value={JSON.stringify({ type: 'voucher', value: qrCodeValue })} />
                                 <div className="voucher_qr-actions">
                                     <div className="row">
                                         <div className="col col-lg-6">
                                             <button
                                                 type="button"
                                                 className="button button-default-dashed button-fill"
-                                                onClick={() => printQrCode()}>
+                                                onClick={() => printQrCode(voucher)}>
                                                 <em className="mdi mdi-printer icon-start" />
-                                                <div>{t('modals.modal_voucher_qr_code.buttons.print')}</div>
+                                                <div>{translate('modals.modal_voucher_qr_code.buttons.print')}</div>
                                             </button>
                                         </div>
                                         <div className="col col-lg-6">
                                             <button
                                                 type="button"
                                                 className="button button-default-dashed button-fill"
-                                                onClick={() => goAssigning()}>
+                                                onClick={goAssigning}>
                                                 <em className="mdi mdi-email icon-start" />
-                                                <div>{t('modals.modal_voucher_qr_code.buttons.assign')}</div>
+                                                <div>{translate('modals.modal_voucher_qr_code.buttons.assign')}</div>
                                             </button>
                                         </div>
                                     </div>
@@ -210,7 +203,7 @@ export default function ModalVoucherQRCode({
                                     <div className="row">
                                         <div className="col col-lg-12">
                                             <div className="form-label form-label-required">
-                                                {t('modals.modal_voucher_qr_code.labels.sent_to_email')}
+                                                {translate('modals.modal_voucher_qr_code.labels.sent_to_email')}
                                             </div>
                                         </div>
                                     </div>
@@ -219,14 +212,16 @@ export default function ModalVoucherQRCode({
                                             <input
                                                 className="form-control"
                                                 type={'text'}
-                                                defaultValue={form.values.email}
-                                                placeholder={t('modals.modal_voucher_qr_code.placeholders.email')}
+                                                value={form.values.email || ''}
+                                                placeholder={translate(
+                                                    'modals.modal_voucher_qr_code.placeholders.email',
+                                                )}
                                                 onChange={(e) => form.update({ email: e.target.value })}
                                             />
                                         </div>
                                         <div className="col col-lg-3">
                                             <button type="submit" className="button button-primary button-fill">
-                                                {t('modals.modal_voucher_qr_code.buttons.send')}
+                                                {translate('modals.modal_voucher_qr_code.buttons.send')}
                                             </button>
                                         </div>
                                     </div>
@@ -238,7 +233,7 @@ export default function ModalVoucherQRCode({
 
                     <div className="modal-footer text-center">
                         <button type="button" className="button button-default" onClick={modal.close}>
-                            {t('modals.modal_voucher_qr_code.buttons.close')}
+                            {translate('modals.modal_voucher_qr_code.buttons.close')}
                         </button>
                     </div>
                 </form>
@@ -248,7 +243,7 @@ export default function ModalVoucherQRCode({
                 <form className="modal-window form" onSubmit={form.submit}>
                     <a className="mdi mdi-close modal-close" onClick={modal.close} role="button" />
                     <div className="modal-header">
-                        <div className="voucher_qr-title">{t('modals.modal_voucher_qr_code.title_assign')}</div>
+                        <div className="voucher_qr-title">{translate('modals.modal_voucher_qr_code.title_assign')}</div>
                     </div>
 
                     <div className="modal-body modal-body-visible">
@@ -256,42 +251,50 @@ export default function ModalVoucherQRCode({
                             <div className="form">
                                 <div className="form-group">
                                     <div className="form-label">
-                                        {t(
+                                        {translate(
                                             'modals.modal_voucher_create.labels.assign_by_type' +
-                                                (voucherActive ? '' : '_or_activate'),
+                                                (isActive ? '' : '_or_activate'),
                                         )}
                                     </div>
                                     <SelectControl
                                         className="form-control"
-                                        propKey={'key'}
                                         propValue={'label'}
-                                        optionsComponent={SelectControlOptions}
-                                        options={assignTypes}
-                                        value={assignType.key}
+                                        options={assignOptions}
+                                        value={assignType}
                                         allowSearch={false}
-                                        onChange={(assign_type_key: string) => {
-                                            setAssignType(assignTypes.find((type) => type.key === assign_type_key));
-                                            onAssignTypeChange();
-                                        }}
+                                        onChange={setAssignType}
                                     />
                                     <FormError error={form.errors?.assign_by_type} />
                                 </div>
 
-                                {(assignType.key === 'email' || assignType.key === 'bsn') && (
+                                {assignType.key === 'email' && (
                                     <div className="form-group">
                                         <div className="form-label form-label-required">
-                                            {t('modals.modal_voucher_qr_code.labels.assign_to_identity')}
+                                            {translate('modals.modal_voucher_qr_code.labels.assign_to_identity')}
+                                        </div>
+                                        <input
+                                            type="email"
+                                            className="form-control"
+                                            value={form.values.email || ''}
+                                            placeholder={translate(`modals.modal_voucher_qr_code.placeholders.email`)}
+                                            onChange={(e) => form.update({ email: e.target.value })}
+                                        />
+                                        <FormError error={form.errors?.email} />
+                                    </div>
+                                )}
+
+                                {assignType.key === 'bsn' && (
+                                    <div className="form-group">
+                                        <div className="form-label form-label-required">
+                                            {translate('modals.modal_voucher_qr_code.labels.assign_to_identity')}
                                         </div>
                                         <input
                                             className="form-control"
-                                            type="text"
-                                            value={form.values[assignType.key]}
-                                            placeholder={t(
-                                                'modals.modal_voucher_qr_code.placeholders.' + assignType.key,
-                                            )}
-                                            onChange={(e) => form.update({ [assignType.key]: e.target.value })}
+                                            value={form.values.bsn || ''}
+                                            placeholder={translate(`modals.modal_voucher_qr_code.placeholders.bsn`)}
+                                            onChange={(e) => form.update({ bsn: e.target.value })}
                                         />
-                                        <FormError error={form.errors?.[assignType.key]} />
+                                        <FormError error={form.errors?.bsn} />
                                     </div>
                                 )}
                             </div>
@@ -303,7 +306,7 @@ export default function ModalVoucherQRCode({
                             <div className="form">
                                 <div className="block block-info">
                                     <em className="mdi mdi-information block-info-icon" />
-                                    {t('modals.modal_voucher_qr_code.info_assign')}
+                                    {translate('modals.modal_voucher_qr_code.info_assign')}
                                 </div>
                             </div>
                         </div>
@@ -313,19 +316,19 @@ export default function ModalVoucherQRCode({
                         <button
                             type="button"
                             className="button button-default"
-                            onClick={() => (voucherActive ? goSending() : modal.close)}>
-                            {t('modals.modal_voucher_qr_code.buttons.cancel')}
+                            onClick={isActive ? goSending : modal.close}>
+                            {translate('modals.modal_voucher_qr_code.buttons.cancel')}
                         </button>
 
                         {assignType.key === 'activate' && (
                             <button type="submit" className="button button-primary">
-                                {t('modals.modal_voucher_create.buttons.activate')}
+                                {translate('modals.modal_voucher_create.buttons.activate')}
                             </button>
                         )}
 
                         {assignType.key !== 'activate' && (
                             <button type="submit" className="button button-primary">
-                                {t('modals.modal_voucher_create.buttons.submit')}
+                                {translate('modals.modal_voucher_create.buttons.submit')}
                             </button>
                         )}
                     </div>
@@ -340,10 +343,10 @@ export default function ModalVoucherQRCode({
                             {assigning && (assignType.key === 'email' || assignType.key === 'bsn') && (
                                 <div className="block block-message">
                                     <div className="message-title">
-                                        {t('modals.modal_voucher_qr_code.success.assigned_title')}
+                                        {translate('modals.modal_voucher_qr_code.success.assigned_title')}
                                     </div>
                                     <div className="message-details">
-                                        {t('modals.modal_voucher_qr_code.success.assigned_details')}
+                                        {translate('modals.modal_voucher_qr_code.success.assigned_details')}
                                     </div>
                                 </div>
                             )}
@@ -351,10 +354,10 @@ export default function ModalVoucherQRCode({
                             {assigning && assignType.key === 'activate' && (
                                 <div className="block block-message">
                                     <div className="message-title">
-                                        {t('modals.modal_voucher_qr_code.success.activated_title')}
+                                        {translate('modals.modal_voucher_qr_code.success.activated_title')}
                                     </div>
                                     <div className="message-details">
-                                        {t('modals.modal_voucher_qr_code.success.activated_details')}
+                                        {translate('modals.modal_voucher_qr_code.success.activated_details')}
                                     </div>
                                 </div>
                             )}
@@ -362,10 +365,10 @@ export default function ModalVoucherQRCode({
                             {assigning && assignType.key === 'activation_code' && (
                                 <div className="block block-message">
                                     <div className="message-title">
-                                        {t('modals.modal_voucher_qr_code.success.activation_code_title')}
+                                        {translate('modals.modal_voucher_qr_code.success.activation_code_title')}
                                     </div>
                                     <div className="message-details">
-                                        {t('modals.modal_voucher_qr_code.success.activation_code_details')}
+                                        {translate('modals.modal_voucher_qr_code.success.activation_code_details')}
                                     </div>
                                 </div>
                             )}
@@ -373,10 +376,10 @@ export default function ModalVoucherQRCode({
                             {!assigning && (
                                 <div className="block block-message">
                                     <div className="message-title">
-                                        {t('modals.modal_voucher_qr_code.success.sending_title')}
+                                        {translate('modals.modal_voucher_qr_code.success.sending_title')}
                                     </div>
                                     <div className="message-details">
-                                        {t('modals.modal_voucher_qr_code.success.sending_details')}
+                                        {translate('modals.modal_voucher_qr_code.success.sending_details')}
                                     </div>
                                 </div>
                             )}
@@ -384,8 +387,8 @@ export default function ModalVoucherQRCode({
                     </div>
 
                     <div className="modal-footer text-center">
-                        <button type="button" className="button button-primary" onClick={() => modal.close()}>
-                            {t('modals.modal_voucher_qr_code.buttons.close')}
+                        <button type="button" className="button button-primary" onClick={modal.close}>
+                            {translate('modals.modal_voucher_qr_code.buttons.close')}
                         </button>
                     </div>
                 </form>

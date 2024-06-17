@@ -23,11 +23,9 @@ export default function useMakeExporterService() {
         (
             fields: Array<ExportFieldProp>,
             record_fields = [],
-            qr_formats: Array<ExportFieldProp> = null,
+            qrFormats: Array<ExportFieldProp> = null,
         ): Array<ExportSectionProp> => {
-            const sections: Array<ExportSectionProp> = [];
-
-            sections.push(
+            const sections: Array<ExportSectionProp> = [
                 {
                     type: 'radio',
                     key: 'data_format',
@@ -44,9 +42,9 @@ export default function useMakeExporterService() {
                     title: 'Kies inbegrepen velden',
                     collapsable: true,
                 },
-            );
+            ];
 
-            if (record_fields.length) {
+            if (record_fields?.length > 0) {
                 sections.push({
                     type: 'checkbox',
                     key: 'extra_fields',
@@ -59,11 +57,11 @@ export default function useMakeExporterService() {
                 });
             }
 
-            if (qr_formats.length) {
+            if (qrFormats?.length > 0) {
                 sections.push({
                     type: 'radio',
                     key: 'qr_format',
-                    fields: qr_formats,
+                    fields: qrFormats,
                     value: 'null',
                     title: 'QR-codes bijvoegen',
                 });

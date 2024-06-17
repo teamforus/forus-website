@@ -1,38 +1,39 @@
 import React, { useState } from 'react';
 import { ModalState } from '../../modules/modals/context/ModalContext';
-import { classList } from '../../helpers/utils';
 import useFormBuilder from '../../hooks/useFormBuilder';
 import useSetProgress from '../../hooks/useSetProgress';
 import Voucher from '../../props/models/Voucher';
 import Organization from '../../props/models/Organization';
-import { useTranslation } from 'react-i18next';
 import PincodeControl from '../elements/forms/controls/PincodeControl';
 import FormError from '../elements/forms/errors/FormError';
 import IconCardSuccess from '../../../../assets/forus-platform/resources/_platform-common/assets/img/modal/icon-physical-cards-success.svg';
 import { usePhysicalCardService } from '../../services/PhysicalCardService';
 import { ResponseError } from '../../props/ApiResponses';
+import useTranslate from '../../hooks/useTranslate';
+import TranslateHtml from '../elements/translate-html/TranslateHtml';
+import usePushDanger from '../../hooks/usePushDanger';
 
 export default function ModalAddPhysicalCard({
     modal,
-    className,
     voucher,
-    organization,
+    className,
     onAttached,
+    organization,
 }: {
     modal: ModalState;
-    className?: string;
     voucher: Voucher;
-    organization: Organization;
+    className?: string;
     onAttached: () => void;
+    organization: Organization;
 }) {
-    const { t } = useTranslation();
-
+    const translate = useTranslate();
+    const pushDanger = usePushDanger();
     const setProgress = useSetProgress();
 
     const physicalCardService = usePhysicalCardService();
 
     const [code, setCode] = useState('');
-    const [state, setState] = useState<string>('form');
+    const [state, setState] = useState<'pending' | 'success'>('pending');
 
     const form = useFormBuilder({ code: '100' }, async (values) => {
         setProgress(0);
@@ -42,83 +43,81 @@ export default function ModalAddPhysicalCard({
             .then((res) => {
                 setProgress(100);
                 setCode(res.data.data.code);
-                setState('success_old_card');
+                setState('success');
                 onAttached();
             })
-            .catch((res: ResponseError) => {
+            .catch((err: ResponseError) => {
                 form.setIsLocked(false);
+                pushDanger('Mislukt!', err.data.message);
 
-                if (res.status === 429) {
-                    return form.setErrors({
-                        code: [res.data.message],
-                    });
+                if (err.status === 429) {
+                    return form.setErrors({ code: [err.data.message] });
                 }
 
-                form.setErrors(res.data.errors);
+                form.setErrors(err.data.errors);
             });
     });
 
     return (
         <div
-            className={classList([
-                'modal',
-                'modal-animated',
-                'modal-physical-cards',
-                modal.loading ? 'modal-loading' : null,
-                className,
-            ])}>
+            className={`modal modal-animated modal-physical-cards ${modal.loading ? 'modal-loading' : ''} ${
+                className || ''
+            }`}>
             <div className="modal-backdrop" aria-label="Sluiten" role="button" onClick={modal.close} />
 
-            {state != 'success_old_card' ? (
-                <div className="modal-window">
+            {state === 'pending' && (
+                <form className="modal-window" onSubmit={form.submit}>
                     <a className="mdi mdi-close modal-close" aria-label="Sluiten" onClick={modal.close} role="button" />
                     <div className="modal-header">
-                        <div className="modal-title">{t('modals.modal_voucher_physical_card.header.card_title')}</div>
+                        <div className="modal-title">
+                            {translate('modals.modal_voucher_physical_card.header.card_title')}
+                        </div>
                     </div>
 
                     <div className="modal-content">
-                        <form className="form">
-                            <div className="activation-card">
-                                <div className="physical-card-title">
-                                    {t('modals.modal_voucher_physical_card.content.title')}
-                                </div>
-                                <p className="text-center">
-                                    {t('modals.modal_voucher_physical_card.content.subtitle')}
-                                </p>
-                                <PincodeControl
-                                    className={'block-pincode-compact'}
-                                    value={form.values.code}
-                                    valueType={'num'}
-                                    blockSize={4}
-                                    blockCount={3}
-                                    cantDeleteSize={3}
-                                    onChange={(code) => form.update({ code })}
-                                />
-
-                                <div className="text-center">
-                                    <FormError error={form.errors?.code} />
-                                </div>
+                        <div className="activation-card">
+                            <div className="physical-card-title">
+                                {translate('modals.modal_voucher_physical_card.content.title')}
                             </div>
-                        </form>
+                            <p className="text-center">
+                                {translate('modals.modal_voucher_physical_card.content.subtitle')}
+                            </p>
+                            <PincodeControl
+                                className={'block-pincode-compact'}
+                                value={form.values.code}
+                                valueType={'num'}
+                                blockSize={4}
+                                blockCount={3}
+                                cantDeleteSize={3}
+                                onChange={(code) => form.update({ code })}
+                            />
+                            <div className="text-center">
+                                <FormError error={form.errors?.code} />
+                            </div>
+                        </div>
                     </div>
 
                     <div className="modal-footer text-center">
                         <button type="button" className="button button-default" onClick={modal.close}>
-                            {t('modals.modal_voucher_physical_card.buttons.cancel')}
+                            {translate('modals.modal_voucher_physical_card.buttons.cancel')}
                         </button>
                         <button
                             type="submit"
-                            className={`button button-primary ${form.values.code.length != 12 ? 'disabled' : ''}`}
-                            onClick={() => form.submit()}>
-                            {t('modals.modal_voucher_physical_card.buttons.submit')}
+                            disabled={form.values.code.length != 12}
+                            className="button button-primary">
+                            {translate('modals.modal_voucher_physical_card.buttons.submit')}
                         </button>
                     </div>
-                </div>
-            ) : (
+                </form>
+            )}
+
+            {state === 'success' && (
                 <div className="modal-window">
                     <a className="mdi mdi-close modal-close" onClick={modal.close} role="button" />
                     <div className="modal-header">
-                        <div className="modal-title">{t('modals.modal_voucher_physical_card.success_card.title')}</div>
+                        <div className="modal-title">
+                            {translate('modals.modal_voucher_physical_card.success_card.title')}
+                        </div>
                     </div>
 
                     <div className="modal-content">
@@ -128,18 +127,16 @@ export default function ModalAddPhysicalCard({
                                     <IconCardSuccess />
                                 </div>
 
-                                <div
-                                    className="physical-card-description"
-                                    dangerouslySetInnerHTML={{
-                                        __html: t('modals.modal_voucher_physical_card.success_card.description', {
-                                            code: code,
-                                        }),
-                                    }}
-                                />
+                                <div className="physical-card-description">
+                                    <TranslateHtml
+                                        i18n={'modals.modal_voucher_physical_card.success_card.description'}
+                                        values={{ code }}
+                                    />
+                                </div>
 
                                 <div className="text-center">
                                     <button type="button" className="button button-primary" onClick={modal.close}>
-                                        {t('modals.modal_voucher_physical_card.success_card.button')}
+                                        {translate('modals.modal_voucher_physical_card.success_card.button')}
                                     </button>
                                 </div>
                             </div>

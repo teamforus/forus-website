@@ -1,5 +1,4 @@
 export default interface PhysicalCard {
-    voucher_id: number;
+    id: number;
     code: string;
-    identity_address: string;
 }
