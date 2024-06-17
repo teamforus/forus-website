@@ -187,7 +187,7 @@ export default function ImplementationsBlockEditor({
                                     <input
                                         className="form-control"
                                         type="text"
-                                        value={block.label}
+                                        value={block.label || ''}
                                         placeholder="Label..."
                                         onChange={(e) => {
                                             setBlocks((blocks) => {
@@ -205,7 +205,7 @@ export default function ImplementationsBlockEditor({
                                     <input
                                         className="form-control"
                                         type="text"
-                                        value={block.title}
+                                        value={block.title || ''}
                                         onChange={(e) => {
                                             setBlocks((blocks) => {
                                                 blocks[index].title = e.target.value;
@@ -221,7 +221,7 @@ export default function ImplementationsBlockEditor({
                                 <div className="form-group">
                                     <label className="form-label form-label-required">Omschrijving</label>
                                     <MarkdownEditor
-                                        value={block.description_html}
+                                        value={block.description_html || ''}
                                         onChange={(value) => {
                                             setBlocks((blocks) => {
                                                 blocks[index].description = value;
