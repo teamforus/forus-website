@@ -40,7 +40,7 @@ export default function CsvValidations() {
         setProgress(0);
 
         recordTypeService
-            .list({ criteria: 1 })
+            .list()
             .then((res) => setRecordTypes(res.data))
             .finally(() => setProgress(100));
     }, [recordTypeService, setProgress]);

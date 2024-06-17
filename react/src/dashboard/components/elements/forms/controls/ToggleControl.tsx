@@ -48,7 +48,7 @@ export default function ToggleControl({
 
                 <div className="toggle-label">
                     {customElement && customElement}
-                    {!customElement && title}
+                    <div>{!customElement && title}</div>
                     {tooltip && <Tooltip text={tooltip} />}
                 </div>
 

@@ -269,6 +269,14 @@ img {
     flex-direction: column;
 }
 
+.flex-horizontal-reverse {
+    flex-direction: row-reverse !important;
+}
+
+.flex-vertical-reverse {
+    flex-direction: column-reverse !important;
+}
+
 .flex {
     display: flex;
 }

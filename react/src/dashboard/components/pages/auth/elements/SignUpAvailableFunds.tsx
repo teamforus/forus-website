@@ -34,7 +34,13 @@ export default function SignUpAvailableFunds({
     const providerFundService = useProviderFundService();
     const assetUrl = useAssetUrl();
 
-    const filter = useFilter({
+    const filter = useFilter<{
+        q?: string;
+        page?: number;
+        tag?: string;
+        per_page?: number;
+        organization_id?: number;
+    }>({
         q: '',
         page: 1,
         tag: null,
@@ -113,9 +119,9 @@ export default function SignUpAvailableFunds({
                                 </label>
                                 <select
                                     className="form-control"
-                                    value={filter.values.organization_id}
+                                    value={filter.values.organization_id || ''}
                                     onChange={(e) => {
-                                        filter.update({ organization_id: parseInt(e.target.value) });
+                                        filter.update({ organization_id: parseInt(e.target.value) || null });
                                     }}>
                                     {organizations.map((organization) => (
                                         <option key={organization.id} value={organization.id}>
@@ -191,6 +197,7 @@ export default function SignUpAvailableFunds({
                             }`}>
                             <div className="card-block-checkbox">
                                 <UIControlCheckbox
+                                    className="ui-control-checkbox-primary"
                                     checked={selected.includes(fund.id)}
                                     onChange={(e) => toggle(e, fund)}
                                 />

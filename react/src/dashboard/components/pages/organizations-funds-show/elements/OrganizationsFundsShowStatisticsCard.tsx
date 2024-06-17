@@ -111,14 +111,14 @@ export default function OrganizationsFundsShowStatisticsCard({
                         <div className="keyvalue-item col col-lg-3">
                             <div className="keyvalue-key">Gestort</div>
                             <div className="keyvalue-value">
-                                {currencyFormat(parseInt(fund.budget.total.toString()))}
+                                {currencyFormat(parseFloat(fund.budget.total.toString()))}
                             </div>
                         </div>
 
                         <div className="keyvalue-item col col-lg-3">
                             <div className="keyvalue-key">Gebruikt</div>
                             <div className="keyvalue-value">
-                                {currencyFormat(parseInt(fund.budget.used.toString()))}
+                                {currencyFormat(parseFloat(fund.budget.used.toString()))}
                             </div>
                         </div>
 
@@ -126,7 +126,7 @@ export default function OrganizationsFundsShowStatisticsCard({
                             <div className="keyvalue-key">Resterend</div>
                             <div className="keyvalue-value">
                                 {currencyFormat(
-                                    parseInt(fund.budget.total.toString()) - parseInt(fund.budget.used.toString()),
+                                    parseFloat(fund.budget.total.toString()) - parseFloat(fund.budget.used.toString()),
                                 )}
                             </div>
                         </div>

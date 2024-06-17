@@ -85,6 +85,7 @@ export default interface Organization {
     bank_statement_details?: {
         bank_transaction_id?: boolean;
         bank_transaction_date?: boolean;
+        bank_transaction_time?: boolean;
         bank_reservation_number?: boolean;
         bank_branch_number?: boolean;
         bank_branch_id?: boolean;

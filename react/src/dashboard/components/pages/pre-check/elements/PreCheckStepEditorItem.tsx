@@ -123,17 +123,15 @@ export default function PreCheckStepEditorItem({
                         <div className="pre-check-item-body-content">
                             <div className="row">
                                 <div className="form-group col col-lg-6 col-xs-12">
-                                    <label className="form-label">Korte titel</label>
+                                    <label className="form-label form-label-required">Korte titel</label>
                                     <input
                                         className="form-control"
                                         type="text"
-                                        defaultValue={preCheck.title_short}
-                                        onChange={(e) =>
-                                            updatePreChecks(preCheckIndex, {
-                                                title_short: e.target.value,
-                                            })
-                                        }
-                                        placeholder="Title..."
+                                        value={preCheck.title_short}
+                                        onChange={(e) => {
+                                            updatePreChecks(preCheckIndex, { title_short: e.target.value });
+                                        }}
+                                        placeholder="Korte titel..."
                                     />
                                     <div className="form-hint">Max. 30 tekens</div>
                                     {errors && <FormError error={errors[`${errorPrefix}.title_short`]} />}
@@ -144,17 +142,29 @@ export default function PreCheckStepEditorItem({
                                     <input
                                         className="form-control"
                                         type="text"
-                                        defaultValue={preCheck.title}
-                                        onChange={(e) =>
-                                            updatePreChecks(preCheckIndex, {
-                                                title: e.target.value,
-                                            })
-                                        }
-                                        placeholder="Title..."
+                                        value={preCheck.title}
+                                        onChange={(e) => {
+                                            updatePreChecks(preCheckIndex, { title: e.target.value });
+                                        }}
+                                        placeholder="Titel..."
                                     />
                                     <div className="form-hint">Max. 100 tekens</div>
                                     {errors && <FormError error={errors[`${errorPrefix}.title`]} />}
                                 </div>
+                            </div>
+
+                            <div className="form-group">
+                                <div className="form-label">Omschrijving</div>
+                                <textarea
+                                    className="form-control"
+                                    value={preCheck.description}
+                                    placeholder="Omschrijving..."
+                                    onChange={(e) => {
+                                        updatePreChecks(preCheckIndex, { description: e.target.value });
+                                    }}
+                                />
+                                <div className="form-hint">Max. 1000 tekens</div>
+                                {errors && <FormError error={errors[`${errorPrefix}.description`]} />}
                             </div>
                         </div>
 
