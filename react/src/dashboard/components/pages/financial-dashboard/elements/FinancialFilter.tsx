@@ -26,7 +26,7 @@ export default function FinancialFilter({
     const [options, setOptions] = useState(optionData);
 
     useEffect(() => {
-        setOptions(optionData.filter((item) => item.name.toLowerCase().includes(search.toLowerCase())));
+        setOptions(optionData.filter((item) => item.name.toLowerCase().includes(search.trim().toLowerCase())));
     }, [optionData, search]);
 
     return (

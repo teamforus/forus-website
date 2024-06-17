@@ -28,6 +28,7 @@ export default function FinancialChart({ chartData }: { chartData: ProviderFinan
         });
 
         setOptions({
+            maintainAspectRatio: false,
             elements: { line: { fill: false } },
             plugins: { legend: { display: false } },
             scales: {
@@ -80,7 +81,7 @@ export default function FinancialChart({ chartData }: { chartData: ProviderFinan
                 </div>
             </div>
             <div className="card-section">
-                <Bar data={data} options={options} height="100px" />
+                <Bar data={data} options={options} height="350px" />
             </div>
         </div>
     );

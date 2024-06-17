@@ -21,6 +21,10 @@ import PhysicalCards from './items/PhysicalCards';
 import VoucherRecords from './items/VoucherRecords';
 import ExtraPayments from './items/ExtraPayments';
 import FundRequests from './items/FundRequests';
+import ExternalFunds from './items/ExternalFunds';
+import VoucherTopUp from './items/VoucherTopUp';
+import SubsidyFunds from './items/SubsidyFunds';
+import BudgetFunds from './items/BudgetFunds';
 
 export default function Feature() {
     const { key } = useParams();
@@ -217,6 +221,42 @@ export default function Feature() {
 
             {feature.key === 'fund_requests' && (
                 <FundRequests
+                    feature={feature}
+                    additionalFeatures={additionalFeatures}
+                    organization={activeOrganization}
+                    openContactModal={openContactModal}
+                />
+            )}
+
+            {feature.key === 'external_funds' && (
+                <ExternalFunds
+                    feature={feature}
+                    additionalFeatures={additionalFeatures}
+                    organization={activeOrganization}
+                    openContactModal={openContactModal}
+                />
+            )}
+
+            {feature.key === 'budget_funds' && (
+                <BudgetFunds
+                    feature={feature}
+                    additionalFeatures={additionalFeatures}
+                    organization={activeOrganization}
+                    openContactModal={openContactModal}
+                />
+            )}
+
+            {feature.key === 'subsidy_funds' && (
+                <SubsidyFunds
+                    feature={feature}
+                    additionalFeatures={additionalFeatures}
+                    organization={activeOrganization}
+                    openContactModal={openContactModal}
+                />
+            )}
+
+            {feature.key === 'voucher_top_up' && (
+                <VoucherTopUp
                     feature={feature}
                     additionalFeatures={additionalFeatures}
                     organization={activeOrganization}

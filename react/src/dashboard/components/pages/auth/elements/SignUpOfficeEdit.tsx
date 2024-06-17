@@ -86,7 +86,7 @@ export default function SignUpOfficeEdit({
                 <div className="sign_up-pane-section">
                     <div className="sign_up-pane-col sign_up-pane-col-2">
                         <div className="form-group">
-                            <label className="form-label">Adres</label>
+                            <label className="form-label form-label-required">Adres</label>
                             <Autocomplete onLoad={onLoad} onPlaceChanged={onPlaceChanged}>
                                 <UIControlText
                                     value={form.values.address}

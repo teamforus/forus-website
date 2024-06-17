@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { ReactNode, useCallback } from 'react';
 import { ModalState } from '../../modules/modals/context/ModalContext';
 import { classList } from '../../helpers/utils';
 import { ModalButton } from './elements/ModalButton';
@@ -19,7 +19,7 @@ export default function ModalNotification({
     icon?: string;
     title: string;
     className?: string;
-    description?: string | Array<string>;
+    description?: string | ReactNode | Array<string> | Array<ReactNode>;
     buttonClose?: ModalButton;
     buttonCancel?: ModalButton;
     buttonSubmit?: ModalButton;

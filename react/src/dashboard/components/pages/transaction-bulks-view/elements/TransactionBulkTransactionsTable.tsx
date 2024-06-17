@@ -71,7 +71,7 @@ export default function TransactionBulkTransactionsTable({
         if (transactionBulk?.id) {
             fetchTransactions(transactionBulk.id);
         }
-    }, [fetchTransactions, transactionBulk?.id]);
+    }, [fetchTransactions, transactionBulk]);
 
     if (!transactions) {
         return <LoadingCard />;

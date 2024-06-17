@@ -3,7 +3,6 @@ import { ModalState } from '../../../../dashboard/modules/modals/context/ModalCo
 import usePushDanger from '../../../../dashboard/hooks/usePushDanger';
 import { cover } from '../../../../dashboard/components/elements/image_cropper/helpers/image';
 import PdfPreview from '../../../../dashboard/components/elements/pdf-preview/PdfPreview';
-import * as pdfJsLib from 'pdfjs-dist';
 import { uniqueId } from 'lodash';
 import ModalPhotoCropperControl from './elements/ModalPhotoCropperControl';
 import { clickOnKeyEnter } from '../../../../dashboard/helpers/wcag';
@@ -172,20 +171,22 @@ export default function ModalPhotoCropper({
         (rawPdfFile): Promise<Blob> => {
             return new Promise((resolve) => {
                 new Response(rawPdfFile).arrayBuffer().then((data) => {
-                    pdfJsLib.getDocument({ data }).promise.then((pdf) => {
-                        pdf.getPage(1).then((page) => {
-                            const viewport = page.getViewport({ scale: 1.5 });
-                            const canvas = document.createElement('canvas');
-                            const canvasContext = canvas.getContext('2d');
+                    window['pdfjsDist']
+                        .getDocument({ data })
+                        .promise.then((pdf: { numPages: number; getPage: (arg0: number) => Promise<any> }) => {
+                            pdf.getPage(1).then((page) => {
+                                const viewport = page.getViewport({ scale: 1.5 });
+                                const canvas = document.createElement('canvas');
+                                const canvasContext = canvas.getContext('2d');
 
-                            canvas.height = viewport.height;
-                            canvas.width = viewport.width;
+                                canvas.height = viewport.height;
+                                canvas.width = viewport.width;
 
-                            page.render({ canvasContext, viewport }).promise.then(() => {
-                                convertPdfCanvasToPreview(canvas).toBlob((blob) => resolve(blob), 'image/jpeg');
+                                page.render({ canvasContext, viewport }).promise.then(() => {
+                                    convertPdfCanvasToPreview(canvas).toBlob((blob) => resolve(blob), 'image/jpeg');
+                                });
                             });
-                        });
-                    }, console.error);
+                        }, console.error);
                 });
             });
         },
