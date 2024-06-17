@@ -55,7 +55,9 @@ export default function ModalCreatePrevalidation({
 
     const recordTypesAvailable = useMemo(() => {
         return recordTypes
-            .filter((type) => type.key != 'primary_email' && !prevalidationRecords?.includes(type?.key))
+            .filter((type) => {
+                return type.criteria && type.key != 'primary_email' && !prevalidationRecords?.includes(type?.key);
+            })
             .filter((record) => record.key !== eligibleKey);
     }, [eligibleKey, prevalidationRecords, recordTypes]);
 
@@ -89,9 +91,21 @@ export default function ModalCreatePrevalidation({
         (values) => {
             setProgress(0);
 
+            const dateValues = {};
+
+            for (const valueKey in values) {
+                if (recordTypesByKey[valueKey]?.type == 'date') {
+                    dateValues[valueKey] = dateFormat(dateParse(values[valueKey]), 'dd-MM-yyyy');
+                }
+            }
+
             prevalidationService
                 .submit(
-                    { ...values, ...(eligibleKey && eligibleKeyValue ? { [eligibleKey]: eligibleKeyValue } : {}) },
+                    {
+                        ...values,
+                        ...dateValues,
+                        ...(eligibleKey && eligibleKeyValue ? { [eligibleKey]: eligibleKeyValue } : {}),
+                    },
                     fund.id,
                 )
                 .then((res) => {
@@ -166,7 +180,11 @@ export default function ModalCreatePrevalidation({
                                                     )}
                                                 </strong>
                                                 <div className="datalist-value text-primary text-right">
-                                                    {form.values[fundRecord]}
+                                                    {form.values[fundRecord] ? (
+                                                        form.values[fundRecord]
+                                                    ) : (
+                                                        <span className={'text-muted'}>-</span>
+                                                    )}
                                                 </div>
                                             </div>
                                         ))}
@@ -218,7 +236,7 @@ export default function ModalCreatePrevalidation({
                                                         recordTypesByKey[fundRecord].type == 'date' && (
                                                             <DatePickerControl
                                                                 value={dateParse(form.values[fundRecord])}
-                                                                dateFormat="dd-MM-jjjj"
+                                                                dateFormat="dd-MM-yyyy"
                                                                 placeholder={recordTypesByKey[fundRecord]?.name}
                                                                 onChange={(date) => {
                                                                     form.update({ [fundRecord]: dateFormat(date) });
@@ -323,7 +341,7 @@ export default function ModalCreatePrevalidation({
                             {prevalidationPrimaryKey && (
                                 <Fragment>
                                     <div className="modal-heading text-center">
-                                        {prevalidationPrimaryKey.name}:
+                                        {prevalidationPrimaryKey.name || prevalidationPrimaryKey.key}:
                                         <div className="text-primary">{prevalidationPrimaryKey.value}</div>
                                     </div>
 

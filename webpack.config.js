@@ -91,14 +91,6 @@ module.exports = (env, argv) => {
                     force: true,
                 },
                 {
-                    from: resolvePath(`./node_modules/pdfjs-dist/build/pdf.worker.js`),
-                    to: resolvePath(`${distPath}/${item.out}/app-${timestamp}.worker.js`),
-                },
-                {
-                    from: resolvePath(`./node_modules/summernote/dist/summernote-lite.min.js`),
-                    to: resolvePath(`${distPath}/${item.out}/assets/dist/js/summernote.${timestamp}.min.js`),
-                },
-                {
                     from: resolvePath(`./node_modules/summernote/dist/summernote-lite.min.js`),
                     to: resolvePath(`${distPath}/${item.out}/assets/dist/js/summernote.${timestamp}.min.js`),
                 },
