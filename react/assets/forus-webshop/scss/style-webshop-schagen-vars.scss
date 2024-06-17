@@ -1,52 +1,37 @@
-@import "../general/vars.scss";
-
 /*==========  Style Sheet - Vars  ==========*/
-$fonts: "https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,700",
-    "https://fonts.googleapis.com/css?family=Source+Serif+Pro:400,400i,600,700";
-$primaryColor: #176b55;
-$primaryColorLight: #2f7f6b;
-
-@font-face {
-    font-family: Oranda;
-    src:
-        local("Oranda BT Roman"),
-        url("https://media.forus.io/assets/fonts/oranda_bt.bde3d05f.woff2") format("woff2"),
-        url("https://media.forus.io/assets/fonts/oranda_bt.05235f9a.woff") format("woff");
-    font-style: normal;
-    font-weight: 400;
-    font-display: swap;
-}
+$primaryColor: #0072b8;
+$primaryColorLight: #1c8fd7;
 
 :root {
     // navbar
-    --bg-nav: #fff;
-    --tc-nav: #212121;
-    --tc-nav-hov: #176b55;
+    --bg-nav: #0072b8;
+    --tc-nav: #ffffff;
+    --tc-nav-hov: #ffffff;
     --logo-padding: 20px 0px;
-    --logo-height: 45px;
+    --logo-height: 75px;
 
     // navbar (auth)
-    --tc-auth-menu: #176b55;
+    --tc-auth-menu: #ffffff;
     --tc-auth-btn: #ffffff;
-    --btn-auth-bg: transparent;
+    --btn-auth-bg: #306fb3;
     --btn-auth-border: #0000;
 
     // navbar (start modal primary)
     --tc-start-btn: #fff;
-    --btn-start-bg: transparent;
-    --btn-start-btn: transparent;
+    --btn-start-bg: #d13e41;
     --btn-start-border: transparent;
 
     // header attributes
     --bg-values: url("../img/splash-top-b.jpg") no-repeat 100% 0;
 
     // base font
-    --base-font: "Source Sans Pro", "Arial", sans-serif;
+    --base-font: "Century Gothic", "Helvetica", "Open Sans", "Arial", sans-serif;
 
+    // heading font
     --hf: var(--base-font);
 
     // text color
-    --tc: #212121;
+    --tc: #4e4d40;
     --tc-var: #fff;
     --tc-link: inherit;
 
@@ -59,10 +44,10 @@ $primaryColorLight: #2f7f6b;
     --bg_2: #ffffff;
 
     // text formatting
-    --text_format: uppercase;
+    --text_format: inherit;
 
     // footer color
-    --footer_background_color: #3a3a3a;
+    --footer_background_color: #306fb3;
     --footer_color: #fff;
 
     --footer_color_link: #fff;
@@ -76,38 +61,44 @@ $primaryColorLight: #2f7f6b;
     // placeholder text color
     --form-control-placeholder-color: #515152;
 
-    --border-color: #e5e5e5;
+    --border-color: #e4e4e4;
 
-    --border-radius: 3px;
+    --border-radius: 5px;
     --box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
 
     --color-primary: #{$primaryColor};
     --color-primary-light: #{$primaryColorLight};
 
-    --color-default: #176b55;
-    --color-default-light: #23a783;
+    --color-default: #{$primaryColor};
+    --color-default-light: #{$primaryColorLight};
 
     --color-search-icon-medium: #{$primaryColor};
     --color-search-icon-dark: #{darken($primaryColor, 10%)};
     --color-search-icon-light: #{lighten($primaryColor, 25%)};
-
-    //- Showcase
-    --showcase-aside-shadow: none;
-    --showcase-aside-border: none;
-    --showcase-aside-padding: 0px;
-
-    --showcase-item-shadow: none;
-    --showcase-item-background: #fff;
-    --showcase-item-border: 1px solid var(--border-color);
-    --showcase-item-border-radius: var(--border-radius);
-
-    --showcase-fullscreen-bottom-offset: 50px;
-
+    
     // Label sets
     --label-set-hover-background: #{rgba($primaryColor, .8)};
 
     // Login button
     --login-button-background: #fff;
+
+    //- Showcase
+    --showcase-fullscreen-bottom-offset: 140px;
+    --showcase-aside-shadow: none;
+    --showcase-aside-border: none;
+    --showcase-aside-padding: 0;
+
+    --showcase-aside-button-color: #fff;
+    --showcase-aside-button-border: 1px solid var(--color-primary);
+    --showcase-aside-button-background: var(--color-primary);
+    --showcase-aside-button-hover-color: #fff;
+    --showcase-aside-button-hover-border: 1px solid var(--color-primary);
+    --showcase-aside-button-hover-background: var(--color-primary-light);
+
+    --showcase-item-shadow: none;
+    --showcase-item-background: #fff;
+    --showcase-item-border: 1px solid var(--border-color);
+    --showcase-item-border-radius: var(--border-radius);
 
     // Nav item line position
     --nav-line-top: auto;
