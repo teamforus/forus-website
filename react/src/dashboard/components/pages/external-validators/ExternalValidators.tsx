@@ -37,12 +37,14 @@ export default function ExternalValidators() {
 
     const [filterValue, filterValueActive, filterUpdate, filter] = useFilterNext<{
         q?: string;
+        page?: number;
         order_by?: 'name' | 'email' | 'phone' | 'website';
         order_dir?: 'asc' | 'desc';
         per_page?: number;
     }>(
         {
             q: '',
+            page: 1,
             order_by: 'name',
             order_dir: 'asc',
             per_page: paginatorService.getPerPage(paginatorKey),
@@ -50,6 +52,7 @@ export default function ExternalValidators() {
         {
             queryParams: {
                 q: StringParam,
+                page: NumberParam,
                 order_by: createEnumParam(['name', 'email', 'phone', 'website']),
                 order_dir: createEnumParam(['asc', 'desc']),
                 per_page: NumberParam,
