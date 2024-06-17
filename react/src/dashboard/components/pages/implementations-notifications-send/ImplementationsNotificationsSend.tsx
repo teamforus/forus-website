@@ -345,13 +345,13 @@ export default function ImplementationsNotificationsSend() {
 
     const fetchFunds = useCallback(() => {
         fundService
-            .list(activeOrganization.id)
+            .list(activeOrganization.id, { implementation_id: implementation.id, state: 'active' })
             .then((res) => {
                 setFunds(res.data.data);
                 setFund(res.data.data[0]);
             })
             .catch((res: ResponseError) => pushDanger('Mislukt!', res.data.message));
-    }, [fundService, activeOrganization.id, pushDanger]);
+    }, [fundService, activeOrganization.id, implementation?.id, pushDanger]);
 
     const fetchFundIdentities = useCallback(() => {
         if (fund) {
@@ -368,10 +368,23 @@ export default function ImplementationsNotificationsSend() {
         }
     }, [fund, setProgress, fundService, activeOrganization.id, identitiesFilters?.activeValues, pushDanger]);
 
-    useEffect(() => fetchFunds(), [fetchFunds]);
-    useEffect(() => fetchImplementation(), [fetchImplementation]);
-    useEffect(() => fetchFundIdentities(), [fetchFundIdentities]);
-    useEffect(() => updateVariableValues(), [updateVariableValues]);
+    useEffect(() => {
+        if (implementation) {
+            fetchFunds();
+        }
+    }, [fetchFunds, implementation]);
+
+    useEffect(() => {
+        fetchImplementation();
+    }, [fetchImplementation]);
+
+    useEffect(() => {
+        fetchFundIdentities();
+    }, [fetchFundIdentities]);
+
+    useEffect(() => {
+        updateVariableValues();
+    }, [updateVariableValues]);
 
     if (!implementation || !fund) {
         return <LoadingCard />;
@@ -577,17 +590,6 @@ export default function ImplementationsNotificationsSend() {
                                 </div>
                             )}
 
-                            {showIdentities && identities && identities?.meta && (
-                                <div className="card-section card-section-narrow">
-                                    <Paginator
-                                        meta={identities.meta}
-                                        filters={identitiesFilters.values}
-                                        updateFilters={identitiesFilters.update}
-                                        perPageKey={perPageKey}
-                                    />
-                                </div>
-                            )}
-
                             {showIdentities && identities.meta.total == 0 && (
                                 <div className="card-section">
                                     <div className="block block-empty text-center">
@@ -599,6 +601,17 @@ export default function ImplementationsNotificationsSend() {
                                             <div className="empty-title">Geen gebruikers gevonden</div>
                                         )}
                                     </div>
+                                </div>
+                            )}
+
+                            {showIdentities && identities && identities?.meta && (
+                                <div className="card-section card-section-narrow">
+                                    <Paginator
+                                        meta={identities.meta}
+                                        filters={identitiesFilters.values}
+                                        updateFilters={identitiesFilters.update}
+                                        perPageKey={perPageKey}
+                                    />
                                 </div>
                             )}
 

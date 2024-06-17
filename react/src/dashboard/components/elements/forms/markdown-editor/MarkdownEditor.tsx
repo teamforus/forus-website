@@ -112,22 +112,29 @@ export default function MarkdownEditor({
             values: { text: string; url: string },
         ): Promise<object | null> => {
             return new Promise((resolve) => {
-                openModal((modal) => (
-                    <ModalMarkdownCustomLink
-                        modal={modal}
-                        type={type}
-                        values={values}
-                        success={(data) => {
-                            const { url, text, uid, alt } = data;
+                let response = null;
 
-                            if (uid && typeof mediaUploadedRef.current == 'function') {
-                                mediaUploadedRef.current({ media_uid: uid });
-                            }
+                openModal(
+                    (modal) => (
+                        <ModalMarkdownCustomLink
+                            modal={modal}
+                            type={type}
+                            values={values}
+                            success={(data) => {
+                                const { url, text, uid, alt } = data;
 
-                            resolve({ ...values, ...{ url, text, alt } });
-                        }}
-                    />
-                ));
+                                if (uid && typeof mediaUploadedRef.current == 'function') {
+                                    mediaUploadedRef.current({ media_uid: uid });
+                                }
+
+                                response = { ...values, ...{ url, text, alt } };
+                            }}
+                        />
+                    ),
+                    {
+                        onClosed: () => response && resolve(response),
+                    },
+                );
             });
         },
         [openModal],
@@ -414,6 +421,7 @@ export default function MarkdownEditor({
 
         getEditor().summernote('removeModule', 'linkPopover');
         getEditor().summernote('removeModule', 'imagePopover');
+        getEditor().summernote('removeModule', 'autoLink');
         setInitialized(true);
     }, [
         AlignButton,
