@@ -26,6 +26,7 @@ export default interface Identity2FAState {
         emails: Auth2FARestriction;
         sessions: Auth2FARestriction;
         reimbursements: Auth2FARestriction;
+        bi_connections: Auth2FARestriction;
     };
     auth_2fa_remember_ip: boolean;
     auth_2fa_remember_hours?: number;
