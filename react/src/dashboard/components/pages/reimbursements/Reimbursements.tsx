@@ -305,7 +305,7 @@ export default function Reimbursements() {
                                                     <FilterItemToggle label={t('reimbursements.labels.from')}>
                                                         <DatePickerControl
                                                             value={dateParse(filter.values.from)}
-                                                            placeholder={t('dd-MM-yyyy')}
+                                                            placeholder={t('yyyy-MM-dd')}
                                                             onChange={(from: Date) => {
                                                                 filter.update({ from: dateFormat(from) });
                                                             }}
@@ -315,7 +315,7 @@ export default function Reimbursements() {
                                                     <FilterItemToggle label={t('reimbursements.labels.to')}>
                                                         <DatePickerControl
                                                             value={dateParse(filter.values.to)}
-                                                            placeholder={t('dd-MM-yyyy')}
+                                                            placeholder={t('yyyy-MM-dd')}
                                                             onChange={(to: Date) => {
                                                                 filter.update({ to: dateFormat(to) });
                                                             }}

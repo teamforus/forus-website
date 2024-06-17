@@ -2383,6 +2383,14 @@ body {
                     margin-top: 25px;
                 }
 
+                .table-pagination {
+                    .form {
+                        margin-bottom: 0;
+                        display: flex;
+                        flex-grow: 1;
+                    }
+                }
+
                 &+.sign_up-pane-body {
                     border-top: 1px solid #edeef0;
                 }

@@ -57,7 +57,7 @@ const MainProvider = ({ children }: { children: React.ReactElement }) => {
 
         setOrganizations(null);
         return null;
-    }, [authIdentity, envData?.client_type, organizationService]);
+    }, [authIdentity, envData, organizationService]);
 
     useEffect(() => {
         if (!envData?.type) {
