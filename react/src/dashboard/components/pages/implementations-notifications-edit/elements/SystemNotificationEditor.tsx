@@ -21,7 +21,7 @@ export default function SystemNotificationEditor({
     notification,
     setNotifications,
 }: {
-    funds: Array<Partial<Fund>>;
+    funds?: Array<Partial<Fund>>;
     implementation: Implementation;
     organization: Organization;
     notification: SystemNotification;
@@ -33,7 +33,7 @@ export default function SystemNotificationEditor({
 
     const implementationNotificationsService = useImplementationNotificationService();
 
-    const [fund, setFund] = useState<Partial<Fund>>(funds[0]);
+    const [fund, setFund] = useState<Partial<Fund>>(funds ? funds[0] : null);
 
     const [notificationToggleLabels] = useState({
         disabled: `Uitgezet, alle kanalen zijn uitgezet.`,
@@ -78,7 +78,7 @@ export default function SystemNotificationEditor({
                 : null,
         };
     }, [
-        fund.id,
+        fund?.id,
         implementationNotificationsService,
         notification.channels,
         notification.templates,
@@ -153,7 +153,7 @@ export default function SystemNotificationEditor({
                     </div>
                 </div>
 
-                {funds.length > 0 && (
+                {funds && funds.length > 0 && (
                     <div className={`card-section ${notification.enable_all ? '' : 'card-section-danger'}`}>
                         <div className="card-block card-block-keyvalue">
                             <div className="keyvalue-item flex">

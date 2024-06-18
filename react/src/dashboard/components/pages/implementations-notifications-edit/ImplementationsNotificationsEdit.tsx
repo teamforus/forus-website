@@ -51,18 +51,20 @@ export default function ImplementationsNotificationsEdit() {
     }, [implementationNotificationsService, activeOrganization.id, implementationId, id, pushDanger, setProgress]);
 
     const fetchFunds = useCallback(() => {
-        setProgress(0);
+        if (implementation.allow_per_fund_notification_templates) {
+            setProgress(0);
 
-        fundService
-            .list(activeOrganization.id, {
-                implementation_id: parseInt(implementationId),
-                with_archived: 1,
-                stats: 'min',
-            })
-            .then((res) => setFunds([{ id: null, name: 'Alle fondsen' }, ...res.data.data]))
-            .catch((res: ResponseError) => pushDanger('Mislukt!', res.data.message))
-            .finally(() => setProgress(100));
-    }, [fundService, activeOrganization.id, implementationId, pushDanger, setProgress]);
+            fundService
+                .list(activeOrganization.id, {
+                    implementation_id: implementation.id,
+                    with_archived: 1,
+                    stats: 'min',
+                })
+                .then((res) => setFunds([{ id: null, name: 'Alle fondsen' }, ...res.data.data]))
+                .catch((res: ResponseError) => pushDanger('Mislukt!', res.data.message))
+                .finally(() => setProgress(100));
+        }
+    }, [setProgress, implementation, fundService, activeOrganization.id, pushDanger]);
 
     useEffect(() => {
         fetchImplementation();
@@ -73,10 +75,12 @@ export default function ImplementationsNotificationsEdit() {
     }, [fetchNotification]);
 
     useEffect(() => {
-        fetchFunds();
-    }, [fetchFunds]);
+        if (implementation) {
+            fetchFunds();
+        }
+    }, [fetchFunds, implementation]);
 
-    if (!implementation || !notification || !funds) {
+    if (!implementation || !notification || (implementation?.allow_per_fund_notification_templates && !funds)) {
         return <LoadingCard />;
     }
 
