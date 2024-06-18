@@ -121,21 +121,13 @@ export default function ImplementationsNotifications() {
     );
 
     const fetchImplementationNotifications = useCallback(() => {
-        if (implementation) {
-            implementationNotificationsService
-                .list(activeOrganization.id, implementation.id)
-                .then((res) => setNotifications(res.data))
-                .catch((res: ResponseError) => pushDanger('Mislukt!', res.data.message));
-        }
-    }, [implementation, implementationNotificationsService, activeOrganization.id, pushDanger]);
+        implementationNotificationsService
+            .list(activeOrganization.id, implementation.id)
+            .then((res) => setNotifications(res.data))
+            .catch((res: ResponseError) => pushDanger('Mislukt!', res.data.message));
+    }, [implementationNotificationsService, activeOrganization.id, implementation?.id, pushDanger]);
 
-    const selectImplementation = useCallback(
-        (item: Implementation) => {
-            setImplementation(item);
-            fetchImplementationNotifications();
-        },
-        [fetchImplementationNotifications],
-    );
+    const selectImplementation = useCallback((item: Implementation) => setImplementation(item), []);
 
     const fetchImplementations = useCallback(() => {
         implementationService
@@ -149,10 +141,16 @@ export default function ImplementationsNotifications() {
     }, [fetchImplementations]);
 
     useEffect(() => {
-        if (implementations && implementations.meta.total > 0) {
+        if (!implementation && implementations && implementations.meta.total > 0) {
             selectImplementation(implementations.data[0]);
         }
-    }, [implementations, selectImplementation]);
+    }, [implementation, implementations, selectImplementation]);
+
+    useEffect(() => {
+        if (implementation) {
+            fetchImplementationNotifications();
+        }
+    }, [fetchImplementationNotifications, implementation]);
 
     if (!implementations || !notificationGroups) {
         return <LoadingCard />;
