@@ -127,8 +127,6 @@ export default function ImplementationsNotifications() {
             .catch((res: ResponseError) => pushDanger('Mislukt!', res.data.message));
     }, [implementationNotificationsService, activeOrganization.id, implementation?.id, pushDanger]);
 
-    const selectImplementation = useCallback((item: Implementation) => setImplementation(item), []);
-
     const fetchImplementations = useCallback(() => {
         implementationService
             .list(activeOrganization.id)
@@ -142,9 +140,9 @@ export default function ImplementationsNotifications() {
 
     useEffect(() => {
         if (!implementation && implementations && implementations.meta.total > 0) {
-            selectImplementation(implementations.data[0]);
+            setImplementation(implementations.data[0]);
         }
-    }, [implementation, implementations, selectImplementation]);
+    }, [implementation, implementations]);
 
     useEffect(() => {
         if (implementation) {
@@ -164,7 +162,7 @@ export default function ImplementationsNotifications() {
 
                     <div className="block block-choose-organization">
                         {implementations.data.map((item) => (
-                            <div key={item.id} className="organization-item" onClick={() => selectImplementation(item)}>
+                            <div key={item.id} className="organization-item" onClick={() => setImplementation(item)}>
                                 <div
                                     className={`organization-item-inner ${
                                         implementation.id == item.id ? 'active' : ''
