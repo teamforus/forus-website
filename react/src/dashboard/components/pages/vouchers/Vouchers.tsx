@@ -94,8 +94,17 @@ export default function Vouchers() {
         setProgress(0);
         setLoading(true);
 
+        const values = filter.activeValues;
+
         voucherService
-            .index(activeOrganization.id, filter.activeValues)
+            .index(activeOrganization.id, {
+                ...values,
+                date_type: null,
+                from: values.date_type === 'created_at' ? values.from : null,
+                to: values.date_type === 'created_at' ? values.to : null,
+                in_use_from: values.date_type === 'used_at' ? values.from : null,
+                in_use_to: values.date_type === 'used_at' ? values.to : null,
+            })
             .then((res) => setVouchers(res.data))
             .finally(() => {
                 setProgress(100);
@@ -187,7 +196,7 @@ export default function Vouchers() {
                                                 <tr data-dusk={`voucherItem${voucher.id}`} key={index}>
                                                     <td>
                                                         <VouchersTableRowActions
-                                                            fund={funds.find((fund) => fund.id === voucher.fund_id)}
+                                                            fund={funds?.find((fund) => fund.id === voucher.fund_id)}
                                                             voucher={voucher}
                                                             organization={activeOrganization}
                                                             fetchVouchers={fetchVouchers}

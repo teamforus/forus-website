@@ -14,7 +14,7 @@ export default function useMakeExporterService() {
     const pushSuccess = usePushSuccess();
     const setProgress = useSetProgress();
 
-    const [dataFormats] = useState<Array<ExportFieldProp>>([
+    const [defaultDataFormats] = useState<Array<ExportFieldProp>>([
         { value: 'csv', label: 'Exporteren CSV', icon: 'file-delimited-outline' },
         { value: 'xls', label: 'Exporteren XLS', icon: 'file-excel-outline' },
     ]);
@@ -23,13 +23,14 @@ export default function useMakeExporterService() {
         (
             fields: Array<ExportFieldProp>,
             record_fields = [],
-            qrFormats: Array<ExportFieldProp> = null,
+            data_formats: Array<ExportFieldProp> = null,
+            qr_formats: Array<ExportFieldProp> = null,
         ): Array<ExportSectionProp> => {
             const sections: Array<ExportSectionProp> = [
                 {
                     type: 'radio',
                     key: 'data_format',
-                    fields: dataFormats,
+                    fields: data_formats ? data_formats : defaultDataFormats,
                     value: 'csv',
                     title: 'Kies bestandsformaat',
                 },
@@ -57,11 +58,11 @@ export default function useMakeExporterService() {
                 });
             }
 
-            if (qrFormats?.length > 0) {
+            if (qr_formats?.length > 0) {
                 sections.push({
                     type: 'radio',
                     key: 'qr_format',
-                    fields: qrFormats,
+                    fields: qr_formats,
                     value: 'null',
                     title: 'QR-codes bijvoegen',
                 });
@@ -69,7 +70,7 @@ export default function useMakeExporterService() {
 
             return sections;
         },
-        [dataFormats],
+        [defaultDataFormats],
     );
 
     const saveExportedData = useCallback(

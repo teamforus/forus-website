@@ -146,7 +146,7 @@ export default function ModalDuplicatesPicker({
 
     return (
         <div className={`modal modal-xl modal-animated ${modal.loading ? 'modal-loading' : ''} ${className || ''}`}>
-            <div className="modal-backdrop" onClick={modal.close} />
+            <div className="modal-backdrop" onClick={cancel} />
             <div className="modal-window">
                 <div className="modal-body">
                     <div className="modal-hero">

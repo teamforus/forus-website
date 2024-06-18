@@ -31,7 +31,7 @@ export default function VoucherRecordsEditor({
     const [showRecordSelector, setShowRecordSelector] = useState<boolean>(false);
 
     const recordTypesAvailable = useMemo(() => {
-        return recordTypes?.filter((item) => records.map((record) => record.key).includes(item.key));
+        return recordTypes?.filter((item) => !records.map((record) => record.key).includes(item.key));
     }, [recordTypes, records]);
 
     const addRecord = useCallback(
@@ -136,24 +136,26 @@ export default function VoucherRecordsEditor({
                         )}
                     </div>
 
-                    <div className="form-group form-group-inline form-group-inline-lg">
-                        <div className="form-label" />
-                        <div className="block-voucher-record-add-actions">
-                            <button
-                                type="button"
-                                className="button button-default"
-                                onClick={() => setShowRecordSelector(false)}>
-                                Annuleren
-                            </button>
-                            <button
-                                type="button"
-                                disabled={!recordType.key}
-                                className="button button-primary"
-                                onClick={() => addRecord(recordType)}>
-                                Toevoegen
-                            </button>
+                    {showRecordSelector && (
+                        <div className="form-group form-group-inline form-group-inline-lg">
+                            <div className="form-label" />
+                            <div className="block-voucher-record-add-actions">
+                                <button
+                                    type="button"
+                                    className="button button-default"
+                                    onClick={() => setShowRecordSelector(false)}>
+                                    Annuleren
+                                </button>
+                                <button
+                                    type="button"
+                                    disabled={!recordType.key}
+                                    className="button button-primary"
+                                    onClick={() => addRecord(recordType)}>
+                                    Toevoegen
+                                </button>
+                            </div>
                         </div>
-                    </div>
+                    )}
                 </div>
             )}
         </div>

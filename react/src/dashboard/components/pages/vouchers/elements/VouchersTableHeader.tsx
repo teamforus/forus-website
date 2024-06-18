@@ -47,6 +47,7 @@ export default function VouchersTableHeader({
                         openModal((modal) => (
                             <ModalVoucherCreate
                                 fund={fund}
+                                type={type}
                                 modal={modal}
                                 onCreated={onCreate}
                                 organization={organization}
@@ -56,7 +57,7 @@ export default function VouchersTableHeader({
                 />
             ));
         },
-        [openModal, organization],
+        [openModal, organization, type],
     );
 
     const uploadVouchers = useCallback(
@@ -88,7 +89,7 @@ export default function VouchersTableHeader({
             <div className="flex">
                 <div className="flex flex-grow">
                     <div className="card-title">
-                        {translate('vouchers.header.title')} ({vouchers?.meta?.total})
+                        {translate(`${type}.header.title`)} ({vouchers?.meta?.total})
                     </div>
                 </div>
 

@@ -17,6 +17,9 @@ import { ResponseError } from '../../props/ApiResponses';
 import usePushDanger from '../../hooks/usePushDanger';
 import useSetProgress from '../../hooks/useSetProgress';
 import Record from '../../props/models/Record';
+import Product from '../../props/models/Product';
+import useProductService from '../../services/ProductService';
+import ModalNotification from './ModalNotification';
 
 export default function ModalVoucherCreate({
     fund,
@@ -24,12 +27,14 @@ export default function ModalVoucherCreate({
     className,
     onCreated,
     organization,
+    type = 'vouchers',
 }: {
     fund: Partial<Fund>;
     modal: ModalState;
     className?: string;
     onCreated: () => void;
     organization: Organization;
+    type?: 'vouchers' | 'product_vouchers';
 }) {
     const translate = useTranslate();
     const openModal = useOpenModal();
@@ -37,8 +42,10 @@ export default function ModalVoucherCreate({
     const setProgress = useSetProgress();
 
     const voucherService = useVoucherService();
+    const productService = useProductService();
 
     const [dateMinLimit] = useState(new Date());
+    const [products, setProducts] = useState<Array<Partial<Product>>>(null);
     const [showRecordFields, setShowRecordFields] = useState<boolean>(false);
     const [showGeneralFields, setShowGeneralFields] = useState<boolean>(true);
 
@@ -62,6 +69,7 @@ export default function ModalVoucherCreate({
         fund_id: number;
         expire_at: string;
         client_uid?: string;
+        product_id?: number;
         limit_multiplier?: number;
     }>(
         {
@@ -73,6 +81,7 @@ export default function ModalVoucherCreate({
             fund_id: fund.id,
             expire_at: fund.end_date,
             client_uid: null,
+            product_id: null,
             limit_multiplier: 1,
         },
         async (values) => {
@@ -121,7 +130,7 @@ export default function ModalVoucherCreate({
                     if (assignType.key === 'email') {
                         voucherService
                             .index(organization.id, {
-                                type: 'fund_voucher',
+                                type: type == 'vouchers' ? 'fund_voucher' : 'product_voucher',
                                 email: form.values.email,
                                 fund_id: fund.id,
                                 source: 'all',
@@ -145,7 +154,7 @@ export default function ModalVoucherCreate({
                     if (assignType.key === 'bsn') {
                         voucherService
                             .index(organization.id, {
-                                type: 'fund_voucher',
+                                type: type == 'vouchers' ? 'fund_voucher' : 'product_voucher',
                                 bsn: form.values.bsn,
                                 fund_id: fund.id,
                                 source: 'all',
@@ -235,6 +244,44 @@ export default function ModalVoucherCreate({
         [openModal],
     );
 
+    const fetchProducts = useCallback(() => {
+        productService
+            .listAll({
+                fund_id: fund.id,
+                show_all: 1,
+                simplified: 1,
+                per_page: 1000,
+                order_by: 'name',
+                order_dir: 'asc',
+            })
+            .then((res) => {
+                setProducts(
+                    res.data.data.map((product) => ({
+                        id: product.id,
+                        price: product.price,
+                        name: product.name + ' (' + product.price_locale + ') van (' + product.organization.name + ')',
+                    })),
+                );
+
+                if (res.data.data.length == 0) {
+                    modal.close();
+
+                    openModal((modal) => (
+                        <ModalNotification
+                            modal={modal}
+                            className={'modal-md'}
+                            title={translate('modals.modal_product_voucher_create.errors.title.no_products')}
+                            description={translate('modals.modal_product_voucher_create.errors.no_products')}
+                            buttonCancel={{
+                                text: translate('modals.modal_product_voucher_create.buttons.close'),
+                                onClick: () => modal.close(),
+                            }}
+                        />
+                    ));
+                }
+            });
+    }, [fund.id, modal, openModal, productService, translate]);
+
     useEffect(() => {
         if (assignType.key !== 'bsn') {
             formUpdate({ bsn: null });
@@ -244,6 +291,12 @@ export default function ModalVoucherCreate({
             formUpdate({ email: null });
         }
     }, [assignType.key, formUpdate]);
+
+    useEffect(() => {
+        if (type === 'product_vouchers') {
+            fetchProducts();
+        }
+    }, [fetchProducts, type]);
 
     return (
         <div
@@ -319,7 +372,7 @@ export default function ModalVoucherCreate({
                                             <FormError error={form.errors?.client_uid} />
                                         </div>
 
-                                        {fund.type === 'budget' && (
+                                        {fund.type === 'budget' && type == 'vouchers' && (
                                             <div className="form-group form-group-inline form-group-inline-lg">
                                                 <div className="form-label form-label-required">
                                                     {translate('modals.modal_voucher_create.labels.amount')}
@@ -344,6 +397,25 @@ export default function ModalVoucherCreate({
                                                     )}
                                                     <FormError error={form.errors?.amount} />
                                                 </div>
+                                            </div>
+                                        )}
+
+                                        {type == 'product_vouchers' && (
+                                            <div className="form-group form-group-inline form-group-inline-lg">
+                                                <div className="form-label">
+                                                    {translate('modals.modal_product_voucher_create.labels.product')}
+                                                </div>
+                                                <div className="form-offset">
+                                                    <SelectControl
+                                                        value={form.values.product_id}
+                                                        propKey={'id'}
+                                                        options={products}
+                                                        placeholder="Selecteer aanbod..."
+                                                        optionsComponent={SelectControlOptions}
+                                                        onChange={(product_id: number) => form.update({ product_id })}
+                                                    />
+                                                </div>
+                                                <FormError error={form.errors?.product_id} />
                                             </div>
                                         )}
 

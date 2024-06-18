@@ -308,7 +308,7 @@ export default function ProductVouchers() {
                                                 <tr data-dusk={`voucherItem${voucher.id}`} key={index}>
                                                     <td>
                                                         <VouchersTableRowActions
-                                                            fund={funds.find((fund) => fund.id === voucher.fund_id)}
+                                                            fund={funds?.find((fund) => fund.id === voucher.fund_id)}
                                                             voucher={voucher}
                                                             organization={activeOrganization}
                                                             fetchVouchers={fetchVouchers}

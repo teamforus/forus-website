@@ -10,20 +10,50 @@ import JSZip from 'jszip';
 import { uniqueId } from 'lodash';
 import { ResponseError } from '../../props/ApiResponses';
 import QRCode from 'easyqrcodejs';
+import useTranslate from '../../hooks/useTranslate';
+import usePushSuccess from '../../hooks/usePushSuccess';
 
 export default function useVoucherExportService() {
     const pushDanger = usePushDanger();
+    const pushSuccess = usePushSuccess();
     const setProgress = useSetProgress();
     const openModal = useOpenModal();
+    const translate = useTranslate();
 
     const voucherService = useVoucherService();
     const fileService = useFileService();
     const { makeSections } = useMakeExporterService();
 
+    const [dataFormats] = useState<Array<ExportFieldProp>>([
+        {
+            value: 'csv',
+            label: translate('modals.modal_export_data.modal_section.export_type_csv'),
+            icon: 'file-delimited-outline',
+        },
+        {
+            value: 'xls',
+            label: translate('modals.modal_export_data.modal_section.export_type_xls'),
+            icon: 'file-excel-outline',
+        },
+        {
+            value: 'all',
+            label: translate('modals.modal_export_data.modal_section.export_type_all'),
+            icon: 'file-outline',
+        },
+    ]);
+
     const [qrFormats] = useState<Array<ExportFieldProp>>([
-        { value: 'null', label: 'Geen', icon: 'cancel' },
-        { value: 'pdf', label: 'PDF', icon: 'file-pdf-box' },
-        { value: 'png', label: 'Afbeelding', icon: 'image-outline' },
+        { value: 'null', label: translate('modals.modal_export_data.modal_section.export_type_none'), icon: 'cancel' },
+        {
+            value: 'pdf',
+            label: translate('modals.modal_export_data.modal_section.export_type_pdf'),
+            icon: 'file-pdf-box',
+        },
+        {
+            value: 'png',
+            label: translate('modals.modal_export_data.modal_section.export_type_png'),
+            icon: 'image-outline',
+        },
     ]);
 
     const makeQrCode = useCallback((qrValue): string => {
@@ -129,7 +159,17 @@ export default function useVoucherExportService() {
 
                 voucherService
                     .export(organization_id, queryFilters)
-                    .then((res) => saveExportedData(res.data, data.qr_format))
+                    .then((res) => {
+                        saveExportedData(res.data, data.qr_format)
+                            .then((error: string) => {
+                                if (error) {
+                                    return pushDanger('Error!', error);
+                                }
+
+                                pushSuccess('Succes!', 'De download begint over enkele ogenblikken.');
+                            }, console.error)
+                            .finally(() => setProgress(100));
+                    })
                     .catch((res: ResponseError) => pushDanger('Mislukt!', res.data.message))
                     .finally(() => setProgress(100));
             };
@@ -143,13 +183,23 @@ export default function useVoucherExportService() {
                 openModal((modal) => (
                     <ModalExportDataSelect
                         modal={modal}
-                        sections={makeSections(fields, extra_fields, qrFormats)}
+                        sections={makeSections(fields, extra_fields, dataFormats, qrFormats)}
                         onSuccess={onSuccess}
                     />
                 ));
             });
         },
-        [makeSections, openModal, pushDanger, qrFormats, saveExportedData, setProgress, voucherService],
+        [
+            dataFormats,
+            makeSections,
+            openModal,
+            pushDanger,
+            pushSuccess,
+            qrFormats,
+            saveExportedData,
+            setProgress,
+            voucherService,
+        ],
     );
 
     return { exportData };

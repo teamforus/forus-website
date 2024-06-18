@@ -143,7 +143,7 @@ export default function ModalVouchersUpload({
         abortRef.current = true;
 
         setCsvFile(null);
-        setCsvErrors(null);
+        setCsvErrors({});
         setCsvIsValid(false);
         setCsvProgress(null);
     }, []);
@@ -190,7 +190,7 @@ export default function ModalVouchersUpload({
         (data: Array<{ [key: string]: string | number }>) => {
             const fundBudget = parseFloat(fund.limit_sum_vouchers);
             const csvTotalAmount: number = data.reduce(
-                (sum: number, row: RowDataProp) => sum + (parseFloat(row.amount.toString()) || 0),
+                (sum: number, row: RowDataProp) => sum + (parseFloat(row.amount?.toString()) || 0),
                 0,
             );
 
@@ -280,7 +280,10 @@ export default function ModalVouchersUpload({
                                 ),
                             );
                         }}
-                        onCancel={() => resolve('canceled')}
+                        onCancel={() => {
+                            window.setTimeout(() => setHideModal(false), 300);
+                            resolve('canceled');
+                        }}
                     />
                 ));
             });
@@ -319,7 +322,10 @@ export default function ModalVouchersUpload({
 
                             resolve(list.filter((row) => !allowed.includes(row.bsn) || allowed.includes(row.bsn)));
                         }}
-                        onCancel={() => resolve('canceled')}
+                        onCancel={() => {
+                            window.setTimeout(() => setHideModal(false), 300);
+                            resolve('canceled');
+                        }}
                     />
                 ));
             });
@@ -786,6 +792,8 @@ export default function ModalVouchersUpload({
             if (listSelected.length > 0) {
                 await startUploading(listSelected, true);
                 await startUploading(listSelected, false);
+            } else {
+                pushDanger('CSV upload is geannuleerd', 'Er zijn geen gegevens geselecteerd.');
             }
         } catch (e) {
             pushDanger('CSV upload is geannuleerd', 'Er zijn geen gegevens geselecteerd.');

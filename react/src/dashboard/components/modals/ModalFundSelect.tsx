@@ -61,7 +61,7 @@ export default function ModalFundSelect({
 
                 <div className="modal-footer text-center">
                     <button type="button" className="button button-default" onClick={modal.close}>
-                        Annuleer
+                        Annuleren
                     </button>
                     <button type="submit" className="button button-primary">
                         Bevestigen

@@ -185,6 +185,13 @@ export class VoucherService<T = Voucher> {
         ];
     }
 
+    public getDateTypesOptions(): Array<{ value: string; name: string }> {
+        return [
+            { value: 'created_at', name: 'Aanmaakdatum' },
+            { value: 'used_at', name: 'Transactiedatum' },
+        ];
+    }
+
     public getColumns(): Array<ConfigurableTableColumn> {
         return [
             {
@@ -231,7 +238,7 @@ export class VoucherService<T = Voucher> {
             {
                 key: 'in_use',
                 label: 'vouchers.labels.in_use',
-                tooltip: { key: 'in_use', title: 'In gebruik', description: 'tooltips.in_use' },
+                tooltip: { key: 'in_use', title: 'In gebruik', description: 'vouchers.tooltips.in_use' },
             },
             {
                 key: 'has_payouts',

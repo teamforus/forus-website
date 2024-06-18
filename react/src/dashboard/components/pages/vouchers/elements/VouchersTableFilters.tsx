@@ -29,6 +29,7 @@ export type VouchersTableFiltersProps = {
     implementation_id?: number;
     amount_min?: string;
     amount_max?: string;
+    date_type?: string;
     amount_available_min?: string;
     amount_available_max?: string;
     count_per_identity_min?: string;
@@ -56,6 +57,7 @@ export default function VouchersTableFilters({
     const [inUseOptions] = useState(voucherService.getInUseOptions());
     const [sourcesOptions] = useState(voucherService.getSourcesOptions());
     const [grantedOptions] = useState(voucherService.getGrantedOptions());
+    const [dateTypeOptions] = useState(voucherService.getDateTypesOptions());
     const [hasPayoutsOptions] = useState(voucherService.getHasPayoutsOptions());
     const [voucherStateOptions] = useState(voucherService.getStates());
     const { implementations } = useVoucherTableOptions(organization);
@@ -246,6 +248,17 @@ export default function VouchersTableFilters({
                                         </div>
                                     </FilterItemToggle>
                                 )}
+
+                                <FilterItemToggle label={translate('vouchers.labels.date_type')}>
+                                    <SelectControl
+                                        className="form-control"
+                                        propKey={'value'}
+                                        allowSearch={false}
+                                        value={filter.values.date_type}
+                                        options={dateTypeOptions}
+                                        onChange={(date_type: string) => filter.update({ date_type })}
+                                    />
+                                </FilterItemToggle>
 
                                 <FilterItemToggle label={translate('vouchers.labels.from')}>
                                     <DatePickerControl

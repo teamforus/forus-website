@@ -299,6 +299,7 @@ export default function ModalVoucherTransaction({
                                         value={form.values?.organization_id}
                                         propKey={'id'}
                                         propValue={'name'}
+                                        allowSearch={true}
                                         options={providers}
                                         optionsComponent={SelectControlOptions}
                                         onChange={(organization_id: number) => form.update({ organization_id })}
