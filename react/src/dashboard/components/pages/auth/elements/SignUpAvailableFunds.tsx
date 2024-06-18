@@ -101,8 +101,12 @@ export default function SignUpAvailableFunds({
                 const allTags = { key: null, name: t('provider_funds.filters.options.all_labels') };
                 const allOrganizations = { id: null, name: t('provider_funds.filters.options.all_organizations') };
 
-                setTags([allTags, ...res.data.meta.tags]);
-                setOrganizations([allOrganizations, ...res.data.meta.organizations]);
+                setTags((tags) => (tags && tags.length ? tags : [allTags, ...res.data.meta.tags]));
+                setOrganizations((organizations) =>
+                    organizations && organizations.length
+                        ? organizations
+                        : [allOrganizations, ...res.data.meta.organizations],
+                );
             })
             .finally(() => setProgress(100));
     }, [fetchAvailableFunds, filter.activeValues, organization, setProgress, t]);
@@ -134,9 +138,10 @@ export default function SignUpAvailableFunds({
                                 <label className="form-label">{t('sign_up_provider.filters.labels.tags')}</label>
                                 <select
                                     className="form-control"
-                                    value={filter.values.tag}
+                                    value={filter.values.tag || ''}
                                     onChange={(e) => {
-                                        filter.update({ tag: e.target.value });
+                                        const tagKey = e.target.value;
+                                        filter.update({ tag: tags.find((tag) => tag.key == tagKey) ? tagKey : null });
                                     }}>
                                     {tags.map((tag) => (
                                         <option key={tag.key} value={tag.key}>
