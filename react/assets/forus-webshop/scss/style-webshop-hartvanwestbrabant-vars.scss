@@ -1,34 +1,33 @@
-@import "../general/vars.scss";
-
 /*==========  Style Sheet - Vars  ==========*/
-$fonts: "https://fonts.googleapis.com/css?family=Lato:300,300i,400,400i,700";
-$primaryColor: #2a2a7f;
-$primaryColorLight: #2a2a7f;
+$primaryColor: #24a1a1;
+$primaryColorLight: #24a1a1;
+
+@import url("https://fonts.googleapis.com/css?family=Montserrat:ital,wght@0,300;0,400;0,500;0,700;1,400");
 
 :root {
     // navbar
-    --bg-nav: #2a2a7f;
-    --tc-nav-hov: #ececec;
+    --bg-nav: #5d646f;
+    --tc-nav-hov: #c7c7c7;
     --tc-nav: #ffffff;
-    --logo-padding: 25px 0px;
-    --logo-height: 100px;
+    --logo-padding: 30px 0px;
+    --logo-height: 75px;
 
     // navbar (auth)
-    --tc-auth-menu: #2a2a7f;
+    --tc-auth-menu: #24a1a1;
     --tc-auth-btn: #fff;
-    --btn-auth-bg: #2a2a7f;
-    --btn-auth-border: transparent;
+    --btn-auth-bg: #24a1a1;
+    --btn-auth-border: #fff;
 
     // navbar (start modal primary)
     --tc-start-btn: #fff;
-    --btn-start-bg: #ed7c20;
-    --btn-start-btn: #ed7c20;
+    --btn-start-bg: #24a1a1;
+    --btn-start-btn: #24a1a1;
     --btn-start-border: transparent;
 
     --bg-values: url("../img/splash-top-b.jpg") no-repeat center 100%;
 
     // base font
-    --base-font: "Lato", "Lucida Sans", "Lucida Sans Unicode", "Lucida Grande", Verdana, Arial, Helvetica, sans-serif;
+    --base-font: "Montserrat", Arial, Verdana;
 
     // text color
     --tc: #1a1919;
@@ -36,7 +35,7 @@ $primaryColorLight: #2a2a7f;
     --tc-link: inherit;
 
     // base color
-    --bc: #2a2a7f;
+    --bc: #24a1a1;
 
     // background color
     --bg: #fff;
@@ -47,7 +46,7 @@ $primaryColorLight: #2a2a7f;
     --text_format: inherit;
 
     // footer color
-    --footer_background_color: #2f2d80;
+    --footer_background_color: #24a1a1;
     --footer_color: #ffffff;
     --footer_color_link: #ffffff;
 
@@ -68,8 +67,8 @@ $primaryColorLight: #2a2a7f;
     --color-primary: #{$primaryColor};
     --color-primary-light: #{$primaryColorLight};
 
-    --color-default: $primaryColo;
-    --color-default-light: #{$primaryColorLight};
+    --color-default: #24a1a1;
+    --color-default-light: #24a1a1;
 
     --color-search-icon-medium: #{$primaryColor};
     --color-search-icon-dark: #{darken($primaryColor, 10%)};
@@ -79,7 +78,7 @@ $primaryColorLight: #2a2a7f;
     --label-set-hover-background: #{rgba($primaryColor, .8)};
 
     //- Showcase
-    --showcase-fullscreen-bottom-offset: 175px;
+    --showcase-fullscreen-bottom-offset: 160px;
 
     // Login button
     --login-button-background: #fff;

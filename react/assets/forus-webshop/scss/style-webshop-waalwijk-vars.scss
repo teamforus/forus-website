@@ -1,46 +1,43 @@
-@import "../general/vars.scss";
+$primaryColor: #2a2a7f;
+$primaryColorLight: #2a2a7f;
 
-/*==========  Style Sheet - Vars  ==========*/
-$fonts: [];
-$primaryColor: #626161;
-$primaryColorLight: #0c6dcb;
+@import url("https://fonts.googleapis.com/css?family=Lato:300,300i,400,400i,700");
 
 :root {
     // navbar
-    --bg-nav: #f5f5f5;
-    --tc-nav: #282b39;
-    --tc-nav-hov: #0575ba;
-    --logo-padding: 30px 0px;
-    --logo-height: 50px;
+    --bg-nav: #2a2a7f;
+    --tc-nav-hov: #ececec;
+    --tc-nav: #ffffff;
+    --logo-padding: 25px 0px;
+    --logo-height: 100px;
 
     // navbar (auth)
-    --tc-auth-menu: #fff;
-    --tc-auth-btn: #0575ba;
-    --btn-auth-bg: #fff;
-    --btn-auth-border: #0575ba;
+    --tc-auth-menu: #2a2a7f;
+    --tc-auth-btn: #fff;
+    --btn-auth-bg: #2a2a7f;
+    --btn-auth-border: transparent;
 
     // navbar (start modal primary)
     --tc-start-btn: #fff;
-    --btn-start-bg: #0575ba;
-    --btn-start-btn: #0575ba;
+    --btn-start-bg: #ed7c20;
+    --btn-start-btn: #ed7c20;
     --btn-start-border: transparent;
 
-    // header attributes
-    --bg-values: url("../img/splash-top-b.jpg") no-repeat 100% 0;
+    --bg-values: url("../img/splash-top-b.jpg") no-repeat center 100%;
 
     // base font
-    --base-font: Helvetica, Arial, Verdana, "Sans Serif";
+    --base-font: "Lato", "Lucida Sans", "Lucida Sans Unicode", "Lucida Grande", Verdana, Arial, Helvetica, sans-serif;
 
     // text color
-    --tc: #595959;
+    --tc: #1a1919;
     --tc-var: #fff;
     --tc-link: inherit;
 
     // base color
-    --bc: #0c6dcb;
+    --bc: #2a2a7f;
 
     // background color
-    --bg: #ececec;
+    --bg: #fff;
 
     --bg_2: none;
 
@@ -48,18 +45,20 @@ $primaryColorLight: #0c6dcb;
     --text_format: inherit;
 
     // footer color
-    --footer_color: #4e4d40;
+    --footer_background_color: #2f2d80;
+    --footer_color: #ffffff;
+    --footer_color_link: #ffffff;
 
-    // Displayed or not
+    // displayed or not
     --footer_display: block;
 
     // product image
-    --product-image-padding: 10px 0 0 10px;
+    --product-image-padding: 0px;
 
     // placeholder text color
     --form-control-placeholder-color: #515152;
 
-    --border-color: #ebedf0;
+    --border-color: #dce0e0;
 
     --border-radius: 0px;
     --box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
@@ -67,8 +66,8 @@ $primaryColorLight: #0c6dcb;
     --color-primary: #{$primaryColor};
     --color-primary-light: #{$primaryColorLight};
 
-    --color-default: #0c6dcb;
-    --color-default-light: 1px solid #626161;
+    --color-default: $primaryColo;
+    --color-default-light: #{$primaryColorLight};
 
     --color-search-icon-medium: #{$primaryColor};
     --color-search-icon-dark: #{darken($primaryColor, 10%)};
@@ -78,7 +77,7 @@ $primaryColorLight: #0c6dcb;
     --label-set-hover-background: #{rgba($primaryColor, .8)};
 
     //- Showcase
-    --showcase-fullscreen-bottom-offset: 135px;
+    --showcase-fullscreen-bottom-offset: 175px;
 
     // Login button
     --login-button-background: #fff;
