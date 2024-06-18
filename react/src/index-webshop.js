@@ -1,5 +1,5 @@
 import ReactDOM from 'react-dom/client';
-import Webshop from './webshop//Webshop';
+import Webshop from './webshop/Webshop';
 
 require(`../assets/forus-webshop/scss/style-webshop-general-vars.scss`);
 require(`../assets/forus-webshop/scss/style-webshop-${env_data.client_skin}-vars.scss`);
