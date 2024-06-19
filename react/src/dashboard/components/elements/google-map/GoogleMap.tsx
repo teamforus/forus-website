@@ -12,6 +12,7 @@ export function GoogleMap({
     centerType = null,
     zoomLevel = 12,
     fullscreenPosition = null,
+    mapControlKeys = null,
 }: {
     appConfigs: AppConfigProp;
     centerType?: 'avg';
@@ -22,6 +23,7 @@ export function GoogleMap({
     mapGestureHandlingMobile?: 'cooperative' | 'greedy' | 'none' | 'auto';
     markerTemplate?: (item: { lat: string; lon: string }) => React.ReactElement | Array<ReactElement>;
     openFirstPointer?: boolean;
+    mapControlKeys?: Array<string>;
 }) {
     const [selectedMarker, setSelectedMarker] = React.useState(null);
     const [markers, setMarkers] = useState([]);
@@ -87,7 +89,7 @@ export function GoogleMap({
                     scaleControl: true,
                     mapTypeControl: true,
                     fullscreenControl: true,
-                    mapTypeControlOptions: { mapTypeIds: ['roadmap', 'map_style'] },
+                    mapTypeControlOptions: { mapTypeIds: mapControlKeys || ['roadmap', 'map_style'] },
                     fullscreenControlOptions: {
                         position: fullscreenPosition || window.google.maps.ControlPosition.LEFT_BOTTOM,
                     },

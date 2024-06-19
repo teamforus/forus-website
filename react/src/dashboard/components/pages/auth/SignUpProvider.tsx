@@ -1754,7 +1754,11 @@ export default function SignUpProvider() {
                                                 </div>
                                                 <div className="office-map">
                                                     <div className="office-map-content">
-                                                        <GoogleMap mapPointers={[office]} appConfigs={appConfigs} />
+                                                        <GoogleMap
+                                                            mapPointers={[office]}
+                                                            appConfigs={appConfigs}
+                                                            mapControlKeys={['map_style']}
+                                                        />
                                                     </div>
                                                     <div className="office-actions">
                                                         <a
