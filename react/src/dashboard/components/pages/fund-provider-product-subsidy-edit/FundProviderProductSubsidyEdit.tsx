@@ -142,7 +142,8 @@ export default function FundProviderProductSubsidyEdit() {
                         id: fundProvider.organization.id,
                         organizationId: activeOrganization.id,
                     }}
-                    className="breadcrumb-item">
+                    className="breadcrumb-item"
+                    activeExact={true}>
                     {strLimit(fundProvider.organization.name, 40)}
                 </StateNavLink>
                 <StateNavLink
@@ -152,7 +153,8 @@ export default function FundProviderProductSubsidyEdit() {
                         fundId: fund.id,
                         organizationId: activeOrganization.id,
                     }}
-                    className="breadcrumb-item">
+                    className="breadcrumb-item"
+                    activeExact={true}>
                     {strLimit(fundProvider.fund.name, 40)}
                 </StateNavLink>
                 <StateNavLink
@@ -163,7 +165,8 @@ export default function FundProviderProductSubsidyEdit() {
                         fundProviderId: fundProvider.id,
                         organizationId: activeOrganization.id,
                     }}
-                    className="breadcrumb-item">
+                    className="breadcrumb-item"
+                    activeExact={true}>
                     {strLimit(product.name, 40)}
                 </StateNavLink>
                 <div className="breadcrumb-item active">Subsidie starten</div>

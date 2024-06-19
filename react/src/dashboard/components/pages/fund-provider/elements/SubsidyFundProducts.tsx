@@ -19,8 +19,7 @@ type ProductLocal = Product & {
     active_deal: DealHistory;
 };
 
-export default function
-({
+export default function SubsidyFundProducts({
     fundProvider,
     organization,
     onChange,

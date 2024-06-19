@@ -135,7 +135,7 @@ export default function ProviderOrganizationOverview({
                                         className="button button-primary"
                                         disabled={submittingState}
                                         onClick={() => updateFundProviderState(true)}>
-                                        <em className="mdi mdi-close icon-start" />
+                                        <em className="mdi mdi-check icon-start" />
                                         Accepteren
                                     </button>
                                 )}

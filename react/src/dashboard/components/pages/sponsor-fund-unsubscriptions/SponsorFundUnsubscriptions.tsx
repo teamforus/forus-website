@@ -115,7 +115,7 @@ export default function SponsorFundUnsubscriptions() {
                 <LoaderTableCard
                     loading={loading}
                     empty={fundUnsubscribes.meta.total == 0}
-                    emptyText={'Geen fondsen gevonden'}>
+                    emptyText={'Geen afmeldingen van aanbieders'}>
                     <div className="card-section">
                         <div className="card-block card-block-table">
                             <div className="table-wrapper">
