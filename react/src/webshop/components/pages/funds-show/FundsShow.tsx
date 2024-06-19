@@ -295,27 +295,23 @@ export default function FundsShow() {
                         </div>
 
                         <div className={`flex flex-vertical`}>
+                            {authIdentity && fund && <BlockCard2FAWarning fund={fund} />}
+
                             {fund.description_position == 'before' ? (
                                 <Fragment>
                                     <div>
                                         {fund.description_html && <Markdown content={fund.description_html} />}
-
                                         <FundFaq fund={fund} />
                                     </div>
 
                                     <FundProductsBlock fund={fund} />
-
-                                    {authIdentity && fund && <BlockCard2FAWarning fund={fund} />}
                                 </Fragment>
                             ) : (
                                 <Fragment>
-                                    {authIdentity && fund && <BlockCard2FAWarning fund={fund} />}
-
                                     <FundProductsBlock fund={fund} />
 
                                     <div>
                                         {fund.description_html && <Markdown content={fund.description_html} />}
-
                                         <FundFaq fund={fund} />
                                     </div>
                                 </Fragment>
