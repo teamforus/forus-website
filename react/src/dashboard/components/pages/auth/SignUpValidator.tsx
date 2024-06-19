@@ -48,6 +48,10 @@ export default function SignUpValidator() {
             if (step <= stepsTotal) {
                 setStep(step);
                 progressStorage.set('step', step.toString());
+
+                if (step == STEP_SELECT_ORGANIZATION && organizations && organizations?.length == 0) {
+                    goToStep(STEP_ORGANIZATION_ADD);
+                }
             }
 
             // last step, time for progress cleanup
@@ -55,7 +59,14 @@ export default function SignUpValidator() {
                 progressStorage.clear();
             }
         },
-        [INFO_STEPS, progressStorage, shownSteps?.length],
+        [
+            INFO_STEPS,
+            STEP_ORGANIZATION_ADD,
+            STEP_SELECT_ORGANIZATION,
+            organizations,
+            progressStorage,
+            shownSteps?.length,
+        ],
     );
 
     const makeOrganizationValidator = useCallback(
@@ -87,8 +98,8 @@ export default function SignUpValidator() {
     }, [STEP_ORGANIZATION_ADD, goToStep]);
 
     const cancelAddOrganization = useCallback(() => {
-        goToStep(STEP_SELECT_ORGANIZATION);
-    }, [STEP_SELECT_ORGANIZATION, goToStep]);
+        goToStep(organizations?.length ? STEP_SELECT_ORGANIZATION : STEP_INFO_DETAILS);
+    }, [STEP_INFO_DETAILS, STEP_SELECT_ORGANIZATION, goToStep, organizations?.length]);
 
     const next = useCallback(
         function () {
@@ -133,15 +144,11 @@ export default function SignUpValidator() {
             ? [
                   STEP_INFO_GENERAL,
                   STEP_INFO_DETAILS,
-                  organizations ? STEP_SELECT_ORGANIZATION : null,
+                  STEP_SELECT_ORGANIZATION,
                   STEP_ORGANIZATION_ADD,
                   STEP_SIGNUP_FINISHED,
               ].filter((step) => step)
             : [STEP_INFO_GENERAL, STEP_INFO_DETAILS, STEP_CREATE_PROFILE, STEP_ORGANIZATION_ADD, STEP_SIGNUP_FINISHED];
-
-        if (authToken && step < STEP_SELECT_ORGANIZATION) {
-            return goToStep(organizations?.length > 0 ? STEP_SELECT_ORGANIZATION : STEP_ORGANIZATION_ADD);
-        }
 
         if (stepsAvailable.indexOf(step) === -1) {
             return goToStep(STEP_INFO_GENERAL);
