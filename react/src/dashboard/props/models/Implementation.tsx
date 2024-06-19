@@ -1,6 +1,6 @@
 export default interface Implementation {
     id: number;
     name: string;
-    has_provider_terms_page: boolean;
+    url_provider_terms_page?: string;
     url_webshop?: string;
 }

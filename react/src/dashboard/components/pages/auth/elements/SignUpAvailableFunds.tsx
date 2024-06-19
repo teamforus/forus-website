@@ -232,13 +232,13 @@ export default function SignUpAvailableFunds({
                                 </button>
                             </div>
                         </div>
-                        {fund?.implementation?.has_provider_terms_page && (
+                        {fund?.implementation?.url_provider_terms_page && (
                             <div className="card-section">
                                 <div className="card-text">
-                                    Door u aan te melden gaat u akkoord met de
+                                    Door u aan te melden gaat u akkoord met de&nbsp;
                                     <a
                                         className="card-text-link"
-                                        href={`${fund.implementation.url_webshop}/aanbieders/aanmelden`}
+                                        href={fund.implementation.url_provider_terms_page}
                                         target="_blank"
                                         rel="noreferrer">
                                         algemene voorwaarden
