@@ -297,14 +297,11 @@ export default function ReimbursementsEdit() {
                                     submit(true);
                                 }}>
                                 {generalErrorMsg && (
-                                    <div className="card-section">
-                                        <div className="form-group">
-                                            <div className="form-error text-center">
-                                                <strong>{generalErrorMsg}</strong>
-                                            </div>
-                                        </div>
+                                    <div className="card-section text-center">
+                                        <FormError error={generalErrorMsg} className={'text-semibold'} />
                                     </div>
                                 )}
+
                                 <div className="card-section">
                                     <FileUploader
                                         type="reimbursement_proof"
@@ -380,7 +377,7 @@ export default function ReimbursementsEdit() {
                                                     id="title"
                                                     name="title"
                                                     type="text"
-                                                    value={form.values.title}
+                                                    value={form.values.title || ''}
                                                     onChange={(e) => form.update({ title: e.target.value })}
                                                     placeholder="Wat heeft u gekocht?"
                                                     maxLength={200}
@@ -411,7 +408,7 @@ export default function ReimbursementsEdit() {
                                                 <textarea
                                                     className="form-control"
                                                     id="description"
-                                                    value={form.values.description}
+                                                    value={form.values.description || ''}
                                                     onChange={(e) => form.update({ description: e.target.value })}
                                                     name="description"
                                                     placeholder="Wilt u nog iets kwijt?"
@@ -429,7 +426,7 @@ export default function ReimbursementsEdit() {
                                                     id="iban"
                                                     type="text"
                                                     name="iban"
-                                                    value={form.values.iban}
+                                                    value={form.values.iban || ''}
                                                     onChange={(e) => form.update({ iban: e.target.value })}
                                                     placeholder="IBAN nummer"
                                                     maxLength={34}
@@ -445,7 +442,7 @@ export default function ReimbursementsEdit() {
                                                     id="iban_name"
                                                     type="text"
                                                     name="iban_name"
-                                                    value={form.values.iban_name}
+                                                    value={form.values.iban_name || ''}
                                                     onChange={(e) => form.update({ iban_name: e.target.value })}
                                                     placeholder="Op welke naam staat uw bankrekening?"
                                                     maxLength={45}
