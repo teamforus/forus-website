@@ -484,7 +484,7 @@ export default function ModalVouchersUpload({
     const defaultNote = useCallback(
         (row: RowDataProp) => {
             return translate('vouchers.csv.default_note' + (row.email ? '' : '_no_email'), {
-                upload_date: dateFormat(new Date(), 'YYYY-MM-DD'),
+                upload_date: dateFormat(new Date(), 'yyyy-MM-dd'),
                 uploader_email: authIdentity?.email || authIdentity?.address,
                 target_email: row.email || null,
             });

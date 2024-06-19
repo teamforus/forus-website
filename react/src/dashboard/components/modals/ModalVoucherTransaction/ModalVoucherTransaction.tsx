@@ -475,10 +475,10 @@ export default function ModalVoucherTransaction({
 
                     <div className="modal-footer text-center">
                         <button type="button" className="button button-default" onClick={modal.close}>
-                            Annuleer
+                            {translate('modals.modal_voucher_transaction.buttons.cancel')}
                         </button>
                         <button type="submit" className="button button-primary" disabled={submitButtonDisabled}>
-                            Bevestigen
+                            {translate('modals.modal_voucher_transaction.buttons.submit')}
                         </button>
                     </div>
                 </form>

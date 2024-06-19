@@ -69,7 +69,7 @@ export default function ModalVoucherRecordEdit({
                     modal.close();
                 })
                 .catch((res) => {
-                    form.errors = res.data?.errors || {};
+                    form.setErrors(res.data?.errors);
                     pushDanger('Foutmelding!', res.data.message);
                 })
                 .finally(() => form.setIsLocked(false));
@@ -199,7 +199,7 @@ export default function ModalVoucherRecordEdit({
 
                 <div className="modal-footer text-center">
                     <button type="button" className="button button-default" onClick={modal.close}>
-                        Annuleer
+                        Annuleren
                     </button>
                     <button type="submit" className="button button-primary">
                         Bevestigen
