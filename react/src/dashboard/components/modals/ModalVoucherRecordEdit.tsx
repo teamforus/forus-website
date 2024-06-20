@@ -82,15 +82,15 @@ export default function ModalVoucherRecordEdit({
         recordTypeService.list({ vouchers: 1 }).then((res) => {
             setProgress(100);
 
-            setRecordTypes([
-                ...(record
-                    ? res.data.filter((record_type) => record_type.key == record.record_type.key)
-                    : res.data.filter((record_type) => !existingRecordTypes.includes(record_type.key))),
-                {
-                    key: null,
-                    name: 'Er zijn niet meer eigenschappen beschikbaar.',
-                },
-            ]);
+            const recordTypesData = record
+                ? res.data.filter((record_type) => record_type.key == record.record_type.key)
+                : res.data.filter((record_type) => !existingRecordTypes.includes(record_type.key));
+
+            setRecordTypes(
+                recordTypesData.length > 0
+                    ? recordTypesData
+                    : [{ key: null, name: 'Er zijn niet meer eigenschappen beschikbaar.' }],
+            );
         });
     }, [existingRecordTypes, record, recordTypeService, setProgress]);
 
