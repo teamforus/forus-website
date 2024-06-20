@@ -4,7 +4,7 @@ export default interface Implementation {
     id: number;
     name: string;
     organization_id?: number;
-    has_provider_terms_page: boolean;
+    url_provider_terms_page?: string;
     url_webshop?: string;
     pre_check_enabled: boolean;
     pre_check_url?: string;
