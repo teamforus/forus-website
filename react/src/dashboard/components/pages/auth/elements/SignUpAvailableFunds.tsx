@@ -101,12 +101,15 @@ export default function SignUpAvailableFunds({
                 const allTags = { key: null, name: t('provider_funds.filters.options.all_labels') };
                 const allOrganizations = { id: null, name: t('provider_funds.filters.options.all_organizations') };
 
-                setTags((tags) => (tags && tags.length ? tags : [allTags, ...res.data.meta.tags]));
-                setOrganizations((organizations) =>
-                    organizations && organizations.length
+                setTags((tags) => {
+                    return tags.length > 0 ? tags : [allTags, { key: 'lorem', name: 'ipsum' }, ...res.data.meta.tags];
+                });
+
+                setOrganizations((organizations) => {
+                    return organizations.length > 0
                         ? organizations
-                        : [allOrganizations, ...res.data.meta.organizations],
-                );
+                        : [allOrganizations, ...res.data.meta.organizations];
+                });
             })
             .finally(() => setProgress(100));
     }, [fetchAvailableFunds, filter.activeValues, organization, setProgress, t]);
@@ -140,11 +143,10 @@ export default function SignUpAvailableFunds({
                                     className="form-control"
                                     value={filter.values.tag || ''}
                                     onChange={(e) => {
-                                        const tagKey = e.target.value;
-                                        filter.update({ tag: tags.find((tag) => tag.key == tagKey) ? tagKey : null });
+                                        filter.update({ tag: e.target.value === 'all' ? null : e.target.value });
                                     }}>
                                     {tags.map((tag) => (
-                                        <option key={tag.key} value={tag.key}>
+                                        <option key={tag.key || 'all'} value={tag.key || 'all'}>
                                             {tag.name}
                                         </option>
                                     ))}
@@ -235,7 +237,7 @@ export default function SignUpAvailableFunds({
                         {fund?.implementation?.url_provider_terms_page && (
                             <div className="card-section">
                                 <div className="card-text">
-                                    Door u aan te melden gaat u akkoord met de&nbsp;
+                                    Door u aan te melden gaat u akkoord met de{' '}
                                     <a
                                         className="card-text-link"
                                         href={fund.implementation.url_provider_terms_page}

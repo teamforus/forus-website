@@ -1757,7 +1757,7 @@ export default function SignUpProvider() {
                                                         <GoogleMap
                                                             mapPointers={[office]}
                                                             appConfigs={appConfigs}
-                                                            mapControlKeys={['map_style']}
+                                                            mapTypeControlOptions={{ mapTypeIds: ['map_style'] }}
                                                         />
                                                     </div>
                                                     <div className="office-actions">
