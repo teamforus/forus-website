@@ -1,4 +1,4 @@
-import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { Fragment, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import useActiveOrganization from '../../../hooks/useActiveOrganization';
 import LoadingCard from '../../elements/loading-card/LoadingCard';
 import StateNavLink from '../../../modules/state_router/StateNavLink';
@@ -44,6 +44,8 @@ export default function VouchersViewComponent() {
     const voucherService = useVoucherService();
     const physicalCardService = usePhysicalCardService();
 
+    const transactionsBlock = useRef<() => void>();
+    const reservationTransactionsBlock = useRef<() => void>();
     const [fund, setFund] = useState<Fund>(null);
     const [voucher, setVoucher] = useState<Voucher>(null);
 
@@ -121,11 +123,14 @@ export default function VouchersViewComponent() {
             <ModalVoucherTransaction
                 modal={modal}
                 voucher={voucher}
-                onCreated={fetchVoucher}
+                onCreated={() => {
+                    transactionsBlock.current();
+                    reservationTransactionsBlock.current();
+                }}
                 organization={activeOrganization}
             />
         ));
-    }, [activeOrganization, fetchVoucher, openModal, voucher]);
+    }, [activeOrganization, openModal, voucher]);
 
     const onOpenAction = useCallback(() => {
         showQrCode(activeOrganization, voucher, fund, fetchVoucher);
@@ -273,7 +278,7 @@ export default function VouchersViewComponent() {
         voucher && fetchFund(voucher);
     }, [fetchFund, voucher]);
 
-    if (!voucher) {
+    if (!voucher || !fund) {
         return <LoadingCard />;
     }
 
@@ -309,7 +314,7 @@ export default function VouchersViewComponent() {
                         <div className="flex flex-grow">
                             <div className="card-title">
                                 <div className="flex flex-vertical flex-center">
-                                    {strLimit(voucher.fund.name, 50)} #{voucher.id}
+                                    {`${strLimit(voucher.fund.name, 50)} #${voucher.id}`}
                                 </div>
                                 <div className="flex flex-vertical flex-center">
                                     {!voucher.expired && voucher.state == 'active' && (
@@ -678,12 +683,14 @@ export default function VouchersViewComponent() {
                         organization={activeOrganization}
                         blockTitle={'Transacties'}
                         filterValues={transactionsFilters.activeValues}
+                        fetchTransactionsRef={transactionsBlock}
                     />
 
                     <VoucherTransactions
                         organization={activeOrganization}
                         blockTitle={'Reserveringen'}
                         filterValues={reservationTransactionsFilters.activeValues}
+                        fetchTransactionsRef={reservationTransactionsBlock}
                     />
                 </Fragment>
             )}

@@ -14,6 +14,7 @@ import ModalDangerZone from '../../../modals/ModalDangerZone';
 import usePushSuccess from '../../../../hooks/usePushSuccess';
 import usePushDanger from '../../../../hooks/usePushDanger';
 import useShowRejectInfoExtraPaid from '../../../../services/helpers/reservations/useShowRejectInfoExtraPaid';
+import LoadingCard from '../../../elements/loading-card/LoadingCard';
 
 export default function TransactionDetails({
     transaction,
@@ -111,6 +112,10 @@ export default function TransactionDetails({
         setVoucherDetailsId(product_reservation?.voucher_id || voucher_id);
     }, [isSponsor, transaction]);
 
+    if (!transaction || !voucherDetailsId) {
+        return <LoadingCard />;
+    }
+
     return (
         <div className="block block-transaction-details">
             {showAmount && (
@@ -165,6 +170,7 @@ export default function TransactionDetails({
                                     <StateNavLink
                                         name={'transaction'}
                                         className="button button-primary"
+                                        activeExact={true}
                                         params={{
                                             organizationId: activeOrganization.id,
                                             address: transaction.address,
@@ -178,7 +184,7 @@ export default function TransactionDetails({
                                         name={'vouchers-show'}
                                         params={{
                                             organizationId: activeOrganization.id,
-                                            voucher_id: voucherDetailsId,
+                                            id: voucherDetailsId,
                                         }}
                                         className="button button-primary">
                                         <em className="mdi mdi-eye-outline icon-start" />

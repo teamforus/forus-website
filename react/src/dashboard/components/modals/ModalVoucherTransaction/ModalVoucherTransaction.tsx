@@ -153,6 +153,7 @@ export default function ModalVoucherTransaction({
                 .then((res) => {
                     setState('finish');
                     setTransaction(res.data.data);
+                    onCreated?.();
                 })
                 .catch((res) => {
                     form.setErrors(res.data.errors);

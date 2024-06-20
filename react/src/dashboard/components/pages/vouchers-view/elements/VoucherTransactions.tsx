@@ -19,10 +19,12 @@ export default function VoucherTransactions({
     blockTitle,
     organization,
     filterValues,
+    fetchTransactionsRef = null,
 }: {
     blockTitle: string;
     organization: Organization;
     filterValues: FilterModel;
+    fetchTransactionsRef?: React.MutableRefObject<() => void>;
 }) {
     const envData = useEnvData();
     const translate = useTranslate();
@@ -49,6 +51,12 @@ export default function VoucherTransactions({
     useEffect(() => {
         fetchTransactions();
     }, [fetchTransactions]);
+
+    useEffect(() => {
+        if (fetchTransactionsRef) {
+            fetchTransactionsRef.current = fetchTransactions;
+        }
+    }, [fetchTransactions, fetchTransactionsRef]);
 
     if (!transactions) {
         return <LoadingCard />;
