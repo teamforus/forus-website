@@ -1,4 +1,4 @@
-import React, { Fragment, useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import UIControlText from '../../../../elements/forms/ui-controls/UIControlText';
 import FormError from '../../../../elements/forms/errors/FormError';
 import Tooltip from '../../../../elements/tooltip/Tooltip';
@@ -279,6 +279,7 @@ export default function SignUpStepOrganizationAdd({
                                             <SelectControl
                                                 value={formOrganization.values.business_type_id}
                                                 propKey={'id'}
+                                                allowSearch={true}
                                                 onChange={(business_type_id?: number) =>
                                                     formOrganization.update({ business_type_id })
                                                 }
