@@ -308,7 +308,8 @@ export default function ModalVoucherCreate({
             <form className="modal-window form" onSubmit={form.submit}>
                 <a className="mdi mdi-close modal-close" onClick={modal.close} role="button" />
                 <div className="modal-header">
-                    {translate(`modals.modal_${type == 'vouchers' ? 'voucher' : 'product_voucher'}_create.title`)}
+                    {type == 'vouchers' && translate('modals.modal_voucher_create.title')}
+                    {type == 'product_vouchers' && translate('modals.modal_product_voucher_create.title')}
                 </div>
 
                 <div className="modal-body">

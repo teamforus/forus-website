@@ -170,7 +170,7 @@ export default function useVoucherExportService() {
                             }, console.error)
                             .finally(() => setProgress(100));
                     })
-                    .catch((res: ResponseError) => pushDanger('Mislukt!', res.data.message))
+                    .catch((err: ResponseError) => pushDanger('Mislukt!', err.data.message))
                     .finally(() => setProgress(100));
             };
 

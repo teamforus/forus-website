@@ -7,6 +7,7 @@ import CheckboxControl from '../elements/forms/controls/CheckboxControl';
 import useOpenModal from '../../hooks/useOpenModal';
 import ModalDangerZone from './ModalDangerZone';
 import useTranslate from '../../hooks/useTranslate';
+import classNames from 'classnames';
 
 export default function ModalVoucherDeactivation({
     modal,
@@ -31,12 +32,22 @@ export default function ModalVoucherDeactivation({
             notify_by_email: false,
         },
         async (values) => {
-            const $transKey = 'modals.modal_voucher_deactivation.danger_zone';
-            const $transData = { fund_name: voucher.fund.name, email: voucher.identity_email };
+            const transData = { fund_name: voucher.fund.name, email: voucher.identity_email };
 
-            const descNoEmail = translate(`${$transKey}.description_no_email`, $transData);
-            const descNotification = translate(`${$transKey}.description_notification`, $transData);
-            const descNotificationEmail = translate(`${$transKey}.description_notification_email`, $transData);
+            const descNoEmail = translate(
+                'modals.modal_voucher_deactivation.danger_zone.description_no_email',
+                transData,
+            );
+
+            const descNotification = translate(
+                'modals.modal_voucher_deactivation.danger_zone.description_notification',
+                transData,
+            );
+
+            const descNotificationEmail = translate(
+                'modals.modal_voucher_deactivation.danger_zone.description_notification_email',
+                transData,
+            );
 
             const description = hasEmail
                 ? values.notify_by_email
@@ -45,10 +56,11 @@ export default function ModalVoucherDeactivation({
                 : descNoEmail;
 
             setHideModal(true);
+
             openModal((modal) => (
                 <ModalDangerZone
                     modal={modal}
-                    title={translate(`${$transKey}.title`, $transData)}
+                    title={translate(`modals.modal_voucher_deactivation.danger_zone.title`, transData)}
                     description_text={description}
                     buttonCancel={{
                         text: 'Annuleren',
@@ -72,9 +84,13 @@ export default function ModalVoucherDeactivation({
 
     return (
         <div
-            className={`modal modal-md modal-animated ${
-                modal.loading || hideModal ? 'modal-loading' : ' '
-            } ${className}`}>
+            className={classNames(
+                'modal',
+                'modal-md',
+                'modal-animated',
+                (modal.loading || hideModal) && 'modal-loading',
+                className,
+            )}>
             <div className="modal-backdrop" onClick={modal.close} />
 
             <form className="modal-window form" onSubmit={form.submit}>

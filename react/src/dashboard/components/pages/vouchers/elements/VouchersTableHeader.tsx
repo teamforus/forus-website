@@ -88,9 +88,17 @@ export default function VouchersTableHeader({
         <div className={`card-header ${loading ? 'card-header-inactive' : ''}`}>
             <div className="flex">
                 <div className="flex flex-grow">
-                    <div className="card-title">
-                        {translate(`${type}.header.title`)} ({vouchers?.meta?.total})
-                    </div>
+                    {type == 'vouchers' && (
+                        <div className="card-title">
+                            {translate('vouchers.header.title')} ({vouchers?.meta?.total})
+                        </div>
+                    )}
+
+                    {type == 'product_vouchers' && (
+                        <div className="card-title">
+                            {translate('product_vouchers.header.title')} ({vouchers?.meta?.total})
+                        </div>
+                    )}
                 </div>
 
                 <div className="flex">
