@@ -23,6 +23,7 @@ import useSetTitle from '../../../hooks/useSetTitle';
 import { clickOnKeyEnter } from '../../../../dashboard/helpers/wcag';
 import BlockShowcase from '../../elements/block-showcase/BlockShowcase';
 import BlockLoader from '../../elements/block-loader/BlockLoader';
+import useSetInputBrowserValidationMessage from '../../../hooks/useSetInputBrowserValidationMessage';
 
 export default function Start() {
     const { token, signOut, setToken } = useContext(authContext);
@@ -35,6 +36,7 @@ export default function Start() {
     const translate = useTranslate();
     const setProgress = useSetProgress();
     const navigateState = useNavigateState();
+    const setInputValidationMessage = useSetInputBrowserValidationMessage();
 
     const [state, setState] = useState<string>('start');
     const [timer, setTimer] = useState(null);
@@ -212,7 +214,10 @@ export default function Start() {
                         <UIControlText
                             type={'email'}
                             value={authForm.values.email}
-                            onChange={(e) => authForm.update({ email: e.target.value })}
+                            onChange={(e) => {
+                                authForm.update({ email: e.target.value });
+                                setInputValidationMessage(e, translate('signup.items.errors.email'));
+                            }}
                             placeholder={'e-mail@e-mail.nl'}
                             id={'email'}
                             name={'email'}
@@ -280,7 +285,7 @@ export default function Start() {
                 )}
             </form>
         ),
-        [authForm, envData?.config?.flags?.privacyPage, translate],
+        [authForm, envData?.config?.flags?.privacyPage, setInputValidationMessage, translate],
     );
 
     const qrOption = (
