@@ -23,6 +23,7 @@ export default function ModalVoucherDeactivation({
     const openModal = useOpenModal();
 
     const [hasEmail] = useState<boolean>(!!voucher.identity_email);
+    const [hideModal, setHideModal] = useState(false);
 
     const form = useFormBuilder(
         {
@@ -30,8 +31,6 @@ export default function ModalVoucherDeactivation({
             notify_by_email: false,
         },
         async (values) => {
-            modal.close();
-
             const $transKey = 'modals.modal_voucher_deactivation.danger_zone';
             const $transData = { fund_name: voucher.fund.name, email: voucher.identity_email };
 
@@ -45,16 +44,24 @@ export default function ModalVoucherDeactivation({
                     : descNotification
                 : descNoEmail;
 
+            setHideModal(true);
             openModal((modal) => (
                 <ModalDangerZone
                     modal={modal}
                     title={translate(`${$transKey}.title`, $transData)}
                     description_text={description}
-                    buttonCancel={{ text: 'Annuleren', onClick: modal.close }}
+                    buttonCancel={{
+                        text: 'Annuleren',
+                        onClick: () => {
+                            setHideModal(false);
+                            modal.close();
+                        },
+                    }}
                     buttonSubmit={{
                         text: 'Bevestigen',
                         onClick: () => {
                             onSubmit(values);
+                            setHideModal(false);
                             modal.close();
                         },
                     }}
@@ -64,7 +71,10 @@ export default function ModalVoucherDeactivation({
     );
 
     return (
-        <div className={`modal modal-md modal-animated ${modal.loading ? 'modal-loading' : ' '} ${className}`}>
+        <div
+            className={`modal modal-md modal-animated ${
+                modal.loading || hideModal ? 'modal-loading' : ' '
+            } ${className}`}>
             <div className="modal-backdrop" onClick={modal.close} />
 
             <form className="modal-window form" onSubmit={form.submit}>

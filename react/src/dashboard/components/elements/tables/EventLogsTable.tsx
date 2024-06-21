@@ -144,6 +144,7 @@ export default function EventLogsTable({
                                     <div className="form">
                                         <div className="form-group">
                                             <input
+                                                type="search"
                                                 className="form-control"
                                                 value={filter.values.q}
                                                 onChange={(e) => filter.update({ q: e.target.value })}
