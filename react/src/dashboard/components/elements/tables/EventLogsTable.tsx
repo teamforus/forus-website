@@ -27,6 +27,7 @@ export default function EventLogsTable({
     hideFilterForm,
     hideFilterDropdown,
     hideEntity,
+    fetchEventLogsRef = null,
 }: {
     organization: Organization;
     loggable: Array<string>;
@@ -36,6 +37,7 @@ export default function EventLogsTable({
     hideFilterForm?: boolean;
     hideFilterDropdown?: boolean;
     hideEntity?: boolean;
+    fetchEventLogsRef?: React.MutableRefObject<() => void>;
 }) {
     const translate = useTranslate();
 
@@ -94,28 +96,34 @@ export default function EventLogsTable({
         [filter],
     );
 
-    const fetchLogs = useCallback(
-        async (query: object) => {
-            setProgress(0);
+    const fetchLogs = useCallback(() => {
+        setProgress(0);
 
-            return eventLogService.list(organization.id, query).finally(() => setProgress(100));
-        },
-        [organization.id, setProgress, eventLogService],
-    );
+        eventLogService
+            .list(organization.id, filter.activeValues)
+            .then((res) => {
+                const logs = {
+                    ...res.data,
+                    data: res.data.data.map((item) => ({
+                        ...item,
+                        note_substr: item.note ? strLimit(item.note, 40) : null,
+                    })),
+                };
+
+                setLogs(logs);
+            })
+            .finally(() => setProgress(100));
+    }, [organization.id, setProgress, eventLogService, filter.activeValues]);
 
     useEffect(() => {
-        fetchLogs(filter.activeValues).then((res) => {
-            const logs = {
-                ...res.data,
-                data: res.data.data.map((item) => ({
-                    ...item,
-                    note_substr: item.note ? strLimit(item.note, 40) : null,
-                })),
-            };
+        fetchLogs();
+    }, [fetchLogs]);
 
-            setLogs(logs);
-        });
-    }, [fetchLogs, filter.activeValues]);
+    useEffect(() => {
+        if (fetchEventLogsRef) {
+            fetchEventLogsRef.current = fetchLogs;
+        }
+    }, [fetchEventLogsRef, fetchLogs]);
 
     if (!logs) {
         return <LoadingCard />;

@@ -148,6 +148,8 @@ export default function ModalVoucherTransaction({
                 }
             }
 
+            setProgress(0);
+
             voucherService
                 .makeSponsorTransaction(organization.id, data)
                 .then((res) => {
@@ -160,7 +162,10 @@ export default function ModalVoucherTransaction({
                     setState('form');
                     pushDanger('Mislukt!', res.data.message);
                 })
-                .finally(() => form.setIsLocked(false));
+                .finally(() => {
+                    setProgress(100);
+                    form.setIsLocked(false);
+                });
         },
     );
 

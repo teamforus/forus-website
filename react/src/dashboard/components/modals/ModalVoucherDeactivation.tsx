@@ -67,6 +67,7 @@ export default function ModalVoucherDeactivation({
                         onClick: () => {
                             setHideModal(false);
                             modal.close();
+                            form.setIsLocked(false);
                         },
                     }}
                     buttonSubmit={{
