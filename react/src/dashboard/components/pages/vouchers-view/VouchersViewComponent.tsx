@@ -20,7 +20,7 @@ import NumericControl from '../../elements/forms/controls/NumericControl';
 import useSetProgress from '../../../hooks/useSetProgress';
 import usePushSuccess from '../../../hooks/usePushSuccess';
 import usePushDanger from '../../../hooks/usePushDanger';
-import { ApiResponse, ApiResponseSingle, ResponseError } from '../../../props/ApiResponses';
+import { ApiResponseSingle, ResponseError } from '../../../props/ApiResponses';
 import VoucherRecords from './elements/VoucherRecords';
 import VoucherTransactions from './elements/VoucherTransactions';
 import useFilter from '../../../hooks/useFilter';
@@ -28,7 +28,6 @@ import EventLogsTable from '../../elements/tables/EventLogsTable';
 import ModalOrderPhysicalCard from '../../modals/ModalOrderPhysicalCard';
 import useTranslate from '../../../hooks/useTranslate';
 import useShowVoucherQrCode from '../vouchers/hooks/useShowVoucherQrCode';
-import EventLog from '../../../props/models/EventLog';
 
 export default function VouchersViewComponent() {
     const { id } = useParams();
@@ -45,9 +44,9 @@ export default function VouchersViewComponent() {
     const voucherService = useVoucherService();
     const physicalCardService = usePhysicalCardService();
 
+    const eventLogsBlock = useRef<() => void>();
     const transactionsBlock = useRef<() => void>();
     const reservationTransactionsBlock = useRef<() => void>();
-    const eventLogsBlock = useRef<() => Promise<ApiResponse<EventLog>>>();
     const [fund, setFund] = useState<Fund>(null);
     const [voucher, setVoucher] = useState<Voucher>(null);
 
