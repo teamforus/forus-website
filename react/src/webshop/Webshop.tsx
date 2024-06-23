@@ -20,6 +20,7 @@ import { PrintableProvider } from '../dashboard/modules/printable/context/Printa
 import MatomoScript from './modules/matomo/MatomoScript';
 import SiteImproveAnalytics from './modules/site_improve_analytics/SiteImproveAnalytics';
 import AwsRumScript from '../dashboard/modules/aws_rum/AwsRumScript';
+import { TitleProvider } from './contexts/TitleContext';
 
 i18n.use(initReactI18next)
     .init({
@@ -94,26 +95,28 @@ export default function Webshop({ envData }: { envData: EnvDataWebshopProp }): R
 
     return (
         <Fragment>
-            <LoadScript googleMapsApiKey={envData.config.google_maps_api_key} language={'nl'}>
+            {/*<LoadScript googleMapsApiKey={envData.config.google_maps_api_key} language={'nl'}>*/}
                 <PushNotificationsProvider>
                     <RouterSelector envData={envData as unknown as EnvDataProp}>
                         <LoadingBarProvider>
                             <PrintableProvider>
                                 <ModalsProvider>
                                     <MainProvider>
-                                        <AuthProvider>
-                                            <QueryParamProvider adapter={ReactRouter6Adapter}>
-                                                <StateHashPrefixRedirect />
-                                                <RouterLayout envData={envData} />
-                                            </QueryParamProvider>
-                                        </AuthProvider>
+                                        <TitleProvider>
+                                            <AuthProvider>
+                                                <QueryParamProvider adapter={ReactRouter6Adapter}>
+                                                    <StateHashPrefixRedirect />
+                                                    <RouterLayout envData={envData} />
+                                                </QueryParamProvider>
+                                            </AuthProvider>
+                                        </TitleProvider>
                                     </MainProvider>
                                 </ModalsProvider>
                             </PrintableProvider>
                         </LoadingBarProvider>
                     </RouterSelector>
                 </PushNotificationsProvider>
-            </LoadScript>
+            {/*</LoadScript>*/}
 
             <AwsRumScript awsRum={envData.config?.aws_rum} />
             <MatomoScript envData={envData} />

@@ -151,11 +151,12 @@ export default function FundsShow() {
     useEffect(() => {
         if (fund) {
             setTitle(
-                translate('page_state_titles.fund', {
-                    fund_name: fund?.name || '',
-                    implementation: translate(`implementation_name.${envData?.client_key}`),
-                    organization_name: fund?.organization?.name || '',
-                }),
+                envData?.client_key == 'vergoedingen'
+                    ? translate('page_state_titles.fund', {
+                          fund_name: fund?.name || '',
+                          organization_name: fund?.organization?.name || '',
+                      })
+                    : translate('custom_page_state_titles.vergoedingen.fund', { fund_name: fund?.name || '' }),
             );
         }
     }, [envData, fund, fund?.name, fund?.organization?.name, setTitle, translate]);

@@ -25,6 +25,7 @@ import BlockShowcasePage from '../../elements/block-showcase/BlockShowcasePage';
 import useFilterNext from '../../../../dashboard/modules/filter_next/useFilterNext';
 import { BooleanParam, NumberParam, StringParam } from 'use-query-params';
 import { clickOnKeyEnter } from '../../../../dashboard/helpers/wcag';
+import useSetTitle from '../../../hooks/useSetTitle';
 
 export default function Products({ fundType = 'budget' }: { fundType: 'budget' | 'subsidies' }) {
     const appConfigs = useAppConfigs();
@@ -35,6 +36,7 @@ export default function Products({ fundType = 'budget' }: { fundType: 'budget' |
     const organizationService = useOrganizationService();
     const productCategoryService = useProductCategoryService();
 
+    const setTitle = useSetTitle();
     const translate = useTranslate();
     const setProgress = useSetProgress();
 
@@ -202,6 +204,17 @@ export default function Products({ fundType = 'budget' }: { fundType: 'budget' |
             setProductSubCategories(null);
         }
     }, [filterUpdate, fundType, filterValues.product_category_id, productCategoryService]);
+
+    useEffect(() => {
+        let options = { fund_name: '' };
+
+        if (funds && filterValuesActive?.fund_id) {
+            const fund = funds.find((item) => item.id === filterValuesActive.fund_id);
+            options = { fund_name: fund ? ` ${fund.name}` : '' };
+        }
+
+        setTitle(translate('page_state_titles.products', options));
+    }, [filterValuesActive?.fund_id, funds, setTitle, translate]);
 
     return (
         <BlockShowcasePage
