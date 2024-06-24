@@ -7,6 +7,8 @@ export default interface Implementation {
     name: string;
     key?: string;
     logo?: string;
+    organization_id?: number;
+    url_provider_terms_page?: string;
     url_webshop?: string;
     has_provider_terms_page: boolean;
     informal_communication?: boolean;
@@ -19,7 +21,6 @@ export default interface Implementation {
     email_logo_default?: Media;
     title?: string;
     description?: string;
-    organization_id?: number;
     description_html?: string;
     description_alignment?: string;
     email_from_name?: string;

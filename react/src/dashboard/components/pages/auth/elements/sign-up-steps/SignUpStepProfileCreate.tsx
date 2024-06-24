@@ -121,7 +121,7 @@ export default function SignUpStepProfileCreate({ panelType }: { panelType: 'spo
                                     <label className="form-label">E-mailadres</label>
                                     <UIControlText
                                         value={formSignUp.values.email}
-                                        onChange={(e) => formSignUp.update({ email: e.target.value })}
+                                        onChangeValue={(email) => formSignUp.update({ email })}
                                         className={'large'}
                                         placeholder={'e-mail@e-mail.nl'}
                                     />
