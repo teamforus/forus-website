@@ -7,9 +7,9 @@ import useMakeExporterService from './useMakeExporterService';
 import { useFundService } from '../FundService';
 
 export default function useFundIdentitiesExportService() {
+    const openModal = useOpenModal();
     const pushDanger = usePushDanger();
     const setProgress = useSetProgress();
-    const openModal = useOpenModal();
 
     const fundService = useFundService();
     const { makeSections, saveExportedData } = useMakeExporterService();
@@ -21,16 +21,15 @@ export default function useFundIdentitiesExportService() {
                 const queryFilters = { ...filters, data_format, fields };
 
                 setProgress(0);
-                console.info('- data loaded from the api.');
 
                 fundService
-                    .export(organization_id, fund_id, queryFilters)
+                    .exportIdentities(organization_id, fund_id, queryFilters)
                     .then((res) => saveExportedData(data, organization_id, res))
                     .catch((res) => pushDanger('Mislukt!', res.data.message))
                     .finally(() => setProgress(100));
             };
 
-            fundService.exportFields(organization_id, fund_id).then((res) => {
+            fundService.exportIdentityFields(organization_id, fund_id).then((res) => {
                 openModal((modal) => (
                     <ModalExportDataSelect modal={modal} sections={makeSections(res.data.data)} onSuccess={onSuccess} />
                 ));

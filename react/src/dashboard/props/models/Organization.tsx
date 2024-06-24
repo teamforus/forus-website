@@ -3,6 +3,28 @@ import Tag from './Tag';
 import BusinessType from './BusinessType';
 import ReservationField from './ReservationField';
 import Office from './Office';
+import Employee from './Employee';
+
+export interface SponsorProviderOrganization extends Organization {
+    funds: Array<{
+        id: number;
+        name: string;
+        organization_id: number;
+        fund_provider_id: number;
+        fund_provider_state: string;
+        fund_provider_state_locale: string;
+    }>;
+    products_count: number;
+    last_activity_locale: string;
+    offices: Array<Office>;
+    employees: Array<Employee>;
+}
+
+export interface OrganizationValidator extends Organization {
+    id: number;
+    organization_id: number;
+    validator_organization_id: number;
+}
 
 export default interface Organization {
     id: number;
@@ -64,6 +86,7 @@ export default interface Organization {
     offices: Array<Office>;
     can_view_provider_extra_payments?: boolean;
     allow_extra_payments_by_sponsor?: boolean;
+    allow_provider_extra_payments?: boolean;
     can_receive_extra_payments?: boolean;
     bank_statement_details?: {
         bank_transaction_id?: boolean;

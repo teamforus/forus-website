@@ -1,6 +1,3 @@
-@import "goereeoverflakkee/vars";
-@import "_common/webshop";
-
 // LAYOUTS
 @import "goereeoverflakkee/layout/navigation";
 @import "goereeoverflakkee/layout/header";
@@ -13,18 +10,16 @@
 @import "goereeoverflakkee/sections/flow";
 @import "goereeoverflakkee/sections/faq";
 
-.block {
-    @import "goereeoverflakkee/sections/blocks/block-map";
-    @import "goereeoverflakkee/sections/blocks/block-markdown";
-    @import "goereeoverflakkee/sections/blocks/block-products";
-    @import "goereeoverflakkee/sections/blocks/block-products-list";
-    @import "goereeoverflakkee/sections/blocks/block-cms-funds";
-    @import "goereeoverflakkee/sections/blocks/block-copyrights";
-    @import "goereeoverflakkee/sections/blocks/block-footer";
-    @import "goereeoverflakkee/sections/blocks/block-navbar-search";
-    @import "goereeoverflakkee/sections/blocks/block-profile";
-    @import "goereeoverflakkee/sections/blocks/block-product";
-    @import "goereeoverflakkee/sections/blocks/block-pane";
-    @import "goereeoverflakkee/sections/blocks/block-organizations";
-    @import "goereeoverflakkee/sections/blocks/block-mobile-menu";
-}
+@import "goereeoverflakkee/sections/blocks/block-map";
+@import "goereeoverflakkee/sections/blocks/block-markdown";
+@import "goereeoverflakkee/sections/blocks/block-products";
+@import "goereeoverflakkee/sections/blocks/block-products-list";
+@import "goereeoverflakkee/sections/blocks/block-cms-funds";
+@import "goereeoverflakkee/sections/blocks/block-copyrights";
+@import "goereeoverflakkee/sections/blocks/block-footer";
+@import "goereeoverflakkee/sections/blocks/block-navbar-search";
+@import "goereeoverflakkee/sections/blocks/block-profile";
+@import "goereeoverflakkee/sections/blocks/block-product";
+@import "goereeoverflakkee/sections/blocks/block-pane";
+@import "goereeoverflakkee/sections/blocks/block-organizations";
+@import "goereeoverflakkee/sections/blocks/block-mobile-menu";

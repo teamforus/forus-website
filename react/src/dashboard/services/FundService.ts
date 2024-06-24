@@ -3,9 +3,10 @@ import { useState } from 'react';
 import ApiRequestService from './ApiRequestService';
 import Fund from '../props/models/Fund';
 import Product from '../props/models/Product';
+import FundProvider from '../props/models/FundProvider';
+import { ExportFieldProp } from '../components/modals/ModalExportDataSelect';
 import FundTopUpTransaction from '../props/models/FundTopUpTransaction';
 import Identity from '../props/models/Sponsor/Identity';
-import { ExportFieldProp } from '../components/modals/ModalExportDataSelect';
 import Papa from 'papaparse';
 import {
     ProviderFinancialStatistics,
@@ -105,7 +106,11 @@ export class FundService<T = Fund> {
         return this.apiRequest.get(`${this.prefix}/${company_id}/funds/${fund_id}/identities/${id}`, data);
     }
 
-    public listIdentities(company_id: number, fund_id: number, data: object = {}): Promise<ApiResponse<Identity>> {
+    public listIdentities(
+        company_id: number,
+        fund_id: number,
+        data: object = {},
+    ): Promise<ApiResponse<Identity, { counts: { active: number; selected: number; without_email: number } }>> {
         return this.apiRequest.get(`${this.prefix}/${company_id}/funds/${fund_id}/identities`, data);
     }
 
@@ -129,6 +134,59 @@ export class FundService<T = Fund> {
         return this.apiRequest.patch(`${this.prefix}/${company_id}/funds/${id}/criteria`, { criteria: data });
     }
 
+    /**
+     * Send notification
+     */
+    public sendNotification(company_id: number, fund_id: number, data: object = {}): Promise<null> {
+        return this.apiRequest.post<null>(
+            `${this.prefix}/${company_id}/funds/${fund_id}/identities/notification`,
+            data,
+        );
+    }
+
+    /**
+     * Export identities
+     */
+    public exportIdentities(
+        company_id: number,
+        fund_id: number,
+        data: object = {},
+    ): Promise<ResponseSimple<ArrayBuffer>> {
+        return this.apiRequest.get<null>(`${this.prefix}/${company_id}/funds/${fund_id}/identities/export`, data, {
+            responseType: 'arraybuffer',
+        });
+    }
+
+    /**
+     * Get export identity fields
+     */
+    public exportIdentityFields(
+        company_id: number,
+        fund_id: number,
+        data: object = {},
+    ): Promise<ApiResponseSingle<Array<ExportFieldProp>>> {
+        return this.apiRequest.get<null>(
+            `${this.prefix}/${company_id}/funds/${fund_id}/identities/export-fields`,
+            data,
+        );
+    }
+
+    public readPublic(fund_id: number, data: object = {}): Promise<ApiResponseSingle<T>> {
+        return this.apiRequest.get(`/platform/funds/${fund_id}`, data);
+    }
+
+    public listProviderProducts(
+        organization_id: number,
+        fund_id: number,
+        provider_id: number,
+        query: object = {},
+    ): Promise<ApiResponse<Product>> {
+        return this.apiRequest.get(
+            `${this.prefix}/${organization_id}/funds/${fund_id}/providers/${provider_id}/products`,
+            query,
+        );
+    }
+
     public getProviderProduct(
         organization_id: number,
         fund_id: number,
@@ -140,6 +198,23 @@ export class FundService<T = Fund> {
             `${this.prefix}/${organization_id}/funds/${fund_id}/providers/${provider_id}/products/${product_id}`,
             query,
         );
+    }
+
+    public readProvider(
+        organization_id: number,
+        fund_id: number,
+        id: number,
+    ): Promise<ApiResponseSingle<FundProvider>> {
+        return this.apiRequest.get(`${this.prefix}/${organization_id}/funds/${fund_id}/providers/${id}`);
+    }
+
+    public updateProvider(
+        organization_id: number,
+        fund_id: number,
+        id: number,
+        query: object = {},
+    ): Promise<ApiResponseSingle<FundProvider>> {
+        return this.apiRequest.patch(`${this.prefix}/${organization_id}/funds/${fund_id}/providers/${id}`, query);
     }
 
     public sampleCSV(fund: Fund): string {

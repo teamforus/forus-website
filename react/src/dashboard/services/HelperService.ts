@@ -1,7 +1,13 @@
 import { useState } from 'react';
 
 export class HelperService {
-    public recursiveLeach(request: CallableFunction, concurrency = 1, page = 1, last_page = null, data = []) {
+    public recursiveLeach<T>(
+        request: CallableFunction,
+        concurrency = 1,
+        page = 1,
+        last_page = null,
+        data = [],
+    ): Promise<Array<T>> {
         return new Promise((resolve, reject) => {
             const requests = [];
             const _concurrency = last_page === null ? 1 : Math.min(concurrency, Math.max(last_page - page + 1, 1));
@@ -16,7 +22,7 @@ export class HelperService {
                 if (res[0].data.meta.last_page === last_page && page + (_concurrency - 1) >= last_page) {
                     resolve(_data);
                 } else {
-                    this.recursiveLeach(
+                    this.recursiveLeach<T>(
                         request,
                         concurrency,
                         page + _concurrency,
