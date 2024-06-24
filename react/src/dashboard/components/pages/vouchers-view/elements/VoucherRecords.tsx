@@ -71,7 +71,7 @@ export default function VoucherRecords({ voucher, organization }: { voucher: Vou
                 <ModalDangerZone
                     modal={modal}
                     title={translate('modals.danger_zone.remove_voucher_record.title')}
-                    description={translate('modals.danger_zone.remove_voucher_record.title')}
+                    description={translate('modals.danger_zone.remove_voucher_record.description')}
                     buttonCancel={{
                         onClick: modal.close,
                         text: translate('modals.danger_zone.remove_voucher_record.buttons.cancel'),
