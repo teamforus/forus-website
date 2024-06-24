@@ -47,14 +47,17 @@ import useFilter from '../../../hooks/useFilter';
 import useDemoTransactionService from '../../../services/DemoTransactionService';
 import { uniq } from 'lodash';
 import useAppConfigs from '../../../hooks/useAppConfigs';
+import usePushDanger from '../../../hooks/usePushDanger';
 
 type OfficeLocal = Office & { edit?: boolean };
 
 export default function SignUpProvider() {
     const { t } = useTranslation();
-    const isMobile = window.innerWidth < 1000;
     const envData = useEnvData();
+
+    const isMobile = window.innerWidth < 1000;
     const appConfigs = useAppConfigs();
+    const pushDanger = usePushDanger();
 
     const [printDebug] = useState(false);
 
@@ -108,7 +111,7 @@ export default function SignUpProvider() {
     const [selectedOption, setSelectedOption] = useState(undefined);
 
     const [organizationsList, setOrganizationsList] = useState<Array<Organization>>(null);
-    const [loggedWithApp, setLoggedWithApp] = useState(true);
+    const [loggedWithApp, setLoggedWithApp] = useState(false);
 
     const [INFO_STEPS] = useState(2);
 
@@ -275,18 +278,22 @@ export default function SignUpProvider() {
             openModal((modal) => (
                 <ModalNotification
                     modal={modal}
-                    title={'Medewerker toevoegen'}
+                    title={'Bevestig uitnodiging'}
                     className={'modal-md'}
-                    description={[
-                        'Wilt u de medewerker met het volgende e-mailadres toevoegen aan uw organisatie?',
-                        `E-mailadres: ${employeeForm.values.email}`,
-                    ]}
+                    description={
+                        <Fragment>
+                            Wilt u medewerker met het e-mailadres{' '}
+                            <strong className="text-primary">{employeeForm.values.email}</strong> uitnodigen?
+                            <br />
+                            Deze medewerker zal hier over een e-mail ontvangen.
+                        </Fragment>
+                    }
                     buttonCancel={{
-                        text: 'Annuleren',
+                        text: 'Annuleer',
                         onClick: () => modal.close(),
                     }}
                     buttonSubmit={{
-                        text: 'Toevoegen',
+                        text: 'Bevestigen',
                         onClick: () => {
                             modal.close();
                             employeeForm.submit();
@@ -330,19 +337,22 @@ export default function SignUpProvider() {
                         text: 'Verwijderen',
                         onClick: () => {
                             modal.close();
-                            officeService.destroy(office.organization_id, office.id).then(() => {
-                                setOffices((offices) => {
-                                    return offices.filter(
-                                        (_office) => typeof _office.id == 'undefined' || _office.id != office.id,
-                                    );
-                                });
-                            });
+                            officeService
+                                .destroy(office.organization_id, office.id)
+                                .then(() => {
+                                    setOffices((offices) => {
+                                        return offices.filter((_office) => {
+                                            return typeof _office.id == 'undefined' || _office.id != office.id;
+                                        });
+                                    });
+                                })
+                                .catch((err: ResponseError) => pushDanger('Mislukt!', err.data.message));
                         },
                     }}
                 />
             ));
         },
-        [officeService, openModal],
+        [officeService, openModal, pushDanger],
     );
 
     const addOffice = useCallback(() => {
@@ -712,6 +722,10 @@ export default function SignUpProvider() {
         }
 
         const step = progressStorage.get('step');
+
+        if (authToken && step == 'STEP_CREATE_PROFILE') {
+            return goToStep(organizations?.length > 0 ? 'STEP_SELECT_ORGANIZATION' : 'STEP_ORGANIZATION_ADD');
+        }
 
         if (!STEPS_AVAILABLE.includes(step)) {
             return goToStep('STEP_INFO_GENERAL');
@@ -1584,7 +1598,7 @@ export default function SignUpProvider() {
                                                 <div className="row">
                                                     <div className="col col-md-8 col-xs-12">
                                                         <UIControlText
-                                                            value={formOrganization.values.website}
+                                                            value={formOrganization.values.website || ''}
                                                             onChange={(e) =>
                                                                 formOrganization.update({ website: e.target.value })
                                                             }
@@ -1740,7 +1754,11 @@ export default function SignUpProvider() {
                                                 </div>
                                                 <div className="office-map">
                                                     <div className="office-map-content">
-                                                        <GoogleMap mapPointers={[office]} appConfigs={appConfigs} />
+                                                        <GoogleMap
+                                                            mapPointers={[office]}
+                                                            appConfigs={appConfigs}
+                                                            mapTypeControlOptions={{ mapTypeIds: ['map_style'] }}
+                                                        />
                                                     </div>
                                                     <div className="office-actions">
                                                         <a
@@ -1815,7 +1833,7 @@ export default function SignUpProvider() {
                                         <button
                                             type={'button'}
                                             className="button button-text button-text-padless"
-                                            disabled={offices?.length <= 0}
+                                            disabled={!offices || offices?.length == 0}
                                             onClick={() => next()}>
                                             {t('sign_up_provider.buttons.next')}
                                             <em className="mdi mdi-chevron-right icon-right" />
@@ -1838,7 +1856,10 @@ export default function SignUpProvider() {
                         <div className="sign_up-pane">
                             <div className="sign_up-pane-header">{t('sign_up_provider.header.title_step_7')}</div>
                             <div className="sign_up-pane-body">
-                                <div className="sign_up-pane-text">{t('sign_up_provider.header.subtitle_step_7')}</div>
+                                <TranslateHtml
+                                    component={<div className="sign_up-pane-text" />}
+                                    i18n={'sign_up_provider.header.subtitle_step_7'}
+                                />
                             </div>
                             <div className="sign_up-pane-body">
                                 <div className="sign_up-employees">

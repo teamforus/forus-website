@@ -1,6 +1,3 @@
-@import "doetegoed/vars";
-@import "_common/webshop";
-
 // LAYOUTS
 @import "doetegoed/layout/navigation";
 @import "doetegoed/layout/header";
@@ -61,18 +58,18 @@ body {
             display: none;
         }
     }
-
-    @import "doetegoed/sections/blocks/block-cms";
-    @import "doetegoed/sections/blocks/block-navbar";
-    @import "doetegoed/sections/blocks/block-footer";
-    @import "doetegoed/sections/blocks/block-product";
-    @import "doetegoed/sections/blocks/block-sign_up";
-    @import "doetegoed/sections/blocks/block-cms-funds";
-    @import "doetegoed/sections/blocks/block-copyrights";
-    @import "doetegoed/sections/blocks/block-action-card";
-    @import "doetegoed/sections/blocks/block-organizations";
-    @import "doetegoed/sections/blocks/block-map";
-    @import "doetegoed/sections/blocks/block-markdown";
-    @import "doetegoed/sections/blocks/block-profile";
-    @import "doetegoed/sections/blocks/block-empty";
 }
+
+@import "doetegoed/sections/blocks/block-cms";
+@import "doetegoed/sections/blocks/block-navbar";
+@import "doetegoed/sections/blocks/block-footer";
+@import "doetegoed/sections/blocks/block-product";
+@import "doetegoed/sections/blocks/block-sign_up";
+@import "doetegoed/sections/blocks/block-cms-funds";
+@import "doetegoed/sections/blocks/block-copyrights";
+@import "doetegoed/sections/blocks/block-action-card";
+@import "doetegoed/sections/blocks/block-organizations";
+@import "doetegoed/sections/blocks/block-map";
+@import "doetegoed/sections/blocks/block-markdown";
+@import "doetegoed/sections/blocks/block-profile";
+@import "doetegoed/sections/blocks/block-empty";

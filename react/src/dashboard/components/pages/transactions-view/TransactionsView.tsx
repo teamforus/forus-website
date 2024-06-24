@@ -46,6 +46,7 @@ export default function TransactionsView() {
                 <StateNavLink
                     name={'transactions'}
                     params={{ organizationId: activeOrganization.id }}
+                    activeExact={true}
                     className="breadcrumb-item">
                     {t('page_state_titles.transactions')}
                 </StateNavLink>
@@ -54,6 +55,7 @@ export default function TransactionsView() {
                     <StateNavLink
                         name={'transactions'}
                         params={{ organizationId: activeOrganization.id }}
+                        activeExact={true}
                         className="breadcrumb-item">
                         {transaction.fund.name}
                     </StateNavLink>
