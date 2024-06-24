@@ -51,6 +51,7 @@ export type SelectControlOptionsProp<T> = {
     setShowOptions: (show: boolean) => void;
     searchInputChanged: () => void;
     onOptionsScroll: (e: UIEvent<HTMLElement>) => void;
+    disabled?: boolean;
 };
 
 export default function SelectControl<T>({
@@ -110,7 +111,7 @@ export default function SelectControl<T>({
     );
 
     const buildSearchedOptions = useCallback(() => {
-        const search = query.toLowerCase();
+        const search = query.toLowerCase().trim();
         const search_len = search.length;
         const options = allowSearch ? prepareOptions(search) : optionsPrepared;
 
@@ -245,5 +246,6 @@ export default function SelectControl<T>({
         onOptionsScroll,
         modelValue,
         className,
+        disabled,
     });
 }

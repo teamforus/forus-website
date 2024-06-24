@@ -44,6 +44,7 @@
         display: inline-flex;
 
         .form-numeric-btn {
+            cursor: pointer;
             display: inline-flex;
             height: 30px;
             flex-direction: column;
@@ -236,6 +237,15 @@
         &.select-control {
             padding: 0;
             border: none;
+
+            &.disabled {
+                background-color: #f1f1f1;
+                pointer-events: none;
+
+                .select-control-search {
+                    background-color: #f1f1f1;
+                }
+            }
         }
 
         &.form-control-dashed {
@@ -493,7 +503,7 @@
             }
 
             &>.form-offset,
-            &>.form-control {
+            &>.form-control, &>.react-datepicker-wrapper {
                 width: calc(100% - 200px);
                 float: left;
 

@@ -1,6 +1,5 @@
 import React, { ChangeEvent, Fragment, useCallback, useEffect, useRef, useState } from 'react';
 import { ModalState } from '../../modules/modals/context/ModalContext';
-import { classList } from '../../helpers/utils';
 import Organization from '../../props/models/Organization';
 import useProductReservationService from '../../services/ProductReservationService';
 import { useFileService } from '../../services/FileService';
@@ -15,6 +14,8 @@ import { ResponseError } from '../../props/ApiResponses';
 import { fileSize } from '../../helpers/string';
 import useOpenModal from '../../hooks/useOpenModal';
 import ModalDuplicatesPicker from './ModalDuplicatesPicker';
+import CSVProgressBar from '../elements/csv-progress-bar/CSVProgressBar';
+import classNames from 'classnames';
 
 export default function ModalReservationUpload({
     modal,
@@ -302,12 +303,12 @@ export default function ModalReservationUpload({
 
     return (
         <div
-            className={classList([
+            className={classNames(
                 'modal',
                 'modal-animated',
-                modal.loading || hideModal ? 'modal-loading' : null,
+                (modal.loading || hideModal) && 'modal-loading',
                 className,
-            ])}>
+            )}>
             <div className="modal-backdrop" onClick={closeModal} />
             <div className="modal-window">
                 <a className="mdi mdi-close modal-close" onClick={closeModal} role="button" />
@@ -369,16 +370,7 @@ export default function ModalReservationUpload({
                                             )}
                                         </div>
 
-                                        <div className="csv-progress">
-                                            <div className="csv-progress-state">{progressStatus}</div>
-                                            <div className="csv-progress-bar">
-                                                <div
-                                                    className="csv-progress-bar-stick"
-                                                    style={{ width: `${progressBar}%` }}
-                                                />
-                                            </div>
-                                            <div className="csv-progress-value">{progressBar.toFixed(2) + '%'}</div>
-                                        </div>
+                                        <CSVProgressBar status={progressStatus} progressBar={progressBar} />
                                     </div>
                                 )}
                                 <div className="csv-upload-actions">

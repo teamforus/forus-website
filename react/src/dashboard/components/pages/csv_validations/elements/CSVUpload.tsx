@@ -4,7 +4,7 @@ import { useFundService } from '../../../../services/FundService';
 import useOpenModal from '../../../../hooks/useOpenModal';
 import ModalCreatePrevalidation from '../../../modals/ModalCreatePrevalidation';
 import { useFileService } from '../../../../services/FileService';
-import ProgressBar from './ProgressBar';
+import CSVProgressBar from '../../../elements/csv-progress-bar/CSVProgressBar';
 import RecordType from '../../../../props/models/RecordType';
 import Papa from 'papaparse';
 import { isEmpty } from 'lodash';
@@ -502,7 +502,7 @@ export default function CSVUpload({
                             {csvProgress === 3 && <div className="mdi mdi-check" />}
                         </div>
 
-                        <ProgressBar progressBar={csvProgressBar} status={progressStatus} />
+                        <CSVProgressBar progressBar={csvProgressBar} status={progressStatus} />
                     </div>
                 )}
 
