@@ -26,7 +26,7 @@ export default function FaqEditor({
 }: {
     organization: Organization;
     faq: Array<Faq & { uid: string }>;
-    setFaq: (faq: Array<Faq & { uid: string }>) => void;
+    setFaq: React.Dispatch<React.SetStateAction<Array<Faq & { uid: string }>>>;
     errors: ResponseErrorData;
     setErrors: (errors: ResponseErrorData) => void;
     createFaqRef: React.MutableRefObject<() => Promise<boolean>>;
@@ -101,8 +101,8 @@ export default function FaqEditor({
                         setErrors(errors);
 
                         const errorIndexes = Object.keys(errors)
-                            .map((error) => error.split('.')[1] || null)
-                            .filter((item) => item);
+                            .map((error) => parseInt(error.split('.')[1] || null))
+                            .filter((item) => Number.isInteger(item));
 
                         setUnCollapsedList((collapsedList) => uniq([...collapsedList, ...errorIndexes]));
                     }
@@ -133,8 +133,10 @@ export default function FaqEditor({
                                     });
                                 }}
                                 onChange={(value: Partial<Faq>) => {
-                                    Object.assign(faq[questionKey], value);
-                                    setFaq([...faq]);
+                                    setFaq((faq) => {
+                                        faq[questionKey] = { ...faq[questionKey], ...value };
+                                        return [...faq];
+                                    });
                                 }}
                                 errors={errors}
                                 index={questionKey}

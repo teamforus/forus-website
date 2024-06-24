@@ -235,10 +235,10 @@ export default function OrganizationsFundsShowImplementationsCard({
                                                                 'manage_implementation_cms',
                                                             ) && (
                                                                 <StateNavLink
-                                                                    name={'implementation-view'}
+                                                                    name={'implementations-view'}
                                                                     params={{
-                                                                        organizationId: fund.organization_id,
                                                                         id: implementation?.id,
+                                                                        organizationId: fund.organization_id,
                                                                     }}
                                                                     className="dropdown-item">
                                                                     <em className="mdi mdi-store-outline icon-start" />

@@ -24,24 +24,55 @@ export class ImplementationService<T = Implementation> {
     }
 
     /**
-     * Read implementation
+     * Store notification by id
      */
-    public read(organizationId: number, implementationId: number, data: object = {}): Promise<ApiResponseSingle<T>> {
-        return this.apiRequest.get(`${this.prefix}/${organizationId}/implementations/${implementationId}`, data);
+    public store(organizationId: number, data: object): Promise<ApiResponseSingle<T>> {
+        return this.apiRequest.post(`${this.prefix}/${organizationId}/implementations`, data);
     }
 
-    public updatePreCheckBanner(
-        organizationId: number,
-        implementationId: number,
-        data: object,
-    ): Promise<ApiResponse<T>> {
-        return this.apiRequest.patch(
-            `${this.prefix}/${organizationId}/implementations/${implementationId}/pre-check-banner`,
-            data,
-        );
+    /**
+     * Fetch by id
+     */
+    public read(organizationId: number, id: number): Promise<ApiResponseSingle<T>> {
+        return this.apiRequest.get(`${this.prefix}/${organizationId}/implementations/${id}`);
+    }
+
+    /**
+     * Update email branding
+     */
+    public updateEmailBranding(organizationId: number, id: number, data: object): Promise<ApiResponseSingle<T>> {
+        return this.apiRequest.patch(`${this.prefix}/${organizationId}/implementations/${id}/email-branding`, data);
+    }
+
+    /**
+     * Update cms by id
+     */
+    public updateCMS(organizationId: number, id: number, data: object): Promise<ApiResponseSingle<T>> {
+        return this.apiRequest.patch(`${this.prefix}/${organizationId}/implementations/${id}/cms`, data);
+    }
+
+    /**
+     * Update digid by id
+     */
+    public updateDigiD(organizationId: number, id: number, data: object): Promise<ApiResponseSingle<T>> {
+        return this.apiRequest.patch(`${this.prefix}/${organizationId}/implementations/${id}/digid`, data);
+    }
+
+    /**
+     * Update email by id
+     */
+    public updateEmail(organizationId: number, id: number, data: object): Promise<ApiResponseSingle<T>> {
+        return this.apiRequest.patch(`${this.prefix}/${organizationId}/implementations/${id}/email`, data);
+    }
+
+    /**
+     * Update pre-check banner by id
+     */
+    public updatePreCheckBanner(organizationId: number, id: number, data: object): Promise<ApiResponseSingle<T>> {
+        return this.apiRequest.patch(`${this.prefix}/${organizationId}/implementations/${id}/pre-check-banner`, data);
     }
 }
 
-export function useImplementationService(): ImplementationService {
+export default function useImplementationService(): ImplementationService {
     return useState(new ImplementationService())[0];
 }

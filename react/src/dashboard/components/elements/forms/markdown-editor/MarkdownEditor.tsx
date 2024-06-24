@@ -22,7 +22,7 @@ type SummernoteObject = {
 
 type Summernote = SummernoteConstructor & SummernoteObject;
 
-const $ = jQuery as JQueryStatic & { summernote: Summernote };
+const $ = typeof jQuery !== 'undefined' ? (jQuery as JQueryStatic & { summernote: Summernote }) : null;
 
 export default function MarkdownEditor({
     value = '',
@@ -37,13 +37,15 @@ export default function MarkdownEditor({
     extendedOptions = false,
     bindEditor = null,
     onChange = null,
+    onUpdatedRaw,
+    insertTextRef,
 }: {
     value: string;
     bindEditor?: CallableFunction;
     modal?: string;
     buttons?: Array<{ key: string; handler: CallableFunction; iconKey: string; icon: string }>;
     alignment?: string;
-    onUpdatedRaw?: string;
+    onUpdatedRaw?: (data: { data: { content?: string; content_html?: string } }) => void;
     disabled?: boolean;
     placeholder?: string;
     allowLists?: boolean;
@@ -52,6 +54,7 @@ export default function MarkdownEditor({
     extendedOptions?: boolean;
     onChange: (value: string) => void;
     onMediaUploaded?: (value: { media_uid: string }) => void;
+    insertTextRef?: React.MutableRefObject<(text: string) => void>;
 }) {
     const $element = useRef<HTMLDivElement>(null);
     const $theEditor = useRef<HTMLTextAreaElement>(null);
@@ -109,22 +112,29 @@ export default function MarkdownEditor({
             values: { text: string; url: string },
         ): Promise<object | null> => {
             return new Promise((resolve) => {
-                openModal((modal) => (
-                    <ModalMarkdownCustomLink
-                        modal={modal}
-                        type={type}
-                        values={values}
-                        success={(data) => {
-                            const { url, text, uid, alt } = data;
+                let response = null;
 
-                            if (uid && typeof mediaUploadedRef.current == 'function') {
-                                mediaUploadedRef.current({ media_uid: uid });
-                            }
+                openModal(
+                    (modal) => (
+                        <ModalMarkdownCustomLink
+                            modal={modal}
+                            type={type}
+                            values={values}
+                            success={(data) => {
+                                const { url, text, uid, alt } = data;
 
-                            resolve({ ...values, ...{ url, text, alt } });
-                        }}
-                    />
-                ));
+                                if (uid && typeof mediaUploadedRef.current == 'function') {
+                                    mediaUploadedRef.current({ media_uid: uid });
+                                }
+
+                                response = { ...values, ...{ url, text, alt } };
+                            }}
+                        />
+                    ),
+                    {
+                        onClosed: () => response && resolve(response),
+                    },
+                );
             });
         },
         [openModal],
@@ -206,7 +216,7 @@ export default function MarkdownEditor({
                         const _buttons = buttons || [];
 
                         context.invoke('editor.saveRange');
-                        _buttons.forEach((button) => (button.key == type ? button.handler($theEditor, button) : null));
+                        _buttons.forEach((button) => (button.key == type ? button.handler(getEditor(), button) : null));
 
                         if (type === 'customLink') {
                             const linkInfo = context.invoke('editor.getLinkInfo');
@@ -260,7 +270,7 @@ export default function MarkdownEditor({
                 return button.render(); // return button as jquery object
             };
         },
-        [buttons, getCustomLink],
+        [buttons, getCustomLink, getEditor],
     );
 
     const CmsCodeMarkdown = useCallback(() => {
@@ -400,6 +410,7 @@ export default function MarkdownEditor({
 
                     onChangeRef.current(value);
                     markdownValueRef.current = value;
+                    onUpdatedRaw && onUpdatedRaw({ data: { content: value, content_html } });
                 },
                 onPaste: (e: Event & { originalEvent: ClipboardEvent }) => {
                     e.preventDefault();
@@ -410,6 +421,7 @@ export default function MarkdownEditor({
 
         getEditor().summernote('removeModule', 'linkPopover');
         getEditor().summernote('removeModule', 'imagePopover');
+        getEditor().summernote('removeModule', 'autoLink');
         setInitialized(true);
     }, [
         AlignButton,
@@ -421,6 +433,7 @@ export default function MarkdownEditor({
         CmsCodeMarkdown,
         initialized,
         getEditor,
+        onUpdatedRaw,
     ]);
 
     useEffect(() => {
@@ -446,6 +459,12 @@ export default function MarkdownEditor({
     useEffect(() => {
         getEditor().summernote('code', value);
     }, [value, getEditor]);
+
+    useEffect(() => {
+        if (insertTextRef) {
+            insertTextRef.current = insertText;
+        }
+    }, [insertText, insertTextRef]);
 
     return (
         <div

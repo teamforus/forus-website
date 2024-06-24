@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { ApiResponseSingle } from '../props/ApiResponses';
 import ApiRequestService from './ApiRequestService';
+import { ApiResponseSingle } from '../props/ApiResponses';
 import Faq from '../props/models/Faq';
 
 export class FaqService<T = Faq> {
