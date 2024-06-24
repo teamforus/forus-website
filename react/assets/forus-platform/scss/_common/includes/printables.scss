@@ -1,13 +1,15 @@
 body {
     &.printable-only {
         @media screen {
-            &>printables-root {
+            &>printables-root,
+            &>#root>.printables-root {
                 display: none;
             }
         }
 
         @media print {
-            &>*:not(printables-root) {
+            &>#root>*:not(.printables-root),
+            &>*:not(printables-root, #root) {
                 display: none !important;
             }
         }

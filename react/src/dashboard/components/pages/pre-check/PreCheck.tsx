@@ -14,7 +14,7 @@ import EmptyCard from '../../elements/empty-card/EmptyCard';
 import { getStateRouteUrl, useNavigateState } from '../../../modules/state_router/Router';
 import useActiveOrganization from '../../../hooks/useActiveOrganization';
 import PhotoSelector from '../../elements/photo-selector/PhotoSelector';
-import { useImplementationService } from '../../../services/ImplementationService';
+import useImplementationService from '../../../services/ImplementationService';
 import { useFundService } from '../../../services/FundService';
 import usePreCheckService from '../../../services/PreCheckService';
 import { useMediaService } from '../../../services/MediaService';

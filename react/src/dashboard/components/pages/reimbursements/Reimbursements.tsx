@@ -20,7 +20,7 @@ import EmptyCard from '../../elements/empty-card/EmptyCard';
 import { getStateRouteUrl } from '../../../modules/state_router/Router';
 import ClickOutside from '../../elements/click-outside/ClickOutside';
 import useReimbursementExportService from '../../../services/exports/useReimbursementExportService';
-import { useImplementationService } from '../../../services/ImplementationService';
+import useImplementationService from '../../../services/ImplementationService';
 import DatePickerControl from '../../elements/forms/controls/DatePickerControl';
 import { dateFormat, dateParse } from '../../../helpers/dates';
 import Implementation from '../../../props/models/Implementation';
