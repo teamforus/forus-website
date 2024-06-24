@@ -55,6 +55,8 @@ export default function ModalVoucherDeactivation({
                     : descNotification
                 : descNoEmail;
 
+            const { close: closeModal } = modal;
+
             setHideModal(true);
 
             openModal((modal) => (
@@ -66,8 +68,8 @@ export default function ModalVoucherDeactivation({
                         text: 'Annuleren',
                         onClick: () => {
                             setHideModal(false);
-                            modal.close();
                             form.setIsLocked(false);
+                            modal.close();
                         },
                     }}
                     buttonSubmit={{
@@ -76,6 +78,7 @@ export default function ModalVoucherDeactivation({
                             onSubmit(values);
                             setHideModal(false);
                             modal.close();
+                            closeModal();
                         },
                     }}
                 />

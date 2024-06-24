@@ -47,6 +47,7 @@ export default function VouchersViewComponent() {
     const eventLogsBlock = useRef<() => void>();
     const transactionsBlock = useRef<() => void>();
     const reservationTransactionsBlock = useRef<() => void>();
+
     const [fund, setFund] = useState<Fund>(null);
     const [voucher, setVoucher] = useState<Voucher>(null);
 
@@ -124,15 +125,11 @@ export default function VouchersViewComponent() {
             <ModalVoucherTransaction
                 modal={modal}
                 voucher={voucher}
-                onCreated={() => {
-                    eventLogsBlock.current();
-                    transactionsBlock.current();
-                    reservationTransactionsBlock.current();
-                }}
+                onCreated={fetchVoucher}
                 organization={activeOrganization}
             />
         ));
-    }, [activeOrganization, openModal, voucher]);
+    }, [activeOrganization, fetchVoucher, openModal, voucher]);
 
     const onOpenAction = useCallback(() => {
         showQrCode(activeOrganization, voucher, fund, fetchVoucher);
@@ -279,6 +276,12 @@ export default function VouchersViewComponent() {
     useEffect(() => {
         voucher && fetchFund(voucher);
     }, [fetchFund, voucher]);
+
+    useEffect(() => {
+        eventLogsBlock.current?.();
+        transactionsBlock.current?.();
+        reservationTransactionsBlock.current?.();
+    }, [voucher]);
 
     if (!voucher || !fund) {
         return <LoadingCard />;

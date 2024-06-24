@@ -8,7 +8,6 @@ import { useFundService } from '../../../services/FundService';
 import Fund from '../../../props/models/Fund';
 import { useOrganizationService } from '../../../services/OrganizationService';
 import { useReimbursementsService } from '../../../services/ReimbursementService';
-import Transaction from '../../../props/models/Transaction';
 import useVoucherService from '../../../services/VoucherService';
 import usePushDanger from '../../../hooks/usePushDanger';
 import SelectControl from '../../elements/select-control/SelectControl';
@@ -50,7 +49,6 @@ export default function ModalVoucherTransaction({
     const [fund, setFund] = useState<Fund>(null);
     const [state, setState] = useState<'form' | 'finish' | 'preview'>('form');
     const [providers, setProviders] = useState<Array<Partial<Organization>>>([]);
-    const [transaction, setTransaction] = useState<Transaction>(null);
     const [reimbursements, setReimbursements] = useState<Array<ReimbursementLocale>>([]);
     const [reimbursement, setReimbursement] = useState<ReimbursementLocale>(null);
 
@@ -152,9 +150,8 @@ export default function ModalVoucherTransaction({
 
             voucherService
                 .makeSponsorTransaction(organization.id, data)
-                .then((res) => {
+                .then(() => {
                     setState('finish');
-                    setTransaction(res.data.data);
                     onCreated?.();
                 })
                 .catch((res) => {
@@ -209,11 +206,6 @@ export default function ModalVoucherTransaction({
                 updateForm({ organization_id: list[0]?.id });
             });
     }, [organization.id, organizationService, voucher.fund_id, updateForm]);
-
-    const closeModal = useCallback(() => {
-        transaction && onCreated?.();
-        modal.close();
-    }, [modal, onCreated, transaction]);
 
     const fetchReimbursements = useCallback(() => {
         reimbursementService
@@ -492,7 +484,7 @@ export default function ModalVoucherTransaction({
 
             {state == 'preview' && (
                 <div className="modal-window">
-                    <div className="modal-close mdi mdi-close" onClick={closeModal} role="button" />
+                    <div className="modal-close mdi mdi-close" onClick={modal.close} role="button" />
                     <div className="modal-icon modal-icon-primary">
                         <div className="mdi mdi-alert-outline" />
                     </div>
@@ -532,7 +524,7 @@ export default function ModalVoucherTransaction({
 
             {state == 'finish' && (
                 <div className="modal-window">
-                    <div className="modal-close mdi mdi-close" onClick={closeModal} role="button" />
+                    <div className="modal-close mdi mdi-close" onClick={modal.close} role="button" />
                     <div className="modal-icon modal-icon-primary">
                         <div className="mdi mdi-check-circle-outline" />
                     </div>
@@ -567,7 +559,7 @@ export default function ModalVoucherTransaction({
                     </div>
 
                     <div className="modal-footer modal-footer-light text-centers">
-                        <button type="button" className="button button-primary" onClick={closeModal}>
+                        <button type="button" className="button button-primary" onClick={modal.close}>
                             {translate('modals.modal_voucher_transaction.buttons.close')}
                         </button>
                     </div>
