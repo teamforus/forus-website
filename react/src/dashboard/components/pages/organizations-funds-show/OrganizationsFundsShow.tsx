@@ -19,6 +19,9 @@ import OrganizationsFundsShowTopUpsCard from './elements/OrganizationsFundsShowT
 import OrganizationsFundsShowImplementationsCard from './elements/OrganizationsFundsShowImplementationsCard';
 import OrganizationsFundsShowIdentitiesCard from './elements/OrganizationsFundsShowIdentitiesCard';
 import { createEnumParam, useQueryParam, withDefault } from 'use-query-params';
+import { filter } from 'lodash';
+
+type TabType = 'top_ups' | 'identities' | 'implementations';
 
 export default function OrganizationsFundsShow() {
     const fundId = useParams().fundId;
@@ -39,25 +42,55 @@ export default function OrganizationsFundsShow() {
         { removeDefaultsFromUrl: true },
     );
 
+    const canManageFunds = useMemo(() => {
+        return hasPermission(activeOrganization, 'manage_funds');
+    }, [activeOrganization]);
+
+    const canViewFinances = useMemo(() => {
+        return hasPermission(activeOrganization, 'view_finances');
+    }, [activeOrganization]);
+
+    const canViewIdentities = useMemo(() => {
+        return hasPermission(activeOrganization, ['manage_implementation_notifications', 'manage_vouchers']);
+    }, [activeOrganization]);
+
+    const canViewImplementation = useMemo(() => {
+        return hasPermission(activeOrganization, 'manage_implementation');
+    }, [activeOrganization]);
+
+    const availableViewTables = useMemo(() => {
+        return filter<TabType>([
+            canViewFinances ? 'top_ups' : null,
+            canViewIdentities ? 'identities' : null,
+            canViewImplementation ? 'implementations' : null,
+        ]);
+    }, [canViewImplementation, canViewFinances, canViewIdentities]);
+
+    const defaultViewTable = useMemo<TabType>(() => {
+        if (fund?.is_configured && availableViewTables.includes('top_ups')) {
+            return 'top_ups';
+        }
+
+        if (availableViewTables.includes('implementations')) {
+            return 'implementations';
+        }
+
+        return availableViewTables.includes('identities') ? 'identities' : null;
+    }, [availableViewTables, fund?.is_configured]);
+
     const [viewTable, setViewTable] = useQueryParam(
         'table_view',
-        withDefault(
-            createEnumParam(['top_ups', 'identities', 'implementations']),
-            fund?.is_configured ? 'top_ups' : 'implementations',
-        ),
+        withDefault(createEnumParam(availableViewTables), defaultViewTable),
         { removeDefaultsFromUrl: true },
     );
 
-    const viewTypes = useMemo<Array<{ key: 'top_ups' | 'identities' | 'implementations'; name: string }>>(
-        () => [
-            ...(fund?.is_configured
-                ? [{ key: 'top_ups' as 'top_ups' | 'identities' | 'implementations', name: 'Bekijk aanvullingen' }]
-                : []),
-            { key: 'implementations', name: 'Webshop' },
-            { key: 'identities', name: 'Aanvragers' },
-        ],
-        [fund?.is_configured],
-    );
+    const viewTypes = useMemo(() => {
+        return filter<{ key: TabType; name: string }>([
+            fund?.is_configured && canViewFinances ? { key: 'top_ups', name: 'Bekijk aanvullingen' } : null,
+            canViewImplementation ? { key: 'implementations', name: 'Webshop' } : null,
+            canViewIdentities ? { key: 'identities', name: 'Aanvragers' } : null,
+        ]);
+    }, [canViewImplementation, canViewFinances, canViewIdentities, fund?.is_configured]);
 
     const fetchFund = useCallback(() => {
         setProgress(0);
@@ -153,18 +186,17 @@ export default function OrganizationsFundsShow() {
 
                         <div className="fund-actions">
                             <div className="button-group flex-end">
-                                {hasPermission(activeOrganization, 'manage_funds') &&
-                                    activeOrganization.allow_2fa_restrictions && (
-                                        <StateNavLink
-                                            className="button button-default"
-                                            name="funds-security"
-                                            params={{ organizationId: activeOrganization.id, fundId: fund.id }}>
-                                            <em className="mdi mdi-security icon-start" />
-                                            {translate('fund_card_sponsor.buttons.security')}
-                                        </StateNavLink>
-                                    )}
+                                {canManageFunds && activeOrganization.allow_2fa_restrictions && (
+                                    <StateNavLink
+                                        className="button button-default"
+                                        name="funds-security"
+                                        params={{ organizationId: activeOrganization.id, fundId: fund.id }}>
+                                        <em className="mdi mdi-security icon-start" />
+                                        {translate('fund_card_sponsor.buttons.security')}
+                                    </StateNavLink>
+                                )}
 
-                                {hasPermission(fund.organization, 'manage_funds') && fund.state == 'waiting' && (
+                                {canManageFunds && fund.state == 'waiting' && (
                                     <button className="button button-default" onClick={() => deleteFund(fund)}>
                                         <em className="mdi mdi-trash-can-outline icon-start" />
                                         Verwijderen
@@ -209,29 +241,35 @@ export default function OrganizationsFundsShow() {
                                                     Beschrijving
                                                 </div>
 
-                                                <div
-                                                    className={`label-tab label-tab-sm ${
-                                                        viewType == 'formulas' ? 'active' : ''
-                                                    }`}
-                                                    onClick={() => setViewType('formulas')}>
-                                                    Rekenregels
-                                                </div>
+                                                {canManageFunds && (
+                                                    <div
+                                                        className={`label-tab label-tab-sm ${
+                                                            viewType == 'formulas' ? 'active' : ''
+                                                        }`}
+                                                        onClick={() => setViewType('formulas')}>
+                                                        Rekenregels
+                                                    </div>
+                                                )}
 
-                                                <div
-                                                    className={`label-tab label-tab-sm ${
-                                                        viewType == 'statistics' ? 'active' : ''
-                                                    }`}
-                                                    onClick={() => setViewType('statistics')}>
-                                                    Statistieken
-                                                </div>
+                                                {canViewFinances && (
+                                                    <div
+                                                        className={`label-tab label-tab-sm ${
+                                                            viewType == 'statistics' ? 'active' : ''
+                                                        }`}
+                                                        onClick={() => setViewType('statistics')}>
+                                                        Statistieken
+                                                    </div>
+                                                )}
 
-                                                <div
-                                                    className={`label-tab label-tab-sm ${
-                                                        viewType == 'criteria' ? 'active' : ''
-                                                    }`}
-                                                    onClick={() => setViewType('criteria')}>
-                                                    Voorwaarden
-                                                </div>
+                                                {canManageFunds && (
+                                                    <div
+                                                        className={`label-tab label-tab-sm ${
+                                                            viewType == 'criteria' ? 'active' : ''
+                                                        }`}
+                                                        onClick={() => setViewType('criteria')}>
+                                                        Voorwaarden
+                                                    </div>
+                                                )}
                                             </div>
                                         </div>
                                     </div>
@@ -244,7 +282,6 @@ export default function OrganizationsFundsShow() {
                 {viewType == 'description' && <OrganizationsFundsShowDescriptionCard fund={fund} />}
                 {viewType == 'formulas' && <OrganizationsFundsShowFormulasCard fund={fund} />}
                 {viewType == 'criteria' && <OrganizationsFundsShowCriteriaCard fund={fund} setFund={setFund} />}
-
                 {viewType == 'statistics' && (
                     <OrganizationsFundsShowStatisticsCard fund={fund} organization={activeOrganization} />
                 )}

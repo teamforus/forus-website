@@ -316,7 +316,7 @@ export default function SystemNotificationTemplateEditor({
     );
 
     const updateTemplatePreview = useCallback(
-        (template) => {
+        (template: NotificationTemplate) => {
             setTitlePreview(implementationNotificationsService.contentToPreview(template?.title || '', variableValues));
 
             if (template.type === 'mail') {

@@ -202,8 +202,7 @@ export default function OrganizationFunds() {
                 <div className="flex-row">
                     <div className="flex-col flex-grow">
                         <div className="card-title" data-dusk="fundsTitle">
-                            <span>{translate('components.organization_funds.title')}</span>
-                            <span className="span-count">{funds.meta.total}</span>
+                            {translate('components.organization_funds.title')} ({funds.meta.total})
                         </div>
                     </div>
 
@@ -362,7 +361,11 @@ export default function OrganizationFunds() {
                                         <th>{translate('components.organization_funds.labels.implementation')}</th>
                                         {funds_type == 'active' && (
                                             <Fragment>
-                                                <th>{translate('components.organization_funds.labels.remaining')}</th>
+                                                {hasPermission(activeOrganization, 'view_finances') && (
+                                                    <th>
+                                                        {translate('components.organization_funds.labels.remaining')}
+                                                    </th>
+                                                )}
                                                 <th>
                                                     {translate('components.organization_funds.labels.requester_count')}
                                                 </th>
@@ -415,12 +418,14 @@ export default function OrganizationFunds() {
 
                                             {funds_type == 'active' && (
                                                 <Fragment>
-                                                    <td>
-                                                        {currencyFormat(
-                                                            (parseFloat(fund.budget?.total) || 0) -
-                                                                (parseFloat(fund.budget?.used) || 0),
-                                                        )}
-                                                    </td>
+                                                    {hasPermission(activeOrganization, 'view_finances') && (
+                                                        <td>
+                                                            {currencyFormat(
+                                                                (parseFloat(fund.budget?.total) || 0) -
+                                                                    (parseFloat(fund.budget?.used) || 0),
+                                                            )}
+                                                        </td>
+                                                    )}
 
                                                     <td className="text-strong text-muted-dark">
                                                         {fund.requester_count}
@@ -479,23 +484,21 @@ export default function OrganizationFunds() {
                                                             )}
 
                                                             {activeOrganization.allow_2fa_restrictions &&
-                                                                hasPermission(
-                                                                    activeOrganization,
-                                                                    'manage_organization',
-                                                                ) && (
+                                                                hasPermission(activeOrganization, 'manage_funds') && (
                                                                     <StateNavLink
                                                                         className="dropdown-item"
                                                                         name={'funds-security'}
                                                                         params={{
-                                                                            organizationId: activeOrganization.id,
                                                                             fundId: fund.id,
+                                                                            organizationId: activeOrganization.id,
                                                                         }}>
                                                                         <em className="mdi mdi-security icon-start" />
                                                                         Beveiliging
                                                                     </StateNavLink>
                                                                 )}
 
-                                                            {fund.balance_provider == 'top_ups' &&
+                                                            {hasPermission(activeOrganization, 'view_finances') &&
+                                                                fund.balance_provider == 'top_ups' &&
                                                                 fund.key &&
                                                                 fund.state != 'closed' && (
                                                                     <a
@@ -513,19 +516,21 @@ export default function OrganizationFunds() {
                                                                     </a>
                                                                 )}
 
-                                                            <a
-                                                                className={`dropdown-item ${
-                                                                    fund.key && fund.state != 'closed' ? 'disabled' : ''
-                                                                }`}
-                                                                onClick={() => {
-                                                                    archiveFund(fund);
-                                                                    setShownFundMenuId(null);
-                                                                }}>
-                                                                <em className="mdi mdi-download-box-outline icon-start" />
-                                                                {translate(
-                                                                    'components.organization_funds.buttons.archive',
-                                                                )}
-                                                            </a>
+                                                            {hasPermission(activeOrganization, 'manage_funds') && (
+                                                                <a
+                                                                    className={`dropdown-item ${
+                                                                        fund.state != 'closed' ? 'disabled' : ''
+                                                                    }`}
+                                                                    onClick={() => {
+                                                                        archiveFund(fund);
+                                                                        setShownFundMenuId(null);
+                                                                    }}>
+                                                                    <em className="mdi mdi-download-box-outline icon-start" />
+                                                                    {translate(
+                                                                        'components.organization_funds.buttons.archive',
+                                                                    )}
+                                                                </a>
+                                                            )}
                                                         </div>
                                                     </TableRowActions>
                                                 ) : (

@@ -1,7 +1,7 @@
 import ApiResponse, { ApiResponseSingle, ResponseSimple } from '../props/ApiResponses';
 import { useState } from 'react';
 import ApiRequestService from './ApiRequestService';
-import Organization, { SponsorProviderOrganization } from '../props/models/Organization';
+import Organization, { OrganizationValidator, SponsorProviderOrganization } from '../props/models/Organization';
 import { hasPermission } from '../helpers/utils';
 import ExternalFund from '../props/models/ExternalFund';
 import Product from '../props/models/Product';
@@ -112,22 +112,23 @@ export class OrganizationService<T = Organization> {
         });
     }
 
-    public readListValidators(id: number, data: object = {}): Promise<ApiResponse<T>> {
+    public readListValidators(id: number, data: object = {}): Promise<ApiResponse<OrganizationValidator>> {
         return this.apiRequest.get(`${this.prefix}/${id}/validators`, data);
     }
 
-    public addExternalValidator(id: number, validator_organization_id: number, data = {}) {
+    public addExternalValidator(
+        id: number,
+        validator_organization_id: number,
+        data = {},
+    ): Promise<ApiResponseSingle<OrganizationValidator>> {
         return this.apiRequest.post(`${this.prefix}/${id}/validators`, {
             ...data,
             organization_id: validator_organization_id,
         });
     }
 
-    public removeExternalValidator(id: number, validator_organization_id: number, data = {}) {
-        return this.apiRequest.delete(`${this.prefix}/${id}/validators`, {
-            ...data,
-            organization_id: validator_organization_id,
-        });
+    public removeExternalValidator(id: number, validator_organization_id: number): Promise<void> {
+        return this.apiRequest.delete(`${this.prefix}/${id}/validators/${validator_organization_id}`);
     }
 
     public listProviders(id: number, data = {}): Promise<ApiResponse<FundProvider>> {
@@ -219,7 +220,7 @@ export class OrganizationService<T = Organization> {
         return {
             sponsor: [
                 { permissions: ['manage_funds', 'view_finances', 'view_funds'], name: 'organization-funds' },
-                { permissions: ['manage_vouchers'], name: 'vouchers' },
+                { permissions: ['manage_vouchers', 'view_vouchers'], name: 'vouchers' },
                 { permissions: ['view_finances'], name: 'transactions' },
                 { permissions: ['validate_records'], name: 'csv-validation' },
             ],

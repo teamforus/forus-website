@@ -22,7 +22,7 @@ type SummernoteObject = {
 
 type Summernote = SummernoteConstructor & SummernoteObject;
 
-const $ = jQuery as JQueryStatic & { summernote: Summernote };
+const $ = typeof jQuery !== 'undefined' ? (jQuery as JQueryStatic & { summernote: Summernote }) : null;
 
 export default function MarkdownEditor({
     value = '',

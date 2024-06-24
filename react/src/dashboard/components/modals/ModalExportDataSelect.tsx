@@ -11,6 +11,7 @@ export type ExportFieldProp = {
     icon: string;
     selected?: boolean;
     label: string;
+    is_record_field?: boolean;
 };
 
 export type ExportSectionProp = {
@@ -22,6 +23,7 @@ export type ExportSectionProp = {
     fieldsPerRow?: number;
     collapsable?: boolean;
     selectAll?: boolean;
+    collapsed?: boolean;
 };
 
 type ExportSectionPropLocal = ExportSectionProp & {
