@@ -3,6 +3,7 @@ import { useState } from 'react';
 import ApiRequestService from './ApiRequestService';
 import Fund from '../props/models/Fund';
 import Product from '../props/models/Product';
+import FundProvider from '../props/models/FundProvider';
 import { ExportFieldProp } from '../components/modals/ModalExportDataSelect';
 import FundTopUpTransaction from '../props/models/FundTopUpTransaction';
 import Identity from '../props/models/Sponsor/Identity';
@@ -170,6 +171,22 @@ export class FundService<T = Fund> {
         );
     }
 
+    public readPublic(fund_id: number, data: object = {}): Promise<ApiResponseSingle<T>> {
+        return this.apiRequest.get(`/platform/funds/${fund_id}`, data);
+    }
+
+    public listProviderProducts(
+        organization_id: number,
+        fund_id: number,
+        provider_id: number,
+        query: object = {},
+    ): Promise<ApiResponse<Product>> {
+        return this.apiRequest.get(
+            `${this.prefix}/${organization_id}/funds/${fund_id}/providers/${provider_id}/products`,
+            query,
+        );
+    }
+
     public getProviderProduct(
         organization_id: number,
         fund_id: number,
@@ -181,6 +198,23 @@ export class FundService<T = Fund> {
             `${this.prefix}/${organization_id}/funds/${fund_id}/providers/${provider_id}/products/${product_id}`,
             query,
         );
+    }
+
+    public readProvider(
+        organization_id: number,
+        fund_id: number,
+        id: number,
+    ): Promise<ApiResponseSingle<FundProvider>> {
+        return this.apiRequest.get(`${this.prefix}/${organization_id}/funds/${fund_id}/providers/${id}`);
+    }
+
+    public updateProvider(
+        organization_id: number,
+        fund_id: number,
+        id: number,
+        query: object = {},
+    ): Promise<ApiResponseSingle<FundProvider>> {
+        return this.apiRequest.patch(`${this.prefix}/${organization_id}/funds/${fund_id}/providers/${id}`, query);
     }
 
     public sampleCSV(fund: Fund): string {

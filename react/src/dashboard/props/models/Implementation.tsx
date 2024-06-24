@@ -5,6 +5,7 @@ import ImplementationPage from './ImplementationPage';
 export default interface Implementation {
     id: number;
     name: string;
+    key?: string;
     logo?: string;
     url_webshop?: string;
     has_provider_terms_page: boolean;

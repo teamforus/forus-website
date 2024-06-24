@@ -54,5 +54,6 @@ export default interface Transaction {
     branch_number?: number;
     branch_name?: string;
     branch_id?: string;
+    target_locale?: string;
     non_cancelable_at_locale?: string;
 }

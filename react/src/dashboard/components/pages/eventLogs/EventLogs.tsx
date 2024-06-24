@@ -1,6 +1,6 @@
 import React from 'react';
 import useActiveOrganization from '../../../hooks/useActiveOrganization';
-import EventLogsTable from './elements/EventLogsTable';
+import EventLogsTable from '../../elements/tables/EventLogsTable';
 
 export default function EventLogs() {
     const activeOrganization = useActiveOrganization();
