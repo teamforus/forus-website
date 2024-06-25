@@ -4,7 +4,6 @@ import { PaginationData } from '../../../props/ApiResponses';
 import Voucher from '../../../props/models/Voucher';
 import useActiveOrganization from '../../../hooks/useActiveOrganization';
 import Paginator from '../../../modules/paginator/components/Paginator';
-import useFilter from '../../../hooks/useFilter';
 import usePaginatorService from '../../../modules/paginator/services/usePaginatorService';
 import EmptyCard from '../../elements/empty-card/EmptyCard';
 import useVoucherService from '../../../services/VoucherService';
@@ -18,6 +17,8 @@ import VouchersTableRowActions from './elements/VouchersTableRowActions';
 import VouchersTableRow from './elements/VouchersTableRow';
 import { keyBy } from 'lodash';
 import useConfigurableTable from './hooks/useConfigurableTable';
+import useFilterNext from '../../../modules/filter_next/useFilterNext';
+import { BooleanParam, createEnumParam, NumberParam, StringParam } from 'use-query-params';
 
 export default function Vouchers() {
     const activeOrganization = useActiveOrganization();
@@ -35,7 +36,7 @@ export default function Vouchers() {
 
     const { funds } = useVoucherTableOptions(activeOrganization);
 
-    const filter = useFilter<VouchersTableFiltersProps>(
+    const [filterValues, filterValuesActive, filterUpdate, filter] = useFilterNext<VouchersTableFiltersProps>(
         {
             q: '',
             granted: null,
@@ -57,28 +58,56 @@ export default function Vouchers() {
             implementation_id: null,
             sort_by: 'created_at',
             sort_order: 'desc',
+            page: 1,
             per_page: paginatorService.getPerPage(paginatorKey, 10),
         },
-        [
-            'q',
-            'amount_min',
-            'amount_max',
-            'amount_available_min',
-            'amount_available_max',
-            'count_per_identity_min',
-            'count_per_identity_max',
-        ],
+        {
+            queryParams: {
+                q: StringParam,
+                granted: BooleanParam,
+                amount_min: NumberParam,
+                amount_max: NumberParam,
+                amount_available_min: NumberParam,
+                amount_available_max: NumberParam,
+                date_type: createEnumParam(['created_at', 'used_at']),
+                from: StringParam,
+                to: StringParam,
+                state: createEnumParam(['pending', 'active', 'deactivated', 'expired']),
+                in_use: BooleanParam,
+                has_payouts: BooleanParam,
+                count_per_identity_min: NumberParam,
+                count_per_identity_max: NumberParam,
+                type: StringParam,
+                source: createEnumParam(['all', 'user', 'employee']),
+                fund_id: NumberParam,
+                implementation_id: NumberParam,
+                sort_by: StringParam,
+                sort_order: StringParam,
+                per_page: NumberParam,
+                page: NumberParam,
+            },
+            queryParamsRemoveDefault: true,
+            throttledValues: [
+                'q',
+                'amount_min',
+                'amount_max',
+                'amount_available_min',
+                'amount_available_max',
+                'count_per_identity_min',
+                'count_per_identity_max',
+            ],
+        },
     );
 
     const columns = useMemo(() => {
         return voucherService.getColumns().filter((column) => {
             return (
-                !filter.activeValues.fund_id ||
+                !filterValuesActive.fund_id ||
                 !column.resourceType ||
-                keyBy(funds, 'id')?.[filter?.activeValues?.fund_id]?.type == column.resourceType
+                keyBy(funds, 'id')?.[filterValuesActive?.fund_id]?.type == column.resourceType
             );
         });
-    }, [filter.activeValues.fund_id, funds, voucherService]);
+    }, [filterValuesActive?.fund_id, funds, voucherService]);
 
     const {
         columnKeys,
@@ -94,12 +123,15 @@ export default function Vouchers() {
         setProgress(0);
         setLoading(true);
 
-        const values = filter.activeValues;
+        const values = filterValuesActive;
 
         voucherService
             .index(activeOrganization.id, {
                 ...values,
                 date_type: null,
+                in_use: values.in_use == null ? null : values.in_use ? 1 : 0,
+                granted: values.granted == null ? null : values.granted ? 1 : 0,
+                has_payouts: values.has_payouts == null ? null : values.has_payouts ? 1 : 0,
                 from: values.date_type === 'created_at' ? values.from : null,
                 to: values.date_type === 'created_at' ? values.to : null,
                 in_use_from: values.date_type === 'used_at' ? values.from : null,
@@ -110,7 +142,7 @@ export default function Vouchers() {
                 setProgress(100);
                 setLoading(false);
             });
-    }, [activeOrganization.id, filter.activeValues, setProgress, voucherService]);
+    }, [activeOrganization.id, filterValuesActive, setProgress, voucherService]);
 
     useEffect(() => {
         fetchVouchers();
@@ -225,8 +257,8 @@ export default function Vouchers() {
                 <div className="card-section">
                     <Paginator
                         meta={vouchers.meta}
-                        filters={filter.values}
-                        updateFilters={filter.update}
+                        filters={filterValues}
+                        updateFilters={filterUpdate}
                         perPageKey={paginatorKey}
                     />
                 </div>
