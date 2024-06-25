@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { ModalState } from '../../modules/modals/context/ModalContext';
-import { classList } from '../../helpers/utils';
 import FundProvider from '../../props/models/FundProvider';
 import Organization from '../../props/models/Organization';
 import Product from '../../props/models/Product';
@@ -13,6 +12,7 @@ import { currencyFormat, strLimit } from '../../helpers/string';
 import StateNavLink from '../../modules/state_router/StateNavLink';
 import usePaginatorService from '../../modules/paginator/services/usePaginatorService';
 import useTranslate from '../../hooks/useTranslate';
+import classNames from 'classnames';
 
 type LocalProduct = Product & {
     allowed: boolean;
@@ -82,13 +82,13 @@ export default function ModalFundOffers({
 
     return (
         <div
-            className={classList([
+            className={classNames(
                 'modal',
                 'modal-animated',
                 'modal-fund-offers',
-                modal.loading ? 'modal-loading' : null,
+                modal.loading && 'modal-loading',
                 className,
-            ])}>
+            )}>
             <div className="modal-backdrop" onClick={modal.close} />
             <div className="modal-window">
                 <a className="mdi mdi-close modal-close" onClick={modal.close} role="button" />

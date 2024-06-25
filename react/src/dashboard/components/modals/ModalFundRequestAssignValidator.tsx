@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { ModalState } from '../../modules/modals/context/ModalContext';
-import { classList } from '../../helpers/utils';
 import useFormBuilder from '../../hooks/useFormBuilder';
 import FormError from '../elements/forms/errors/FormError';
 import { ResponseError } from '../../props/ApiResponses';
@@ -13,6 +12,7 @@ import SelectControlOptions from '../elements/select-control/templates/SelectCon
 import Employee from '../../props/models/Employee';
 import { strLimit } from '../../helpers/string';
 import useTranslate from '../../hooks/useTranslate';
+import classNames from 'classnames';
 
 export default function ModalFundRequestAssignValidator({
     modal,
@@ -56,14 +56,7 @@ export default function ModalFundRequestAssignValidator({
     });
 
     return (
-        <div
-            className={classList([
-                'modal',
-                'modal-md',
-                'modal-animated',
-                modal.loading ? 'modal-loading' : null,
-                className,
-            ])}>
+        <div className={classNames('modal', 'modal-md', 'modal-animated', modal.loading && 'modal-loading', className)}>
             <div className="modal-backdrop" onClick={modal.close} />
 
             <form className="modal-window form" onSubmit={form.submit}>

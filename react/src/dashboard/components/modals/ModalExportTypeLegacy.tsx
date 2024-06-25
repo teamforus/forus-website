@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { ModalState } from '../../modules/modals/context/ModalContext';
-import { classList } from '../../helpers/utils';
 import { ModalButton } from './elements/ModalButton';
 import useTranslate from '../../hooks/useTranslate';
+import classNames from 'classnames';
 
 export default function ModalExportTypeLegacy({
     modal,
@@ -21,14 +21,14 @@ export default function ModalExportTypeLegacy({
 
     return (
         <div
-            className={classList([
+            className={classNames(
                 'modal',
                 'modal-md',
                 'modal-animated',
                 'modal-voucher-export-type',
                 'modal-voucher-export-narrow',
-                modal.loading ? 'modal-loading' : null,
-            ])}>
+                modal.loading && 'modal-loading',
+            )}>
             <div className="modal-backdrop" onClick={modal.close} />
             <div className="modal-window form">
                 <div className="modal-close mdi mdi-close" onClick={modal.close} />

@@ -1,6 +1,5 @@
 import React from 'react';
 import { ModalState } from '../../modules/modals/context/ModalContext';
-import { classList } from '../../helpers/utils';
 import useFormBuilder from '../../hooks/useFormBuilder';
 import FormError from '../elements/forms/errors/FormError';
 import PincodeControl from '../elements/forms/controls/PincodeControl';
@@ -10,6 +9,7 @@ import useOpenModal from '../../hooks/useOpenModal';
 import useAssetUrl from '../../hooks/useAssetUrl';
 import { ResponseError } from '../../props/ApiResponses';
 import useTranslate from '../../hooks/useTranslate';
+import classNames from 'classnames';
 
 export default function ModalAuthPincode({ modal }: { modal: ModalState }) {
     const assetUrl = useAssetUrl();
@@ -51,7 +51,7 @@ export default function ModalAuthPincode({ modal }: { modal: ModalState }) {
 
     return (
         <div
-            className={classList(['modal', 'modal-pin-code', 'modal-animated', modal.loading ? 'modal-loading' : null])}
+            className={classNames('modal', 'modal-pin-code', 'modal-animated', modal.loading && 'modal-loading')}
             aria-describedby="pinCodeDialogSubtitle"
             aria-labelledby="pinCodeDialogTitle"
             role="dialog">

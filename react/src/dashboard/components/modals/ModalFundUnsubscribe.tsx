@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { ModalState } from '../../modules/modals/context/ModalContext';
-import { classList } from '../../helpers/utils';
 import FundProvider from '../../props/models/FundProvider';
 import Organization from '../../props/models/Organization';
 import { ResponseError } from '../../props/ApiResponses';
@@ -15,6 +14,7 @@ import useSetProgress from '../../hooks/useSetProgress';
 import { addDays } from 'date-fns';
 import { clickOnKeyEnter } from '../../helpers/wcag';
 import useTranslate from '../../hooks/useTranslate';
+import classNames from 'classnames';
 
 export default function ModalFundUnsubscribe({
     modal,
@@ -66,13 +66,13 @@ export default function ModalFundUnsubscribe({
 
     return (
         <div
-            className={classList([
+            className={classNames(
                 'modal',
                 'modal-animated',
                 'modal-fund-unsubscribe',
-                modal.loading ? 'modal-loading' : null,
+                modal.loading && 'modal-loading',
                 className,
-            ])}>
+            )}>
             <div className="modal-backdrop" onClick={modal.close} />
             <form className="modal-window form" onSubmit={form.submit}>
                 <div

@@ -1,12 +1,12 @@
 import React, { ChangeEvent, useCallback, useRef, useState } from 'react';
 import { ModalState } from '../../modules/modals/context/ModalContext';
-import { classList } from '../../helpers/utils';
 import useFormBuilder from '../../hooks/useFormBuilder';
 import { useMediaService } from '../../services/MediaService';
 import { ResponseError } from '../../props/ApiResponses';
 import FormError from '../elements/forms/errors/FormError';
 import useSetProgress from '../../hooks/useSetProgress';
 import useTranslate from '../../hooks/useTranslate';
+import classNames from 'classnames';
 
 export default function ModalMarkdownCustomLink({
     type,
@@ -77,7 +77,7 @@ export default function ModalMarkdownCustomLink({
     );
 
     return (
-        <div className={classList(['modal', 'modal-animated', modal.loading ? 'modal-loading' : null, className])}>
+        <div className={classNames('modal', 'modal-animated', modal.loading && 'modal-loading', className)}>
             <div className="modal-backdrop" onClick={modal.close} />
 
             <form className="modal-window form" onSubmit={form.submit}>

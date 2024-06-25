@@ -1,8 +1,8 @@
 import React from 'react';
 import { ModalState } from '../../modules/modals/context/ModalContext';
-import { classList } from '../../helpers/utils';
 import useEnvData from '../../hooks/useEnvData';
 import useTranslate from '../../hooks/useTranslate';
+import classNames from 'classnames';
 
 export default function ModalFeatureContact({ modal }: { modal: ModalState }) {
     const envData = useEnvData();
@@ -11,13 +11,13 @@ export default function ModalFeatureContact({ modal }: { modal: ModalState }) {
 
     return (
         <div
-            className={classList([
+            className={classNames(
                 'modal',
                 'modal-md',
                 'modal-animated',
                 'modal-feature-contact',
-                modal.loading ? 'modal-loading' : null,
-            ])}>
+                modal.loading && 'modal-loading',
+            )}>
             <div className="modal-backdrop" onClick={modal.close} />
 
             <div className="modal-window form">

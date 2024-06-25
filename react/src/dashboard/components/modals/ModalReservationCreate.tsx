@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { ModalState } from '../../modules/modals/context/ModalContext';
-import { classList } from '../../helpers/utils';
 import Organization from '../../props/models/Organization';
 import Reservation from '../../props/models/Reservation';
 import Product from '../../props/models/Product';
@@ -12,6 +11,7 @@ import SelectControl from '../elements/select-control/SelectControl';
 import SelectControlOptions from '../elements/select-control/templates/SelectControlOptions';
 import FormGroupInfo from '../elements/forms/elements/FormGroupInfo';
 import useTranslate from '../../hooks/useTranslate';
+import classNames from 'classnames';
 
 export default function ModalReservationCreate({
     modal,
@@ -122,13 +122,13 @@ export default function ModalReservationCreate({
 
     return (
         <div
-            className={classList([
+            className={classNames(
                 'modal',
                 'modal-animated',
                 'modal-reservation-create',
-                modal.loading ? 'modal-loading' : null,
+                modal.loading && 'modal-loading',
                 className,
-            ])}>
+            )}>
             <div className="modal-backdrop" onClick={modal.close} />
             {step === 'voucher' && (
                 <form className="modal-window form" onSubmit={formVouchers.submit}>
