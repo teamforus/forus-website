@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
 
-export default function LoadingCard({ type = 'card' }: { type?: 'card' | 'section-card' }) {
+export default function LoadingCard({ type = 'card' }: { type?: 'card' | 'card-section' }) {
     return React.createElement(
         type == 'card' ? 'div' : Fragment,
         type == 'card' ? { className: 'card' } : {},

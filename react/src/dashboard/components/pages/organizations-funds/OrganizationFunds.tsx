@@ -555,7 +555,7 @@ export default function OrganizationFunds() {
 
             {!loading && funds.meta.total == 0 && <EmptyCard type={'card-section'} title={'Geen fondsen gevonden'} />}
 
-            {loading && <LoadingCard type={'section-card'} />}
+            {loading && <LoadingCard type={'card-section'} />}
 
             {!loading && funds.meta.total > 0 && (
                 <div className="card-section">

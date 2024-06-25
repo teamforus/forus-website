@@ -247,7 +247,7 @@ export default function Vouchers() {
                 </div>
             )}
 
-            {loading && <LoadingCard type={'section-card'} />}
+            {loading && <LoadingCard type={'card-section'} />}
 
             {!loading && vouchers.meta.total == 0 && (
                 <EmptyCard title={'Geen vouchers gevonden'} type={'card-section'} />

@@ -23,8 +23,9 @@ import useOpenModal from '../../../hooks/useOpenModal';
 import useActiveOrganization from '../../../hooks/useActiveOrganization';
 import useEnvData from '../../../hooks/useEnvData';
 import usePaginatorService from '../../../modules/paginator/services/usePaginatorService';
-import EmptyCard from '../../elements/empty-card/EmptyCard';
 import useTranslate from '../../../hooks/useTranslate';
+import LoaderTableCard from '../../elements/loader-table-card/LoaderTableCard';
+import useSetProgress from '../../../hooks/useSetProgress';
 
 export default function Employees() {
     const envData = useEnvData();
@@ -33,6 +34,7 @@ export default function Employees() {
     const openModal = useOpenModal();
     const pushDanger = usePushDanger();
     const pushSuccess = usePushSuccess();
+    const setProgress = useSetProgress();
     const authIdentity = useAuthIdentity();
     const activeOrganization = useActiveOrganization();
 
@@ -42,6 +44,7 @@ export default function Employees() {
 
     const { setActiveOrganization } = useContext(mainContext);
 
+    const [loading, setLoading] = useState<boolean>(false);
     const [employees, setEmployees] = useState<PaginationData<Employee>>(null);
     const [paginatorKey] = useState('employees');
     const [adminEmployees, setAdminEmployees] = useState([]);
@@ -52,11 +55,18 @@ export default function Employees() {
     });
 
     const fetchEmployees = useCallback(() => {
-        employeeService.list(activeOrganization.id, filter.activeValues).then(
-            (res) => setEmployees(res.data),
-            (res) => console.error(res),
-        );
-    }, [activeOrganization.id, employeeService, filter.activeValues]);
+        setLoading(true);
+        setProgress(0);
+
+        employeeService
+            .list(activeOrganization.id, filter.activeValues)
+            .then((res) => setEmployees(res.data))
+            .catch((err: ResponseError) => console.error(err))
+            .finally(() => {
+                setLoading(false);
+                setProgress(100);
+            });
+    }, [activeOrganization.id, employeeService, filter.activeValues, setProgress]);
 
     const fetchAdminEmployees = useCallback(() => {
         employeeService.list(activeOrganization.id, { role: 'admin', per_page: 1000 }).then(
@@ -194,8 +204,13 @@ export default function Employees() {
         [activeOrganization, authIdentity.address],
     );
 
-    useEffect(() => fetchEmployees(), [fetchEmployees]);
-    useEffect(() => fetchAdminEmployees(), [fetchAdminEmployees]);
+    useEffect(() => {
+        fetchEmployees();
+    }, [fetchEmployees]);
+
+    useEffect(() => {
+        fetchAdminEmployees();
+    }, [fetchAdminEmployees]);
 
     if (!employees || !adminEmployees) {
         return <LoadingCard />;
@@ -255,7 +270,10 @@ export default function Employees() {
                 </div>
             </div>
 
-            {employees?.meta.total > 0 && (
+            <LoaderTableCard
+                loading={loading}
+                empty={employees?.meta.total == 0}
+                emptyTitle={'Geen medewerkers gevonden'}>
                 <div className="card-section">
                     <div className="card-block card-block-table">
                         <div className="table-wrapper">
@@ -381,20 +399,18 @@ export default function Employees() {
                         </div>
                     </div>
                 </div>
-            )}
 
-            {employees?.meta.total == 0 && <EmptyCard type="card-section" title="Geen medewerkers gevonden" />}
-
-            {employees?.meta && (
-                <div className="card-section">
-                    <Paginator
-                        meta={employees.meta}
-                        filters={filter.values}
-                        updateFilters={filter.update}
-                        perPageKey={paginatorKey}
-                    />
-                </div>
-            )}
+                {employees?.meta.total > 0 && (
+                    <div className="card-section">
+                        <Paginator
+                            meta={employees.meta}
+                            filters={filter.values}
+                            updateFilters={filter.update}
+                            perPageKey={paginatorKey}
+                        />
+                    </div>
+                )}
+            </LoaderTableCard>
         </div>
     );
 }
