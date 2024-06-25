@@ -297,11 +297,11 @@ export default function Employees() {
                                                     {employee.email || strLimit(employee.identity_address, 32)}
                                                 </div>
                                                 {activeOrganization.identity_address != employee.identity_address ? (
-                                                    <div className={'text-muted'}>
+                                                    <div className={'text-muted text-md'}>
                                                         {strLimit(rolesList(employee) || 'Geen...', 32)}
                                                     </div>
                                                 ) : (
-                                                    <div className="text-muted">
+                                                    <div className="text-muted text-md">
                                                         {translate('organization_employees.labels.owner')}
                                                     </div>
                                                 )}
@@ -348,50 +348,49 @@ export default function Employees() {
                                                 )}
                                             </td>
 
-                                            <td className={'text-right'}>
-                                                <Fragment>
-                                                    {canEditEmployee(employee) && (
-                                                        <a
-                                                            className="text-primary-light"
-                                                            data-dusk={'btnEmployeeEdit'}
-                                                            onClick={() => editEmployee(employee)}>
-                                                            {translate('organization_employees.buttons.adjust')}
-                                                        </a>
-                                                    )}
-
-                                                    {authIdentity.address !== employee.identity_address && (
-                                                        <Fragment>
-                                                            &nbsp;&nbsp;
-                                                            <a
-                                                                className="text-danger"
-                                                                data-dusk={'btnEmployeeDelete'}
-                                                                onClick={() => deleteEmployee(employee)}>
-                                                                {translate('organization_employees.buttons.delete')}
-                                                            </a>
-                                                        </Fragment>
-                                                    )}
-                                                </Fragment>
-
-                                                {activeOrganization.identity_address == employee.identity_address && (
+                                            {activeOrganization.identity_address != employee.identity_address ? (
+                                                <td className={'text-right'}>
                                                     <Fragment>
-                                                        &nbsp;&nbsp;
-                                                        {adminEmployees.length > 0 &&
-                                                        authIdentity.address === activeOrganization.identity_address ? (
+                                                        {canEditEmployee(employee) && (
                                                             <a
                                                                 className="text-primary-light"
-                                                                onClick={() => transferOwnership(adminEmployees)}>
-                                                                {translate(
-                                                                    'organization_employees.buttons.transfer_ownership',
-                                                                )}
+                                                                data-dusk={'btnEmployeeEdit'}
+                                                                onClick={() => editEmployee(employee)}>
+                                                                {translate('organization_employees.buttons.adjust')}
                                                             </a>
-                                                        ) : (
-                                                            <span className={'text-muted'}>
-                                                                {translate('organization_employees.labels.owner')}
-                                                            </span>
+                                                        )}
+
+                                                        {authIdentity.address !== employee.identity_address && (
+                                                            <Fragment>
+                                                                &nbsp;&nbsp;
+                                                                <a
+                                                                    className="text-danger"
+                                                                    data-dusk={'btnEmployeeDelete'}
+                                                                    onClick={() => deleteEmployee(employee)}>
+                                                                    {translate('organization_employees.buttons.delete')}
+                                                                </a>
+                                                            </Fragment>
                                                         )}
                                                     </Fragment>
-                                                )}
-                                            </td>
+                                                </td>
+                                            ) : (
+                                                <td className={'text-right'}>
+                                                    {adminEmployees.length > 0 &&
+                                                    authIdentity.address === activeOrganization.identity_address ? (
+                                                        <a
+                                                            className="text-primary-light"
+                                                            onClick={() => transferOwnership(adminEmployees)}>
+                                                            {translate(
+                                                                'organization_employees.buttons.transfer_ownership',
+                                                            )}
+                                                        </a>
+                                                    ) : (
+                                                        <span className={'text-muted'}>
+                                                            {translate('organization_employees.labels.owner')}
+                                                        </span>
+                                                    )}
+                                                </td>
+                                            )}
                                         </tr>
                                     ))}
                                 </tbody>
