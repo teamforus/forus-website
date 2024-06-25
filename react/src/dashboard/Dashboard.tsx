@@ -17,12 +17,14 @@ import StateHashPrefixRedirect from './modules/state_router/StateHashPrefixRedir
 import { ToastsProvider } from './modules/toasts/context/ToastsContext';
 import AwsRumScript from './modules/aws_rum/AwsRumScript';
 import { PrintableProvider } from './modules/printable/context/PrintableContext';
+import i18nEN from './i18n/i18n-en';
+import i18nNL from './i18n/i18n-nl';
 
 i18n.use(initReactI18next)
     .init({
         resources: {
-            en: { translation: require('./i18n/i18n-en') },
-            nl: { translation: require('./i18n/i18n-nl') },
+            en: { translation: i18nEN },
+            nl: { translation: i18nNL },
         },
         lng: 'nl',
         fallbackLng: 'nl',
