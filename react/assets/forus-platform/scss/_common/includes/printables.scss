@@ -1,15 +1,15 @@
 body {
     &.printable-only {
         @media screen {
-            &>printables-root,
-            &>#root>.printables-root {
+            & > printables-root,
+            & > #root > .printables-root {
                 display: none;
             }
         }
 
         @media print {
-            &>#root>*:not(.printables-root),
-            &>*:not(printables-root, #root) {
+            & > #root > *:not(.printables-root),
+            & > *:not(printables-root, #root) {
                 display: none !important;
             }
         }
@@ -23,10 +23,10 @@ body {
 
         &.printable-voucher-qr_code {
             .printable-main-info {
-                border: 1px solid #EBEDF0;
+                border: 1px solid #ebedf0;
                 box-sizing: border-box;
                 position: relative;
-                padding: 50px 14px 0px 14px;
+                padding: 50px 14px 0 14px;
                 margin-bottom: 30px;
 
                 .printable-usage-info {
@@ -42,7 +42,7 @@ body {
                     top: 10px;
                     right: 10px;
                     width: 80px;
-                    
+
                     img {
                         width: 100%;
                     }
@@ -53,23 +53,24 @@ body {
                     text-align: center;
                     margin-bottom: 10px;
                 }
-    
+
                 .printable-description {
                     font: 400 12px var(--base-font);
                     text-align: center;
                     margin-bottom: 20px;
                 }
-    
+
                 .block-qr-code {
                     margin: 0 auto 20px;
-    
+
                     .qr_code {
                         margin: 0 auto;
                         width: 240px;
                         height: auto;
                     }
-    
-                    img, canvas {
+
+                    img,
+                    canvas {
                         padding: 10px;
                         margin: 0 auto;
                         width: 100%;
@@ -103,7 +104,7 @@ body {
             }
 
             .printable-organization-info {
-                background: #F5F5F5;
+                background: #f5f5f5;
                 border-radius: 5px;
                 padding: 20px;
                 margin-left: 70px;

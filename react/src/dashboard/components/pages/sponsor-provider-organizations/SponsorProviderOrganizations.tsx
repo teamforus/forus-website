@@ -17,7 +17,6 @@ import { useFundService } from '../../../services/FundService';
 import { useOrganizationService } from '../../../services/OrganizationService';
 import useFundUnsubscribeService from '../../../services/FundUnsubscribeService';
 import { SponsorProviderOrganization } from '../../../props/models/Organization';
-import ProvidersTable from './elements/ProvidersTable';
 import ModalExportTypeLegacy from '../../modals/ModalExportTypeLegacy';
 import { format } from 'date-fns';
 import useSetProgress from '../../../hooks/useSetProgress';
@@ -25,6 +24,10 @@ import { NumberParam, StringParam, createEnumParam } from 'use-query-params';
 import useTranslate from '../../../hooks/useTranslate';
 import useFilterNext from '../../../modules/filter_next/useFilterNext';
 import StateNavLink from '../../../modules/state_router/StateNavLink';
+import LoaderTableCard from '../../elements/loader-table-card/LoaderTableCard';
+import ThSortable from '../../elements/tables/ThSortable';
+import ProvidersTableItem from './elements/ProvidersTableItem';
+import Paginator from '../../../modules/paginator/components/Paginator';
 
 export default function SponsorProviderOrganizations() {
     const translate = useTranslate();
@@ -42,6 +45,7 @@ export default function SponsorProviderOrganizations() {
     const fundUnsubscribeService = useFundUnsubscribeService();
 
     const [funds, setFunds] = useState<Array<Partial<Fund>>>(null);
+    const [loading, setLoading] = useState<boolean>(false);
     const [implementations, setImplementations] = useState<Array<Partial<Implementation>>>(null);
     const [providerOrganizations, setProviderOrganizations] =
         useState<PaginationData<SponsorProviderOrganization>>(null);
@@ -117,6 +121,7 @@ export default function SponsorProviderOrganizations() {
     }, [activeOrganization.id, fundService, pushDanger, setProgress]);
 
     const fetchProviderOrganizations = useCallback(() => {
+        setLoading(true);
         setProgress(0);
 
         const query = {
@@ -131,7 +136,10 @@ export default function SponsorProviderOrganizations() {
             .providerOrganizations(activeOrganization.id, query)
             .then((res) => setProviderOrganizations(res.data))
             .catch((err: ResponseError) => pushDanger('Mislukt!', err.data.message))
-            .finally(() => setProgress(100));
+            .finally(() => {
+                setLoading(false);
+                setProgress(100);
+            });
     }, [activeOrganization.id, filterActiveValues, organizationService, pushDanger, setProgress]);
 
     const fetchFundUnsubscribes = useCallback(() => {
@@ -521,12 +529,58 @@ export default function SponsorProviderOrganizations() {
                     </div>
                 </div>
 
-                <ProvidersTable
-                    providers={providerOrganizations}
-                    organization={activeOrganization}
-                    paginatorKey={paginatorKey}
-                    filter={filter}
-                />
+                <LoaderTableCard
+                    loading={loading}
+                    empty={providerOrganizations.meta.total == 0}
+                    emptyTitle={'Je hebt nog geen verzoeken van aanbieders'}>
+                    <div className="card-section">
+                        <div className="card-block card-block-table">
+                            <div className="table-wrapper">
+                                <table className="table">
+                                    <tbody>
+                                        <tr>
+                                            <ThSortable
+                                                label={translate('provider_organizations.labels.organization_name')}
+                                            />
+                                            <ThSortable
+                                                label={translate('provider_organizations.labels.last_active')}
+                                            />
+                                            <ThSortable
+                                                label={translate('provider_organizations.labels.product_count')}
+                                            />
+                                            <ThSortable
+                                                label={translate('provider_organizations.labels.funds_count')}
+                                            />
+                                            <ThSortable
+                                                className="text-right"
+                                                label={translate('provider_organizations.labels.actions')}
+                                            />
+                                        </tr>
+                                    </tbody>
+
+                                    {providerOrganizations.data.map((providerOrganization) => (
+                                        <ProvidersTableItem
+                                            key={providerOrganization.id}
+                                            organization={activeOrganization}
+                                            providerOrganization={providerOrganization}
+                                        />
+                                    ))}
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    {providerOrganizations.meta.total > 0 && (
+                        <div className="card-section">
+                            <Paginator
+                                meta={providerOrganizations.meta}
+                                filters={filter.values}
+                                updateFilters={filter.update}
+                                perPageKey={paginatorKey}
+                            />
+                        </div>
+                    )}
+                </LoaderTableCard>
             </div>
         </Fragment>
     );

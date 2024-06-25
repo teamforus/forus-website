@@ -268,7 +268,7 @@ export default function OrganizationsFundsShowIdentitiesCard({
                     </div>
                 </Fragment>
             ) : (
-                <LoadingCard type={'section-card'} />
+                <LoadingCard type={'card-section'} />
             )}
 
             {identities?.meta?.total > 0 && (

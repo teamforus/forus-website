@@ -1,6 +1,6 @@
-// No nested objects allowed 
-module.exports = {
+// No nested objects allowed
+export default {
     general: {},
     nijmegen: {},
-    zuidhorn: {}
+    zuidhorn: {},
 };

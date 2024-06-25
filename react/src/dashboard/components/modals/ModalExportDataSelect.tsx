@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect, useMemo } from 'react';
 import { ModalState } from '../../modules/modals/context/ModalContext';
-import { useTranslation } from 'react-i18next';
 import { chunk } from 'lodash';
 import CheckboxControl from '../elements/forms/controls/CheckboxControl';
+import useTranslate from '../../hooks/useTranslate';
 
 export type ExportFieldProp = {
     key?: string;
@@ -50,7 +50,7 @@ export default function ModalExportDataSelect({
     description?: string | Array<string>;
     onSuccess: (values: object) => void;
 }) {
-    const { t } = useTranslation();
+    const translate = useTranslate();
     const [localSections, setLocalSections] = React.useState<Array<ExportSectionPropLocal>>(null);
 
     const isValid = useMemo(() => {
@@ -144,7 +144,7 @@ export default function ModalExportDataSelect({
                     onSubmit();
                 }}>
                 <div className="modal-close mdi mdi-close" onClick={modal.close} />
-                <div className="modal-header">{title ? title : t('modals.modal_export_data.title')}</div>
+                <div className="modal-header">{title ? title : translate('modals.modal_export_data.title')}</div>
 
                 <div className="modal-body">
                     <div className="modal-section">
@@ -247,10 +247,10 @@ export default function ModalExportDataSelect({
                 </div>
                 <div className="modal-footer text-center">
                     <button className="button button-default" type="button" onClick={modal.close}>
-                        {t('modals.modal_voucher_create.buttons.cancel')}
+                        {translate('modals.modal_voucher_create.buttons.cancel')}
                     </button>
                     <button className="button button-primary" disabled={!isValid} type="submit">
-                        {t('modals.modal_export_data.buttons.submit')}
+                        {translate('modals.modal_export_data.buttons.submit')}
                     </button>
                 </div>
             </form>

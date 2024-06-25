@@ -20,7 +20,6 @@
         cursor: default;
         font: 500 12px/20px var(--base-font);
         margin-bottom: 4px;
-        color: var(--text-color);
         padding: 0;
         color: var(--color-primary);
 
@@ -65,9 +64,10 @@
                 box-shadow: var(--box-shadow);
             }
 
-            &.disabled, &[disabled] {
+            &.disabled,
+            &[disabled] {
                 pointer-events: none;
-                filter: grayscale(1) opacity(.5);
+                filter: grayscale(1) opacity(0.5);
             }
         }
 
@@ -102,8 +102,8 @@
             color: #262626;
         }
 
-        &>input[type=radio],
-        &>input[type=checkbox] {
+        & > input[type='radio'],
+        & > input[type='checkbox'] {
             display: none;
         }
 
@@ -118,7 +118,7 @@
                 border: 1px solid var(--border-color);
                 height: 20px;
                 position: relative;
-                transition: all .4s ease-in-out;
+                transition: all 0.4s ease-in-out;
 
                 .toggle-input-dot {
                     width: 24px;
@@ -126,7 +126,7 @@
                     border: 1px solid #fff;
                     border-radius: 24px;
                     background: #fff;
-                    box-shadow: 1px 2px 6px rgba(0, 0, 0, .25);
+                    box-shadow: 1px 2px 6px rgba(0, 0, 0, 0.25);
                     left: -2px;
                     top: 50%;
                     text-align: center;
@@ -134,7 +134,7 @@
                     font-size: 18px;
                     transform: translate(0, -50%);
                     color: #fefefe;
-                    transition: all .4s ease-in-out;
+                    transition: all 0.4s ease-in-out;
                     position: relative;
                     margin-top: -1px;
                 }
@@ -144,7 +144,7 @@
                 font: 700 12px/20px var(--base-font);
                 color: #323232;
                 margin-right: 10px;
-                transition: color .4s;
+                transition: color 0.4s;
 
                 span {
                     color: #bcc1d3;
@@ -153,7 +153,7 @@
                 a {
                     font: inherit;
                     color: var(--color-primary);
-                    transition: color .4s;
+                    transition: color 0.4s;
 
                     &:hover {
                         color: var(--base-color);
@@ -162,7 +162,7 @@
 
                 &:last-child {
                     margin-left: 10px;
-                    margin-right: 0px;
+                    margin-right: 0;
                 }
             }
         }
@@ -170,8 +170,8 @@
         &.form-toggle-active:not(.form-toggle-off) .form-toggle-inner,
         &.active:not(.form-toggle-off) .form-toggle-inner,
         &.checked:not(.form-toggle-off) .form-toggle-inner,
-        &:not(.form-toggle-off)>input[type=radio]:checked+.form-toggle-inner,
-        &:not(.form-toggle-off)>input[type=checkbox]:checked+.form-toggle-inner {
+        &:not(.form-toggle-off) > input[type='radio']:checked + .form-toggle-inner,
+        &:not(.form-toggle-off) > input[type='checkbox']:checked + .form-toggle-inner {
             .toggle-input {
                 background: #9bc4ef;
                 border-color: #9bc4ef;
@@ -190,15 +190,16 @@
             cursor: default !important;
         }
 
-        &.form-toggle-disabled, &[disabled] {
+        &.form-toggle-disabled,
+        &[disabled] {
             pointer-events: none;
-            opacity: .5;
+            opacity: 0.5;
             filter: saturate(0);
         }
 
         &.form-toggle-danger {
-            &>input[type=checkbox]:not(:checked)+.form-toggle-inner,
-            &>input[type=radio]:not(:checked)+.form-toggle-inner {
+            & > input[type='checkbox']:not(:checked) + .form-toggle-inner,
+            & > input[type='radio']:not(:checked) + .form-toggle-inner {
                 .toggle-input {
                     background-color: #c52929;
                 }
@@ -253,7 +254,7 @@
         }
     }
 
-    .form-control[type=color]:not([type='radio']):not([type='checkbox']) {
+    .form-control[type='color']:not([type='radio']):not([type='checkbox']) {
         width: 36px;
         height: 36px;
         padding: 4px;
@@ -288,7 +289,8 @@
                 border-top-left-radius: 0;
                 border-bottom-left-radius: 0;
 
-                &:hover, &.active {
+                &:hover,
+                &.active {
                     .mdi {
                         color: var(--color-default-light);
                     }
@@ -313,7 +315,7 @@
             margin-bottom: 0;
         }
 
-        &+.block-info-box {
+        & + .block-info-box {
             margin-top: 10px;
         }
     }
@@ -374,7 +376,7 @@
         margin: 0;
 
         &:first-letter {
-            text-transform: uppercase
+            text-transform: uppercase;
         }
     }
 
@@ -398,7 +400,7 @@
         margin: 0;
 
         &:first-letter {
-            text-transform: uppercase
+            text-transform: uppercase;
         }
     }
 
@@ -441,7 +443,7 @@
             display: flex;
             align-self: center;
             font: 500 12px/16px var(--base-font);
-            color: #282B39;
+            color: #282b39;
             font-style: italic;
         }
 
@@ -477,7 +479,7 @@
                 z-index: 5;
             }
 
-            &>.form-label {
+            & > .form-label {
                 width: 200px;
                 padding-top: 8px;
                 padding-bottom: 8px;
@@ -502,8 +504,9 @@
                 }
             }
 
-            &>.form-offset,
-            &>.form-control, &>.react-datepicker-wrapper {
+            & > .form-offset,
+            & > .form-control,
+            & > .react-datepicker-wrapper {
                 width: calc(100% - 200px);
                 float: left;
 
@@ -512,77 +515,77 @@
                 }
             }
 
-            &>.form-error {
+            & > .form-error {
                 margin-left: 200px;
                 width: calc(100% - 200px);
                 float: left;
             }
 
-            &>.form-title {
+            & > .form-title {
                 padding-left: 0;
                 width: calc(100% - 200px);
                 float: left;
             }
 
             &.form-group-inline-xl {
-                &>.form-label {
+                & > .form-label {
                     width: 250px;
                 }
 
-                &>.form-offset,
-                &>.form-control {
+                & > .form-offset,
+                & > .form-control {
                     width: calc(100% - 250px);
                 }
 
-                &>.form-error {
+                & > .form-error {
                     margin-left: 250px;
                     width: calc(100% - 250px);
                 }
             }
 
             &.form-group-inline-lg {
-                &>.form-label {
+                & > .form-label {
                     width: 145px;
                 }
 
-                &>.form-offset,
-                &>.form-control {
+                & > .form-offset,
+                & > .form-control {
                     width: calc(100% - 145px);
                 }
 
-                &>.form-error {
+                & > .form-error {
                     margin-left: 145px;
                     width: calc(100% - 145px);
                 }
             }
 
             &.form-group-inline-md {
-                &>.form-label {
+                & > .form-label {
                     width: 125px;
                 }
 
-                &>.form-offset,
-                &>.form-control {
+                & > .form-offset,
+                & > .form-control {
                     width: calc(100% - 125px);
                 }
 
-                &>.form-error {
+                & > .form-error {
                     margin-left: 125px;
                     width: calc(100% - 125px);
                 }
             }
 
             &.form-group-inline-sm {
-                &>.form-label {
+                & > .form-label {
                     width: 80px;
                 }
 
-                &>.form-offset,
-                &>.form-control {
+                & > .form-offset,
+                & > .form-control {
                     width: calc(100% - 80px);
                 }
 
-                &>.form-error {
+                & > .form-error {
                     margin-left: 80px;
                     width: calc(100% - 80px);
                 }
@@ -647,10 +650,10 @@
                 transform: translate(0, -50%);
                 opacity: 1;
                 pointer-events: none;
-                transition: opacity .4s;
+                transition: opacity 0.4s;
 
                 .mdi {
-                    color: #CCD0E0;
+                    color: #ccd0e0;
                     font-size: 18px;
                     height: 18px;
                     vertical-align: bottom;
@@ -695,12 +698,13 @@
             margin-bottom: 30px;
 
             .select-control-option {
-                padding: calc(calc(var(--option-height) - 20px) / 2) 15px calc(calc(calc(var(--option-height) - 20px) / 2) - 1px);
+                padding: calc(calc(var(--option-height) - 20px) / 2) 15px
+                    calc(calc(calc(var(--option-height) - 20px) / 2) - 1px);
                 font: 500 13px/20px var(--base-font);
-                color: rgba(var(--text-color), .75);
+                color: rgba(var(--text-color), 0.75);
                 border-bottom: 1px solid whitesmoke;
                 cursor: pointer;
-                transition: .4s;
+                transition: 0.4s;
                 height: var(--option-height);
                 @include ellipsis();
 
@@ -737,7 +741,7 @@
         .select-control-input {
             --option-height: 30px;
 
-            .form-control:not([type=radio]):not([type=checkbox]).select-control-search {
+            .form-control:not([type='radio']):not([type='checkbox']).select-control-search {
                 font: 600 16px/24px var(--base-font);
                 border: none;
                 text-align: left;
@@ -763,12 +767,12 @@
             margin-top: 2px;
             text-align: left;
 
-            .form-control:not([type=radio]):not([type=checkbox]).select-control-search {
+            .form-control:not([type='radio']):not([type='checkbox']).select-control-search {
                 padding: 6px 15px;
                 text-align: left;
                 font-weight: 600;
                 border-bottom: 1px solid var(--border-color);
-                letter-spacing: -.5px;
+                letter-spacing: -0.5px;
                 cursor: text;
             }
 
@@ -798,7 +802,7 @@
             .select-control-input {
                 --option-height: 40px;
 
-                .form-control:not([type=radio]):not([type=checkbox]).select-control-search {
+                .form-control:not([type='radio']):not([type='checkbox']).select-control-search {
                     font-size: 14px;
                 }
 
@@ -813,7 +817,7 @@
                 width: 400%;
                 max-width: 85vw;
 
-                .form-control:not([type=radio]):not([type=checkbox]).select-control-search {
+                .form-control:not([type='radio']):not([type='checkbox']).select-control-search {
                     padding: 8px 15px;
                 }
             }
@@ -830,7 +834,7 @@
         position: relative;
         z-index: 1;
 
-        .form-control:not([type="radio"]):not([type="checkbox"]).phone-control-input {
+        .form-control:not([type='radio']):not([type='checkbox']).phone-control-input {
             padding: var(--input-padding);
             padding-left: calc(var(--selector-width) + 10px);
             font: 600 16px/24px var(--base-font);
@@ -847,7 +851,7 @@
             position: absolute;
 
             .select-control-input {
-                .form-control:not([type="radio"]):not([type="checkbox"]) {
+                .form-control:not([type='radio']):not([type='checkbox']) {
                     background: none;
                     outline: none;
                     padding: var(--input-padding);
@@ -857,12 +861,12 @@
 
                 .select-control-search {
                     border-right: none;
-                    border-top-right-radius: 0px;
-                    border-bottom-right-radius: 0px;
+                    border-top-right-radius: 0;
+                    border-bottom-right-radius: 0;
 
                     &:after {
                         display: block;
-                        content: "";
+                        content: '';
                         width: 1px;
                         background-color: #cfcfcf;
                         position: absolute;
@@ -878,7 +882,7 @@
             --selector-width: 105px;
             --input-padding: 12px 12px;
 
-            .form-control:not([type="radio"]):not([type="checkbox"]).phone-control-input {
+            .form-control:not([type='radio']):not([type='checkbox']).phone-control-input {
                 font-size: 14px;
 
                 &::placeholder {
@@ -890,9 +894,7 @@
 
     .checkbox {
         display: inline-block;
-        padding: 8px 0;
-        padding-right: 15px;
-        padding-left: 25px;
+        padding: 8px 15px 8px 25px;
         vertical-align: middle;
 
         .checkbox-box {
@@ -940,7 +942,7 @@
         }
 
         &.checked,
-        input[type='checkbox']:checked+.checkbox-label {
+        input[type='checkbox']:checked + .checkbox-label {
             .checkbox-box {
                 .mdi {
                     opacity: 1;
@@ -959,17 +961,17 @@
             padding-right: 0;
 
             .checkbox-box {
-                border-color: #D4D9DD;
-                background-color: #F6F9FC;
+                border-color: #d4d9dd;
+                background-color: #f6f9fc;
             }
 
-            input[type='checkbox']:checked+.checkbox-label {
+            input[type='checkbox']:checked + .checkbox-label {
                 .checkbox-box {
                     border-color: #134478;
                     background-color: #134478;
 
                     .mdi {
-                        color: #FFFFFF;
+                        color: #ffffff;
                     }
                 }
             }
@@ -979,9 +981,11 @@
             margin: -6px 0;
         }
 
-        &[disabled], &.disabled, &.checkbox-disabled {
+        &[disabled],
+        &.disabled,
+        &.checkbox-disabled {
             position: relative;
-            opacity: .4;
+            opacity: 0.4;
             filter: grayscale(1);
             cursor: default;
             user-select: none;
@@ -1000,9 +1004,7 @@
 
     .radio {
         display: inline-block;
-        padding: 10px 0;
-        padding-right: 15px;
-        padding-left: 30px;
+        padding: 10px 15px 10px 30px;
         vertical-align: middle;
         width: 100%;
         @include cf();
@@ -1022,9 +1024,8 @@
             &::before {
                 content: '';
                 @include fill_parent(-2px);
-                border: inherit;
                 border-radius: inherit;
-                border-width: 5px;
+                border: 5px inherit;
                 opacity: 0;
                 transition: 0.4s;
             }
@@ -1039,11 +1040,11 @@
             float: left;
         }
 
-        input[type=radio] {
+        input[type='radio'] {
             display: none;
         }
 
-        input[type=radio]:checked+.radio-label {
+        input[type='radio']:checked + .radio-label {
             .radio-circle::before {
                 opacity: 1;
             }
@@ -1072,9 +1073,9 @@
                 width: calc(100% - 200px);
                 padding: 10px;
                 float: left;
-                color: #9CA6AF;
-                background: #F6F9FC;
-                border: 1px dashed #D4D9DD;
+                color: #9ca6af;
+                background: #f6f9fc;
+                border: 1px dashed #d4d9dd;
                 border-radius: 3px;
                 word-wrap: break-word;
                 white-space: pre-wrap;
@@ -1084,7 +1085,7 @@
 
     .form-title {
         font: 600 14px/20px var(--base-font);
-        color: #151B26;
+        color: #151b26;
         padding: 8px;
     }
 

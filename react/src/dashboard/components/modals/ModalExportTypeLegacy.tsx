@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { ModalState } from '../../modules/modals/context/ModalContext';
-import { classList } from '../../helpers/utils';
 import { ModalButton } from './elements/ModalButton';
-import { useTranslation } from 'react-i18next';
+import useTranslate from '../../hooks/useTranslate';
+import classNames from 'classnames';
 
 export default function ModalExportTypeLegacy({
     modal,
@@ -15,24 +15,24 @@ export default function ModalExportTypeLegacy({
     buttonCancel?: ModalButton;
     buttonSubmit?: ModalButton;
 }) {
-    const { t } = useTranslation();
+    const translate = useTranslate();
     const [exportTypes] = useState(['xls', 'csv']);
     const [exportType, setExportType] = useState('xls');
 
     return (
         <div
-            className={classList([
+            className={classNames(
                 'modal',
                 'modal-md',
                 'modal-animated',
                 'modal-voucher-export-type',
                 'modal-voucher-export-narrow',
-                modal.loading ? 'modal-loading' : null,
-            ])}>
+                modal.loading && 'modal-loading',
+            )}>
             <div className="modal-backdrop" onClick={modal.close} />
             <div className="modal-window form">
                 <div className="modal-close mdi mdi-close" onClick={modal.close} />
-                <div className="modal-header">{t('modals.modal_voucher_export.title')}</div>
+                <div className="modal-header">{translate('modals.modal_voucher_export.title')}</div>
 
                 <div className="modal-body modal-body-visible">
                     <div className="modal-section">
@@ -49,7 +49,7 @@ export default function ModalExportTypeLegacy({
                                         <div className="voucher-export-type-item-icon">
                                             <em className="mdi mdi-file-delimited" />
                                         </div>
-                                        {t(`modals.modal_voucher_export.modal_section.export_type_${type}`)}
+                                        {translate(`modals.modal_voucher_export.modal_section.export_type_${type}`)}
                                     </div>
                                 ))}
                             </div>

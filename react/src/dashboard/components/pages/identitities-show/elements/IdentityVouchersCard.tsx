@@ -180,7 +180,7 @@ export default function IdentityVouchersCard({
                                                         params={{
                                                             organizationId: organization.id,
                                                             fundId: fund?.id,
-                                                            voucherId: voucher?.id,
+                                                            id: voucher?.id,
                                                         }}
                                                         className="button button-primary button-icon pull-right">
                                                         <em className="mdi mdi-eye-outline icon-start" />

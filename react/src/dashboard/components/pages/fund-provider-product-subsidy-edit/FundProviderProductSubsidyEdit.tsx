@@ -133,26 +133,19 @@ export default function FundProviderProductSubsidyEdit() {
                 <StateNavLink
                     name={'sponsor-provider-organizations'}
                     params={{ organizationId: activeOrganization.id }}
+                    activeExact={true}
                     className="breadcrumb-item">
                     {translate('page_state_titles.organization-providers')}
                 </StateNavLink>
                 <StateNavLink
                     name={'sponsor-provider-organization'}
-                    params={{
-                        id: fundProvider.organization.id,
-                        organizationId: activeOrganization.id,
-                    }}
-                    className="breadcrumb-item"
-                    activeExact={true}>
+                    params={{ organizationId: activeOrganization.id, id: fundProvider.organization.id }}
+                    className="breadcrumb-item">
                     {strLimit(fundProvider.organization.name, 40)}
                 </StateNavLink>
                 <StateNavLink
                     name={'fund-provider'}
-                    params={{
-                        id: fundProvider.id,
-                        fundId: fund.id,
-                        organizationId: activeOrganization.id,
-                    }}
+                    params={{ organizationId: activeOrganization.id, id: fundProvider.id, fundId: fund.id }}
                     className="breadcrumb-item"
                     activeExact={true}>
                     {strLimit(fundProvider.fund.name, 40)}

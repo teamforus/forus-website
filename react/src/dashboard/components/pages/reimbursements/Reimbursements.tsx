@@ -5,7 +5,6 @@ import { PaginationData } from '../../../props/ApiResponses';
 import FundSelector from '../../elements/fund-selector/FundSelector';
 import Fund from '../../../props/models/Fund';
 import Reimbursement from '../../../props/models/Reimbursement';
-import { useTranslation } from 'react-i18next';
 import { useReimbursementsService } from '../../../services/ReimbursementService';
 import useFilter from '../../../hooks/useFilter';
 import usePaginatorService from '../../../modules/paginator/services/usePaginatorService';
@@ -26,11 +25,13 @@ import { dateFormat, dateParse } from '../../../helpers/dates';
 import Implementation from '../../../props/models/Implementation';
 import useSetProgress from '../../../hooks/useSetProgress';
 import LoadingCard from '../../elements/loading-card/LoadingCard';
+import useTranslate from '../../../hooks/useTranslate';
+import classNames from 'classnames';
 
 export default function Reimbursements() {
-    const { t } = useTranslation();
     const activeOrganization = useActiveOrganization();
 
+    const translate = useTranslate();
     const setProgress = useSetProgress();
 
     const fundService = useFundService();
@@ -141,7 +142,7 @@ export default function Reimbursements() {
                     <div className="flex-row">
                         <div className="flex-col flex-grow">
                             <div className="card-title">
-                                {t('reimbursements.header.title')} ({reimbursements?.meta?.total})
+                                {translate('reimbursements.header.title')} ({reimbursements?.meta?.total})
                             </div>
                         </div>
 
@@ -182,7 +183,7 @@ export default function Reimbursements() {
                                 {filter.show && (
                                     <div className="button button-text" onClick={filter.resetFilters}>
                                         <em className="mdi mdi-close icon-start" />
-                                        <span>{t('reimbursements.buttons.clear_filter')}</span>
+                                        <span>{translate('reimbursements.buttons.clear_filter')}</span>
                                     </div>
                                 )}
 
@@ -194,7 +195,7 @@ export default function Reimbursements() {
                                                 className="form-control"
                                                 value={filter.values.q}
                                                 data-dusk="searchReimbursement"
-                                                placeholder={t('reimbursements.labels.search')}
+                                                placeholder={translate('reimbursements.labels.search')}
                                                 onChange={(e) => filter.update({ q: e.target.value })}
                                             />
                                         </div>
@@ -212,17 +213,17 @@ export default function Reimbursements() {
                                                 <div className="form">
                                                     <FilterItemToggle
                                                         show={true}
-                                                        label={t('reimbursements.labels.search')}>
+                                                        label={translate('reimbursements.labels.search')}>
                                                         <input
                                                             className="form-control"
                                                             data-dusk="searchReimbursement"
                                                             value={filter.values.q}
                                                             onChange={(e) => filter.update({ q: e.target.value })}
-                                                            placeholder={t('reimbursements.labels.search')}
+                                                            placeholder={translate('reimbursements.labels.search')}
                                                         />
                                                     </FilterItemToggle>
 
-                                                    <FilterItemToggle label={t('reimbursements.labels.state')}>
+                                                    <FilterItemToggle label={translate('reimbursements.labels.state')}>
                                                         <SelectControl
                                                             className="form-control"
                                                             propKey={'value'}
@@ -237,7 +238,7 @@ export default function Reimbursements() {
                                                     {filter.values.archived == 1 && (
                                                         <Fragment>
                                                             <FilterItemToggle
-                                                                label={t('reimbursements.labels.expired')}>
+                                                                label={translate('reimbursements.labels.expired')}>
                                                                 <SelectControl
                                                                     className="form-control"
                                                                     propKey={'value'}
@@ -252,7 +253,7 @@ export default function Reimbursements() {
                                                             </FilterItemToggle>
 
                                                             <FilterItemToggle
-                                                                label={t('reimbursements.labels.deactivated')}>
+                                                                label={translate('reimbursements.labels.deactivated')}>
                                                                 <SelectControl
                                                                     className="form-control"
                                                                     propKey={'value'}
@@ -268,7 +269,7 @@ export default function Reimbursements() {
                                                         </Fragment>
                                                     )}
 
-                                                    <FilterItemToggle label={t('transactions.labels.amount')}>
+                                                    <FilterItemToggle label={translate('transactions.labels.amount')}>
                                                         <div className="row">
                                                             <div className="col col-lg-6">
                                                                 <input
@@ -281,7 +282,9 @@ export default function Reimbursements() {
                                                                             amount_min: e.target.value,
                                                                         })
                                                                     }
-                                                                    placeholder={t('transactions.labels.amount_min')}
+                                                                    placeholder={translate(
+                                                                        'transactions.labels.amount_min',
+                                                                    )}
                                                                 />
                                                             </div>
 
@@ -296,33 +299,36 @@ export default function Reimbursements() {
                                                                             amount_max: e.target.value,
                                                                         })
                                                                     }
-                                                                    placeholder={t('transactions.labels.amount_max')}
+                                                                    placeholder={translate(
+                                                                        'transactions.labels.amount_max',
+                                                                    )}
                                                                 />
                                                             </div>
                                                         </div>
                                                     </FilterItemToggle>
 
-                                                    <FilterItemToggle label={t('reimbursements.labels.from')}>
+                                                    <FilterItemToggle label={translate('reimbursements.labels.from')}>
                                                         <DatePickerControl
                                                             value={dateParse(filter.values.from)}
-                                                            placeholder={t('yyyy-MM-dd')}
+                                                            placeholder={translate('yyyy-MM-dd')}
                                                             onChange={(from: Date) => {
                                                                 filter.update({ from: dateFormat(from) });
                                                             }}
                                                         />
                                                     </FilterItemToggle>
 
-                                                    <FilterItemToggle label={t('reimbursements.labels.to')}>
+                                                    <FilterItemToggle label={translate('reimbursements.labels.to')}>
                                                         <DatePickerControl
                                                             value={dateParse(filter.values.to)}
-                                                            placeholder={t('yyyy-MM-dd')}
+                                                            placeholder={translate('yyyy-MM-dd')}
                                                             onChange={(to: Date) => {
                                                                 filter.update({ to: dateFormat(to) });
                                                             }}
                                                         />
                                                     </FilterItemToggle>
 
-                                                    <FilterItemToggle label={t('reimbursements.labels.implementation')}>
+                                                    <FilterItemToggle
+                                                        label={translate('reimbursements.labels.implementation')}>
                                                         <SelectControl
                                                             className="form-control"
                                                             propKey={'id'}
@@ -342,7 +348,7 @@ export default function Reimbursements() {
                                                             onClick={() => exportReimbursements()}
                                                             disabled={reimbursements.meta.total == 0}>
                                                             <em className="mdi mdi-download icon-start"> </em>
-                                                            {t('components.dropdown.export', {
+                                                            {translate('components.dropdown.export', {
                                                                 total: reimbursements.meta.total,
                                                             })}
                                                         </button>
@@ -370,30 +376,38 @@ export default function Reimbursements() {
                                 <table className="table">
                                     <thead>
                                         <tr>
-                                            <th>{t('reimbursements.labels.identity')}</th>
-                                            <th>{t('reimbursements.labels.fund')}</th>
-                                            <th>{t('reimbursements.labels.amount')}</th>
-                                            <th>{t('reimbursements.labels.created_at')}</th>
-                                            <th>{t('reimbursements.labels.lead_time')}</th>
-                                            <th>{t('reimbursements.labels.employee')}</th>
-                                            <th>{t('reimbursements.labels.expired')}</th>
-                                            <th>{t('reimbursements.labels.state')}</th>
-                                            <th>{t('reimbursements.labels.transaction')}</th>
-                                            <th className="nowrap text-right">{t('reimbursements.labels.actions')}</th>
+                                            <th>{translate('reimbursements.labels.identity')}</th>
+                                            <th>{translate('reimbursements.labels.fund')}</th>
+                                            <th>{translate('reimbursements.labels.amount')}</th>
+                                            <th>{translate('reimbursements.labels.created_at')}</th>
+                                            <th>{translate('reimbursements.labels.lead_time')}</th>
+                                            <th>{translate('reimbursements.labels.employee')}</th>
+                                            <th>{translate('reimbursements.labels.expired')}</th>
+                                            <th>{translate('reimbursements.labels.state')}</th>
+                                            <th>{translate('reimbursements.labels.transaction')}</th>
+                                            <th className="nowrap text-right">
+                                                {translate('reimbursements.labels.actions')}
+                                            </th>
                                         </tr>
                                     </thead>
 
                                     <tbody>
                                         {reimbursements.data.map((reimbursement) => (
-                                            <tr
+                                            <StateNavLink
+                                                customElement={'tr'}
+                                                name={'reimbursements-view'}
+                                                params={{ id: reimbursement.id, organizationId: activeOrganization.id }}
                                                 key={reimbursement.id}
-                                                data-dusk={'reimbursement' + reimbursement.id}
-                                                className={"reimbursement.expired ? 'tr-warning' : ''"}>
+                                                dataDusk={`reimbursement${reimbursement.id}`}
+                                                className={classNames(
+                                                    'clickable',
+                                                    reimbursement.expired && 'tr-warning',
+                                                )}>
                                                 <td>
                                                     {/* Email */}
                                                     <div
                                                         className="text-primary text-medium"
-                                                        data-dusk="{{ 'reimbursementIdentityEmail' + reimbursement.id }}">
+                                                        data-dusk={`reimbursementIdentityEmail${reimbursement.id}`}>
                                                         {strLimit(reimbursement.identity_email, 25) || 'Geen E-mail'}
                                                     </div>
 
@@ -492,7 +506,7 @@ export default function Reimbursements() {
                                                         </StateNavLink>
                                                     </div>
                                                 </td>
-                                            </tr>
+                                            </StateNavLink>
                                         ))}
                                     </tbody>
                                 </table>
@@ -502,11 +516,7 @@ export default function Reimbursements() {
                 )}
 
                 {reimbursements.meta.total == 0 && (
-                    <div className="card-section">
-                        <div className="block block-empty text-center">
-                            <div className="empty-title">Geen declaraties gevonden</div>
-                        </div>
-                    </div>
+                    <EmptyCard type={'card-section'} title={'Geen declaraties gevonden'} />
                 )}
 
                 {reimbursements.meta && (

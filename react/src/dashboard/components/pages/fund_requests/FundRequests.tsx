@@ -3,7 +3,6 @@ import useFilter from '../../../hooks/useFilter';
 import { useFundRequestValidatorService } from '../../../services/FundRequestValidatorService';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { getStateRouteUrl } from '../../../modules/state_router/Router';
-import { useTranslation } from 'react-i18next';
 import Paginator from '../../../modules/paginator/components/Paginator';
 import { strLimit } from '../../../helpers/string';
 import FundRequest from '../../../props/models/FundRequest';
@@ -30,11 +29,14 @@ import usePushDanger from '../../../hooks/usePushDanger';
 import useSetProgress from '../../../hooks/useSetProgress';
 import { dateFormat, dateParse } from '../../../helpers/dates';
 import usePaginatorService from '../../../modules/paginator/services/usePaginatorService';
+import EmptyCard from '../../elements/empty-card/EmptyCard';
+import useTranslate from '../../../hooks/useTranslate';
 
 export default function FundRequests() {
-    const { t } = useTranslation();
     const envData = useEnvData();
+
     const openModal = useOpenModal();
+    const translate = useTranslate();
     const appConfigs = useAppConfigs();
     const activeOrganization = useActiveOrganization();
 
@@ -194,7 +196,7 @@ export default function FundRequests() {
                 <div className="flex-row">
                     <div className="flex flex-grow">
                         <div className="card-title">
-                            {t('validation_requests.header.title')} ({fundRequests?.meta.total})
+                            {translate('validation_requests.header.title')} ({fundRequests?.meta.total})
                         </div>
                     </div>
 
@@ -208,7 +210,7 @@ export default function FundRequests() {
                                         filter.setShow(false);
                                     }}>
                                     <em className="mdi mdi-close icon-start" />
-                                    {t('validation_requests.buttons.clear_filter')}
+                                    {translate('validation_requests.buttons.clear_filter')}
                                 </button>
                             )}
 
@@ -220,23 +222,23 @@ export default function FundRequests() {
                                             className="form-control"
                                             value={filter.values.q}
                                             onChange={(e) => filter.update({ q: e.target.value })}
-                                            placeholder={t('validation_requests.labels.search')}
+                                            placeholder={translate('validation_requests.labels.search')}
                                         />
                                     </div>
                                 </div>
                             )}
 
                             <CardHeaderFilter filter={filter}>
-                                <FilterItemToggle show={true} label={t('validation_requests.labels.search')}>
+                                <FilterItemToggle show={true} label={translate('validation_requests.labels.search')}>
                                     <input
                                         type="text"
                                         value={filter.values?.q}
                                         onChange={(e) => filter.update({ q: e.target.value })}
-                                        placeholder={t('validation_requests.labels.search')}
+                                        placeholder={translate('validation_requests.labels.search')}
                                         className="form-control"
                                     />
                                 </FilterItemToggle>
-                                <FilterItemToggle label={t('validation_requests.labels.status')}>
+                                <FilterItemToggle label={translate('validation_requests.labels.status')}>
                                     <SelectControl
                                         className={'form-control'}
                                         options={states}
@@ -246,7 +248,7 @@ export default function FundRequests() {
                                         onChange={(state: string) => filter.update({ state })}
                                     />
                                 </FilterItemToggle>
-                                <FilterItemToggle label={t('validation_requests.labels.assignee_state')}>
+                                <FilterItemToggle label={translate('validation_requests.labels.assignee_state')}>
                                     <SelectControl
                                         className={'form-control'}
                                         options={assignedOptions}
@@ -256,7 +258,7 @@ export default function FundRequests() {
                                         onChange={(assigned: number | null) => filter.update({ assigned })}
                                     />
                                 </FilterItemToggle>
-                                <FilterItemToggle label={t('validation_requests.labels.assigned_to')}>
+                                <FilterItemToggle label={translate('validation_requests.labels.assigned_to')}>
                                     {employees && (
                                         <SelectControl
                                             className={'form-control'}
@@ -269,7 +271,7 @@ export default function FundRequests() {
                                         />
                                     )}
                                 </FilterItemToggle>
-                                <FilterItemToggle label={t('validation_requests.labels.from')}>
+                                <FilterItemToggle label={translate('validation_requests.labels.from')}>
                                     <DatePickerControl
                                         placeholder={'yyyy-MM-dd'}
                                         value={dateParse(filter.values.from?.toString())}
@@ -277,7 +279,7 @@ export default function FundRequests() {
                                     />
                                 </FilterItemToggle>
 
-                                <FilterItemToggle label={t('validation_requests.labels.to')}>
+                                <FilterItemToggle label={translate('validation_requests.labels.to')}>
                                     <DatePickerControl
                                         placeholder={'yyyy-MM-dd'}
                                         value={dateParse(filter.values.to)}
@@ -291,7 +293,7 @@ export default function FundRequests() {
                                             disabled={fundRequests.meta.total == 0}
                                             onClick={() => exportRequests()}>
                                             <em className="mdi mdi-download icon-start" />
-                                            {t('components.dropdown.export', {
+                                            {translate('components.dropdown.export', {
                                                 total: fundRequests.meta.total,
                                             })}
                                         </button>
@@ -313,36 +315,36 @@ export default function FundRequests() {
                                         <ThSortable
                                             className={'th-narrow'}
                                             filter={filter}
-                                            label={t('validation_requests.labels.id')}
+                                            label={translate('validation_requests.labels.id')}
                                             value={'id'}
                                         />
                                         <ThSortable
                                             filter={filter}
-                                            label={t('validation_requests.labels.requester')}
+                                            label={translate('validation_requests.labels.requester')}
                                             value={'requester_email'}
                                         />
                                         <ThSortable
                                             filter={filter}
-                                            label={t('validation_requests.labels.fund')}
+                                            label={translate('validation_requests.labels.fund')}
                                             value={'fund_name'}
                                         />
                                         <ThSortable
                                             filter={filter}
-                                            label={t('validation_requests.labels.created_date')}
+                                            label={translate('validation_requests.labels.created_date')}
                                             value={'created_at'}
                                         />
                                         <ThSortable
                                             filter={filter}
-                                            label={t('validation_requests.labels.assignee')}
+                                            label={translate('validation_requests.labels.assignee')}
                                             value={'assignee_email'}
                                         />
                                         <ThSortable
                                             filter={filter}
-                                            label={t('validation_requests.labels.status')}
+                                            label={translate('validation_requests.labels.status')}
                                             value={'state'}
                                         />
                                         <th className={'nowrap text-right th-narrow'}>
-                                            {t('validation_requests.labels.actions')}
+                                            {translate('validation_requests.labels.actions')}
                                         </th>
                                     </tr>
                                 </thead>
@@ -422,7 +424,7 @@ export default function FundRequests() {
                                                     to={getShowUrl(fundRequest)}
                                                     className="button button-sm button-primary pull-right">
                                                     <em className="mdi mdi-eye-outline icon-start" />
-                                                    {t('validation_requests.buttons.view')}
+                                                    {translate('validation_requests.buttons.view')}
                                                 </NavLink>
                                             </td>
                                         </tr>
@@ -435,11 +437,7 @@ export default function FundRequests() {
             )}
 
             {fundRequests?.meta.total == 0 && (
-                <div className="card-section">
-                    <div className="block block-empty text-center">
-                        <div className="empty-title">{t('validation_requests.labels.empty_table')}</div>
-                    </div>
-                </div>
+                <EmptyCard type={'card-section'} title={translate('validation_requests.labels.empty_table')} />
             )}
 
             {fundRequests?.meta && (

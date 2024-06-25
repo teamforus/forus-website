@@ -5,6 +5,7 @@ import Fund from '../../props/models/Fund';
 import SelectControl from '../elements/select-control/SelectControl';
 import FormError from '../elements/forms/errors/FormError';
 import SelectControlOptionsFund from '../elements/select-control/templates/SelectControlOptionsFund';
+import classNames from 'classnames';
 
 export default function ModalFundSelect({
     modal,
@@ -31,9 +32,14 @@ export default function ModalFundSelect({
 
     return (
         <div
-            className={`modal modal-animated modal-voucher-create ${
-                modal.loading ? 'modal-loading' : null
-            } ${className}`}>
+            className={classNames(
+                'modal',
+                'modal-animated',
+                'modal-voucher-create',
+                modal.loading && 'modal-loading',
+                className,
+            )}
+            data-dusk="modalFundSelect">
             <div className="modal-backdrop" onClick={modal.close} />
 
             <form className="modal-window form" onSubmit={form.submit}>
@@ -63,7 +69,7 @@ export default function ModalFundSelect({
                     <button type="button" className="button button-default" onClick={modal.close}>
                         Annuleren
                     </button>
-                    <button type="submit" className="button button-primary">
+                    <button type="submit" className="button button-primary" data-dusk="modalFundSelectSubmit">
                         Bevestigen
                     </button>
                 </div>

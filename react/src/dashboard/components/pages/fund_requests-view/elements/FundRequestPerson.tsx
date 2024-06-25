@@ -3,8 +3,8 @@ import usePushDanger from '../../../../hooks/usePushDanger';
 import useSetProgress from '../../../../hooks/useSetProgress';
 import React, { useCallback, useState } from 'react';
 import { useFundRequestValidatorService } from '../../../../services/FundRequestValidatorService';
-import { useTranslation } from 'react-i18next';
 import FundRequest from '../../../../props/models/FundRequest';
+import useTranslate from '../../../../hooks/useTranslate';
 
 type FundRequestLocal = FundRequest & { bsn_expanded?: boolean };
 
@@ -15,13 +15,13 @@ export default function FundRequestPerson({
     request: FundRequest;
     organization: Organization;
 }) {
+    const translate = useTranslate();
     const pushDanger = usePushDanger();
     const setProgress = useSetProgress();
+
     const [fundRequest, setFundRequest] = useState<FundRequestLocal>(request);
     const [fetchingPerson, setFetchingPerson] = useState(null);
     const fundRequestService = useFundRequestValidatorService();
-
-    const { t } = useTranslation();
 
     const closePerson = useCallback(() => {
         setFundRequest((fundRequest) => ({ ...fundRequest, bsn_expanded: false }));
@@ -150,7 +150,7 @@ export default function FundRequestPerson({
                                                 (relation, index: number) => (
                                                     <div key={index} className="keyvalue-item">
                                                         <div className="keyvalue-key">
-                                                            {t(
+                                                            {translate(
                                                                 `validation_requests.person.relations.${relationsListKey}`,
                                                                 {
                                                                     index: index + 1,

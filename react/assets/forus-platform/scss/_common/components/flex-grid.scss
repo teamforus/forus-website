@@ -11,7 +11,7 @@ $media_xs: 1000;
     margin-right: -$pad;
     margin-left: -$pad;
 
-    &+flex-row {
+    & + flex-row {
         margin-top: $pad;
     }
 }

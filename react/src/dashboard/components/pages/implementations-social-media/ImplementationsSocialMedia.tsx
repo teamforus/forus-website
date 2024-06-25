@@ -21,6 +21,7 @@ import useTranslate from '../../../hooks/useTranslate';
 import useFilterNext from '../../../modules/filter_next/useFilterNext';
 import { NumberParam } from 'use-query-params';
 import { useParams } from 'react-router-dom';
+import EmptyCard from '../../elements/empty-card/EmptyCard';
 
 export default function ImplementationsSocialMedia() {
     const { id } = useParams();
@@ -162,22 +163,22 @@ export default function ImplementationsSocialMedia() {
             <div className="block block-breadcrumbs">
                 <StateNavLink
                     name={'implementations'}
-                    activeExact={true}
                     params={{ organizationId: activeOrganization.id }}
+                    activeExact={true}
                     className="breadcrumb-item">
                     Webshops
                 </StateNavLink>
                 <StateNavLink
                     name={'implementations-view'}
-                    activeExact={true}
                     params={{ organizationId: activeOrganization.id, id: implementation.id }}
+                    activeExact={true}
                     className="breadcrumb-item">
                     {implementation.name}
                 </StateNavLink>
                 <StateNavLink
                     name={'implementations-cms'}
-                    activeExact={true}
                     params={{ organizationId: activeOrganization.id, id: implementation.id }}
+                    activeExact={true}
                     className="breadcrumb-item">
                     Content Management System
                 </StateNavLink>
@@ -251,11 +252,7 @@ export default function ImplementationsSocialMedia() {
                 )}
 
                 {socialMedias.meta.total == 0 && (
-                    <div className="card-section">
-                        <div className="block block-empty text-center">
-                            <div className="empty-title">Er zijn momenteel geen social media.</div>
-                        </div>
-                    </div>
+                    <EmptyCard type={'card-section'} title={'Er zijn momenteel geen social media.'} />
                 )}
 
                 {socialMedias?.meta && (

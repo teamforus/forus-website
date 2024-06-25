@@ -1,9 +1,9 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import useOfficeService from '../../../../services/OfficeService';
 import FormError from '../../../elements/forms/errors/FormError';
 import UIControlCheckbox from '../../../elements/forms/ui-controls/UIControlCheckbox';
 import OfficeSchedule from '../../../../props/models/OfficeSchedule';
+import useTranslate from '../../../../hooks/useTranslate';
 
 type Errors = { [key: string]: Array<string> };
 
@@ -25,7 +25,7 @@ export default function ScheduleControl({
     schedule: Array<OfficeSchedule>;
     onChange: (schedule: Array<OfficeSchedule>) => void;
 }) {
-    const { t } = useTranslation();
+    const translate = useTranslate();
     const officeService = useOfficeService();
     const [scheduleValue] = useState(schedule);
 
@@ -244,13 +244,13 @@ export default function ScheduleControl({
 
     return (
         <div className="block block-schedule-editor">
-            <div className="schedule-editor-heading">{t('organization_edit.labels.schedule')}</div>
+            <div className="schedule-editor-heading">{translate('organization_edit.labels.schedule')}</div>
             <div>
                 <UIControlCheckbox
                     className="sync"
                     name="office_same_hours"
                     id="office_same_hours"
-                    label={t('organization_edit.labels.weekdays_same_hours')}
+                    label={translate('organization_edit.labels.weekdays_same_hours')}
                     onChange={(e) => toggleSameCheckboxes(e.target.checked, true)}
                     checked={sameHours}
                 />
@@ -260,7 +260,7 @@ export default function ScheduleControl({
                     className="sync"
                     name="weekend_same_hours"
                     id="weekend_same_hours"
-                    label={t('organization_edit.labels.weekends_same_hours')}
+                    label={translate('organization_edit.labels.weekends_same_hours')}
                     onChange={(e) => toggleSameCheckboxes(e.target.checked, false)}
                     checked={sameHoursWeekend}
                 />
@@ -271,11 +271,11 @@ export default function ScheduleControl({
                 <table width="100%">
                     <thead>
                         <tr>
-                            <th>{t('organization_edit.labels.day')}</th>
-                            <th>{t('organization_edit.labels.closed')}</th>
-                            <th>{t('organization_edit.labels.start')}</th>
-                            <th>{t('organization_edit.labels.end')}</th>
-                            <th className="breaks">{t('organization_edit.labels.break')}</th>
+                            <th>{translate('organization_edit.labels.day')}</th>
+                            <th>{translate('organization_edit.labels.closed')}</th>
+                            <th>{translate('organization_edit.labels.start')}</th>
+                            <th>{translate('organization_edit.labels.end')}</th>
+                            <th className="breaks">{translate('organization_edit.labels.break')}</th>
                         </tr>
                     </thead>
                     {weekDaysKeys.map((weekDayNumber) => (
@@ -300,7 +300,7 @@ export default function ScheduleControl({
                                 </td>
                                 <td>
                                     {scheduleData[weekDayNumber]?.is_closed ? (
-                                        <span>{t('organization_edit.labels.closed')}</span>
+                                        <span>{translate('organization_edit.labels.closed')}</span>
                                     ) : (
                                         <select
                                             className="form-control form-control-sm"
@@ -415,7 +415,9 @@ export default function ScheduleControl({
                                     {weekDays[weekDayNumber]}
                                 </div>
                                 {scheduleData[weekDayNumber].is_closed && (
-                                    <div className="flex-col text-right">{t('organization_edit.labels.closed')}</div>
+                                    <div className="flex-col text-right">
+                                        {translate('organization_edit.labels.closed')}
+                                    </div>
                                 )}
                             </div>
                         </div>
@@ -430,7 +432,7 @@ export default function ScheduleControl({
                                         return [...scheduleDetails];
                                     });
                                 }}
-                                label={t('organization_edit.labels.closed')}
+                                label={translate('organization_edit.labels.closed')}
                                 checked={scheduleData[weekDayNumber].is_closed}
                             />
                         </div>

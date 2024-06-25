@@ -320,7 +320,7 @@ export default function OrganizationsFundsShowTopUpsCard({
                     </div>
                 </Fragment>
             ) : (
-                <LoadingCard type={'section-card'} />
+                <LoadingCard type={'card-section'} />
             )}
         </div>
     );

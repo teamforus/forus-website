@@ -20,20 +20,25 @@ export type VouchersTableFiltersProps = {
     q?: string;
     to?: string;
     from?: string;
-    state?: string;
-    in_use?: number;
-    source?: string;
-    granted?: number;
+    type?: string;
+    state?: 'pending' | 'active' | 'deactivated' | 'expired';
+    in_use?: boolean;
+    source?: 'all' | 'user' | 'employee';
+    granted?: boolean;
     fund_id?: number;
-    has_payouts?: number;
+    has_payouts?: boolean;
     implementation_id?: number;
     amount_min?: string;
     amount_max?: string;
-    date_type?: string;
+    date_type?: 'created_at' | 'used_at';
     amount_available_min?: string;
     amount_available_max?: string;
     count_per_identity_min?: string;
     count_per_identity_max?: string;
+    sort_by?: string;
+    sort_order?: string;
+    per_page?: number;
+    page?: number;
 };
 
 export default function VouchersTableFilters({
@@ -120,9 +125,9 @@ export default function VouchersTableFilters({
                                         className="form-control"
                                         propKey={'value'}
                                         allowSearch={false}
-                                        value={filter.values.granted || ''}
+                                        value={filter.values.granted}
                                         options={grantedOptions}
-                                        onChange={(granted: number) => filter.update({ granted })}
+                                        onChange={(granted?: boolean) => filter.update({ granted })}
                                     />
                                 </FilterItemToggle>
 
@@ -133,7 +138,7 @@ export default function VouchersTableFilters({
                                         allowSearch={false}
                                         value={filter.values.source}
                                         options={sourcesOptions}
-                                        onChange={(source: string) => filter.update({ source })}
+                                        onChange={(source: 'all' | 'user' | 'employee') => filter.update({ source })}
                                     />
                                 </FilterItemToggle>
 
@@ -144,7 +149,9 @@ export default function VouchersTableFilters({
                                         allowSearch={false}
                                         value={filter.values.state}
                                         options={voucherStateOptions}
-                                        onChange={(state: string) => filter.update({ state })}
+                                        onChange={(state: 'pending' | 'active' | 'deactivated' | 'expired') =>
+                                            filter.update({ state })
+                                        }
                                     />
                                 </FilterItemToggle>
 
@@ -185,7 +192,7 @@ export default function VouchersTableFilters({
                                         allowSearch={false}
                                         value={filter.values.in_use}
                                         options={inUseOptions}
-                                        onChange={(in_use: number) => filter.update({ in_use })}
+                                        onChange={(in_use: boolean) => filter.update({ in_use })}
                                     />
                                 </FilterItemToggle>
 
@@ -256,7 +263,7 @@ export default function VouchersTableFilters({
                                         allowSearch={false}
                                         value={filter.values.date_type}
                                         options={dateTypeOptions}
-                                        onChange={(date_type: string) => filter.update({ date_type })}
+                                        onChange={(date_type: 'created_at' | 'used_at') => filter.update({ date_type })}
                                     />
                                 </FilterItemToggle>
 
@@ -305,7 +312,7 @@ export default function VouchersTableFilters({
                                         allowSearch={false}
                                         value={filter.values.has_payouts}
                                         options={hasPayoutsOptions}
-                                        onChange={(has_payouts: number) => filter.update({ has_payouts })}
+                                        onChange={(has_payouts: boolean) => filter.update({ has_payouts })}
                                     />
                                 </FilterItemToggle>
 

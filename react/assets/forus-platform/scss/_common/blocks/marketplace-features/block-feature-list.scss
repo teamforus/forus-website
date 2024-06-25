@@ -1,5 +1,5 @@
 &.block-feature-list {
-    color: #282B39;
+    color: #282b39;
     margin-bottom: 32px;
 
     h3 {
@@ -28,7 +28,7 @@
                 align-items: center;
 
                 &:before {
-                    content: " ";
+                    content: ' ';
                     width: 14px;
                     height: 14px;
                     min-width: 14px;
@@ -61,7 +61,7 @@
             .block-feature-list-items {
                 .block-feature-list-item {
                     margin-bottom: 12px;
-                    border-bottom: 1px solid #D4D9DD;
+                    border-bottom: 1px solid #d4d9dd;
                     padding-bottom: 12px;
 
                     &:last-child {
@@ -98,7 +98,7 @@
             gap: 16px;
 
             .block-feature-list-items-title {
-                border-bottom: 1px solid #D4D9DD;
+                border-bottom: 1px solid #d4d9dd;
                 padding-bottom: 16px;
             }
 

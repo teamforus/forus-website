@@ -1,6 +1,5 @@
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { mainContext } from '../../../../contexts/MainContext';
-import { useTranslation } from 'react-i18next';
 import PhotoSelector from '../../../elements/photo-selector/PhotoSelector';
 import useFormBuilder from '../../../../hooks/useFormBuilder';
 import { useOrganizationService } from '../../../../services/OrganizationService';
@@ -25,14 +24,16 @@ import { ResponseError } from '../../../../props/ApiResponses';
 import useEnvData from '../../../../hooks/useEnvData';
 import StateNavLink from '../../../../modules/state_router/StateNavLink';
 import Media from '../../../../props/models/Media';
+import useTranslate from '../../../../hooks/useTranslate';
 
 export default function OrganizationForm() {
-    const { t } = useTranslation();
     const { organizationId } = useParams();
     const { fetchOrganizations } = useContext(mainContext);
     const updateActiveOrganization = useUpdateActiveOrganization();
 
     const authIdentity = useAuthIdentity();
+
+    const translate = useTranslate();
     const pushDanger = usePushDanger();
     const pushSuccess = usePushSuccess();
     const setProgress = useSetProgress();
@@ -170,7 +171,9 @@ export default function OrganizationForm() {
         <form className="card form" onSubmit={form.submit}>
             <div className="card-header">
                 <div className="card-title">
-                    {t(organizationId ? 'organization_edit.header.title_edit' : 'organization_edit.header.title_add')}
+                    {translate(
+                        organizationId ? 'organization_edit.header.title_edit' : 'organization_edit.header.title_add',
+                    )}
                 </div>
             </div>
             <div className="card-section card-section-primary">
@@ -197,7 +200,7 @@ export default function OrganizationForm() {
                     <div className="col col-lg-9 col-lg-12">
                         <div className="form-group form-group-inline">
                             <label htmlFor="name" className="form-label form-label-required">
-                                {t('organization_edit.labels.name')}
+                                {translate('organization_edit.labels.name')}
                             </label>
                             <input
                                 type="text"
@@ -210,7 +213,7 @@ export default function OrganizationForm() {
                         </div>
                         <div className="form-group form-group-inline">
                             <label htmlFor="iban" className="form-label form-label-required">
-                                {t('organization_edit.labels.bank')}
+                                {translate('organization_edit.labels.bank')}
                             </label>
                             <div className="form-offset">
                                 <input
@@ -234,7 +237,7 @@ export default function OrganizationForm() {
             <div className="card-section card-section-primary">
                 <div className="form-group form-group-inline">
                     <label htmlFor="email" className="form-label form-label-required">
-                        {t('organization_edit.labels.mail')}
+                        {translate('organization_edit.labels.mail')}
                     </label>
                     <div className="form-offset">
                         <div className="row">
@@ -264,7 +267,7 @@ export default function OrganizationForm() {
 
                 <div className="form-group form-group-inline">
                     <label htmlFor="phone" className="form-label form-label-required">
-                        {t('organization_edit.labels.phone')}
+                        {translate('organization_edit.labels.phone')}
                     </label>
                     <div className="form-offset">
                         <div className="row">
@@ -294,7 +297,7 @@ export default function OrganizationForm() {
 
                 <div className="form-group form-group-inline">
                     <label htmlFor="website" className="form-label">
-                        {t('organization_edit.labels.website')}
+                        {translate('organization_edit.labels.website')}
                     </label>
                     <div className="form-offset">
                         <div className="row">
@@ -327,7 +330,7 @@ export default function OrganizationForm() {
                     <div className="col col-lg-9 col-lg-12">
                         <div className="form-group form-group-inline">
                             <label htmlFor="" className="form-label form-label-required">
-                                {t('organization_edit.labels.business_type')}
+                                {translate('organization_edit.labels.business_type')}
                             </label>
                             <div className="form-offset">
                                 <SelectControl
@@ -351,14 +354,14 @@ export default function OrganizationForm() {
                     <div className="col col-lg-9 col-lg-12">
                         <div className="form-group form-group-inline">
                             <label htmlFor="description" className="form-label form-label-required">
-                                {t('organization_edit.labels.description')}
+                                {translate('organization_edit.labels.description')}
                             </label>
                             <div className="form-offset">
                                 <MarkdownEditor
                                     value={form.values?.description_html || ''}
                                     onChange={(description) => form.update({ description })}
                                     extendedOptions={true}
-                                    placeholder={t('organization_edit.labels.description')}
+                                    placeholder={translate('organization_edit.labels.description')}
                                 />
                                 <FormError error={form.errors?.description} />
                             </div>
@@ -372,7 +375,7 @@ export default function OrganizationForm() {
                     <div className="col col-lg-9 col-lg-12">
                         <div className="form-group form-group-inline">
                             <label htmlFor="kvk" className="form-label form-label-required">
-                                {t('organization_edit.labels.kvk')}
+                                {translate('organization_edit.labels.kvk')}
                             </label>
                             <input
                                 type="text"
@@ -385,7 +388,7 @@ export default function OrganizationForm() {
                         </div>
                         <div className="form-group form-group-inline">
                             <label htmlFor="kvk" className="form-label form-label-required">
-                                {t('organization_edit.labels.tax')}
+                                {translate('organization_edit.labels.tax')}
                             </label>
                             <input
                                 type="text"
@@ -407,16 +410,16 @@ export default function OrganizationForm() {
                             name={isProvider ? 'offices' : 'organizations'}
                             params={{ organizationId: organization.id }}
                             className="button button-default">
-                            {t('organization_edit.buttons.cancel')}
+                            {translate('organization_edit.buttons.cancel')}
                         </StateNavLink>
                     ) : (
                         <StateNavLink name={'organizations'} className="button button-default">
-                            {t('organization_edit.buttons.cancel')}
+                            {translate('organization_edit.buttons.cancel')}
                         </StateNavLink>
                     )}
 
                     <button type="submit" className="button button-primary">
-                        {t('organization_edit.buttons.create')}
+                        {translate('organization_edit.buttons.create')}
                     </button>
                 </div>
             </div>

@@ -1,13 +1,13 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import Organization from '../../../props/models/Organization';
 import { useNotificationService } from '../../../services/NotificationService';
-import { classList } from '../../../helpers/utils';
 import ClickOutside from '../../../components/elements/click-outside/ClickOutside';
 import { NavLink } from 'react-router-dom';
 import { getStateRouteUrl } from '../../../modules/state_router/Router';
 import { PaginationData } from '../../../props/ApiResponses';
 import Notification from '../../../props/models/Notification';
 import useEnvData from '../../../hooks/useEnvData';
+import classNames from 'classnames';
 
 export default function HeaderNotifications({ organization }: { organization: Organization }) {
     const envData = useEnvData();
@@ -50,7 +50,7 @@ export default function HeaderNotifications({ organization }: { organization: Or
     }, [showNotifications, fetchNotifications, setReadTimeoutDelay, notifications]);
 
     return (
-        <div className={classList(['notifications', showNotifications ? 'active' : null])}>
+        <div className={classNames('notifications', showNotifications && 'active')}>
             <div className="notifications-icons flex">
                 {/* Help link */}
                 {envData?.config?.help_link && (
@@ -65,12 +65,12 @@ export default function HeaderNotifications({ organization }: { organization: Or
 
                 {/* Notifications */}
                 <div
-                    className={classList([
+                    className={classNames(
                         'notifications-icon',
                         parseInt(notifications?.meta?.total_unseen?.toString()) > 0
                             ? 'notifications-icon-updates'
                             : null,
-                    ])}
+                    )}
                     onClick={(e) => {
                         e.stopPropagation();
                         setShowNotifications(!showNotifications);
@@ -111,10 +111,10 @@ export default function HeaderNotifications({ organization }: { organization: Or
                             {notifications?.data.map((notification) => (
                                 <div
                                     key={notification.id}
-                                    className={classList([
+                                    className={classNames(
                                         'notifications-menu-item',
                                         notification.seen ? null : 'notifications-menu-item-new',
-                                    ])}>
+                                    )}>
                                     <div className="notifications-menu-item-details">
                                         <div className="notifications-menu-item-title">{notification.title}</div>
                                         <div className="notifications-menu-item-text">{notification.description}</div>

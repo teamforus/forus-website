@@ -12,6 +12,7 @@ import LoadingCard from '../../../elements/loading-card/LoadingCard';
 import TableRowActions from '../../../elements/tables/TableRowActions';
 import useUpdateProduct from '../hooks/useUpdateProduct';
 import StateNavLink from '../../../../modules/state_router/StateNavLink';
+import EmptyCard from '../../../elements/empty-card/EmptyCard';
 
 type ProductLocal = Product & {
     allowed: boolean;
@@ -261,13 +262,7 @@ export default function BudgetFundSponsorProducts({
                 </div>
             </div>
 
-            {products.meta.total == 0 && (
-                <div className="card-section">
-                    <div className="block block-empty text-center">
-                        <div className="empty-title">Geen aanbiedingen</div>
-                    </div>
-                </div>
-            )}
+            {products.meta.total == 0 && <EmptyCard type={'card-section'} title={'Geen aanbiedingen'} />}
 
             {products.meta && (
                 <div className="card-section card-section-narrow">

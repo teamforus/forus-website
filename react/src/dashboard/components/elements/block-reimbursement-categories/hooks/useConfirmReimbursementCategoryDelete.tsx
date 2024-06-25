@@ -1,28 +1,28 @@
 import React, { useCallback } from 'react';
 import ModalDangerZone from '../../../modals/ModalDangerZone';
 import useOpenModal from '../../../../hooks/useOpenModal';
-import { useTranslation } from 'react-i18next';
+import useTranslate from '../../../../hooks/useTranslate';
 
 export default function useConfirmReimbursementCategoryDelete() {
-    const { t } = useTranslation();
     const openModal = useOpenModal();
+    const translate = useTranslate();
 
     return useCallback((): Promise<boolean> => {
         return new Promise((resolve) =>
             openModal((modal) => (
                 <ModalDangerZone
                     modal={modal}
-                    title={t('modals.danger_zone.remove_reimbursement_category.title')}
-                    description={t('modals.danger_zone.remove_reimbursement_category.description')}
+                    title={translate('modals.danger_zone.remove_reimbursement_category.title')}
+                    description={translate('modals.danger_zone.remove_reimbursement_category.description')}
                     buttonCancel={{
-                        text: t('modals.danger_zone.remove_reimbursement_category.buttons.cancel'),
+                        text: translate('modals.danger_zone.remove_reimbursement_category.buttons.cancel'),
                         onClick: () => {
                             modal.close();
                             resolve(false);
                         },
                     }}
                     buttonSubmit={{
-                        text: t('modals.danger_zone.remove_reimbursement_category.buttons.confirm'),
+                        text: translate('modals.danger_zone.remove_reimbursement_category.buttons.confirm'),
                         onClick: () => {
                             modal.close();
                             resolve(true);
@@ -31,5 +31,5 @@ export default function useConfirmReimbursementCategoryDelete() {
                 />
             )),
         );
-    }, [openModal, t]);
+    }, [openModal, translate]);
 }

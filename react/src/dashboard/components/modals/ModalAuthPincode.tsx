@@ -1,7 +1,5 @@
 import React from 'react';
 import { ModalState } from '../../modules/modals/context/ModalContext';
-import { classList } from '../../helpers/utils';
-import { useTranslation } from 'react-i18next';
 import useFormBuilder from '../../hooks/useFormBuilder';
 import FormError from '../elements/forms/errors/FormError';
 import PincodeControl from '../elements/forms/controls/PincodeControl';
@@ -10,13 +8,14 @@ import ModalNotification from './ModalNotification';
 import useOpenModal from '../../hooks/useOpenModal';
 import useAssetUrl from '../../hooks/useAssetUrl';
 import { ResponseError } from '../../props/ApiResponses';
+import useTranslate from '../../hooks/useTranslate';
+import classNames from 'classnames';
 
 export default function ModalAuthPincode({ modal }: { modal: ModalState }) {
-    const openModal = useOpenModal();
     const assetUrl = useAssetUrl();
+    const translate = useTranslate();
+    const openModal = useOpenModal();
     const identityService = useIdentityService();
-
-    const { t } = useTranslation();
 
     const form = useFormBuilder({ pin_code: '' }, (values) => {
         identityService.authorizeAuthCode(values.pin_code.toString()).then(
@@ -26,14 +25,14 @@ export default function ModalAuthPincode({ modal }: { modal: ModalState }) {
                 openModal((modal) => (
                     <ModalNotification
                         modal={modal}
-                        title={t('popup_auth.pin_code.confirmation.title')}
-                        description={t('popup_auth.pin_code.confirmation.description')}
+                        title={translate('popup_auth.pin_code.confirmation.title')}
+                        description={translate('popup_auth.pin_code.confirmation.description')}
                         buttonSubmit={{
-                            text: t('popup_auth.pin_code.confirmation.buttons.confirm'),
+                            text: translate('popup_auth.pin_code.confirmation.buttons.confirm'),
                             onClick: () => modal.close(),
                         }}
                         buttonCancel={{
-                            text: t('popup_auth.pin_code.confirmation.buttons.try_again'),
+                            text: translate('popup_auth.pin_code.confirmation.buttons.try_again'),
                             onClick: () => openModal((modal) => <ModalAuthPincode modal={modal} />),
                         }}
                     />
@@ -52,7 +51,7 @@ export default function ModalAuthPincode({ modal }: { modal: ModalState }) {
 
     return (
         <div
-            className={classList(['modal', 'modal-pin-code', 'modal-animated', modal.loading ? 'modal-loading' : null])}
+            className={classNames('modal', 'modal-pin-code', 'modal-animated', modal.loading && 'modal-loading')}
             aria-describedby="pinCodeDialogSubtitle"
             aria-labelledby="pinCodeDialogTitle"
             role="dialog">
@@ -104,10 +103,10 @@ export default function ModalAuthPincode({ modal }: { modal: ModalState }) {
                                 <img src={assetUrl('/assets/img/icon-auth/me-app-fill-pin-code.svg')} alt={''} />
                             </div>
                             <h2 className="app-instructions-title" id="pinCodeDialogTitle">
-                                {`Stap 3: ${t('open_in_me.app_header.title')}`}
+                                {`Stap 3: ${translate('open_in_me.app_header.title')}`}
                             </h2>
                             <div className="app-instructions-subtitle" id="pinCodeDialogSubtitle">
-                                {t('open_in_me.app_header.subtitle')}
+                                {translate('open_in_me.app_header.subtitle')}
                             </div>
                             <div className="form-group">
                                 <PincodeControl
@@ -121,13 +120,13 @@ export default function ModalAuthPincode({ modal }: { modal: ModalState }) {
                 </div>
                 <div className="modal-footer text-center">
                     <button className="button button-default" type="button" onClick={modal.close}>
-                        {t('modal.buttons.cancel')}
+                        {translate('modal.buttons.cancel')}
                     </button>
                     <button
                         className="button button-primary"
                         type="submit"
                         disabled={form.isLocked || !form.values.pin_code}>
-                        {t('open_in_me.authorize.submit')}
+                        {translate('open_in_me.authorize.submit')}
                     </button>
                 </div>
             </form>
