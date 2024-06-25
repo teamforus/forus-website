@@ -38,7 +38,11 @@
     @import 'blocks/block-provider-product';
     @import 'blocks/block-notifications';
     @import '../../../forus-webshop/scss/_common/components/ui-controls';
-    @import '../../../forus-webshop/scss/_common/sections/blocks/block-sign_up';
+}
+
+@import '../../../forus-webshop/scss/_common/sections/blocks/block-sign_up';
+
+.block {
     @import 'blocks/block-fund_types';
     @import 'blocks/block-subsidy-product-overview';
     @import 'blocks/block-app_download.scss';
