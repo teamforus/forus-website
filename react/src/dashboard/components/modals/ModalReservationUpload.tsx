@@ -7,7 +7,6 @@ import Papa from 'papaparse';
 import { isEmpty } from 'lodash';
 import useAuthIdentity from '../../hooks/useAuthIdentity';
 import { dateFormat } from '../../helpers/dates';
-import { useTranslation } from 'react-i18next';
 import usePushSuccess from '../../hooks/usePushSuccess';
 import usePushDanger from '../../hooks/usePushDanger';
 import { ResponseError } from '../../props/ApiResponses';
@@ -16,6 +15,7 @@ import useOpenModal from '../../hooks/useOpenModal';
 import ModalDuplicatesPicker from './ModalDuplicatesPicker';
 import CSVProgressBar from '../elements/csv-progress-bar/CSVProgressBar';
 import classNames from 'classnames';
+import useTranslate from '../../hooks/useTranslate';
 
 export default function ModalReservationUpload({
     modal,
@@ -28,8 +28,11 @@ export default function ModalReservationUpload({
     onCreated: () => void;
     organization: Organization;
 }) {
-    const { t } = useTranslation();
     const authIdentity = useAuthIdentity();
+
+    const openModal = useOpenModal();
+    const translate = useTranslate();
+
     const fileService = useFileService();
     const productReservationService = useProductReservationService();
 
@@ -43,7 +46,6 @@ export default function ModalReservationUpload({
     const [csvFile, setCsvFile] = useState(null);
     const [hideModal, setHideModal] = useState(false);
 
-    const openModal = useOpenModal();
     const fileInput = useRef(null);
     const dropBlock = useRef(null);
 
@@ -67,13 +69,13 @@ export default function ModalReservationUpload({
 
     const makeDefaultNote = useCallback(
         function (row: object): string {
-            return t('reservations.csv.default_note', {
+            return translate('reservations.csv.default_note', {
                 ...row,
                 upload_date: dateFormat(new Date()),
                 uploader_email: authIdentity?.email || authIdentity?.address,
             });
         },
-        [authIdentity?.address, authIdentity?.email, t],
+        [authIdentity?.address, authIdentity?.email, translate],
     );
 
     const validateCsvData = useCallback(function (data) {
@@ -411,7 +413,7 @@ export default function ModalReservationUpload({
                                         <div className="text-center">
                                             {!loading && (
                                                 <button className="button button-primary" onClick={uploadToServer}>
-                                                    {t('csv_upload.buttons.upload')}
+                                                    {translate('csv_upload.buttons.upload')}
                                                 </button>
                                             )}
                                         </div>
@@ -423,7 +425,7 @@ export default function ModalReservationUpload({
                 </div>
                 <div className="modal-footer text-center">
                     <button className="button button-primary" onClick={closeModal} id="close">
-                        {t('modal_funds_add.buttons.close')}
+                        {translate('modal_funds_add.buttons.close')}
                     </button>
                 </div>
             </div>

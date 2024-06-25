@@ -6,7 +6,6 @@ import Papa from 'papaparse';
 import { chunk, isEmpty } from 'lodash';
 import useAuthIdentity from '../../hooks/useAuthIdentity';
 import { dateFormat } from '../../helpers/dates';
-import { useTranslation } from 'react-i18next';
 import usePushSuccess from '../../hooks/usePushSuccess';
 import usePushDanger from '../../hooks/usePushDanger';
 import { ResponseError } from '../../props/ApiResponses';
@@ -15,6 +14,7 @@ import useOpenModal from '../../hooks/useOpenModal';
 import ModalDuplicatesPicker from './ModalDuplicatesPicker';
 import useTransactionService from '../../services/TransactionService';
 import CSVProgressBar from '../elements/csv-progress-bar/CSVProgressBar';
+import useTranslate from '../../hooks/useTranslate';
 
 export default function ModalVoucherTransactionsUpload({
     modal,
@@ -27,7 +27,7 @@ export default function ModalVoucherTransactionsUpload({
     onCreated: () => void;
     organization: Organization;
 }) {
-    const { t } = useTranslation();
+    const translate = useTranslate();
     const authIdentity = useAuthIdentity();
 
     const fileService = useFileService();
@@ -65,13 +65,13 @@ export default function ModalVoucherTransactionsUpload({
 
     const makeDefaultNote = useCallback(
         (row: object): string => {
-            return t('transactions.csv.default_note', {
+            return translate('transactions.csv.default_note', {
                 ...row,
                 upload_date: dateFormat(new Date()),
                 uploader_email: authIdentity?.email || authIdentity?.address,
             });
         },
-        [authIdentity?.address, authIdentity?.email, t],
+        [authIdentity?.address, authIdentity?.email, translate],
     );
 
     const validateCsvData = useCallback(
@@ -499,7 +499,7 @@ export default function ModalVoucherTransactionsUpload({
                                                     className="button button-primary"
                                                     onClick={uploadToServer}
                                                     data-dusk="uploadFileButton">
-                                                    {t('csv_upload.buttons.upload')}
+                                                    {translate('csv_upload.buttons.upload')}
                                                 </button>
                                             )}
                                         </div>
@@ -516,7 +516,7 @@ export default function ModalVoucherTransactionsUpload({
                         disabled={loading}
                         id="close"
                         data-dusk="closeModalButton">
-                        {t('modal_funds_add.buttons.close')}
+                        {translate('modal_funds_add.buttons.close')}
                     </button>
                 </div>
             </div>

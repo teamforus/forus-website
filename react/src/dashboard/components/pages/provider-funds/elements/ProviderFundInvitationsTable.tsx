@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import useFilter from '../../../../hooks/useFilter';
 import { PaginationData, ResponseError } from '../../../../props/ApiResponses';
 import Organization from '../../../../props/models/Organization';
@@ -14,6 +13,8 @@ import useFundProviderInvitationsService from '../../../../services/useFundProvi
 import { strLimit } from '../../../../helpers/string';
 import useTableToggles from '../../../../hooks/useTableToggles';
 import usePaginatorService from '../../../../modules/paginator/services/usePaginatorService';
+import EmptyCard from '../../../elements/empty-card/EmptyCard';
+import useTranslate from '../../../../hooks/useTranslate';
 
 type FundProviderInvitationLocal = FundProviderInvitation & {
     status_class?: string;
@@ -29,14 +30,13 @@ export default function ProviderFundInvitationsTable({
     organization: Organization;
     onChange: () => void;
 }) {
-    const { t } = useTranslation();
-
     const [loading, setLoading] = useState(true);
 
     const assetUrl = useAssetUrl();
-    const setProgress = useSetProgress();
+    const translate = useTranslate();
     const pushDanger = usePushDanger();
     const pushSuccess = usePushSuccess();
+    const setProgress = useSetProgress();
 
     const paginatorService = usePaginatorService();
     const fundProviderInvitationsService = useFundProviderInvitationsService();
@@ -85,7 +85,7 @@ export default function ProviderFundInvitationsTable({
                 ...item,
                 ...(item.state
                     ? {
-                          status_text: t(`provider_funds.status.${item.expired ? 'expired' : item.state}`),
+                          status_text: translate(`provider_funds.status.${item.expired ? 'expired' : item.state}`),
                           status_class:
                               item.state == 'pending' && !item.expired
                                   ? 'tag-warning'
@@ -94,12 +94,12 @@ export default function ProviderFundInvitationsTable({
                                   : 'tag-success',
                       }
                     : {
-                          status_text: t('provider_funds.status.closed'),
+                          status_text: translate('provider_funds.status.closed'),
                           status_class: 'tag-default',
                       }),
             }));
         },
-        [t],
+        [translate],
     );
 
     const fetchInvitations = useCallback(
@@ -136,7 +136,7 @@ export default function ProviderFundInvitationsTable({
                 <div className="flex">
                     <div className="flex flex-grow">
                         <div className="card-title">
-                            {t(`provider_funds.title.${type}`)}
+                            {translate(`provider_funds.title.${type}`)}
 
                             {!loading && selected.length > 0 && ` (${selected.length}/${invitations.data.length})`}
                             {!loading && selected.length == 0 && ` (${invitations.meta.total})`}
@@ -149,7 +149,7 @@ export default function ProviderFundInvitationsTable({
                                 className="button button-primary button-sm"
                                 disabled={selectedMeta?.selected_active?.length !== selected.length}
                                 onClick={() => acceptInvitations(selectedMeta?.selected_active)}>
-                                {t('provider_funds.labels.accept_invitation')}
+                                {translate('provider_funds.labels.accept_invitation')}
                             </button>
                         )}
 
@@ -182,17 +182,19 @@ export default function ProviderFundInvitationsTable({
                                             </th>
                                         )}
 
-                                        <th>{t('provider_funds.labels.fund')}</th>
-                                        <th>{t('provider_funds.labels.organization')}</th>
-                                        <th>{t('provider_funds.labels.start_date')}</th>
-                                        <th>{t('provider_funds.labels.end_date')}</th>
+                                        <th>{translate('provider_funds.labels.fund')}</th>
+                                        <th>{translate('provider_funds.labels.organization')}</th>
+                                        <th>{translate('provider_funds.labels.start_date')}</th>
+                                        <th>{translate('provider_funds.labels.end_date')}</th>
 
                                         <th className={type !== 'invitations' ? 'text-right' : ''}>
-                                            {t('provider_funds.labels.status')}
+                                            {translate('provider_funds.labels.status')}
                                         </th>
 
                                         {type === 'invitations' && (
-                                            <th className="nowrap text-right">{t('provider_funds.labels.actions')}</th>
+                                            <th className="nowrap text-right">
+                                                {translate('provider_funds.labels.actions')}
+                                            </th>
                                         )}
                                     </tr>
 
@@ -263,7 +265,7 @@ export default function ProviderFundInvitationsTable({
                                                             className="button button-primary button-sm"
                                                             onClick={() => acceptInvitations([invitation])}>
                                                             <em className="mdi mdi-check-circle icon-start" />
-                                                            {t('provider_funds.labels.accept_invitation')}
+                                                            {translate('provider_funds.labels.accept_invitation')}
                                                         </div>
                                                     </div>
                                                 </td>
@@ -286,11 +288,7 @@ export default function ProviderFundInvitationsTable({
             )}
 
             {!loading && invitations?.meta?.total == 0 && (
-                <div className="card-section">
-                    <div className="block block-empty text-center">
-                        <div className="empty-title">{t(`provider_funds.empty_block.${type}`)}</div>
-                    </div>
-                </div>
+                <EmptyCard type={'card-section'} title={translate(`provider_funds.empty_block.${type}`)} />
             )}
 
             {invitations?.meta && (

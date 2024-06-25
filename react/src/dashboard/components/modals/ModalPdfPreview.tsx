@@ -1,8 +1,8 @@
 import React from 'react';
 import { ModalState } from '../../modules/modals/context/ModalContext';
 import { classList } from '../../helpers/utils';
-import { useTranslation } from 'react-i18next';
 import PdfPreview from '../elements/pdf-preview/PdfPreview';
+import useTranslate from '../../hooks/useTranslate';
 
 export default function ModalPdfPreview({
     modal,
@@ -13,7 +13,7 @@ export default function ModalPdfPreview({
     className?: string;
     rawPdfFile?: Blob;
 }) {
-    const { t } = useTranslation();
+    const translate = useTranslate();
 
     return (
         <div
@@ -28,7 +28,7 @@ export default function ModalPdfPreview({
 
             <div className="modal-window">
                 <a className="mdi mdi-close modal-close" onClick={modal.close} role="button" />
-                <div className="modal-header">{t('modal_pdf_preview.header.title')}</div>
+                <div className="modal-header">{translate('modal_pdf_preview.header.title')}</div>
                 <div className="modal-body">
                     <div className="modal-section">
                         <PdfPreview className={'block block-pdf-preview'} rawPdfFile={rawPdfFile} />

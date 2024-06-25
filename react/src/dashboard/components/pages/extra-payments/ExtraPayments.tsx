@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import useActiveOrganization from '../../../hooks/useActiveOrganization';
-import { useTranslation } from 'react-i18next';
 import LoadingCard from '../../elements/loading-card/LoadingCard';
 import useSetProgress from '../../../hooks/useSetProgress';
 import useExtraPaymentService from '../../../services/ExtraPaymentService';
@@ -18,9 +17,11 @@ import CardHeaderFilter from '../../elements/tables/elements/CardHeaderFilter';
 import Fund from '../../../props/models/Fund';
 import { useFundService } from '../../../services/FundService';
 import usePaginatorService from '../../../modules/paginator/services/usePaginatorService';
+import EmptyCard from '../../elements/empty-card/EmptyCard';
+import useTranslate from '../../../hooks/useTranslate';
 
 export default function ExtraPayments() {
-    const { t } = useTranslation();
+    const translate = useTranslate();
     const fundService = useFundService();
     const activeOrganization = useActiveOrganization();
     const extraPaymentService = useExtraPaymentService();
@@ -84,7 +85,7 @@ export default function ExtraPayments() {
                 <div className="flex-row">
                     <div className="flex flex-grow">
                         <div className="card-title">
-                            {t('extra_payments.header.title')} ({extraPayments.meta.total})
+                            {translate('extra_payments.header.title')} ({extraPayments.meta.total})
                         </div>
                     </div>
                     <div className="flex">
@@ -97,7 +98,7 @@ export default function ExtraPayments() {
                                         filter.setShow(false);
                                     }}>
                                     <em className="mdi mdi-close icon-start" />
-                                    {t('extra_payments.buttons.clear_filter')}
+                                    {translate('extra_payments.buttons.clear_filter')}
                                 </button>
                             )}
 
@@ -109,23 +110,23 @@ export default function ExtraPayments() {
                                             className="form-control"
                                             value={filter.values.q}
                                             onChange={(e) => filter.update({ q: e.target.value })}
-                                            placeholder={t('extra_payments.labels.search')}
+                                            placeholder={translate('extra_payments.labels.search')}
                                         />
                                     </div>
                                 </div>
                             )}
 
                             <CardHeaderFilter filter={filter}>
-                                <FilterItemToggle show={true} label={t('extra_payments.labels.search')}>
+                                <FilterItemToggle show={true} label={translate('extra_payments.labels.search')}>
                                     <input
                                         type="text"
                                         value={filter.values?.q}
                                         onChange={(e) => filter.update({ q: e.target.value })}
-                                        placeholder={t('extra_payments.labels.search')}
+                                        placeholder={translate('extra_payments.labels.search')}
                                         className="form-control"
                                     />
                                 </FilterItemToggle>
-                                <FilterItemToggle label={t('extra_payments.labels.fund')}>
+                                <FilterItemToggle label={translate('extra_payments.labels.fund')}>
                                     <SelectControl
                                         className={'form-control'}
                                         options={funds}
@@ -151,63 +152,63 @@ export default function ExtraPayments() {
                                         <ThSortable
                                             className="th-narrow nowrap"
                                             filter={filter}
-                                            label={t('extra_payments.labels.id')}
+                                            label={translate('extra_payments.labels.id')}
                                             value="id"
                                         />
 
                                         <ThSortable
                                             className={'nowrap'}
                                             filter={filter}
-                                            label={t('extra_payments.labels.price')}
+                                            label={translate('extra_payments.labels.price')}
                                             value="price"
                                         />
 
                                         <ThSortable
                                             className={'nowrap'}
                                             filter={filter}
-                                            label={t('extra_payments.labels.amount_extra')}
+                                            label={translate('extra_payments.labels.amount_extra')}
                                             value="amount"
                                         />
 
                                         <ThSortable
                                             className={'nowrap'}
                                             filter={filter}
-                                            label={t('extra_payments.labels.method')}
+                                            label={translate('extra_payments.labels.method')}
                                             value="method"
                                         />
 
                                         <ThSortable
                                             className={'nowrap'}
                                             filter={filter}
-                                            label={t('extra_payments.labels.paid_at')}
+                                            label={translate('extra_payments.labels.paid_at')}
                                             value="paid_at"
                                         />
 
                                         <ThSortable
                                             className={'nowrap'}
                                             filter={filter}
-                                            label={t('extra_payments.labels.fund')}
+                                            label={translate('extra_payments.labels.fund')}
                                             value="fund_name"
                                         />
 
                                         <ThSortable
                                             className={'nowrap'}
                                             filter={filter}
-                                            label={t('extra_payments.labels.product')}
+                                            label={translate('extra_payments.labels.product')}
                                             value="product_name"
                                         />
 
                                         <ThSortable
                                             className={'nowrap'}
                                             filter={filter}
-                                            label={t('extra_payments.labels.provider')}
+                                            label={translate('extra_payments.labels.provider')}
                                             value="provider_name"
                                         />
 
                                         <ThSortable
                                             className={'th-narrow text-right'}
                                             filter={filter}
-                                            label={t('extra_payments.labels.actions')}
+                                            label={translate('extra_payments.labels.actions')}
                                         />
                                     </tr>
                                     {extraPayments?.data.map((extraPayment) => (
@@ -258,11 +259,7 @@ export default function ExtraPayments() {
             )}
 
             {!loading && extraPayments.meta.total === 0 && (
-                <div className="card-section">
-                    <div className="block block-empty text-center">
-                        <div className="empty-title">Geen extra payments gevonden</div>
-                    </div>
-                </div>
+                <EmptyCard type="card-section" title="Geen extra payments gevonden" />
             )}
 
             {!loading && extraPayments?.meta && (

@@ -4,7 +4,6 @@ import { useEmployeeService } from '../../../services/EmployeeService';
 import { NavLink } from 'react-router-dom';
 import { hasPermission } from '../../../helpers/utils';
 import { getStateRouteUrl } from '../../../modules/state_router/Router';
-import { t } from 'i18next';
 import useFilter from '../../../hooks/useFilter';
 import { strLimit } from '../../../helpers/string';
 import Employee from '../../../props/models/Employee';
@@ -24,12 +23,16 @@ import useOpenModal from '../../../hooks/useOpenModal';
 import useActiveOrganization from '../../../hooks/useActiveOrganization';
 import useEnvData from '../../../hooks/useEnvData';
 import usePaginatorService from '../../../modules/paginator/services/usePaginatorService';
+import EmptyCard from '../../elements/empty-card/EmptyCard';
+import useTranslate from '../../../hooks/useTranslate';
 
 export default function Employees() {
     const envData = useEnvData();
-    const pushSuccess = usePushSuccess();
-    const pushDanger = usePushDanger();
+
+    const translate = useTranslate();
     const openModal = useOpenModal();
+    const pushDanger = usePushDanger();
+    const pushSuccess = usePushSuccess();
     const authIdentity = useAuthIdentity();
     const activeOrganization = useActiveOrganization();
 
@@ -156,11 +159,11 @@ export default function Employees() {
             openModal((modal) => (
                 <ModalDangerZone
                     modal={modal}
-                    title={t('modals.danger_zone.remove_organization_employees.title')}
-                    description={t('modals.danger_zone.remove_organization_employees.description')}
+                    title={translate('modals.danger_zone.remove_organization_employees.title')}
+                    description={translate('modals.danger_zone.remove_organization_employees.description')}
                     buttonCancel={{
                         onClick: modal.close,
-                        text: t('modals.danger_zone.remove_organization_employees.buttons.cancel'),
+                        text: translate('modals.danger_zone.remove_organization_employees.buttons.cancel'),
                     }}
                     buttonSubmit={{
                         onClick: () => {
@@ -173,12 +176,12 @@ export default function Employees() {
                                 })
                                 .catch((res: ResponseError) => pushDanger(res.data.message));
                         },
-                        text: t('modals.danger_zone.remove_organization_employees.buttons.confirm'),
+                        text: translate('modals.danger_zone.remove_organization_employees.buttons.confirm'),
                     }}
                 />
             ));
         },
-        [openModal, employeeService, activeOrganization.id, filter, pushSuccess, pushDanger],
+        [openModal, translate, employeeService, activeOrganization.id, filter, pushSuccess, pushDanger],
     );
 
     const canEditEmployee = useCallback(
@@ -216,7 +219,7 @@ export default function Employees() {
                                             organizationId: activeOrganization.id,
                                         })}>
                                         <em className="mdi mdi-security icon-start" />
-                                        {t('organization_employees.buttons.security')}
+                                        {translate('organization_employees.buttons.security')}
                                     </NavLink>
                                 )}
                             <button
@@ -224,7 +227,7 @@ export default function Employees() {
                                 className="button button-primary button-sm"
                                 onClick={() => exportEmployees()}>
                                 <span className="mdi mdi-download icon-start" />
-                                {t('organization_employees.buttons.export')}
+                                {translate('organization_employees.buttons.export')}
                             </button>
                             <button
                                 type="button"
@@ -232,7 +235,7 @@ export default function Employees() {
                                 data-dusk={'addEmployee'}
                                 onClick={() => editEmployee()}>
                                 <em className="mdi mdi-plus-circle icon-start" />
-                                {t('organization_employees.buttons.add')}
+                                {translate('organization_employees.buttons.add')}
                             </button>
 
                             <div className="form">
@@ -259,11 +262,13 @@ export default function Employees() {
                             <table className="table">
                                 <thead>
                                     <tr>
-                                        <th>{t('organization_employees.labels.email')}</th>
-                                        <th>{t('organization_employees.labels.branch_name_id')}</th>
-                                        <th>{t('organization_employees.labels.branch_number')}</th>
-                                        <th>{t('organization_employees.labels.auth_2fa')}</th>
-                                        <th className={'text-right'}>{t('organization_employees.labels.actions')}</th>
+                                        <th>{translate('organization_employees.labels.email')}</th>
+                                        <th>{translate('organization_employees.labels.branch_name_id')}</th>
+                                        <th>{translate('organization_employees.labels.branch_number')}</th>
+                                        <th>{translate('organization_employees.labels.auth_2fa')}</th>
+                                        <th className={'text-right'}>
+                                            {translate('organization_employees.labels.actions')}
+                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -279,7 +284,7 @@ export default function Employees() {
                                                     </div>
                                                 ) : (
                                                     <div className="text-muted">
-                                                        {t('organization_employees.labels.owner')}
+                                                        {translate('organization_employees.labels.owner')}
                                                     </div>
                                                 )}
                                             </td>
@@ -332,7 +337,7 @@ export default function Employees() {
                                                             className="text-primary-light"
                                                             data-dusk={'btnEmployeeEdit'}
                                                             onClick={() => editEmployee(employee)}>
-                                                            {t('organization_employees.buttons.adjust')}
+                                                            {translate('organization_employees.buttons.adjust')}
                                                         </a>
                                                     )}
 
@@ -343,7 +348,7 @@ export default function Employees() {
                                                                 className="text-danger"
                                                                 data-dusk={'btnEmployeeDelete'}
                                                                 onClick={() => deleteEmployee(employee)}>
-                                                                {t('organization_employees.buttons.delete')}
+                                                                {translate('organization_employees.buttons.delete')}
                                                             </a>
                                                         </Fragment>
                                                     )}
@@ -357,11 +362,13 @@ export default function Employees() {
                                                             <a
                                                                 className="text-primary-light"
                                                                 onClick={() => transferOwnership(adminEmployees)}>
-                                                                {t('organization_employees.buttons.transfer_ownership')}
+                                                                {translate(
+                                                                    'organization_employees.buttons.transfer_ownership',
+                                                                )}
                                                             </a>
                                                         ) : (
                                                             <span className={'text-muted'}>
-                                                                {t('organization_employees.labels.owner')}
+                                                                {translate('organization_employees.labels.owner')}
                                                             </span>
                                                         )}
                                                     </Fragment>
@@ -376,13 +383,7 @@ export default function Employees() {
                 </div>
             )}
 
-            {employees?.meta.total == 0 && (
-                <div className="card-section">
-                    <div className="block block-empty text-center">
-                        <div className="empty-title">Geen medewerkers gevonden</div>
-                    </div>
-                </div>
-            )}
+            {employees?.meta.total == 0 && <EmptyCard type="card-section" title="Geen medewerkers gevonden" />}
 
             {employees?.meta && (
                 <div className="card-section">

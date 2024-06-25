@@ -5,7 +5,6 @@ import StateNavLink from '../../../../modules/state_router/StateNavLink';
 import Paginator from '../../../../modules/paginator/components/Paginator';
 import Transaction from '../../../../props/models/Transaction';
 import { PaginationData } from '../../../../props/ApiResponses';
-import { useTranslation } from 'react-i18next';
 import useTransactionExportService from '../../../../services/exports/useTransactionExportService';
 import Organization from '../../../../props/models/Organization';
 import TransactionBulk from '../../../../props/models/TransactionBulk';
@@ -16,6 +15,7 @@ import usePushDanger from '../../../../hooks/usePushDanger';
 import useSetProgress from '../../../../hooks/useSetProgress';
 import useEnvData from '../../../../hooks/useEnvData';
 import LoadingCard from '../../../elements/loading-card/LoadingCard';
+import useTranslate from '../../../../hooks/useTranslate';
 
 export default function TransactionBulkTransactionsTable({
     organization,
@@ -24,9 +24,9 @@ export default function TransactionBulkTransactionsTable({
     organization: Organization;
     transactionBulk: TransactionBulk;
 }) {
-    const { t } = useTranslation();
     const envData = useEnvData();
 
+    const translate = useTranslate();
     const pushDanger = usePushDanger();
     const setProgress = useSetProgress();
 
@@ -83,7 +83,7 @@ export default function TransactionBulkTransactionsTable({
                 <div className="flex-row">
                     <div className="flex flex-grow">
                         <div className="card-title">
-                            {`${t('transactions.header.title')} (${transactions.meta.total})`}
+                            {`${translate('transactions.header.title')} (${transactions.meta.total})`}
                         </div>
                     </div>
                     <div className="flex">
@@ -100,46 +100,58 @@ export default function TransactionBulkTransactionsTable({
                         <table className="table">
                             <thead>
                                 <tr>
-                                    <ThSortable filter={filter} label={t('transactions.labels.id')} value="id" />
-
-                                    <ThSortable filter={filter} label={t('transactions.labels.uid')} value="uid" />
-
-                                    <ThSortable filter={filter} label={t('transactions.labels.price')} value="amount" />
+                                    <ThSortable
+                                        filter={filter}
+                                        label={translate('transactions.labels.id')}
+                                        value="id"
+                                    />
 
                                     <ThSortable
                                         filter={filter}
-                                        label={t('transactions.labels.date')}
+                                        label={translate('transactions.labels.uid')}
+                                        value="uid"
+                                    />
+
+                                    <ThSortable
+                                        filter={filter}
+                                        label={translate('transactions.labels.price')}
+                                        value="amount"
+                                    />
+
+                                    <ThSortable
+                                        filter={filter}
+                                        label={translate('transactions.labels.date')}
                                         value="created_at"
                                     />
 
                                     <ThSortable
                                         filter={filter}
-                                        label={t('transactions.labels.fund')}
+                                        label={translate('transactions.labels.fund')}
                                         value="fund_name"
                                     />
 
                                     <ThSortable
                                         filter={filter}
-                                        label={t('transactions.labels.provider')}
+                                        label={translate('transactions.labels.provider')}
                                         value="provider_name"
                                     />
 
                                     <ThSortable
                                         filter={filter}
-                                        label={t('transactions.labels.product_name')}
+                                        label={translate('transactions.labels.product_name')}
                                         value="product_name"
                                     />
 
                                     <ThSortable
                                         filter={filter}
-                                        label={t('transactions.labels.status')}
+                                        label={translate('transactions.labels.status')}
                                         value="status"
                                     />
 
                                     <ThSortable
                                         className={'th-narrow text-right'}
                                         filter={filter}
-                                        label={t('transactions.labels.action')}
+                                        label={translate('transactions.labels.action')}
                                     />
                                 </tr>
                             </thead>

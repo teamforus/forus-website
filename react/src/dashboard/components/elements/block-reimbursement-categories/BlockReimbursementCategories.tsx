@@ -1,5 +1,4 @@
 import React, { Fragment, useCallback, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { PaginationData, ResponseError } from '../../../props/ApiResponses';
 import ReimbursementCategory from '../../../props/models/ReimbursementCategory';
 import Paginator from '../../../modules/paginator/components/Paginator';
@@ -14,6 +13,7 @@ import usePushDanger from '../../../hooks/usePushDanger';
 import ModalReimbursementCategoryEdit from '../../modals/ModalReimbursementCategoryEdit';
 import useConfirmReimbursementCategoryDelete from './hooks/useConfirmReimbursementCategoryDelete';
 import useSetProgress from '../../../hooks/useSetProgress';
+import useTranslate from '../../../hooks/useTranslate';
 
 export default function BlockReimbursementCategories({
     compact = false,
@@ -22,10 +22,10 @@ export default function BlockReimbursementCategories({
     compact?: boolean;
     createCategoryRef?: React.MutableRefObject<() => Promise<boolean>>;
 }) {
-    const { t } = useTranslation();
     const activeOrganization = useActiveOrganization();
 
     const openModal = useOpenModal();
+    const translate = useTranslate();
     const pushDanger = usePushDanger();
     const pushSuccess = usePushSuccess();
     const setProgress = useSetProgress();
@@ -123,7 +123,7 @@ export default function BlockReimbursementCategories({
                                         id="add_reimbursement_category"
                                         onClick={() => editReimbursementCategory()}>
                                         <em className="mdi mdi-plus-circle icon-start" />
-                                        {t('Toevoegen')}
+                                        {translate('Toevoegen')}
                                     </a>
                                 </div>
                             </div>
@@ -159,7 +159,7 @@ export default function BlockReimbursementCategories({
                                                                 editReimbursementCategory(reimbursementCategory)
                                                             }>
                                                             <em className="mdi mdi-pen icon-start" />
-                                                            {t('Bewerken')}
+                                                            {translate('Bewerken')}
                                                         </a>
                                                         <button
                                                             className="button button-danger button-icon"

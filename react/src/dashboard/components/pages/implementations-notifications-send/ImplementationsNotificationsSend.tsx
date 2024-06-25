@@ -27,6 +27,7 @@ import SystemNotificationTemplateEditor from '../implementations-notifications-e
 import SystemNotification from '../../../props/models/SystemNotification';
 import useFundIdentitiesExportService from '../../../services/exports/useFundIdentitiesExportService';
 import useTranslate from '../../../hooks/useTranslate';
+import EmptyCard from "../../elements/empty-card/EmptyCard";
 
 export default function ImplementationsNotificationsSend() {
     const { id } = useParams();
@@ -397,6 +398,7 @@ export default function ImplementationsNotificationsSend() {
                     <StateNavLink
                         name={'implementation-notifications'}
                         params={{ organizationId: activeOrganization.id, id: implementation.id }}
+                        activeExact={true}
                         className="breadcrumb-item">
                         Systeemberichten
                     </StateNavLink>
@@ -591,17 +593,14 @@ export default function ImplementationsNotificationsSend() {
                             )}
 
                             {showIdentities && identities.meta.total == 0 && (
-                                <div className="card-section">
-                                    <div className="block block-empty text-center">
-                                        {lastIdentitiesQuery ? (
-                                            <div className="empty-title">
-                                                Geen gebruikers gevonden voor &quot;{lastIdentitiesQuery}&quot;
-                                            </div>
-                                        ) : (
-                                            <div className="empty-title">Geen gebruikers gevonden</div>
-                                        )}
-                                    </div>
-                                </div>
+                                <EmptyCard
+                                    type={'card-section'}
+                                    title={
+                                        lastIdentitiesQuery
+                                            ? `Geen gebruikers gevonden voor "${lastIdentitiesQuery}"`
+                                            : 'Geen gebruikers gevonden'
+                                    }
+                                />
                             )}
 
                             {showIdentities && identities && identities?.meta && (

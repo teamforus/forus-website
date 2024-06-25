@@ -82,7 +82,7 @@ export default function OrganizationsSecurity() {
         <>
             <div>
                 <div className="block block-breadcrumbs">
-                    <StateNavLink className="breadcrumb-item" name={'organizations'} params={{}}>
+                    <StateNavLink className="breadcrumb-item" name={'organizations'} activeExact={true}>
                         {activeOrganization.name}
                     </StateNavLink>
                     <div className="breadcrumb-item active">Beveiliging</div>

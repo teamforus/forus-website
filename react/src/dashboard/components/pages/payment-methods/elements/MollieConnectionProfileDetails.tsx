@@ -1,5 +1,4 @@
 import React, { Fragment, useCallback, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import MollieConnection from '../../../../props/models/MollieConnection';
 import KeyValueItem from '../../../elements/key-value/KeyValueItem';
 import MollieConnectionProfileSelector from './MollieConnectionProfileSelector';
@@ -11,6 +10,7 @@ import useMollieConnectionService from '../../../../services/MollieConnectionSer
 import useSetProgress from '../../../../hooks/useSetProgress';
 import usePushSuccess from '../../../../hooks/usePushSuccess';
 import Organization from '../../../../props/models/Organization';
+import useTranslate from '../../../../hooks/useTranslate';
 
 export default function MollieConnectionProfileDetails({
     onChange,
@@ -23,10 +23,11 @@ export default function MollieConnectionProfileDetails({
     onResponseError?: (err: ResponseError & ResponseErrorThrottled) => void;
     mollieConnection: MollieConnection;
 }) {
-    const { t } = useTranslation();
-    const mollieConnectionService = useMollieConnectionService();
+    const translate = useTranslate();
     const setProgress = useSetProgress();
     const pushSuccess = usePushSuccess();
+
+    const mollieConnectionService = useMollieConnectionService();
 
     const [currentProfile, setCurrentProfile] = useState<MollieConnectionProfile>(null);
     const [currentProfileId, setCurrentProfileId] = useState<number>(null);
@@ -98,7 +99,7 @@ export default function MollieConnectionProfileDetails({
                         <div className="flex">
                             <div className="flex flex-grow">
                                 <div className="card-title">
-                                    {t('mollie_connection.titles.current_profile_information')}
+                                    {translate('mollie_connection.titles.current_profile_information')}
                                 </div>
                             </div>
 
@@ -116,19 +117,19 @@ export default function MollieConnectionProfileDetails({
 
                     <div className="card-section">
                         <div className="card-block card-block-keyvalue">
-                            <KeyValueItem label={t('mollie_connection.labels.name')}>
+                            <KeyValueItem label={translate('mollie_connection.labels.name')}>
                                 {mollieConnection.profile_active.name}
                             </KeyValueItem>
 
-                            <KeyValueItem label={t('mollie_connection.labels.phone')}>
+                            <KeyValueItem label={translate('mollie_connection.labels.phone')}>
                                 {mollieConnection.profile_active.phone}
                             </KeyValueItem>
 
-                            <KeyValueItem label={t('mollie_connection.labels.email')}>
+                            <KeyValueItem label={translate('mollie_connection.labels.email')}>
                                 {mollieConnection.profile_active.email}
                             </KeyValueItem>
 
-                            <KeyValueItem label={t('mollie_connection.labels.website')}>
+                            <KeyValueItem label={translate('mollie_connection.labels.website')}>
                                 {mollieConnection.profile_active.website}
                             </KeyValueItem>
                         </div>
@@ -141,7 +142,7 @@ export default function MollieConnectionProfileDetails({
                             <div className="flex">
                                 <div className="flex flex-grow">
                                     <div className="card-title">
-                                        {t('mollie_connection.header_update_profile.title')}
+                                        {translate('mollie_connection.header_update_profile.title')}
                                     </div>
                                 </div>
 
@@ -164,58 +165,62 @@ export default function MollieConnectionProfileDetails({
                                         <div className="form-group form-group-inline">
                                             <label className="form-label">&nbsp;</label>
                                             <div className="form-title">
-                                                {t('mollie_connection.titles.profile_information')}
+                                                {translate('mollie_connection.titles.profile_information')}
                                             </div>
                                         </div>
 
                                         <div className="form-group form-group-inline">
                                             <label className="form-label">
-                                                {t('mollie_connection.labels.profile_name')}
+                                                {translate('mollie_connection.labels.profile_name')}
                                             </label>
                                             <input
                                                 className="form-control"
                                                 onChange={(e) => form.update({ name: e.target.value })}
                                                 value={form.values.name || ''}
                                                 type="text"
-                                                placeholder={t('mollie_connection.labels.profile_name')}
+                                                placeholder={translate('mollie_connection.labels.profile_name')}
                                             />
                                             <FormError error={form.errors.name} />
                                         </div>
 
                                         <div className="form-group form-group-inline">
-                                            <label className="form-label">{t('mollie_connection.labels.email')}</label>
+                                            <label className="form-label">
+                                                {translate('mollie_connection.labels.email')}
+                                            </label>
                                             <input
                                                 className="form-control"
                                                 onChange={(e) => form.update({ email: e.target.value })}
                                                 value={form.values.email || ''}
                                                 type="text"
-                                                placeholder={t('mollie_connection.labels.email')}
+                                                placeholder={translate('mollie_connection.labels.email')}
                                             />
                                             <FormError error={form.errors.email} />
                                         </div>
 
                                         <div className="form-group form-group-inline">
-                                            <label className="form-label">{t('mollie_connection.labels.phone')}</label>
+                                            <label className="form-label">
+                                                {translate('mollie_connection.labels.phone')}
+                                            </label>
                                             <input
                                                 className="form-control"
                                                 onChange={(e) => form.update({ phone: e.target.value })}
                                                 value={form.values.phone || ''}
                                                 type="text"
-                                                placeholder={t('mollie_connection.labels.phone')}
+                                                placeholder={translate('mollie_connection.labels.phone')}
                                             />
                                             <FormError error={form.errors.phone} />
                                         </div>
 
                                         <div className="form-group form-group-inline">
                                             <label className="form-label">
-                                                {t('mollie_connection.labels.website')}
+                                                {translate('mollie_connection.labels.website')}
                                             </label>
                                             <input
                                                 className="form-control"
                                                 onChange={(e) => form.update({ website: e.target.value })}
                                                 value={form.values.website || ''}
                                                 type="text"
-                                                placeholder={t('mollie_connection.labels.website')}
+                                                placeholder={translate('mollie_connection.labels.website')}
                                             />
                                             <FormError error={form.errors.website} />
                                         </div>
@@ -227,7 +232,7 @@ export default function MollieConnectionProfileDetails({
                                 <div className="info-box-icon mdi mdi-information"></div>
                                 <div className="info-box-content">
                                     <div className="block block-markdown">
-                                        <p>{t('mollie_connection.create_form.info_content')}</p>
+                                        <p>{translate('mollie_connection.create_form.info_content')}</p>
                                     </div>
                                 </div>
                             </div>
@@ -236,7 +241,7 @@ export default function MollieConnectionProfileDetails({
                         <div className="card-section">
                             <div className="button-group flex-center">
                                 <button className="button button-primary" type="submit">
-                                    {t('mollie_connection.buttons.submit')}
+                                    {translate('mollie_connection.buttons.submit')}
                                 </button>
                             </div>
                         </div>

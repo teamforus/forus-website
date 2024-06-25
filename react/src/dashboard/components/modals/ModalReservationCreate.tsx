@@ -8,10 +8,10 @@ import useFormBuilder from '../../hooks/useFormBuilder';
 import useVoucherService from '../../services/VoucherService';
 import useProductReservationService from '../../services/ProductReservationService';
 import FormError from '../elements/forms/errors/FormError';
-import { useTranslation } from 'react-i18next';
 import SelectControl from '../elements/select-control/SelectControl';
 import SelectControlOptions from '../elements/select-control/templates/SelectControlOptions';
 import FormGroupInfo from '../elements/forms/elements/FormGroupInfo';
+import useTranslate from '../../hooks/useTranslate';
 
 export default function ModalReservationCreate({
     modal,
@@ -24,7 +24,7 @@ export default function ModalReservationCreate({
     onCreated: (reservation: Reservation) => void;
     organization: Organization;
 }) {
-    const { t } = useTranslation();
+    const translate = useTranslate();
     const voucherService = useVoucherService();
     const productReservationService = useProductReservationService();
 
@@ -161,10 +161,10 @@ export default function ModalReservationCreate({
                     </div>
                     <div className="modal-footer text-center">
                         <button className="button button-default" type="button" onClick={() => modal.close()}>
-                            {t('modals.modal_voucher_create.buttons.cancel')}
+                            {translate('modals.modal_voucher_create.buttons.cancel')}
                         </button>
                         <button className="button button-primary" type="submit">
-                            {t('modals.modal_voucher_create.buttons.submit')}
+                            {translate('modals.modal_voucher_create.buttons.submit')}
                         </button>
                     </div>
                 </form>
@@ -184,7 +184,7 @@ export default function ModalReservationCreate({
                                     <div className="form-group form-group-inline form-group-inline-md">
                                         <label className="form-label">Aanbod</label>
                                         <div className="form-offset">
-                                            <FormGroupInfo info={t('reservation_create.tooltips.product')}>
+                                            <FormGroupInfo info={translate('reservation_create.tooltips.product')}>
                                                 <SelectControl
                                                     className="form-control"
                                                     propKey={'id'}
