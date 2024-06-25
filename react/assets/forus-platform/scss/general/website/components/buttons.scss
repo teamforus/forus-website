@@ -1,4 +1,4 @@
-// this mixing is being used, needs cheking
+// this mixing is being used, needs checking
 @mixin button($backgroundColor, $color, $hover_color, $bg_hover_color) {
     display: inline-block;
     border: 1px solid transparent;
@@ -238,9 +238,8 @@ label {
 }
 
 .main_button {
-    margin: 0 auto;
     display: inline-block;
-    margin-top: 20px;
+    margin: 20px auto 0;
     border-radius: 4px;
     padding: 12px 22px;
 }

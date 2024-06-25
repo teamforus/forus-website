@@ -23,7 +23,7 @@
         border: 3px solid #fff;
         background: var(--color-primary-light);
         color: #fff;
-        margin: 0px auto -45px;
+        margin: 0 auto -45px;
 
         &.modal-icon-primary {
             background: var(--color-primary);
@@ -81,7 +81,7 @@
             @include webkit_scrollbar();
 
             .signup-layout {
-                padding-top: 0px;
+                padding-top: 0;
             }
 
             .modal-icon-mdi {
@@ -1133,8 +1133,8 @@
 
             .modal-subtitle {
                 font: 400 16px var(--base-font);
-                padding: 0px 10px 20px;
-                margin: 0px 40px;
+                padding: 0 10px 20px;
+                margin: 0 40px;
             }
         }
     }

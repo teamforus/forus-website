@@ -195,9 +195,7 @@ ui-view {
 
     .checkbox {
         display: inline-block;
-        padding: 10px 0;
-        padding-right: 15px;
-        padding-left: 30px;
+        padding: 10px 15px 10px 30px;
         vertical-align: middle;
         @include cf();
 
@@ -251,9 +249,7 @@ ui-view {
     .radio {
         margin-bottom: 10px;
         display: inline-block;
-        padding: 10px 0;
-        padding-right: 15px;
-        padding-left: 30px;
+        padding: 10px 15px 10px 30px;
         vertical-align: middle;
         @include cf();
 
@@ -373,7 +369,7 @@ ui-view {
 
     .splash {
         background-image: assetUrl('../img/landing/splash-top.png');
-        background-position: 100% 0%;
+        background-position: 100% 0;
         background-size: auto 100%;
         background-repeat: no-repeat;
         height: 750px;
@@ -503,14 +499,12 @@ ui-view {
         position: relative;
         margin: 0 auto;
         width: 100%;
-        background: assetUrl('../img/landing/splash-top-b.png') no-repeat 100% 0;
         background-size: cover;
-        background-position: center center;
+        background: no-repeat center center;
         @include cf();
 
         .heade-sprite {
-            background: assetUrl('../img/sprite-meapp.png') no-repeat;
-            background-position: 100% 0%;
+            background: no-repeat 100% 0%;
             background-size: auto 100%;
             @include fill_parent();
             bottom: -50px;
@@ -713,8 +707,7 @@ ui-view {
             position: relative;
             right: 0;
             width: 100%;
-            background: none;
-            background-position: 100% 50%;
+            background: none 100% 50%;
             background-size: auto 100%;
             transform: translate(0, -50%);
             z-index: 0;
@@ -735,8 +728,7 @@ ui-view {
                 transition: 0.4s;
 
                 .faq-item-header {
-                    padding: 15px 30px;
-                    padding-right: 45px;
+                    padding: 15px 45px 15px 30px;
                     font: 500 18px var(--base-font-landing);
                     color: #00122a;
                     position: relative;
@@ -768,7 +760,6 @@ ui-view {
                 }
 
                 .faq-item-content {
-                    padding-right: 200px;
                     font: 400 16px var(--base-font-landing);
                     padding: 0 30px 20px;
                     color: #646f79;
@@ -1001,9 +992,8 @@ ui-view {
             }
 
             .lang-selector {
-                padding: 10px 20px;
                 margin: -10px 0;
-                padding-left: 30px;
+                padding: 10px 20px 10px 30px;
 
                 .lang-list {
                     left: 50%;
@@ -1362,7 +1352,7 @@ ui-view {
                 font: 700 14px/24px var(--base-font-landing);
 
                 &:last-of-type {
-                    margin-right: 0px;
+                    margin-right: 0;
                 }
             }
 
@@ -1378,8 +1368,7 @@ ui-view {
                 float: right;
 
                 .auth-user {
-                    padding: 20px 0;
-                    padding-right: 50px;
+                    padding: 20px 50px 20px 0;
                     position: relative;
                     height: 80px;
                     margin: -20px 0;
@@ -1487,7 +1476,7 @@ ui-view {
 
     &.block-navbar {
         width: 100%;
-        padding: 0 0px;
+        padding: 0 0;
         top: 0;
         position: sticky;
         z-index: 10;
@@ -1568,13 +1557,10 @@ ui-view {
             float: left;
 
             .blog-image {
-                margin: -30px -30px 40px;
-                border-radius: 15px;
-                border-bottom-left-radius: 0;
-                border-bottom-right-radius: 0;
+                border-radius: 15px 15px 0 0;
                 overflow: hidden;
                 display: block;
-                margin-bottom: 20px;
+                margin: 40px 40px 20px;
                 position: relative;
 
                 img {
@@ -2194,9 +2180,7 @@ ui-view {
             }
 
             .navbar-logo {
-                padding: 15px 0px;
-                padding-left: 20px;
-                padding-right: -40px;
+                padding: 15px -40px 15px 20px;
                 border-right: none;
                 flex-grow: 1;
 
@@ -2243,8 +2227,7 @@ ui-view {
                     margin-bottom: -1px;
 
                     .navbar-item {
-                        padding: 10px 20px;
-                        padding-left: 15px;
+                        padding: 10px 20px 10px 15px;
                         font: 700 12px/30px var(--base-font-landing);
                         color: #646f79;
                         border-bottom: 1px solid #e6ecf0;

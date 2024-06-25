@@ -27,7 +27,7 @@ import SystemNotificationTemplateEditor from '../implementations-notifications-e
 import SystemNotification from '../../../props/models/SystemNotification';
 import useFundIdentitiesExportService from '../../../services/exports/useFundIdentitiesExportService';
 import useTranslate from '../../../hooks/useTranslate';
-import EmptyCard from "../../elements/empty-card/EmptyCard";
+import EmptyCard from '../../elements/empty-card/EmptyCard';
 
 export default function ImplementationsNotificationsSend() {
     const { id } = useParams();

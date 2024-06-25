@@ -221,7 +221,7 @@ body {
 
         .notifications {
             margin-right: 40px;
-            padding-bottom: 0px;
+            padding-bottom: 0;
             position: relative;
             display: flex;
             flex-direction: column;
@@ -507,7 +507,7 @@ body {
                         display: flex;
                         justify-content: flex-start;
                         cursor: pointer;
-                        padding: 0px;
+                        padding: 0;
                         font: 500 13px/36px var(--base-font);
                         letter-spacing: -0.312px;
                         color: #151b26;
@@ -709,7 +709,6 @@ body {
                 cursor: default;
 
                 &:first-child {
-                    padding-top: 10px;
                     padding: 10px 0 15px;
                 }
             }
@@ -771,7 +770,7 @@ body {
     .block.block-inline-filters {
         .form {
             .form-group {
-                margin: 0px 10px 0px 0;
+                margin: 0 10px 0 0;
 
                 &:last-child {
                     margin-right: 0;
@@ -1247,7 +1246,7 @@ body {
     }
 
     &.card-padded {
-        margin-bottom: 0px;
+        margin-bottom: 0;
     }
 }
 
@@ -1289,7 +1288,7 @@ body {
         }
 
         .card-block-listing-row {
-            margin: 0px 0px 15px;
+            margin: 0 0 15px;
 
             &:last-child {
                 margin-bottom: 0;
@@ -1320,7 +1319,7 @@ body {
         }
 
         &.card-block-listing-no-pad {
-            padding-bottom: 0px;
+            padding-bottom: 0;
         }
     }
 
@@ -1630,8 +1629,7 @@ body {
         margin: -25px;
 
         .note-form {
-            padding: 15px 55px;
-            padding-right: 15px;
+            padding: 15px 15px 15px 55px;
 
             .note-form-actions {
                 padding-top: 10px;
@@ -1801,9 +1799,7 @@ body {
 
             .checkbox {
                 display: inline-block;
-                padding: 0;
-                padding-right: 15px;
-                padding-left: 30px;
+                padding: 0 15px 0 30px;
                 vertical-align: middle;
 
                 input[type='checkbox'] {
@@ -2082,7 +2078,7 @@ body {
     }
 
     &.card-block-requests {
-        box-shadow: 0px 2px 5px rgba(25, 39, 52, 0.11);
+        box-shadow: 0 2px 5px rgba(25, 39, 52, 0.11);
         border-radius: 4px;
         margin: 20px 0;
         color: #646f79;
@@ -2316,7 +2312,7 @@ body {
 
         @media screen and (max-width: 1000px) {
             .tooltip {
-                left: 0%;
+                left: 0;
                 width: 250px;
             }
         }
@@ -2635,13 +2631,13 @@ body {
             .form {
                 .form-group {
                     &.col {
-                        padding-right: 0px;
+                        padding-right: 0;
                     }
                 }
 
                 .office-block {
-                    margin-left: 0px;
-                    margin-right: 0px;
+                    margin-left: 0;
+                    margin-right: 0;
                     padding-left: 20px;
                     padding-right: 20px;
                     border-bottom: 1px solid #eff2f4;
@@ -2649,16 +2645,16 @@ body {
 
                 .schedule-settings-block,
                 .schedule-block {
-                    margin-left: 0px;
-                    margin-right: 0px;
+                    margin-left: 0;
+                    margin-right: 0;
                     padding-left: 35px;
                     padding-right: 35px;
                     border-bottom: 1px solid #eff2f4;
                 }
 
                 .description {
-                    margin-left: 0px;
-                    margin-right: 0px;
+                    margin-left: 0;
+                    margin-right: 0;
                     padding-left: 40px;
                     padding-right: 40px;
                     font: 400 16px/24px var(--base-font);
@@ -2719,7 +2715,7 @@ body {
 
                             &.end {
                                 input {
-                                    margin-right: 0px;
+                                    margin-right: 0;
                                 }
                             }
 
@@ -2738,7 +2734,7 @@ body {
                 .opening {
                     .ui-control.ui-control-checkbox {
                         .ui-checkbox-label {
-                            padding-bottom: 0px;
+                            padding-bottom: 0;
                             font-size: 16px;
                         }
                     }
@@ -2801,7 +2797,7 @@ body {
                 line-height: 38px;
                 text-align: center;
                 color: #3561ff;
-                margin-top: 0px !important;
+                margin-top: 0 !important;
             }
 
             .sign_up-pane-text {
@@ -2827,12 +2823,12 @@ body {
 
                     .card-block {
                         &.card-block-fund {
-                            padding-top: 0px;
+                            padding-top: 0;
                             display: flex;
 
                             .fund-img {
                                 margin: 0 10px auto 0;
-                                padding: 0px;
+                                padding: 0;
                                 width: 50px;
                                 height: 50px;
                                 min-width: 50px;
@@ -2852,7 +2848,7 @@ body {
                                     display: block;
                                     font: 400 14px/18px var(--base-font);
                                     color: #222530;
-                                    margin: 0px 0px;
+                                    margin: 0 0;
                                 }
                             }
                         }
@@ -2910,7 +2906,7 @@ body {
                     }
 
                     &.card-section-primary {
-                        padding: 0px;
+                        padding: 0;
                     }
                 }
 
@@ -2999,7 +2995,7 @@ body {
             }
 
             .block.block-photo-selector {
-                margin-bottom: 0px;
+                margin-bottom: 0;
 
                 .photo-img {
                     margin-left: auto;
@@ -3030,7 +3026,6 @@ body {
             .info-block.info-block-primary {
                 color: #646f79;
                 font: 400 11px/16px var(--base-font);
-                padding-top: 0px;
                 padding: 17.5px;
                 text-align: center;
                 background: none;
@@ -3197,7 +3192,7 @@ body {
                 .sign_up-offices {
                     .sign_up-office {
                         flex-wrap: wrap;
-                        padding: 20px 0px 30px;
+                        padding: 20px 0 30px;
 
                         .office-media {
                             order: 1;
@@ -3262,7 +3257,7 @@ body {
                                 padding-right: 10px;
 
                                 &.breaks {
-                                    padding-left: 0px;
+                                    padding-left: 0;
                                 }
                             }
 
@@ -3325,7 +3320,7 @@ body {
                                     margin-top: 12px;
 
                                     &:first-child {
-                                        margin-top: 0px;
+                                        margin-top: 0;
                                     }
                                 }
                             }
@@ -3365,7 +3360,7 @@ body {
 
                             &.icon-right,
                             &.icon-left {
-                                margin-right: 0px;
+                                margin-right: 0;
                             }
                         }
                     }
@@ -3457,8 +3452,7 @@ body {
                         line-height: 20px;
                         color: var(--color-primary);
                         float: left;
-                        margin: 0;
-                        margin-right: 5px;
+                        margin: 0 5px 0 0;
                     }
 
                     &:last-child {
@@ -3538,8 +3532,8 @@ body {
                         top: 0;
                         left: 50%;
                         bottom: 100%;
-                        width: 0px;
-                        height: 0px;
+                        width: 0;
+                        height: 0;
                         border-style: solid;
                         border-width: 0 10px 10px 10px;
                         border-color: transparent transparent var(--border-color) transparent;
@@ -3621,12 +3615,12 @@ body {
 
         .empty-title {
             font: 700 16px/28px var(--base-font);
-            margin: 0px;
+            margin: 0;
         }
 
         .empty-details {
             font: 500 14px/24px var(--base-font);
-            margin: 0px;
+            margin: 0;
 
             &:last-child {
                 margin-bottom: 0;
@@ -3896,7 +3890,7 @@ body {
             }
 
             .block-info-icon {
-                margin: 0 5px 0px 0;
+                margin: 0 5px 0 0;
             }
 
             .block-info-list-items {
@@ -4012,7 +4006,7 @@ body {
         .section-product {
             .back {
                 padding-bottom: 15px;
-                margin: 0px 50px;
+                margin: 0 50px;
                 font: 500 18px/22px var(--base-font);
                 color: #9e9e9e;
 
@@ -4126,7 +4120,7 @@ body {
                         .step-item-icon {
                             width: 70px;
                             height: 70px;
-                            top: 0px;
+                            top: 0;
                             left: 35px;
                             border-width: 0;
 
@@ -4145,7 +4139,7 @@ body {
                             background: #305dfb;
                             width: 70px;
                             height: 70px;
-                            top: 0px;
+                            top: 0;
                             left: 35px;
                             border-width: 0;
 
@@ -4560,9 +4554,8 @@ body {
                     border-radius: 70px;
                     background: #e2e8e9;
                     border: 1px solid #e2e8e9;
-                    margin: 0 auto;
                     overflow: hidden;
-                    margin-bottom: 5px;
+                    margin: 0 auto 5px;
 
                     img {
                         display: block;
@@ -4676,7 +4669,7 @@ body {
 
                     &.end {
                         input {
-                            margin-right: 0px;
+                            margin-right: 0;
                         }
                     }
 
@@ -4698,14 +4691,13 @@ body {
 
         .photo-img {
             float: left;
-            background: #ffffff;
             border: 1px solid #d4d9dd;
             border-radius: 75px;
             width: 75px;
             height: 75px;
             margin-right: 15px;
             overflow: hidden;
-            background-position: 50%;
+            background: #ffffff 50%;
             background-size: cover;
 
             img {
@@ -4726,8 +4718,7 @@ body {
         width: 100%;
         border: 1px dashed #d4d9dd;
         padding: 15px 55px 15px;
-        background: assetUrl('img/icon-file.png') no-repeat;
-        background-position: 25px 20px;
+        background: no-repeat 25px 20px;
         position: relative;
         border-radius: 4px;
         text-align: left;
@@ -4823,8 +4814,7 @@ body {
             margin-right: 10px;
 
             .form-group {
-                margin: -2px 0;
-                margin-right: 10px;
+                margin: 0 10px 0 0;
 
                 &:last-child {
                     margin-right: 0;
@@ -5201,7 +5191,7 @@ body {
             border: 1px solid #e7e7e7;
             border-left: none;
             border-right: none;
-            padding: 18px 0px;
+            padding: 18px 0;
             margin: 0 0 30px;
 
             .auth-digid-link {
@@ -5394,10 +5384,7 @@ body {
     &.block-label-tabs {
         display: flex;
         margin-left: 10px;
-        border-top-left-radius: calc(var(--border-radius));
-        border-top-right-radius: calc(var(--border-radius));
-        border-bottom-left-radius: calc(var(--border-radius));
-        border-bottom-right-radius: calc(var(--border-radius));
+        border-radius: calc(var(--border-radius));
 
         .label-tab {
             background: #fff;
@@ -5596,7 +5583,7 @@ body {
                 float: left;
                 width: 25px;
                 margin-left: -25px;
-                margin-top: 0px;
+                margin-top: 0;
                 margin-right: 5px;
                 color: #33475b;
             }
@@ -6241,7 +6228,7 @@ body {
             }
 
             .chart-header-title {
-                flex: 1 0px;
+                flex: 1 0;
                 text-align: center;
                 font: 500 13px/34px var(--base-font);
                 color: #151b26;
@@ -6324,14 +6311,14 @@ body {
                 @extend .text-wrap;
                 font: 500 14px/20px var(--base-font);
                 color: #646f79;
-                padding: 7.5px 15px 7.5px 0px;
+                padding: 7.5px 15px 7.5px 0;
             }
 
             .datalist-value {
                 @extend .text-wrap;
                 font: 500 14px/20px var(--base-font);
                 color: #646f79;
-                padding: 7.5px 0px;
+                padding: 7.5px 0;
             }
         }
 
@@ -6506,7 +6493,7 @@ body {
                     background: #fff;
                     color: #134478;
                     border-color: transparent;
-                    box-shadow: 0px 0px 10px rgba(25, 39, 52, 0.22);
+                    box-shadow: 0 0 10px rgba(25, 39, 52, 0.22);
 
                     .toggle-label {
                         color: #134478;
@@ -6680,7 +6667,7 @@ body {
             .schedule-item {
                 select.form-control {
                     height: 34px;
-                    padding: 0px 12px;
+                    padding: 0 12px;
                     border: 1px solid #d2e6ff;
                     color: #282b39;
                     font: 500 12px var(--base-font);
@@ -6790,8 +6777,6 @@ body {
                     max-width: none;
 
                     .photo-img {
-                        margin-left: none;
-                        margin-right: none;
                         width: 80px;
                         height: 80px;
                         margin: 0 20px 0 0 !important;
@@ -6818,7 +6803,7 @@ body {
 
                 .sign_up-pane-section {
                     flex-direction: column !important;
-                    padding-right: 0px !important;
+                    padding-right: 0 !important;
 
                     .sign_up-pane-col {
                         width: 100% !important;

@@ -166,11 +166,10 @@
             }
             svg,
             img {
-                margin: 0 auto;
                 width: 120px;
                 height: 120px;
                 display: block;
-                margin-bottom: 18px;
+                margin: 0 auto 18px;
             }
             .me-logo {
                 height: 100px;
@@ -184,8 +183,7 @@
             display: flex;
             width: 100%;
             max-width: 800px;
-            margin: 0 auto;
-            margin-top: 25px;
+            margin: 25px auto 0;
             flex-direction: row;
             justify-content: space-around;
             .col-33 {

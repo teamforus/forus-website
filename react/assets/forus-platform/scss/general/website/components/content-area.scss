@@ -13,7 +13,7 @@
                 li {
                     width: 100%;
                     float: left;
-                    padding: 5px 0px;
+                    padding: 5px 0;
                     border: solid 1px #f6f8f9;
                     h5 {
                         font-size: 14px;
@@ -30,13 +30,13 @@
             display: inline-flex;
             flex-direction: column;
             width: 100%;
-            padding: 20px 0px;
+            padding: 20px 0;
             ul {
                 display: inline-flex;
                 justify-content: space-evenly;
-                padding: 20px 0px;
+                padding: 20px 0;
                 li {
-                    padding: 0px 10px;
+                    padding: 0 10px;
                     min-width: 200px;
                 }
             }
@@ -77,7 +77,7 @@
         padding: 40px 20px 40px;
         @media screen and (max-width: 991px) {
             &.no-pad-t {
-                padding-top: 0px;
+                padding-top: 0;
             }
             .holder {
                 svg {
@@ -151,7 +151,7 @@
     }
     &__2a {
         @media screen and (min-width: 768px) {
-            padding: 60px 20px 0px;
+            padding: 60px 20px 0;
         }
         .holder {
             .bg_hn-1 {
@@ -213,7 +213,7 @@
         }
     }
     &__3 {
-        padding: 0px 20px 75px;
+        padding: 0 20px 75px;
     }
     &__4 {
         @media screen and (max-width: 768px) {
@@ -226,7 +226,7 @@
             padding: 30px 30px 260px;
         }
         @media screen and (min-width: 992px) {
-            padding: 0px 20px 200px;
+            padding: 0 20px 200px;
         }
     }
     &__4a {

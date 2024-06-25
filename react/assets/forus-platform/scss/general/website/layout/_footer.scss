@@ -6,8 +6,7 @@
     border-top: solid 1px #f6f8f9;
     padding-top: 20px;
     .main_button {
-        margin: 0;
-        margin-top: 20px;
+        margin: 20px 0 0;
     }
     h4 {
         font-weight: 600;
@@ -45,7 +44,7 @@
 }
 .footer .col {
     width: 100%;
-    padding: 0px 20px 20px 20px;
+    padding: 0 20px 20px 20px;
 }
 
 .sub-foot {
@@ -81,11 +80,10 @@
 
 .footer .col h1 {
     margin: 0;
-    padding: 0;
     font-family: inherit;
     font-size: 12px;
     line-height: 17px;
-    padding: 20px 0px 5px 0px;
+    padding: 20px 0 5px 0;
     color: rgba(255, 255, 255, 0.2);
     font-weight: normal;
     text-transform: uppercase;
@@ -101,7 +99,7 @@
     font-size: 14px;
     font-family: inherit;
     font-weight: bold;
-    padding: 5px 0px 5px 0px;
+    padding: 5px 0 5px 0;
     cursor: pointer;
     transition: 0.2s;
     -webkit-transition: 0.2s;
