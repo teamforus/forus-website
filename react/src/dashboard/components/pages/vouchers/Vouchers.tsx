@@ -157,7 +157,7 @@ export default function Vouchers() {
     }
 
     return (
-        <div className="card" data-dusk={`vouchersCard${vouchers.data.length > 0 ? vouchers.data[0].fund_id : ''}`}>
+        <div className="card" data-dusk={`vouchersCard${filterValues?.fund_id || ''}`}>
             <VouchersTableHeader
                 filter={filter}
                 organization={activeOrganization}

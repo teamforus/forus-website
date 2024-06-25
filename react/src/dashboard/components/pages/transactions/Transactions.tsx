@@ -36,6 +36,7 @@ import ModalVoucherTransactionsUpload from '../../modals/ModalVoucherTransaction
 import usePaginatorService from '../../../modules/paginator/services/usePaginatorService';
 import ClickOutside from '../../elements/click-outside/ClickOutside';
 import useTranslate from '../../../hooks/useTranslate';
+import classNames from 'classnames';
 
 export default function Transactions() {
     const envData = useEnvData();
@@ -845,7 +846,7 @@ export default function Transactions() {
                                                 <ThSortable label="" />
                                             </tr>
                                             {transactions.data.map((transaction) => (
-                                                <tr key={transaction.id} data-dusk="transactionItem">
+                                                <tr key={transaction.id} data-dusk={`transactionItem${transaction.id}`}>
                                                     <td>{transaction.id}</td>
 
                                                     {isSponsor && (
@@ -857,8 +858,8 @@ export default function Transactions() {
                                                         <StateNavLink
                                                             name={'transaction'}
                                                             params={{
-                                                                organizationId: activeOrganization.id,
                                                                 address: transaction.address,
+                                                                organizationId: activeOrganization.id,
                                                             }}
                                                             className="text-primary-light">
                                                             {transaction.amount_locale}
@@ -920,7 +921,11 @@ export default function Transactions() {
                                                         {strLimit(transaction.fund.name, 25)}
                                                     </td>
                                                     <td title={transaction.product?.name || '-'}>
-                                                        {strLimit(transaction.product?.name || '-', 25)}
+                                                        {transaction.product?.name ? (
+                                                            strLimit(transaction.product?.name || '', 25)
+                                                        ) : (
+                                                            <div className={'text-muted'}>-</div>
+                                                        )}
                                                     </td>
                                                     {isSponsor && (
                                                         <td
@@ -939,7 +944,7 @@ export default function Transactions() {
                                                                     </div>
                                                                 </td>
                                                             ) : (
-                                                                <td>-</td>
+                                                                <td className={'text-muted'}>-</td>
                                                             )}
                                                         </Fragment>
                                                     )}
@@ -953,7 +958,7 @@ export default function Transactions() {
                                                                     id: transaction.voucher_transaction_bulk_id,
                                                                 }}
                                                                 className="text-primary-light">
-                                                                {'#' + transaction.voucher_transaction_bulk_id}
+                                                                {`#${transaction.voucher_transaction_bulk_id}`}
                                                             </StateNavLink>
                                                         </td>
                                                     )}
@@ -970,12 +975,12 @@ export default function Transactions() {
                                                                     </div>
                                                                 </div>
                                                             ) : (
-                                                                <span>-</span>
+                                                                <span className={'text-muted'}>-</span>
                                                             )}
                                                         </td>
                                                     )}
                                                     {isSponsor && (
-                                                        <td data-dusk="transactionState">
+                                                        <td>
                                                             {(transaction.bulk_state == 'rejected' ||
                                                                 transaction.bulk_state == 'error') && (
                                                                 <div className="label label-danger">
@@ -995,15 +1000,20 @@ export default function Transactions() {
                                                                     {transaction.bulk_state_locale}
                                                                 </div>
                                                             )}
+
+                                                            {!transaction.bulk_state && (
+                                                                <div className={'text-muted'}>-</div>
+                                                            )}
                                                         </td>
                                                     )}
                                                     <td data-dusk="transactionState">
                                                         <div
-                                                            className={`label ${
+                                                            className={classNames(
+                                                                'label',
                                                                 transaction.state == 'success'
                                                                     ? 'label-success'
-                                                                    : 'label-default'
-                                                            }`}>
+                                                                    : 'label-default',
+                                                            )}>
                                                             {transaction.state_locale}
                                                         </div>
                                                     </td>

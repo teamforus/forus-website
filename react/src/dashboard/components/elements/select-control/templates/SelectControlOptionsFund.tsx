@@ -4,6 +4,7 @@ import { uniqueId } from 'lodash';
 import { SelectControlOptionsProp } from '../SelectControl';
 import Fund from '../../../../props/models/Fund';
 import useAssetUrl from '../../../../hooks/useAssetUrl';
+import classNames from 'classnames';
 
 export default function SelectControlOptionsFund<T>({
     id,
@@ -60,7 +61,9 @@ export default function SelectControlOptionsFund<T>({
                     selectorRef?.current?.focus();
                 }
             }}>
-            <div className={['select-control-input', showOptions ? 'options' : ''].filter((item) => item).join(' ')}>
+            <div
+                className={classNames('select-control-input', showOptions && 'options')}
+                data-dusk="selectControlFunds">
                 {/* Placeholder */}
                 <label
                     htmlFor={controlId}

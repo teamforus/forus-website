@@ -862,6 +862,7 @@ export default function ModalVouchersUpload({
                                         hidden={true}
                                         ref={inputRef}
                                         type="file"
+                                        data-dusk={'inputUpload'}
                                         accept={(acceptedFiles || []).join(',')}
                                         onChange={(e) => {
                                             uploadFile(filterSelectedFiles(e.target.files)?.[0]).then();

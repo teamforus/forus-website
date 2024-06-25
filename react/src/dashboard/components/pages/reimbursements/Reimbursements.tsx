@@ -26,6 +26,7 @@ import Implementation from '../../../props/models/Implementation';
 import useSetProgress from '../../../hooks/useSetProgress';
 import LoadingCard from '../../elements/loading-card/LoadingCard';
 import useTranslate from '../../../hooks/useTranslate';
+import classNames from 'classnames';
 
 export default function Reimbursements() {
     const activeOrganization = useActiveOrganization();
@@ -392,15 +393,21 @@ export default function Reimbursements() {
 
                                     <tbody>
                                         {reimbursements.data.map((reimbursement) => (
-                                            <tr
+                                            <StateNavLink
+                                                customElement={'tr'}
+                                                name={'reimbursements-view'}
+                                                params={{ id: reimbursement.id, organizationId: activeOrganization.id }}
                                                 key={reimbursement.id}
-                                                data-dusk={'reimbursement' + reimbursement.id}
-                                                className={"reimbursement.expired ? 'tr-warning' : ''"}>
+                                                dataDusk={`reimbursement${reimbursement.id}`}
+                                                className={classNames(
+                                                    'clickable',
+                                                    reimbursement.expired && 'tr-warning',
+                                                )}>
                                                 <td>
                                                     {/* Email */}
                                                     <div
                                                         className="text-primary text-medium"
-                                                        data-dusk="{{ 'reimbursementIdentityEmail' + reimbursement.id }}">
+                                                        data-dusk={`reimbursementIdentityEmail${reimbursement.id}`}>
                                                         {strLimit(reimbursement.identity_email, 25) || 'Geen E-mail'}
                                                     </div>
 
@@ -499,7 +506,7 @@ export default function Reimbursements() {
                                                         </StateNavLink>
                                                     </div>
                                                 </td>
-                                            </tr>
+                                            </StateNavLink>
                                         ))}
                                     </tbody>
                                 </table>

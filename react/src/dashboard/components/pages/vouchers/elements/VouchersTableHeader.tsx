@@ -89,13 +89,13 @@ export default function VouchersTableHeader({
             <div className="flex">
                 <div className="flex flex-grow">
                     {type == 'vouchers' && (
-                        <div className="card-title">
+                        <div className="card-title" data-dusk="vouchersTitle">
                             {translate('vouchers.header.title')} ({vouchers?.meta?.total})
                         </div>
                     )}
 
                     {type == 'product_vouchers' && (
-                        <div className="card-title">
+                        <div className="card-title" data-dusk="vouchersTitle">
                             {translate('product_vouchers.header.title')} ({vouchers?.meta?.total})
                         </div>
                     )}
