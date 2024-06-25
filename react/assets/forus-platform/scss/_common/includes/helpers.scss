@@ -1,19 +1,20 @@
 // clear Fix - for floating blocks
-@mixin cf(){
+@mixin cf() {
     *zoom: 1;
 
-    &:before, &:after{
-        content: " ";
+    &:before,
+    &:after {
+        content: ' ';
         display: table;
     }
 
-    &:after{
+    &:after {
         clear: both;
     }
 }
 
 // fill parrent block
-@mixin fill_parent($offset: 0px, $position: absolute){
+@mixin fill_parent($offset: 0px, $position: absolute) {
     position: $position;
     top: $offset;
     right: $offset;
@@ -43,15 +44,17 @@
     text-overflow: ellipsis;
 }
 
-@mixin visible_on_hover($item, $timeout: .3s) {
-    #{$item}, #{$item} * {
+@mixin visible_on_hover($item, $timeout: 0.3s) {
+    #{$item},
+    #{$item} * {
         opacity: 0;
         visibility: hidden;
         transition: opacity calc($timeout / 3), visibility calc($timeout / 3) linear;
     }
 
     &:hover {
-        #{$item}, #{$item} * {
+        #{$item},
+        #{$item} * {
             opacity: 1;
             visibility: visible;
             transition: opacity $timeout, visibility $timeout linear;
@@ -59,8 +62,9 @@
     }
 }
 
-@mixin visible_on_toggle($item, $class, $timeout: .3s) {
-    #{$item}, #{$item} {
+@mixin visible_on_toggle($item, $class, $timeout: 0.3s) {
+    #{$item},
+    #{$item} {
         opacity: 0;
         visibility: hidden;
         transition: opacity calc($timeout / 3), visibility calc($timeout / 3) linear;
@@ -95,11 +99,11 @@
     }
 }
 
-@mixin webkit_scrollbar_gray($color: #9E9FA1) {
+@mixin webkit_scrollbar_gray($color: #9e9fa1) {
     @include webkit_scrollbar($color);
 }
 
-@mixin webkit_scrollbar_vertical($color: #646F79) {
+@mixin webkit_scrollbar_vertical($color: #646f79) {
     &::-webkit-scrollbar {
         width: 12px;
         height: 20px;
@@ -120,14 +124,14 @@
     }
 }
 
-@mixin webkit_scrollbar_horizontal($color: #646F79) {
+@mixin webkit_scrollbar_horizontal($color: #646f79) {
     &::-webkit-scrollbar {
         width: 24px;
         height: 6px;
     }
 
     &::-webkit-scrollbar-track {
-        background: #FFF;
+        background: #fff;
         border-left: 1px solid var(--border-color) !important;
     }
 
@@ -143,37 +147,37 @@
 @mixin anim_blink() {
     @keyframes blink {
         0% {
-            opacity: 0.0;
+            opacity: 0;
         }
 
         30% {
-            opacity: 1.0;
+            opacity: 1;
         }
 
         70% {
-            opacity: 1.0;
+            opacity: 1;
         }
 
         100% {
-            opacity: 0.0;
+            opacity: 0;
         }
     }
 
     @-webkit-keyframes blink {
         0% {
-            opacity: 0.0;
+            opacity: 0;
         }
 
         30% {
-            opacity: 1.0;
+            opacity: 1;
         }
 
         70% {
-            opacity: 1.0;
+            opacity: 1;
         }
 
         100% {
-            opacity: 0.0;
+            opacity: 0;
         }
     }
 

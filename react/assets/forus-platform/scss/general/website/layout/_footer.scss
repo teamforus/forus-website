@@ -3,7 +3,7 @@
     width: 100%;
     position: relative;
     height: auto;
-    border-top: solid 1px #F6F8F9;
+    border-top: solid 1px #f6f8f9;
     padding-top: 20px;
     .main_button {
         margin: 0;
@@ -49,7 +49,7 @@
 }
 
 .sub-foot {
-    background-color: #F6F8F9;
+    background-color: #f6f8f9;
     width: 100%;
     margin-top: 50px;
     .container {
@@ -86,10 +86,10 @@
     font-size: 12px;
     line-height: 17px;
     padding: 20px 0px 5px 0px;
-    color: rgba(255,255,255,0.2);
+    color: rgba(255, 255, 255, 0.2);
     font-weight: normal;
     text-transform: uppercase;
-    letter-spacing: 0.250em;
+    letter-spacing: 0.25em;
 }
 .footer .col ul {
     list-style-type: none;
@@ -103,9 +103,9 @@
     font-weight: bold;
     padding: 5px 0px 5px 0px;
     cursor: pointer;
-    transition: .2s;
-    -webkit-transition: .2s;
-    -moz-transition: .2s;
+    transition: 0.2s;
+    -webkit-transition: 0.2s;
+    -moz-transition: 0.2s;
 }
 .contact ul li {
     display: inline-block;
@@ -114,9 +114,9 @@
 
 .footer .col ul li:hover {
     color: #ffffff;
-    transition: .1s;
-    -webkit-transition: .1s;
-    -moz-transition: .1s;
+    transition: 0.1s;
+    -webkit-transition: 0.1s;
+    -moz-transition: 0.1s;
 }
 .clearfix {
     clear: both;

@@ -1,4 +1,4 @@
-@mixin fill_parent($offset: 0px, $position: absolute){
+@mixin fill_parent($offset: 0px, $position: absolute) {
     position: $position;
     top: $offset;
     right: $offset;
@@ -39,7 +39,7 @@ html {
                 margin: 0 0 5px;
             }
         }
-        .blur{
+        .blur {
             -webkit-filter: blur(5px);
             -moz-filter: blur(5px);
             -o-filter: blur(5px);
@@ -47,10 +47,15 @@ html {
             filter: blur(5px);
         }
         .wrapper {
-            &_story, &_holder, &_quote, &_reason, &_content, &_variable {
+            &_story,
+            &_holder,
+            &_quote,
+            &_reason,
+            &_content,
+            &_variable {
                 padding: 20px 0;
             }
-            &_start{
+            &_start {
                 padding-top: 50px;
                 border-top: 1px solid #edeef0;
             }
@@ -58,7 +63,7 @@ html {
                 margin-bottom: 100px;
             }
         }
-        footer{
+        footer {
             margin: 0 auto;
             margin-top: 80px;
             .container {

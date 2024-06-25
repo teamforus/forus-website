@@ -77,7 +77,7 @@
                             .checkbox-label {
                                 font: 600 13px/16px var(--base-font);
                                 color: #646f79;
-    
+
                                 &.active {
                                     color: #009ef4;
                                 }
@@ -125,14 +125,14 @@
             border-radius: 5px;
             box-shadow: 0 2px 8px rgba(#000, 0.1);
             cursor: default;
-    
+
             .financial-totals-header {
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
                 border-bottom: 1px solid #d4d9dd;
                 padding: 15px 15px;
-    
+
                 .financial-totals-label {
                     font: 600 13px/20px var(--base-font);
                     color: #282b39;
@@ -143,7 +143,7 @@
                     &:last-child {
                         text-align: right;
                     }
-    
+
                     &.financial-totals-label-sm {
                         font: 600 12px/20px var(--base-font);
                         text-align: right;
@@ -152,13 +152,13 @@
                     }
                 }
             }
-    
+
             .financial-totals-content {
                 display: flex;
                 flex-direction: row;
                 padding: 15px 15px;
                 flex-grow: 1;
-    
+
                 .financial-totals-value {
                     font: 600 22px/30px var(--base-font);
                     color: #000000;

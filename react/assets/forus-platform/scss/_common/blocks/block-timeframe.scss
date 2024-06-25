@@ -35,7 +35,8 @@
             color: inherit;
         }
 
-        &[disabled], &.timeframe-item-disabled {
+        &[disabled],
+        &.timeframe-item-disabled {
             pointer-events: none;
             cursor: default;
             color: #ccc;

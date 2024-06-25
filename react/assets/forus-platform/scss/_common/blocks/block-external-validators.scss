@@ -37,8 +37,8 @@
                     font-size: 25px;
                     margin-right: 5px;
                     line-height: 30px;
-                    color: #646F79;
-                    transition: color .4s;
+                    color: #646f79;
+                    transition: color 0.4s;
                 }
 
                 &:hover {
@@ -55,7 +55,7 @@
             .validator-properties {
                 display: block;
                 @include cf();
-                
+
                 .validator-property {
                     width: 30%;
                     float: left;

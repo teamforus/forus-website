@@ -5,13 +5,13 @@
     flex-wrap: wrap;
 }
 .contributor {
-  /*outline: 5px dotted green;*/
-  width: 200px;
-  height: 200px;
-  margin: 10px 10px 50px 18px;
-  text-align: center;
-  font-size: 22px;
-  display: block;
+    /*outline: 5px dotted green;*/
+    width: 200px;
+    height: 200px;
+    margin: 10px 10px 50px 18px;
+    text-align: center;
+    font-size: 22px;
+    display: block;
     img {
         vertical-align: middle;
         border-radius: 100px;
@@ -19,10 +19,10 @@
     }
 }
 .commit-count {
- display:inline-block;
- float: left;
- clear: both;
- width: 100%;
+    display: inline-block;
+    float: left;
+    clear: both;
+    width: 100%;
 }
 
 @media (max-width: 767px) {

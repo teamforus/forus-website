@@ -6,7 +6,7 @@
         display: flex;
         flex-direction: column;
         margin: 0 0 10px;
-        background: #FFFFFF;
+        background: #ffffff;
         border: 1px solid var(--border-color);
         box-shadow: 0px 0px 5px rgba(25, 39, 52, 0.22);
         border-radius: calc(var(--border-radius) / 2);
@@ -21,10 +21,10 @@
                 flex-grow: 1;
                 font: 700 14px/30px var(--base-font);
                 margin: 0 0;
-                transition: line-height .4s;
+                transition: line-height 0.4s;
                 @include ellipsis();
             }
-            
+
             .pre-check-item-header-drag {
                 font-size: 20px;
                 line-height: 30px;
@@ -32,7 +32,7 @@
                 margin-left: -10px;
                 cursor: grab;
                 color: #9da1a3;
-                transition: color .4s;
+                transition: color 0.4s;
 
                 &:hover {
                     color: var(--text-color);
@@ -52,18 +52,19 @@
         .pre-check-item-body {
             display: block;
 
-            .pre-check-item-body-content, .pre-check-item-body-records {
+            .pre-check-item-body-content,
+            .pre-check-item-body-records {
                 padding: 20px;
             }
 
             .pre-check-item-body-records {
                 border-top: 1px solid var(--border-color);
-    
+
                 .block-records-title {
                     font: 700 14px/24px var(--base-font);
                     margin-bottom: 10px;
                 }
-    
+
                 .pre-check-item-body-records-items {
                     .pre-check-item-body-records-empty {
                         height: 200px;
@@ -81,10 +82,10 @@
                                 display: block;
                             }
                         }
-    
+
                         .pre-check-item-body-records-empty-title {
                             font: 500 14px/21px var(--base-font);
-                            color: #646F79;
+                            color: #646f79;
                         }
                     }
                 }

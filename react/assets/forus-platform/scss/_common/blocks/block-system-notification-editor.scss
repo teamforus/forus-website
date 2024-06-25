@@ -6,7 +6,7 @@
         margin-bottom: 10px;
         padding: 10px;
         border-radius: calc(var(--border-radius));
-        border: 1px solid rgba(var(--border-color), $alpha: .5);
+        border: 1px solid rgba(var(--border-color), $alpha: 0.5);
 
         .variables-list {
             display: flex;

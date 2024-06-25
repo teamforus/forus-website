@@ -10,7 +10,7 @@
         border-bottom: 1px solid var(--border-color);
         display: flex;
         flex-direction: row;
-        
+
         .product-media {
             border-top-left-radius: calc(var(--border-radius));
             overflow: hidden;
@@ -29,7 +29,7 @@
 
             .product-name {
                 font: 500 16px/26px var(--base-font);
-                color: #151B26;
+                color: #151b26;
                 margin: 0 0 15px;
             }
 
@@ -46,13 +46,13 @@
                     .product-property-label {
                         font: 500 13px/14px var(--base-font);
                         margin: 0 0 10px;
-                        color: #646F79;
+                        color: #646f79;
                     }
 
                     .product-property-value {
                         font: 500 16px/20px var(--base-font);
                         margin: 0 0 5px;
-                        color: #151B26;
+                        color: #151b26;
                     }
 
                     &:first-child {
@@ -77,7 +77,7 @@
                 flex-grow: 1;
                 flex-direction: column;
                 font: 600 18px/24px var(--base-font);
-                color: #151B26;
+                color: #151b26;
                 text-align: right;
             }
 
@@ -109,7 +109,7 @@
             border-bottom: 1px solid var(--border-color);
             padding: 25px;
             font: 600 16px/28px var(--base-font);
-            color: #282B39;
+            color: #282b39;
             @include cf();
 
             .description-header-action {
@@ -127,7 +127,7 @@
         .description-body {
             padding: 25px;
             font: 500 14px/20px var(--base-font);
-            color: #646F79;
+            color: #646f79;
             border-bottom: 1px solid var(--border-color);
             cursor: default;
             position: relative;
@@ -136,16 +136,21 @@
                 left: 70px;
             }
 
-            ul, ol, li, p {
+            ul,
+            ol,
+            li,
+            p {
                 font: 400 14px/20px var(--base-font);
                 margin: 0 0 10px;
             }
 
-            strong, b {
+            strong,
+            b {
                 font: 600 14px/22px var(--base-font);
             }
 
-            em, i {
+            em,
+            i {
                 font: 600 14px/22px var(--base-font);
             }
 
@@ -172,7 +177,7 @@
 
             ol {
                 padding-left: 15px;
-                
+
                 li {
                     margin: 0 0 5px;
 

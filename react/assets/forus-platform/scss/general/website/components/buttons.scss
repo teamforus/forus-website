@@ -18,7 +18,7 @@
         text-align: center;
     }
 
-    &>svg {
+    & > svg {
         position: relative;
         height: 12px;
         width: 16px;
@@ -39,7 +39,7 @@
         color: $backgroundColor !important;
         border: solid 1px $backgroundColor;
 
-        &>svg {
+        & > svg {
             left: 10px;
         }
     }

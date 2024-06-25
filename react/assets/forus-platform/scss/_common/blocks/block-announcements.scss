@@ -17,18 +17,18 @@
 
         .title {
             font: 600 13px/16px var(--base-font);
-            color: #151B26;
+            color: #151b26;
             margin-bottom: 7px;
         }
 
         .description {
             font: 500 11px/16px var(--base-font);
-            color: #646F79;
-    
+            color: #646f79;
+
             .block.block-markdown {
                 font: inherit !important;
                 color: inherit;
-    
+
                 p {
                     &:last-child {
                         margin-bottom: 0;

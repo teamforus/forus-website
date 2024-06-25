@@ -1,9 +1,10 @@
-.wrapper{
+.wrapper {
     align-items: center;
 
-    &_me, &_sup {
+    &_me,
+    &_sup {
         display: flex;
-        margin: auto;             
+        margin: auto;
         .column {
             flex: auto;
             width: 50%;
@@ -48,7 +49,6 @@
                 height: 500px;
             }
         }
-        
     }
     &_feature_one {
         background-color: #f9fafb;
@@ -77,7 +77,7 @@
                 height: 600px;
                 padding: 50px 0 0 0;
             }
-            .small{
+            .small {
                 max-height: 350px;
             }
         }
@@ -103,12 +103,11 @@
                 width: 850px;
                 padding: 50px 0 0 0;
             }
-            .small{
+            .small {
                 max-width: 560px;
                 float: left;
             }
         }
-
     }
     &_feature_three {
         padding: 10px 0 10px 0;
@@ -134,7 +133,7 @@
                 float: right;
                 height: 500px;
                 padding: 50px 0 0 0;
-            }   
+            }
         }
     }
     &_fund {
@@ -147,7 +146,7 @@
         }
         .fund {
             font-family: Montserrat;
-            
+
             font-weight: 500;
             letter-spacing: 1px;
             color: #7e818c;
@@ -158,14 +157,15 @@
             width: 1170px;
             height: 673px;
             object-fit: contain;
-        }                  
+        }
     }
     &_current {
-        .container{
+        .container {
             p {
                 max-width: 835px;
             }
-            svg, img {
+            svg,
+            img {
                 margin: 0 auto;
                 width: 120px;
                 height: 120px;
@@ -188,17 +188,17 @@
             margin-top: 25px;
             flex-direction: row;
             justify-content: space-around;
-            .col-33{
+            .col-33 {
                 width: 33.33%;
             }
             h2 {
                 font-weight: 600;
                 text-align: center;
-                color: var(--text-color); 
+                color: var(--text-color);
             }
             h4 {
                 text-align: center;
-                color: var(--text-color);  
+                color: var(--text-color);
                 font-weight: 500;
             }
             .number_link {
@@ -210,19 +210,19 @@
         }
     }
     &_explain {
-        margin-bottom:125px;
+        margin-bottom: 125px;
         .container {
             display: flex;
             justify-content: space-between;
             img {
-                width:560px;
+                width: 560px;
                 height: 350px;
             }
         }
         span {
-            width:462px;
-            display:block;
-            float:left;
-        }   
+            width: 462px;
+            display: block;
+            float: left;
+        }
     }
 }

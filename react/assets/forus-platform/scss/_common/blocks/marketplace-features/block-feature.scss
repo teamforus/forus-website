@@ -5,14 +5,15 @@
     gap: 20px;
 
     .block-feature-icon {
-        svg, img {
+        svg,
+        img {
             display: block;
             width: 100%;
         }
     }
 
     .block-feature-info {
-        .block-feature-title  {
+        .block-feature-title {
             font: 600 22px/32px var(--base-font);
             display: flex;
             align-items: flex-start;
@@ -27,7 +28,7 @@
                 margin: 6px 0 0;
             }
         }
-    
+
         .block-feature-details {
             font: 400 14px/20px var(--base-font);
             margin-bottom: 12px;
@@ -45,9 +46,9 @@
             font: 600 11px/14px var(--base-font);
             padding: 2px 4px;
             border-radius: 4px;
-            border: 1px solid #DADFE5;
-            background: #EBEEF1;
-            color: #151B26;
+            border: 1px solid #dadfe5;
+            background: #ebeef1;
+            color: #151b26;
             display: inline-block;
             margin-right: 8px;
 
@@ -77,7 +78,7 @@
         }
 
         .block-feature-info {
-            .block-feature-title  {
+            .block-feature-title {
                 font: 600 18px/28px var(--base-font);
                 flex-direction: column;
                 margin: 0 0 20px;

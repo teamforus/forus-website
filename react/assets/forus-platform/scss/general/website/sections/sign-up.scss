@@ -16,7 +16,7 @@
 
         em {
             font: 500 25px/30px var(--base-font);
-    
+
             &.icon-start {
                 margin-right: 2px;
                 margin-left: -5px;
@@ -56,45 +56,45 @@
                 border-radius: 6px;
                 padding: 30px 20px;
                 text-align: center;
-                transition: all .3s;
+                transition: all 0.3s;
 
                 .block-sign-up-option-img {
                     margin: 0 0 15px;
                     display: flex;
                     flex-direction: column;
                     justify-content: center;
-    
+
                     img {
                         margin: 0 auto;
                         display: block;
                         max-width: 100%;
-    
+
                         &.img-default {
                             display: block;
                         }
-        
+
                         &.img-hover {
                             display: none;
                         }
                     }
                 }
-    
+
                 .block-sign-up-option-description {
                     font: 500 17px/25px var(--base-font);
                 }
-    
+
                 &:hover {
                     cursor: pointer;
                     border: 1px solid #0c66ff;
                     color: #0c66ff;
                     text-decoration: none;
-    
+
                     .block-sign-up-option-img {
                         img {
                             &.img-default {
                                 display: none;
                             }
-            
+
                             &.img-hover {
                                 display: block;
                             }
@@ -130,7 +130,7 @@
             border: 1px solid #0c66ff;
             border-radius: 8px;
             font: 600 17px/21px var(--base-font);
-            transition: color 0.3s, border-color .3s, background 0.3s, box-shadow 0.3s;
+            transition: color 0.3s, border-color 0.3s, background 0.3s, box-shadow 0.3s;
 
             &:hover {
                 cursor: pointer;
@@ -151,7 +151,7 @@
 
         .block-sign-up-header {
             font: 500 17px/21px var(--base-font);
-            border: none;   
+            border: none;
         }
 
         .block-sign-up-options {
@@ -164,7 +164,7 @@
                 padding: 0;
                 margin: 0 0 20px;
 
-                .block-sign-up-option-inner  {
+                .block-sign-up-option-inner {
                     padding: 20px 20px;
 
                     .block-sign-up-option-img {

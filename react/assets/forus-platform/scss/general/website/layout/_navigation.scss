@@ -1,5 +1,3 @@
-
-
 html {
     body {
         margin: auto;
@@ -42,7 +40,7 @@ html {
 
                         .navbar-logo {
                             svg {
-                                height: 20px!important;
+                                height: 20px !important;
                                 path {
                                     fill: #000;
                                 }
@@ -57,12 +55,14 @@ html {
                     .navbar-toggle {
                         background-color: transparent;
                         border: none;
-        
+
                         .icon-bar {
                             background: black;
                         }
-        
-                        &:hover, &:active, &:focus {
+
+                        &:hover,
+                        &:active,
+                        &:focus {
                             background-color: transparent;
                         }
                     }
@@ -86,7 +86,7 @@ html {
                             display: flex;
                             flex-direction: row;
                             cursor: pointer;
-                        
+
                             .auth-user-details {
                                 display: flex;
                                 flex-direction: column;
@@ -97,7 +97,7 @@ html {
                                     color: #151b26;
                                     text-align: right;
                                 }
-                
+
                                 .auth-user-role {
                                     font: 400 12px/20px var(--base-font);
                                     color: #151b26;
@@ -111,7 +111,6 @@ html {
                                         padding: 0 3px;
                                     }
                                 }
-
                             }
 
                             .auth-user-caret {
@@ -119,14 +118,14 @@ html {
                                 align-items: center;
                                 color: #151b26;
                                 padding-left: 5px;
-                    
+
                                 em {
                                     font-size: 20px;
                                     font-weight: 600;
                                     margin-top: 3px;
                                 }
 
-                                @media screen and (max-width: 1000px){
+                                @media screen and (max-width: 1000px) {
                                     display: none;
                                 }
                             }
@@ -137,7 +136,7 @@ html {
                                 height: 50px;
                                 border-radius: 50px;
                                 background: #fff;
-                                box-shadow: 0 2px 9px rgba(0,0,0,0.1);
+                                box-shadow: 0 2px 9px rgba(0, 0, 0, 0.1);
                             }
 
                             .auth-user-menu {
@@ -202,13 +201,16 @@ html {
                             transform: rotate(0);
                             cursor: pointer !important;
 
-                            &:hover, &:active, &:focus, &.active{
+                            &:hover,
+                            &:active,
+                            &:focus,
+                            &.active {
                                 color: var(--forus-sky-blue);
                                 background: none;
                             }
 
-                            &[aria-expanded="true"]{
-                                svg{
+                            &[aria-expanded='true'] {
+                                svg {
                                     -webkit-transform: rotate(-180deg);
                                     -ms-transform: rotate(-180deg);
                                     transform: rotate(-180deg);
@@ -216,14 +218,14 @@ html {
                                 }
                             }
 
-                            &.lang{
-                                span{
-                                    &.icon{
-                                        img{
+                            &.lang {
+                                span {
+                                    &.icon {
+                                        img {
                                             width: 23px;
                                             margin: -3px 13px 0 0;
                                         }
-                                        & + span{
+                                        & + span {
                                             font-weight: 600;
                                         }
                                     }
@@ -269,7 +271,7 @@ html {
                                 display: flex;
                                 align-items: center;
                                 padding: 9px 15px;
-    
+
                                 .navbar-logo {
                                     flex-grow: 1;
                                     text-align: left;
@@ -278,7 +280,7 @@ html {
                                         height: 25px;
                                     }
                                 }
-    
+
                                 .navbar-toggle {
                                     margin: 0;
                                     padding: 0;
@@ -294,7 +296,7 @@ html {
 
                         & > li {
                             float: none;
-                    
+
                             & > a {
                                 padding-top: 10px;
                                 padding-bottom: 10px;

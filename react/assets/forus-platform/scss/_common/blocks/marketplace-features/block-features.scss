@@ -28,9 +28,9 @@
                 font: 600 11px/14px var(--base-font);
                 padding: 2px 4px;
                 border-radius: 4px;
-                border: 1px solid #DADFE5;
-                background: #EBEEF1;
-                color: #151B26;
+                border: 1px solid #dadfe5;
+                background: #ebeef1;
+                color: #151b26;
                 display: inline-flex;
                 margin-right: 8px;
                 width: fit-content;
@@ -49,7 +49,8 @@
                 position: relative;
                 height: fit-content;
 
-                svg, img {
+                svg,
+                img {
                     width: 100%;
                 }
 
@@ -70,7 +71,7 @@
                 }
             }
 
-            .features-list-item-title  {
+            .features-list-item-title {
                 font: 500 16px/20px var(--base-font);
                 display: flex;
                 margin: 0 0 5px;
@@ -100,12 +101,12 @@
             &:hover {
                 .features-list-item-icon {
                     .features-icon-label {
-                        background: #39B924;
+                        background: #39b924;
                     }
                 }
 
                 &:before {
-                    background-color: #F3F4F5;
+                    background-color: #f3f4f5;
                 }
             }
         }
@@ -120,7 +121,6 @@
             grid-template-columns: repeat(1, 1fr);
         }
     }
-
 
     @media screen and (max-width: 500px) {
         .features-list {

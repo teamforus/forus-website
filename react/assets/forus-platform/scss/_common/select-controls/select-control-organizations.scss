@@ -96,7 +96,8 @@
                     font-size: 20px;
                 }
 
-                &[disabled], &.disabled {
+                &[disabled],
+                &.disabled {
                     color: #ccc;
                     pointer-events: none;
                 }
@@ -235,8 +236,8 @@
                                 top: 50%;
                                 position: absolute;
                                 transform: translate(0, -50%);
-                                content: "\F012C";
-                                font: normal normal normal 16px/1 "Material Design Icons";
+                                content: '\F012C';
+                                font: normal normal normal 16px/1 'Material Design Icons';
                             }
                         }
                     }
