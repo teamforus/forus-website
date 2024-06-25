@@ -1,6 +1,5 @@
 import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
 import useActiveOrganization from '../../../hooks/useActiveOrganization';
-import { useTranslation } from 'react-i18next';
 import { useNavigateState } from '../../../modules/state_router/Router';
 import Transaction from '../../../props/models/Transaction';
 import useOpenModal from '../../../hooks/useOpenModal';
@@ -36,12 +35,14 @@ import { dateFormat, dateParse } from '../../../helpers/dates';
 import ModalVoucherTransactionsUpload from '../../modals/ModalVoucherTransactionsUpload';
 import usePaginatorService from '../../../modules/paginator/services/usePaginatorService';
 import ClickOutside from '../../elements/click-outside/ClickOutside';
+import useTranslate from '../../../hooks/useTranslate';
+import classNames from 'classnames';
 
 export default function Transactions() {
-    const { t } = useTranslation();
-
     const envData = useEnvData();
+
     const openModal = useOpenModal();
+    const translate = useTranslate();
     const pushDanger = usePushDanger();
     const pushSuccess = usePushSuccess();
     const setProgress = useSetProgress();
@@ -367,11 +368,11 @@ export default function Transactions() {
                     <div className="flex-col flex-grow">
                         {viewType.key == 'transactions' ? (
                             <div className="card-title">
-                                {t('transactions.header.title')} ({transactions.meta.total})
+                                {translate('transactions.header.title')} ({transactions.meta.total})
                             </div>
                         ) : (
                             <div className="card-title">
-                                {t('transactions.header.titleBulks')} ({transactionBulks.meta.total})
+                                {translate('transactions.header.titleBulks')} ({transactionBulks.meta.total})
                             </div>
                         )}
                     </div>
@@ -437,7 +438,7 @@ export default function Transactions() {
                                             value={filter.values.q}
                                             onChange={(e) => filter.update({ q: e.target.value })}
                                             data-dusk="searchTransaction"
-                                            placeholder={t('transactions.labels.search')}
+                                            placeholder={translate('transactions.labels.search')}
                                         />
                                     </div>
                                 </div>
@@ -445,16 +446,16 @@ export default function Transactions() {
 
                             {viewType.key == 'transactions' && (
                                 <CardHeaderFilter filter={filter}>
-                                    <FilterItemToggle label={t('transactions.labels.search')} show={true}>
+                                    <FilterItemToggle label={translate('transactions.labels.search')} show={true}>
                                         <input
                                             className="form-control"
                                             value={filter.values.q}
                                             onChange={(e) => filter.update({ q: e.target.value })}
-                                            placeholder={t('transactions.labels.search')}
+                                            placeholder={translate('transactions.labels.search')}
                                         />
                                     </FilterItemToggle>
 
-                                    <FilterItemToggle label={t('transactions.labels.amount')}>
+                                    <FilterItemToggle label={translate('transactions.labels.amount')}>
                                         <div className="row">
                                             <div className="col col-lg-6">
                                                 <input
@@ -467,7 +468,7 @@ export default function Transactions() {
                                                             amount_min: e.target.value,
                                                         })
                                                     }
-                                                    placeholder={t('transactions.labels.amount_min')}
+                                                    placeholder={translate('transactions.labels.amount_min')}
                                                 />
                                             </div>
                                             <div className="col col-lg-6">
@@ -481,13 +482,13 @@ export default function Transactions() {
                                                             amount_max: e.target.value,
                                                         })
                                                     }
-                                                    placeholder={t('transactions.labels.amount_max')}
+                                                    placeholder={translate('transactions.labels.amount_max')}
                                                 />
                                             </div>
                                         </div>
                                     </FilterItemToggle>
 
-                                    <FilterItemToggle label={t('transactions.labels.state')}>
+                                    <FilterItemToggle label={translate('transactions.labels.state')}>
                                         <SelectControl
                                             className="form-control"
                                             propKey={'key'}
@@ -499,7 +500,7 @@ export default function Transactions() {
                                         />
                                     </FilterItemToggle>
 
-                                    <FilterItemToggle label={t('transactions.labels.fund')}>
+                                    <FilterItemToggle label={translate('transactions.labels.fund')}>
                                         {funds && (
                                             <SelectControl
                                                 className="form-control"
@@ -512,27 +513,27 @@ export default function Transactions() {
                                         )}
                                     </FilterItemToggle>
 
-                                    <FilterItemToggle label={t('transactions.labels.from')}>
+                                    <FilterItemToggle label={translate('transactions.labels.from')}>
                                         <DatePickerControl
                                             value={dateParse(filter.values.from)}
-                                            placeholder={t('jjjj-MM-dd')}
+                                            placeholder={translate('jjjj-MM-dd')}
                                             onChange={(from: Date) => {
                                                 filter.update({ from: dateFormat(from) });
                                             }}
                                         />
                                     </FilterItemToggle>
 
-                                    <FilterItemToggle label={t('transactions.labels.to')}>
+                                    <FilterItemToggle label={translate('transactions.labels.to')}>
                                         <DatePickerControl
                                             value={dateParse(filter.values.to)}
-                                            placeholder={t('jjjj-MM-dd')}
+                                            placeholder={translate('jjjj-MM-dd')}
                                             onChange={(to: Date) => {
                                                 filter.update({ to: dateFormat(to) });
                                             }}
                                         />
                                     </FilterItemToggle>
 
-                                    <FilterItemToggle label={t('transactions.labels.transfer_in')}>
+                                    <FilterItemToggle label={translate('transactions.labels.transfer_in')}>
                                         <div className="row">
                                             <div className="col col-lg-6">
                                                 <input
@@ -545,7 +546,7 @@ export default function Transactions() {
                                                             filter.update({ transfer_in_min: e.target.value });
                                                         }
                                                     }}
-                                                    placeholder={t('transactions.labels.transfer_in_min')}
+                                                    placeholder={translate('transactions.labels.transfer_in_min')}
                                                 />
                                             </div>
                                             <div className="col col-lg-6">
@@ -559,7 +560,7 @@ export default function Transactions() {
                                                             filter.update({ transfer_in_max: e.target.value });
                                                         }
                                                     }}
-                                                    placeholder={t('transactions.labels.transfer_in_max')}
+                                                    placeholder={translate('transactions.labels.transfer_in_max')}
                                                 />
                                             </div>
                                         </div>
@@ -567,27 +568,29 @@ export default function Transactions() {
 
                                     {isSponsor && (
                                         <Fragment>
-                                            <FilterItemToggle label={t('transactions.labels.non_cancelable_from')}>
+                                            <FilterItemToggle
+                                                label={translate('transactions.labels.non_cancelable_from')}>
                                                 <DatePickerControl
                                                     value={dateParse(filter.values.non_cancelable_from)}
-                                                    placeholder={t('jjjj-MM-dd')}
+                                                    placeholder={translate('jjjj-MM-dd')}
                                                     onChange={(from: Date) => {
                                                         filter.update({ non_cancelable_from: dateFormat(from) });
                                                     }}
                                                 />
                                             </FilterItemToggle>
 
-                                            <FilterItemToggle label={t('transactions.labels.non_cancelable_to')}>
+                                            <FilterItemToggle
+                                                label={translate('transactions.labels.non_cancelable_to')}>
                                                 <DatePickerControl
                                                     value={dateParse(filter.values.non_cancelable_to)}
-                                                    placeholder={t('jjjj-MM-dd')}
+                                                    placeholder={translate('jjjj-MM-dd')}
                                                     onChange={(to: Date) => {
                                                         filter.update({ non_cancelable_to: dateFormat(to) });
                                                     }}
                                                 />
                                             </FilterItemToggle>
 
-                                            <FilterItemToggle label={t('transactions.labels.bulk_state')}>
+                                            <FilterItemToggle label={translate('transactions.labels.bulk_state')}>
                                                 <SelectControl
                                                     className="form-control"
                                                     propKey={'key'}
@@ -601,7 +604,7 @@ export default function Transactions() {
                                         </Fragment>
                                     )}
 
-                                    <FilterItemToggle label={t('transactions.labels.fund_state')}>
+                                    <FilterItemToggle label={translate('transactions.labels.fund_state')}>
                                         <SelectControl
                                             className="form-control"
                                             propKey={'key'}
@@ -619,7 +622,7 @@ export default function Transactions() {
                                             onClick={() => exportTransactions()}
                                             disabled={transactions.meta.total == 0}>
                                             <em className="mdi mdi-download icon-start"> </em>
-                                            {t('components.dropdown.export', {
+                                            {translate('components.dropdown.export', {
                                                 total: transactions.meta.total,
                                             })}
                                         </button>
@@ -628,7 +631,7 @@ export default function Transactions() {
                             )}
                             {viewType.key == 'bulks' && (
                                 <CardHeaderFilter filter={bulkFilter}>
-                                    <FilterItemToggle label={t('transactions.labels.amount')}>
+                                    <FilterItemToggle label={translate('transactions.labels.amount')}>
                                         <div className="row">
                                             <div className="col col-lg-6">
                                                 <input
@@ -641,7 +644,7 @@ export default function Transactions() {
                                                             amount_min: e.target.value,
                                                         })
                                                     }
-                                                    placeholder={t('transactions.labels.amount_min')}
+                                                    placeholder={translate('transactions.labels.amount_min')}
                                                 />
                                             </div>
                                             <div className="col col-lg-6">
@@ -655,13 +658,13 @@ export default function Transactions() {
                                                             amount_max: e.target.value,
                                                         })
                                                     }
-                                                    placeholder={t('transactions.labels.amount_max')}
+                                                    placeholder={translate('transactions.labels.amount_max')}
                                                 />
                                             </div>
                                         </div>
                                     </FilterItemToggle>
 
-                                    <FilterItemToggle label={t('transactions.labels.quantity')}>
+                                    <FilterItemToggle label={translate('transactions.labels.quantity')}>
                                         <div className="row">
                                             <div className="col col-lg-6">
                                                 <input
@@ -674,7 +677,7 @@ export default function Transactions() {
                                                             quantity_min: e.target.value,
                                                         })
                                                     }
-                                                    placeholder={t('transactions.labels.quantity_min')}
+                                                    placeholder={translate('transactions.labels.quantity_min')}
                                                 />
                                             </div>
                                             <div className="col col-lg-6">
@@ -688,13 +691,13 @@ export default function Transactions() {
                                                             quantity_max: e.target.value,
                                                         })
                                                     }
-                                                    placeholder={t('transactions.labels.quantity_max')}
+                                                    placeholder={translate('transactions.labels.quantity_max')}
                                                 />
                                             </div>
                                         </div>
                                     </FilterItemToggle>
 
-                                    <FilterItemToggle label={t('transactions.labels.state')}>
+                                    <FilterItemToggle label={translate('transactions.labels.state')}>
                                         <SelectControl
                                             className="form-control"
                                             propKey={'key'}
@@ -706,20 +709,20 @@ export default function Transactions() {
                                         />
                                     </FilterItemToggle>
 
-                                    <FilterItemToggle label={t('transactions.labels.from')}>
+                                    <FilterItemToggle label={translate('transactions.labels.from')}>
                                         <DatePickerControl
                                             value={dateParse(bulkFilter.values.from)}
-                                            placeholder={t('jjjj-MM-dd')}
+                                            placeholder={translate('jjjj-MM-dd')}
                                             onChange={(from: Date) => {
                                                 bulkFilter.update({ from: dateFormat(from) });
                                             }}
                                         />
                                     </FilterItemToggle>
 
-                                    <FilterItemToggle label={t('transactions.labels.to')}>
+                                    <FilterItemToggle label={translate('transactions.labels.to')}>
                                         <DatePickerControl
                                             value={dateParse(bulkFilter.values.to)}
-                                            placeholder={t('jjjj-MM-dd')}
+                                            placeholder={translate('jjjj-MM-dd')}
                                             onChange={(to: Date) => {
                                                 bulkFilter.update({ to: dateFormat(to) });
                                             }}
@@ -732,7 +735,7 @@ export default function Transactions() {
                                             onClick={() => exportTransactionBulks()}
                                             disabled={transactionBulks.meta.total == 0}>
                                             <em className="mdi mdi-download icon-start"> </em>
-                                            {t('components.dropdown.export', {
+                                            {translate('components.dropdown.export', {
                                                 total: transactionBulks.meta.total,
                                             })}
                                         </button>
@@ -758,56 +761,56 @@ export default function Transactions() {
                                                     <ThSortable label={'UID'} value={'uid'} filter={filter} />
                                                 )}
                                                 <ThSortable
-                                                    label={t('transactions.labels.price')}
+                                                    label={translate('transactions.labels.price')}
                                                     value={'amount'}
                                                     filter={filter}
                                                 />
                                                 {isProvider && (
                                                     <ThSortable
                                                         className={'nowrap'}
-                                                        label={t('transactions.labels.method')}
+                                                        label={translate('transactions.labels.method')}
                                                         filter={filter}
                                                     />
                                                 )}
                                                 {isProvider && (
                                                     <ThSortable
                                                         className={'nowrap'}
-                                                        label={t('transactions.labels.branch_name')}
+                                                        label={translate('transactions.labels.branch_name')}
                                                         filter={filter}
                                                     />
                                                 )}
                                                 {isProvider && (
                                                     <ThSortable
                                                         className={'nowrap'}
-                                                        label={t('transactions.labels.branch_number')}
+                                                        label={translate('transactions.labels.branch_number')}
                                                         filter={filter}
                                                     />
                                                 )}
                                                 {isProvider && (
                                                     <ThSortable
                                                         className={'nowrap'}
-                                                        label={t('transactions.labels.amount_extra')}
+                                                        label={translate('transactions.labels.amount_extra')}
                                                         filter={filter}
                                                     />
                                                 )}
                                                 <ThSortable
-                                                    label={t('transactions.labels.date')}
+                                                    label={translate('transactions.labels.date')}
                                                     value={'created_at'}
                                                     filter={filter}
                                                 />
                                                 <ThSortable
-                                                    label={t('transactions.labels.fund')}
+                                                    label={translate('transactions.labels.fund')}
                                                     value={'fund_name'}
                                                     filter={filter}
                                                 />
                                                 <ThSortable
-                                                    label={t('transactions.labels.product_name')}
+                                                    label={translate('transactions.labels.product_name')}
                                                     value={'product_name'}
                                                     filter={filter}
                                                 />
                                                 {isSponsor && (
                                                     <ThSortable
-                                                        label={t('transactions.labels.provider')}
+                                                        label={translate('transactions.labels.provider')}
                                                         value={'provider_name'}
                                                         filter={filter}
                                                     />
@@ -815,27 +818,27 @@ export default function Transactions() {
                                                 {isSponsor && (
                                                     <ThSortable
                                                         className="nowrap"
-                                                        label={t('transactions.labels.date_non_cancelable')}
+                                                        label={translate('transactions.labels.date_non_cancelable')}
                                                         value={'date_non_cancelable'}
                                                         filter={filter}
                                                     />
                                                 )}
                                                 {isSponsor && (
                                                     <ThSortable
-                                                        label={t('transactions.labels.bulk')}
+                                                        label={translate('transactions.labels.bulk')}
                                                         value={'transaction_in'}
                                                         filter={filter}
                                                     />
                                                 )}
                                                 {isSponsor && (
                                                     <ThSortable
-                                                        label={t('transactions.labels.bulk_state')}
+                                                        label={translate('transactions.labels.bulk_state')}
                                                         value={'bulk_state'}
                                                         filter={filter}
                                                     />
                                                 )}
                                                 <ThSortable
-                                                    label={t('transactions.labels.status')}
+                                                    label={translate('transactions.labels.status')}
                                                     value={'state'}
                                                     filter={filter}
                                                 />
@@ -843,7 +846,7 @@ export default function Transactions() {
                                                 <ThSortable label="" />
                                             </tr>
                                             {transactions.data.map((transaction) => (
-                                                <tr key={transaction.id} data-dusk="transactionItem">
+                                                <tr key={transaction.id} data-dusk={`transactionItem${transaction.id}`}>
                                                     <td>{transaction.id}</td>
 
                                                     {isSponsor && (
@@ -855,8 +858,8 @@ export default function Transactions() {
                                                         <StateNavLink
                                                             name={'transaction'}
                                                             params={{
-                                                                organizationId: activeOrganization.id,
                                                                 address: transaction.address,
+                                                                organizationId: activeOrganization.id,
                                                             }}
                                                             className="text-primary-light">
                                                             {transaction.amount_locale}
@@ -918,7 +921,11 @@ export default function Transactions() {
                                                         {strLimit(transaction.fund.name, 25)}
                                                     </td>
                                                     <td title={transaction.product?.name || '-'}>
-                                                        {strLimit(transaction.product?.name || '-', 25)}
+                                                        {transaction.product?.name ? (
+                                                            strLimit(transaction.product?.name || '', 25)
+                                                        ) : (
+                                                            <div className={'text-muted'}>-</div>
+                                                        )}
                                                     </td>
                                                     {isSponsor && (
                                                         <td
@@ -937,7 +944,7 @@ export default function Transactions() {
                                                                     </div>
                                                                 </td>
                                                             ) : (
-                                                                <td>-</td>
+                                                                <td className={'text-muted'}>-</td>
                                                             )}
                                                         </Fragment>
                                                     )}
@@ -951,7 +958,7 @@ export default function Transactions() {
                                                                     id: transaction.voucher_transaction_bulk_id,
                                                                 }}
                                                                 className="text-primary-light">
-                                                                {'#' + transaction.voucher_transaction_bulk_id}
+                                                                {`#${transaction.voucher_transaction_bulk_id}`}
                                                             </StateNavLink>
                                                         </td>
                                                     )}
@@ -968,12 +975,12 @@ export default function Transactions() {
                                                                     </div>
                                                                 </div>
                                                             ) : (
-                                                                <span>-</span>
+                                                                <span className={'text-muted'}>-</span>
                                                             )}
                                                         </td>
                                                     )}
                                                     {isSponsor && (
-                                                        <td data-dusk="transactionState">
+                                                        <td>
                                                             {(transaction.bulk_state == 'rejected' ||
                                                                 transaction.bulk_state == 'error') && (
                                                                 <div className="label label-danger">
@@ -993,15 +1000,20 @@ export default function Transactions() {
                                                                     {transaction.bulk_state_locale}
                                                                 </div>
                                                             )}
+
+                                                            {!transaction.bulk_state && (
+                                                                <div className={'text-muted'}>-</div>
+                                                            )}
                                                         </td>
                                                     )}
                                                     <td data-dusk="transactionState">
                                                         <div
-                                                            className={`label ${
+                                                            className={classNames(
+                                                                'label',
                                                                 transaction.state == 'success'
                                                                     ? 'label-success'
-                                                                    : 'label-default'
-                                                            }`}>
+                                                                    : 'label-default',
+                                                            )}>
                                                             {transaction.state_locale}
                                                         </div>
                                                     </td>
@@ -1113,11 +1125,7 @@ export default function Transactions() {
                 )}
 
             {viewType.key == 'transactions' && transactions.meta.total == 0 && (
-                <div className="card-section">
-                    <div className="block block-empty text-center">
-                        <div className="empty-title">Geen transacties gevonden</div>
-                    </div>
-                </div>
+                <EmptyCard type={'card-section'} title="Geen transacties gevonden" />
             )}
 
             {viewType.key == 'transactions' && transactions?.meta && (

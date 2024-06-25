@@ -1,9 +1,9 @@
 import React from 'react';
 import ExtraPaymentRefund from '../../../../props/models/ExtraPaymentRefund';
-import { useTranslation } from 'react-i18next';
+import useTranslate from '../../../../hooks/useTranslate';
 
 export default function ReservationExtraPaymentRefunds({ refunds }: { refunds: Array<ExtraPaymentRefund> }) {
-    const { t } = useTranslation();
+    const translate = useTranslate();
 
     return (
         <div className="card">
@@ -11,7 +11,7 @@ export default function ReservationExtraPaymentRefunds({ refunds }: { refunds: A
                 <div className="flex">
                     <div className="flex flex-grow">
                         <div className="card-title">
-                            <span>{t('reservation.header.refunds.title')}</span>
+                            <span>{translate('reservation.header.refunds.title')}</span>
                             &nbsp;
                             <span className="span-count">{refunds.length}</span>
                         </div>
@@ -25,9 +25,9 @@ export default function ReservationExtraPaymentRefunds({ refunds }: { refunds: A
                         <table className="table">
                             <tbody>
                                 <tr>
-                                    <th>{t('reservation.labels.refund_date')}</th>
-                                    <th>{t('reservation.labels.refund_amount')}</th>
-                                    <th>{t('reservation.labels.status')}</th>
+                                    <th>{translate('reservation.labels.refund_date')}</th>
+                                    <th>{translate('reservation.labels.refund_amount')}</th>
+                                    <th>{translate('reservation.labels.status')}</th>
                                 </tr>
                                 {refunds?.map((refund) => (
                                     <tr key={refund.id}>

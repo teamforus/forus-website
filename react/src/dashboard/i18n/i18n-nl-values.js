@@ -1,12 +1,12 @@
 // No nested objects allowed
-module.exports = {
+export default {
     general: {
-        name: "General"
+        name: 'General',
     },
     nijmegen: {
-        name: "Nijmegen"
+        name: 'Nijmegen',
     },
     zuidhorn: {
-        name: "Zuidhorn"
-    }
+        name: 'Zuidhorn',
+    },
 };

@@ -12,14 +12,15 @@
         margin-right: 5px;
 
         &:after {
-            color: #8CA3A6;
+            color: #8ca3a6;
             margin-left: 5px;
             display: flex;
             content: '»';
         }
 
-        &.breadcrumb-item-active, &.active {
-            color: #646F79;
+        &.breadcrumb-item-active,
+        &.active {
+            color: #646f79;
             cursor: default;
         }
 

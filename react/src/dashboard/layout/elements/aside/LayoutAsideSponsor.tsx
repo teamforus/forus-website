@@ -2,12 +2,12 @@ import React, { Fragment } from 'react';
 import LayoutAsideNavItem from './LayoutAsideNavItem';
 import { hasPermission } from '../../../helpers/utils';
 import Organization from '../../../props/models/Organization';
-import { useTranslation } from 'react-i18next';
 import useEnvData from '../../../hooks/useEnvData';
+import useTranslate from '../../../hooks/useTranslate';
 
 export default function LayoutAsideSponsor({ organization }: { organization: Organization }) {
     const envData = useEnvData();
-    const { t } = useTranslation();
+    const translate = useTranslate();
     const { allow_bi_connection, allow_2fa_restrictions, allow_pre_checks } = organization;
 
     return (
@@ -26,7 +26,7 @@ export default function LayoutAsideSponsor({ organization }: { organization: Org
                 icon={'vouchers'}
                 route={'vouchers'}
                 routeParams={{ organizationId: organization?.id }}
-                show={hasPermission(organization, 'manage_vouchers')}
+                show={hasPermission(organization, ['manage_vouchers', 'view_vouchers'])}
                 id={'vouchers'}
                 dusk={'vouchersPage'}
             />
@@ -35,7 +35,7 @@ export default function LayoutAsideSponsor({ organization }: { organization: Org
                 icon={'product_voucher'}
                 route={'product-vouchers'}
                 routeParams={{ organizationId: organization?.id }}
-                show={hasPermission(organization, 'manage_vouchers')}
+                show={hasPermission(organization, ['manage_vouchers', 'view_vouchers'])}
                 id={'product_vouchers'}
             />
             <LayoutAsideNavItem
@@ -118,7 +118,7 @@ export default function LayoutAsideSponsor({ organization }: { organization: Org
 
             {hasPermission(organization, 'view_finances') && (
                 <Fragment>
-                    <div className="sidebar-section-title">{t('menu.financial')}</div>
+                    <div className="sidebar-section-title">{translate('menu.financial')}</div>
                     <LayoutAsideNavItem
                         name={'Overzicht'}
                         icon={'financial_dashboard_overview'}
@@ -162,7 +162,7 @@ export default function LayoutAsideSponsor({ organization }: { organization: Org
                 false,
             ) && (
                 <Fragment>
-                    <div className="sidebar-section-title">{t('menu.implementation')}</div>
+                    <div className="sidebar-section-title">{translate('menu.implementation')}</div>
                     <LayoutAsideNavItem
                         name={'Webshops'}
                         icon={'implementation'}

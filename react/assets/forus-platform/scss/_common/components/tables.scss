@@ -87,6 +87,7 @@
                             justify-content: center;
                             background-color: #ffffff;
                             font-size: 16px;
+                            cursor: pointer;
 
                             &.active {
                                 border-color: var(--color-primary);
@@ -161,9 +162,7 @@
                 &.cell-chevron,
                 &.cell-chevron {
                     width: 1px;
-                    padding: 10px 10px;
-                    padding-left: 15px;
-                    padding-right: 0;
+                    padding: 10px 0 10px 15px;
                 }
             }
 
@@ -481,6 +480,8 @@
                 }
             }
 
+            &.cursor-pointer:hover,
+            &.clickable:hover,
             &[ng-click]:hover,
             &[ui-sref]:hover {
                 td,

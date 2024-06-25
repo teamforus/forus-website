@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { ModalState } from '../../modules/modals/context/ModalContext';
-import { classList } from '../../helpers/utils';
 import Organization from '../../props/models/Organization';
 import Employee from '../../props/models/Employee';
 import useFormBuilder from '../../hooks/useFormBuilder';
@@ -14,6 +13,7 @@ import { ResponseError } from '../../props/ApiResponses';
 import SelectControl from '../elements/select-control/SelectControl';
 import SelectControlOptions from '../elements/select-control/templates/SelectControlOptions';
 import useOfficeService from '../../services/OfficeService';
+import classNames from 'classnames';
 
 export default function ModalEmployeeEdit({
     modal,
@@ -30,7 +30,7 @@ export default function ModalEmployeeEdit({
     cancelButton?: ModalButton;
     organization: Organization;
 }) {
-    const [roles, setRoles] = useState([]);
+    const [roles, setRoles] = useState<Array<Role>>([]);
     const roleService = useRoleService();
     const employeeService = useEmployeeService();
     const officeService = useOfficeService();
@@ -92,14 +92,14 @@ export default function ModalEmployeeEdit({
 
     return (
         <div
-            className={classList([
+            className={classNames(
                 'modal',
                 'modal-md',
                 'modal-animated',
                 'modal-notification',
-                modal.loading ? 'modal-loading' : null,
+                modal.loading && 'modal-loading',
                 className,
-            ])}>
+            )}>
             <div className="modal-backdrop" onClick={modal.close} />
             <form className="modal-window form" onSubmit={form.submit} data-dusk={'formEmployeeEdit'}>
                 <div className="modal-close mdi mdi-close" onClick={modal.close} />

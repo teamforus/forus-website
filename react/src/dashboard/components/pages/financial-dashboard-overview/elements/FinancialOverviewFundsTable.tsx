@@ -1,11 +1,11 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
 import ThSortable from '../../../elements/tables/ThSortable';
 import Tooltip from '../../../elements/tooltip/Tooltip';
 import Fund from '../../../../props/models/Fund';
 import useExportFunds from '../hooks/useExportFunds';
 import Organization from '../../../../props/models/Organization';
 import { FinancialOverview } from '../../financial-dashboard/types/FinancialStatisticTypes';
+import useTranslate from '../../../../hooks/useTranslate';
 
 export default function FinancialOverviewFundsTable({
     funds,
@@ -16,7 +16,7 @@ export default function FinancialOverviewFundsTable({
     organization: Organization;
     fundsFinancialOverview: FinancialOverview;
 }) {
-    const { t } = useTranslation();
+    const translate = useTranslate();
     const exportFunds = useExportFunds(organization);
 
     return (
@@ -32,7 +32,7 @@ export default function FinancialOverviewFundsTable({
                     <div className="flex">
                         <button className="button button-primary button-sm" onClick={() => exportFunds(false)}>
                             <em className="mdi mdi-download icon-start" />
-                            {t('financial_dashboard_overview.buttons.export')}
+                            {translate('financial_dashboard_overview.buttons.export')}
                         </button>
                     </div>
                 </div>
@@ -44,13 +44,15 @@ export default function FinancialOverviewFundsTable({
                         <table className="table">
                             <tbody>
                                 <tr>
-                                    <ThSortable label={t('financial_dashboard_overview.labels.fund_name')} />
-                                    <ThSortable label={t('financial_dashboard_overview.labels.total_budget')} />
-                                    <ThSortable label={t('financial_dashboard_overview.labels.used_budget')} />
-                                    <ThSortable label={t('financial_dashboard_overview.labels.current_budget')} />
+                                    <ThSortable label={translate('financial_dashboard_overview.labels.fund_name')} />
+                                    <ThSortable label={translate('financial_dashboard_overview.labels.total_budget')} />
+                                    <ThSortable label={translate('financial_dashboard_overview.labels.used_budget')} />
+                                    <ThSortable
+                                        label={translate('financial_dashboard_overview.labels.current_budget')}
+                                    />
                                     <ThSortable
                                         className={'text-right'}
-                                        label={t('financial_dashboard_overview.labels.transaction_costs')}
+                                        label={translate('financial_dashboard_overview.labels.transaction_costs')}
                                     />
                                 </tr>
 
@@ -65,7 +67,7 @@ export default function FinancialOverviewFundsTable({
                                 ))}
 
                                 <tr className="table-totals">
-                                    <td>{t('financial_dashboard_overview.labels.total')}</td>
+                                    <td>{translate('financial_dashboard_overview.labels.total')}</td>
                                     <td>{fundsFinancialOverview.funds.budget_locale}</td>
                                     <td>{fundsFinancialOverview.funds.budget_used_locale}</td>
                                     <td>{fundsFinancialOverview.funds.budget_left_locale}</td>
