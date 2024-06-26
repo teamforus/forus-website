@@ -10,7 +10,7 @@ module.exports = {
         start_email: 'Start aanvraag',
         signup_option: 'Maak een keuze om verder te gaan',
         errors: {
-            email: 'U heeft geen e-mailadres ingevuld, of U heeft geen geldig e-mailadres ingevuld',
+            email: 'Please enter a valid email address using the following format: joe@example.com',
         },
         ede: {
             title: 'Inloggen',
