@@ -20,6 +20,7 @@ import VouchersTableRowStatus from './elements/VouchersTableRowStatus';
 import VouchersTableRowActions from './elements/VouchersTableRowActions';
 import useFilterNext from '../../../modules/filter_next/useFilterNext';
 import { BooleanParam, createEnumParam, NumberParam, StringParam } from 'use-query-params';
+import TableEmptyValue from '../../elements/table-empty-value/TableEmptyValue';
 
 export default function ProductVouchers() {
     const activeOrganization = useActiveOrganization();
@@ -247,7 +248,11 @@ export default function ProductVouchers() {
                                                         </div>
 
                                                         <div className="text-strong text-md text-muted-dark">
-                                                            {strLimit(voucher.fund.implementation.name, 32)}
+                                                            {voucher.fund.implementation?.name ? (
+                                                                strLimit(voucher.fund.implementation?.name, 32)
+                                                            ) : (
+                                                                <TableEmptyValue />
+                                                            )}
                                                         </div>
                                                     </td>
 
