@@ -374,7 +374,7 @@ export default function ProductVouchers() {
             {loading && <LoadingCard type={'card-section'} />}
 
             {!loading && vouchers.meta.total == 0 && (
-                <EmptyCard title={'Geen vouchers gevonden'} type={'card-section'} />
+                <EmptyCard title={'Geen aanbiedingsvouchers gevonden'} type={'card-section'} />
             )}
 
             {vouchers.meta && (
