@@ -179,7 +179,7 @@ export default function TransactionDetails({
                                         name={'vouchers-show'}
                                         params={{
                                             organizationId: activeOrganization.id,
-                                            id: transaction.voucher_id,
+                                            id: transaction.product_reservation?.voucher_id || transaction.voucher_id,
                                         }}
                                         className="button button-primary">
                                         <em className="mdi mdi-eye-outline icon-start" />

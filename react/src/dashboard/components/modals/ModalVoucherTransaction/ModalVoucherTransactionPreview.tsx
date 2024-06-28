@@ -15,7 +15,7 @@ export default function ModalVoucherTransactionPreview({
         organization_id?: number;
         target_iban?: string;
         target_name?: string;
-        amount?: string;
+        amount?: number;
         iban_source?: string;
     };
     providers?: Array<Partial<Organization>>;
@@ -87,7 +87,7 @@ export default function ModalVoucherTransactionPreview({
                             <div className="datalist-key text-primary text-right">
                                 <strong>{translate('modals.modal_voucher_transaction.labels.amount')}</strong>
                             </div>
-                            <div className="datalist-value">{currencyFormat(parseFloat(formValues.amount))}</div>
+                            <div className="datalist-value">{currencyFormat(formValues.amount)}</div>
                         </div>
                     </div>
                 </div>

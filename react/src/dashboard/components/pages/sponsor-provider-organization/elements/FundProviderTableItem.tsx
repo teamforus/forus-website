@@ -55,10 +55,11 @@ export default function FundProviderTableItem({
     const updateFundProviderState = useCallback(
         (fundProvider: FundProvider, accepted: boolean) => {
             const state = accepted ? 'accepted' : 'rejected';
+
             setSubmittingState(state);
 
             confirmFundProviderUpdate(fundProvider, state)
-                .then((data) => updateProvider(fundProvider, data))
+                .then((data) => data && updateProvider(fundProvider, data))
                 .catch((r) => r)
                 .finally(() => setSubmittingState(null));
         },
