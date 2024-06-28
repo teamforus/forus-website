@@ -117,6 +117,10 @@ export default function Products({ fundType = 'budget' }: { fundType: 'budget' |
         ].filter((value) => value).length;
     }, [filterValues]);
 
+    const fundFiltered = useMemo(() => {
+        return filterValuesActive?.fund_id && funds?.find((item) => item.id === filterValuesActive?.fund_id);
+    }, [filterValuesActive?.fund_id, funds]);
+
     const [products, setProducts] = useState<PaginationData<Product>>(null);
 
     const buildQuery = useCallback(
@@ -206,15 +210,8 @@ export default function Products({ fundType = 'budget' }: { fundType: 'budget' |
     }, [filterUpdate, fundType, filterValues.product_category_id, productCategoryService]);
 
     useEffect(() => {
-        let options = { fund_name: '' };
-
-        if (funds && filterValuesActive?.fund_id) {
-            const fund = funds.find((item) => item.id === filterValuesActive.fund_id);
-            options = { fund_name: fund ? ` ${fund.name}` : '' };
-        }
-
-        setTitle(translate('page_state_titles.products', options));
-    }, [filterValuesActive?.fund_id, funds, setTitle, translate]);
+        setTitle(translate('page_state_titles.products', { fund_name: fundFiltered ? ` ${fundFiltered.name}` : '' }));
+    }, [fundFiltered, setTitle, translate]);
 
     return (
         <BlockShowcasePage
