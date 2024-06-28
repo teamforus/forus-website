@@ -5,6 +5,7 @@ import useOpenModal from '../../hooks/useOpenModal';
 import ModalExportDataSelect from '../../components/modals/ModalExportDataSelect';
 import useProductReservationService from '../ProductReservationService';
 import useMakeExporterService from './useMakeExporterService';
+import { ResponseError } from '../../props/ApiResponses';
 
 export default function useProductReservationsExportService() {
     const pushDanger = usePushDanger();
@@ -26,7 +27,7 @@ export default function useProductReservationsExportService() {
                 productReservationService
                     .export(organization_id, queryFilters)
                     .then((res) => saveExportedData(data, organization_id, res))
-                    .catch((res) => pushDanger('Mislukt!', res.data.message))
+                    .catch((err: ResponseError) => pushDanger('Mislukt!', err.data.message))
                     .finally(() => setProgress(100));
             };
 

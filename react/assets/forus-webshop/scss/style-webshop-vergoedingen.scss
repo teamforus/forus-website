@@ -1,6 +1,3 @@
-@import "vergoedingen/vars";
-@import "_common/webshop";
-
 // INCLUDES
 @import "vergoedingen/includes/fonts";
 @import "vergoedingen/includes/shame";
@@ -14,10 +11,8 @@
 }
 
 // BLOCKS
-.block {
-    @import "vergoedingen/sections/blocks/block-sign_up";
-    @import "vergoedingen/sections/blocks/block-organization-info";
-    @import "vergoedingen/sections/blocks/block-cms-funds";
-    @import "vergoedingen/sections/blocks/block-navbar-search-results";
-    @import "vergoedingen/sections/blocks/block-mobile-menu";
-}
+@import "vergoedingen/sections/blocks/block-sign_up";
+@import "vergoedingen/sections/blocks/block-organization-info";
+@import "vergoedingen/sections/blocks/block-cms-funds";
+@import "vergoedingen/sections/blocks/block-navbar-search-results";
+@import "vergoedingen/sections/blocks/block-mobile-menu";

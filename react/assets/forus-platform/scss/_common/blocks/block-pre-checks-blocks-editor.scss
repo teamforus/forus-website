@@ -89,6 +89,128 @@
                     }
                 }
             }
+
+            .pre-check-item-settings {
+                display: flex;
+                flex-direction: column;
+                gap: 5px;
+
+                .pre-check-item-settings-header {
+                    display: flex;
+                    flex-direction: row;
+                    gap: 5px;
+                    font: 700 14px/24px var(--base-font);
+                    cursor: pointer;
+
+                    .mdi {
+                        font-size: 20px;
+                        line-height: 24px;
+                        width: 16px;
+                        text-align: center;
+                    }
+                }
+
+                .pre-check-item-settings-list {
+                    display: flex;
+                    flex-direction: column;
+                    border: 1px dashed var(--border-color);
+                    border-radius: var(--border-radius);
+                    padding: 10px 15px;
+                    gap: 10px;
+
+                    .pre-check-item-settings-labels {
+                        display: flex;
+                        flex-direction: row;
+                        gap: 20px;
+                        margin-bottom: -5px;
+
+                        .pre-check-item-settings-label {
+                            flex: 0 0 calc(100% / 3);
+                        }
+                    }
+
+                    .pre-check-item-settings-item {
+                        display: flex;
+                        flex-direction: column;
+                        gap: 10px;
+
+                        .pre-check-item-settings-item-content {
+                            display: flex;
+                            flex-direction: row;
+                            gap: 20px;
+
+                            .pre-check-item-settings-item-fund,
+                            .pre-check-item-settings-item-weight,
+                            .pre-check-item-settings-item-knockout {
+                                display: flex;
+                                flex: 0 0 calc(100% / 3);
+                                min-width: 0;
+                            }
+
+                            .pre-check-item-settings-item-fund {
+                                flex-direction: row;
+                                gap: 10px;
+                                padding: 3px 0;
+
+                                .pre-check-item-settings-item-fund-media {
+                                    display: flex;
+                                    flex: 0 0 24px;
+                                    height: 24px;
+                                    align-self: center;
+
+                                    img {
+                                        display: block;
+                                        width: 100%;
+                                        height: 100%;
+                                        object-fit: cover;
+                                        border-radius: 4px;
+                                        border: 1px solid var(--border-color);
+                                    }
+                                }
+
+                                .pre-check-item-settings-item-fund-content {
+                                    display: flex;
+                                    flex-direction: column;
+                                    min-width: 0;
+
+                                    .pre-check-item-settings-item-fund-title {
+                                        font: 500 13px/16px var(--base-font);
+                                        color: #151b26;
+                                        @include ellipsis_inline();
+                                    }
+
+                                    .pre-check-item-settings-item-fund-subtitle {
+                                        font: 500 11px/14px var(--base-font);
+                                        color: #646f79;
+                                        @include ellipsis_inline();
+                                    }
+                                }
+                            }
+                        }
+
+                        .pre-check-item-settings-item-note {
+                            display: flex;
+                            flex-direction: column;
+                            border: 1px solid var(--border-color);
+                            border-radius: var(--border-radius);
+                            padding: 12px;
+                            gap: 2px;
+                        }
+
+                        .pre-check-item-settings-item-separator {
+                            border-top: 1px solid var(--border-color);
+                            margin-left: -15px;
+                            margin-right: -15px;
+                        }
+
+                        &:last-child {
+                            .pre-check-item-settings-item-separator {
+                                display: none;
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         &:last-child {

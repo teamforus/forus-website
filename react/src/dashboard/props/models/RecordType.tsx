@@ -8,6 +8,7 @@ export default interface RecordType {
     system: boolean;
     criteria: boolean;
     name: string;
+    validations: Array<'date' | 'email' | 'iban' | 'min' | 'max'>;
     options: Array<RecordTypeOption>;
     operators?: Array<RecordTypeOperator>;
 }
