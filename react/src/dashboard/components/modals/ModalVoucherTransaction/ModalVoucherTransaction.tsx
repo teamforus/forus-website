@@ -109,7 +109,7 @@ export default function ModalVoucherTransaction({
         target_name?: string;
         note?: string;
         note_shared?: boolean;
-        amount?: number;
+        amount?: string;
         voucher_id?: number;
         organization_id?: number;
         iban_source?: 'manual' | 'reimbursement';
@@ -173,11 +173,11 @@ export default function ModalVoucherTransaction({
         const { amount, iban_source } = form.values;
 
         if (target === 'provider') {
-            return !organization_id || !amount;
+            return !organization_id || !amount || parseFloat(amount) === 0;
         }
 
         if (target === 'top_up') {
-            return !amount;
+            return !amount || parseFloat(amount) === 0;
         }
 
         if (target === 'iban') {
@@ -416,7 +416,7 @@ export default function ModalVoucherTransaction({
                                         min=".02"
                                         max={amountLimit}
                                         placeholder={translate('modals.modal_voucher_transaction.labels.amount')}
-                                        onChange={(e) => form.update({ amount: parseFloat(e.target.value) })}
+                                        onChange={(e) => form.update({ amount: e.target.value })}
                                     />
                                     {!form.errors?.amount ? (
                                         <div className="form-hint">
