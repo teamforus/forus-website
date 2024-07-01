@@ -1,17 +1,31 @@
-* , :after, :before{
-    -moz-box-sizing:    border-box;
+*,
+:after,
+:before {
+    -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
-    box-sizing:         border-box;
+    box-sizing: border-box;
     -webkit-font-smoothing: antialiased !important;
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 
-html, body {
+html,
+body {
     margin: 0;
     padding: 0;
 }
 
-h1, h2, h3, h4, h5, h6, p, span, b, i, li, td{
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+span,
+b,
+i,
+li,
+td {
     font-family: var(--base-font);
     color: inherit;
     padding: 0;
@@ -29,9 +43,10 @@ ul {
 
 a {
     text-decoration: none;
-    color: #222; 
+    color: #222;
 }
 
-b, strong {
+b,
+strong {
     font-weight: 600;
 }

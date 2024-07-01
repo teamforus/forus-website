@@ -26,7 +26,22 @@ import { dateFormat, dateParse } from '../../../../dashboard/helpers/dates';
 import Tooltip from '../../elements/tooltip/Tooltip';
 import { clickOnKeyEnter } from '../../../../dashboard/helpers/wcag';
 
-type VoucherType = Voucher & { amount_extra: number };
+type VoucherType = Voucher & {
+    amount_extra: number;
+};
+
+type Field = {
+    fullWidth?: boolean;
+    description?: string;
+    showInfo?: boolean;
+    label?: string;
+    placeholder?: string;
+    required?: boolean;
+    key?: string;
+    dusk?: string;
+    type?: string;
+    custom?: boolean;
+};
 
 export default function ModalProductReserve({
     fund,
@@ -101,7 +116,7 @@ export default function ModalProductReserve({
 
     const [step, setStep] = useState(hasEmail ? STEP_SELECT_VOUCHER : STEP_EMAIL_SETUP);
     const [steps, setSteps] = useState([]);
-    const [fields, setFields] = useState([]);
+    const [fields, setFields] = useState<Array<Field>>([]);
     const [emptyText] = useState(translate('modal_product_reserve_notes.confirm_notes.labels.empty'));
     const [voucher, setVoucher] = useState<VoucherType>(null);
 

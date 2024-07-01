@@ -4,7 +4,7 @@
     .modal-title {
         font: 500 21px/29px var(--base-font);
         text-align: center;
-        color: #191A1C;
+        color: #191a1c;
         margin-bottom: 10px;
     }
 
@@ -79,7 +79,7 @@
                             width: 100%;
                             border-radius: 0;
                             border: 1px solid #dadada;
-                            box-shadow: 2px 5px 20px rgba(0, 0, 0, .075);
+                            box-shadow: 2px 5px 20px rgba(0, 0, 0, 0.075);
                         }
 
                         .crop-control-original {
@@ -135,7 +135,7 @@
             }
         }
     }
-    
+
     .modal-footer {
         .button {
             padding: 10px 50px;

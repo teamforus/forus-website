@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import useFilter from '../../../../hooks/useFilter';
 import { PaginationData } from '../../../../props/ApiResponses';
 import FundProvider from '../../../../props/models/FundProvider';
@@ -18,6 +17,8 @@ import ModalFundOffers from '../../../modals/ModalFundOffers';
 import ModalFundUnsubscribe from '../../../modals/ModalFundUnsubscribe';
 import useTableToggles from '../../../../hooks/useTableToggles';
 import usePaginatorService from '../../../../modules/paginator/services/usePaginatorService';
+import EmptyCard from '../../../elements/empty-card/EmptyCard';
+import useTranslate from '../../../../hooks/useTranslate';
 
 export default function ProviderFundsTable({
     type,
@@ -28,15 +29,14 @@ export default function ProviderFundsTable({
     organization: Organization;
     onChange: () => void;
 }) {
-    const { t } = useTranslation();
-
     const [loading, setLoading] = useState(true);
 
     const assetUrl = useAssetUrl();
-    const setProgress = useSetProgress();
+    const translate = useTranslate();
+    const openModal = useOpenModal();
     const pushDanger = usePushDanger();
     const pushSuccess = usePushSuccess();
-    const openModal = useOpenModal();
+    const setProgress = useSetProgress();
 
     const paginatorService = usePaginatorService();
     const providerFundService = useProviderFundService();
@@ -79,16 +79,16 @@ export default function ProviderFundsTable({
                 return (
                     <ModalDangerZone
                         modal={modal}
-                        title={t('modals.danger_zone.remove_provider_application.title')}
-                        description={t('modals.danger_zone.remove_provider_application.description', {
+                        title={translate('modals.danger_zone.remove_provider_application.title')}
+                        description={translate('modals.danger_zone.remove_provider_application.description', {
                             sponsor_organization_name,
                         })}
                         buttonCancel={{
-                            text: t('modals.danger_zone.remove_provider_application.buttons.cancel'),
+                            text: translate('modals.danger_zone.remove_provider_application.buttons.cancel'),
                             onClick: () => modal.close(),
                         }}
                         buttonSubmit={{
-                            text: t('modals.danger_zone.remove_provider_application.buttons.confirm'),
+                            text: translate('modals.danger_zone.remove_provider_application.buttons.confirm'),
                             onClick: () => {
                                 modal.close();
                                 setProgress(0);
@@ -111,7 +111,17 @@ export default function ProviderFundsTable({
                 );
             });
         },
-        [filter, onChange, openModal, organization.id, providerFundService, pushDanger, pushSuccess, setProgress, t],
+        [
+            filter,
+            onChange,
+            openModal,
+            organization.id,
+            providerFundService,
+            pushDanger,
+            pushSuccess,
+            setProgress,
+            translate,
+        ],
     );
 
     const unsubscribe = useCallback(
@@ -165,7 +175,7 @@ export default function ProviderFundsTable({
                 <div className="flex">
                     <div className="flex flex-grow">
                         <div className="card-title">
-                            {t(`provider_funds.title.${type}`)}
+                            {translate(`provider_funds.title.${type}`)}
 
                             {!loading && selected.length > 0 && ` (${selected.length}/${providerFunds.data.length})`}
                             {!loading && selected.length == 0 && ` (${providerFunds.meta.total})`}
@@ -179,7 +189,7 @@ export default function ProviderFundsTable({
                                 disabled={selectedMeta?.selected_cancel?.length !== selected.length}
                                 onClick={() => cancelApplications(selectedMeta?.selected_cancel)}>
                                 <em className="mdi mdi-close-circle-outline icon-start" />
-                                {t('provider_funds.labels.cancel_application')}
+                                {translate('provider_funds.labels.cancel_application')}
                             </button>
                         )}
                         <div className="form">
@@ -211,19 +221,21 @@ export default function ProviderFundsTable({
                                             </th>
                                         )}
 
-                                        <th>{t('provider_funds.labels.fund')}</th>
-                                        <th>{t('provider_funds.labels.organization')}</th>
-                                        <th>{t('provider_funds.labels.start_date')}</th>
-                                        <th>{t('provider_funds.labels.end_date')}</th>
+                                        <th>{translate('provider_funds.labels.fund')}</th>
+                                        <th>{translate('provider_funds.labels.organization')}</th>
+                                        <th>{translate('provider_funds.labels.start_date')}</th>
+                                        <th>{translate('provider_funds.labels.end_date')}</th>
 
-                                        {type === 'active' && <th>{t('provider_funds.labels.max_amount')}</th>}
+                                        {type === 'active' && <th>{translate('provider_funds.labels.max_amount')}</th>}
 
-                                        <th>{t('provider_funds.labels.allow_budget')}</th>
-                                        <th>{t('provider_funds.labels.allow_products')}</th>
-                                        <th>{t('provider_funds.labels.status')}</th>
+                                        <th>{translate('provider_funds.labels.allow_budget')}</th>
+                                        <th>{translate('provider_funds.labels.allow_products')}</th>
+                                        <th>{translate('provider_funds.labels.status')}</th>
 
                                         {type !== 'archived' && (
-                                            <th className="nowrap text-right">{t('provider_funds.labels.actions')}</th>
+                                            <th className="nowrap text-right">
+                                                {translate('provider_funds.labels.actions')}
+                                            </th>
                                         )}
                                     </tr>
                                     {providerFunds.data?.map((providerFund) => (
@@ -261,7 +273,7 @@ export default function ProviderFundsTable({
                                                             target="_blank"
                                                             className="text-strong text-md text-muted-dark text-inherit"
                                                             rel="noreferrer">
-                                                            {strLimit(providerFund.fund.implementation.name, 32)}
+                                                            {strLimit(providerFund.fund.implementation?.name, 32)}
                                                         </a>
                                                     </div>
                                                 </div>
@@ -371,11 +383,7 @@ export default function ProviderFundsTable({
             )}
 
             {!loading && providerFunds?.meta?.total == 0 && (
-                <div className="card-section">
-                    <div className="block block-empty text-center">
-                        <div className="empty-title">{t(`provider_funds.empty_block.${type}`)}</div>
-                    </div>
-                </div>
+                <EmptyCard type={'card-section'} title={translate(`provider_funds.empty_block.${type}`)} />
             )}
 
             {providerFunds?.meta && (

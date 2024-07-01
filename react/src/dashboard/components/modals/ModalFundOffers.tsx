@@ -1,11 +1,9 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { ModalState } from '../../modules/modals/context/ModalContext';
-import { classList } from '../../helpers/utils';
 import FundProvider from '../../props/models/FundProvider';
 import Organization from '../../props/models/Organization';
 import Product from '../../props/models/Product';
 import { PaginationData } from '../../props/ApiResponses';
-import { useTranslation } from 'react-i18next';
 import useProductService from '../../services/ProductService';
 import useProviderFundService from '../../services/ProviderFundService';
 import useFilter from '../../hooks/useFilter';
@@ -13,6 +11,8 @@ import Paginator from '../../modules/paginator/components/Paginator';
 import { currencyFormat, strLimit } from '../../helpers/string';
 import StateNavLink from '../../modules/state_router/StateNavLink';
 import usePaginatorService from '../../modules/paginator/services/usePaginatorService';
+import useTranslate from '../../hooks/useTranslate';
+import classNames from 'classnames';
 
 type LocalProduct = Product & {
     allowed: boolean;
@@ -34,7 +34,8 @@ export default function ModalFundOffers({
     organization: Organization;
     className?: string;
 }) {
-    const { t } = useTranslation();
+    const translate = useTranslate();
+
     const productService = useProductService();
     const paginatorService = usePaginatorService();
     const providerFundService = useProviderFundService();
@@ -81,17 +82,17 @@ export default function ModalFundOffers({
 
     return (
         <div
-            className={classList([
+            className={classNames(
                 'modal',
                 'modal-animated',
                 'modal-fund-offers',
-                modal.loading ? 'modal-loading' : null,
+                modal.loading && 'modal-loading',
                 className,
-            ])}>
+            )}>
             <div className="modal-backdrop" onClick={modal.close} />
             <div className="modal-window">
                 <a className="mdi mdi-close modal-close" onClick={modal.close} role="button" />
-                <div className="modal-header">{t('modals.modal_funds_offers.title')}</div>
+                <div className="modal-header">{translate('modals.modal_funds_offers.title')}</div>
                 <div className="modal-body form">
                     <div className="modal-section">
                         <div className="card-block card-block-table">
@@ -99,15 +100,15 @@ export default function ModalFundOffers({
                                 <table className="table">
                                     <thead>
                                         <tr>
-                                            <th>{t('modals.modal_funds_offers.labels.name')}</th>
-                                            <th>{t('modals.modal_funds_offers.labels.stock')}</th>
-                                            <th>{t('modals.modal_funds_offers.labels.price')}</th>
-                                            <th>{t('modals.modal_funds_offers.labels.subsidy_amount')}</th>
-                                            <th>{t('modals.modal_funds_offers.labels.subsidy_user_amount')}</th>
-                                            <th>{t('modals.modal_funds_offers.labels.subsidy_user_limit')}</th>
-                                            <th>{t('modals.modal_funds_offers.labels.subsidy_limit_total')}</th>
+                                            <th>{translate('modals.modal_funds_offers.labels.name')}</th>
+                                            <th>{translate('modals.modal_funds_offers.labels.stock')}</th>
+                                            <th>{translate('modals.modal_funds_offers.labels.price')}</th>
+                                            <th>{translate('modals.modal_funds_offers.labels.subsidy_amount')}</th>
+                                            <th>{translate('modals.modal_funds_offers.labels.subsidy_user_amount')}</th>
+                                            <th>{translate('modals.modal_funds_offers.labels.subsidy_user_limit')}</th>
+                                            <th>{translate('modals.modal_funds_offers.labels.subsidy_limit_total')}</th>
                                             <th className="text-right">
-                                                {t('modals.modal_funds_offers.labels.status')}
+                                                {translate('modals.modal_funds_offers.labels.status')}
                                             </th>
                                         </tr>
                                     </thead>
@@ -153,8 +154,8 @@ export default function ModalFundOffers({
                                                             offer.allowed ? 'tag-success' : 'tag-default'
                                                         }`}>
                                                         {offer.allowed
-                                                            ? t(`modals.modal_funds_offers.labels.available`)
-                                                            : t(`modals.modal_funds_offers.labels.rejected`)}
+                                                            ? translate(`modals.modal_funds_offers.labels.available`)
+                                                            : translate(`modals.modal_funds_offers.labels.rejected`)}
                                                     </div>
                                                 </td>
                                             </tr>

@@ -10,7 +10,9 @@
     <% } %>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:300,400,400i,500,600,700">
     <link href="<%= libs.mdi.css %>" rel="stylesheet">
-    <link href="<%= libs.summernote.css %>" rel="stylesheet">
+    <% if (libs?.summernote?.css) { %>
+        <link href="<%= libs.summernote.css %>" rel="stylesheet">
+    <% } %>
     <link rel="shortcut icon" type="image/x-icon" href="<%= favicon %>">
     <title><%= title %></title>
     <base href="<%= base %>">
@@ -20,13 +22,19 @@
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
     <script>const env_data = JSON.parse('<%= JSON.stringify(env_data) %>');</script>
-    <script type="module">
-        import * as pdfjsDist from 'https://cdn.jsdelivr.net/npm/pdfjs-dist@4.2.67';
-        pdfjsDist.GlobalWorkerOptions.workerSrc = '//cdnjs.cloudflare.com/ajax/libs/pdf.js/4.2.67/pdf.worker.min.mjs';
-        window.pdfjsDist = pdfjsDist;
-    </script>
-    <script src="<%= libs.jquery.js %>"></script>
-    <script src="<%= libs.summernote.js %>"></script>
+    <% if (env_data?.client_type !== 'website') { %>
+        <script type="module">
+            import * as pdfjsDist from 'https://cdn.jsdelivr.net/npm/pdfjs-dist@4.2.67';
+            pdfjsDist.GlobalWorkerOptions.workerSrc = '//cdnjs.cloudflare.com/ajax/libs/pdf.js/4.2.67/pdf.worker.min.mjs';
+            window.pdfjsDist = pdfjsDist;
+        </script>
+    <% } %>
+    <% if (libs?.jquery?.js) { %>
+        <script src="<%= libs.jquery.js %>"></script>
+    <% } %>
+    <% if (libs?.summernote?.js) { %>
+        <script src="<%= libs.summernote.js %>"></script>
+    <% } %>
     <script src="<%= script %>"></script>
 
     <% if (env_data?.config?.chat_id) { %>

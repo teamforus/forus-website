@@ -8,7 +8,6 @@ import { mainContext } from '../../../contexts/MainContext';
 import Paginator from '../../../modules/paginator/components/Paginator';
 import ExternalFund from '../../../props/models/ExternalFund';
 import ModalDangerZone from '../../modals/ModalDangerZone';
-import { useTranslation } from 'react-i18next';
 import useOpenModal from '../../../hooks/useOpenModal';
 import useSetProgress from '../../../hooks/useSetProgress';
 import usePushSuccess from '../../../hooks/usePushSuccess';
@@ -16,16 +15,17 @@ import usePushDanger from '../../../hooks/usePushDanger';
 import useActiveOrganization from '../../../hooks/useActiveOrganization';
 import useThumbnailUrl from '../../../hooks/useThumbnailUrl';
 import usePaginatorService from '../../../modules/paginator/services/usePaginatorService';
+import useTranslate from '../../../hooks/useTranslate';
 
 export default function ExternalFunds() {
-    const { t } = useTranslation();
     const { setActiveOrganization } = useContext(mainContext);
 
-    const thumbnailUrl = useThumbnailUrl();
+    const translate = useTranslate();
     const openModal = useOpenModal();
     const pushDanger = usePushDanger();
     const setProgress = useSetProgress();
     const pushSuccess = usePushSuccess();
+    const thumbnailUrl = useThumbnailUrl();
     const activeOrganization = useActiveOrganization();
 
     const [funds, setFunds] = useState<PaginationData<ExternalFund>>(null);
@@ -53,27 +53,27 @@ export default function ExternalFunds() {
             openModal((modal) => (
                 <ModalDangerZone
                     modal={modal}
-                    title={t('modals.danger_zone.remove_external_validators.title')}
-                    description={t('modals.danger_zone.remove_external_validators.description')}
+                    title={translate('modals.danger_zone.remove_external_validators.title')}
+                    description={translate('modals.danger_zone.remove_external_validators.description')}
                     buttonSubmit={{
-                        text: t('modals.danger_zone.remove_external_validators.buttons.confirm'),
+                        text: translate('modals.danger_zone.remove_external_validators.buttons.confirm'),
                         onClick: () => {
                             modal.close();
                             onConfirm();
                         },
                     }}
                     buttonCancel={{
-                        text: t('modals.danger_zone.remove_external_validators.buttons.cancel'),
+                        text: translate('modals.danger_zone.remove_external_validators.buttons.cancel'),
                         onClick: modal.close,
                     }}
                 />
             ));
         },
-        [openModal, t],
+        [openModal, translate],
     );
 
     const updateFundAcceptance = useCallback(
-        (fund) => {
+        (fund: ExternalFund) => {
             setProgress(0);
 
             organizationService

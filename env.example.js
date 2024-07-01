@@ -147,6 +147,21 @@ fronts['dashboard.validator'] = {
     },
 };
 
+fronts['website'] = {
+    type: 'website',
+    client_key: 'general',
+    client_type: 'website',
+    name: 'Website',
+    webRoot: 'website',
+    useHashRouter: use_hash_router,
+    config: {
+        api_url: api_url,
+        android_link: android_link,
+        ios_iphone_link: ios_iphone_link,
+        google_maps_api_key: google_maps_api_key,
+    },
+};
+
 // eslint-disable-next-line no-undef
 module.exports = {
     fronts: fronts,
