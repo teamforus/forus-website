@@ -109,7 +109,7 @@ export default function ModalVoucherTransaction({
         target_name?: string;
         note?: string;
         note_shared?: boolean;
-        amount?: string;
+        amount?: number;
         voucher_id?: number;
         organization_id?: number;
         iban_source?: 'manual' | 'reimbursement';
@@ -119,7 +119,7 @@ export default function ModalVoucherTransaction({
         {
             note: '',
             note_shared: false,
-            amount: '',
+            amount: null,
             target: target || targets[0]?.key,
             voucher_id: voucher.id,
             organization_id: providers[0]?.id,
@@ -411,12 +411,12 @@ export default function ModalVoucherTransaction({
                                     <input
                                         className="form-control"
                                         type="number"
-                                        value={form.values.amount}
+                                        value={form.values.amount || ''}
                                         step=".01"
                                         min=".02"
                                         max={amountLimit}
                                         placeholder={translate('modals.modal_voucher_transaction.labels.amount')}
-                                        onChange={(e) => form.update({ amount: e.target.value })}
+                                        onChange={(e) => form.update({ amount: parseFloat(e.target.value) })}
                                     />
                                     {!form.errors?.amount ? (
                                         <div className="form-hint">
@@ -426,7 +426,7 @@ export default function ModalVoucherTransaction({
                                         <FormError error={form.errors?.amount} />
                                     )}
                                 </div>
-                                <FormError error={form.errors?.organization_id} />
+                                <FormError error={form.errors?.amount} />
                             </div>
 
                             <div className="form-group form-group-inline form-group-inline-md">
@@ -446,7 +446,7 @@ export default function ModalVoucherTransaction({
                                         <FormError error={form.errors?.note} />
                                     )}
                                 </div>
-                                <FormError error={form.errors?.organization_id} />
+                                <FormError error={form.errors?.note} />
                             </div>
 
                             <div className="form-group form-group-inline form-group-inline-md">
