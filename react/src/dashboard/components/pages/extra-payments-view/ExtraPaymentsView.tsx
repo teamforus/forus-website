@@ -1,6 +1,5 @@
 import React, { Fragment, useCallback, useEffect, useState } from 'react';
 import useActiveOrganization from '../../../hooks/useActiveOrganization';
-import { useTranslation } from 'react-i18next';
 import LoadingCard from '../../elements/loading-card/LoadingCard';
 import usePushDanger from '../../../hooks/usePushDanger';
 import StateNavLink from '../../../modules/state_router/StateNavLink';
@@ -15,9 +14,10 @@ import TransactionDetails from '../transactions-view/elements/TransactionDetails
 import useExtraPaymentService from '../../../services/ExtraPaymentService';
 import ExtraPayment from '../../../props/models/ExtraPayment';
 import ReservationExtraPaymentDetails from '../reservations-view/elements/ReservationExtraPaymentDetails';
+import useTranslate from '../../../hooks/useTranslate';
+import TableEmptyValue from '../../elements/table-empty-value/TableEmptyValue';
 
 export default function ExtraPaymentsView() {
-    const { t } = useTranslation();
     const { id } = useParams();
     const envData = useEnvData();
     const activeOrganization = useActiveOrganization();
@@ -26,6 +26,7 @@ export default function ExtraPaymentsView() {
     const extraPaymentService = useExtraPaymentService();
     const productReservationService = useProductReservationService();
 
+    const translate = useTranslate();
     const pushDanger = usePushDanger();
     const setProgress = useSetProgress();
 
@@ -85,6 +86,7 @@ export default function ExtraPaymentsView() {
                 <StateNavLink
                     name={'extra-payments'}
                     params={{ organizationId: activeOrganization.id }}
+                    activeExact={true}
                     className="breadcrumb-item">
                     Bijbetalingen
                 </StateNavLink>
@@ -123,7 +125,7 @@ export default function ExtraPaymentsView() {
                                     <tr>
                                         <td>
                                             <strong className="text-strong text-md text-primary">
-                                                {t('reservation.labels.price')}
+                                                {translate('reservation.labels.price')}
                                             </strong>
                                             <br />
                                             <strong className="text-black">
@@ -132,14 +134,14 @@ export default function ExtraPaymentsView() {
                                         </td>
                                         <td>
                                             <strong className="text-strong text-md text-primary">
-                                                {t('reservation.labels.fund')}
+                                                {translate('reservation.labels.fund')}
                                             </strong>
                                             <br />
                                             <strong className="text-black">{extraPayment.reservation.fund.name}</strong>
                                         </td>
                                         <td>
                                             <strong className="text-strong text-md text-primary">
-                                                {t('reservation.labels.sponsor_organization')}
+                                                {translate('reservation.labels.sponsor_organization')}
                                             </strong>
                                             <br />
                                             <strong className="text-black">
@@ -148,7 +150,7 @@ export default function ExtraPaymentsView() {
                                         </td>
                                         <td>
                                             <strong className="text-strong text-md text-primary">
-                                                {t('reservation.labels.product')}
+                                                {translate('reservation.labels.product')}
                                             </strong>
                                             <br />
                                             <strong className="text-black">
@@ -159,7 +161,7 @@ export default function ExtraPaymentsView() {
                                     <tr>
                                         <td>
                                             <strong className="text-strong text-md text-primary">
-                                                {t('reservation.labels.created_at')}
+                                                {translate('reservation.labels.created_at')}
                                             </strong>
 
                                             <br />
@@ -169,7 +171,7 @@ export default function ExtraPaymentsView() {
                                         </td>
                                         <td>
                                             <strong className="text-strong text-md text-primary">
-                                                {t('reservation.labels.expire_at')}
+                                                {translate('reservation.labels.expire_at')}
                                             </strong>
                                             <br />
                                             <strong className="text-black">
@@ -178,7 +180,7 @@ export default function ExtraPaymentsView() {
                                         </td>
                                         <td>
                                             <strong className="text-strong text-md text-primary">
-                                                {t('reservation.labels.accepted_at')}
+                                                {translate('reservation.labels.accepted_at')}
                                             </strong>
                                             <br />
                                             {extraPayment.reservation.accepted_at ? (
@@ -186,12 +188,12 @@ export default function ExtraPaymentsView() {
                                                     {extraPayment.reservation.accepted_at_locale}
                                                 </strong>
                                             ) : (
-                                                <span className="text-muted">-</span>
+                                                <TableEmptyValue />
                                             )}
                                         </td>
                                         <td>
                                             <strong className="text-strong text-md text-primary">
-                                                {t('reservation.labels.rejected_at')}
+                                                {translate('reservation.labels.rejected_at')}
                                             </strong>
                                             <br />
                                             {extraPayment.reservation.rejected_at ? (
@@ -199,7 +201,7 @@ export default function ExtraPaymentsView() {
                                                     {extraPayment.reservation.rejected_at_locale}
                                                 </strong>
                                             ) : (
-                                                <span className="text-muted">-</span>
+                                                <TableEmptyValue />
                                             )}
                                         </td>
                                     </tr>

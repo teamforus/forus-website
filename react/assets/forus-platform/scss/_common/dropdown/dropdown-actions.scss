@@ -19,21 +19,21 @@
         display: flex;
         align-items: center;
         flex: 1 1 100%;
-        color: #151B26;
+        color: #151b26;
         font: 500 12px/18px var(--base-font);
         padding: 7px 8px;
-        transition: all .3s;
+        transition: all 0.3s;
         border-radius: calc(var(--border-radius));
         cursor: pointer;
 
         .mdi {
-            color: #646F79;
+            color: #646f79;
             font-size: 16px;
-            transition: all .3s;
+            transition: all 0.3s;
             display: inline-flex;
             height: 18px;
             line-height: 18px;
-            
+
             &.icon-start {
                 margin-right: 8px;
             }
@@ -46,15 +46,17 @@
         &:hover {
             color: #426993;
             background: #f3f4f5;
-            transition: all .3s;
+            transition: all 0.3s;
 
             .mdi {
                 color: #426993;
-                transition: all .3s;
+                transition: all 0.3s;
             }
         }
 
-        &[disabled], .disabled {
+        &[disabled],
+        &.disabled,
+        .disabled {
             pointer-events: none;
             background-color: rgb(248, 248, 248);
             color: #a0abb5;

@@ -36,7 +36,6 @@
     "@types/react": "^17.0.36",
     "@types/react-datepicker": "^4.11.2",
     "@types/react-dom": "^18.0.6",
-    "@types/sortablejs": "^1.13.0",
     "@types/turndown": "^5.0.1",
     "@typescript-eslint/eslint-plugin": "^5.57.0",
     "@typescript-eslint/parser": "^5.57.1",
@@ -45,6 +44,7 @@
     "babel-plugin-syntax-trailing-function-commas": "^6.22.0",
     "babelify": "^10.0.0",
     "browserify": "^17.0.0",
+    "classnames": "^2.5.1",
     "compression-webpack-plugin": "^11.1.0",
     "copy-webpack-plugin": "^11.0.0",
     "css-loader": "^6.5.1",
@@ -88,6 +88,7 @@
     "@mdi/js": "^7.1.96",
     "@react-google-maps/api": "^2.19.2",
     "aws-rum-web": "^1.17.2",
+    "chart.js": "^4.4.1",
     "clean-webpack-plugin": "^4.0.0",
     "colors": "^1.4.0",
     "date-fns": "^2.29.3",
@@ -101,8 +102,10 @@
     "papaparse": "^5.4.1",
     "pdfjs-dist": "4.2",
     "prop-types": "^15.8.1",
+    "qrcode.react": "^3.1.0",
     "query-string": "^8.1.0",
     "react": "^18.1.0",
+    "react-chartjs-2": "^5.2.0",
     "react-datepicker": "^4.16.0",
     "react-dom": "^18.1.0",
     "react-i18next": "^13.0.2",
@@ -112,7 +115,8 @@
     "terser-webpack-plugin": "^5.3.9",
     "turndown": "^7.1.2",
     "turndown-plugin-gfm": "^1.0.2",
-    "use-query-params": "^2.2.1"
+    "use-query-params": "^2.2.1",
+    "jszip": "^3.10.1"
   },
   "browser": {
     "original-fs": true

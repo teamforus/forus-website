@@ -14,41 +14,82 @@ export default function useMakeExporterService() {
     const pushSuccess = usePushSuccess();
     const setProgress = useSetProgress();
 
-    const [dataFormats] = useState<Array<ExportFieldProp>>([
+    const [defaultDataFormats] = useState<Array<ExportFieldProp>>([
         { value: 'csv', label: 'Exporteren CSV', icon: 'file-delimited-outline' },
         { value: 'xls', label: 'Exporteren XLS', icon: 'file-excel-outline' },
     ]);
 
     const makeSections = useCallback(
-        (fields: Array<ExportFieldProp>): Array<ExportSectionProp> => [
-            {
-                type: 'radio',
-                key: 'data_format',
-                fields: dataFormats,
-                value: 'csv',
-                title: 'Kies bestandsformaat',
-            },
-            {
-                type: 'checkbox',
-                key: 'fields',
-                fields,
-                fieldsPerRow: 3,
-                selectAll: true,
-                title: 'Kies inbegrepen velden',
-            },
-        ],
-        [dataFormats],
+        (
+            fields: Array<ExportFieldProp>,
+            record_fields = [],
+            data_formats: Array<ExportFieldProp> = null,
+            qr_formats: Array<ExportFieldProp> = null,
+        ): Array<ExportSectionProp> => {
+            const sections: Array<ExportSectionProp> = [
+                {
+                    type: 'radio',
+                    key: 'data_format',
+                    fields: data_formats ? data_formats : defaultDataFormats,
+                    value: 'csv',
+                    title: 'Kies bestandsformaat',
+                },
+                {
+                    type: 'checkbox',
+                    key: 'fields',
+                    fields,
+                    fieldsPerRow: 3,
+                    selectAll: true,
+                    title: 'Kies inbegrepen velden',
+                    collapsable: true,
+                },
+            ];
+
+            if (record_fields?.length > 0) {
+                sections.push({
+                    type: 'checkbox',
+                    key: 'extra_fields',
+                    fields: record_fields,
+                    fieldsPerRow: 3,
+                    selectAll: true,
+                    title: 'Persoonlijke eigenschappen',
+                    collapsable: true,
+                    collapsed: true,
+                });
+            }
+
+            if (qr_formats?.length > 0) {
+                sections.push({
+                    type: 'radio',
+                    key: 'qr_format',
+                    fields: qr_formats,
+                    value: 'null',
+                    title: 'QR-codes bijvoegen',
+                });
+            }
+
+            return sections;
+        },
+        [defaultDataFormats],
     );
 
     const saveExportedData = useCallback(
-        (data: { data_format: string; fields: string }, organization_id: number, res: ResponseSimple<ArrayBuffer>) => {
+        (
+            data: { data_format: string; fields: string },
+            organization_id: number,
+            res: ResponseSimple<ArrayBuffer>,
+            suffix = null,
+        ) => {
             pushSuccess('Gelukt!', 'Het downloaden begint binnenkort.');
 
             const fileName = [
                 envData.client_type,
                 organization_id,
+                suffix,
                 format(new Date(), 'yyyy-MM-dd HH:mm:ss') + '.' + data.data_format,
-            ].join('_');
+            ]
+                .filter((item) => item)
+                .join('_');
 
             fileService.downloadFile(fileName, res.data, res.headers['content-type']);
             setProgress(100);

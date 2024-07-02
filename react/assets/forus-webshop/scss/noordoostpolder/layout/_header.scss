@@ -44,20 +44,30 @@
             top: -2px;
             bottom: -2px;
             z-index: 1;
-            content: " ";
+            content: ' ';
             background-size: auto 100%;
             background-repeat: no-repeat;
         }
 
         &:before {
             left: -2px;
-            background-image: url("../img/left-leaf.png");
+
+            @if ($buildReact) {
+                background-image: url('./assets/img/left-leaf.png');
+            } @else {
+                background-image: url('../img/left-leaf.png');
+            }
+
             background-position: top left;
         }
 
         &:after {
             right: -2px;
-            background-image: url("../img/splash-top-b.png");
+            @if ($buildReact) {
+                background-image: url('./assets/img/splash-top-b.png');
+            } @else {
+                background-image: url('../img/splash-top-b.png');
+            }
             background-position: top right;
         }
 

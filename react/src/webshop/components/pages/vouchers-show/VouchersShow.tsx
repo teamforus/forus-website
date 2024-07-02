@@ -115,6 +115,7 @@ export default function VouchersShow() {
                 <VoucherQrCodePrintable
                     printable={printable}
                     voucher={voucher}
+                    webshopUrl={appConfigs?.fronts.url_webshop}
                     organization={!voucher.product ? voucher.fund.organization : voucher.product.organization}
                     assetUrl={assetUrl}
                 />

@@ -8,14 +8,14 @@
     padding: 10%;
 
     &:before {
-        background-image: url("../img/quote-tl.png");
+        background-image: url('../img/quote-tl.png');
         left: -25px;
         top: 0;
         margin-top: -2.5%;
     }
 
     &:after {
-        background-image: url("../img/quote-br.png");
+        background-image: url('../img/quote-br.png');
         right: -25px;
         bottom: 0;
         margin-bottom: -2.5%;
@@ -23,7 +23,7 @@
 
     &:before,
     &:after {
-        content: "";
+        content: '';
         position: absolute;
         height: 56px;
         width: 65px;
@@ -32,8 +32,7 @@
 }
 
 .gradient-border {
-    background-image:
-        linear-gradient(var(--forus-blue), var(--forus-blue)),
+    background-image: linear-gradient(var(--forus-blue), var(--forus-blue)),
         linear-gradient(to right, var(--forus-blue), var(--forus-blue)),
         linear-gradient(to bottom, var(--forus-blue), var(--forus-blue)),
         linear-gradient(to left, var(--forus-blue), var(--forus-blue)),

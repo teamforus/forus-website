@@ -21,30 +21,30 @@
             background-color: #f6f9fc;
             border: 1px solid var(--border-color);
             border-radius: calc(var(--border-radius));
-            transition: .4s;
+            transition: 0.4s;
             position: relative;
             box-shadow: 0 0 0 transparent;
             cursor: pointer;
-            
+
             .fund_type-media {
                 margin-bottom: 10px;
-    
+
                 .fund_type-media-img {
                     display: block;
                     margin: auto;
                 }
             }
-    
+
             .fund_type-name {
                 font: 500 14px var(--base-font);
                 margin: 0 0 -5px;
             }
-    
+
             .fund_type-check {
                 position: absolute;
                 top: 10px;
                 right: 10px;
-                background-color: #646F79;
+                background-color: #646f79;
                 width: 20px;
                 height: 20px;
                 line-height: 20px;
@@ -53,13 +53,13 @@
                 font-size: 16px;
                 color: #fff;
                 opacity: 0;
-                transition: .4s;
+                transition: 0.4s;
             }
 
             &:hover {
                 background-color: #fff;
                 border-color: #fff;
-                box-shadow: 0 7.5px 15px rgba($color: #000000, $alpha: .15);
+                box-shadow: 0 7.5px 15px rgba($color: #000000, $alpha: 0.15);
             }
         }
 
@@ -89,15 +89,14 @@
             .fund_type-item-inner {
                 background-color: #fff;
                 border-color: #fff;
-                box-shadow: 0 2.5px 5px 2px rgba($color: #000000, $alpha: .2);
-                
+                box-shadow: 0 2.5px 5px 2px rgba($color: #000000, $alpha: 0.2);
+
                 .fund_type-check {
                     opacity: 1;
                 }
             }
         }
     }
-
 
     &:last-of-type {
         margin-bottom: 0;

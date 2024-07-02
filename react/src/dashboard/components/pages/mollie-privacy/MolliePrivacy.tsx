@@ -11,6 +11,7 @@ export default function MolliePrivacy() {
                 <StateNavLink
                     name={'payment-methods'}
                     params={{ organizationId: activeOrganization.id }}
+                    activeExact={true}
                     className="breadcrumb-item">
                     Algemene voorwaarden
                 </StateNavLink>

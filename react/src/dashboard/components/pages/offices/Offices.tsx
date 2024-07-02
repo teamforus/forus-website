@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import useActiveOrganization from '../../../hooks/useActiveOrganization';
-import { useTranslation } from 'react-i18next';
 import useFilter from '../../../hooks/useFilter';
 import LoadingCard from '../../elements/loading-card/LoadingCard';
 import { NavLink, useNavigate } from 'react-router-dom';
@@ -19,16 +18,16 @@ import StateNavLink from '../../../modules/state_router/StateNavLink';
 import usePushSuccess from '../../../hooks/usePushSuccess';
 import usePushDanger from '../../../hooks/usePushDanger';
 import { ResponseError } from '../../../props/ApiResponses';
+import useTranslate from '../../../hooks/useTranslate';
 
 interface OfficeLocal extends Office {
     scheduleByDay: { [key: string]: OfficeSchedule };
 }
 
 export default function Offices() {
-    const { t } = useTranslation();
-
     const assetUrl = useAssetUrl();
     const openModal = useOpenModal();
+    const translate = useTranslate();
     const organization = useActiveOrganization();
     const navigate = useNavigate();
 
@@ -69,8 +68,8 @@ export default function Offices() {
             openModal((modal) => (
                 <ModalNotification
                     modal={modal}
-                    title={t('offices.confirm_delete.title')}
-                    description={t('offices.confirm_delete.description')}
+                    title={translate('offices.confirm_delete.title')}
+                    description={translate('offices.confirm_delete.description')}
                     buttonSubmit={{
                         onClick: () => {
                             modal.close();
@@ -89,22 +88,22 @@ export default function Offices() {
                 />
             ));
         },
-        [fetchOffices, officeService, openModal, pushDanger, pushSuccess, t],
+        [fetchOffices, officeService, openModal, pushDanger, pushSuccess, translate],
     );
 
     const confirmHasEmployees = useCallback(() => {
         openModal((modal) => (
             <ModalDangerZone
                 modal={modal}
-                title={t('offices.confirm_has_employees.title')}
-                description_text={t('offices.confirm_has_employees.description')}
+                title={translate('offices.confirm_has_employees.title')}
+                description_text={translate('offices.confirm_has_employees.description')}
                 buttonCancel={{
-                    text: t('offices.confirm_has_employees.buttons.cancel'),
+                    text: translate('offices.confirm_has_employees.buttons.cancel'),
                     onClick: modal.close,
                 }}
                 buttonSubmit={{
                     type: 'primary',
-                    text: t('offices.confirm_has_employees.buttons.confirm'),
+                    text: translate('offices.confirm_has_employees.buttons.confirm'),
                     onClick: () => {
                         modal.close();
                         navigate(getStateRouteUrl('employees', { organizationId: organization.id }));
@@ -112,7 +111,7 @@ export default function Offices() {
                 }}
             />
         ));
-    }, [organization.id, navigate, openModal, t]);
+    }, [organization.id, navigate, openModal, translate]);
 
     const deleteOffice = useCallback(
         (office: Office) => {
@@ -144,7 +143,7 @@ export default function Offices() {
                                 to={getStateRouteUrl('organizations-edit', { organizationId: organization.id })}
                                 className="button button-default">
                                 <em className="mdi mdi-pen icon-start" />
-                                {t('offices.buttons.adjust')}
+                                {translate('offices.buttons.adjust')}
                             </NavLink>
                         )}
                     </div>
@@ -170,13 +169,13 @@ export default function Offices() {
                 <div className="card-section card-section-primary">
                     <div className="card-block card-block-keyvalue card-block-keyvalue-horizontal row">
                         <div className="keyvalue-item col-xs-12 col-sm-6 col-lg-4">
-                            <div className="keyvalue-key">{t('offices.labels.business_type')}</div>
+                            <div className="keyvalue-key">{translate('offices.labels.business_type')}</div>
                             <div className={`keyvalue-value ${!organization.business_type?.name ? 'text-muted' : ''}`}>
                                 {organization.business_type?.name || 'Geen data'}
                             </div>
                         </div>
                         <div className="keyvalue-item col-xs-12 col-sm-6 col-lg-4">
-                            <div className="keyvalue-key">{t('offices.labels.mail')}</div>
+                            <div className="keyvalue-key">{translate('offices.labels.mail')}</div>
                             <div
                                 className={`keyvalue-value ${
                                     !organization.email ? 'text-muted' : 'text-primary-light'
@@ -216,7 +215,7 @@ export default function Offices() {
                         <div className="flex-row">
                             <div className="flex-col flex-grow">
                                 <div className="card-title">
-                                    {t('offices.labels.offices')} ({offices?.length})
+                                    {translate('offices.labels.offices')} ({offices?.length})
                                 </div>
                             </div>
 
@@ -281,12 +280,12 @@ export default function Offices() {
                                             organizationId: office.organization_id,
                                         })}>
                                         <em className="mdi mdi-pen icon-start" />
-                                        {t('offices.buttons.adjust')}
+                                        {translate('offices.buttons.adjust')}
                                     </NavLink>
                                     {offices.length > 1 && (
                                         <a className="button button-default" onClick={() => deleteOffice(office)}>
                                             <em className="mdi mdi-delete icon-start" />
-                                            {t('offices.buttons.delete')}
+                                            {translate('offices.buttons.delete')}
                                         </a>
                                     )}
                                     {office.lat && office.lon && (
@@ -296,7 +295,7 @@ export default function Offices() {
                                             rel="noreferrer"
                                             target="_blank">
                                             <em className="mdi mdi-map-marker icon-start" />
-                                            {t('offices.buttons.map')}
+                                            {translate('offices.buttons.map')}
                                         </a>
                                     )}
                                 </div>
@@ -306,34 +305,36 @@ export default function Offices() {
                         <div className="row">
                             <div className="card-block card-block-listing">
                                 <div className="listing-item col-xs-6 col-md-3 col-lg-2">
-                                    <div className="listing-item-label">{t('offices.labels.phone')}</div>
+                                    <div className="listing-item-label">{translate('offices.labels.phone')}</div>
                                     <div className="listing-item-value">
                                         {office.phone ? (
                                             <strong>{office.phone}</strong>
                                         ) : (
-                                            <span className="text-muted">{t('offices.labels.none')}</span>
+                                            <span className="text-muted">{translate('offices.labels.none')}</span>
                                         )}
                                     </div>
                                 </div>
 
                                 <div className="listing-item col-xs-6 col-md-3 col-lg-2">
-                                    <div className="listing-item-label">{t('offices.labels.branch_number')}</div>
+                                    <div className="listing-item-label">
+                                        {translate('offices.labels.branch_number')}
+                                    </div>
                                     <div className="listing-item-value">
                                         {office.branch_number ? (
                                             <strong>{office.branch_number}</strong>
                                         ) : (
-                                            <span className="text-muted">{t('offices.labels.none')}</span>
+                                            <span className="text-muted">{translate('offices.labels.none')}</span>
                                         )}
                                     </div>
                                 </div>
 
                                 <div className="listing-item col-xs-6 col-md-3 col-lg-2">
-                                    <div className="listing-item-label">{t('offices.labels.branch_id')}</div>
+                                    <div className="listing-item-label">{translate('offices.labels.branch_id')}</div>
                                     <div className="listing-item-value">
                                         {office.branch_id ? (
                                             <strong>{office.branch_id}</strong>
                                         ) : (
-                                            <span className="text-muted">{t('offices.labels.none')}</span>
+                                            <span className="text-muted">{translate('offices.labels.none')}</span>
                                         )}
                                     </div>
                                 </div>
@@ -344,7 +345,7 @@ export default function Offices() {
                     {office.schedule.length != 0 && (
                         <div className="card-section card-section-primary">
                             <div className="card-block card-block-schedule">
-                                <div className="card-block-schedule-title">{t('offices.labels.hours')}</div>
+                                <div className="card-block-schedule-title">{translate('offices.labels.hours')}</div>
                                 <div className="card-block-schedule-list">
                                     <div className="card-block card-block-listing">
                                         {Object.keys(weekDays)?.map((weekDayKey) => (

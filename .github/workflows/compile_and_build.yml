@@ -17,7 +17,7 @@ jobs:
       - name: Create env.js from example
         run: cp env.example.js env.js
       - name: Build
-        run: npm run build
+        run: npm run build-dev -- --env only="webshop.general,dashboard.sponsor,dashboard.provider,dashboard.validator"
 
       - uses: actions/upload-artifact@v3
         if: always()

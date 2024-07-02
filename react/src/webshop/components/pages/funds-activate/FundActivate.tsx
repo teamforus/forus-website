@@ -13,7 +13,6 @@ import usePushSuccess from '../../../../dashboard/hooks/usePushSuccess';
 import Fund from '../../../props/models/Fund';
 import Identity from '../../../../dashboard/props/models/Identity';
 import Voucher from '../../../../dashboard/props/models/Voucher';
-import FundCriterion from '../../../props/models/FundCriterion';
 import FundRequest from '../../../../dashboard/props/models/FundRequest';
 import { useFundService } from '../../../services/FundService';
 import { useVoucherService } from '../../../services/VoucherService';
@@ -38,6 +37,7 @@ import useSetProgress from '../../../../dashboard/hooks/useSetProgress';
 import BlockShowcase from '../../elements/block-showcase/BlockShowcase';
 import BlockLoader from '../../elements/block-loader/BlockLoader';
 import { clickOnKeyEnter } from '../../../../dashboard/helpers/wcag';
+import FundCriterion from '../../../../dashboard/props/models/FundCriterion';
 
 export default function FundActivate() {
     const { id } = useParams();

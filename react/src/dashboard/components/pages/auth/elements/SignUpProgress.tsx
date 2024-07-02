@@ -22,7 +22,7 @@ export default function SignUpProgress({
                 <div
                     key={stepItem}
                     className={`sign_up-step ${step == stepItem + infoSteps ? 'sign_up-step-active' : ''} ${
-                        step > stepItem + infoSteps ? 'sign_up-step-done' : ''
+                        step > stepItem + infoSteps || step == shownSteps.length + infoSteps ? 'sign_up-step-done' : ''
                     }`}>
                     <div className="sign_up-step-border"></div>
                     <div className="sign-up-step-block">Stap {index + 1}</div>

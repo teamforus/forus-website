@@ -49,7 +49,7 @@ export default function Auth2Fa({
                         />
 
                         <h3>Belangrijkste voordelen</h3>
-            
+
                         <div className="block block-feature-icons">
                             <div className="block-feature-icons-item">
                                 <div className="block-feature-icon">
