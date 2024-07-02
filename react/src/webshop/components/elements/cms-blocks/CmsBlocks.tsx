@@ -32,12 +32,12 @@ export default function CmsBlocks({ page }: { page: ImplementationPage }) {
                                             />
                                         </div>
                                         <div className="fund-information">
+                                            {block.title && <h2 className="fund-title">{block.title}</h2>}
                                             {block.label && (
-                                                <h2 className="fund-label">
+                                                <div className="fund-label">
                                                     <span className="label label-primary">{block.label}</span>
-                                                </h2>
+                                                </div>
                                             )}
-                                            {block.title && <h3 className="fund-title">{block.title}</h3>}
 
                                             <div className="fund-description">
                                                 <Markdown content={block.description_html} />
