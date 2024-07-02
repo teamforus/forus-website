@@ -160,6 +160,7 @@ export default function Modal2FADeactivate({
                                             valueType={'num'}
                                             blockSize={3}
                                             blockCount={2}
+                                            ariaLabel={'Voer de tweefactorauthenticatiecode in voor deactivering'}
                                         />
 
                                         <FormError error={errorCode} />

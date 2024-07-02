@@ -640,6 +640,7 @@ export default function FundActivate() {
                                                 blockCount={2}
                                                 blockSize={4}
                                                 valueType={'alphaNum'}
+                                                ariaLabel={'Voer de activatiecode van het fonds in'}
                                             />
                                             <FormError error={codeForm.errors.code} />
                                         </div>
