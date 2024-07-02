@@ -50,9 +50,13 @@ export default function EmptyBlock({
                         className={`button button-${button.type}`}
                         onClick={button.onClick}
                         data-dusk="btnEmptyBlock">
-                        {button.icon && !button.iconEnd && <em className={`mdi mdi-${button.icon}`} />}
+                        {button.icon && !button.iconEnd && (
+                            <em className={`mdi mdi-${button.icon}`} aria-hidden="true" />
+                        )}
                         {button.text}
-                        {button.icon && button.iconEnd && <em className={`icon-right mdi mdi-${button.icon}`} />}
+                        {button.icon && button.iconEnd && (
+                            <em className={`icon-right mdi mdi-${button.icon}`} aria-hidden="true" />
+                        )}
                     </button>
                 </div>
             )}
