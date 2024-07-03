@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { ModalState } from '../../modules/modals/context/ModalContext';
-import { classList } from '../../helpers/utils';
 import ImageCropper, { ImageCropperPresetValue } from '../elements/image_cropper/ImageCropper';
 import useAppConfigs from '../../hooks/useAppConfigs';
+import classNames from 'classnames';
 
 export default function ModalPhotoUploader({
     type,
@@ -69,13 +69,13 @@ export default function ModalPhotoUploader({
 
     return (
         <div
-            className={classList([
+            className={classNames(
                 'modal',
                 'modal-animated',
                 'modal-photo-upload',
-                modal.loading ? 'modal-loading' : null,
+                modal.loading && 'modal-loading',
                 className,
-            ])}>
+            )}>
             <div className="modal-backdrop" onClick={modal.close} />
             <div className="modal-window">
                 <div className="modal-close mdi mdi-close" onClick={modal.close} />

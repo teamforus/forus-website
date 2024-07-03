@@ -45,16 +45,16 @@
                     font: 500 13px/20px var(--base-font);
                     color: #646f79;
                     display: flex;
-    
-                    .session-property-label, 
+
+                    .session-property-label,
                     .session-property-value {
                         display: inline-flex;
                     }
-    
+
                     .session-property-label {
                         padding-right: 5px;
                     }
-    
+
                     .session-property-value {
                         color: #151b26;
                     }
@@ -74,7 +74,7 @@
                 .session-action {
                     font: 500 13px/20px var(--base-font);
                     color: var(--color-primary);
-                    transition: .4s;
+                    transition: 0.4s;
                     margin-right: 10px;
                     float: left;
 
@@ -87,7 +87,7 @@
                         width: 15px;
                         text-align: center;
 
-                        &[class*="mdi-menu"] {
+                        &[class*='mdi-menu'] {
                             font-size: 24px;
                         }
                     }

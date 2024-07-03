@@ -1,8 +1,8 @@
-import React, { useCallback } from 'react';
+import React, { ReactNode, useCallback } from 'react';
 import { ModalState } from '../../modules/modals/context/ModalContext';
-import { classList } from '../../helpers/utils';
 import { ModalButton } from './elements/ModalButton';
 import useAssetUrl from '../../hooks/useAssetUrl';
+import classNames from 'classnames';
 
 export default function ModalNotification({
     modal,
@@ -19,7 +19,7 @@ export default function ModalNotification({
     icon?: string;
     title: string;
     className?: string;
-    description?: string | Array<string>;
+    description?: string | ReactNode | Array<string> | Array<ReactNode>;
     buttonClose?: ModalButton;
     buttonCancel?: ModalButton;
     buttonSubmit?: ModalButton;
@@ -30,13 +30,13 @@ export default function ModalNotification({
 
     return (
         <div
-            className={classList([
+            className={classNames(
                 'modal',
                 'modal-animated',
                 'modal-notification',
-                modal.loading ? 'modal-loading' : null,
+                modal.loading && 'modal-loading',
                 className,
-            ])}>
+            )}>
             <div className="modal-backdrop" onClick={modal.close} />
             <div className="modal-window">
                 <div className="modal-close mdi mdi-close" onClick={modal.close} />

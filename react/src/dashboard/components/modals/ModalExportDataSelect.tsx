@@ -1,38 +1,33 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 import { ModalState } from '../../modules/modals/context/ModalContext';
-import { classList } from '../../helpers/utils';
-import { useTranslation } from 'react-i18next';
 import { chunk } from 'lodash';
 import CheckboxControl from '../elements/forms/controls/CheckboxControl';
+import useTranslate from '../../hooks/useTranslate';
 
 export type ExportFieldProp = {
     key?: string;
     name?: string;
     value: string;
     icon: string;
-    selected?: string;
+    selected?: boolean;
     label: string;
+    is_record_field?: boolean;
 };
 
 export type ExportSectionProp = {
     type: 'radio' | 'checkbox';
     key: string;
+    title: string;
     value?: string;
     fields: Array<ExportFieldProp>;
     fieldsPerRow?: number;
-    title: string;
     collapsable?: boolean;
     selectAll?: boolean;
+    collapsed?: boolean;
 };
 
 type ExportSectionPropLocal = ExportSectionProp & {
-    fieldsView: Array<
-        Array<{
-            key: string;
-            name: string;
-            selected: boolean;
-        }>
-    >;
+    fieldsView: Array<Array<{ key: string; name: string; selected: boolean }>>;
     value?: string;
     collapsed: boolean;
     selected: Array<ExportFieldProp>;
@@ -44,8 +39,9 @@ export default function ModalExportDataSelect({
     className,
     description,
     sections,
-    required,
+    required = true,
     onSuccess,
+    onCancel,
 }: {
     modal: ModalState;
     title?: string;
@@ -54,48 +50,38 @@ export default function ModalExportDataSelect({
     required?: boolean;
     description?: string | Array<string>;
     onSuccess: (values: object) => void;
+    onCancel?: () => void;
 }) {
-    const { t } = useTranslation();
-
-    const [isValid, setIsValid] = React.useState(false);
+    const translate = useTranslate();
     const [localSections, setLocalSections] = React.useState<Array<ExportSectionPropLocal>>(null);
 
-    const updateIsValid = useCallback(
-        (localSections) => {
-            const checkboxSections = localSections?.filter(
-                (section: ExportSectionPropLocal) => section.type === 'checkbox',
-            );
-            const checkboxSectionsChecked = checkboxSections?.filter(
-                (section: ExportSectionPropLocal) => section.selected.length > 0,
-            );
+    const isValid = useMemo(() => {
+        const checkboxSections = localSections?.filter(
+            (section: ExportSectionPropLocal) => section.type === 'checkbox',
+        );
 
-            setIsValid(!required || !checkboxSections?.length || checkboxSectionsChecked?.length);
-        },
-        [required],
-    );
+        const checkboxSectionsChecked = checkboxSections?.filter(
+            (section: ExportSectionPropLocal) => section.selected.length > 0,
+        );
 
-    const updateSelectedFields = useCallback(
-        (localSections, section: ExportSectionPropLocal, checkUpdateIsValid = true) => {
-            section.selected = section.fields.filter((field: ExportFieldProp) => field.selected);
-            section.selectAll = section.selected.length === section.fields.length;
+        return !required || !checkboxSections?.length || checkboxSectionsChecked?.length;
+    }, [localSections, required]);
 
-            if (checkUpdateIsValid) {
-                updateIsValid(localSections);
-            }
+    const updateSelectedFields = useCallback((section: ExportSectionPropLocal) => {
+        section.selected = section.fields.filter((field: ExportFieldProp) => field.selected);
+        section.selectAll = section.selected.length === section.fields.length;
 
-            return section;
-        },
-        [updateIsValid],
-    );
+        return section;
+    }, []);
 
     const toggleAllFields = useCallback(
         (section: ExportSectionPropLocal, checked: boolean) => {
             section.selectAll = checked;
             section.fieldsView.forEach((row) => row.forEach((field) => (field.selected = section.selectAll)));
 
-            setLocalSections([...localSections]);
+            setLocalSections(localSections.map(updateSelectedFields));
         },
-        [localSections],
+        [localSections, updateSelectedFields],
     );
 
     const collapseSection = useCallback(
@@ -108,6 +94,11 @@ export default function ModalExportDataSelect({
         },
         [localSections],
     );
+
+    const closeModal = useCallback(() => {
+        modal.close();
+        onCancel?.();
+    }, [modal, onCancel]);
 
     const onSubmit = useCallback(() => {
         const values = localSections.reduce((values, section) => {
@@ -147,32 +138,20 @@ export default function ModalExportDataSelect({
             return section;
         });
 
-        const localSections2 = localSections.map((section: ExportSectionPropLocal) =>
-            updateSelectedFields(localSections, section, false),
-        );
-
-        setLocalSections(localSections2);
-        updateIsValid(localSections2);
-    }, [sections, updateIsValid, updateSelectedFields]);
+        setLocalSections(localSections.map(updateSelectedFields));
+    }, [sections, updateSelectedFields]);
 
     return (
-        <div
-            className={classList([
-                'modal',
-                'modal-md',
-                'modal-animated',
-                modal.loading ? 'modal-loading' : null,
-                className,
-            ])}>
-            <div className="modal-backdrop" onClick={modal.close} />
+        <div className={`modal modal-md modal-animated ${modal.loading ? 'modal-loading' : ''} ${className}`}>
+            <div className="modal-backdrop" onClick={closeModal} />
             <form
                 className="modal-window form"
                 onSubmit={(e) => {
                     e.preventDefault();
                     onSubmit();
                 }}>
-                <div className="modal-close mdi mdi-close" onClick={modal.close} />
-                <div className="modal-header">{title ? title : t('modals.modal_export_data.title')}</div>
+                <div className="modal-close mdi mdi-close" onClick={closeModal} />
+                <div className="modal-header">{title ? title : translate('modals.modal_export_data.title')}</div>
 
                 <div className="modal-body">
                     <div className="modal-section">
@@ -229,6 +208,7 @@ export default function ModalExportDataSelect({
                                                                         title={field.name}
                                                                         onChange={() => {
                                                                             field.selected = !field.selected;
+                                                                            updateSelectedFields(section);
                                                                             setLocalSections([...localSections]);
                                                                         }}
                                                                     />
@@ -254,6 +234,7 @@ export default function ModalExportDataSelect({
                                                         value={field.value}
                                                         onChange={(e) => {
                                                             section.value = e.target.value;
+                                                            updateSelectedFields(section);
                                                             setLocalSections([...localSections]);
                                                         }}
                                                     />
@@ -272,11 +253,11 @@ export default function ModalExportDataSelect({
                     </div>
                 </div>
                 <div className="modal-footer text-center">
-                    <button className="button button-default" type="button" onClick={modal.close}>
-                        {t('modals.modal_voucher_create.buttons.cancel')}
+                    <button className="button button-default" type="button" onClick={closeModal}>
+                        {translate('modals.modal_voucher_create.buttons.cancel')}
                     </button>
                     <button className="button button-primary" disabled={!isValid} type="submit">
-                        {t('modals.modal_export_data.buttons.submit')}
+                        {translate('modals.modal_export_data.buttons.submit')}
                     </button>
                 </div>
             </form>

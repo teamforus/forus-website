@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import useProviderFundService from '../../../services/ProviderFundService';
 import useActiveOrganization from '../../../hooks/useActiveOrganization';
 import FundProvider from '../../../props/models/FundProvider';
@@ -28,6 +28,14 @@ export default function ProviderOverview() {
     const [productsTotal, setProductsTotal] = useState(null);
     const [employeesTotal, setEmployeesTotal] = useState(null);
     const [transactionsTotal, setTransactionsTotal] = useState(null);
+
+    const productHardLimitReached = useMemo(() => {
+        return appConfigs?.products_hard_limit > 0 && productsTotal >= appConfigs?.products_hard_limit;
+    }, [appConfigs?.products_hard_limit, productsTotal]);
+
+    const productSoftLimitReached = useMemo(() => {
+        return appConfigs?.products_soft_limit > 0 && productsTotal >= appConfigs?.products_soft_limit;
+    }, [appConfigs?.products_soft_limit, productsTotal]);
 
     const isActive = useCallback((fund: FundProvider) => {
         return (
@@ -85,18 +93,22 @@ export default function ProviderOverview() {
                                         <div className="chart-value_value">{productsTotal}</div>
                                         <div className="chart-value_label"> Producten of diensten</div>
                                     </div>
-                                    {productsTotal < appConfigs.products_hard_limit && (
-                                        <div className="chart-action">
-                                            <StateNavLink
-                                                name={'products-create'}
-                                                params={{ organizationId: activeOrganization.id }}
-                                                className="button button-primary"
-                                                id="add_product">
-                                                <em className="mdi mdi-plus-circle icon-start" />
-                                                Toevoegen
-                                            </StateNavLink>
-                                        </div>
-                                    )}
+                                    <div className="chart-action">
+                                        <StateNavLink
+                                            name={'products-create'}
+                                            params={{ organizationId: activeOrganization.id }}
+                                            className={`button button-primary ${
+                                                productHardLimitReached ? 'disabled' : ''
+                                            }`}
+                                            id="add_product"
+                                            disabled={productHardLimitReached}>
+                                            <em className="mdi mdi-plus-circle icon-start" />
+                                            Toevoegen
+                                            {productSoftLimitReached
+                                                ? ` (${productsTotal} / ${appConfigs?.products_hard_limit})`
+                                                : ``}
+                                        </StateNavLink>
+                                    </div>
                                 </div>
                             </div>
                         </div>

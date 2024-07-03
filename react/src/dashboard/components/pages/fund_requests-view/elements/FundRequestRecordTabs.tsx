@@ -1,9 +1,9 @@
 import React, { useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import FundRequestRecordHistoryTab from './record-tabs/FundRequestRecordHistoryTab';
 import FundRequestRecordAttachmentsTab from './record-tabs/FundRequestRecordAttachmentsTab';
 import FundRequestRecordClarificationsTab from './record-tabs/FundRequestRecordClarificationsTab';
 import FundRequestRecord from '../../../../props/models/FundRequestRecord';
+import useTranslate from '../../../../hooks/useTranslate';
 
 export default function FundRequestRecordTabs({ fundRequestRecord }: { fundRequestRecord: FundRequestRecord }) {
     const contentMap = useMemo(
@@ -15,7 +15,8 @@ export default function FundRequestRecordTabs({ fundRequestRecord }: { fundReque
         [fundRequestRecord],
     );
 
-    const { t } = useTranslation();
+    const translate = useTranslate();
+
     const hasMultiple = useMemo(() => contentMap.filter((value) => value).length > 1, [contentMap]);
     const [shownType, setShownType] = useState(contentMap.filter((value) => value)[0] || null);
 
@@ -27,7 +28,7 @@ export default function FundRequestRecordTabs({ fundRequestRecord }: { fundReque
                         <div
                             className={`label-tab ${shownType == 'files' ? 'active' : ''}`}
                             onClick={() => setShownType('files')}>
-                            {t('validation_request_details.labels.files', {
+                            {translate('validation_request_details.labels.files', {
                                 count: fundRequestRecord.files.length,
                             })}
                         </div>
@@ -37,7 +38,7 @@ export default function FundRequestRecordTabs({ fundRequestRecord }: { fundReque
                         <div
                             className={`label-tab ${shownType == 'clarifications' ? 'active' : ''}`}
                             onClick={() => setShownType('clarifications')}>
-                            {t('validation_request_details.labels.clarification_requests', {
+                            {translate('validation_request_details.labels.clarification_requests', {
                                 count: fundRequestRecord.clarifications.length,
                             })}
                         </div>
@@ -47,7 +48,7 @@ export default function FundRequestRecordTabs({ fundRequestRecord }: { fundReque
                         <div
                             className={`label-tab ${shownType == 'history' ? 'active' : ''}`}
                             onClick={() => setShownType('history')}>
-                            {t('validation_request_details.labels.history', {
+                            {translate('validation_request_details.labels.history', {
                                 count: fundRequestRecord.history.length,
                             })}
                         </div>

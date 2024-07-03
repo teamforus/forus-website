@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import useFilter from '../../../../hooks/useFilter';
 import { PaginationData } from '../../../../props/ApiResponses';
 import Organization from '../../../../props/models/Organization';
@@ -22,6 +21,8 @@ import ThSortable from '../../../elements/tables/ThSortable';
 import useTableToggles from '../../../../hooks/useTableToggles';
 import Implementation from '../../../../props/models/Implementation';
 import usePaginatorService from '../../../../modules/paginator/services/usePaginatorService';
+import EmptyCard from '../../../elements/empty-card/EmptyCard';
+import useTranslate from '../../../../hooks/useTranslate';
 
 export default function ProviderAvailableFundsTable({
     organization,
@@ -30,7 +31,7 @@ export default function ProviderAvailableFundsTable({
     organization: Organization;
     onChange: () => void;
 }) {
-    const { t } = useTranslation();
+    const translate = useTranslate();
 
     const [loading, setLoading] = useState(true);
 
@@ -68,30 +69,30 @@ export default function ProviderAvailableFundsTable({
         openModal((modal) => (
             <ModalNotification
                 modal={modal}
-                title={t('provider_funds.available.applied_for_fund.title')}
-                description={t('provider_funds.available.applied_for_fund.description')}
+                title={translate('provider_funds.available.applied_for_fund.title')}
+                description={translate('provider_funds.available.applied_for_fund.description')}
                 icon={'fund_applied'}
                 buttonSubmit={{
-                    text: t('modal.buttons.confirm'),
+                    text: translate('modal.buttons.confirm'),
                     onClick: modal.close,
                 }}
             />
         ));
-    }, [openModal, t]);
+    }, [openModal, translate]);
 
     const failOfficesCheck = useCallback(() => {
         openModal((modal) => (
             <ModalNotification
                 modal={modal}
-                title={t('provider_funds.available.error_apply.title')}
-                description={t('provider_funds.available.error_apply.description')}
+                title={translate('provider_funds.available.error_apply.title')}
+                description={translate('provider_funds.available.error_apply.description')}
                 buttonCancel={{
-                    text: t('modal.buttons.cancel'),
+                    text: translate('modal.buttons.cancel'),
                     onClick: modal.close,
                 }}
             />
         ));
-    }, [openModal, t]);
+    }, [openModal, translate]);
 
     const applyFunds = useCallback(
         (funds) => {
@@ -156,7 +157,10 @@ export default function ProviderAvailableFundsTable({
                         return tags;
                     }
 
-                    return [{ key: null, name: t('provider_funds.filters.options.all_labels') }, ...res.data.meta.tags];
+                    return [
+                        { key: null, name: translate('provider_funds.filters.options.all_labels') },
+                        ...res.data.meta.tags,
+                    ];
                 });
 
                 setOrganizations((organizations) => {
@@ -165,7 +169,7 @@ export default function ProviderAvailableFundsTable({
                     }
 
                     return [
-                        { id: null, name: t('provider_funds.filters.options.all_organizations') },
+                        { id: null, name: translate('provider_funds.filters.options.all_organizations') },
                         ...res.data.meta.organizations,
                     ];
                 });
@@ -176,13 +180,13 @@ export default function ProviderAvailableFundsTable({
                     }
 
                     return [
-                        { id: null, name: t('provider_funds.filters.options.all_implementations') },
+                        { id: null, name: translate('provider_funds.filters.options.all_implementations') },
                         ...res.data.meta.implementations,
                     ];
                 });
             })
             .catch((err) => pushDanger('Mislukt!', err.data?.message));
-    }, [fetchFunds, filter.activeValues, organization, pushDanger, setSelected, t]);
+    }, [fetchFunds, filter.activeValues, organization, pushDanger, setSelected, translate]);
 
     return (
         <div className="card">
@@ -190,7 +194,7 @@ export default function ProviderAvailableFundsTable({
                 <div className="flex">
                     <div className="flex flex-grow">
                         <div className="card-title">
-                            {t(`provider_funds.title.available`)}
+                            {translate(`provider_funds.title.available`)}
 
                             {!loading && selected.length > 0 && ` (${selected.length}/${funds.data.length})`}
                             {!loading && selected.length == 0 && ` (${funds.meta.total})`}
@@ -203,7 +207,7 @@ export default function ProviderAvailableFundsTable({
                                 className="button button-primary button-sm"
                                 onClick={() => applyFunds(selectedMeta?.selected)}>
                                 <em className="mdi mdi-send-circle-outline icon-start" />
-                                {t('provider_funds.buttons.join')}
+                                {translate('provider_funds.buttons.join')}
                             </button>
                         )}
                         {filter.show && (
@@ -227,7 +231,7 @@ export default function ProviderAvailableFundsTable({
                         )}
 
                         <CardHeaderFilter filter={filter}>
-                            <FilterItemToggle label={t('provider_funds.filters.labels.search')} show={true}>
+                            <FilterItemToggle label={translate('provider_funds.filters.labels.search')} show={true}>
                                 <input
                                     className="form-control"
                                     value={filter.values.q}
@@ -236,7 +240,7 @@ export default function ProviderAvailableFundsTable({
                                 />
                             </FilterItemToggle>
 
-                            <FilterItemToggle label={t('provider_funds.filters.labels.implementations')}>
+                            <FilterItemToggle label={translate('provider_funds.filters.labels.implementations')}>
                                 <SelectControl
                                     value={filter.values.implementation_id}
                                     options={implementations}
@@ -247,7 +251,7 @@ export default function ProviderAvailableFundsTable({
                                 />
                             </FilterItemToggle>
 
-                            <FilterItemToggle label={t('provider_funds.filters.labels.organizations')}>
+                            <FilterItemToggle label={translate('provider_funds.filters.labels.organizations')}>
                                 <SelectControl
                                     value={filter.values.organization_id}
                                     options={organizations}
@@ -258,7 +262,7 @@ export default function ProviderAvailableFundsTable({
                                 />
                             </FilterItemToggle>
 
-                            <FilterItemToggle label={t('provider_funds.filters.labels.tags')}>
+                            <FilterItemToggle label={translate('provider_funds.filters.labels.tags')}>
                                 <SelectControl
                                     value={filter.values.tag}
                                     options={tags}
@@ -287,31 +291,31 @@ export default function ProviderAvailableFundsTable({
                                         </th>
 
                                         <ThSortable
-                                            label={t('provider_funds.labels.fund')}
+                                            label={translate('provider_funds.labels.fund')}
                                             value={'name'}
                                             filter={filter}
                                         />
                                         <ThSortable
-                                            label={t('provider_funds.labels.organization')}
+                                            label={translate('provider_funds.labels.organization')}
                                             value={'organization_name'}
                                             filter={filter}
                                         />
 
                                         <ThSortable
-                                            label={t('provider_funds.labels.start_date')}
+                                            label={translate('provider_funds.labels.start_date')}
                                             value={'start_date'}
                                             filter={filter}
                                         />
 
                                         <ThSortable
-                                            label={t('provider_funds.labels.end_date')}
+                                            label={translate('provider_funds.labels.end_date')}
                                             value={'end_date'}
                                             filter={filter}
                                         />
 
                                         <ThSortable
                                             className={'nowrap text-right'}
-                                            label={t('provider_funds.labels.actions')}
+                                            label={translate('provider_funds.labels.actions')}
                                         />
                                     </tr>
                                     {funds.data?.map((fund) => (
@@ -344,7 +348,7 @@ export default function ProviderAvailableFundsTable({
                                                             target="_blank"
                                                             className="text-strong text-md text-muted-dark text-inherit"
                                                             rel="noreferrer">
-                                                            {strLimit(fund.implementation.name, 32)}
+                                                            {strLimit(fund.implementation?.name, 32)}
                                                         </a>
                                                     </div>
                                                 </div>
@@ -373,7 +377,7 @@ export default function ProviderAvailableFundsTable({
                                                             className="button button-primary button-sm"
                                                             onClick={() => applyFunds([fund])}>
                                                             <em className="mdi mdi-send-circle-outline icon-start" />
-                                                            {t('provider_funds.buttons.join')}
+                                                            {translate('provider_funds.buttons.join')}
                                                         </button>
                                                     )}
                                                 </div>
@@ -396,11 +400,7 @@ export default function ProviderAvailableFundsTable({
             )}
 
             {!loading && funds?.meta?.total == 0 && (
-                <div className="card-section">
-                    <div className="block block-empty text-center">
-                        <div className="empty-title">{t(`provider_funds.empty_block.available`)}</div>
-                    </div>
-                </div>
+                <EmptyCard type={'card-section'} title={translate(`provider_funds.empty_block.available`)} />
             )}
 
             {!loading && funds?.meta && (

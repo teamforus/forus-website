@@ -35,22 +35,28 @@ module.exports = (env, argv) => {
             return isDevServer ? `/${item.out}${path}` : `${webRoot}${path}`;
         };
 
+        const isDashboard = ['sponsor', 'provider', 'validator'].includes(item.client_type);
+
         return new HtmlWebpackPlugin({
             template: `../../react/public/index.ejs`,
             templateParameters: {
-                title: `Forus ${item.client_type} app`,
+                title: item.default_title || 'Forus',
                 script: webPath(`/${scriptPath}`),
                 base: webPath(`/`),
                 favicon: webPath(`/assets/img/favicon.ico`),
                 disable_indexing: item.config?.disable_indexing,
                 libs: {
-                    summernote: {
-                        js: webPath(`/assets/dist/js/summernote.${timestamp}.min.js`),
-                        css: webPath(`/assets/dist/js/summernote.${timestamp}.min.css`),
-                    },
-                    jquery: {
-                        js: webPath(`/assets/dist/js/jquery.${timestamp}.min.js`),
-                    },
+                    ...(isDashboard
+                        ? {
+                              summernote: {
+                                  js: webPath(`/assets/dist/js/summernote.${timestamp}.min.js`),
+                                  css: webPath(`/assets/dist/js/summernote.${timestamp}.min.css`),
+                              },
+                              jquery: {
+                                  js: webPath(`/assets/dist/js/jquery.${timestamp}.min.js`),
+                              },
+                          }
+                        : {}),
                     mdi: {
                         css: webPath(`/assets/dist/css/materialdesignicons.min.css`),
                     },
@@ -73,7 +79,7 @@ module.exports = (env, argv) => {
 
     const copyPlugins = configs.map((item) => {
         const isDashboard = ['sponsor', 'provider', 'validator'].includes(item.client_type);
-        const platform = isDashboard ? 'platform' : 'webshop';
+        const platform = isDashboard ? 'platform' : item.client_type === 'website' ? 'website' : 'webshop';
 
         return new CopyPlugin({
             patterns: [
@@ -91,18 +97,6 @@ module.exports = (env, argv) => {
                     force: true,
                 },
                 {
-                    from: resolvePath(`./node_modules/summernote/dist/summernote-lite.min.js`),
-                    to: resolvePath(`${distPath}/${item.out}/assets/dist/js/summernote.${timestamp}.min.js`),
-                },
-                {
-                    from: resolvePath(`./node_modules/summernote/dist/summernote-lite.min.css`),
-                    to: resolvePath(`${distPath}/${item.out}/assets/dist/js/summernote.${timestamp}.min.css`),
-                },
-                {
-                    from: resolvePath(`./node_modules/jquery/dist/jquery.min.js`),
-                    to: resolvePath(`${distPath}/${item.out}/assets/dist/js/jquery.${timestamp}.min.js`),
-                },
-                {
                     from: resolvePath(`./node_modules/@mdi/font/fonts`),
                     to: resolvePath(`${distPath}/${item.out}/assets/dist/fonts`),
                 },
@@ -110,6 +104,22 @@ module.exports = (env, argv) => {
                     from: resolvePath(`./node_modules/@mdi/font/css/materialdesignicons.min.css`),
                     to: resolvePath(`${distPath}/${item.out}/assets/dist/css/materialdesignicons.min.css`),
                 },
+                ...(isDashboard
+                    ? [
+                          {
+                              from: resolvePath(`./node_modules/summernote/dist/summernote-lite.min.js`),
+                              to: resolvePath(`${distPath}/${item.out}/assets/dist/js/summernote.${timestamp}.min.js`),
+                          },
+                          {
+                              from: resolvePath(`./node_modules/summernote/dist/summernote-lite.min.css`),
+                              to: resolvePath(`${distPath}/${item.out}/assets/dist/js/summernote.${timestamp}.min.css`),
+                          },
+                          {
+                              from: resolvePath(`./node_modules/jquery/dist/jquery.min.js`),
+                              to: resolvePath(`${distPath}/${item.out}/assets/dist/js/jquery.${timestamp}.min.js`),
+                          },
+                      ]
+                    : []),
             ],
         });
     });
