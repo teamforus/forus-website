@@ -33,8 +33,8 @@
 
     .danger_zone-description {
         font: 500 14px/20px var(--base-font);
-        color: #646F79;
-        border-top: 1px solid #D4D9DD;
+        color: #646f79;
+        border-top: 1px solid #d4d9dd;
         width: 100%;
         padding: 15px;
     }
@@ -50,7 +50,7 @@
             color: var(--color-primary);
 
             .mdi {
-                color: rgba($color: #000000, $alpha: .4);
+                color: rgba($color: #000000, $alpha: 0.4);
             }
         }
     }

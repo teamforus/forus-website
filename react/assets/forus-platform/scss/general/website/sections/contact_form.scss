@@ -1,7 +1,7 @@
 html {
     body {
-        form{
-            .form-group{
+        form {
+            .form-group {
                 input:-webkit-autofill,
                 input:-webkit-autofill:hover,
                 input:-webkit-autofill:focus,
@@ -17,46 +17,47 @@ html {
                     transition: background-color 5000s ease-in-out 0s;
                     background: #ffffff;
                 }
-                .form-control{
+                .form-control {
                     box-shadow: none;
                     border: 1px solid transparent;
-                    &[value=""]{
+                    &[value=''] {
                         background-color: #eeeef0;
-                        border-color: #eeeef0!important;
+                        border-color: #eeeef0 !important;
                         box-shadow: none;
-                        & + label{
+                        & + label {
                             display: none;
                         }
                     }
-                    &:focus{
-                        outline: none!important;
+                    &:focus {
+                        outline: none !important;
                         box-shadow: none;
                     }
                 }
 
-                textarea{
-                    height: 100px!important;
+                textarea {
+                    height: 100px !important;
                     resize: none;
                     padding-top: 15px;
                 }
-                &.has-error{
-                    .form-control{
+                &.has-error {
+                    .form-control {
                         border-radius: 8px;
-                        border: solid 1px #ff2100!important;
+                        border: solid 1px #ff2100 !important;
                         background-color: #fff0ee;
-                        & + label{
-                            display: none!important;
+                        & + label {
+                            display: none !important;
                         }
                     }
-                    .help-block{
+                    .help-block {
                         display: block;
                     }
                 }
             }
         }
-        #formContact, #formContactHome{
-            textarea{
-                height: 100px!important;
+        #formContact,
+        #formContactHome {
+            textarea {
+                height: 100px !important;
                 resize: none;
                 overflow: hidden;
             }
@@ -66,57 +67,57 @@ html {
                 color: #666;
                 caret-color: var(--forus-demi-blue);
             }
-            .info{
+            .info {
                 text-align: right;
                 text-transform: uppercase;
-                span{
+                span {
                     margin-right: 5px;
                     display: inline-block;
                 }
             }
-            .form-group{
-                label{
+            .form-group {
+                label {
                     font-weight: 500;
                     text-align: left;
                     margin-left: 10px;
                 }
-                &.required{
-                    label{
+                &.required {
+                    label {
                         position: relative;
-                        &:after{
-                            content: "*";
+                        &:after {
+                            content: '*';
                             color: red;
                             margin-left: 5px;
                             display: inline-block;
                         }
                     }
                 }
-                .input-group{
+                .input-group {
                     width: 100%;
                     position: relative;
                     border-radius: 8px;
                     background-color: #eff2f4;
-                    .help-block{
+                    .help-block {
                         position: absolute;
                         top: 100%;
                         left: 10px;
                         margin-top: 0;
                     }
-                    .clear_field{
+                    .clear_field {
                         position: absolute;
                         top: 17px;
                         right: 17px;
                         z-index: 0;
-                        svg{
+                        svg {
                             display: block;
                         }
                     }
-                    &:hover{
-                        .clear_field{
+                    &:hover {
+                        .clear_field {
                             z-index: 10;
                         }
                     }
-                    .form-control{
+                    .form-control {
                         width: 100%;
                         border-radius: 8px;
                         background-color: #eff2f4;
@@ -130,24 +131,24 @@ html {
                         letter-spacing: normal;
                         color: #222530;
                         left: 0 !important;
-                        &:focus{
+                        &:focus {
                             box-shadow: none;
-                            border-color: var(--forus-demi-blue)!important;
-                            &[val=""] + .clear_field{
+                            border-color: var(--forus-demi-blue) !important;
+                            &[val=''] + .clear_field {
                                 display: none;
                             }
                         }
                     }
                 }
 
-                &:focus{
-                    label{
-                        color: var(--forus-demi-blue)!important;
+                &:focus {
+                    label {
+                        color: var(--forus-demi-blue) !important;
                     }
-                    .input-group{
-                        .form-control{
-                            border-color: var(--forus-demi-blue)!important;
-                            &:focus{
+                    .input-group {
+                        .form-control {
+                            border-color: var(--forus-demi-blue) !important;
+                            &:focus {
                                 outline: none;
                                 box-shadow: none;
                             }

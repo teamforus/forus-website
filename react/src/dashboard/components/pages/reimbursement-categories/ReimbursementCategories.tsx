@@ -10,9 +10,10 @@ export default function ReimbursementCategories() {
         <Fragment>
             <div className="block block-breadcrumbs">
                 <StateNavLink
-                    className="breadcrumb-item"
                     name="reimbursements"
-                    params={{ organizationId: activeOrganization.id }}>
+                    params={{ organizationId: activeOrganization.id }}
+                    activeExact={true}
+                    className="breadcrumb-item">
                     Declaraties
                 </StateNavLink>
 

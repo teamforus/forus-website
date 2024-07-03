@@ -1,6 +1,5 @@
 import React, { Fragment, useCallback, useEffect, useState } from 'react';
 import useActiveOrganization from '../../../hooks/useActiveOrganization';
-import { useTranslation } from 'react-i18next';
 import LoadingCard from '../../elements/loading-card/LoadingCard';
 import useSetProgress from '../../../hooks/useSetProgress';
 import useMollieConnectionService from '../../../services/MollieConnectionService';
@@ -20,13 +19,14 @@ import MollieConnectionDetails from './elements/MollieConnectionDetails';
 import MollieConnectionProfileDetails from './elements/MollieConnectionProfileDetails';
 import MollieConnectionForm from './elements/MollieConnectionForm';
 import CheckboxControl from '../../elements/forms/controls/CheckboxControl';
+import useTranslate from '../../../hooks/useTranslate';
 
 export default function PaymentMethods() {
-    const { t } = useTranslation();
     const activeOrganization = useActiveOrganization();
     const mollieConnectionService = useMollieConnectionService();
 
     const openModal = useOpenModal();
+    const translate = useTranslate();
     const pushDanger = usePushDanger();
     const pushSuccess = usePushSuccess();
     const setProgress = useSetProgress();
@@ -92,11 +92,11 @@ export default function PaymentMethods() {
             openModal((modal) => (
                 <ModalDangerZone
                     modal={modal}
-                    title={t('modals.danger_zone.remove_mollie_connection.title')}
-                    description={t('modals.danger_zone.remove_mollie_connection.description')}
+                    title={translate('modals.danger_zone.remove_mollie_connection.title')}
+                    description={translate('modals.danger_zone.remove_mollie_connection.description')}
                     buttonCancel={{
                         onClick: modal.close,
-                        text: t('modals.danger_zone.remove_mollie_connection.buttons.cancel'),
+                        text: translate('modals.danger_zone.remove_mollie_connection.buttons.cancel'),
                     }}
                     buttonSubmit={{
                         onClick: () => {
@@ -106,14 +106,14 @@ export default function PaymentMethods() {
                                 fetchMollieConnection();
                             }, onResponseError);
                         },
-                        text: t('modals.danger_zone.remove_mollie_connection.buttons.confirm'),
+                        text: translate('modals.danger_zone.remove_mollie_connection.buttons.confirm'),
                     }}
                 />
             ));
         },
         [
             openModal,
-            t,
+            translate,
             mollieConnectionService,
             activeOrganization.id,
             onResponseError,
@@ -222,7 +222,9 @@ export default function PaymentMethods() {
 
                                     <div className="connection-content-details">
                                         <div className="connection-content-title">
-                                            <span className="ng-scope">{t('mollie_connection.header.title')}</span>
+                                            <span className="ng-scope">
+                                                {translate('mollie_connection.header.title')}
+                                            </span>
                                             <div className="flex flex-grow"></div>
                                             <label
                                                 className={
@@ -239,7 +241,7 @@ export default function PaymentMethods() {
                                                 <div className="block block-compact-datalist compact-datalist-vertical">
                                                     <div className="datalist-row">
                                                         <div className="datalist-key">
-                                                            {t('mollie_connection.labels.completed_at')}
+                                                            {translate('mollie_connection.labels.completed_at')}
                                                         </div>
 
                                                         {mollieConnection.completed_at ? (
@@ -248,7 +250,9 @@ export default function PaymentMethods() {
                                                             </div>
                                                         ) : (
                                                             <div className="datalist-value text-muted">
-                                                                {t('mollie_connection.header.unknown_competed_at')}
+                                                                {translate(
+                                                                    'mollie_connection.header.unknown_competed_at',
+                                                                )}
                                                             </div>
                                                         )}
                                                     </div>
@@ -262,7 +266,7 @@ export default function PaymentMethods() {
                                                         disabled={fetchingMollieAccount}
                                                         onClick={fetchMollieAccount}>
                                                         <em className="mdi mdi-autorenew icon-start"></em>
-                                                        {t('mollie_connection.buttons.fetch')}
+                                                        {translate('mollie_connection.buttons.fetch')}
                                                     </button>
 
                                                     {hasPermission(activeOrganization, ['manage_payment_methods']) && (
@@ -271,7 +275,7 @@ export default function PaymentMethods() {
                                                             disabled={fetchingMollieAccount}
                                                             onClick={deleteConnection}>
                                                             <em className="mdi mdi-close icon-start"></em>
-                                                            {t('mollie_connection.buttons.delete')}
+                                                            {translate('mollie_connection.buttons.delete')}
                                                         </button>
                                                     )}
                                                 </div>
@@ -284,7 +288,7 @@ export default function PaymentMethods() {
 
                         <div className="card-footer card-footer-warning card-footer-sm">
                             <div className="card-title">
-                                <div className="text-small">{t('mollie_connection.header.warning')}</div>
+                                <div className="text-small">{translate('mollie_connection.header.warning')}</div>
                             </div>
                         </div>
                     </div>

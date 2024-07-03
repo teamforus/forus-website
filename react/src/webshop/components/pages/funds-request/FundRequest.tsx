@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import FundCriterion from '../../../props/models/FundCriterion';
 import Fund from '../../../props/models/Fund';
 import { useFundRequestService } from '../../../services/FundRequestService';
 import { ResponseError } from '../../../../dashboard/props/ApiResponses';
@@ -36,10 +35,11 @@ import BlockShowcase from '../../elements/block-showcase/BlockShowcase';
 import useFetchAuthIdentity from '../../../hooks/useFetchAuthIdentity';
 import useSetProgress from '../../../../dashboard/hooks/useSetProgress';
 import BlockLoader from '../../elements/block-loader/BlockLoader';
-import FundCriteriaStep from '../../../props/models/FundCriteriaStep';
+import FundCriteriaStep from '../../../../dashboard/props/models/FundCriteriaStep';
 import FundRequestStepCriteria from './elements/steps/FundRequestStepCriteria';
-import { orderBy, sortBy } from 'lodash';
 import useShouldRequestRecord from './hooks/useShouldRequestRecord';
+import FundCriterion from '../../../../dashboard/props/models/FundCriterion';
+import { orderBy, sortBy } from 'lodash';
 
 export type LocalCriterion = FundCriterion & {
     input_value?: string;
@@ -583,7 +583,7 @@ export default function FundRequest() {
         }
     }, [autoSubmit, autoSubmitted, step, steps, submitConfirmCriteria]);
 
-    if (!fund) {
+    if (!fund || !vouchers || !fundRequests) {
         return null;
     }
 

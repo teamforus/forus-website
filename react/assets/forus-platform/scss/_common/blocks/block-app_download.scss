@@ -36,7 +36,7 @@
         justify-content: center;
 
         &.form {
-            .form-control:not([type="radio"]):not([type="checkbox"]):not(textarea) {
+            .form-control:not([type='radio']):not([type='checkbox']):not(textarea) {
                 padding: 10px 15px;
                 width: 280px;
                 max-width: 100%;

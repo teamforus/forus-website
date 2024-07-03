@@ -6,6 +6,7 @@ import ModalPhotoCropper from '../../modals/modal-photo-cropper/ModalPhotoCroppe
 import FileUploaderItemView from './FileUploaderItemView';
 import usePushInfo from '../../../../dashboard/hooks/usePushInfo';
 import { uniqueId } from 'lodash';
+import { ResponseError } from '../../../../dashboard/props/ApiResponses';
 
 export type FileUploaderItem = {
     id?: string;
@@ -140,12 +141,12 @@ export default function FileUploader({
 
                     callbackRef?.current?.onFileUploaded?.(makeFileEvent(filesRef?.current, fileItem));
                 })
-                .catch((res) => {
-                    const error = res?.data?.errors?.file || res?.data?.errors?.type;
+                .catch((err: ResponseError) => {
+                    const error = err?.data?.errors?.file || err?.data?.errors?.type;
 
                     updateItem(fileItem.id, (item) => ({
                         ...item,
-                        error: error || res?.data?.message ? [res?.data?.message] : ['Onbekende fout!'],
+                        error: error || err?.data?.message ? [err?.data?.message] : ['Onbekende fout!'],
                     }));
 
                     callbackRef?.current?.onFileError?.(makeFileEvent(filesRef?.current, fileItem));

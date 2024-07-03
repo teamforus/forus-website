@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import useFormBuilder from '../../../hooks/useFormBuilder';
 import useEnvData from '../../../hooks/useEnvData';
 import FormError from '../../elements/forms/errors/FormError';
@@ -11,13 +10,14 @@ import usePushDanger from '../../../hooks/usePushDanger';
 import useAssetUrl from '../../../hooks/useAssetUrl';
 import { ResponseError } from '../../../props/ApiResponses';
 import useAuthIdentity from '../../../hooks/useAuthIdentity';
+import useTranslate from '../../../hooks/useTranslate';
 
 export default function Feedback() {
-    const { t } = useTranslation();
     const envData = useEnvData();
     const authIdentity = useAuthIdentity();
 
     const assetUrl = useAssetUrl();
+    const translate = useTranslate();
     const pushDanger = usePushDanger();
 
     const feedbackService = useFeedbackService();
@@ -68,7 +68,7 @@ export default function Feedback() {
                 <div className="card">
                     <form className="form" onSubmit={() => setState('confirmation')}>
                         <div className="card-header">
-                            <div className="card-title">{t('components.feedback.title')}</div>
+                            <div className="card-title">{translate('components.feedback.title')}</div>
                         </div>
 
                         {/* Description */}
@@ -94,7 +94,7 @@ export default function Feedback() {
                                 <div className="col col-lg-9 col-xs-12">
                                     <div className="form-group form-group-inline">
                                         <label className="form-label form-label-required">
-                                            {t('components.feedback.labels.title')}
+                                            {translate('components.feedback.labels.title')}
                                         </label>
                                         <input
                                             type="text"
@@ -103,13 +103,15 @@ export default function Feedback() {
                                             name="name"
                                             value={form.values?.title || ''}
                                             onChange={(e) => form.update({ title: e.target.value })}
-                                            placeholder={t('components.feedback.labels.title')}
+                                            placeholder={translate('components.feedback.labels.title')}
                                         />
                                         <FormError error={form.errors?.title} />
                                     </div>
 
                                     <div className="form-group form-group-inline">
-                                        <label className="form-label">{t('components.feedback.labels.urgency')}</label>
+                                        <label className="form-label">
+                                            {translate('components.feedback.labels.urgency')}
+                                        </label>
                                         <SelectControl
                                             className="form-control"
                                             propValue={'label'}
@@ -125,7 +127,7 @@ export default function Feedback() {
 
                                     <div className="form-group form-group-inline">
                                         <label className="form-label form-label-required">
-                                            {t('components.feedback.labels.content')}
+                                            {translate('components.feedback.labels.content')}
                                         </label>
                                         <textarea
                                             maxLength={4000}
@@ -133,19 +135,19 @@ export default function Feedback() {
                                             name="content"
                                             value={form.values?.content || ''}
                                             onChange={(e) => form.update({ content: e.target.value })}
-                                            placeholder={t('components.feedback.labels.content')}
+                                            placeholder={translate('components.feedback.labels.content')}
                                         />
                                         <FormError error={form.errors?.content} />
                                     </div>
 
                                     <div className="form-group form-group-inline">
                                         <label htmlFor="" className="form-label">
-                                            {t('components.feedback.labels.contact')}
+                                            {translate('components.feedback.labels.contact')}
                                         </label>
 
                                         <CheckboxControl
                                             id="use_email"
-                                            title={t('components.feedback.labels.use_customer_email')}
+                                            title={translate('components.feedback.labels.use_customer_email')}
                                             checked={form.values?.use_customer_email}
                                             onChange={(e) => form.update({ use_customer_email: e.target.checked })}
                                         />
@@ -155,7 +157,7 @@ export default function Feedback() {
                                     {form.values?.use_customer_email && (
                                         <div className="form-group form-group-inline">
                                             <label className="form-label form-label-required">
-                                                {t('components.feedback.labels.email')}
+                                                {translate('components.feedback.labels.email')}
                                             </label>
 
                                             <input
@@ -183,7 +185,7 @@ export default function Feedback() {
                                         !form.values.content ||
                                         (form.values.use_customer_email && !form.values.customer_email)
                                     }>
-                                    {t('components.feedback.buttons.confirm')}
+                                    {translate('components.feedback.buttons.confirm')}
                                 </button>
                             </div>
                         </div>
@@ -195,7 +197,7 @@ export default function Feedback() {
                 <div className="card">
                     <form className="form" onSubmit={form.submit}>
                         <div className="card-header">
-                            <div className="card-title">{t('components.feedback.title')}</div>
+                            <div className="card-title">{translate('components.feedback.title')}</div>
                         </div>
 
                         <div className="card-section card-section-primary">
@@ -204,7 +206,7 @@ export default function Feedback() {
                                     <div className="form-data-preview">
                                         <div className="form-group form-group-inline">
                                             <label className="form-label">
-                                                {t('components.feedback.labels.title')}
+                                                {translate('components.feedback.labels.title')}
                                             </label>
                                             <span className="form-input-data">{form.values?.title}</span>
                                         </div>
@@ -212,7 +214,7 @@ export default function Feedback() {
                                         {form.values.urgency && (
                                             <div className="form-group form-group-inline">
                                                 <label className="form-label">
-                                                    {t('components.feedback.labels.urgency')}
+                                                    {translate('components.feedback.labels.urgency')}
                                                 </label>
                                                 <span className="form-input-data">
                                                     {
@@ -227,7 +229,7 @@ export default function Feedback() {
                                         {form.values?.content && (
                                             <div className="form-group form-group-inline">
                                                 <label className="form-label">
-                                                    {t('components.feedback.labels.content')}
+                                                    {translate('components.feedback.labels.content')}
                                                 </label>
                                                 <span className="form-input-data">{form.values?.content}</span>
                                             </div>
@@ -236,7 +238,7 @@ export default function Feedback() {
                                         {form.values?.use_customer_email && (
                                             <div className="form-group form-group-inline">
                                                 <label className="form-label">
-                                                    {t('components.feedback.labels.email')}
+                                                    {translate('components.feedback.labels.email')}
                                                 </label>
                                                 <span className="form-input-data">{form.values?.customer_email}</span>
                                             </div>
@@ -252,11 +254,11 @@ export default function Feedback() {
                                     type="button"
                                     className="button button-default"
                                     onClick={() => setState('form')}>
-                                    {t('components.feedback.buttons.back')}
+                                    {translate('components.feedback.buttons.back')}
                                 </button>
 
                                 <button type="submit" className="button button-primary">
-                                    {t('components.feedback.buttons.send')}
+                                    {translate('components.feedback.buttons.send')}
                                 </button>
                             </div>
                         </div>
@@ -268,7 +270,7 @@ export default function Feedback() {
                 <div className="card">
                     <form className="form">
                         <div className="card-header">
-                            <div className="card-title">{t('components.feedback.title')}</div>
+                            <div className="card-title">{translate('components.feedback.title')}</div>
                         </div>
 
                         <div className="card-section card-section-primary">
@@ -280,10 +282,10 @@ export default function Feedback() {
                                         alt={''}
                                     />
                                     <div className="feedback-result-title">
-                                        {t('components.feedback.submit_success.title')}
+                                        {translate('components.feedback.submit_success.title')}
                                     </div>
                                     <div className="feedback-result-info">
-                                        {t('components.feedback.submit_success.info')}
+                                        {translate('components.feedback.submit_success.info')}
                                     </div>
                                 </div>
                             </div>
@@ -298,7 +300,7 @@ export default function Feedback() {
                                         setState('form');
                                         form.reset();
                                     }}>
-                                    {t('components.feedback.buttons.confirm')}
+                                    {translate('components.feedback.buttons.confirm')}
                                 </button>
                             </div>
                         </div>
@@ -310,7 +312,7 @@ export default function Feedback() {
                 <div className="card">
                     <form className="form">
                         <div className="card-header">
-                            <div className="card-title">{t('components.feedback.title')}</div>
+                            <div className="card-title">{translate('components.feedback.title')}</div>
                         </div>
 
                         <div className="card-section card-section-primary">
@@ -322,10 +324,10 @@ export default function Feedback() {
                                         alt={''}
                                     />
                                     <div className="feedback-result-title">
-                                        {t('components.feedback.submit_failure.title')}
+                                        {translate('components.feedback.submit_failure.title')}
                                     </div>
                                     <div className="feedback-result-info">
-                                        {t('components.feedback.submit_failure.info')}
+                                        {translate('components.feedback.submit_failure.info')}
                                     </div>
                                 </div>
                             </div>
@@ -340,7 +342,7 @@ export default function Feedback() {
                                         setState('form');
                                         form.reset();
                                     }}>
-                                    {t('components.feedback.buttons.confirm')}
+                                    {translate('components.feedback.buttons.confirm')}
                                 </button>
                             </div>
                         </div>

@@ -1,7 +1,15 @@
-.pad-bt { padding: 5% 0; }
-.pad-b  { padding-bottom: 5%; }
-.pad-t { padding-top: 5%;}
-.pad-res { padding: 0;}
+.pad-bt {
+    padding: 5% 0;
+}
+.pad-b {
+    padding-bottom: 5%;
+}
+.pad-t {
+    padding-top: 5%;
+}
+.pad-res {
+    padding: 0;
+}
 
 html {
     body {
@@ -20,31 +28,30 @@ html {
             @media screen and (max-width: 991px) {
                 &.mb-ro {
                     display: flex;
-                    flex-direction: column-reverse
+                    flex-direction: column-reverse;
                 }
             }
             @media screen and (min-width: 992px) {
                 display: flex;
                 align-items: center;
             }
-            
         }
 
         .container {
             max-width: 100%;
 
-            @media screen and (min-width: 768px) { 
+            @media screen and (min-width: 768px) {
                 width: 840px;
             }
 
-            @media screen and (min-width: 992px) { 
+            @media screen and (min-width: 992px) {
                 width: 1024px;
             }
 
-            @media screen and (min-width: 1280px) { 
+            @media screen and (min-width: 1280px) {
                 width: 1200px;
             }
-            
+
             .col-vr {
                 position: relative;
                 margin: 0 auto;
@@ -59,13 +66,13 @@ html {
         margin: 0 auto;
         display: block;
     }
-    
+
     @media screen and (max-width: 1300px) {
         .wrapper {
             padding: 0 25px;
         }
     }
-    
+
     @media screen and (max-width: 1024px) {
         .wrapper {
             padding: 0 20px;

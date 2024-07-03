@@ -1,10 +1,8 @@
 import React, { useState } from 'react';
 import { ModalState } from '../../modules/modals/context/ModalContext';
-import { classList } from '../../helpers/utils';
 import FundProvider from '../../props/models/FundProvider';
 import Organization from '../../props/models/Organization';
 import { ResponseError } from '../../props/ApiResponses';
-import { useTranslation } from 'react-i18next';
 import useFormBuilder from '../../hooks/useFormBuilder';
 import usePushSuccess from '../../hooks/usePushSuccess';
 import usePushDanger from '../../hooks/usePushDanger';
@@ -15,6 +13,8 @@ import useFundUnsubscribeService from '../../services/FundUnsubscribeService';
 import useSetProgress from '../../hooks/useSetProgress';
 import { addDays } from 'date-fns';
 import { clickOnKeyEnter } from '../../helpers/wcag';
+import useTranslate from '../../hooks/useTranslate';
+import classNames from 'classnames';
 
 export default function ModalFundUnsubscribe({
     modal,
@@ -29,13 +29,14 @@ export default function ModalFundUnsubscribe({
     onUnsubscribe: () => void;
     className?: string;
 }) {
-    const { t } = useTranslation();
     const [dateMin] = useState(addDays(new Date(), 1));
-    const fundUnsubscribeService = useFundUnsubscribeService();
 
+    const translate = useTranslate();
     const pushDanger = usePushDanger();
     const pushSuccess = usePushSuccess();
     const setProgress = useSetProgress();
+
+    const fundUnsubscribeService = useFundUnsubscribeService();
 
     const form = useFormBuilder(
         {
@@ -65,13 +66,13 @@ export default function ModalFundUnsubscribe({
 
     return (
         <div
-            className={classList([
+            className={classNames(
                 'modal',
                 'modal-animated',
                 'modal-fund-unsubscribe',
-                modal.loading ? 'modal-loading' : null,
+                modal.loading && 'modal-loading',
                 className,
-            ])}>
+            )}>
             <div className="modal-backdrop" onClick={modal.close} />
             <form className="modal-window form" onSubmit={form.submit}>
                 <div
@@ -121,10 +122,10 @@ export default function ModalFundUnsubscribe({
                 <div className="modal-footer">
                     <div className="button-group">
                         <button className="button button-default" type="button" onClick={() => modal.close()}>
-                            {t('modals.modal_voucher_create.buttons.cancel')}
+                            {translate('modals.modal_voucher_create.buttons.cancel')}
                         </button>
                         <button className="button button-primary" type="submit">
-                            {t('modals.modal_voucher_create.buttons.submit')}
+                            {translate('modals.modal_voucher_create.buttons.submit')}
                         </button>
                     </div>
                 </div>

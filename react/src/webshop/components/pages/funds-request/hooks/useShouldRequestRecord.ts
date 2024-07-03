@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import FundCriterionRule from '../../../../props/models/FundCriterionRule';
+import FundCriterionRule from '../../../../../dashboard/props/models/FundCriterionRule';
 import { dateParse } from '../../../../../dashboard/helpers/dates';
 import { isBefore, isEqual, parseISO } from 'date-fns';
 import RecordType from '../../../../../dashboard/props/models/RecordType';

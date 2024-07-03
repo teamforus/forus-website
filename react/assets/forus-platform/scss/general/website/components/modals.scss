@@ -10,7 +10,7 @@ html {
                 .modal-backdrop {
                     @include fill_parent();
                     cursor: pointer;
-                    background: rgba(#192734, .5);
+                    background: rgba(#192734, 0.5);
                     z-index: 0;
                 }
 
@@ -44,7 +44,7 @@ html {
                         display: block;
                         cursor: pointer;
                         color: #222;
-                        transition: color .4s;
+                        transition: color 0.4s;
                         z-index: 1;
                     }
 
@@ -153,7 +153,7 @@ html {
                         display: block;
                         cursor: pointer;
                         color: #222;
-                        transition: color .4s;
+                        transition: color 0.4s;
                         z-index: 1;
                     }
 
@@ -172,10 +172,11 @@ html {
                         .qr_code {
                             width: 200px;
                             height: 160px;
-                            padding: 0px 20px;
+                            padding: 0 20px;
                             margin: auto;
 
-                            img, canvas {
+                            img,
+                            canvas {
                                 display: block;
                                 width: 100%;
                             }
@@ -243,7 +244,8 @@ html {
             box-shadow: 0 5px 35px rgba(0, 0, 0, 0.075);
             border: 2px dashed #000;
 
-            img, canvas {
+            img,
+            canvas {
                 display: block;
                 width: 100%;
             }
