@@ -1,6 +1,5 @@
 import React from 'react';
 import { ModalState } from '../../modules/modals/context/ModalContext';
-import { classList } from '../../helpers/utils';
 import useFormBuilder from '../../hooks/useFormBuilder';
 import FormError from '../elements/forms/errors/FormError';
 import FormValuesModel from '../../types/FormValuesModel';
@@ -8,6 +7,7 @@ import { ApiResponseSingle, ResponseError } from '../../props/ApiResponses';
 import Note from '../../props/models/Note';
 import useSetProgress from '../../hooks/useSetProgress';
 import usePushDanger from '../../hooks/usePushDanger';
+import classNames from 'classnames';
 
 export default function ModalAddNote({
     modal,
@@ -44,14 +44,7 @@ export default function ModalAddNote({
     });
 
     return (
-        <div
-            className={classList([
-                'modal',
-                'modal-md',
-                'modal-animated',
-                modal.loading ? 'modal-loading' : null,
-                className,
-            ])}>
+        <div className={classNames('modal', 'modal-md', 'modal-animated', modal.loading && 'modal-loading', className)}>
             <div className="modal-backdrop" onClick={modal.close} />
             <form className="modal-window form" onSubmit={form.submit}>
                 <div className="modal-close mdi mdi-close" onClick={modal.close} role="button" />

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import ClickOutside from '../../../elements/click-outside/ClickOutside';
-import { useTranslation } from 'react-i18next';
 import { FinancialFilterOptionItem } from '../types/FinancialStatisticTypes';
+import useTranslate from '../../../../hooks/useTranslate';
 
 export default function FinancialFilter({
     type,
@@ -20,7 +20,7 @@ export default function FinancialFilter({
     setShownDropdownType?: (type: string) => void;
     selectOption: (type: string, option: FinancialFilterOptionItem) => void;
 }) {
-    const { t } = useTranslation();
+    const translate = useTranslate();
 
     const [search, setSearch] = useState('');
     const [options, setOptions] = useState(optionData);
@@ -56,7 +56,7 @@ export default function FinancialFilter({
                                         className="form-control"
                                         value={search}
                                         onChange={(e) => setSearch(e.target.value)}
-                                        placeholder={t('search')}
+                                        placeholder={translate('search')}
                                     />
                                 </div>
                             </div>

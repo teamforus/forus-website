@@ -1,16 +1,16 @@
 import React from 'react';
 import { ModalState } from '../../modules/modals/context/ModalContext';
-import { classList } from '../../helpers/utils';
 import Organization from '../../props/models/Organization';
 import Employee from '../../props/models/Employee';
 import useFormBuilder from '../../hooks/useFormBuilder';
 import FormError from '../elements/forms/errors/FormError';
 import { ModalButton } from './elements/ModalButton';
-import { useTranslation } from 'react-i18next';
 import { useOrganizationService } from '../../services/OrganizationService';
 import SelectControl from '../elements/select-control/SelectControl';
 import SelectControlOptions from '../elements/select-control/templates/SelectControlOptions';
 import { ResponseError } from '../../props/ApiResponses';
+import useTranslate from '../../hooks/useTranslate';
+import classNames from 'classnames';
 
 export default function ModalTransferOrganizationOwnership({
     modal,
@@ -25,7 +25,8 @@ export default function ModalTransferOrganizationOwnership({
     organization: Organization;
     adminEmployees: Array<Employee>;
 }) {
-    const { t } = useTranslation();
+    const translate = useTranslate();
+
     const organizationService = useOrganizationService();
 
     const form = useFormBuilder(
@@ -52,18 +53,18 @@ export default function ModalTransferOrganizationOwnership({
 
     return (
         <div
-            className={classList([
+            className={classNames(
                 'modal',
                 'modal-md',
                 'modal-animated',
                 'modal-notification',
-                modal.loading ? 'modal-loading' : null,
+                modal.loading && 'modal-loading',
                 className,
-            ])}>
+            )}>
             <div className="modal-backdrop" onClick={modal.close} />
             <form className="modal-window form" onSubmit={form.submit}>
                 <div className="modal-close mdi mdi-close" onClick={modal.close} />
-                <div className="modal-header">{t('modals.modal_transfer_organization_ownership.title')}</div>
+                <div className="modal-header">{translate('modals.modal_transfer_organization_ownership.title')}</div>
 
                 <div className="modal-body modal-body-visible">
                     <div className="modal-section">
@@ -71,7 +72,7 @@ export default function ModalTransferOrganizationOwnership({
                             <div className="col col-lg-8 col-lg-offset-2 col-lg-12">
                                 <div className="form-group">
                                     <label className="form-label form-label-required">
-                                        {t('modals.modal_transfer_organization_ownership.labels.transfer_to')}
+                                        {translate('modals.modal_transfer_organization_ownership.labels.transfer_to')}
                                     </label>
                                     <SelectControl
                                         value={form.values.employee_id?.toString()}
@@ -94,7 +95,7 @@ export default function ModalTransferOrganizationOwnership({
                             <div className="col col-lg-8 col-lg-offset-2 col-lg-12">
                                 <div className="block block-info">
                                     <em className="mdi mdi-information block-info-icon" />
-                                    {t('modals.modal_transfer_organization_ownership.info')}
+                                    {translate('modals.modal_transfer_organization_ownership.info')}
                                 </div>
                             </div>
                         </div>
@@ -104,12 +105,12 @@ export default function ModalTransferOrganizationOwnership({
                 <div className="modal-footer text-center">
                     <ModalButton
                         button={{ onClick: modal.close }}
-                        text={t('modals.modal_transfer_organization_ownership.buttons.cancel')}
+                        text={translate('modals.modal_transfer_organization_ownership.buttons.cancel')}
                         type="default"
                     />
                     <ModalButton
                         button={{ onClick: form.submit }}
-                        text={t('modals.modal_transfer_organization_ownership.buttons.submit')}
+                        text={translate('modals.modal_transfer_organization_ownership.buttons.submit')}
                         type="primary"
                         submit={true}
                     />

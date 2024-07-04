@@ -1,6 +1,5 @@
 import React, { Fragment, useEffect, useState } from 'react';
 import useActiveOrganization from '../../../hooks/useActiveOrganization';
-import { useTranslation } from 'react-i18next';
 import ProviderFinancialTable from './elements/ProviderFinancialTable';
 import FinancialStatistics from './elements/FinancialStatistics';
 import LoadingCard from '../../elements/loading-card/LoadingCard';
@@ -8,17 +7,15 @@ import FinancialChart from './elements/FinancialChart';
 import FinancialFilters, { FinancialFiltersQuery } from './elements/FinancialFilters';
 import { useFundService } from '../../../services/FundService';
 import useSetProgress from '../../../hooks/useSetProgress';
-import {
-    ProviderFinancialStatistics,
-    ProviderFinancialFilterOptions,
-} from './types/FinancialStatisticTypes';
+import { ProviderFinancialStatistics, ProviderFinancialFilterOptions } from './types/FinancialStatisticTypes';
 import usePushDanger from '../../../hooks/usePushDanger';
 import { ResponseError } from '../../../props/ApiResponses';
+import useTranslate from '../../../hooks/useTranslate';
 
 export default function FinancialDashboard() {
-    const { t } = useTranslation();
     const activeOrganization = useActiveOrganization();
 
+    const translate = useTranslate();
     const pushDanger = usePushDanger();
     const setProgress = useSetProgress();
 
@@ -54,7 +51,7 @@ export default function FinancialDashboard() {
 
     return (
         <Fragment>
-            <div className="card-heading">{t('financial_dashboard.header.title')}</div>
+            <div className="card-heading">{translate('financial_dashboard.header.title')}</div>
             <div className="block block-financial-dashboard">
                 <FinancialFilters options={options} onChange={setExternalFilters} />
 

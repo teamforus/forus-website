@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect } from 'react';
 import ReservationField from '../../../../props/models/ReservationField';
 import { ResponseErrorData } from '../../../../props/ApiResponses';
-import { useTranslation } from 'react-i18next';
 import { uniq, uniqueId } from 'lodash';
 import FormError from '../../../elements/forms/errors/FormError';
 import ReservationFieldItem from './ReservationFieldItem';
@@ -13,6 +12,7 @@ import {
     sortableKeyboardCoordinates,
     verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
+import useTranslate from '../../../../hooks/useTranslate';
 
 type FieldsLocal = ReservationField & { expanded?: boolean; uid?: string };
 
@@ -25,7 +25,7 @@ export default function ReservationFieldsEditor({
     onChange: React.Dispatch<React.SetStateAction<Array<FieldsLocal>>>;
     errors: ResponseErrorData;
 }) {
-    const { t } = useTranslation();
+    const translate = useTranslate();
 
     const sensors = useSensors(
         useSensor(PointerSensor),
@@ -119,7 +119,7 @@ export default function ReservationFieldsEditor({
                     disabled={fields.length >= 10}
                     onClick={() => addField()}>
                     <em className="mdi mdi-plus-circle icon-start" />
-                    {t('reservation_settings.buttons.add_field')}
+                    {translate('reservation_settings.buttons.add_field')}
                 </button>
             </div>
             <FormError error={errors.fields} />

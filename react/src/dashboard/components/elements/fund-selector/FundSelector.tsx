@@ -13,7 +13,6 @@ export default function FundSelector({
     onSelectFund: (fund: Fund) => void;
 }) {
     const assetUrl = useAssetUrl();
-
     const fundService = useFundService();
 
     const [activeFund, setActiveFund] = useState<Fund>(null);
@@ -31,17 +30,23 @@ export default function FundSelector({
     );
 
     useEffect(() => {
-        if (fund?.id !== fundService.getLastSelectedFund(funds)?.id) {
-            return selectFund(fund);
+        const lastSelectedFund = fundService.getLastSelectedFund(funds);
+
+        if (fund?.id !== lastSelectedFund?.id) {
+            selectFund(lastSelectedFund);
         }
 
-        setActiveFund(fund);
+        setActiveFund(lastSelectedFund);
     }, [fund, fundService, funds, selectFund]);
 
     return (
         <div className="block block-choose-organization">
             {funds?.map((fund: Fund) => (
-                <div key={fund.id} className="organization-item" onClick={() => selectFund(fund)}>
+                <div
+                    key={fund.id}
+                    className="organization-item"
+                    onClick={() => selectFund(fund)}
+                    data-dusk={`fundSelectorOption${fund.id}`}>
                     <div className={'organization-item-inner ' + (activeFund?.id == fund.id ? 'active' : '')}>
                         <div className="organization-logo">
                             <img

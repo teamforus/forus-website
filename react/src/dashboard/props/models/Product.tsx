@@ -5,6 +5,21 @@ import ProductCategory from './ProductCategory';
 import Fund from './Fund';
 import Voucher from './Voucher';
 
+export interface DealHistory {
+    id: number;
+    amount?: string;
+    amount_locale?: string;
+    limit_total?: number;
+    limit_total_unlimited?: boolean;
+    limit_per_identity?: number;
+    voucher_transactions_count?: number;
+    product_reservations_pending_count?: number;
+    active: boolean;
+    product_id: number;
+    expire_at?: string;
+    expire_at_locale?: string;
+}
+
 export default interface Product {
     id: number;
     name: string;
@@ -80,4 +95,6 @@ export default interface Product {
         state: 'active' | 'closed' | 'paused' | 'waiting';
         expire_at: string;
     }>;
+    deals_history?: Array<DealHistory>;
+    is_available?: boolean;
 }

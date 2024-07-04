@@ -1,6 +1,5 @@
 import React, { Fragment, useCallback, useEffect, useState } from 'react';
 import useActiveOrganization from '../../../hooks/useActiveOrganization';
-import { useTranslation } from 'react-i18next';
 import LoadingCard from '../../elements/loading-card/LoadingCard';
 import usePushDanger from '../../../hooks/usePushDanger';
 import StateNavLink from '../../../modules/state_router/StateNavLink';
@@ -21,15 +20,16 @@ import ModalReimbursementResolve from '../../modals/ModalReimbursementResolve';
 import ModalReimbursementDetailsEdit from '../../modals/ModalReimbursementDetailsEdit';
 import useFilePreview from '../../../services/helpers/useFilePreview';
 import { useFileService } from '../../../services/FileService';
+import useTranslate from '../../../hooks/useTranslate';
 
 export default function ReimbursementsView() {
-    const { t } = useTranslation();
     const { id } = useParams();
 
     const authIdentity = useAuthIdentity();
     const activeOrganization = useActiveOrganization();
 
     const openModal = useOpenModal();
+    const translate = useTranslate();
     const pushDanger = usePushDanger();
     const pushSuccess = usePushSuccess();
     const setProgress = useSetProgress();
@@ -179,9 +179,10 @@ export default function ReimbursementsView() {
             {activeOrganization && (
                 <div className="block block-breadcrumbs">
                     <StateNavLink
-                        className="breadcrumb-item"
                         name="reimbursements"
-                        params={{ organizationId: activeOrganization.id }}>
+                        params={{ organizationId: activeOrganization.id }}
+                        activeExact={true}
+                        className="breadcrumb-item">
                         Reimbursements
                     </StateNavLink>
 
@@ -326,7 +327,7 @@ export default function ReimbursementsView() {
                                         <tr>
                                             <td>
                                                 <div className="text-strong text-md text-primary">
-                                                    {t('reimbursements.labels.email')}
+                                                    {translate('reimbursements.labels.email')}
                                                 </div>
                                                 <div
                                                     className={
@@ -340,7 +341,7 @@ export default function ReimbursementsView() {
 
                                             <td>
                                                 <div className="text-strong text-md text-primary">
-                                                    {t('reimbursements.labels.bsn')}
+                                                    {translate('reimbursements.labels.bsn')}
                                                 </div>
                                                 {activeOrganization.bsn_enabled ? (
                                                     <div
@@ -358,7 +359,7 @@ export default function ReimbursementsView() {
 
                                             <td>
                                                 <div className="text-strong text-md text-primary">
-                                                    {t('reimbursements.labels.fund')}
+                                                    {translate('reimbursements.labels.fund')}
                                                 </div>
                                                 <div className="text-medium text-black">{reimbursement.fund.name}</div>
                                             </td>
@@ -367,7 +368,7 @@ export default function ReimbursementsView() {
                                         <tr>
                                             <td>
                                                 <div className="text-strong text-md text-primary">
-                                                    {t('reimbursements.labels.employee')}
+                                                    {translate('reimbursements.labels.employee')}
                                                 </div>
                                                 <div
                                                     className={`text-medium ${
@@ -379,7 +380,7 @@ export default function ReimbursementsView() {
 
                                             <td>
                                                 <div className="text-strong text-md text-primary">
-                                                    {t('reimbursements.labels.lead_time')}
+                                                    {translate('reimbursements.labels.lead_time')}
                                                 </div>
                                                 <div className="text-medium text-black">
                                                     {reimbursement.lead_time_locale}
@@ -390,13 +391,13 @@ export default function ReimbursementsView() {
                                                 <td>
                                                     {!reimbursement.expired && (
                                                         <div className="text-strong text-md text-primary">
-                                                            {t('reimbursements.labels.expired_at')}
+                                                            {translate('reimbursements.labels.expired_at')}
                                                         </div>
                                                     )}
 
                                                     {reimbursement.expired && (
                                                         <div className="text-strong text-md text-primary">
-                                                            {t('reimbursements.labels.expired_at')}
+                                                            {translate('reimbursements.labels.expired_at')}
                                                         </div>
                                                     )}
 
@@ -409,7 +410,7 @@ export default function ReimbursementsView() {
                                             {reimbursement.resolved && (
                                                 <td>
                                                     <div className="text-strong text-md text-primary">
-                                                        {t('reimbursements.labels.resolved_at')}
+                                                        {translate('reimbursements.labels.resolved_at')}
                                                     </div>
                                                     <div className="text-medium text-black">
                                                         {reimbursement.resolved_at_locale}
@@ -436,21 +437,23 @@ export default function ReimbursementsView() {
                             <div className="flex">
                                 <div className="card-block card-block-keyvalue">
                                     <div className="keyvalue-item">
-                                        <div className="keyvalue-key">{t('reimbursements.labels.iban')}</div>
+                                        <div className="keyvalue-key">{translate('reimbursements.labels.iban')}</div>
                                         <div className="keyvalue-value" data-dusk="reimbursementIBAN">
                                             {reimbursement.iban}
                                         </div>
                                     </div>
 
                                     <div className="keyvalue-item">
-                                        <div className="keyvalue-key">{t('reimbursements.labels.iban_name')}</div>
+                                        <div className="keyvalue-key">
+                                            {translate('reimbursements.labels.iban_name')}
+                                        </div>
                                         <div className="keyvalue-value" data-dusk="reimbursementIBANName">
                                             {reimbursement.iban_name}
                                         </div>
                                     </div>
 
                                     <div className="keyvalue-item">
-                                        <div className="keyvalue-key">{t('reimbursements.labels.amount')}</div>
+                                        <div className="keyvalue-key">{translate('reimbursements.labels.amount')}</div>
                                         <div
                                             className="keyvalue-value text-primary text-md"
                                             data-dusk="reimbursementAmount">
@@ -459,7 +462,7 @@ export default function ReimbursementsView() {
                                     </div>
 
                                     <div className="keyvalue-item">
-                                        <div className="keyvalue-key">{t('reimbursements.labels.state')}</div>
+                                        <div className="keyvalue-key">{translate('reimbursements.labels.state')}</div>
                                         <div className="keyvalue-value">
                                             <label
                                                 className={`label ${stateLabels[reimbursement.state] || ''}`}
@@ -470,26 +473,30 @@ export default function ReimbursementsView() {
                                     </div>
 
                                     <div className="keyvalue-item">
-                                        <div className="keyvalue-key">{t('reimbursements.labels.title')}</div>
+                                        <div className="keyvalue-key">{translate('reimbursements.labels.title')}</div>
                                         <div className="keyvalue-value" data-dusk="reimbursementTitle">
                                             {reimbursement.title}
                                         </div>
                                     </div>
 
                                     <div className="keyvalue-item">
-                                        <div className="keyvalue-key">{t('reimbursements.labels.description')}</div>
+                                        <div className="keyvalue-key">
+                                            {translate('reimbursements.labels.description')}
+                                        </div>
                                         <div className="keyvalue-value" data-dusk="reimbursementDescription">
                                             {reimbursement.description}
                                         </div>
                                     </div>
 
                                     <div className="keyvalue-item">
-                                        <div className="keyvalue-key">{t('reimbursements.labels.created_at')}</div>
+                                        <div className="keyvalue-key">
+                                            {translate('reimbursements.labels.created_at')}
+                                        </div>
                                         <div className="keyvalue-value">{reimbursement.created_at_locale}</div>
                                     </div>
 
                                     <div className="keyvalue-item">
-                                        <div className="keyvalue-key">{t('reimbursements.labels.files')}</div>
+                                        <div className="keyvalue-key">{translate('reimbursements.labels.files')}</div>
                                         <div className="keyvalue-value">
                                             {reimbursement.files.length > 0 && (
                                                 <div className="block block-attachments-list">
@@ -565,7 +572,9 @@ export default function ReimbursementsView() {
                             <div className="flex">
                                 <div className="card-block card-block-keyvalue">
                                     <div className="keyvalue-item">
-                                        <div className="keyvalue-key">{t('reimbursements.labels.provider')}</div>
+                                        <div className="keyvalue-key">
+                                            {translate('reimbursements.labels.provider')}
+                                        </div>
                                         {reimbursement.provider_name ? (
                                             <div className="keyvalue-value">{reimbursement.provider_name}</div>
                                         ) : (
@@ -574,7 +583,9 @@ export default function ReimbursementsView() {
                                     </div>
 
                                     <div className="keyvalue-item">
-                                        <div className="keyvalue-key">{t('reimbursements.labels.category')}</div>
+                                        <div className="keyvalue-key">
+                                            {translate('reimbursements.labels.category')}
+                                        </div>
                                         {reimbursement.reimbursement_category?.name ? (
                                             <div className="keyvalue-value">
                                                 {reimbursement.reimbursement_category.name}

@@ -9,19 +9,20 @@ import AppLinks from '../../elements/app-links/AppLinks';
 import FormError from '../../elements/forms/errors/FormError';
 import useEnvData from '../../../hooks/useEnvData';
 import useAssetUrl from '../../../hooks/useAssetUrl';
-import { useTranslation } from 'react-i18next';
 import TranslateHtml from '../../elements/translate-html/TranslateHtml';
 import { ResponseError } from '../../../props/ApiResponses';
+import useTranslate from '../../../hooks/useTranslate';
 
 export default function SignIn() {
     const [timer, setTimer] = useState(null);
     const [qrValue, setQrValue] = useState(null);
     const { token, setToken } = useContext(authContext);
-    const { t } = useTranslation();
 
     const envData = useEnvData();
-    const navigate = useNavigate();
+
     const assetUrl = useAssetUrl();
+    const navigate = useNavigate();
+    const translate = useTranslate();
     const identityService = useIdentityService();
 
     const signInForm = useFormBuilder({ email: '' }, async (values) => {
@@ -158,7 +159,7 @@ export default function SignIn() {
                                     className="sign_up-email_sent-icon-img"
                                 />
                             </div>
-                            <div className="block-login-email_sent-title">{t('popup_auth.labels.join')}</div>
+                            <div className="block-login-email_sent-title">{translate('popup_auth.labels.join')}</div>
                             <div className="block-login-email_sent-text">
                                 <TranslateHtml
                                     i18n={'popup_auth.notifications.link'}

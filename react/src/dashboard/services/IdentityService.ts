@@ -1,7 +1,7 @@
 import ApiRequestService from './ApiRequestService';
 import Identity from '../props/models/Identity';
 import { useState } from 'react';
-import { ResponseSimple, ApiResponseSingle } from '../props/ApiResponses';
+import { ResponseSimple } from '../props/ApiResponses';
 
 export default class IdentityService<T = Identity> {
     /**

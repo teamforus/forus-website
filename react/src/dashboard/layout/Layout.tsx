@@ -9,8 +9,10 @@ import LoadingBar from '../modules/loading_bar/components/LoadingBar';
 import { LayoutType } from '../modules/state_router/RouterProps';
 import useAuthIdentity from '../hooks/useAuthIdentity';
 import useActiveOrganization from '../hooks/useActiveOrganization';
+import Toasts from '../modules/toasts/components/Toasts';
 import { Libraries, LoadScript } from '@react-google-maps/api';
 import useEnvData from '../hooks/useEnvData';
+import Printable from '../modules/printable/components/Printable';
 
 export const Layout = ({ children }: { children: React.ReactElement }) => {
     const { modals } = useContext(modalsContext);
@@ -31,6 +33,10 @@ export const Layout = ({ children }: { children: React.ReactElement }) => {
     useEffect(() => {
         pageScrollRef?.current?.scrollTo({ top: 0 });
     }, [route?.pathname]);
+
+    if (!envData?.config) {
+        return null;
+    }
 
     return (
         <LoadScript googleMapsApiKey={envData?.config?.google_maps_api_key} libraries={libraries}>
@@ -61,7 +67,10 @@ export const Layout = ({ children }: { children: React.ReactElement }) => {
 
                 <Modals />
                 <PushNotifications />
+                <Toasts />
             </div>
+
+            <Printable />
         </LoadScript>
     );
 };

@@ -2,11 +2,11 @@ import React, { useCallback, useEffect, useState } from 'react';
 import FilterModel from '../../../types/FilterModel';
 import FilterSetter from '../../../types/FilterSetter';
 import { ApiPaginationMetaProp } from '../../../props/ApiResponses';
-import { useTranslation } from 'react-i18next';
 import usePaginatorService from '../services/usePaginatorService';
 import SelectControl from '../../../components/elements/select-control/SelectControl';
 import SelectControlOptions from '../../../components/elements/select-control/templates/SelectControlOptions';
 import { clickOnKeyEnter } from '../../../helpers/wcag';
+import useTranslate from '../../../hooks/useTranslate';
 
 export default function Paginator({
     meta,
@@ -27,7 +27,8 @@ export default function Paginator({
     perPageKey?: string;
     className?: string;
 }) {
-    const { t } = useTranslation();
+    const translate = useTranslate();
+
     const [pages, setPages] = useState([]);
     const { perPageOptions, setPerPage } = usePaginatorService();
 
@@ -101,7 +102,7 @@ export default function Paginator({
                         <div className="table-pagination-counter-info">
                             <span className="text-strong">{`${meta.from}-${meta.to} `}</span>
                             &nbsp;
-                            {t('paginator.labels.from')}
+                            {translate('paginator.labels.from')}
                             &nbsp;
                             <span className="text-strong">{meta.total}</span>
                         </div>
@@ -116,7 +117,7 @@ export default function Paginator({
                     onKeyDown={clickOnKeyEnter}
                     tabIndex={meta.current_page === 1 ? undefined : 0}
                     className={`button ${buttonClass} ${meta.current_page === 1 ? ' disabled' : ''}`}>
-                    {t('paginator.buttons.first')}
+                    {translate('paginator.buttons.first')}
                 </div>
                 {pages.map((page, key) => (
                     <div
@@ -135,7 +136,7 @@ export default function Paginator({
                     onKeyDown={clickOnKeyEnter}
                     tabIndex={meta.current_page === meta.last_page ? undefined : 0}
                     className={`button ${buttonClass} ${meta.current_page === meta.last_page ? ' disabled' : ''}`}>
-                    {t('paginator.buttons.last')}
+                    {translate('paginator.buttons.last')}
                 </div>
             </div>
         </div>

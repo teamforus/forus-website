@@ -4,7 +4,6 @@ import Organization from '../../../../props/models/Organization';
 import useFormBuilder from '../../../../hooks/useFormBuilder';
 import FormError from '../../../elements/forms/errors/FormError';
 import PhotoSelector from '../../../elements/photo-selector/PhotoSelector';
-import { useTranslation } from 'react-i18next';
 import ScheduleControl from '../../offices-edit/elements/ScheduleControl';
 import UIControlText from '../../../elements/forms/ui-controls/UIControlText';
 import OfficeSchedule from '../../../../props/models/OfficeSchedule';
@@ -12,6 +11,7 @@ import { useMediaService } from '../../../../services/MediaService';
 import useOfficeService from '../../../../services/OfficeService';
 import { ApiResponseSingle, ResponseError } from '../../../../props/ApiResponses';
 import { Autocomplete } from '@react-google-maps/api';
+import useTranslate from '../../../../hooks/useTranslate';
 
 export default function SignUpOfficeEdit({
     office,
@@ -26,7 +26,7 @@ export default function SignUpOfficeEdit({
     created?: (office: Office) => void;
     updated?: (office: Office) => void;
 }) {
-    const { t } = useTranslation();
+    const translate = useTranslate();
     const [officeMediaFile, setOfficeMediaFile] = useState(null);
     const [autocomplete, setAutocomplete] = React.useState(null);
     const addressInputRef = useRef<HTMLInputElement>();
@@ -86,7 +86,7 @@ export default function SignUpOfficeEdit({
                 <div className="sign_up-pane-section">
                     <div className="sign_up-pane-col sign_up-pane-col-2">
                         <div className="form-group">
-                            <label className="form-label">Adres</label>
+                            <label className="form-label form-label-required">Adres</label>
                             <Autocomplete onLoad={onLoad} onPlaceChanged={onPlaceChanged}>
                                 <UIControlText
                                     value={form.values.address}
@@ -113,7 +113,7 @@ export default function SignUpOfficeEdit({
                         <PhotoSelector
                             template={'photo-selector-sign_up'}
                             type={'organization_logo'}
-                            description={t('organization_edit.labels.photo_description')}
+                            description={translate('organization_edit.labels.photo_description')}
                             selectPhoto={setOfficeMediaFile}
                         />
                     </div>
@@ -136,7 +136,7 @@ export default function SignUpOfficeEdit({
                                         className="button button-primary button-fill button-sm"
                                         type="button"
                                         onClick={() => cancel()}>
-                                        {t('organization_edit.buttons.cancel')}
+                                        {translate('organization_edit.buttons.cancel')}
                                     </button>
                                 </div>
                             </div>
@@ -145,7 +145,7 @@ export default function SignUpOfficeEdit({
                                     <button
                                         className="button button-primary-variant button-fill button-sm"
                                         type="submit">
-                                        {t('organization_edit.buttons.save_location')}
+                                        {translate('organization_edit.buttons.save_location')}
                                     </button>
                                 </div>
                             </div>

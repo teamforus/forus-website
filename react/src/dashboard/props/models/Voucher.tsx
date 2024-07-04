@@ -1,15 +1,16 @@
 import Fund from './Fund';
 import Media from './Media';
-import Transaction from './Transaction';
 import Product from './Product';
+import Transaction from './Transaction';
 import Office from './Office';
 import Reservation from './Reservation';
+import PhysicalCard from './PhysicalCard';
 
 export default interface Voucher {
     id: number;
     address?: string;
     fund_id: number;
-    expired: boolean;
+    expired?: boolean;
     fund: Fund;
     type?: 'regular' | 'product';
     state?: string;
@@ -38,6 +39,32 @@ export default interface Voucher {
         name: string;
         logo: Media;
     }>;
+    identity_email?: string;
+    activation_code?: string;
+    identity_bsn?: string;
+    relation_bsn?: string;
+    client_uid?: string;
+    physical_card?: PhysicalCard;
+    source_locale?: string;
+    amount?: string;
+    amount_locale?: string;
+    amount_total?: string;
+    amount_total_locale?: string;
+    amount_top_up?: string;
+    amount_top_up_locale?: string;
+    amount_available?: string;
+    amount_available_locale?: string;
+    amount_spent?: string;
+    amount_spent_locale?: string;
+    note?: string;
+    expire_at_locale?: string;
+    in_use?: boolean;
+    first_use_date_locale?: string;
+    has_payouts?: boolean;
+    is_granted?: boolean;
+    is_external: boolean;
+    limit_multiplier?: number;
+    identity_address?: string;
     history: Array<{
         id: number;
         event: string;
@@ -46,19 +73,13 @@ export default interface Voucher {
         created_at_locale: string;
     }>;
     deactivated?: boolean;
-    is_external: boolean;
-    amount?: string;
-    amount_locale?: string;
     used: boolean;
     last_transaction_at?: string;
     last_transaction_at_locale?: string;
     records_title?: string;
     returnable?: boolean;
     last_active_day_locale?: string;
-    physical_card?: { id: null; code: string };
-    created_at: string;
-    created_at_locale: string;
-    identity_email?: string;
+    created_at?: string;
+    created_at_locale?: string;
     expire_at?: string;
-    expire_at_locale?: string;
 }

@@ -1,7 +1,6 @@
 import React, { Fragment, useCallback, useEffect, useState } from 'react';
 import useActiveOrganization from '../../../hooks/useActiveOrganization';
 import LoadingCard from '../../elements/loading-card/LoadingCard';
-import { useTranslation } from 'react-i18next';
 import useProviderFundService from '../../../services/ProviderFundService';
 import { ResponseError } from '../../../props/ApiResponses';
 import usePushDanger from '../../../hooks/usePushDanger';
@@ -9,10 +8,10 @@ import ProviderFundsTable from './elements/ProviderFundsTable';
 import ProviderFundUnsubscriptionsTable from './elements/ProviderFundUnsubscriptionsTable';
 import ProviderAvailableFundsTable from './elements/ProviderAvailableFundsTable';
 import ProviderFundInvitationsTable from './elements/ProviderFundInvitationsTable';
+import useTranslate from '../../../hooks/useTranslate';
 
 export default function ProviderFunds() {
-    const { t } = useTranslation();
-
+    const translate = useTranslate();
     const pushDanger = usePushDanger();
     const activeOrganization = useActiveOrganization();
     const providerFundService = useProviderFundService();
@@ -38,31 +37,32 @@ export default function ProviderFunds() {
     return (
         <Fragment>
             <div className="card-heading flex-row">
-                <div className="flex-col flex-grow">{t('provider_funds.title.main')}</div>
+                <div className="flex-col flex-grow">{translate('provider_funds.title.main')}</div>
                 <div className="flex-col">
                     <div className="block block-label-tabs nowrap">
                         <div className="label-tab-set">
                             <div
                                 className={`label-tab label-tab-sm ${tab == 'active' ? 'active' : ''}`}
                                 onClick={() => setTab('active')}>
-                                {t('provider_funds.tabs.active')} ({fundsAvailable.meta.totals.active})
+                                {translate('provider_funds.tabs.active')} ({fundsAvailable.meta.totals.active})
                             </div>
                             <div
                                 className={`label-tab label-tab-sm ${tab == 'pending_rejected' ? 'active' : ''}`}
                                 onClick={() => setTab('pending_rejected')}>
-                                {t('provider_funds.tabs.pending_rejected')} ({fundsAvailable.meta.totals.pending})
+                                {translate('provider_funds.tabs.pending_rejected')} (
+                                {fundsAvailable.meta.totals.pending})
                             </div>
 
                             <div
                                 className={`label-tab label-tab-sm ${tab == 'available' ? 'active' : ''}`}
                                 onClick={() => setTab('available')}>
-                                {t('provider_funds.tabs.available')} ({fundsAvailable.meta.totals.available})
+                                {translate('provider_funds.tabs.available')} ({fundsAvailable.meta.totals.available})
                             </div>
 
                             <div
                                 className={`label-tab label-tab-sm ${tab == 'archived' ? 'active' : ''}`}
                                 onClick={() => setTab('archived')}>
-                                {t('provider_funds.tabs.archived')} ({fundsAvailable.meta.totals.archived})
+                                {translate('provider_funds.tabs.archived')} ({fundsAvailable.meta.totals.archived})
                             </div>
                         </div>
                     </div>
@@ -73,13 +73,14 @@ export default function ProviderFunds() {
                             <div
                                 className={`label-tab label-tab-sm ${tab == 'invitations' ? 'active' : ''}`}
                                 onClick={() => setTab('invitations')}>
-                                {t('provider_funds.tabs.invitations')} ({fundsAvailable.meta.totals.invitations})
+                                {translate('provider_funds.tabs.invitations')} ({fundsAvailable.meta.totals.invitations}
+                                )
                             </div>
 
                             <div
                                 className={`label-tab label-tab-sm ${tab == 'invitations_archived' ? 'active' : ''}`}
                                 onClick={() => setTab('invitations_archived')}>
-                                {t('provider_funds.tabs.invitations_archived')} (
+                                {translate('provider_funds.tabs.invitations_archived')} (
                                 {fundsAvailable.meta.totals.invitations_archived})
                             </div>
                         </div>
@@ -92,8 +93,8 @@ export default function ProviderFunds() {
                                 className={`label-tab label-tab-sm ${tab == 'unsubscriptions' ? 'active' : ''}`}
                                 onClick={() => setTab('unsubscriptions')}>
                                 <em className="mdi mdi-close-circle-outline label-tab-icon-start" />
-                                {t('provider_funds.tabs.unsubscriptions')} ({fundsAvailable.meta.totals.unsubscriptions}
-                                )
+                                {translate('provider_funds.tabs.unsubscriptions')} (
+                                {fundsAvailable.meta.totals.unsubscriptions})
                             </div>
                         </div>
                     </div>
