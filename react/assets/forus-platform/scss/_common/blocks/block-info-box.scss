@@ -1,5 +1,5 @@
 &.block-info-box {
-    background-color: #FFFDEB;
+    background-color: #fffdeb;
     border: 1px solid var(--border-color);
     padding: 15px;
     font: 400 13px/20px var(--base-font);
@@ -16,7 +16,14 @@
             font: 400 13px/22px var(--base-font) !important;
             text-align: left;
 
-            h1, h2, h3, h4, h5, h6, ul, p {
+            h1,
+            h2,
+            h3,
+            h4,
+            h5,
+            h6,
+            ul,
+            p {
                 margin-bottom: 5px;
                 text-align: left;
 
@@ -40,16 +47,16 @@
     }
 
     &.block-info-box-primary {
-        background-color: #F3F8FE;
+        background-color: #f3f8fe;
         border-style: solid;
 
         .info-box-icon {
-            color: #009EF4;
+            color: #009ef4;
         }
     }
 
     &.block-info-box-default {
-        background-color: #F7F9FC;
+        background-color: #f7f9fc;
         border-style: solid;
 
         .info-box-icon {
@@ -58,7 +65,7 @@
     }
 
     &.block-warning-box {
-        background-color: #F3F8FE;
+        background-color: #f3f8fe;
         border-style: solid;
 
         .info-box-icon {

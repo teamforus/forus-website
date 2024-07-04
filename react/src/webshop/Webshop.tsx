@@ -13,13 +13,13 @@ import { PushNotificationsProvider } from '../dashboard/modules/push_notificatio
 import { LoadingBarProvider } from '../dashboard/modules/loading_bar/context/LoadingBarContext';
 import ApiRequestService from '../dashboard/services/ApiRequestService';
 import { getRoutes } from './modules/state_router/Router';
-import StateHashPrefixRedirect from './modules/state_router/StateHashPrefixRedirect';
 import EnvDataWebshopProp from '../props/EnvDataWebshopProp';
 import { LoadScript } from '@react-google-maps/api';
 import { PrintableProvider } from '../dashboard/modules/printable/context/PrintableContext';
 import MatomoScript from './modules/matomo/MatomoScript';
 import SiteImproveAnalytics from './modules/site_improve_analytics/SiteImproveAnalytics';
 import AwsRumScript from '../dashboard/modules/aws_rum/AwsRumScript';
+import StateHashPrefixRedirect from '../dashboard/modules/state_router/StateHashPrefixRedirect';
 
 i18n.use(initReactI18next)
     .init({

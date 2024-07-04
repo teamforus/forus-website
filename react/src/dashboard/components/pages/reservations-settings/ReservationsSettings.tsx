@@ -1,6 +1,5 @@
 import React, { Fragment, useState } from 'react';
 import useActiveOrganization from '../../../hooks/useActiveOrganization';
-import { useTranslation } from 'react-i18next';
 import LoadingCard from '../../elements/loading-card/LoadingCard';
 import { useOrganizationService } from '../../../services/OrganizationService';
 import useFormBuilder from '../../../hooks/useFormBuilder';
@@ -16,9 +15,10 @@ import ReservationFieldsEditor from '../reservations/elements/ReservationFieldsE
 import useSetProgress from '../../../hooks/useSetProgress';
 import { uniqueId } from 'lodash';
 import { ResponseError } from '../../../props/ApiResponses';
+import useTranslate from '../../../hooks/useTranslate';
 
 export default function ReservationsSettings() {
-    const { t } = useTranslation();
+    const translate = useTranslate();
     const activeOrganization = useActiveOrganization();
     const updateActiveOrganization = useUpdateActiveOrganization();
 
@@ -89,6 +89,7 @@ export default function ReservationsSettings() {
                 <StateNavLink
                     name={'reservations'}
                     params={{ organizationId: activeOrganization.id }}
+                    activeExact={true}
                     className={'breadcrumb-item'}>
                     Reserveringen
                 </StateNavLink>
@@ -98,11 +99,11 @@ export default function ReservationsSettings() {
                 <form className="form" onSubmit={form.submit}>
                     <div className="card-header flex flex-horizontal">
                         <div className="flex flex-grow">
-                            <div className="card-title">{t('reservation_settings.header.title')}</div>
+                            <div className="card-title">{translate('reservation_settings.header.title')}</div>
                         </div>
                         <div className="flex">
                             <button className="button button-primary button-sm" type="submit">
-                                {t('reservation_settings.buttons.confirm')}
+                                {translate('reservation_settings.buttons.confirm')}
                             </button>
                         </div>
                     </div>
@@ -111,7 +112,7 @@ export default function ReservationsSettings() {
                             <div className="col-xs-12 col-lg-8">
                                 <div className="form-group form-group-inline">
                                     <label className="form-label" htmlFor="reservation_phone">
-                                        {t('reservation_settings.labels.phone')}
+                                        {translate('reservation_settings.labels.phone')}
                                     </label>
                                     <div className="form-offset">
                                         <SelectControl
@@ -129,7 +130,7 @@ export default function ReservationsSettings() {
                                 </div>
                                 <div className="form-group form-group-inline">
                                     <label className="form-label" htmlFor="reservation_address">
-                                        {t('reservation_settings.labels.address')}
+                                        {translate('reservation_settings.labels.address')}
                                     </label>
                                     <div className="form-offset">
                                         <SelectControl
@@ -148,7 +149,7 @@ export default function ReservationsSettings() {
 
                                 <div className="form-group form-group-inline">
                                     <label className="form-label" htmlFor="reservation_birth_date">
-                                        {t('reservation_settings.labels.birth_date')}
+                                        {translate('reservation_settings.labels.birth_date')}
                                     </label>
                                     <div className="form-offset">
                                         <SelectControl
@@ -169,7 +170,7 @@ export default function ReservationsSettings() {
                     </div>
                     <div className="card-section card-section-primary">
                         <div className="form-group form-group-inline">
-                            <label className="form-label">{t('reservation_settings.labels.fields')}</label>
+                            <label className="form-label">{translate('reservation_settings.labels.fields')}</label>
                             <div className="form-offset">
                                 <ReservationFieldsEditor fields={fields} onChange={setFields} errors={form.errors} />
                             </div>
@@ -183,7 +184,7 @@ export default function ReservationsSettings() {
                                     <div className="col-xs-12 col-lg-8">
                                         <div className="form-group form-group-inline">
                                             <label className="form-label" htmlFor="reservation_birth_date">
-                                                {t('reservation_settings.labels.extra_payments')}
+                                                {translate('reservation_settings.labels.extra_payments')}
                                             </label>
                                             <div className="form-offset">
                                                 <SelectControl
@@ -210,10 +211,10 @@ export default function ReservationsSettings() {
                                 name={'reservations'}
                                 params={{ organizationId: activeOrganization.id }}
                                 className="button button-default">
-                                {t('reservation_settings.buttons.cancel')}
+                                {translate('reservation_settings.buttons.cancel')}
                             </StateNavLink>
                             <button className="button button-primary" type="submit">
-                                {t('reservation_settings.buttons.confirm')}
+                                {translate('reservation_settings.buttons.confirm')}
                             </button>
                         </div>
                     </div>

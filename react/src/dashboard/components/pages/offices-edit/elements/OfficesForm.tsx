@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import PhotoSelector from '../../../elements/photo-selector/PhotoSelector';
 import useFormBuilder from '../../../../hooks/useFormBuilder';
 import FormError from '../../../elements/forms/errors/FormError';
@@ -17,10 +16,10 @@ import Organization from '../../../../props/models/Organization';
 import OfficeSchedule from '../../../../props/models/OfficeSchedule';
 import { ResponseError } from '../../../../props/ApiResponses';
 import Media from '../../../../props/models/Media';
+import useTranslate from '../../../../hooks/useTranslate';
 
 export default function OfficesForm({ organization, id }: { organization: Organization; id?: number }) {
-    const { t } = useTranslation();
-
+    const translate = useTranslate();
     const pushDanger = usePushDanger();
     const pushSuccess = usePushSuccess();
     const setProgress = useSetProgress();
@@ -128,7 +127,7 @@ export default function OfficesForm({ organization, id }: { organization: Organi
         <form className="card form" onSubmit={form.submit}>
             <div className="card-header">
                 <div className="card-title">
-                    {t(id ? 'offices_edit.header.title_edit' : 'offices_edit.header.title_add')}
+                    {translate(id ? 'offices_edit.header.title_edit' : 'offices_edit.header.title_add')}
                 </div>
             </div>
 
@@ -152,11 +151,13 @@ export default function OfficesForm({ organization, id }: { organization: Organi
                 <div className="row">
                     <div className="col col-xs-12 col-md-12">
                         <div className="form-group form-group-inline">
-                            <label className="form-label form-label-required">{t('offices_edit.labels.address')}</label>
+                            <label className="form-label form-label-required">
+                                {translate('offices_edit.labels.address')}
+                            </label>
                             <input
                                 type="text"
                                 className="form-control"
-                                placeholder={t('offices_edit.labels.address')}
+                                placeholder={translate('offices_edit.labels.address')}
                                 value={form.values?.address || ''}
                                 onChange={(e) => form.update({ address: e.target.value })}
                             />
@@ -164,11 +165,11 @@ export default function OfficesForm({ organization, id }: { organization: Organi
                         </div>
 
                         <div className="form-group form-group-inline">
-                            <label className="form-label">{t('offices_edit.labels.phone')}</label>
+                            <label className="form-label">{translate('offices_edit.labels.phone')}</label>
                             <input
                                 type="text"
                                 className="form-control"
-                                placeholder={t('offices_edit.labels.phone')}
+                                placeholder={translate('offices_edit.labels.phone')}
                                 value={form.values?.phone || ''}
                                 onChange={(e) => form.update({ phone: e.target.value })}
                             />
@@ -182,12 +183,12 @@ export default function OfficesForm({ organization, id }: { organization: Organi
                 <div className="row">
                     <div className="col col-xs-12 col-md-12">
                         <div className="form-group form-group-inline">
-                            <label className="form-label">{t('offices_edit.labels.branch_number')}</label>
+                            <label className="form-label">{translate('offices_edit.labels.branch_number')}</label>
                             <div className="form-group-info">
                                 <div className="form-group-info-control">
                                     <input
                                         className="form-control"
-                                        placeholder={t('offices_edit.labels.branch_number')}
+                                        placeholder={translate('offices_edit.labels.branch_number')}
                                         value={form.values?.branch_number || ''}
                                         onChange={(e) => form.update({ branch_number: e.target.value })}
                                     />
@@ -211,13 +212,13 @@ export default function OfficesForm({ organization, id }: { organization: Organi
                                 <label className="form-label"></label>
                                 <div className="form-offset block block-info">
                                     <em className="mdi mdi-information block-info-icon" />
-                                    {t('offices_edit.info.branch_number')}
+                                    {translate('offices_edit.info.branch_number')}
                                 </div>
                             </div>
                         )}
 
                         <div className="form-group form-group-inline">
-                            <label className="form-label">{t('offices_edit.labels.branch_name')}</label>
+                            <label className="form-label">{translate('offices_edit.labels.branch_name')}</label>
                             <div className="form-group-info">
                                 <div className="form-group-info-control">
                                     <input
@@ -225,7 +226,7 @@ export default function OfficesForm({ organization, id }: { organization: Organi
                                         className="form-control"
                                         minLength={3}
                                         maxLength={100}
-                                        placeholder={t('offices_edit.labels.branch_name')}
+                                        placeholder={translate('offices_edit.labels.branch_name')}
                                         value={form.values?.branch_name || ''}
                                         onChange={(e) => form.update({ branch_name: e.target.value })}
                                     />
@@ -249,13 +250,13 @@ export default function OfficesForm({ organization, id }: { organization: Organi
                                 <label className="form-label"></label>
                                 <div className="form-offset block block-info">
                                     <em className="mdi mdi-information block-info-icon" />
-                                    {t('offices_edit.info.branch_name')}
+                                    {translate('offices_edit.info.branch_name')}
                                 </div>
                             </div>
                         )}
 
                         <div className="form-group form-group-inline">
-                            <label className="form-label">{t('offices_edit.labels.branch_id')}</label>
+                            <label className="form-label">{translate('offices_edit.labels.branch_id')}</label>
                             <div className="form-group-info">
                                 <div className="form-group-info-control">
                                     <input
@@ -263,7 +264,7 @@ export default function OfficesForm({ organization, id }: { organization: Organi
                                         className="form-control"
                                         minLength={3}
                                         maxLength={20}
-                                        placeholder={t('offices_edit.labels.branch_id')}
+                                        placeholder={translate('offices_edit.labels.branch_id')}
                                         value={form.values?.branch_id || ''}
                                         onChange={(e) => form.update({ branch_id: e.target.value })}
                                     />
@@ -287,7 +288,7 @@ export default function OfficesForm({ organization, id }: { organization: Organi
                                 <label className="form-label"></label>
                                 <div className="form-offset block block-info">
                                     <em className="mdi mdi-information block-info-icon" />
-                                    {t('offices_edit.info.branch_id')}
+                                    {translate('offices_edit.info.branch_id')}
                                 </div>
                             </div>
                         )}
@@ -320,11 +321,11 @@ export default function OfficesForm({ organization, id }: { organization: Organi
                         to={getStateRouteUrl('offices', { organizationId: organization.id })}
                         type="button"
                         className="button button-default">
-                        {t('offices_edit.buttons.cancel')}
+                        {translate('offices_edit.buttons.cancel')}
                     </NavLink>
 
                     <button type="submit" className="button button-primary">
-                        {t('offices_edit.buttons.confirm')}
+                        {translate('offices_edit.buttons.confirm')}
                     </button>
                 </div>
             </div>

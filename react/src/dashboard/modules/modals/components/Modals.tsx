@@ -7,7 +7,7 @@ export default function Modals() {
 
     const modalRef = useRef<HTMLDivElement>(null);
 
-    const focusModalElement = useCallback((init = false) => {
+    const focusModalElement = useCallback(() => {
         const element: Element = modalRef.current?.querySelector(
             [
                 'a[href], area[href], input:not([disabled]), select:not([disabled])',
@@ -24,7 +24,7 @@ export default function Modals() {
             return;
         }
 
-        focusModalElement(true);
+        focusModalElement();
 
         const onActiveFocusIn = () => {
             if (modalRef.current && !modalRef.current?.contains(document.activeElement)) {

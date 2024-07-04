@@ -49,13 +49,12 @@ export default function ModalReimbursementResolve({
                 reason: showReason && reason ? reason : null,
             };
 
-            const promise = approve
-                ? reimbursementService.approve(organization.id, reimbursement.id, data)
-                : reimbursementService.decline(organization.id, reimbursement.id, data);
-
             setProgress(0);
 
-            promise
+            (approve
+                ? reimbursementService.approve(organization.id, reimbursement.id, data)
+                : reimbursementService.decline(organization.id, reimbursement.id, data)
+            )
                 .then((res) => {
                     pushSuccess('Gelukt!', approve ? 'Declaratie goedgekeurd!' : 'Declaratie afgewezen!');
                     onSubmit(res);

@@ -32,14 +32,18 @@
                 color: #9b9b9b;
                 border-bottom: solid 2px #dbdbddd5;
                 &.enabled {
-                    &:hover, &:active, &focus{
+                    &:hover,
+                    &:active,
+                    &focus {
                         cursor: pointer;
                         color: #222530;
                         border-bottom: solid 2px #191a1c;
                     }
                 }
                 &.disabled {
-                    &:hover, &:active, &focus{
+                    &:hover,
+                    &:active,
+                    &focus {
                         cursor: not-allowed;
                         color: #222530;
                         border-bottom: solid 2px #191a1c;

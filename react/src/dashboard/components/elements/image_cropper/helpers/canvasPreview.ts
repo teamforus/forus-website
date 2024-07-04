@@ -15,25 +15,17 @@ export function canvasPreview(
         throw new Error('No 2d context');
     }
 
-    const scaleX = image.naturalWidth / image.width;
-    const scaleY = image.naturalHeight / image.height;
-    const pixelRatio = window.devicePixelRatio;
+    canvas.width = Math.floor(crop.width);
+    canvas.height = Math.floor(crop.height);
 
-    canvas.width = Math.floor(crop.width * scaleX * pixelRatio);
-    canvas.height = Math.floor(crop.height * scaleY * pixelRatio);
-
-    ctx.scale(pixelRatio, pixelRatio);
     ctx.imageSmoothingQuality = 'high';
-
-    const cropX = crop.x * scaleX;
-    const cropY = crop.y * scaleY;
 
     const rotateRads = rotate * TO_RADIANS;
     const centerX = image.naturalWidth / 2;
     const centerY = image.naturalHeight / 2;
 
     ctx.save();
-    ctx.translate(-cropX, -cropY);
+    ctx.translate(-crop.x, -crop.y);
     ctx.translate(centerX, centerY);
     ctx.rotate(rotateRads);
     ctx.scale(scale, scale);

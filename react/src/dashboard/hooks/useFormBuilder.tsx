@@ -8,19 +8,20 @@ export default function useFormBuilder<T = FormValuesModel, D = unknown>(
     initialValues: T | null,
     onSubmit: FormSubmitter<T, D> | false,
 ): FormBuilder<T> {
-    const [values, setValues] = useState<T | null>(initialValues);
+    const [initValues] = useState(initialValues);
+    const [values, setValues] = useState<T | null>(initValues);
     const [isLocked, setIsLocked] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [state, setState] = useState<'pending' | 'error' | 'success' | string>('pending');
     const [errors, setErrors] = useState<{ [key: string]: Array<string> }>({});
 
     const reset = useCallback(() => {
-        setValues(initialValues);
+        setValues(initValues);
         setState('pending');
         setErrors({});
         setIsLoading(false);
         setIsLocked(false);
-    }, [initialValues]);
+    }, [initValues]);
 
     const submit = useCallback<(e?: FormEvent<HTMLFormElement>, data?: D) => void>(
         (e = null, data): void => {

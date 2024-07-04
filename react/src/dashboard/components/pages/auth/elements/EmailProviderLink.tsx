@@ -1,7 +1,7 @@
 import React from 'react';
 import { useHelperService } from '../../../../services/HelperService';
 import { Fragment, useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
+import useTranslate from '../../../../hooks/useTranslate';
 
 export default function EmailProviderLink({
     email = '',
@@ -12,9 +12,12 @@ export default function EmailProviderLink({
     icon?: string;
     type?: 'button' | 'text';
 }) {
+    const translate = useTranslate();
     const helperService = useHelperService();
-    const url = useMemo(() => helperService.getEmailServiceProviderUrl(email), [email, helperService]);
-    const { t } = useTranslation();
+
+    const url = useMemo(() => {
+        return helperService.getEmailServiceProviderUrl(email);
+    }, [email, helperService]);
 
     return (
         <Fragment>
@@ -23,7 +26,7 @@ export default function EmailProviderLink({
                     className={`button ${type == 'button' ? 'button-primary' : 'button-text button-text-primary'}`}
                     href={url}>
                     {icon && <em className={`mdi icon-start mdi-${icon}`} />}
-                    {t('email_service_switch.confirm')}
+                    {translate('email_service_switch.confirm')}
                     <em className="mdi mdi-arrow-right icon-right" aria-hidden="true" />
                 </a>
             )}

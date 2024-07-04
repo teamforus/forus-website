@@ -1,15 +1,15 @@
 import FundRequestRecord from '../../../../../props/models/FundRequestRecord';
-import { useTranslation } from 'react-i18next';
 import React, { Fragment } from 'react';
+import useTranslate from '../../../../../hooks/useTranslate';
 
 export default function FundRequestRecordHistoryTab({ record }: { record: FundRequestRecord }) {
-    const { t } = useTranslation();
+    const translate = useTranslate();
 
     return (
         <div className="card">
             <div className="card-header">
                 <div className="card-title pull-left">
-                    {t('validation_request_details.labels.history', { count: record.history.length })}
+                    {translate('validation_request_details.labels.history', { count: record.history.length })}
                 </div>
             </div>
             <div className="card-section">
@@ -18,11 +18,11 @@ export default function FundRequestRecordHistoryTab({ record }: { record: FundRe
                         <table className="table table-fixed">
                             <tbody>
                                 <tr>
-                                    <th>{t('validation_request_details.labels.new_value')}</th>
-                                    <th>{t('validation_request_details.labels.old_value')}</th>
-                                    <th>{t('validation_request_details.labels.employee')}</th>
+                                    <th>{translate('validation_request_details.labels.new_value')}</th>
+                                    <th>{translate('validation_request_details.labels.old_value')}</th>
+                                    <th>{translate('validation_request_details.labels.employee')}</th>
                                     <th className="text-right">
-                                        {t('validation_request_details.labels.date_changed')}
+                                        {translate('validation_request_details.labels.date_changed')}
                                     </th>
                                 </tr>
                                 {record.history?.map((log) => (
