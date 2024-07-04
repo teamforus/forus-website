@@ -1,7 +1,7 @@
 import React from 'react';
 import { ModalState } from '../../modules/modals/context/ModalContext';
-import { classList } from '../../helpers/utils';
 import { ModalButton } from './elements/ModalButton';
+import classNames from 'classnames';
 
 export default function ModalDangerZone({
     modal,
@@ -31,13 +31,7 @@ export default function ModalDangerZone({
     return (
         <div
             data-dusk="modalDangerZone"
-            className={classList([
-                'modal',
-                'modal-md',
-                'modal-animated',
-                modal.loading ? 'modal-loading' : null,
-                className,
-            ])}>
+            className={classNames('modal', 'modal-md', 'modal-animated', modal.loading && 'modal-loading', className)}>
             <div className="modal-backdrop" onClick={buttonCancel?.onClick || modal.close} />
             <div className="modal-window">
                 <div className="modal-body form">

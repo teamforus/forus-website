@@ -21,7 +21,7 @@
 
                 .note-dropdown-item {
                     * {
-                        margin: 0px !important;
+                        margin: 0 !important;
                     }
                 }
             }
@@ -29,7 +29,7 @@
             .note-dropdown-item {
                 text-decoration: none !important;
                 color: var(--text-color) !important;
-                margin: 0px !important;
+                margin: 0 !important;
                 padding: 5px 10px;
                 display: flex;
                 flex-direction: row;
@@ -62,7 +62,7 @@
                     transition: 0.4s;
                     display: block;
                     float: left;
-                    padding: 0px;
+                    padding: 0;
                     color: #000000;
                     background: none;
                     border: 1px solid var(--border-color);
@@ -88,7 +88,7 @@
                     }
 
                     &.active {
-                        box-shadow: inset 0 0 2px rgba(0, 0, 0, .5);
+                        box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.5);
                         background: #ebebeb;
                     }
 

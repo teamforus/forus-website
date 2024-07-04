@@ -1,8 +1,8 @@
 &.block-feature-text-image-columns {
     display: grid;
-    grid-template-columns: repeat(2,1fr);
+    grid-template-columns: repeat(2, 1fr);
     border-radius: 8px;
-    border: 1px solid #D4D9DD;
+    border: 1px solid #d4d9dd;
     overflow: hidden;
     margin-bottom: 32px;
 
@@ -27,14 +27,14 @@
     }
 
     &.block-feature-text-image-columns-secondary {
-        border-color: #B0D136;
+        border-color: #b0d136;
         grid-template-columns: 300px auto;
 
         .block-feature-text-image-columns-description {
             position: relative;
             height: fit-content;
             background: #fff;
-            color: #646F79;
+            color: #646f79;
             margin: 42px;
             padding: 0;
             font-size: 16px;
@@ -43,7 +43,7 @@
             align-self: center;
 
             h4 {
-                color: #151B26;
+                color: #151b26;
                 margin-bottom: 12px;
                 font-size: 28px;
                 font-weight: 600;
@@ -51,7 +51,7 @@
             }
 
             strong {
-                color: #5F9E50;
+                color: #5f9e50;
             }
 
             &:before {
@@ -60,7 +60,7 @@
                 width: 5px;
                 height: 100%;
                 border-radius: 3px;
-                background: linear-gradient(0deg, #7DB75A 0%, #7DB75A 100%), #E6EEAF;
+                background: linear-gradient(0deg, #7db75a 0%, #7db75a 100%), #e6eeaf;
                 position: absolute;
                 top: 0;
                 left: -25px;
@@ -70,7 +70,7 @@
 
     &.block-feature-text-image-columns-light {
         .block-feature-text-image-columns-description {
-            background: #315EFD;
+            background: #315efd;
         }
     }
 

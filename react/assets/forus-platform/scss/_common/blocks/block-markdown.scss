@@ -99,7 +99,7 @@
                 transition: 0.3s;
                 font: inherit;
 
-                &>a {
+                & > a {
                     font: inherit;
                 }
             }
@@ -126,7 +126,8 @@
             }
 
             &:first-child {
-                th, td {
+                th,
+                td {
                     color: #646f79;
                     padding-top: 10px;
                     padding-bottom: 10px;
@@ -140,11 +141,10 @@
             }
         }
 
-        &>tr,
-        &>thead:last-child>tr,
-        &>tbody:last-child>tr {
+        & > tr,
+        & > thead:last-child > tr,
+        & > tbody:last-child > tr {
             &:last-child {
-
                 td,
                 th {
                     border-bottom: 0;
@@ -196,22 +196,22 @@
 
     @media screen and (max-width: 1000px) {
         font: 400 14px/22px var(--base-font) !important;
-    
+
         h1 {
             font: 500 1.8em var(--base-font);
             margin-bottom: 1em;
         }
-    
+
         h2 {
             font: 500 1.6em var(--base-font);
             margin-bottom: 1em;
         }
-    
+
         h3 {
             font: 500 1.3em var(--base-font);
             margin-bottom: 1em;
         }
-    
+
         &.block-markdown-lg {
             font: 400 14px/22px var(--base-font) !important;
         }

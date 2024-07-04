@@ -1,6 +1,5 @@
 import React, { Fragment, useCallback, useEffect, useState } from 'react';
 import useActiveOrganization from '../../../hooks/useActiveOrganization';
-import { useTranslation } from 'react-i18next';
 import LoadingCard from '../../elements/loading-card/LoadingCard';
 import { useFundService } from '../../../services/FundService';
 import FinancialOverviewFundsTable from './elements/FinancialOverviewFundsTable';
@@ -9,9 +8,10 @@ import { ResponseError } from '../../../props/ApiResponses';
 import usePushDanger from '../../../hooks/usePushDanger';
 import Fund from '../../../props/models/Fund';
 import { FinancialOverview } from '../financial-dashboard/types/FinancialStatisticTypes';
+import useTranslate from '../../../hooks/useTranslate';
 
 export default function FinancialDashboardOverview() {
-    const { t } = useTranslation();
+    const translate = useTranslate();
     const activeOrganization = useActiveOrganization();
 
     const pushDanger = usePushDanger();
@@ -48,7 +48,7 @@ export default function FinancialDashboardOverview() {
 
     return (
         <Fragment>
-            <div className="card-heading">{t('financial_dashboard_overview.header.title')}</div>
+            <div className="card-heading">{translate('financial_dashboard_overview.header.title')}</div>
 
             <FinancialOverviewFundsTable
                 funds={funds}

@@ -14,7 +14,7 @@
         height: 40px;
         width: 100%;
         position: absolute;
-        top: 0px;
+        top: 0;
         border: none;
         background: none;
         z-index: -100;
@@ -33,7 +33,7 @@
         border-radius: 4px;
         margin-right: 6px;
         padding: 9px 0;
-        font: 600 18px/38px "Open Sans", arial, sans-serif;
+        font: 600 18px/38px 'Open Sans', arial, sans-serif;
         text-align: center;
         cursor: default;
         position: relative;
@@ -50,7 +50,7 @@
             display: block;
             transform: translate(0, -50%);
             @include anim_blink();
-            transition: opacity .4s;
+            transition: opacity 0.4s;
         }
 
         &:last-of-type {
@@ -94,7 +94,7 @@
         margin-bottom: 0;
     }
 
-    &.block-phone-number{
+    &.block-phone-number {
         width: calc(60px * 10 + 10px * 9);
         margin: 25px auto;
     }
@@ -103,17 +103,17 @@
         margin-bottom: 10px;
 
         .pincode-number {
-            font: 600 22px/60px var(--base-font)
+            font: 600 22px/60px var(--base-font);
         }
     }
 
     @media screen and (max-width: 1000px) {
         width: calc(60px * 6 + 10px * 5);
-        
+
         .pincode-number {
             height: 60px;
             width: 60px;
-            font: 600 22px/70px var(--base-font)
+            font: 600 22px/70px var(--base-font);
         }
     }
 

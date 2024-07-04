@@ -14,6 +14,7 @@ import { useFileService } from '../../../../services/FileService';
 import usePushDanger from '../../../../hooks/usePushDanger';
 import { FinancialFiltersQuery } from './FinancialFilters';
 import { ProviderFinancial } from '../types/FinancialStatisticTypes';
+import EmptyCard from '../../../elements/empty-card/EmptyCard';
 
 type ProviderFinancialLocal = ProviderFinancial & { id: string };
 
@@ -184,15 +185,7 @@ export default function ProviderFinancialTable({ externalFilters }: { externalFi
                 </div>
             )}
 
-            {providersFinances.meta.total == 0 && (
-                <div className="card">
-                    <div className="card-section">
-                        <div className="block block-empty text-center">
-                            <div className="empty-details">Geen aanbieder.</div>
-                        </div>
-                    </div>
-                </div>
-            )}
+            {providersFinances.meta.total == 0 && <EmptyCard title={'Geen aanbieder.'} />}
         </Fragment>
     );
 }

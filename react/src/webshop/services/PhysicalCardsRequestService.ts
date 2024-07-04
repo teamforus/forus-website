@@ -1,9 +1,9 @@
 import { ApiResponse, ApiResponseSingle } from '../../dashboard/props/ApiResponses';
 import { useState } from 'react';
 import ApiRequestService from '../../dashboard/services/ApiRequestService';
-import PhysicalCard from '../props/models/PhysicalCard';
+import PhysicalCardRequest from '../../dashboard/props/models/PhysicalCardRequest';
 
-export class PhysicalCardsRequestService<T = PhysicalCard> {
+export class PhysicalCardsRequestService<T = PhysicalCardRequest> {
     /**
      * @param apiRequest
      */
