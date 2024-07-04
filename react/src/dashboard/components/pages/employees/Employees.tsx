@@ -4,7 +4,6 @@ import { useEmployeeService } from '../../../services/EmployeeService';
 import { NavLink } from 'react-router-dom';
 import { hasPermission } from '../../../helpers/utils';
 import { getStateRouteUrl } from '../../../modules/state_router/Router';
-import { t } from 'i18next';
 import useFilter from '../../../hooks/useFilter';
 import { strLimit } from '../../../helpers/string';
 import Employee from '../../../props/models/Employee';
@@ -24,12 +23,25 @@ import useOpenModal from '../../../hooks/useOpenModal';
 import useActiveOrganization from '../../../hooks/useActiveOrganization';
 import useEnvData from '../../../hooks/useEnvData';
 import usePaginatorService from '../../../modules/paginator/services/usePaginatorService';
+import useTranslate from '../../../hooks/useTranslate';
+import LoaderTableCard from '../../elements/loader-table-card/LoaderTableCard';
+import useSetProgress from '../../../hooks/useSetProgress';
+import usePushApiError from '../../../hooks/usePushApiError';
+import useIsProviderPanel from '../../../hooks/useIsProviderPanel';
+import TableEmptyValue from '../../elements/table-empty-value/TableEmptyValue';
 
 export default function Employees() {
     const envData = useEnvData();
-    const pushSuccess = usePushSuccess();
-    const pushDanger = usePushDanger();
+    const isProviderPanel = useIsProviderPanel();
+
+    const { setActiveOrganization } = useContext(mainContext);
+
+    const translate = useTranslate();
     const openModal = useOpenModal();
+    const pushDanger = usePushDanger();
+    const pushSuccess = usePushSuccess();
+    const setProgress = useSetProgress();
+    const pushApiError = usePushApiError();
     const authIdentity = useAuthIdentity();
     const activeOrganization = useActiveOrganization();
 
@@ -37,8 +49,7 @@ export default function Employees() {
     const employeeService = useEmployeeService();
     const paginatorService = usePaginatorService();
 
-    const { setActiveOrganization } = useContext(mainContext);
-
+    const [loading, setLoading] = useState<boolean>(false);
     const [employees, setEmployees] = useState<PaginationData<Employee>>(null);
     const [paginatorKey] = useState('employees');
     const [adminEmployees, setAdminEmployees] = useState([]);
@@ -49,21 +60,29 @@ export default function Employees() {
     });
 
     const fetchEmployees = useCallback(() => {
-        employeeService.list(activeOrganization.id, filter.activeValues).then(
-            (res) => setEmployees(res.data),
-            (res) => console.error(res),
-        );
-    }, [activeOrganization.id, employeeService, filter.activeValues]);
+        setLoading(true);
+        setProgress(0);
+
+        employeeService
+            .list(activeOrganization.id, filter.activeValues)
+            .then((res) => setEmployees(res.data))
+            .catch(pushApiError)
+            .finally(() => {
+                setLoading(false);
+                setProgress(100);
+            });
+    }, [activeOrganization.id, employeeService, filter.activeValues, setProgress, pushApiError]);
 
     const fetchAdminEmployees = useCallback(() => {
-        employeeService.list(activeOrganization.id, { role: 'admin', per_page: 1000 }).then(
-            (res) =>
+        employeeService
+            .list(activeOrganization.id, { role: 'admin', per_page: 1000 })
+            .then((res) =>
                 setAdminEmployees(
                     res.data.data.filter((item) => item.identity_address !== activeOrganization.identity_address),
                 ),
-            (res) => console.error(res),
-        );
-    }, [employeeService, activeOrganization]);
+            )
+            .catch(pushApiError);
+    }, [employeeService, activeOrganization.id, activeOrganization.identity_address, pushApiError]);
 
     const rolesList = useCallback((employee: Employee) => {
         const rolesList = employee.roles
@@ -156,11 +175,11 @@ export default function Employees() {
             openModal((modal) => (
                 <ModalDangerZone
                     modal={modal}
-                    title={t('modals.danger_zone.remove_organization_employees.title')}
-                    description={t('modals.danger_zone.remove_organization_employees.description')}
+                    title={translate('modals.danger_zone.remove_organization_employees.title')}
+                    description={translate('modals.danger_zone.remove_organization_employees.description')}
                     buttonCancel={{
                         onClick: modal.close,
-                        text: t('modals.danger_zone.remove_organization_employees.buttons.cancel'),
+                        text: translate('modals.danger_zone.remove_organization_employees.buttons.cancel'),
                     }}
                     buttonSubmit={{
                         onClick: () => {
@@ -173,12 +192,12 @@ export default function Employees() {
                                 })
                                 .catch((res: ResponseError) => pushDanger(res.data.message));
                         },
-                        text: t('modals.danger_zone.remove_organization_employees.buttons.confirm'),
+                        text: translate('modals.danger_zone.remove_organization_employees.buttons.confirm'),
                     }}
                 />
             ));
         },
-        [openModal, employeeService, activeOrganization.id, filter, pushSuccess, pushDanger],
+        [openModal, translate, employeeService, activeOrganization.id, filter, pushSuccess, pushDanger],
     );
 
     const canEditEmployee = useCallback(
@@ -191,8 +210,13 @@ export default function Employees() {
         [activeOrganization, authIdentity.address],
     );
 
-    useEffect(() => fetchEmployees(), [fetchEmployees]);
-    useEffect(() => fetchAdminEmployees(), [fetchAdminEmployees]);
+    useEffect(() => {
+        fetchEmployees();
+    }, [fetchEmployees]);
+
+    useEffect(() => {
+        fetchAdminEmployees();
+    }, [fetchAdminEmployees]);
 
     if (!employees || !adminEmployees) {
         return <LoadingCard />;
@@ -216,7 +240,7 @@ export default function Employees() {
                                             organizationId: activeOrganization.id,
                                         })}>
                                         <em className="mdi mdi-security icon-start" />
-                                        {t('organization_employees.buttons.security')}
+                                        {translate('organization_employees.buttons.security')}
                                     </NavLink>
                                 )}
                             <button
@@ -224,7 +248,7 @@ export default function Employees() {
                                 className="button button-primary button-sm"
                                 onClick={() => exportEmployees()}>
                                 <span className="mdi mdi-download icon-start" />
-                                {t('organization_employees.buttons.export')}
+                                {translate('organization_employees.buttons.export')}
                             </button>
                             <button
                                 type="button"
@@ -232,7 +256,7 @@ export default function Employees() {
                                 data-dusk={'addEmployee'}
                                 onClick={() => editEmployee()}>
                                 <em className="mdi mdi-plus-circle icon-start" />
-                                {t('organization_employees.buttons.add')}
+                                {translate('organization_employees.buttons.add')}
                             </button>
 
                             <div className="form">
@@ -252,18 +276,27 @@ export default function Employees() {
                 </div>
             </div>
 
-            {employees?.meta.total > 0 && (
+            <LoaderTableCard
+                loading={loading}
+                empty={employees?.meta.total == 0}
+                emptyTitle={'Geen medewerkers gevonden'}>
                 <div className="card-section">
                     <div className="card-block card-block-table">
                         <div className="table-wrapper">
                             <table className="table">
                                 <thead>
                                     <tr>
-                                        <th>{t('organization_employees.labels.email')}</th>
-                                        <th>{t('organization_employees.labels.branch_name_id')}</th>
-                                        <th>{t('organization_employees.labels.branch_number')}</th>
-                                        <th>{t('organization_employees.labels.auth_2fa')}</th>
-                                        <th className={'text-right'}>{t('organization_employees.labels.actions')}</th>
+                                        <th>{translate('organization_employees.labels.email')}</th>
+                                        {isProviderPanel && (
+                                            <Fragment>
+                                                <th>{translate('organization_employees.labels.branch_name_id')}</th>
+                                                <th>{translate('organization_employees.labels.branch_number')}</th>
+                                            </Fragment>
+                                        )}
+                                        <th>{translate('organization_employees.labels.auth_2fa')}</th>
+                                        <th className={'text-right'}>
+                                            {translate('organization_employees.labels.actions')}
+                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -274,37 +307,43 @@ export default function Employees() {
                                                     {employee.email || strLimit(employee.identity_address, 32)}
                                                 </div>
                                                 {activeOrganization.identity_address != employee.identity_address ? (
-                                                    <div className={'text-muted'}>
+                                                    <div className={'text-muted text-md'}>
                                                         {strLimit(rolesList(employee) || 'Geen...', 32)}
                                                     </div>
                                                 ) : (
-                                                    <div className="text-muted">
-                                                        {t('organization_employees.labels.owner')}
+                                                    <div className="text-muted text-md">
+                                                        {translate('organization_employees.labels.owner')}
                                                     </div>
                                                 )}
                                             </td>
-                                            <td>
-                                                {employee?.branch?.name && (
-                                                    <div className="text-primary">
-                                                        {strLimit(employee.branch?.name, 32)}
-                                                    </div>
-                                                )}
+                                            {isProviderPanel && (
+                                                <Fragment>
+                                                    <td>
+                                                        {employee?.branch?.name && (
+                                                            <div className="text-primary">
+                                                                {strLimit(employee.branch?.name, 32)}
+                                                            </div>
+                                                        )}
 
-                                                {employee?.branch?.id && (
-                                                    <div>
-                                                        ID <strong>{strLimit(employee.branch?.id, 32)}</strong>
-                                                    </div>
-                                                )}
+                                                        {employee?.branch?.id && (
+                                                            <div>
+                                                                ID <strong>{strLimit(employee.branch?.id, 32)}</strong>
+                                                            </div>
+                                                        )}
 
-                                                {!employee.branch?.id && !employee.branch?.name && (
-                                                    <div className={'text-muted'}>Geen...</div>
-                                                )}
-                                            </td>
-                                            <td>
-                                                <div className={employee?.branch?.number ? '' : 'text-muted'}>
-                                                    {strLimit(employee.branch?.number?.toString(), 32) || 'Geen...'}
-                                                </div>
-                                            </td>
+                                                        {!employee.branch?.id && !employee.branch?.name && (
+                                                            <TableEmptyValue />
+                                                        )}
+                                                    </td>
+                                                    <td>
+                                                        <div className={employee?.branch?.number ? '' : 'text-muted'}>
+                                                            {strLimit(employee.branch?.number?.toString(), 32) || (
+                                                                <TableEmptyValue />
+                                                            )}
+                                                        </div>
+                                                    </td>
+                                                </Fragment>
+                                            )}
                                             <td>
                                                 {employee.is_2fa_configured && (
                                                     <div className="td-state-2fa">
@@ -325,48 +364,49 @@ export default function Employees() {
                                                 )}
                                             </td>
 
-                                            <td className={'text-right'}>
-                                                <Fragment>
-                                                    {canEditEmployee(employee) && (
-                                                        <a
-                                                            className="text-primary-light"
-                                                            data-dusk={'btnEmployeeEdit'}
-                                                            onClick={() => editEmployee(employee)}>
-                                                            {t('organization_employees.buttons.adjust')}
-                                                        </a>
-                                                    )}
-
-                                                    {authIdentity.address !== employee.identity_address && (
-                                                        <Fragment>
-                                                            &nbsp;&nbsp;
-                                                            <a
-                                                                className="text-danger"
-                                                                data-dusk={'btnEmployeeDelete'}
-                                                                onClick={() => deleteEmployee(employee)}>
-                                                                {t('organization_employees.buttons.delete')}
-                                                            </a>
-                                                        </Fragment>
-                                                    )}
-                                                </Fragment>
-
-                                                {activeOrganization.identity_address == employee.identity_address && (
+                                            {activeOrganization.identity_address != employee.identity_address ? (
+                                                <td className={'text-right'}>
                                                     <Fragment>
-                                                        &nbsp;&nbsp;
-                                                        {adminEmployees.length > 0 &&
-                                                        authIdentity.address === activeOrganization.identity_address ? (
+                                                        {canEditEmployee(employee) && (
                                                             <a
                                                                 className="text-primary-light"
-                                                                onClick={() => transferOwnership(adminEmployees)}>
-                                                                {t('organization_employees.buttons.transfer_ownership')}
+                                                                data-dusk={'btnEmployeeEdit'}
+                                                                onClick={() => editEmployee(employee)}>
+                                                                {translate('organization_employees.buttons.adjust')}
                                                             </a>
-                                                        ) : (
-                                                            <span className={'text-muted'}>
-                                                                {t('organization_employees.labels.owner')}
-                                                            </span>
+                                                        )}
+
+                                                        {authIdentity.address !== employee.identity_address && (
+                                                            <Fragment>
+                                                                &nbsp;&nbsp;
+                                                                <a
+                                                                    className="text-danger"
+                                                                    data-dusk={'btnEmployeeDelete'}
+                                                                    onClick={() => deleteEmployee(employee)}>
+                                                                    {translate('organization_employees.buttons.delete')}
+                                                                </a>
+                                                            </Fragment>
                                                         )}
                                                     </Fragment>
-                                                )}
-                                            </td>
+                                                </td>
+                                            ) : (
+                                                <td className={'text-right'}>
+                                                    {adminEmployees.length > 0 &&
+                                                    authIdentity.address === activeOrganization.identity_address ? (
+                                                        <a
+                                                            className="text-primary-light"
+                                                            onClick={() => transferOwnership(adminEmployees)}>
+                                                            {translate(
+                                                                'organization_employees.buttons.transfer_ownership',
+                                                            )}
+                                                        </a>
+                                                    ) : (
+                                                        <span className={'text-muted'}>
+                                                            {translate('organization_employees.labels.owner')}
+                                                        </span>
+                                                    )}
+                                                </td>
+                                            )}
                                         </tr>
                                     ))}
                                 </tbody>
@@ -374,26 +414,18 @@ export default function Employees() {
                         </div>
                     </div>
                 </div>
-            )}
 
-            {employees?.meta.total == 0 && (
-                <div className="card-section">
-                    <div className="block block-empty text-center">
-                        <div className="empty-title">Geen medewerkers gevonden</div>
+                {employees?.meta.total > 0 && (
+                    <div className="card-section">
+                        <Paginator
+                            meta={employees.meta}
+                            filters={filter.values}
+                            updateFilters={filter.update}
+                            perPageKey={paginatorKey}
+                        />
                     </div>
-                </div>
-            )}
-
-            {employees?.meta && (
-                <div className="card-section">
-                    <Paginator
-                        meta={employees.meta}
-                        filters={filter.values}
-                        updateFilters={filter.update}
-                        perPageKey={paginatorKey}
-                    />
-                </div>
-            )}
+                )}
+            </LoaderTableCard>
         </div>
     );
 }

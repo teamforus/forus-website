@@ -1,5 +1,4 @@
 import React, { Fragment, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { getStateRouteUrl } from '../../../modules/state_router/Router';
 import ProgressStorage from '../../../helpers/ProgressStorage';
@@ -48,15 +47,16 @@ import useDemoTransactionService from '../../../services/DemoTransactionService'
 import { uniq } from 'lodash';
 import useAppConfigs from '../../../hooks/useAppConfigs';
 import usePushDanger from '../../../hooks/usePushDanger';
+import useTranslate from '../../../hooks/useTranslate';
 
 type OfficeLocal = Office & { edit?: boolean };
 
 export default function SignUpProvider() {
-    const { t } = useTranslation();
     const envData = useEnvData();
-
     const isMobile = window.innerWidth < 1000;
     const appConfigs = useAppConfigs();
+
+    const translate = useTranslate();
     const pushDanger = usePushDanger();
 
     const [printDebug] = useState(false);
@@ -197,7 +197,7 @@ export default function SignUpProvider() {
         async (values) => {
             if (values && values.iban != values.iban_confirmation) {
                 formOrganization.setIsLocked(false);
-                formOrganization.setErrors({ iban_confirmation: [t('validation.iban_confirmation')] });
+                formOrganization.setErrors({ iban_confirmation: [translate('validation.iban_confirmation')] });
                 return;
             }
 
@@ -763,7 +763,7 @@ export default function SignUpProvider() {
                     </div>
                 </div>
 
-                <h2 className="block-title">{t('sign_up_provider.header.main_header')}</h2>
+                <h2 className="block-title">{translate('sign_up_provider.header.main_header')}</h2>
 
                 {step == 'STEP_INFO_GENERAL' && (
                     <Fragment>
@@ -774,41 +774,45 @@ export default function SignUpProvider() {
                         />
 
                         <div className="sign_up-pane">
-                            <div className="sign_up-pane-header">{t('sign_up_provider.header.title_step_1')}</div>
+                            <div className="sign_up-pane-header">
+                                {translate('sign_up_provider.header.title_step_1')}
+                            </div>
                             <div className="sign_up-pane-body sign_up-pane-body-padless-bottom">
-                                <div className="sign_up-pane-text">{t('sign_up_provider.header.subtitle_step_1')}</div>
+                                <div className="sign_up-pane-text">
+                                    {translate('sign_up_provider.header.subtitle_step_1')}
+                                </div>
                                 <div className="sign_up-pane-text">
                                     <h5 className="sign_up-pane-heading">
-                                        {t('sign_up_provider.header.title_step_1_paragrah_1')}
+                                        {translate('sign_up_provider.header.title_step_1_paragrah_1')}
                                     </h5>
                                     <ul className="list-normal">
                                         <li className="sign_up-pane-text list-item-normal">
-                                            {t('sign_up_provider.header.subtitle_step_1_point_1')}
+                                            {translate('sign_up_provider.header.subtitle_step_1_point_1')}
                                         </li>
                                         <li className="sign_up-pane-text list-item-normal">
-                                            {t('sign_up_provider.header.subtitle_step_1_point_2')}
+                                            {translate('sign_up_provider.header.subtitle_step_1_point_2')}
                                         </li>
                                         <li className="sign_up-pane-text list-item-normal">
-                                            {t('sign_up_provider.header.subtitle_step_1_point_3')}
+                                            {translate('sign_up_provider.header.subtitle_step_1_point_3')}
                                         </li>
                                     </ul>
                                 </div>
                                 {!authToken && (
                                     <div className="sign_up-pane-text">
                                         <h5 className="sign_up-pane-heading">
-                                            {t('sign_up_provider.header.title_step_1_paragrah_2')}
+                                            {translate('sign_up_provider.header.title_step_1_paragrah_2')}
                                         </h5>
                                         <StateNavLink name={'sign-in'} className="sign_up-pane-link">
                                             Klik hier&nbsp;
                                         </StateNavLink>
-                                        {t('sign_up_provider.header.subtitle_step_1_paragrah_2')}
+                                        {translate('sign_up_provider.header.subtitle_step_1_paragrah_2')}
                                     </div>
                                 )}
                                 <div className="sign_up-pane-text">
                                     <h5 className="sign_up-pane-heading">
-                                        {t('sign_up_provider.header.title_step_1_paragrah_3')}
+                                        {translate('sign_up_provider.header.title_step_1_paragrah_3')}
                                     </h5>
-                                    {t('sign_up_provider.header.subtitle_step_1_paragrah_3')}
+                                    {translate('sign_up_provider.header.subtitle_step_1_paragrah_3')}
                                 </div>
                                 <div className="sign_up-pane-media">
                                     <img src={assetUrl('/assets/img/sign_up_first_step.png')} alt={''} />
@@ -822,7 +826,7 @@ export default function SignUpProvider() {
                                     </div>
                                     <div className="col col-lg-6 text-right">
                                         <div className="button button-text button-text-padless" onClick={next}>
-                                            {t('sign_up_provider.buttons.next')}
+                                            {translate('sign_up_provider.buttons.next')}
                                             <em className="mdi mdi-chevron-right icon-right" />
                                         </div>
                                     </div>
@@ -841,7 +845,9 @@ export default function SignUpProvider() {
                         />
 
                         <div className="sign_up-pane">
-                            <div className="sign_up-pane-header">{t('sign_up_provider.header.title_step_2')}</div>
+                            <div className="sign_up-pane-header">
+                                {translate('sign_up_provider.header.title_step_2')}
+                            </div>
                             <div className="sign_up-pane-body">
                                 <div className="sign_up-pane-media">
                                     <img
@@ -860,12 +866,12 @@ export default function SignUpProvider() {
                                     <div className="col col-lg-6 text-left">
                                         <div className="button button-text button-text-padless" onClick={back}>
                                             <em className="mdi mdi-chevron-left icon-left" />
-                                            {t('sign_up_provider.buttons.back')}
+                                            {translate('sign_up_provider.buttons.back')}
                                         </div>
                                     </div>
                                     <div className="col col-lg-6 text-right">
                                         <div className="button button-text button-text-padless" onClick={next}>
-                                            {t('sign_up_provider.buttons.next')}
+                                            {translate('sign_up_provider.buttons.next')}
                                             <em className="mdi mdi-chevron-right icon-right"> </em>
                                         </div>
                                     </div>
@@ -885,18 +891,20 @@ export default function SignUpProvider() {
 
                         <div className="sign_up-pane">
                             {hasApp && (
-                                <div className="sign_up-pane-header">{t('sign_up_provider.header.title_step_3')}</div>
+                                <div className="sign_up-pane-header">
+                                    {translate('sign_up_provider.header.title_step_3')}
+                                </div>
                             )}
 
                             {!hasApp && (
                                 <div className="sign_up-pane-header visible-md visible-lg">
-                                    {t('sign_up_provider.header.title_step_3_mail')}
+                                    {translate('sign_up_provider.header.title_step_3_mail')}
                                 </div>
                             )}
 
                             {!hasApp && (
                                 <div className="sign_up-pane-header visible-sm visible-xs">
-                                    {t('sign_up_provider.header.title_step_3_mail_mobile')}
+                                    {translate('sign_up_provider.header.title_step_3_mail_mobile')}
                                 </div>
                             )}
 
@@ -1038,7 +1046,7 @@ export default function SignUpProvider() {
                                                                 className="button button-primary-outline"
                                                                 type="button"
                                                                 onClick={() => phoneForm.submit()}>
-                                                                {t('sign_up_provider.download.download_link')}
+                                                                {translate('sign_up_provider.download.download_link')}
                                                             </button>
                                                         </div>
                                                     </div>
@@ -1152,7 +1160,7 @@ export default function SignUpProvider() {
                                             <div className="app_download-row" />
                                             <div className="app_download-row">
                                                 <div className="app_download-text app_download-text-xs">
-                                                    {t('sign_up_provider.download.cannot_install_app')}
+                                                    {translate('sign_up_provider.download.cannot_install_app')}
                                                     <span>&nbsp;</span>
                                                     <a
                                                         className="app_download-link text-muted"
@@ -1182,7 +1190,7 @@ export default function SignUpProvider() {
                                             <br />
                                             <div className="sign_up-pane-text">
                                                 <small>
-                                                    {t('sign_up_provider.download.no_link_received_sms')}{' '}
+                                                    {translate('sign_up_provider.download.no_link_received_sms')}{' '}
                                                     <a href="https://www.forus.io/DL" target="_blank" rel="noreferrer">
                                                         www.forus.io/DL
                                                     </a>
@@ -1218,7 +1226,7 @@ export default function SignUpProvider() {
                                             <br />
                                             <div className="sign_up-pane-text">
                                                 <small>
-                                                    {t('sign_up_provider.download.no_link_received_email')}{' '}
+                                                    {translate('sign_up_provider.download.no_link_received_email')}{' '}
                                                     <a href="https://www.forus.io/DL" target="_blank" rel="noreferrer">
                                                         www.forus.io/DL
                                                     </a>
@@ -1284,10 +1292,10 @@ export default function SignUpProvider() {
                             {!authEmailSent && !authEmailRestoreSent && !hasApp && (
                                 <div className="sign_up-pane-body">
                                     <div className="sign_up-pane-heading visible-md visible-lg">
-                                        {t('sign_up_provider.no_app.enter_email')}
+                                        {translate('sign_up_provider.no_app.enter_email')}
                                     </div>
                                     <div className="sign_up-pane-text visible-md visible-lg">
-                                        {t('sign_up_provider.no_app.instructions')}
+                                        {translate('sign_up_provider.no_app.instructions')}
                                     </div>
                                     <form className="sign-up-form form" onSubmit={signUpForm.submit}>
                                         <div className="row">
@@ -1310,7 +1318,7 @@ export default function SignUpProvider() {
                                                         className="button button-primary button-fill"
                                                         type="submit"
                                                         disabled={!signUpForm.values.email || signUpForm.isLocked}>
-                                                        {t('sign_up_provider.app_instruction.create_profile')}
+                                                        {translate('sign_up_provider.app_instruction.create_profile')}
                                                     </button>
                                                 </div>
                                             </div>
@@ -1319,7 +1327,7 @@ export default function SignUpProvider() {
                                     <div
                                         className="sign_up-pane-link visible-md visible-lg"
                                         onClick={() => setHasApp(true)}>
-                                        {t('sign_up_provider.no_app.continue_app')}
+                                        {translate('sign_up_provider.no_app.continue_app')}
                                     </div>
                                 </div>
                             )}
@@ -1330,10 +1338,10 @@ export default function SignUpProvider() {
                                         <img src={assetUrl('/assets/img/email_confirmed.svg')} alt={''} />
                                     </div>
                                     <div className="sign_up-pane-heading sign_up-pane-heading-lg text-primary-mid">
-                                        {t('sign_up_sponsor.labels.confirm_email')}
+                                        {translate('sign_up_sponsor.labels.confirm_email')}
                                     </div>
                                     <div className="sign_up-pane-text">
-                                        {t('sign_up_sponsor.labels.confirm_email_description')}
+                                        {translate('sign_up_sponsor.labels.confirm_email_description')}
                                         &nbsp;
                                         <span className="sign_up-pane-link">{signUpForm.values.email}</span>
                                         <br />
@@ -1353,7 +1361,7 @@ export default function SignUpProvider() {
                                                     resetShareForms();
                                                 }}>
                                                 <em className="mdi mdi-chevron-left icon-lefts" />
-                                                {t('sign_up_provider.buttons.back')}
+                                                {translate('sign_up_provider.buttons.back')}
                                             </div>
                                         </div>
                                         <div className="col col-lg-6 text-right" />
@@ -1369,7 +1377,7 @@ export default function SignUpProvider() {
                                                 className="button button-text button-text-padless"
                                                 onClick={() => back()}>
                                                 <em className="mdi mdi-chevron-left icon-lefts" />
-                                                {t('sign_up_provider.buttons.back')}
+                                                {translate('sign_up_provider.buttons.back')}
                                             </div>
                                         </div>
                                         <div className="col col-lg-6 text-right" />
@@ -1389,9 +1397,13 @@ export default function SignUpProvider() {
                         />
 
                         <div className="sign_up-pane">
-                            <div className="sign_up-pane-header">{t('sign_up_provider.header.title_step_4')}</div>
+                            <div className="sign_up-pane-header">
+                                {translate('sign_up_provider.header.title_step_4')}
+                            </div>
                             <div className="sign_up-pane-body">
-                                <div className="sign_up-pane-text">{t('sign_up_provider.header.subtitle_step_4')}</div>
+                                <div className="sign_up-pane-text">
+                                    {translate('sign_up_provider.header.subtitle_step_4')}
+                                </div>
                                 <br />
                                 <div className="sign_up-organizations">
                                     {organizationsList?.map((item) => (
@@ -1421,13 +1433,13 @@ export default function SignUpProvider() {
                                     className="button button-primary-outline button-fill visible-sm visible-xs"
                                     onClick={addOrganization}>
                                     <div className="mdi mdi-plus-circle-outline icon-start" />
-                                    {t('sign_up_sponsor.buttons.organization_add')}
+                                    {translate('sign_up_sponsor.buttons.organization_add')}
                                 </div>
                             </div>
                             <div className="sign_up-pane-body visible-md visible-lg">
                                 <div className="button button-primary-outline" onClick={addOrganization}>
                                     <div className="mdi mdi-plus-circle-outline icon-start" />
-                                    {t('sign_up_sponsor.buttons.organization_add')}
+                                    {translate('sign_up_sponsor.buttons.organization_add')}
                                 </div>
                             </div>
                             <div className="sign_up-pane-footer">
@@ -1435,7 +1447,7 @@ export default function SignUpProvider() {
                                     <div className="col col-lg-6 text-left">
                                         <div className="button button-text button-text-padless" onClick={back}>
                                             <em className="mdi mdi-chevron-left icon-lefts" />
-                                            {t('sign_up_provider.buttons.back')}
+                                            {translate('sign_up_provider.buttons.back')}
                                         </div>
                                     </div>
                                     <div className="col col-lg-6 text-right" />
@@ -1460,10 +1472,12 @@ export default function SignUpProvider() {
                                     e?.preventDefault();
                                     next();
                                 }}>
-                                <div className="sign_up-pane-header">{t('sign_up_provider.header.title_step_5')}</div>
+                                <div className="sign_up-pane-header">
+                                    {translate('sign_up_provider.header.title_step_5')}
+                                </div>
                                 <div className="sign_up-pane-body">
                                     <div className="sign_up-pane-text">
-                                        {t('sign_up_provider.header.subtitle_step_5')}
+                                        {translate('sign_up_provider.header.subtitle_step_5')}
                                     </div>
                                 </div>
                                 <div className="sign_up-pane-body sign_up-pane-body-padless">
@@ -1471,7 +1485,7 @@ export default function SignUpProvider() {
                                         <div className="sign_up-pane-col sign_up-pane-col-2">
                                             <div className="form-group">
                                                 <label className="form-label">
-                                                    {t('organization_edit.labels.name')}
+                                                    {translate('organization_edit.labels.name')}
                                                 </label>
                                                 <UIControlText
                                                     value={formOrganization.values.name}
@@ -1482,7 +1496,7 @@ export default function SignUpProvider() {
                                             </div>
                                             <div className="form-group">
                                                 <label className="form-label">
-                                                    {t('organization_edit.labels.bank')}
+                                                    {translate('organization_edit.labels.bank')}
                                                     <Tooltip
                                                         text={
                                                             'Vul hier het rekeningnummer in waar u de betalingen op wilt ontvangen'
@@ -1520,7 +1534,7 @@ export default function SignUpProvider() {
                                                 type={'organization_logo'}
                                                 template="photo-selector-sign_up"
                                                 selectPhoto={selectPhoto}
-                                                description={t('organization_edit.labels.photo_description')}
+                                                description={translate('organization_edit.labels.photo_description')}
                                             />
                                         </div>
                                     </div>
@@ -1530,7 +1544,7 @@ export default function SignUpProvider() {
                                         <div className="sign_up-pane-col">
                                             <div className="form-group">
                                                 <label className="form-label">
-                                                    {t('organization_edit.labels.mail')}
+                                                    {translate('organization_edit.labels.mail')}
                                                 </label>
                                                 <div className="row">
                                                     <div className="col col-md-8 col-xs-12">
@@ -1547,7 +1561,7 @@ export default function SignUpProvider() {
                                                             id={'email_public_input'}
                                                             name="email_public"
                                                             className="make-public"
-                                                            label={t('organization_edit.labels.make_public')}
+                                                            label={translate('organization_edit.labels.make_public')}
                                                             checked={formOrganization.values.email_public}
                                                             onChange={(e) =>
                                                                 formOrganization.update({
@@ -1562,7 +1576,7 @@ export default function SignUpProvider() {
                                             </div>
                                             <div className="form-group">
                                                 <label className="form-label">
-                                                    {t('organization_edit.labels.phone')}
+                                                    {translate('organization_edit.labels.phone')}
                                                 </label>
                                                 <div className="row">
                                                     <div className="col col-md-8 col-xs-12">
@@ -1579,7 +1593,7 @@ export default function SignUpProvider() {
                                                             id={'phone_public_input'}
                                                             name="phone_public"
                                                             className="make-public"
-                                                            label={t('organization_edit.labels.make_public')}
+                                                            label={translate('organization_edit.labels.make_public')}
                                                             checked={formOrganization.values.phone_public}
                                                             onChange={(e) =>
                                                                 formOrganization.update({
@@ -1593,7 +1607,7 @@ export default function SignUpProvider() {
                                             </div>
                                             <div className="form-group">
                                                 <label className="form-label">
-                                                    {t('organization_edit.labels.website')}
+                                                    {translate('organization_edit.labels.website')}
                                                 </label>
                                                 <div className="row">
                                                     <div className="col col-md-8 col-xs-12">
@@ -1610,7 +1624,7 @@ export default function SignUpProvider() {
                                                             id={'website_public_input'}
                                                             name="website_public"
                                                             className="make-public"
-                                                            label={t('organization_edit.labels.make_public')}
+                                                            label={translate('organization_edit.labels.make_public')}
                                                             checked={formOrganization.values.website_public}
                                                             onChange={(e) =>
                                                                 formOrganization.update({
@@ -1631,7 +1645,7 @@ export default function SignUpProvider() {
                                             <div className="form-group row">
                                                 <div className="col col-md-8 col-xs-12">
                                                     <label className="form-label">
-                                                        {t('organization_edit.labels.business_type')}
+                                                        {translate('organization_edit.labels.business_type')}
                                                     </label>
                                                     <div className="form-offset">
                                                         {businessTypes && (
@@ -1653,7 +1667,7 @@ export default function SignUpProvider() {
                                             <div className="form-group row">
                                                 <div className="col col-md-8 col-xs-12">
                                                     <label className="form-label">
-                                                        {t('organization_edit.labels.kvk')}
+                                                        {translate('organization_edit.labels.kvk')}
                                                     </label>
                                                     <UIControlText
                                                         value={formOrganization.values.kvk}
@@ -1668,7 +1682,7 @@ export default function SignUpProvider() {
                                             <div className="form-group row">
                                                 <div className="col col-md-8 col-xs-12">
                                                     <label className="form-label">
-                                                        {t('organization_edit.labels.tax')}
+                                                        {translate('organization_edit.labels.tax')}
                                                     </label>
                                                     <UIControlText
                                                         value={formOrganization.values.btw}
@@ -1678,7 +1692,7 @@ export default function SignUpProvider() {
                                                         placeholder={'Voorbeeld: NL123456789B01'}
                                                     />
                                                     <div className="form-hint text-right">
-                                                        {t('organization_edit.labels.optional')}
+                                                        {translate('organization_edit.labels.optional')}
                                                     </div>
                                                     <FormError error={formOrganization.errors.btw} />
                                                 </div>
@@ -1694,12 +1708,12 @@ export default function SignUpProvider() {
                                                 className="button button-text button-text-padless"
                                                 onClick={cancelAddOrganization}>
                                                 <em className="mdi mdi-chevron-left icon-left" />
-                                                {t('sign_up_provider.buttons.back')}
+                                                {translate('sign_up_provider.buttons.back')}
                                             </button>
                                         </div>
                                         <div className="col col-lg-6 text-right">
                                             <button type={'submit'} className="button button-text button-text-padless">
-                                                {t('sign_up_provider.buttons.next')}
+                                                {translate('sign_up_provider.buttons.next')}
                                                 <em className="mdi mdi-chevron-right icon-right" />
                                             </button>
                                         </div>
@@ -1719,9 +1733,13 @@ export default function SignUpProvider() {
                         />
 
                         <div className="sign_up-pane">
-                            <div className="sign_up-pane-header">{t('sign_up_provider.header.title_step_6')}</div>
+                            <div className="sign_up-pane-header">
+                                {translate('sign_up_provider.header.title_step_6')}
+                            </div>
                             <div className="sign_up-pane-body">
-                                <div className="sign_up-pane-text">{t('sign_up_provider.header.subtitle_step_6')}</div>
+                                <div className="sign_up-pane-text">
+                                    {translate('sign_up_provider.header.subtitle_step_6')}
+                                </div>
                             </div>
                             <div className="sign_up-pane-body sign_up-pane-body-padless">
                                 {offices?.map((office, index) => (
@@ -1749,7 +1767,8 @@ export default function SignUpProvider() {
                                                     </div>
                                                     <div className="office-contact">
                                                         <em className="mdi mdi-phone" />
-                                                        {office.phone || t('organization_edit.labels.not_specified')}
+                                                        {office.phone ||
+                                                            translate('organization_edit.labels.not_specified')}
                                                     </div>
                                                 </div>
                                                 <div className="office-map">
@@ -1768,7 +1787,7 @@ export default function SignUpProvider() {
                                                                 editOffice(office);
                                                             }}>
                                                             <em className="edit mdi mdi-pencil-outline" />
-                                                            {t('organization_edit.buttons.edit_location')}
+                                                            {translate('organization_edit.buttons.edit_location')}
                                                         </a>
                                                         <a
                                                             className="office-action"
@@ -1777,7 +1796,7 @@ export default function SignUpProvider() {
                                                                 deleteOffice(office);
                                                             }}>
                                                             <em className="delete mdi mdi-trash-can-outline" />
-                                                            {t('organization_edit.buttons.delete_location')}
+                                                            {translate('organization_edit.buttons.delete_location')}
                                                         </a>
                                                     </div>
                                                 </div>
@@ -1814,7 +1833,7 @@ export default function SignUpProvider() {
                                                 className="button button-primary-outline button-fill button-sm"
                                                 onClick={addOffice}>
                                                 <em className="mdi mdi-plus-circle-outline icon-start" />
-                                                {t('organization_edit.buttons.add_location')}
+                                                {translate('organization_edit.buttons.add_location')}
                                             </button>
                                         </div>
                                     )}
@@ -1826,7 +1845,7 @@ export default function SignUpProvider() {
                                     <div className="col col-lg-6 text-left">
                                         <div className="button button-text button-text-padless" onClick={() => back()}>
                                             <em className="mdi mdi-chevron-left icon-lefts" />
-                                            {t('sign_up_provider.buttons.back')}
+                                            {translate('sign_up_provider.buttons.back')}
                                         </div>
                                     </div>
                                     <div className="col col-lg-6 text-right">
@@ -1835,7 +1854,7 @@ export default function SignUpProvider() {
                                             className="button button-text button-text-padless"
                                             disabled={!offices || offices?.length == 0}
                                             onClick={() => next()}>
-                                            {t('sign_up_provider.buttons.next')}
+                                            {translate('sign_up_provider.buttons.next')}
                                             <em className="mdi mdi-chevron-right icon-right" />
                                         </button>
                                     </div>
@@ -1854,7 +1873,9 @@ export default function SignUpProvider() {
                         />
 
                         <div className="sign_up-pane">
-                            <div className="sign_up-pane-header">{t('sign_up_provider.header.title_step_7')}</div>
+                            <div className="sign_up-pane-header">
+                                {translate('sign_up_provider.header.title_step_7')}
+                            </div>
                             <div className="sign_up-pane-body">
                                 <TranslateHtml
                                     component={<div className="sign_up-pane-text" />}
@@ -1901,7 +1922,7 @@ export default function SignUpProvider() {
                                                     className="button button-primary button-fill"
                                                     type="submit"
                                                     disabled={!employeeForm.values.email || employeeForm.isLocked}>
-                                                    {t('organization_edit.buttons.add_employee')}
+                                                    {translate('organization_edit.buttons.add_employee')}
                                                 </button>
                                             </div>
                                         </div>
@@ -1913,12 +1934,12 @@ export default function SignUpProvider() {
                                     <div className="col col-lg-6 text-left">
                                         <div className="button button-text button-text-padless" onClick={() => back()}>
                                             <em className="mdi mdi-chevron-left icon-lefts" />
-                                            {t('sign_up_provider.buttons.back')}
+                                            {translate('sign_up_provider.buttons.back')}
                                         </div>
                                     </div>
                                     <div className="col col-lg-6 text-right">
                                         <div className="button button-text button-text-padless" onClick={() => next()}>
-                                            {t('sign_up_provider.buttons.next')}
+                                            {translate('sign_up_provider.buttons.next')}
                                             <em className="mdi mdi-chevron-right icon-right" />
                                         </div>
                                     </div>
@@ -1937,9 +1958,13 @@ export default function SignUpProvider() {
                         />
 
                         <div className="sign_up-pane">
-                            <div className="sign_up-pane-header">{t('sign_up_provider.header.title_step_8')}</div>
+                            <div className="sign_up-pane-header">
+                                {translate('sign_up_provider.header.title_step_8')}
+                            </div>
                             <div className="sign_up-pane-body">
-                                <div className="sign_up-pane-text">{t('sign_up_provider.header.subtitle_step_8')}</div>
+                                <div className="sign_up-pane-text">
+                                    {translate('sign_up_provider.header.subtitle_step_8')}
+                                </div>
                             </div>
                             <div className="sign_up-pane-body">
                                 <SignUpAvailableFunds
@@ -1949,7 +1974,9 @@ export default function SignUpProvider() {
                                 />
                                 {!hasFundApplications && (
                                     <UIControlCheckbox
-                                        label={t('Ik wil me nu niet aanmelden voor een regeling en doe dit later.')}
+                                        label={translate(
+                                            'Ik wil me nu niet aanmelden voor een regeling en doe dit later.',
+                                        )}
                                         checked={skipFundApplications}
                                         onChange={(e) => setSkipFundApplications(e.target.checked)}
                                     />
@@ -1960,7 +1987,7 @@ export default function SignUpProvider() {
                                     <div className="col col-lg-6 text-left">
                                         <div className="button button-text button-text-padless" onClick={() => back()}>
                                             <em className="mdi mdi-chevron-left icon-lefts"></em>
-                                            {t('sign_up_provider.buttons.back')}
+                                            {translate('sign_up_provider.buttons.back')}
                                         </div>
                                     </div>
                                     {(skipFundApplications || hasFundApplications) && (
@@ -1968,7 +1995,7 @@ export default function SignUpProvider() {
                                             <div
                                                 className="button button-text button-text-padless"
                                                 onClick={() => next()}>
-                                                {t('sign_up_provider.buttons.next')}
+                                                {translate('sign_up_provider.buttons.next')}
                                                 <em className="mdi mdi-chevron-right icon-right"></em>
                                             </div>
                                         </div>
@@ -1988,7 +2015,9 @@ export default function SignUpProvider() {
                         />
 
                         <div className="sign_up-pane">
-                            <div className="sign_up-pane-header">{t('sign_up_provider.header.title_step_9')}</div>
+                            <div className="sign_up-pane-header">
+                                {translate('sign_up_provider.header.title_step_9')}
+                            </div>
                             <div className="sign_up-pane-body">
                                 <div className="form row">
                                     <div className="form-group col col-lg-12">
@@ -1996,15 +2025,15 @@ export default function SignUpProvider() {
                                             <img alt={''} src={assetUrl('/assets/img/icon-sign_up-success.svg')} />
                                         </div>
                                         <div className="sign_up-pane-heading text-center">
-                                            {t('sign_up_provider.header.top_title_step_9')}
+                                            {translate('sign_up_provider.header.top_title_step_9')}
                                         </div>
                                         <p className="sign_up-pane-text text-center">
-                                            {t('sign_up_provider.header.subtitle_step_9')}
+                                            {translate('sign_up_provider.header.subtitle_step_9')}
                                         </p>
                                         <div className="text-center">
                                             {loggedWithApp && (
                                                 <div className="button button-primary-variant" onClick={() => next()}>
-                                                    {t('sign_up_provider.buttons.go_test_screen')}
+                                                    {translate('sign_up_provider.buttons.go_test_screen')}
                                                 </div>
                                             )}
                                         </div>
@@ -2017,7 +2046,7 @@ export default function SignUpProvider() {
                                     <div className="col col-lg-6 text-left">
                                         <div className="button button-text button-text-padless" onClick={() => back()}>
                                             <em className="mdi mdi-chevron-left icon-lefts"></em>
-                                            {t('sign_up_provider.buttons.back')}
+                                            {translate('sign_up_provider.buttons.back')}
                                         </div>
                                     </div>
                                     <div className="col col-lg-6 text-right">
@@ -2025,7 +2054,7 @@ export default function SignUpProvider() {
                                             <div
                                                 className="button button-text button-text-padless"
                                                 onClick={() => finish()}>
-                                                {t('sign_up_provider.buttons.go_to_dashboard')}
+                                                {translate('sign_up_provider.buttons.go_to_dashboard')}
                                                 <em className="mdi mdi-chevron-right icon-right" />
                                             </div>
                                         )}
@@ -2046,7 +2075,7 @@ export default function SignUpProvider() {
 
                         <div className="sign_up-pane">
                             <div className="sign_up-pane-header">
-                                {t('sign_up_provider.header.title_step_9_mobile')}
+                                {translate('sign_up_provider.header.title_step_9_mobile')}
                             </div>
                             <div className="sign_up-pane-body">
                                 <div className="form row">
@@ -2055,15 +2084,15 @@ export default function SignUpProvider() {
                                             <img alt={''} src={assetUrl('/assets/img/icon-sign_up-success.svg')} />
                                         </div>
                                         <div className="sign_up-pane-heading text-center">
-                                            {t('sign_up_provider.header.top_title_step_9_mobile')}
+                                            {translate('sign_up_provider.header.top_title_step_9_mobile')}
                                         </div>
                                         <p className="sign_up-pane-text text-left">
-                                            {t('sign_up_provider.header.subtitle_step_9_mobile')}
+                                            {translate('sign_up_provider.header.subtitle_step_9_mobile')}
                                         </p>
                                         <div className="text-center">
                                             {loggedWithApp && (
                                                 <div className="button button-primary-variant" onClick={() => next()}>
-                                                    {t('sign_up_provider.buttons.go_test_screen')}
+                                                    {translate('sign_up_provider.buttons.go_test_screen')}
                                                 </div>
                                             )}
                                         </div>
@@ -2074,7 +2103,7 @@ export default function SignUpProvider() {
                                             <a
                                                 href="https://www.forus.io/DL"
                                                 className="button button-primary-outline col-xs-12">
-                                                {t('sign_up_provider.header.download_step_9_mobile')}
+                                                {translate('sign_up_provider.header.download_step_9_mobile')}
                                             </a>
                                         </div>
                                     </div>
@@ -2093,10 +2122,12 @@ export default function SignUpProvider() {
                         />
 
                         <div className="sign_up-pane">
-                            <div className="sign_up-pane-header">{t('sign_up_provider.header.title_step_10')}</div>
+                            <div className="sign_up-pane-header">
+                                {translate('sign_up_provider.header.title_step_10')}
+                            </div>
                             <div className="sign_up-pane-body">
                                 <div className="sign_up-pane-text header">
-                                    {t('sign_up_provider.header.subtitle_step_10')}
+                                    {translate('sign_up_provider.header.subtitle_step_10')}
                                 </div>
                                 <div className="sign_up-pane-auth test-qr">
                                     <div className="sign_up-pane-auth-qr_code">
@@ -2121,7 +2152,7 @@ export default function SignUpProvider() {
                                                     back();
                                                 }}>
                                                 <em className="mdi mdi-chevron-left icon-lefts"></em>
-                                                {t('sign_up_provider.buttons.back')}
+                                                {translate('sign_up_provider.buttons.back')}
                                             </div>
                                         </div>
                                         <div className="col col-lg-6 text-right">
@@ -2144,7 +2175,7 @@ export default function SignUpProvider() {
                                             <div
                                                 className="button button-text button-text-padless"
                                                 onClick={() => next()}>
-                                                {t('sign_up_provider.buttons.go_to_dashboard')}
+                                                {translate('sign_up_provider.buttons.go_to_dashboard')}
                                                 <em className="mdi mdi-chevron-right icon-right" />
                                             </div>
                                         </div>
@@ -2164,7 +2195,9 @@ export default function SignUpProvider() {
                         />
 
                         <div className="sign_up-pane">
-                            <div className="sign_up-pane-header">{t('sign_up_provider.header.title_step_11')}</div>
+                            <div className="sign_up-pane-header">
+                                {translate('sign_up_provider.header.title_step_11')}
+                            </div>
                             <div className="sign_up-pane-body">
                                 <div className="form row">
                                     <div className="form-group col col-lg-12">
@@ -2172,14 +2205,14 @@ export default function SignUpProvider() {
                                             <img alt={''} src={assetUrl('/assets/img/icon-smartphone-sign_up.svg')} />
                                         </div>
                                         <div className="sign_up-pane-heading text-center">
-                                            {t('sign_up_provider.header.top_title_step_11')}
+                                            {translate('sign_up_provider.header.top_title_step_11')}
                                         </div>
                                         <p className="sign_up-pane-text text-center">
-                                            {t('sign_up_provider.header.subtitle_step_11')}
+                                            {translate('sign_up_provider.header.subtitle_step_11')}
                                         </p>
                                         <div className="text-center">
                                             <div className="button button-primary-variant" onClick={() => finish()}>
-                                                {t('sign_up_provider.buttons.go_to_dashboard')}
+                                                {translate('sign_up_provider.buttons.go_to_dashboard')}
                                             </div>
                                         </div>
                                     </div>

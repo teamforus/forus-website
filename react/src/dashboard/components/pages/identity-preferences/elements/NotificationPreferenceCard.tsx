@@ -1,6 +1,6 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
 import { PreferenceOption } from '../../../../props/models/NotificationPreference';
+import useTranslate from '../../../../hooks/useTranslate';
 
 export default function NotificationPreferenceCard({
     title,
@@ -11,7 +11,7 @@ export default function NotificationPreferenceCard({
     preferences: Array<PreferenceOption>;
     togglePreference: (preference: PreferenceOption, subscribed: boolean) => void;
 }) {
-    const { t } = useTranslation();
+    const translate = useTranslate();
 
     return (
         <div className="card">
@@ -26,11 +26,11 @@ export default function NotificationPreferenceCard({
                         className="preference-option">
                         <div className="preference-option-details">
                             <div className="card-heading card-heading-padless">
-                                {t(`notification_preferences.types.${preference.key}.title`)}
+                                {translate(`notification_preferences.types.${preference.key}.title`)}
                             </div>
 
                             <div className="card-text">
-                                {t(`notification_preferences.types.${preference.key}.description`)}
+                                {translate(`notification_preferences.types.${preference.key}.description`)}
                             </div>
                         </div>
                         <div className="preference-option-input">

@@ -2,7 +2,7 @@ import React from 'react';
 import SelectControl from '../../../elements/select-control/SelectControl';
 import SelectControlOptions from '../../../elements/select-control/templates/SelectControlOptions';
 import MollieConnectionProfile from '../../../../props/models/MollieConnectionProfile';
-import { useTranslation } from 'react-i18next';
+import useTranslate from '../../../../hooks/useTranslate';
 
 export default function MollieConnectionProfileSelector({
     profiles,
@@ -17,7 +17,7 @@ export default function MollieConnectionProfileSelector({
     onSelect: (value: number) => void;
     onChange: () => void;
 }) {
-    const { t } = useTranslation();
+    const translate = useTranslate();
 
     return (
         <div className="flex">
@@ -27,7 +27,7 @@ export default function MollieConnectionProfileSelector({
                         <SelectControl
                             className="form-control inline-filter-control"
                             propKey={'id'}
-                            placeholder={t('mollie_connection.labels.current_profile')}
+                            placeholder={translate('mollie_connection.labels.current_profile')}
                             options={profiles}
                             value={currentProfileId}
                             onChange={(currentProfileId: number) => onSelect(currentProfileId)}
@@ -41,7 +41,7 @@ export default function MollieConnectionProfileSelector({
                     disabled={!currentProfileId || (currentProfile && currentProfileId == currentProfile.id)}
                     type="button"
                     onClick={() => onChange()}>
-                    {t('mollie_connection.buttons.change_profile')}
+                    {translate('mollie_connection.buttons.change_profile')}
                 </button>
             </div>
         </div>

@@ -2,9 +2,9 @@ import React, { useCallback, useEffect, useState } from 'react';
 import FormError from '../../../elements/forms/errors/FormError';
 import ProductCategory from '../../../../props/models/ProductCategory';
 import SelectControl from '../../../elements/select-control/SelectControl';
-import { useTranslation } from 'react-i18next';
 import SelectControlOptions from '../../../elements/select-control/templates/SelectControlOptions';
 import useProductCategoryService from '../../../../services/ProductCategoryService';
+import useTranslate from '../../../../hooks/useTranslate';
 
 export default function ProductCategoriesControl({
     value,
@@ -17,7 +17,7 @@ export default function ProductCategoriesControl({
     onChange: (value: number) => void;
     disabled?: boolean;
 }) {
-    const { t } = useTranslation();
+    const translate = useTranslate();
     const [ready, setReady] = useState(false);
     const [categoriesValues, setCategoriesValues] = useState<Array<number | null>>([]);
     const [categoriesHierarchy, setCategoriesHierarchy] = useState<Array<Array<Partial<ProductCategory>>>>([]);
@@ -118,7 +118,9 @@ export default function ProductCategoriesControl({
             {[...categoriesHierarchy.keys()].map((index) => (
                 <div className="form-group form-group-inline" key={categoriesHierarchy.length + '-' + index}>
                     {index == 0 ? (
-                        <label className="form-label form-label-required">{t('product_edit.labels.category')}</label>
+                        <label className="form-label form-label-required">
+                            {translate('product_edit.labels.category')}
+                        </label>
                     ) : (
                         <label className="form-label">&nbsp;</label>
                     )}

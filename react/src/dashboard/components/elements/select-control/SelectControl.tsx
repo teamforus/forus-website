@@ -11,7 +11,7 @@ type SelectControlProps<T> = {
     strict?: boolean;
     allowSearch?: boolean;
     autoClear?: boolean;
-    value?: T | string | number;
+    value?: T | string | number | boolean;
     onChange: CallableFunction;
     onCreate?: CallableFunction;
     onSearchChange?: CallableFunction;

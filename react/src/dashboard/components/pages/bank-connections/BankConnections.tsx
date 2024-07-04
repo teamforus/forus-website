@@ -18,6 +18,7 @@ import { BooleanParam, StringParam, useQueryParams } from 'use-query-params';
 import useConfirmBankConnectionDisable from './hooks/useConfirmBankConnectionDisable';
 import useConfirmBankNewConnection from './hooks/useConfirmBankNewConnection';
 import LoadingCard from '../../elements/loading-card/LoadingCard';
+import EmptyCard from '../../elements/empty-card/EmptyCard';
 
 export default function BankConnections() {
     const activeOrganization = useActiveOrganization();
@@ -53,7 +54,7 @@ export default function BankConnections() {
 
     const selectBank = useCallback(
         (bankName: string) => {
-            setBank(banks.data.filter((bank) => bank.key == bankName)[0] || null);
+            setBank(banks.data.find((bank) => bank.key == bankName) || null);
         },
         [banks],
     );
@@ -227,136 +228,48 @@ export default function BankConnections() {
     return (
         <Fragment>
             {banks.meta.total === 0 && (
-                <div className="card">
-                    <div className="card-section">
-                        <div className="block block-empty text-center">
-                            <div className="empty-title">Niet beschikbaar</div>
-                            <div className="empty-details">Geen verbindingen met een bank beschikbaar</div>
-                        </div>
-                    </div>
-                </div>
+                <EmptyCard title="Niet beschikbaar" description="Geen verbindingen met een bank beschikbaar" />
             )}
 
-            <div className="row">
-                <div className="col col-md-6">
-                    {bank === null && !bankConnection && (
-                        <div className="card">
-                            <div className="card-section">
-                                <div className="block block-empty text-center">
-                                    <div className="empty-icon">
-                                        <img
-                                            className="empty-icon-img"
-                                            src={assetUrl('/assets/img/bunq-logo.jpg')}
-                                            alt={''}
-                                        />
-                                    </div>
-                                    <div className="empty-title">Bunq integratie</div>
-                                    <div className="empty-actions">
-                                        <button className="button button-primary" onClick={() => selectBank('bunq')}>
-                                            Selecteer
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    )}
-                </div>
-
-                <div className="col col-md-6">
-                    {bank === null && !bankConnection && (
-                        <div className="card">
-                            <div className="card-section">
-                                <div className="block block-empty text-center">
-                                    <div className="empty-icon">
-                                        <img
-                                            className="empty-icon-img empty-icon-img-border"
-                                            src={assetUrl('/assets/img/bng-logo.jpg')}
-                                            alt={''}
-                                        />
-                                    </div>
-                                    <div className="empty-title">BNG integratie</div>
-                                    <div className="empty-actions">
-                                        <button className="button button-primary" onClick={() => selectBank('bng')}>
-                                            Selecteer
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    )}
-                </div>
-            </div>
-
-            {bank?.key === 'bunq' && !bankConnection && (
-                <div className="card">
-                    <div className="card-section">
-                        <div className="block block-empty text-center">
-                            <div className="empty-icon">
-                                <img className="empty-icon-img" src={assetUrl('/assets/img/bunq-logo.jpg')} alt={''} />
-                            </div>
-                            <div className="empty-title">Bank integratie</div>
-                            <div className="empty-details">
-                                <div className="row">
-                                    <div className="col-lg-6 col-sm-8 col-offset-sm-2 col-offset-lg-3">
-                                        Gebruik de koppeling met uw bank om rekeninginformatie uit te lezen en
-                                        transacties klaar te zetten.
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="empty-actions">
-                                <button
-                                    type="button"
-                                    className="button button-primary"
-                                    onSubmit={() => makeBankConnection(bank)}>
-                                    {submittingConnection ? (
-                                        <em className="mdi mdi-loading mdi-spin icon-start" />
-                                    ) : (
-                                        <em className="mdi mdi-qrcode-scan icon-start" />
-                                    )}
-                                    Koppelen
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            )}
-
-            {bank?.key === 'bng' && !bankConnection && (
-                <div className="card">
-                    <div className="card-section">
-                        <div className="block block-empty text-center">
-                            <div className="empty-icon">
-                                <img
-                                    className="empty-icon-img empty-icon-img-border"
-                                    src={assetUrl('/assets/img/bng-logo.jpg')}
-                                    alt={''}
+            {!bankConnection && (
+                <Fragment>
+                    {bank === null ? (
+                        <div className="row">
+                            <div className="col col-md-6">
+                                <EmptyCard
+                                    title={'Bunq integratie'}
+                                    imageIconImg={assetUrl('/assets/img/bunq-logo.jpg')}
+                                    button={{ text: 'Selecteer', type: 'primary', onClick: () => selectBank('bunq') }}
                                 />
                             </div>
-                            <div className="empty-title">Bank integratie</div>
-                            <div className="empty-details">
-                                <div className="row">
-                                    <div className="col-lg-6 col-sm-8 col-offset-sm-2 col-offset-lg-3">
-                                        Gebruik de koppeling met uw bank om rekeninginformatie uit te lezen en
-                                        transacties klaar te zetten.
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="empty-actions">
-                                <button
-                                    type="button"
-                                    className="button button-primary"
-                                    onClick={() => makeBankConnection(bank)}>
-                                    {submittingConnection ? (
-                                        <em className="mdi mdi-loading mdi-spin icon-start" />
-                                    ) : (
-                                        <em className="mdi mdi-link-variant icon-start" />
-                                    )}
-                                    Koppelen
-                                </button>
+
+                            <div className="col col-md-6">
+                                <EmptyCard
+                                    title={'BNG integratie'}
+                                    imageIconImg={assetUrl('/assets/img/bng-logo.jpg')}
+                                    button={{ text: 'Selecteer', type: 'primary', onClick: () => selectBank('bng') }}
+                                />
                             </div>
                         </div>
-                    </div>
-                </div>
+                    ) : (
+                        <EmptyCard
+                            title={'Bank integratie'}
+                            description={[
+                                'Gebruik de koppeling met uw bank om rekeninginformatie uit te lezen en',
+                                'transacties klaar te zetten.',
+                            ].join('\n')}
+                            imageIconImg={assetUrl(
+                                bank?.key === 'bunq' ? '/assets/img/bunq-logo.jpg' : '/assets/img/bng-logo.jpg',
+                            )}
+                            button={{
+                                text: 'Koppelen',
+                                type: 'primary',
+                                icon: submittingConnection ? 'loading mdi-spin icon-start' : 'link-variant icon-start',
+                                onClick: () => makeBankConnection(bank),
+                            }}
+                        />
+                    )}
+                </Fragment>
             )}
 
             {bank && bankConnection && (

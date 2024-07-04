@@ -1,5 +1,4 @@
 import React, { FormEvent, Fragment, useCallback, useEffect, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import PhotoSelector from '../../../elements/photo-selector/PhotoSelector';
 import useFormBuilder from '../../../../hooks/useFormBuilder';
 import FormError from '../../../elements/forms/errors/FormError';
@@ -30,6 +29,7 @@ import CheckboxControl from '../../../elements/forms/controls/CheckboxControl';
 import { dateFormat, dateParse } from '../../../../helpers/dates';
 import { hasPermission } from '../../../../helpers/utils';
 import { strLimit } from '../../../../helpers/string';
+import useTranslate from '../../../../hooks/useTranslate';
 
 export default function ProductsForm({
     organization,
@@ -42,8 +42,7 @@ export default function ProductsForm({
     sourceId?: number;
     id?: number;
 }) {
-    const { t } = useTranslation();
-
+    const translate = useTranslate();
     const pushDanger = usePushDanger();
     const pushSuccess = usePushSuccess();
     const setProgress = useSetProgress();
@@ -373,8 +372,8 @@ export default function ProductsForm({
                 <ModalNotification
                     modal={modal}
                     icon={'product-create'}
-                    title={t('product_edit.confirm_price_change.title')}
-                    description={t('product_edit.confirm_price_change.description')}
+                    title={translate('product_edit.confirm_price_change.title')}
+                    description={translate('product_edit.confirm_price_change.description')}
                     buttonSubmit={{
                         onClick: () => {
                             setAlreadyConfirmed(true);
@@ -386,7 +385,7 @@ export default function ProductsForm({
                 />
             ));
         });
-    }, [alreadyConfirmed, openModal, t]);
+    }, [alreadyConfirmed, openModal, translate]);
 
     const saveProduct = useCallback(
         (e: FormEvent<HTMLFormElement>) => {
@@ -428,7 +427,7 @@ export default function ProductsForm({
                     <ModalNotification
                         icon={'product-error'}
                         modal={modal}
-                        title={t('product_edit.errors.already_added')}
+                        title={translate('product_edit.errors.already_added')}
                         buttonCancel={{
                             onClick: () => navigateState('products', { organizationId: organization.id }),
                         }}
@@ -436,7 +435,7 @@ export default function ProductsForm({
                 );
             });
         }
-    }, [organization, appConfigs, product, products, openModal, t, navigateState]);
+    }, [organization, appConfigs, product, products, openModal, translate, navigateState]);
 
     useEffect(() => {
         if (id) {
@@ -500,25 +499,21 @@ export default function ProductsForm({
                     <StateNavLink
                         name={'sponsor-provider-organizations'}
                         params={{ organizationId: organization.id }}
+                        activeExact={true}
                         className="breadcrumb-item">
-                        {t('page_state_titles.organization-providers')}
+                        {translate('page_state_titles.organization-providers')}
                     </StateNavLink>
                     <StateNavLink
                         name={'sponsor-provider-organization'}
-                        params={{
-                            id: fundProvider.organization.id,
-                            organizationId: organization.id,
-                        }}
+                        params={{ id: fundProvider.organization.id, organizationId: organization.id }}
+                        activeExact={true}
                         className="breadcrumb-item">
                         {strLimit(fundProvider.organization.name, 40)}
                     </StateNavLink>
                     <StateNavLink
                         name={'fund-provider'}
-                        params={{
-                            id: fundProvider.id,
-                            fundId: fundProvider.fund.id,
-                            organizationId: organization.id,
-                        }}
+                        params={{ id: fundProvider.id, fundId: fundProvider.fund.id, organizationId: organization.id }}
+                        activeExact={true}
                         className="breadcrumb-item">
                         {strLimit(fundProvider.fund.name, 40)}
                     </StateNavLink>
@@ -529,11 +524,12 @@ export default function ProductsForm({
                     <StateNavLink
                         name={'products'}
                         params={{ organizationId: organization.id }}
+                        activeExact={true}
                         className="breadcrumb-item">
                         Aanbod
                     </StateNavLink>
                     <div className="breadcrumb-item active">
-                        {t(id ? 'product_edit.header.title_edit' : 'product_edit.header.title_add')}
+                        {translate(id ? 'product_edit.header.title_edit' : 'product_edit.header.title_add')}
                     </div>
                 </div>
             )}
@@ -541,7 +537,7 @@ export default function ProductsForm({
             <form className="card form" onSubmit={saveProduct}>
                 <div className="card-header">
                     <div className="card-title">
-                        {t(id ? 'product_edit.header.title_edit' : 'product_edit.header.title_add')}
+                        {translate(id ? 'product_edit.header.title_edit' : 'product_edit.header.title_add')}
                     </div>
                 </div>
 
@@ -562,14 +558,16 @@ export default function ProductsForm({
                             </div>
                             <div className="form-group form-group-inline" />
                             <div className="form-group form-group-inline">
-                                <label className="form-label">{t('product_edit.labels.alternative_text')}</label>
+                                <label className="form-label">
+                                    {translate('product_edit.labels.alternative_text')}
+                                </label>
                                 <input
                                     className="form-control"
                                     disabled={!isEditable}
                                     onChange={(e) => form.update({ alternative_text: e.target.value })}
                                     value={form.values.alternative_text || ''}
                                     type="text"
-                                    placeholder={t('product_edit.labels.alternative_text_placeholder')}
+                                    placeholder={translate('product_edit.labels.alternative_text_placeholder')}
                                 />
                                 <FormError error={form.errors.alternative_text} />
                             </div>
@@ -581,7 +579,7 @@ export default function ProductsForm({
                         <div className="col col-xs-11 col-lg-9">
                             <div className="form-group form-group-inline">
                                 <label className="form-label form-label-required">
-                                    {t('product_edit.labels.name')}
+                                    {translate('product_edit.labels.name')}
                                 </label>
                                 <input
                                     type="text"
@@ -596,14 +594,14 @@ export default function ProductsForm({
 
                             <div className="form-group form-group-inline tooltipped">
                                 <label className="form-label form-label-required">
-                                    {t('product_edit.labels.description')}
+                                    {translate('product_edit.labels.description')}
                                 </label>
                                 <div className="form-offset">
                                     <MarkdownEditor
                                         value={form.values.description_html || ''}
                                         disabled={!isEditable}
                                         onChange={(description) => form.update({ description })}
-                                        placeholder={t('product_edit.labels.description')}
+                                        placeholder={translate('product_edit.labels.description')}
                                     />
                                     <Tooltip
                                         text={
@@ -635,7 +633,7 @@ export default function ProductsForm({
                                                 </div>
                                             ))}
                                         </div>
-                                        <Tooltip text={t('product_edit.tooltips.product_type')?.split('\n')} />
+                                        <Tooltip text={translate('product_edit.tooltips.product_type')?.split('\n')} />
                                     </div>
                                 </div>
                             </div>
@@ -709,7 +707,7 @@ export default function ProductsForm({
 
                             {product && (
                                 <div className="form-group form-group-inline">
-                                    <label className="form-label">{t('product_edit.labels.sold')}</label>
+                                    <label className="form-label">{translate('product_edit.labels.sold')}</label>
                                     <input
                                         className="form-control"
                                         disabled={true}
@@ -728,12 +726,12 @@ export default function ProductsForm({
 
                             <div className="form-group form-group-inline tooltipped">
                                 <label className="form-label form-label-required">
-                                    {t('product_edit.labels.total')}
+                                    {translate('product_edit.labels.total')}
                                 </label>
                                 {product && product.unlimited_stock && (
                                     <div className="form-offset">
                                         <div className="form-value text-muted">
-                                            {t('product_edit.labels.stock_unlimited')}
+                                            {translate('product_edit.labels.stock_unlimited')}
                                         </div>
                                     </div>
                                 )}
@@ -764,7 +762,7 @@ export default function ProductsForm({
                                                 <div className="col col-lg-7">
                                                     <input
                                                         className="form-control"
-                                                        value={t('product_edit.labels.stock_unlimited')}
+                                                        value={translate('product_edit.labels.stock_unlimited')}
                                                         disabled={true}
                                                     />
                                                 </div>
@@ -774,7 +772,7 @@ export default function ProductsForm({
                                                 <CheckboxControl
                                                     disabled={!isEditable || (product && !product.unlimited_stock)}
                                                     id="unlimited_stock"
-                                                    title={t('product_edit.labels.stock_unlimited')}
+                                                    title={translate('product_edit.labels.stock_unlimited')}
                                                     checked={form.values.unlimited_stock}
                                                     onChange={(e) => {
                                                         form.update({ unlimited_stock: e.target.checked });
@@ -790,7 +788,9 @@ export default function ProductsForm({
 
                             {product && !product.unlimited_stock && (
                                 <div className="form-group form-group-inline tooltipped">
-                                    <label className="form-label">{t('product_edit.labels.stock_amount')}</label>
+                                    <label className="form-label">
+                                        {translate('product_edit.labels.stock_amount')}
+                                    </label>
                                     <div className="form-offset">
                                         <div className="form-group-info">
                                             <div className="form-group-info-control">
@@ -824,7 +824,7 @@ export default function ProductsForm({
                                                 <div className="info-box-icon mdi mdi-information" />
                                                 <div className="info-box-content">
                                                     <div className="block block-markdown">
-                                                        {t('tooltip.product.limit')}
+                                                        {translate('tooltip.product.limit')}
                                                     </div>
                                                 </div>
                                             </div>
@@ -841,14 +841,14 @@ export default function ProductsForm({
                     <div className="row">
                         <div className="col col-xs-11 col-lg-9">
                             <div className="form-group form-group-inline tooltipped">
-                                <label className="form-label">{t('product_edit.labels.expire')}</label>
+                                <label className="form-label">{translate('product_edit.labels.expire')}</label>
                                 <div className="form-offset">
                                     <div className="row">
                                         <div className="col col-lg-7">
                                             {nonExpiring ? (
                                                 <input
                                                     className="form-control"
-                                                    defaultValue={t('product_edit.labels.unlimited')}
+                                                    defaultValue={translate('product_edit.labels.unlimited')}
                                                     disabled={true}
                                                 />
                                             ) : (
@@ -865,7 +865,7 @@ export default function ProductsForm({
                                             <CheckboxControl
                                                 disabled={!isEditable}
                                                 id="non_expiring"
-                                                title={t('product_edit.labels.unlimited')}
+                                                title={translate('product_edit.labels.unlimited')}
                                                 checked={nonExpiring}
                                                 onChange={() => setNonExpiring(!nonExpiring)}
                                             />
@@ -899,7 +899,7 @@ export default function ProductsForm({
                                         />
                                         <FormError error={form.errors.reservation_enabled} />
                                     </div>
-                                    <Tooltip text={t('product_edit.tooltips.reservation_enabled')} />
+                                    <Tooltip text={translate('product_edit.tooltips.reservation_enabled')} />
                                 </div>
                             </div>
                         </div>
@@ -970,7 +970,7 @@ export default function ProductsForm({
                                             />
                                             <FormError error={form.errors.reservation_fields} />
                                         </div>
-                                        <Tooltip text={t('product_edit.tooltips.reservation_fields')} />
+                                        <Tooltip text={translate('product_edit.tooltips.reservation_fields')} />
                                     </div>
 
                                     {form.values.reservation_fields && (
@@ -1044,7 +1044,7 @@ export default function ProductsForm({
                             <div className="col-lg-9">
                                 <div className="form-group form-group-inline">
                                     <label className="form-label" htmlFor="reservation_extra_payments">
-                                        {t('product_edit.labels.extra_payments')}
+                                        {translate('product_edit.labels.extra_payments')}
                                     </label>
 
                                     <SelectControl
@@ -1084,12 +1084,12 @@ export default function ProductsForm({
                             type="button"
                             onClick={() => cancel()}
                             id="cancel_create_product">
-                            {t('product_edit.buttons.cancel')}
+                            {translate('product_edit.buttons.cancel')}
                         </button>
 
                         {isEditable && (
                             <button type="submit" className="button button-primary">
-                                {t('product_edit.buttons.confirm')}
+                                {translate('product_edit.buttons.confirm')}
                             </button>
                         )}
                     </div>

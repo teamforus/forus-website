@@ -10,7 +10,7 @@ export default function OrganizationsNoPermissions() {
         <>
             <div>
                 <div className="block block-breadcrumbs">
-                    <StateNavLink className="breadcrumb-item" name={'organizations'} params={{}}>
+                    <StateNavLink className="breadcrumb-item" name={'organizations'} activeExact={true}>
                         {activeOrganization.name}
                     </StateNavLink>
                     <div className="breadcrumb-item active">{title}</div>

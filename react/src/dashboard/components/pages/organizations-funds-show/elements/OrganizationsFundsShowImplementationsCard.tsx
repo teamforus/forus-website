@@ -276,7 +276,7 @@ export default function OrganizationsFundsShowImplementationsCard({
                     </div>
                 </Fragment>
             ) : (
-                <LoadingCard type={'section-card'} />
+                <LoadingCard type={'card-section'} />
             )}
         </div>
     );

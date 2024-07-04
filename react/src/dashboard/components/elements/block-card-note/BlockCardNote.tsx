@@ -1,6 +1,5 @@
 import FilterModel from '../../../types/FilterModel';
 import FormValuesModel from '../../../types/FormValuesModel';
-import { useTranslation } from 'react-i18next';
 import { useCallback, useEffect, useState } from 'react';
 import { ApiResponse, ApiResponseSingle, PaginationData, ResponseError } from '../../../props/ApiResponses';
 import Paginator from '../../../modules/paginator/components/Paginator';
@@ -16,6 +15,8 @@ import LoadingCard from '../loading-card/LoadingCard';
 import ModalAddNote from '../../modals/ModalAddNote';
 import useSetProgress from '../../../hooks/useSetProgress';
 import usePaginatorService from '../../../modules/paginator/services/usePaginatorService';
+import EmptyCard from '../empty-card/EmptyCard';
+import useTranslate from '../../../hooks/useTranslate';
 
 export default function BlockCardNote({
     isAssigned,
@@ -28,16 +29,17 @@ export default function BlockCardNote({
     deleteNote: (note: Note) => Promise<ApiResponseSingle<null>>;
     storeNote: (values: FormValuesModel) => Promise<ApiResponseSingle<Note>>;
 }) {
-    const { t } = useTranslation();
-    const [notes, setNotes] = useState<PaginationData<Note>>(null);
     const identity = useAuthIdentity();
+
     const openModal = useOpenModal();
+    const translate = useTranslate();
     const pushDanger = usePushDanger();
     const pushSuccess = usePushSuccess();
     const setProgress = useSetProgress();
 
     const paginatorService = usePaginatorService();
 
+    const [notes, setNotes] = useState<PaginationData<Note>>(null);
     const [paginatorKey] = useState('fund_request_notes');
 
     const filter = useFilter({
@@ -58,11 +60,11 @@ export default function BlockCardNote({
             openModal((modal) => (
                 <ModalDangerZone
                     modal={modal}
-                    title={t('modals.danger_zone.remove_note.title')}
-                    description={t('modals.danger_zone.remove_note.description')}
+                    title={translate('modals.danger_zone.remove_note.title')}
+                    description={translate('modals.danger_zone.remove_note.description')}
                     buttonCancel={{
                         onClick: modal.close,
-                        text: t('modals.danger_zone.remove_note.buttons.cancel'),
+                        text: translate('modals.danger_zone.remove_note.buttons.cancel'),
                     }}
                     buttonSubmit={{
                         onClick: () => {
@@ -77,12 +79,12 @@ export default function BlockCardNote({
                                 .catch((res: ResponseError) => pushDanger('Foutmelding!', res.data.message))
                                 .finally(() => setProgress(100));
                         },
-                        text: t('modals.danger_zone.remove_note.buttons.confirm'),
+                        text: translate('modals.danger_zone.remove_note.buttons.confirm'),
                     }}
                 />
             ));
         },
-        [deleteNote, filter, openModal, pushDanger, pushSuccess, setProgress, t],
+        [deleteNote, filter, openModal, pushDanger, pushSuccess, setProgress, translate],
     );
 
     const onAddNote = useCallback(() => {
@@ -109,7 +111,7 @@ export default function BlockCardNote({
                 <div className="flex-row">
                     <div className="flex flex-grow">
                         <div className="card-title">
-                            {t('notes.header.title')}&nbsp;
+                            {translate('notes.header.title')}&nbsp;
                             <span className="span-count">{notes.meta.total}</span>
                         </div>
                     </div>
@@ -118,7 +120,7 @@ export default function BlockCardNote({
                             {isAssigned && (
                                 <div className="button button-primary" onClick={onAddNote}>
                                     <em className="mdi mdi-plus-circle icon-start" />
-                                    {t('notes.buttons.add_new')}
+                                    {translate('notes.buttons.add_new')}
                                 </div>
                             )}
                         </div>
@@ -132,11 +134,11 @@ export default function BlockCardNote({
                             <table className="table table-align-top">
                                 <tbody>
                                     <tr>
-                                        <th>{t('notes.labels.id')}</th>
-                                        <th>{t('notes.labels.created_at')}</th>
-                                        <th>{t('notes.labels.created_by')}</th>
-                                        <th>{t('notes.labels.note')}</th>
-                                        <th className="text-right">{t('notes.labels.actions')}</th>
+                                        <th>{translate('notes.labels.id')}</th>
+                                        <th>{translate('notes.labels.created_at')}</th>
+                                        <th>{translate('notes.labels.created_by')}</th>
+                                        <th>{translate('notes.labels.note')}</th>
+                                        <th className="text-right">{translate('notes.labels.actions')}</th>
                                     </tr>
                                     {notes.data?.map((note) => (
                                         <tr key={note.id}>
@@ -172,13 +174,7 @@ export default function BlockCardNote({
                 </div>
             )}
 
-            {notes.meta.total == 0 && (
-                <div className="card-section">
-                    <div className="block block-empty text-center">
-                        <div className="empty-title">Geen notites</div>
-                    </div>
-                </div>
-            )}
+            {notes.meta.total == 0 && <EmptyCard type={'card-section'} title={'Geen notites'} />}
 
             {notes?.meta && (
                 <div className="card-section">

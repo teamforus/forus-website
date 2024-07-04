@@ -1,4 +1,4 @@
-module.exports = {
+export default {
     modal_section: {
         request_new_card: {
             title: 'Bestel een pas',
@@ -28,7 +28,7 @@ module.exports = {
             title: 'Je pas is besteld!',
             heading: 'De pas wordt verstuurd naar het adres:',
             description: 'Je hebt een e-mail ontvangen met de bevestiging van je bestelling.',
-        }
+        },
     },
     buttons: {
         confirm_card: {
@@ -41,5 +41,5 @@ module.exports = {
             cancel: 'Annuleer',
             confirm: 'Bevestigen',
         },
-    }
-}
+    },
+};

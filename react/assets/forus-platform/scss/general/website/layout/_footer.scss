@@ -3,11 +3,10 @@
     width: 100%;
     position: relative;
     height: auto;
-    border-top: solid 1px #F6F8F9;
+    border-top: solid 1px #f6f8f9;
     padding-top: 20px;
     .main_button {
-        margin: 0;
-        margin-top: 20px;
+        margin: 20px 0 0;
     }
     h4 {
         font-weight: 600;
@@ -45,11 +44,11 @@
 }
 .footer .col {
     width: 100%;
-    padding: 0px 20px 20px 20px;
+    padding: 0 20px 20px 20px;
 }
 
 .sub-foot {
-    background-color: #F6F8F9;
+    background-color: #f6f8f9;
     width: 100%;
     margin-top: 50px;
     .container {
@@ -81,15 +80,14 @@
 
 .footer .col h1 {
     margin: 0;
-    padding: 0;
     font-family: inherit;
     font-size: 12px;
     line-height: 17px;
-    padding: 20px 0px 5px 0px;
-    color: rgba(255,255,255,0.2);
+    padding: 20px 0 5px 0;
+    color: rgba(255, 255, 255, 0.2);
     font-weight: normal;
     text-transform: uppercase;
-    letter-spacing: 0.250em;
+    letter-spacing: 0.25em;
 }
 .footer .col ul {
     list-style-type: none;
@@ -101,11 +99,11 @@
     font-size: 14px;
     font-family: inherit;
     font-weight: bold;
-    padding: 5px 0px 5px 0px;
+    padding: 5px 0 5px 0;
     cursor: pointer;
-    transition: .2s;
-    -webkit-transition: .2s;
-    -moz-transition: .2s;
+    transition: 0.2s;
+    -webkit-transition: 0.2s;
+    -moz-transition: 0.2s;
 }
 .contact ul li {
     display: inline-block;
@@ -114,9 +112,9 @@
 
 .footer .col ul li:hover {
     color: #ffffff;
-    transition: .1s;
-    -webkit-transition: .1s;
-    -moz-transition: .1s;
+    transition: 0.1s;
+    -webkit-transition: 0.1s;
+    -moz-transition: 0.1s;
 }
 .clearfix {
     clear: both;

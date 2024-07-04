@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import useActiveOrganization from '../../../hooks/useActiveOrganization';
-import { useTranslation } from 'react-i18next';
 import LoadingCard from '../../elements/loading-card/LoadingCard';
 import useSetProgress from '../../../hooks/useSetProgress';
 import useProductService from '../../../services/ProductService';
@@ -38,14 +37,15 @@ import useShowReservationRejectInfoExtraPaid from '../../../services/helpers/res
 import useConfirmReservationArchive from '../../../services/helpers/reservations/useConfirmReservationArchive';
 import useConfirmReservationUnarchive from '../../../services/helpers/reservations/useConfirmReservationUnarchive';
 import usePaginatorService from '../../../modules/paginator/services/usePaginatorService';
+import useTranslate from '../../../hooks/useTranslate';
 
 export default function Reservations() {
-    const { t } = useTranslation();
     const activeOrganization = useActiveOrganization();
     const updateActiveOrganization = useUpdateActiveOrganization();
     const identity = useAuthIdentity();
 
     const openModal = useOpenModal();
+    const translate = useTranslate();
     const pushDanger = usePushDanger();
     const pushSuccess = usePushSuccess();
     const setProgress = useSetProgress();
@@ -357,7 +357,7 @@ export default function Reservations() {
             <div className="card-header">
                 <div className="flex">
                     <div className="flex flex-grow card-title" data-dusk="reservationsTitle">
-                        {t('reservations.header.title', reservations.meta)}
+                        {translate('reservations.header.title', reservations.meta)}
                     </div>
                     <div className="flex block block-inline-filters">
                         {reservationEnabled && (
@@ -413,7 +413,7 @@ export default function Reservations() {
                                     <input
                                         className="form-control"
                                         value={filter.values.q}
-                                        placeholder={t('reservations.filters.search')}
+                                        placeholder={translate('reservations.filters.search')}
                                         onChange={(e) => filter.update({ q: e.target.value })}
                                     />
                                 </div>
@@ -421,16 +421,16 @@ export default function Reservations() {
                         )}
 
                         <CardHeaderFilter filter={filter}>
-                            <FilterItemToggle label={t('reservations.filters.search')} show={true}>
+                            <FilterItemToggle label={translate('reservations.filters.search')} show={true}>
                                 <input
                                     className="form-control"
                                     value={filter.values.q}
                                     onChange={(e) => filter.update({ q: e.target.value })}
-                                    placeholder={t('reservations.filters.search')}
+                                    placeholder={translate('reservations.filters.search')}
                                 />
                             </FilterItemToggle>
 
-                            <FilterItemToggle label={t('reservations.filters.fund')}>
+                            <FilterItemToggle label={translate('reservations.filters.fund')}>
                                 {funds && (
                                     <SelectControl
                                         className="form-control"
@@ -443,7 +443,7 @@ export default function Reservations() {
                                 )}
                             </FilterItemToggle>
 
-                            <FilterItemToggle label={t('reservations.filters.product')}>
+                            <FilterItemToggle label={translate('reservations.filters.product')}>
                                 {products && (
                                     <SelectControl
                                         className="form-control"
@@ -456,27 +456,27 @@ export default function Reservations() {
                                 )}
                             </FilterItemToggle>
 
-                            <FilterItemToggle label={t('reservations.filters.from')}>
+                            <FilterItemToggle label={translate('reservations.filters.from')}>
                                 <DatePickerControl
                                     value={dateParse(filter.values.from)}
-                                    placeholder={t('jjjj-MM-dd')}
+                                    placeholder={translate('jjjj-MM-dd')}
                                     onChange={(from: Date) => {
                                         filter.update({ from: dateFormat(from) });
                                     }}
                                 />
                             </FilterItemToggle>
 
-                            <FilterItemToggle label={t('reservations.filters.to')}>
+                            <FilterItemToggle label={translate('reservations.filters.to')}>
                                 <DatePickerControl
                                     value={dateParse(filter.values.to)}
-                                    placeholder={t('jjjj-MM-dd')}
+                                    placeholder={translate('jjjj-MM-dd')}
                                     onChange={(to: Date) => {
                                         filter.update({ to: dateFormat(to) });
                                     }}
                                 />
                             </FilterItemToggle>
 
-                            <FilterItemToggle label={t('reservations.filters.state')}>
+                            <FilterItemToggle label={translate('reservations.filters.state')}>
                                 <SelectControl
                                     className="form-control"
                                     propKey={'key'}
@@ -494,7 +494,7 @@ export default function Reservations() {
                                     onClick={() => exportReservations()}
                                     disabled={reservations.meta.total == 0}>
                                     <em className="mdi mdi-download icon-start"> </em>
-                                    {t('components.dropdown.export', {
+                                    {translate('components.dropdown.export', {
                                         total: reservations.meta.total,
                                     })}
                                 </button>
@@ -509,14 +509,19 @@ export default function Reservations() {
                         <table className="table">
                             <tbody>
                                 <tr>
-                                    <ThSortable label={t('reservations.labels.number')} />
-                                    <ThSortable label={t('reservations.labels.product')} />
-                                    <ThSortable label={t('reservations.labels.price')} />
-                                    {showExtraPayments && <ThSortable label={t('reservations.labels.amount_extra')} />}
-                                    <ThSortable label={t('reservations.labels.customer')} />
-                                    <ThSortable label={t('reservations.labels.reserved_at')} />
-                                    <ThSortable label={t('reservations.labels.status')} />
-                                    <ThSortable className={'text-right'} label={t('reservations.labels.actions')} />
+                                    <ThSortable label={translate('reservations.labels.number')} />
+                                    <ThSortable label={translate('reservations.labels.product')} />
+                                    <ThSortable label={translate('reservations.labels.price')} />
+                                    {showExtraPayments && (
+                                        <ThSortable label={translate('reservations.labels.amount_extra')} />
+                                    )}
+                                    <ThSortable label={translate('reservations.labels.customer')} />
+                                    <ThSortable label={translate('reservations.labels.reserved_at')} />
+                                    <ThSortable label={translate('reservations.labels.status')} />
+                                    <ThSortable
+                                        className={'text-right'}
+                                        label={translate('reservations.labels.actions')}
+                                    />
                                 </tr>
                                 {reservations.data?.map((reservation) => (
                                     <tr data-dusk={`reservationRow${reservation.id}`} key={reservation.id}>

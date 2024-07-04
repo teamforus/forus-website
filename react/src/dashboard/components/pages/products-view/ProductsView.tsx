@@ -5,7 +5,6 @@ import useProductService from '../../../services/ProductService';
 import Product from '../../../props/models/Product';
 import StateNavLink from '../../../modules/state_router/StateNavLink';
 import LoadingCard from '../../elements/loading-card/LoadingCard';
-import { useTranslation } from 'react-i18next';
 import useAssetUrl from '../../../hooks/useAssetUrl';
 import TranslateHtml from '../../elements/translate-html/TranslateHtml';
 import { PaginationData } from '../../../props/ApiResponses';
@@ -22,6 +21,7 @@ import ProductFund from '../../../props/models/ProductFund';
 import ToggleControl from '../../elements/forms/controls/ToggleControl';
 import ModalFundProviderChatProvider from '../../modals/ModalFundProviderChatProvider';
 import usePaginatorService from '../../../modules/paginator/services/usePaginatorService';
+import useTranslate from '../../../hooks/useTranslate';
 
 type ProductFundLocal = ProductFund & {
     chat?: FundProviderChat;
@@ -30,7 +30,7 @@ type ProductFundLocal = ProductFund & {
 export default function ProductsView() {
     const { id } = useParams();
 
-    const { t } = useTranslation();
+    const translate = useTranslate();
     const activeOrganization = useActiveOrganization();
     const assetUrl = useAssetUrl();
 
@@ -60,8 +60,8 @@ export default function ProductsView() {
                 <ModalNotification
                     modal={modal}
                     icon={'product-create'}
-                    title={t('products.confirm_delete.title')}
-                    description={t('products.confirm_delete.description')}
+                    title={translate('products.confirm_delete.title')}
+                    description={translate('products.confirm_delete.description')}
                     buttonSubmit={{
                         onClick: () => {
                             modal.close();
@@ -77,7 +77,7 @@ export default function ProductsView() {
                 />
             ));
         },
-        [activeOrganization.id, navigateState, openModal, productService, t],
+        [activeOrganization.id, navigateState, openModal, productService, translate],
     );
 
     const changeFundExclusion = useCallback(
@@ -199,26 +199,28 @@ export default function ProductsView() {
                         <div className="product-name">{product.name}</div>
                         <div className="product-properties">
                             <div className="product-property">
-                                <div className="product-property-label">{t('product_edit.labels.expire')}</div>
+                                <div className="product-property-label">{translate('product_edit.labels.expire')}</div>
                                 <div className="product-property-value">
                                     {product.expire_at ? product.expire_at_locale : 'Onbeperkt'}
                                 </div>
                             </div>
                             <div className="product-property">
-                                <div className="product-property-label">{t('product_edit.labels.sold')}</div>
+                                <div className="product-property-label">{translate('product_edit.labels.sold')}</div>
                                 <div className="product-property-value">{product.sold_amount}</div>
                             </div>
                             <div className="product-property">
-                                <div className="product-property-label">{t('product_edit.labels.reserved')}</div>
+                                <div className="product-property-label">
+                                    {translate('product_edit.labels.reserved')}
+                                </div>
                                 <div className="product-property-value">{product.reserved_amount}</div>
                             </div>
                             <div className="product-property">
                                 <div className="product-property-label">
-                                    {t('product_edit.labels.available_offers')}
+                                    {translate('product_edit.labels.available_offers')}
                                 </div>
                                 <div className="product-property-value">
                                     {product.unlimited_stock
-                                        ? t('product_edit.labels.unlimited')
+                                        ? translate('product_edit.labels.unlimited')
                                         : product.stock_amount}
                                 </div>
                             </div>
@@ -235,7 +237,7 @@ export default function ProductsView() {
                             <div className="button-group">
                                 <a className="button button-primary" onClick={() => deleteProduct(product)}>
                                     <em className="mdi mdi-delete icon-start"> </em>
-                                    {t('product_card.buttons.delete')}
+                                    {translate('product_card.buttons.delete')}
                                 </a>
                                 <StateNavLink
                                     className="button button-default"
@@ -245,7 +247,7 @@ export default function ProductsView() {
                                         id: product.id,
                                     }}>
                                     <em className="mdi mdi-pen icon-start"> </em>
-                                    {t('product_card.buttons.edit')}
+                                    {translate('product_card.buttons.edit')}
                                 </StateNavLink>
                             </div>
                         </div>
