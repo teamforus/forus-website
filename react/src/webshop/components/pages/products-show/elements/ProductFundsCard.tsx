@@ -17,7 +17,15 @@ import ModalProductReserve from '../../../modals/modal-product-reserve/ModalProd
 import Tooltip from '../../../elements/tooltip/Tooltip';
 import useFetchAuthIdentity from '../../../../hooks/useFetchAuthIdentity';
 
-export default function ProductFundsCard({ product, vouchers = [] }: { product: Product; vouchers: Array<Voucher> }) {
+export default function ProductFundsCard({
+    product,
+    funds,
+    vouchers = [],
+}: {
+    product: Product;
+    funds: Array<Fund>;
+    vouchers: Array<Voucher>;
+}) {
     const envData = useEnvData();
     const appConfigs = useAppConfigs();
 
@@ -29,8 +37,6 @@ export default function ProductFundsCard({ product, vouchers = [] }: { product: 
 
     const authIdentity = useAuthIdentity();
     const showTakenByPartnerModal = useShowTakenByPartnerModal();
-
-    const [funds, setFunds] = useState<Array<Fund>>(null);
 
     const fundService = useFundService();
     const productService = useProductService();
@@ -92,20 +98,6 @@ export default function ProductFundsCard({ product, vouchers = [] }: { product: 
         },
         [fetchAuthIdentity, openModal, product],
     );
-
-    const fetchFunds = useCallback(() => {
-        if (!product?.funds.length) {
-            return;
-        }
-
-        fundService
-            .list({ per_page: 100, check_criteria: 1, fund_ids: product?.funds.map((fund) => fund.id) })
-            .then((res) => setFunds(res.data.data));
-    }, [fundService, product?.funds]);
-
-    useEffect(() => {
-        fetchFunds();
-    }, [fetchFunds]);
 
     return (
         <Fragment>
