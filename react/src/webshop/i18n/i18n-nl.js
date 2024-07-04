@@ -115,7 +115,7 @@ module.exports = {
         waalwijk: 'Pas Wijzer',
         vergoedingen: 'Nijmegen',
         schagen: 'Gemeente Schagen',
-        goereeoverflakkee: 'Goeree-Overflakkee',
+        goereeoverflakkee: 'Gemeente Goeree-Overflakkee',
     },
 
     // COMPONENTS

@@ -3,6 +3,7 @@ import ClickOutside from '../../click-outside/ClickOutside';
 import { uniqueId } from 'lodash';
 import { SelectControlOptionsProp } from '../SelectControl';
 import SelectControlOptionItem from './elements/SelectControlOptionItem';
+import classNames from 'classnames';
 
 export default function SelectControlOptions<T>({
     id,
@@ -32,7 +33,7 @@ export default function SelectControlOptions<T>({
     return (
         <div
             id={id}
-            className={`form-control select-control ${disabled ? 'disabled' : ''} ${className ? className : ''}`}
+            className={classNames('form-control', 'select-control', disabled && 'disabled', className)}
             tabIndex={0}
             role="button"
             data-dusk={dusk}
