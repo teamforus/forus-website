@@ -20,6 +20,7 @@ export default function UIControlText({
     dataDusk = null,
     rows = 5,
     validationMessages = null,
+    required = false,
 }: {
     id?: string;
     name?: string;
@@ -37,6 +38,7 @@ export default function UIControlText({
     dataDusk?: string;
     rows?: number;
     validationMessages?: InputValidationTexts;
+    required?: boolean;
 }) {
     const innerInputRef = useRef<HTMLInputElement>(null);
     const customInputValidationMessage = useCustomInputValidationMessage();
@@ -57,7 +59,10 @@ export default function UIControlText({
                 onChange: (e: React.ChangeEvent<HTMLInputElement & HTMLTextAreaElement>) => {
                     onChange?.(e);
                     onChangeValue?.(e?.target?.value);
-                    customInputValidationMessage?.(e, validationMessages);
+                    customInputValidationMessage?.(e?.target, validationMessages);
+                },
+                onInvalid: (e: React.FormEvent<HTMLInputElement & HTMLTextAreaElement>) => {
+                    customInputValidationMessage?.(e?.currentTarget, validationMessages);
                 },
                 placeholder: placeholder,
                 disabled: disabled,
@@ -65,6 +70,7 @@ export default function UIControlText({
                 tabIndex: tabIndex,
                 autoFocus: autoFocus,
                 rows: rows,
+                required: required,
                 'data-dusk': dataDusk,
             })}
 

@@ -58,7 +58,7 @@ export default function UIControlSearch({
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                     onChange ? onChange(e) : null;
                     onChangeValue ? onChangeValue(e?.target?.value) : null;
-                    customInputValidationMessage?.(e, validationMessages);
+                    customInputValidationMessage?.(e?.target, validationMessages);
                 }}
                 tabIndex={tabIndex}
                 onClick={onClick}

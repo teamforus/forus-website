@@ -76,7 +76,7 @@ export default function UIControlNumber({
                 onChange={(e: React.ChangeEvent<HTMLInputElement & HTMLTextAreaElement>) => {
                     onChange ? onChange(e) : null;
                     onChangeValue ? onChangeValue(parseFloat(parseFloat(e?.target?.value).toFixed(precision))) : null;
-                    customInputValidationMessage?.(e, validationMessages);
+                    customInputValidationMessage?.(e?.target, validationMessages);
                 }}
                 min={min}
                 max={max}

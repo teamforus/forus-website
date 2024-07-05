@@ -10,7 +10,10 @@ module.exports = {
         start_email: 'Start aanvraag',
         signup_option: 'Maak een keuze om verder te gaan',
         errors: {
-            email: 'Vul alstublieft een geldig e-mailadres in, bijvoorbeeld naam@voorbeeld.com',
+            email: {
+                type_mismatch: 'Vul alstublieft een geldig e-mailadres in, bijvoorbeeld naam@voorbeeld.com',
+                value_missing: 'Vul alstublieft een geldig e-mailadres in, bijvoorbeeld naam@voorbeeld.com.',
+            },
         },
         ede: {
             title: 'Inloggen',
