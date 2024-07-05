@@ -33,6 +33,7 @@ module.exports = {
     },
     buttons: {
         buy: 'Reserveren',
+        buy_label: 'Open Reservation Form',
         request: 'Activeren',
         open_voucher: 'Open tegoed',
         groningen: {

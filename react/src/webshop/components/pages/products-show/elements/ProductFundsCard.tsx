@@ -224,6 +224,8 @@ export default function ProductFundsCard({
                                                 type={'button'}
                                                 className="button button-dark button-flat"
                                                 onClick={() => reserveProduct(fund)}
+                                                aria-label={translate('product.buttons.buy_label')}
+                                                aria-haspopup="dialog"
                                                 data-dusk="reserveProduct">
                                                 {translate('product.buttons.buy')}
                                             </button>

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import useAssetUrl from '../../../../../hooks/useAssetUrl';
 import StateNavLink from '../../../../../modules/state_router/StateNavLink';
 import Provider from '../../../../../props/models/Provider';
-import {clickOnKeyEnter} from "../../../../../../dashboard/helpers/wcag";
+import { clickOnKeyEnter } from '../../../../../../dashboard/helpers/wcag';
 
 export default function ProvidersListItemList({
     provider,
