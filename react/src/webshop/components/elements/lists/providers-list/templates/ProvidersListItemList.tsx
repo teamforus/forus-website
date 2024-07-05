@@ -45,6 +45,7 @@ export default function ProvidersListItemList({
                 <div
                     className="organization-pane-collapse"
                     aria-expanded={showOffices}
+                    aria-controls={'organization-offices-list'}
                     onClick={() => setShowOffices(!showOffices)}
                     onKeyDown={clickOnKeyEnter}
                     role="button"
@@ -59,7 +60,7 @@ export default function ProvidersListItemList({
                 </div>
             </div>
             {showOffices && (
-                <div className="organization-offices">
+                <div className="organization-offices" id="organization-offices-list">
                     <div className="block block-offices">
                         {provider.offices?.map((office) => (
                             <StateNavLink
