@@ -177,7 +177,8 @@ export default function TopNavbarSearch() {
                             className={`search-reset ${
                                 !envData.config?.flags?.genericSearchUseToggle ? 'show-sm' : ''
                             }`}
-                            aria-label="Close">
+                            aria-label="Sluit zoeken"
+                            role="button">
                             <div className="mdi mdi-close" onClick={hideSearchBox} />
                         </div>
                     </div>
@@ -328,7 +329,7 @@ export default function TopNavbarSearch() {
                                 {((groupKey == 'all' && !resultsAll.length) ||
                                     (groupKey != 'all' && !results[groupKey].items.length)) && (
                                     <div className="search-no-result">
-                                        <div className="search-no-result-icon">
+                                        <div className="search-no-result-icon" aria-hidden="true">
                                             <IconSearchEmptyResult />
                                         </div>
                                         <div className="search-no-result-description">
