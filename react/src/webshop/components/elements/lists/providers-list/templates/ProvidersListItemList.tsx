@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import useAssetUrl from '../../../../../hooks/useAssetUrl';
 import StateNavLink from '../../../../../modules/state_router/StateNavLink';
 import Provider from '../../../../../props/models/Provider';
+import {clickOnKeyEnter} from "../../../../../../dashboard/helpers/wcag";
 
 export default function ProvidersListItemList({
     provider,
@@ -45,7 +46,9 @@ export default function ProvidersListItemList({
                     className="organization-pane-collapse"
                     aria-expanded={showOffices}
                     onClick={() => setShowOffices(!showOffices)}
-                    role="button">
+                    onKeyDown={clickOnKeyEnter}
+                    role="button"
+                    tabIndex={0}>
                     <div className="organization-chevron">
                         <em className={`mdi ${showOffices ? 'mdi-chevron-up' : 'mdi-chevron-down'}`} />
                     </div>
