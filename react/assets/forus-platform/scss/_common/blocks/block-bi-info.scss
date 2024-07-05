@@ -19,9 +19,16 @@
 
         .block.block-markdown {
             font: 400 14px/20px var(--base-font) !important;
-            color: #282B39;
+            color: #282b39;
 
-            h1, h2, h3, h4, h5, h6, ul, p {
+            h1,
+            h2,
+            h3,
+            h4,
+            h5,
+            h6,
+            ul,
+            p {
                 margin-bottom: 5px !important;
                 text-align: left !important;
 

@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { loadingBarContext } from '../context/LoadingBarContext';
-import { classList } from '../../../helpers/utils';
+import classNames from 'classnames';
 
 export default function LoadingBar() {
     const { progress } = useContext(loadingBarContext);
@@ -45,11 +45,11 @@ export default function LoadingBar() {
 
     return (
         <div
-            className={classList([
+            className={classNames(
                 'block block-page-loading-bar',
                 progressValue == 0 ? 'start' : null,
                 progressValue == 100 ? 'complete' : null,
-            ])}
+            )}
             style={{ width: progressValue + '%' }}
         />
     );

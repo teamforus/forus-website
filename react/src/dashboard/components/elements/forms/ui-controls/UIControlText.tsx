@@ -43,7 +43,8 @@ export default function UIControlText({
 
     const reset = useCallback(() => {
         (inputRef || innerInputRef).current.value = '';
-    }, [inputRef]);
+        onChangeValue ? onChangeValue('') : null;
+    }, [inputRef, onChangeValue]);
 
     return (
         <div className={`ui-control ui-control-text  ${className}`} aria-label={ariaLabel}>

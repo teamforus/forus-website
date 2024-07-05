@@ -493,7 +493,7 @@ export default function FinancialFilters({
             <div className="card-section">
                 <div className="card-heading">Actieve filters:</div>
                 <div className="label-group">
-                    {Object.values(selections).map((selection) => (
+                    {Object.values(selections).map((selection: SelectionItem) => (
                         <Fragment key={selection.type}>
                             {(!selection.ids || selection.ids.length > 0) && (
                                 <div

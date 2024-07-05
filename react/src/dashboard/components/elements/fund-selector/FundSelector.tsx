@@ -42,7 +42,11 @@ export default function FundSelector({
     return (
         <div className="block block-choose-organization">
             {funds?.map((fund: Fund) => (
-                <div key={fund.id} className="organization-item" onClick={() => selectFund(fund)}>
+                <div
+                    key={fund.id}
+                    className="organization-item"
+                    onClick={() => selectFund(fund)}
+                    data-dusk={`fundSelectorOption${fund.id}`}>
                     <div className={'organization-item-inner ' + (activeFund?.id == fund.id ? 'active' : '')}>
                         <div className="organization-logo">
                             <img
