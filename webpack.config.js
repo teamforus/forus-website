@@ -23,6 +23,8 @@ module.exports = (env, argv) => {
 
     const { mode = 'development' } = argv;
     const distPath = 'dist';
+    const distBackend = '../forus-backend/public/assets';
+    const backendScriptPath = `app.js`;
     const scriptPath = `app-${timestamp}.js`;
 
     const entry = configs.reduce((entry, item) => {
@@ -37,7 +39,7 @@ module.exports = (env, argv) => {
 
         const isDashboard = ['sponsor', 'provider', 'validator'].includes(item.client_type);
 
-        return new HtmlWebpackPlugin({
+        return item.type === 'backend' ? null : new HtmlWebpackPlugin({
             template: `../../react/public/index.ejs`,
             templateParameters: {
                 title: item.default_title || 'Forus',
@@ -71,7 +73,7 @@ module.exports = (env, argv) => {
             filename: item.out + '/index.html',
             inject: false,
         });
-    });
+    }).filter((i) => i !== null);
 
     const resolvePath = (path) => {
         return _path.resolve(__dirname, path);
@@ -79,44 +81,45 @@ module.exports = (env, argv) => {
 
     const copyPlugins = configs.map((item) => {
         const isDashboard = ['sponsor', 'provider', 'validator'].includes(item.client_type);
-        const platform = isDashboard ? 'platform' : item.client_type === 'website' ? 'website' : 'webshop';
+        const platform = isDashboard ? 'platform' : item.client_type === 'website' ? 'website' : (item.type === 'backend' ? 'backend' : 'webshop');
+        const assetPath = item.type === 'backend' ? distBackend : `${distPath}/${item.out}/assets`;
 
         return new CopyPlugin({
             patterns: [
                 {
                     context: `../assets/forus-${platform}/resources/_${platform}-common/assets`,
                     from: `**/**.*`,
-                    to: resolvePath(`${distPath}/${item.out}/assets`),
+                    to: resolvePath(assetPath),
                     noErrorOnMissing: true,
                 },
                 {
                     context: `../assets/forus-${platform}/resources/${platform}-${item.client_key}/assets`,
                     from: `**/**.*`,
-                    to: resolvePath(`${distPath}/${item.out}/assets`),
+                    to: resolvePath(assetPath),
                     noErrorOnMissing: true,
                     force: true,
                 },
                 {
                     from: resolvePath(`./node_modules/@mdi/font/fonts`),
-                    to: resolvePath(`${distPath}/${item.out}/assets/dist/fonts`),
+                    to: resolvePath(`${assetPath}/dist/fonts`),
                 },
                 {
                     from: resolvePath(`./node_modules/@mdi/font/css/materialdesignicons.min.css`),
-                    to: resolvePath(`${distPath}/${item.out}/assets/dist/css/materialdesignicons.min.css`),
+                    to: resolvePath(`${assetPath}/dist/css/materialdesignicons.min.css`),
                 },
                 ...(isDashboard
                     ? [
                           {
                               from: resolvePath(`./node_modules/summernote/dist/summernote-lite.min.js`),
-                              to: resolvePath(`${distPath}/${item.out}/assets/dist/js/summernote.${timestamp}.min.js`),
+                              to: resolvePath(`${assetPath}/dist/js/summernote.${timestamp}.min.js`),
                           },
                           {
                               from: resolvePath(`./node_modules/summernote/dist/summernote-lite.min.css`),
-                              to: resolvePath(`${distPath}/${item.out}/assets/dist/js/summernote.${timestamp}.min.css`),
+                              to: resolvePath(`${assetPath}/dist/js/summernote.${timestamp}.min.css`),
                           },
                           {
                               from: resolvePath(`./node_modules/jquery/dist/jquery.min.js`),
-                              to: resolvePath(`${distPath}/${item.out}/assets/dist/js/jquery.${timestamp}.min.js`),
+                              to: resolvePath(`${assetPath}/dist/js/jquery.${timestamp}.min.js`),
                           },
                       ]
                     : []),
@@ -156,7 +159,9 @@ module.exports = (env, argv) => {
         output: {
             path: resolvePath(distPath),
             publicPath: '/',
-            filename: `[name]/${scriptPath}`,
+            filename: (pathData) => {
+                return pathData.chunk.name === 'backend_general' ? `../${distBackend}/js/${backendScriptPath}` : `[name]/${scriptPath}`;
+            },
         },
 
         resolve: {
