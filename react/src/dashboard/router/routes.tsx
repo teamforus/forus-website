@@ -482,7 +482,7 @@ router.state('csv-validation', <CsvValidations />, {
 });
 
 router.state('csv-validation-redirect', <CsvValidationsRedirect />, {
-    path: `/csv-validation/funds/redirect/:fundId?`,
+    path: `/csv-validations/redirect`,
 });
 
 router.state('preferences-emails', <PreferencesEmails />, {
