@@ -8,11 +8,9 @@ import FundsListItemModel from '../../../../../services/types/FundsListItemModel
 export default function FundsListItemList({
     fund,
     applyFund,
-    searchParams,
 }: {
     fund?: FundsListItemModel;
     applyFund?: (event: React.MouseEvent, fund: FundsListItemModel) => void;
-    searchParams?: object;
 }) {
     const assetUrl = useAssetUrl();
     const translate = useTranslate();
@@ -54,14 +52,7 @@ export default function FundsListItemList({
                         )}
                     </div>
 
-                    <h2 className="fund-name">
-                        <StateNavLink
-                            name={'fund'}
-                            params={{ id: fund.id }}
-                            state={{ searchParams: searchParams || null }}>
-                            {fund.name}
-                        </StateNavLink>
-                    </h2>
+                    <h2 className="fund-name">{fund.name}</h2>
 
                     {fund.description_short && (
                         <div className="fund-description">
