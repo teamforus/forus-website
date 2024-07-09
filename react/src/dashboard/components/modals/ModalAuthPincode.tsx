@@ -112,6 +112,7 @@ export default function ModalAuthPincode({ modal }: { modal: ModalState }) {
                                 <PincodeControl
                                     value={form.values.pin_code.toString()}
                                     onChange={(pin_code) => form.update({ pin_code })}
+                                    ariaLabel={'Voer de koppelcode van de Me-app in'}
                                 />
                                 <FormError error={form.errors.auth_code} />
                             </div>
