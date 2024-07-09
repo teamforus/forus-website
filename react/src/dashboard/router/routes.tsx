@@ -43,7 +43,6 @@ import SecuritySessions from '../components/pages/identity-security/SecuritySess
 import OrganizationsNoPermissions from '../components/pages/organizations-no-permissions/OrganizationsNoPermissions';
 import PaymentMethods from '../components/pages/payment-methods/PaymentMethods';
 import MolliePrivacy from '../components/pages/mollie-privacy/MolliePrivacy';
-import CsvValidationsRedirect from '../components/pages/csv_validations/CsvValidationsRedirect';
 import Reimbursements from '../components/pages/reimbursements/Reimbursements';
 import ReimbursementsView from '../components/pages/reimbursements-view/ReimbursementsView';
 import BankConnections from '../components/pages/bank-connections/BankConnections';
@@ -479,10 +478,6 @@ router.state('feedback', <Feedback />, {
 
 router.state('csv-validation', <CsvValidations />, {
     path: `/csv-validations`,
-});
-
-router.state('csv-validation-redirect', <CsvValidationsRedirect />, {
-    path: `/csv-validations/redirect`,
 });
 
 router.state('preferences-emails', <PreferencesEmails />, {
