@@ -17,7 +17,7 @@ module.exports = {
     buy: 'Koop',
     next: 'Volgende',
     back: 'Terug',
-    create: 'Eigenschap aanmaken',
+    create: 'Persoonsgegeven aanmaken',
     send: 'E-Mail naar mij',
     details: 'Bekjk details',
     show_map: 'Bekijk de kaart',

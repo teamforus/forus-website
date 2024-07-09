@@ -52,7 +52,7 @@ export default function useMakeExporterService() {
                     fields: record_fields,
                     fieldsPerRow: 3,
                     selectAll: true,
-                    title: 'Persoonlijke eigenschappen',
+                    title: 'Persoonsgegevens',
                     collapsable: true,
                     collapsed: true,
                 });

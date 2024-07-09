@@ -65,7 +65,7 @@ export default function ModalVoucherRecordEdit({
             promise
                 .then((res) => {
                     onClose(res.data.data);
-                    pushSuccess('Gelukt!', 'Eigenschap is toegevoegd!');
+                    pushSuccess('Gelukt!', 'Persoonsgegeven is toegevoegd!');
                     modal.close();
                 })
                 .catch((res) => {
@@ -89,7 +89,7 @@ export default function ModalVoucherRecordEdit({
             setRecordTypes(
                 recordTypesData.length > 0
                     ? recordTypesData
-                    : [{ key: null, name: 'Er zijn niet meer eigenschappen beschikbaar.' }],
+                    : [{ key: null, name: 'Er zijn geen persoonsgegevens meer beschikbaar.' }],
             );
         });
     }, [existingRecordTypes, record, recordTypeService, setProgress]);
@@ -122,14 +122,14 @@ export default function ModalVoucherRecordEdit({
 
             <form className="modal-window form" onSubmit={form.submit}>
                 <a className="mdi mdi-close modal-close" onClick={modal.close} role="button" />
-                <div className="modal-header">Voeg een nieuwe eigenschap toe</div>
+                <div className="modal-header">Voeg een nieuwe persoonsgegeven toe</div>
 
                 <div className="modal-body modal-body-visible">
                     <div className="modal-section">
                         <div className="row">
                             <div className="col-lg-10 col-offset-lg-1">
                                 <div className="form-group">
-                                    <div className="form-label form-label-required">Soort eigenschap</div>
+                                    <div className="form-label form-label-required">Soort persoonsgegeven</div>
                                     <div className="form-offset">
                                         <SelectControl
                                             className="form-control"
@@ -150,7 +150,7 @@ export default function ModalVoucherRecordEdit({
                                 </div>
 
                                 <div className="form-group">
-                                    <div className="form-label form-label-required">Eigenschap</div>
+                                    <div className="form-label form-label-required">Persoonsgegeven</div>
 
                                     {form.values.record_type_key != 'birth_date' ? (
                                         <input
