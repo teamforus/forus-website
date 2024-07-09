@@ -18,6 +18,34 @@ export class MarkdownService<T = { data: Identity }> {
      */
     public constructor(protected apiRequest: ApiRequestService<T> = new ApiRequestService<T>()) {}
 
+    private nodeContainsTable(node: HTMLElement | ChildNode) {
+        if (!node.childNodes) return false;
+
+        for (let i = 0; i < node.childNodes.length; i++) {
+            const child = node.childNodes[i];
+            if (child.nodeName === 'TABLE') return true;
+            if (this.nodeContainsTable(child)) return true;
+        }
+        return false;
+    }
+
+    private tableShouldBeSkipped(tableNode: HTMLTableElement) {
+        if (!tableNode) return true;
+        if (!tableNode.rows) return true;
+        if (tableNode.rows.length === 1 && tableNode.rows[0].childNodes.length <= 1) return true; // Table with only one cell
+        return this.nodeContainsTable(tableNode);
+    }
+
+    private tableColCount(node: HTMLTableElement) {
+        let maxColCount = 0;
+        for (let i = 0; i < node.rows.length; i++) {
+            const row = node.rows[i];
+            const colCount = row.childNodes.length;
+            if (colCount > maxColCount) maxColCount = colCount;
+        }
+        return maxColCount;
+    }
+
     public getTurnDownService() {
         const turnDownService = new TurnDownService({ headingStyle: 'atx' });
 
@@ -35,6 +63,32 @@ export class MarkdownService<T = { data: Identity }> {
                     'https://www.youtube.com/embed/',
                     'https://www.youtube.com/watch?v=',
                 )})`;
+            },
+        });
+
+        turnDownService.addRule('tables', {
+            filter: (node) => {
+                return node.nodeName === 'TABLE';
+            },
+            replacement: (content: string, node: HTMLTableElement) => {
+                if (this.tableShouldBeSkipped(node)) return content;
+
+                // Ensure there are no blank lines
+                content = content.replace(/\n+/g, '\n');
+
+                // If table has no heading, add an empty one to get a valid Markdown table
+                const lines = content.trim().split('\n');
+                let secondLine = '';
+                if (lines.length >= 2) secondLine = lines[1];
+                const secondLineIsDivider = secondLine.indexOf('| ---') === 0;
+
+                const columnCount = this.tableColCount(node);
+                let emptyHeader = '';
+                if (columnCount && !secondLineIsDivider) {
+                    emptyHeader = '|' + '     |'.repeat(columnCount) + '\n' + '|' + ' --- |'.repeat(columnCount);
+                }
+
+                return '\n\n' + emptyHeader + content + '\n\n';
             },
         });
 

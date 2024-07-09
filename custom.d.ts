@@ -12,3 +12,7 @@ declare module "*.jpg" {
     const content: any;
     export default content;
 }
+
+declare module "turndown-plugin-gfm" {
+    export const gfm: any;
+}
