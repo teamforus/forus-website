@@ -62,8 +62,13 @@ export default function FundsListItemList({
                             <br />
                             {fund.description_short.length > 190 && (
                                 <button
+                                    type={'button'}
                                     className="button button-text button-xs"
-                                    onClick={() => setShowMore(!showMore)}
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        setShowMore(!showMore);
+                                    }}
                                     aria-expanded={showMore}
                                     aria-controls="fund_description_short">
                                     {showMore ? 'Toon minder' : 'Toon meer'}
@@ -79,8 +84,8 @@ export default function FundsListItemList({
                 {fund.showActivateButton && (
                     <div className="fund-actions">
                         <button
-                            className="button button-primary button-xs"
                             type="button"
+                            className="button button-primary button-xs"
                             onClick={(e) => applyFund(e, fund)}>
                             {translate('funds.buttons.is_applicable')}
                             <em className="mdi mdi-arrow-right icon-right" aria-hidden="true" />
@@ -91,10 +96,10 @@ export default function FundsListItemList({
                 {fund.showPendingButton && (
                     <div className="fund-actions">
                         <StateNavLink
+                            customElement={'button'}
                             name={'fund-requests'}
                             params={{ fund_id: fund.id }}
                             className="button button-text button-xs"
-                            role="button"
                             ng-click="$dir.goToFundRequests($event)">
                             {translate('funds.buttons.check_status')}
                             <em className="mdi mdi-chevron-right icon-right" aria-hidden="true" />
