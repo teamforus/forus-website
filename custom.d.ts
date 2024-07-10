@@ -13,6 +13,6 @@ declare module "*.jpg" {
     export default content;
 }
 
-declare module "turndown-plugin-gfm" {
+declare module "@joplin/turndown-plugin-gfm" {
     export const gfm: any;
 }
