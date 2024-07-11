@@ -1,4 +1,4 @@
-module.exports = {
+export default {
     // AUTHENTICATION POPUP = popup-auth.pug
     header: {
         title: 'E-mail verstuurd',

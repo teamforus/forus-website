@@ -82,7 +82,7 @@ const messages = {
     digid_010c: digiDefaultMessage, // 'DigiD - temporarily unavailable',
 };
 
-module.exports = {
+export default {
     ...{ titles, messages },
     ...{
         home_button: 'Ga terug naar de startpagina',

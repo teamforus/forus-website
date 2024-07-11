@@ -1,6 +1,5 @@
-module.exports = {
+export default {
     show_more: 'Bekijk meer',
-    send: 'Verzenden',
     validate: 'Goedkeuren',
     add: 'Toevoegen',
     cancel: 'Annuleren',

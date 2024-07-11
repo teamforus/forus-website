@@ -260,8 +260,8 @@ export default function ImplementationsCmsPageForm({
                                                             De interne privacyverklaring pagina wordt gehost op ons
                                                             webshopdomein. Hieronder kunt u de inhoud van de pagina
                                                             aanpassen. U kunt er ook voor kiezen om een externe
-                                                            privacyverklaring te gebruiken en de doorverwijzingslink
-                                                            op te geven.
+                                                            privacyverklaring te gebruiken en de doorverwijzingslink op
+                                                            te geven.
                                                         </div>
                                                     </div>
                                                 </div>

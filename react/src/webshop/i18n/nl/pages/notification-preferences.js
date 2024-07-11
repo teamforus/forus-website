@@ -1,4 +1,4 @@
-module.exports = {
+export default {
     title_preferences: 'Notificatievoorkeuren',
     title_emails_turned_on: 'Inschrijven voor alle e-mails',
     title_emails_turned_of: 'Uitschrijven voor alle e-mails',

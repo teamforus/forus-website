@@ -1,4 +1,4 @@
-module.exports = {
+export default {
     // VOUCHERs = vouchers.pug
     header: {
         title: 'My vouchers',
