@@ -198,7 +198,9 @@ export default function CSVUpload({
 
             if (invalidRecordTypes.length > 0) {
                 return setCsvErrors(
-                    `Het .csv bestand heeft de volgende ongeldige persoonsgegevens: '${invalidRecordTypes.join("', '")}'`,
+                    `Het .csv bestand heeft de volgende ongeldige persoonsgegevens: '${invalidRecordTypes.join(
+                        "', '",
+                    )}'`,
                 );
             }
 
