@@ -2,7 +2,7 @@ module.exports = {
     buttons: {
         first: 'Eerste',
         last: 'Laatste',
-        wcag_page: 'page',
+        wcag_page: 'Pagina',
     },
     labels: {
         from: 'van',

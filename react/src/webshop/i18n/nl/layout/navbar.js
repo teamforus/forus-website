@@ -11,7 +11,7 @@ module.exports = {
         search: 'Zoek',
         menu: {
             show: 'Meer',
-            close: 'Close',
+            close: 'Sluiten',
         },
         westerkwartier: {
             funds: 'Potjes',
