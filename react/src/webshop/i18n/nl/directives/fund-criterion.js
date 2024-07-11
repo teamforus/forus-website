@@ -10,7 +10,7 @@ module.exports = {
         westerkwartier: {
             location: 'Westerkwartier',
         },
-        value: 'Eigenschap ontbreekt in uw profiel',
+        value: 'Persoonsgegeven ontbreekt in uw profiel',
     },
     buttons: {
         validate: 'Goedkeuren',

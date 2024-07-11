@@ -262,8 +262,8 @@ export default function ModalVouchersUpload({
                         modal={modal}
                         hero_title={`Dubbele e-mailadressen gedetecteerd voor fond "${fund.name}".`}
                         hero_subtitle={[
-                            `Weet u zeker dat u voor ${items.length} e-mailadres(sen) een extra voucher wilt aanmaken?`,
-                            'Deze e-mailadressen bezitten al een voucher van dit fonds.',
+                            `Weet u zeker dat u voor ${items.length} e-mailadres(sen) een extra tegoed wilt aanmaken?`,
+                            'Deze e-mailadressen bezitten al een tegoed van dit fonds.',
                         ]}
                         button_none={'Alle overslaan'}
                         button_all={'Alle aanmaken'}
@@ -308,8 +308,8 @@ export default function ModalVouchersUpload({
                         modal={modal}
                         hero_title={`Dubbele bsn(s) gedetecteerd voor fond "${fund.name}".`}
                         hero_subtitle={[
-                            `Weet u zeker dat u voor ${items.length} bsn(s) een extra voucher wilt aanmaken?`,
-                            'Deze bsn(s) bezitten al een voucher van dit fonds.',
+                            `Weet u zeker dat u voor ${items.length} bsn(s) een extra tegoed wilt aanmaken?`,
+                            'Deze bsn(s) bezitten al een tegoed van dit fonds.',
                         ]}
                         enableToggles={true}
                         button_none={'Alle overslaan'}

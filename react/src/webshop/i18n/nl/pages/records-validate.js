@@ -1,7 +1,7 @@
 module.exports = {
     // VALIDATE A RECORD = record-validate.pug
     header: {
-        title: 'Mijn eigenschappen',
+        title: 'Mijn persoonsgegevens',
     },
     labels: {
         validators: 'Beoordelaars',

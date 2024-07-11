@@ -87,7 +87,7 @@ module.exports = {
         voucher: 'Mijn tegoeden',
         reimbursements: 'Kosten terugvragen',
         profile: 'Profiel >',
-        records: 'Mijn eigenschappen',
+        records: 'Mijn persoonsgegevens',
         authorize: 'Log in op de app',
         logout: 'Uitloggen',
         products: 'Aanbod',
