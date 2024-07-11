@@ -328,10 +328,12 @@ export default function FundRequestsView() {
                 buttonSubmit={{
                     onClick: () => {
                         modal.close();
-                        fundRequestService.approve(activeOrganization.id, fundRequest.id).then(
-                            () => reloadRequest(),
-                            (err) => showInfoModal('Validatie van persoonsgegeven mislukt.', `Reden: ${err.data.message}`),
-                        );
+                        fundRequestService
+                            .approve(activeOrganization.id, fundRequest.id)
+                            .then(() => reloadRequest())
+                            .catch((err: ResponseError) => {
+                                showInfoModal('Validatie van persoonsgegeven mislukt.', `Reden: ${err.data.message}`);
+                            });
                     },
                 }}
             />
