@@ -121,7 +121,7 @@ export default function VouchersShow() {
                 />
             ));
         },
-        [assetUrl, openPrintable],
+        [appConfigs?.fronts?.url_webshop, assetUrl, openPrintable],
     );
 
     const sendVoucherEmail = useCallback(
