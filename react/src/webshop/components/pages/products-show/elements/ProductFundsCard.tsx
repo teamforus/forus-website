@@ -220,12 +220,15 @@ export default function ProductFundsCard({
 
                                     {fund.meta.isReservationAvailable && (
                                         <div className="fund-item-section">
-                                            <div
+                                            <button
+                                                type={'button'}
                                                 className="button button-dark button-flat"
                                                 onClick={() => reserveProduct(fund)}
+                                                aria-label={translate('product.buttons.buy_label')}
+                                                aria-haspopup="dialog"
                                                 data-dusk="reserveProduct">
                                                 {translate('product.buttons.buy')}
-                                            </div>
+                                            </button>
                                         </div>
                                     )}
                                     {fund.external_link_text && fund.external_link_url && (
