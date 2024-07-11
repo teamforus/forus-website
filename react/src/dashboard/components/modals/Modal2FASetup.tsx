@@ -461,6 +461,7 @@ export default function Modal2FASetup({
                                         valueType={'num'}
                                         className={'block-pincode-compact'}
                                         onChange={(code) => setConfirmationCode(code)}
+                                        ariaLabel={'Voer de tweefactorauthenticatiecode in'}
                                     />
                                     <FormError error={activateAuthErrors} />
                                 </div>
@@ -544,6 +545,7 @@ export default function Modal2FASetup({
                                             valueType={'num'}
                                             className={'block-pincode-compact'}
                                             onChange={(code) => setConfirmationCode(code)}
+                                            ariaLabel={'Voer de tweefactorauthenticatiecode in'}
                                         />
                                         <FormError error={verifyAuthErrors} />
                                     </div>

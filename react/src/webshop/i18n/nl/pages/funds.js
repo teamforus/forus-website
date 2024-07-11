@@ -59,7 +59,7 @@ module.exports = {
         age: '< 18 jaar oud',
         income: 'Inkomensgrens',
         amount: '< € 1118.46',
-        categories_label: 'U kunt uw voucher activeren tot en met:',
+        categories_label: 'U kunt uw tegoed activeren tot en met:',
     },
     criteria: {
         key: '{{key}}',

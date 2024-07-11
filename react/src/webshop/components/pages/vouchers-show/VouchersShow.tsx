@@ -753,7 +753,7 @@ export default function VouchersShow() {
                                         {voucherCard.records_title ? (
                                             <div className="block-card-details">
                                                 <h3 className="block-card-title block-card-title-sm text-muted-dim">
-                                                    Persoonlijke eigenschappen
+                                                    Persoonsgegevens
                                                 </h3>
                                                 <h2 className="block-card-title block-card-title-lg">
                                                     <strong>{voucherCard.records_title}</strong>
@@ -765,7 +765,7 @@ export default function VouchersShow() {
                                             </div>
                                         ) : (
                                             <div className="block-card-details">
-                                                <h3 className="block-card-title">Persoonlijke eigenschappen</h3>
+                                                <h3 className="block-card-title">Persoonsgegevens</h3>
                                             </div>
                                         )}
 

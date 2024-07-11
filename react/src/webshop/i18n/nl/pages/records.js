@@ -1,13 +1,13 @@
 module.exports = {
     // RECORDS = records.pug
     header: {
-        title: 'Eigenschappen',
+        title: 'Persoonsgegevens',
     },
     labels: {
         count: 'Beoordelingen',
     },
     buttons: {
         validate: 'Goedkeuren',
-        create: 'Eigenschap aanmaken',
+        create: 'Persoonsgegeven aanmaken',
     },
 };
