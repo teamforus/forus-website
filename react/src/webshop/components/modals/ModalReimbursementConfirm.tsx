@@ -49,7 +49,7 @@ export default function ModalReimbursementConfirm({
                         className="button button-primary-outline button-sm"
                         onClick={modal.close}
                         data-dusk="modalReimbursementConfirmationCancel">
-                        Cancel
+                        Annuleren
                     </div>
                     <div
                         className="button button-primary button-sm"
