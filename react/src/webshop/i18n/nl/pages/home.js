@@ -1,4 +1,4 @@
-module.exports = {
+export default {
     // HOME = home.pug
     header: {
         title: '{{implementation}}',
@@ -17,9 +17,6 @@ module.exports = {
         auth_button: 'Download Me',
         signup_cta: 'Lees meer >',
         button: 'Inloggen',
-        potjeswijzer: {
-            button: 'Start aanvraag',
-        },
         westerkwartier: {
             subtitle_av:
                 'Er bestaan veel verschillende potjes binnen het Westerkwartier, vaak meer dan je denkt. Met deze website kan je potjes aanvragen, beheren en uitgeven.',
@@ -33,6 +30,7 @@ module.exports = {
                 'Er bestaan veel verschillende potjes binnen het Westerkwartier, vaak meer dan je denkt. Met deze website kan je potjes aanvragen, beheren en uitgeven.',
             cta_av: '',
             button_av: 'Start',
+            button: 'Start aanvraag',
         },
         berkelland: {
             title_multi: 'Kindregeling gemeente Berkelland',
@@ -299,10 +297,6 @@ module.exports = {
         four: "Met het tegoed betaalt u bij deelnemende aanbieders. De aanbieder scant uw code. Daarna wordt het tegoed automatisch afgeschreven. Via de lijst met deelnemende aanbieders en de pagina 'Aanbod' kunt u zien waar en waaraan u uw tegoed kunt besteden.",
         stepfive: 'Stap 5',
         five: "Klik op 'Aanbod' om het aanbod te zien. Als u klikt op 'Mijn tegoeden' ziet u hoeveel tegoed u heeft.",
-        westerkwartier: {
-            three: 'Klik daarna op ‘Aanbod’ om het aanbod op de webshop te zien. Ook kunt u uw tegoed zien. het tegoed met het tegoed vindt u terug door bovenaan op ‘Mijn tegoeden’ te klikken.',
-            four: "Bij ‘Mijn tegoeden’ staat ook een persoonlijke QR-code. Daarmee betaalt u de aanbieder waar u een aankoop wilt doen. De QR-code kunt u uitprinten, naar uzelf mailen of op uw telefoon hebben door in te loggen op de app <a href='#!/me' tartget='_blank'><u><i>Me</i></u></a>. De app <a href='#!/me' tartget='_blank'><u><i>Me</i></u></a> kunt u downloaden via de Google Playstore en de App Store.",
-        },
         noordoostpolder: {
             one: 'U heeft van de gemeente een brief ontvangen met een activatiecode voor het Meedoenpakket.',
             two: 'Klik op <u>Start</u> om uw e-mailadres en activatiecode in te vullen. Gebruik per activatiecode een ander e-mailadres.',

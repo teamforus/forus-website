@@ -1,4 +1,4 @@
-module.exports = {
+export default {
     // error-page.pug
     404: {
         title: 'Pagina niet gevonden',

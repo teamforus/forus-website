@@ -1,4 +1,4 @@
-module.exports = {
+export default {
     buttons: {
         first: 'Eerste',
         last: 'Laatste',

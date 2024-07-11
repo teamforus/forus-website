@@ -1,4 +1,4 @@
-module.exports = {
+export default {
     header: {
         title: 'Uw persoonlijke QR-code',
         subtitle: 'Laat uw persoonlijke QR-code scannen door een beoordelaar.',

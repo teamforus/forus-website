@@ -1,4 +1,4 @@
-module.exports = {
+export default {
     items: {
         home: 'Home',
         funds: 'Activeren',
@@ -18,6 +18,7 @@ module.exports = {
         },
         groningen: {
             funds: 'Aanvragen',
+            explanation: 'Hoe werkt het?',
         },
         waalwijk: {
             funds: 'Aanvragen',
@@ -49,9 +50,6 @@ module.exports = {
         },
         noordoostpolder: {
             funds: 'Regelingen',
-        },
-        groningen: {
-            explanation: 'Hoe werkt het?',
         },
     },
     buttons: {
@@ -148,7 +146,7 @@ module.exports = {
                     funds: 'Activeren',
                 },
                 noordoostpolder: {
-                    funds: 'Activeren',
+                    funds: 'Regelingen',
                 },
                 vergoedingen: {
                     funds: 'Vergoedingen',
@@ -157,9 +155,6 @@ module.exports = {
                     funds: 'Regelingen',
                 },
                 ede: {
-                    funds: 'Regelingen',
-                },
-                noordoostpolder: {
                     funds: 'Regelingen',
                 },
             },

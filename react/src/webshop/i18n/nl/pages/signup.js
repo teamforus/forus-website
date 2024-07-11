@@ -1,4 +1,4 @@
-module.exports = {
+export default {
     // SIGNUP = sign-up.pug
     items: {
         title: 'Inloggen',

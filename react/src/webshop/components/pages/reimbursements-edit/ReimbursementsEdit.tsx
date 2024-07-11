@@ -415,7 +415,9 @@ export default function ReimbursementsEdit() {
                                                         <div className="flex-inline flex-center flex-vertical">
                                                             <Tooltip
                                                                 className={'text-left'}
-                                                                text={'IBAN-nummer moet het formaat NL89BANK0123456789 hebben.'}
+                                                                text={
+                                                                    'IBAN-nummer moet het formaat NL89BANK0123456789 hebben.'
+                                                                }
                                                             />
                                                         </div>
                                                     </div>
