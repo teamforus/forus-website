@@ -1,4 +1,4 @@
-import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { Fragment, useCallback, useMemo } from 'react';
 import Fund from '../../../../props/models/Fund';
 import Voucher from '../../../../../dashboard/props/models/Voucher';
 import Product from '../../../../props/models/Product';
@@ -77,7 +77,7 @@ export default function ProductFundsCard({
                     return showTakenByPartnerModal();
                 }
 
-                navigateState('fund-activate', { fund_id });
+                navigateState('fund-activate', { id: fund_id });
             });
         },
         [fundService, navigateState, showTakenByPartnerModal],
