@@ -1,7 +1,7 @@
 module.exports = {
     // VALIDATIONS OF THE RECORDS = record-validations.pug
     header: {
-        title: 'Mijn eigenschappen',
+        title: 'Mijn persoonsgegevens',
     },
     labels: {
         count: 'Goedkeuringen',

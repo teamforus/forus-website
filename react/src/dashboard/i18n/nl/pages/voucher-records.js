@@ -1,17 +1,17 @@
 export default {
     header: {
-        title: 'Persoonlijke eigenschappen',
+        title: 'Persoonsgegevens',
     },
     labels: {
         id: 'ID',
-        record_type: 'Soort eigenschap',
-        value: 'Eigenschap',
+        record_type: 'Soort persoonsgegeven',
+        value: 'Persoonsgegeven',
         created_at: 'Aanmaakdatum',
         note: 'Notitie',
         action: 'Acties',
         search: 'Zoeken',
     },
     buttons: {
-        add_record: 'Eigenschap toevoegen',
+        add_record: 'Persoonsgegevens toevoegen',
     },
 };

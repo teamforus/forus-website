@@ -13,7 +13,7 @@ module.exports = {
         bookmarks: 'Mijn verlanglijstje',
         reservations: 'Reserveringen',
         reimbursements: 'Kosten terugvragen',
-        records: 'Eigenschappen',
+        records: 'Persoonsgegevens',
         funds: 'Aanvragen',
         notifications: 'Notificaties',
         notification_preferences: 'Notificatievoorkeuren',

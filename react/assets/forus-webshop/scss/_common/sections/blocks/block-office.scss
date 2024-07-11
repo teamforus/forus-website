@@ -49,7 +49,7 @@
         z-index: 1;
 
         .block-pane:first-child {
-            margin-top: -70px;
+            margin-top: 30px;
         }
 
         .office-organization {
@@ -114,7 +114,7 @@
     @media screen and (max-width: 1000px){
         .office-content {
             .block-pane:first-child {
-                margin-top: -15px;
+                margin-top: 10px;
             }
 
             .office-organization {

@@ -128,7 +128,7 @@ export default function FinancialOverviewFundsBudgetTableItem({ fund }: { fund: 
                     {fundBudget.children_count > 0 && (
                         <tr className="table-highlight-grey">
                             <td>
-                                <strong>Eigenschappen</strong>
+                                <strong>Persoonsgegevens</strong>
                             </td>
                             <td colSpan={6}>
                                 <div>Aantal kinderen</div>

@@ -9,7 +9,10 @@ module.exports = {
         identity: 'Profiel',
         signup: 'Uitleg aanbieders',
         search: 'Zoek',
-        menu: 'Meer',
+        menu: {
+            show: 'Meer',
+            close: 'Sluiten',
+        },
         westerkwartier: {
             funds: 'Potjes',
         },
@@ -84,7 +87,7 @@ module.exports = {
         voucher: 'Mijn tegoeden',
         reimbursements: 'Kosten terugvragen',
         profile: 'Profiel >',
-        records: 'Mijn eigenschappen',
+        records: 'Mijn persoonsgegevens',
         authorize: 'Log in op de app',
         logout: 'Uitloggen',
         products: 'Aanbod',

@@ -100,8 +100,10 @@ export default function FundsListItem({
     }
 
     return (
-        <div className={'fund-item'}>
-            <FundsListItemList fund={fundModel} searchParams={searchParams} applyFund={applyFund} />
-        </div>
+        <StateNavLink name={'fund'} params={{ id: fund.id }} state={{ searchParams: searchParams || null }}>
+            <div className={'fund-item'}>
+                <FundsListItemList fund={fundModel} applyFund={applyFund} />
+            </div>
+        </StateNavLink>
     );
 }

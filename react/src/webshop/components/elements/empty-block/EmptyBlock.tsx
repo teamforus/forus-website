@@ -24,12 +24,12 @@ export default function EmptyBlock({
     return (
         <div className="block block-empty" data-dusk={dataDusk}>
             {svgIcon === 'reimbursements' && (
-                <div className="block-icon">
+                <div className="block-icon" aria-hidden="true">
                     <IconReimbursements />
                 </div>
             )}
             {svgIcon === 'fund-requests' && (
-                <div className="block-icon">
+                <div className="block-icon" aria-hidden="true">
                     <IconFundRequest />
                 </div>
             )}
@@ -50,9 +50,13 @@ export default function EmptyBlock({
                         className={`button button-${button.type}`}
                         onClick={button.onClick}
                         data-dusk="btnEmptyBlock">
-                        {button.icon && !button.iconEnd && <em className={`mdi mdi-${button.icon}`} />}
+                        {button.icon && !button.iconEnd && (
+                            <em className={`mdi mdi-${button.icon}`} aria-hidden="true" />
+                        )}
                         {button.text}
-                        {button.icon && button.iconEnd && <em className={`icon-right mdi mdi-${button.icon}`} />}
+                        {button.icon && button.iconEnd && (
+                            <em className={`icon-right mdi mdi-${button.icon}`} aria-hidden="true" />
+                        )}
                     </button>
                 </div>
             )}

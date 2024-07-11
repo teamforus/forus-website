@@ -42,10 +42,9 @@ export default function LayoutAsideValidator({ organization }: { organization: O
             <LayoutAsideNavItem
                 name={'Aanvragers'}
                 icon={'file_csv'}
-                route={'csv-validation-redirect'}
+                route={'csv-validation'}
                 routeParams={{ organizationId: organization?.id }}
                 show={true}
-                target={'_blank'}
                 id={'requesters'}
             />
             <LayoutAsideNavItem

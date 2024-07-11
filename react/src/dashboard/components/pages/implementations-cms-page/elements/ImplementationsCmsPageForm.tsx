@@ -257,9 +257,11 @@ export default function ImplementationsCmsPageForm({
                                                     <div className="info-box-icon mdi mdi-information" />
                                                     <div className="info-box-content">
                                                         <div className="block block-markdown">
-                                                            Internal pages are hosted on our webshop domain and you can
-                                                            edit the content of the page below. Or you can select
-                                                            external, to provider a custom url for the page.
+                                                            De interne privacyverklaring pagina wordt gehost op ons
+                                                            webshopdomein. Hieronder kunt u de inhoud van de pagina
+                                                            aanpassen. U kunt er ook voor kiezen om een externe
+                                                            privacyverklaring te gebruiken en de doorverwijzingslink
+                                                            op te geven.
                                                         </div>
                                                     </div>
                                                 </div>
