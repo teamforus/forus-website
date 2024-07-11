@@ -293,7 +293,7 @@ export default function ModalCreatePrevalidation({
 
                                     {showNewRecord && (
                                         <Fragment>
-                                            <label className="form-label">Selecteer eigenschap</label>
+                                            <label className="form-label">Selecteer persoonsgegevens</label>
                                             <div className="flex-row">
                                                 <div className="flex-col flex-grow">
                                                     <div className="form-offset">
@@ -328,7 +328,7 @@ export default function ModalCreatePrevalidation({
                                                 type="button"
                                                 onClick={() => setShowNewRecord(true)}>
                                                 <em className="mdi mdi-plus icon-start" />
-                                                Eigenschap toevoegen
+                                                Persoonsgegevens toevoegen
                                             </button>
                                         </div>
                                     )}

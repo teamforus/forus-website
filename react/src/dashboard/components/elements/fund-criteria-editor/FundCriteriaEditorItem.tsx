@@ -288,11 +288,11 @@ export default function FundCriteriaEditorItem({
                         <div className="form-group">
                             <div className="row">
                                 <div className="col col-xs-12 col-sm-4">
-                                    <label className="form-label">Eigenschap</label>
+                                    <label className="form-label">Persoonsgegeven</label>
                                     <div className="form-offset">
                                         <SelectControl
                                             className={`form-control ${disabled ? 'disabled' : ''}`}
-                                            placeholder="Eigenschap"
+                                            placeholder="Persoonsgegeven"
                                             disabled={disabled}
                                             value={recordType}
                                             allowSearch={true}

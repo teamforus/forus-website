@@ -103,7 +103,7 @@ export default function FundRequestsShow() {
                                         <div className="fund-request-prop-value">{fundRequest.created_at_locale}</div>
                                     </div>
                                     <div className="fund-request-prop">
-                                        <div className="fund-request-prop-label">Aantal eigenschappen:</div>
+                                        <div className="fund-request-prop-label">Aantal persoonsgegevens:</div>
                                         <div className="fund-request-prop-value">{fundRequest.records.length}</div>
                                     </div>
                                 </div>

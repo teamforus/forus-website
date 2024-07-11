@@ -68,7 +68,7 @@ module.exports = {
         link: 'Vul uw e-mailadres in om een link te ontvangen waarmee u kunt inloggen.',
         code: 'Vul de activatiecode in die u per brief hebt ontvangen.<br /><strong>Let op:</strong> U kunt één activatiecode per e-mailadres gebruiken. Sluit dit venster als u al een activatiecode heeft gebruikt.',
         voucher_email: 'Het is gelukt!',
-        isactivated: 'Uw voucher is al geactiveerd.',
+        isactivated: 'Uw tegoed is al geactiveerd.',
         codeactivated: 'U heeft al een activatiecode gebruikt. Het is niet mogelijk nog één te gebruiken.',
         dont_have_account: 'Heeft u geen account en wilt u één aanmaken door een activatiecode te gebruiken?',
     },

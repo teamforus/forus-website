@@ -86,8 +86,8 @@ module.exports = {
                 description: 'Ontvang een e-mail notificatie wanneer er een nieuw validatieverzoek is gedaan.',
             },
             you_added_as_validator: {
-                title: 'Toegevoegd als validator',
-                description: 'Ontvang een e-mail notificatie wanneer u als validator aan een fonds bent toegevoegd.',
+                title: 'Toegevoegd als beoordelaar',
+                description: 'Ontvang een e-mail notificatie wanneer u als beoordelaar aan een fonds bent toegevoegd.',
             },
         },
         vouchers: {
