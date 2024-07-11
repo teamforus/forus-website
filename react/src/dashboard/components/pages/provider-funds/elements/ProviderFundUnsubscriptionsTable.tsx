@@ -380,7 +380,7 @@ export default function ProviderFundUnsubscriptionsTable({
                                                             title="Cancel"
                                                             onClick={() => cancelUnsubscriptions([unsubscription])}>
                                                             <em className="mdi mdi-close-circle-outline icon-start" />
-                                                            Cancel
+                                                            Annuleren
                                                         </button>
                                                     )}
                                                 </div>
