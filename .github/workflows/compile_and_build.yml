@@ -1,4 +1,4 @@
-name: Build and compile frontend
+name: Build frontend
 
 on: [pull_request]
 
@@ -10,12 +10,14 @@ jobs:
       - name: Compile frontends
         uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: 20
 
       - name: Install dependencies
         run: npm install
+        
       - name: Create env.js from example
         run: cp env.example.js env.js
+        
       - name: Build
         run: npm run build-dev -- --env only="webshop.general,dashboard.sponsor,dashboard.provider,dashboard.validator"
 
