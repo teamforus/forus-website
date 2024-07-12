@@ -1,4 +1,4 @@
-module.exports = {
+export default {
     title: 'Privacyverklaring',
 
     one: 'De volgende gegevens worden opgeslagen:',

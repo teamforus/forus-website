@@ -1,4 +1,4 @@
-module.exports = {
+export default {
     sms: {
         title: 'Download <i>Me</i> on your smartphone.',
         description: 'Enter your phone number to receive a downloadlink.',

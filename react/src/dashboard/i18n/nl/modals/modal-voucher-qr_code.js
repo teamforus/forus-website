@@ -10,7 +10,7 @@ export default {
         bsn: 'BSN',
     },
     info_assign:
-        'Wanneer toegekend heeft de voucher een nieuwe eigenaar. De nieuwe eigenaar kan de voucher beheren via de webshop. Hierdoor verliest u eigenaarschap en daarmee de functies: via e-mail versturen en QR-code printen.',
+        'Wanneer toegekend heeft het tegoed een nieuwe eigenaar. De nieuwe eigenaar kan het tegoed beheren via de webshop. Hierdoor verliest u eigenaarschap en daarmee de functies: via e-mail versturen en QR-code printen.',
     success: {
         sending_title: 'Succes',
         sending_details: 'Tegoed verstuurd',

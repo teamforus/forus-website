@@ -7,7 +7,7 @@ export default {
             delete: 'Delete',
             top_up: 'Top-up fund',
             criteria: 'Criteria',
-            statistics: 'Stistics',
+            statistics: 'Statistics',
             top_up_history: 'View transactions',
         },
         states: {

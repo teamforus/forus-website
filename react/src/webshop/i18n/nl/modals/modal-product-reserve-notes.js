@@ -1,4 +1,4 @@
-module.exports = {
+export default {
     fill_notes: {
         header: {
             title: 'Vul uw gegevens in',

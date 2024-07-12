@@ -1,4 +1,4 @@
-module.exports = {
+export default {
     title_preferences: 'Email preferences',
     subscribe_desc:
         'You are currently unsubscribed from all notifications with this e-mail address "{{email}}". If you want to receive notifications, you can set this per notification below.',

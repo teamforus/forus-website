@@ -1,4 +1,4 @@
-module.exports = {
+export default {
     header: {
         title: 'We hebben {{ count }} aanbieders gevonden',
         subtitle: 'Selecteer een om meer informatie te zien',

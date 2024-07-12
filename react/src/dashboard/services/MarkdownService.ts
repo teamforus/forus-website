@@ -2,7 +2,7 @@ import ApiRequestService from './ApiRequestService';
 import Identity from '../props/models/Identity';
 import { useState } from 'react';
 import TurnDownService from 'turndown';
-import * as turnDownPluginGfm from 'turndown-plugin-gfm';
+import * as turnDownPluginGfm from '@joplin/turndown-plugin-gfm';
 import { ResponseSimple } from '../props/ApiResponses';
 
 export class MarkdownService<T = { data: Identity }> {

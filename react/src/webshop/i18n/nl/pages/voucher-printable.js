@@ -1,4 +1,4 @@
-module.exports = {
+export default {
     product_voucher: {
         labels: {
             use_for: 'Gebruik dit tegoed voor:',

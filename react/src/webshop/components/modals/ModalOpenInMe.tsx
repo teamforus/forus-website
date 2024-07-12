@@ -12,7 +12,7 @@ import IconMeLogo from '../../../../assets/forus-webshop/resources/_webshop-comm
 import ModalAuthPincode from './ModalAuthPincode';
 import useOpenModal from '../../../dashboard/hooks/useOpenModal';
 import TranslateHtml from '../../../dashboard/components/elements/translate-html/TranslateHtml';
-import {clickOnKeyEnter} from "../../../dashboard/helpers/wcag";
+import { clickOnKeyEnter } from '../../../dashboard/helpers/wcag';
 
 export default function ModalOpenInMe({ modal }: { modal: ModalState }) {
     const translate = useTranslate();

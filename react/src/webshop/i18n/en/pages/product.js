@@ -1,4 +1,4 @@
-module.exports = {
+export default {
     // PRODUCT = product.pug
     labels: {
         fund: 'Funds',

@@ -1,4 +1,4 @@
-module.exports = {
+export default {
     // CREATE A RECORD  = record.create.pug
     header: {
         title: 'Create a record',

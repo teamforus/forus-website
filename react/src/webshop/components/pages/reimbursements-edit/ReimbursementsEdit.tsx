@@ -419,7 +419,17 @@ export default function ReimbursementsEdit() {
                                             </div>
                                             <div className="form-group form-group-inline">
                                                 <label className="form-label form-label-required" htmlFor="iban">
-                                                    IBAN nummer
+                                                    <div className="flex-inline">
+                                                        <div className="flex">IBAN nummer&nbsp;</div>
+                                                        <div className="flex-inline flex-center flex-vertical">
+                                                            <Tooltip
+                                                                className={'text-left'}
+                                                                text={
+                                                                    'IBAN-nummer moet het formaat NL89BANK0123456789 hebben.'
+                                                                }
+                                                            />
+                                                        </div>
+                                                    </div>
                                                 </label>
                                                 <input
                                                     className="form-control"

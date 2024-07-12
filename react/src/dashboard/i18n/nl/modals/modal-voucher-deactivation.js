@@ -1,6 +1,6 @@
 export default {
     title: 'Deactiveren',
-    description: 'Klik op bevestig om het tegoed te deactiveren. Het tegoed is hierna direct niet meer geldig.',
+    description: 'Klik op bevestigen om het tegoed te deactiveren. Het tegoed is hierna direct niet meer geldig.',
     labels: {
         note: 'Notitie*',
         notify_by_email: 'Informeer de gebruiker via een e-mailbericht.',
