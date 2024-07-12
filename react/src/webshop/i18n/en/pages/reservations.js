@@ -1,4 +1,4 @@
-module.exports = {
+export default {
     // reservations = reservations.pug
     header: {
         title: 'My reservations',

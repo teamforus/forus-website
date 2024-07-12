@@ -1,4 +1,4 @@
-module.exports = {
+export default {
     links: {
         privacy: 'Privacy statement',
         accessibility: 'Accessibility statement',

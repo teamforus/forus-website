@@ -56,7 +56,7 @@ export default function EventLogsTable({
             { key: 'fund', title: 'Fonds' },
             { key: 'employees', title: 'Medewerker' },
             { key: 'bank_connection', title: 'Bank integratie' },
-            { key: 'voucher', title: 'Vouchers' },
+            { key: 'voucher', title: 'Tegoeden' },
         ].filter((item) => hasPermission(organization, permissionsMap[item.key]));
     }, [organization, permissionsMap]);
 

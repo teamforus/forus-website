@@ -1,4 +1,4 @@
-module.exports = {
+export default {
     // PRODUCT RESERVE POPUP = popup-product-reserve.pug
     header: {
         title: 'Maak een reservering',

@@ -213,11 +213,16 @@ export default function Start() {
                             type={'email'}
                             value={authForm.values.email}
                             onChange={(e) => authForm.update({ email: e.target.value })}
+                            validationMessages={{
+                                typeMismatch: translate('signup.items.errors.email.type_mismatch'),
+                                valueMissing: translate('signup.items.errors.email.value_missing'),
+                            }}
                             placeholder={'e-mail@e-mail.nl'}
                             id={'email'}
                             name={'email'}
                             tabIndex={1}
                             autoFocus={true}
+                            required={true}
                             dataDusk={'authEmailFormEmail'}
                         />
                         <FormError error={authForm.errors.email} />
@@ -330,7 +335,7 @@ export default function Start() {
                 <img
                     className="sign_up-option-media-img"
                     src={assetUrl('/assets/img/icon-auth/icon-auth-digid.svg')}
-                    alt=""
+                    alt="logo DigiD"
                 />
             </div>
             <div className="sign_up-option-details">
@@ -401,11 +406,11 @@ export default function Start() {
                                             ) : (
                                                 <div className="sign_up-row">
                                                     <div className="sign_up-col">
-                                                        <h3 className="sign_up-pane-text">
+                                                        <h2 className="sign_up-pane-text">
                                                             <div className="sign_up-pane-heading">
                                                                 Account aanmaken of een aanvraag starten?
                                                             </div>
-                                                        </h3>
+                                                        </h2>
                                                         <div className={`sign_up-options ${loading ? 'disabled' : ''}`}>
                                                             {appConfigs.digid &&
                                                                 !envData.config?.flags?.startPage
@@ -421,7 +426,7 @@ export default function Start() {
                                                         </div>
                                                     </div>
                                                     <div className="sign_up-col">
-                                                        <h3 className="sign_up-pane-text">
+                                                        <h2 className="sign_up-pane-text">
                                                             <div className="sign_up-pane-heading">
                                                                 {translate(
                                                                     `signup.items.${envData.client_key}.pane_text`,
@@ -429,7 +434,7 @@ export default function Start() {
                                                                     'signup.items.pane_text',
                                                                 )}
                                                             </div>
-                                                        </h3>
+                                                        </h2>
                                                         <div className={`sign_up-options ${loading ? 'disabled' : ''}`}>
                                                             {appConfigs.digid &&
                                                                 envData.config?.flags?.startPage

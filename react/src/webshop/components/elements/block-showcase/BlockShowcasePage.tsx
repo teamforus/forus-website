@@ -2,6 +2,7 @@ import React, { CSSProperties, useCallback, useState } from 'react';
 import BlockShowcase from './BlockShowcase';
 import BlockLoader from '../block-loader/BlockLoader';
 import ErrorBoundaryHandler from '../../../../dashboard/components/elements/error-boundary-handler/ErrorBoundaryHandler';
+import classNames from 'classnames';
 
 export default function BlockShowcasePage({
     aside = null,
@@ -40,7 +41,12 @@ export default function BlockShowcasePage({
                         <div className="mobile-filters-count-value">{countFiltersApplied}</div>
                     </div>
                     <div className="mobile-filters-title">Filteren</div>
-                    <div className="mobile-filters-icon" onClick={toggleMobileMenu} aria-label="Filteren">
+                    <div
+                        className="mobile-filters-icon"
+                        onClick={toggleMobileMenu}
+                        aria-label="Filteren"
+                        aria-expanded={showModalFilters}
+                        aria-controls={'aside-mobile'}>
                         <em className="mdi mdi-filter-outline" />
                     </div>
                 </div>
@@ -49,7 +55,12 @@ export default function BlockShowcasePage({
 
                 <ErrorBoundaryHandler>
                     <div className="showcase-layout">
-                        <div className={`showcase-aside form form-compact ${showModalFilters ? 'show-mobile' : ''}`}>
+                        <div
+                            className={classNames(
+                                'showcase-aside form form-compact',
+                                showModalFilters && 'show-mobile',
+                            )}
+                            id={'aside-mobile'}>
                             {aside || <BlockLoader />}
                         </div>
 

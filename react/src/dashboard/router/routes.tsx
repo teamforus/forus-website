@@ -43,7 +43,6 @@ import SecuritySessions from '../components/pages/identity-security/SecuritySess
 import OrganizationsNoPermissions from '../components/pages/organizations-no-permissions/OrganizationsNoPermissions';
 import PaymentMethods from '../components/pages/payment-methods/PaymentMethods';
 import MolliePrivacy from '../components/pages/mollie-privacy/MolliePrivacy';
-import CsvValidationsRedirect from '../components/pages/csv_validations/CsvValidationsRedirect';
 import Reimbursements from '../components/pages/reimbursements/Reimbursements';
 import ReimbursementsView from '../components/pages/reimbursements-view/ReimbursementsView';
 import BankConnections from '../components/pages/bank-connections/BankConnections';
@@ -90,6 +89,7 @@ import ThrowError from '../components/pages_system/ThrowError';
 import Implementations from '../components/pages/implementations/Implementations';
 import ExternalValidators from '../components/pages/external-validators/ExternalValidators';
 import SponsorFundUnsubscriptions from '../components/pages/sponsor-fund-unsubscriptions/SponsorFundUnsubscriptions';
+import OrganizationsContacts from '../components/pages/organizations-contacts/OrganizationsContacts';
 
 const router = new RouterBuilder();
 
@@ -352,6 +352,11 @@ router.state('bi-connection', <BiConnection />, {
     fallbackState: 'organizations',
 });
 
+router.state('organizations-contacts', <OrganizationsContacts />, {
+    path: `/organizations/:organizationId/contacts`,
+    fallbackState: 'organizations',
+});
+
 router.state('offices', <Offices />, {
     path: `/organizations/:organizationId/offices`,
 });
@@ -473,10 +478,6 @@ router.state('feedback', <Feedback />, {
 
 router.state('csv-validation', <CsvValidations />, {
     path: `/csv-validations`,
-});
-
-router.state('csv-validation-redirect', <CsvValidationsRedirect />, {
-    path: `/csv-validation/funds/redirect/:fundId?`,
 });
 
 router.state('preferences-emails', <PreferencesEmails />, {

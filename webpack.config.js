@@ -8,6 +8,7 @@ const timestamp = new Date().getTime();
 const isDevServer = process.env.WEBPACK_SERVE;
 const CopyPlugin = require('copy-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
+const ESLintPlugin = require('eslint-webpack-plugin');
 const envData = require('./env.js');
 const { info: logInfo } = console;
 
@@ -40,7 +41,7 @@ module.exports = (env, argv) => {
         return new HtmlWebpackPlugin({
             template: `../../react/public/index.ejs`,
             templateParameters: {
-                title: `Forus ${item.client_type} app`,
+                title: item.default_title || 'Forus',
                 script: webPath(`/${scriptPath}`),
                 base: webPath(`/`),
                 favicon: webPath(`/assets/img/favicon.ico`),
@@ -250,6 +251,14 @@ module.exports = (env, argv) => {
             buildGzipFiles ? new CompressionPlugin({ algorithm: 'gzip', test: /\.js(\?.*)?$/i }) : null,
             new DefinePlugin({ __REACT_DEVTOOLS_GLOBAL_HOOK__: '({ isDisabled: true })' }),
             new ProvidePlugin({ React: 'react' }),
+            new ESLintPlugin({
+                extensions: ['js', 'mjs', 'jsx', 'ts', 'tsx'],
+                eslintPath: require.resolve('eslint'),
+                failOnError: true,
+                failOnWarning: true,
+                cache: true,
+                resolvePluginsRelativeTo: __dirname,
+            }),
         ].filter((plugin) => plugin),
 
         optimization: {
