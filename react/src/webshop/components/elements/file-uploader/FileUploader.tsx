@@ -6,6 +6,7 @@ import ModalPhotoCropper from '../../modals/modal-photo-cropper/ModalPhotoCroppe
 import FileUploaderItemView from './FileUploaderItemView';
 import usePushInfo from '../../../../dashboard/hooks/usePushInfo';
 import { uniqueId } from 'lodash';
+import { ResponseError } from '../../../../dashboard/props/ApiResponses';
 
 export type FileUploaderItem = {
     id?: string;
@@ -53,6 +54,7 @@ export default function FileUploader({
     onFilesChange = null,
     hideButtons = false,
     fileListCompact = false,
+    isRequired = false,
 }: {
     type: 'fund_request_clarification_proof' | 'reimbursement_proof' | 'fund_request_record_proof';
     title?: string;
@@ -65,6 +67,7 @@ export default function FileUploader({
     acceptedFiles?: Array<string>;
     hideButtons?: boolean;
     fileListCompact?: boolean;
+    isRequired?: boolean;
 } & FileItemEventsListener) {
     const fileService = useFileService();
 
@@ -142,12 +145,12 @@ export default function FileUploader({
 
                     callbackRef?.current?.onFileUploaded?.(makeFileEvent(filesRef?.current, fileItem));
                 })
-                .catch((res) => {
-                    const error = res?.data?.errors?.file || res?.data?.errors?.type;
+                .catch((err: ResponseError) => {
+                    const error = err?.data?.errors?.file || err?.data?.errors?.type;
 
                     updateItem(fileItem.id, (item) => ({
                         ...item,
-                        error: error || res?.data?.message ? [res?.data?.message] : [],
+                        error: error || err?.data?.message ? [err?.data?.message] : [],
                     }));
 
                     callbackRef?.current?.onFileError?.(makeFileEvent(filesRef?.current, fileItem));
@@ -304,7 +307,7 @@ export default function FileUploader({
                     <div className="droparea-icon">
                         <div className="mdi mdi-tray-arrow-up"></div>
                     </div>
-                    <div className="droparea-title">
+                    <div className={`droparea-title ${isRequired ? 'droparea-title-required' : ''}`}>
                         <strong>{title}</strong>
                         <br />
                         <small>of</small>

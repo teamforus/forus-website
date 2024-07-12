@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import useFilter from '../../../../hooks/useFilter';
 import { PaginationData } from '../../../../props/ApiResponses';
 import Organization from '../../../../props/models/Organization';
@@ -18,9 +17,11 @@ import FilterItemToggle from '../../../elements/tables/elements/FilterItemToggle
 import DatePickerControl from '../../../elements/forms/controls/DatePickerControl';
 import { dateFormat, dateParse } from '../../../../helpers/dates';
 import { strLimit } from '../../../../helpers/string';
-import ClickOutside from '../../../elements/click-outside/ClickOutside';
 import useTableToggles from '../../../../hooks/useTableToggles';
 import usePaginatorService from '../../../../modules/paginator/services/usePaginatorService';
+import EmptyCard from '../../../elements/empty-card/EmptyCard';
+import useTranslate from '../../../../hooks/useTranslate';
+import Tooltip from '../../../elements/tooltip/Tooltip';
 
 type FundProviderUnsubscribeLocal = FundProviderUnsubscribe & {
     showTooltip?: boolean;
@@ -33,15 +34,14 @@ export default function ProviderFundUnsubscriptionsTable({
     organization: Organization;
     onChange: () => void;
 }) {
-    const { t } = useTranslation();
-
     const [loading, setLoading] = useState(true);
 
     const assetUrl = useAssetUrl();
-    const setProgress = useSetProgress();
-    const pushDanger = usePushDanger();
-    const pushSuccess = usePushSuccess();
+    const translate = useTranslate();
     const openModal = useOpenModal();
+    const pushDanger = usePushDanger();
+    const setProgress = useSetProgress();
+    const pushSuccess = usePushSuccess();
 
     const paginatorService = usePaginatorService();
     const fundUnsubscribeService = useFundUnsubscribeService();
@@ -81,10 +81,10 @@ export default function ProviderFundUnsubscriptionsTable({
             openModal((modal) => (
                 <ModalDangerZone
                     modal={modal}
-                    title={t('modals.danger_zone.cancel_provider_unsubscription.title')}
-                    description={t('modals.danger_zone.cancel_provider_unsubscription.description')}
+                    title={translate('modals.danger_zone.cancel_provider_unsubscription.title')}
+                    description={translate('modals.danger_zone.cancel_provider_unsubscription.description')}
                     buttonSubmit={{
-                        text: t('modals.danger_zone.cancel_provider_unsubscription.buttons.cancel'),
+                        text: translate('modals.danger_zone.cancel_provider_unsubscription.buttons.cancel'),
                         onClick: () => {
                             const promises = unsubscriptions.map((item) => {
                                 return fundUnsubscribeService.update(organization.id, item.id, { canceled: 1 });
@@ -101,32 +101,14 @@ export default function ProviderFundUnsubscriptionsTable({
                         },
                     }}
                     buttonCancel={{
-                        text: t('modals.danger_zone.cancel_provider_unsubscription.buttons.confirm'),
+                        text: translate('modals.danger_zone.cancel_provider_unsubscription.buttons.confirm'),
                         onClick: modal.close,
                     }}
                 />
             ));
         },
-        [filter, fundUnsubscribeService, onChange, openModal, organization.id, pushDanger, pushSuccess, t],
+        [filter, fundUnsubscribeService, onChange, openModal, organization.id, pushDanger, pushSuccess, translate],
     );
-
-    const showTooltip = useCallback((e: React.MouseEvent, target: FundProviderUnsubscribe) => {
-        e.stopPropagation();
-
-        setFundUnsubscriptions((data) => {
-            data.data.forEach((item) => (item.showTooltip = item.id == target.id));
-            return { ...data };
-        });
-    }, []);
-
-    const hideTooltip = useCallback((e: React.MouseEvent) => {
-        e.stopPropagation();
-
-        setFundUnsubscriptions((data) => {
-            data.data.forEach((item) => (item.showTooltip = false));
-            return { ...data };
-        });
-    }, []);
 
     const fetchUnsubscriptions = useCallback(
         async (filters: object) => {
@@ -155,7 +137,7 @@ export default function ProviderFundUnsubscriptionsTable({
                 <div className="flex">
                     <div className="flex flex-grow">
                         <div className="card-title">
-                            {t(`fund_unsubscriptions.title`)}
+                            {translate(`fund_unsubscriptions.title`)}
 
                             {!loading &&
                                 selected.length > 0 &&
@@ -211,7 +193,7 @@ export default function ProviderFundUnsubscriptionsTable({
                             </div>
                         )}
                         <CardHeaderFilter filter={filter}>
-                            <FilterItemToggle label={t('provider_funds.filters.labels.search')} show={true}>
+                            <FilterItemToggle label={translate('provider_funds.filters.labels.search')} show={true}>
                                 <input
                                     className="form-control"
                                     value={filter.values.q}
@@ -220,20 +202,20 @@ export default function ProviderFundUnsubscriptionsTable({
                                 />
                             </FilterItemToggle>
 
-                            <FilterItemToggle label={t('transactions.labels.from')}>
+                            <FilterItemToggle label={translate('transactions.labels.from')}>
                                 <DatePickerControl
                                     value={dateParse(filter.values.from)}
-                                    placeholder={t('jjjj-MM-dd')}
+                                    placeholder={translate('jjjj-MM-dd')}
                                     onChange={(from: Date) => {
                                         filter.update({ from: dateFormat(from) });
                                     }}
                                 />
                             </FilterItemToggle>
 
-                            <FilterItemToggle label={t('transactions.labels.to')}>
+                            <FilterItemToggle label={translate('transactions.labels.to')}>
                                 <DatePickerControl
                                     value={dateParse(filter.values.to)}
-                                    placeholder={t('jjjj-MM-dd')}
+                                    placeholder={translate('jjjj-MM-dd')}
                                     onChange={(to: Date) => {
                                         filter.update({ to: dateFormat(to) });
                                     }}
@@ -259,14 +241,14 @@ export default function ProviderFundUnsubscriptionsTable({
                                             </th>
                                         )}
 
-                                        <th>{t('fund_unsubscriptions.labels.fund')}</th>
-                                        <th>{t('fund_unsubscriptions.labels.organization')}</th>
-                                        <th>{t('fund_unsubscriptions.labels.created_at')}</th>
-                                        <th>{t('fund_unsubscriptions.labels.unsubscription_date')}</th>
-                                        <th>{t('fund_unsubscriptions.labels.note')}</th>
-                                        <th>{t('fund_unsubscriptions.labels.status')}</th>
+                                        <th>{translate('fund_unsubscriptions.labels.fund')}</th>
+                                        <th>{translate('fund_unsubscriptions.labels.organization')}</th>
+                                        <th>{translate('fund_unsubscriptions.labels.created_at')}</th>
+                                        <th>{translate('fund_unsubscriptions.labels.unsubscription_date')}</th>
+                                        <th>{translate('fund_unsubscriptions.labels.note')}</th>
+                                        <th>{translate('fund_unsubscriptions.labels.status')}</th>
                                         <th className="nowrap text-right">
-                                            {t('fund_unsubscriptions.labels.actions')}
+                                            {translate('fund_unsubscriptions.labels.actions')}
                                         </th>
                                     </tr>
 
@@ -305,7 +287,7 @@ export default function ProviderFundUnsubscriptionsTable({
                                                             rel="noreferrer"
                                                             href={unsubscription.fund.implementation.url_webshop}
                                                             className="text-strong text-md text-muted-dark text-inherit">
-                                                            {strLimit(unsubscription.fund.implementation.name, 40)}
+                                                            {strLimit(unsubscription.fund.implementation?.name, 40)}
                                                         </a>
                                                     </div>
                                                 </div>
@@ -328,21 +310,11 @@ export default function ProviderFundUnsubscriptionsTable({
                                                     <span>{strLimit(unsubscription.note)}</span>
                                                     &nbsp;
                                                     {unsubscription.note?.length >= 25 && (
-                                                        <em
-                                                            className={`td-icon mdi mdi-information block block-tooltip-details ${
-                                                                unsubscription.showTooltip ? 'active' : ''
-                                                            }`}
-                                                            onClick={(e) => showTooltip(e, unsubscription)}>
-                                                            {unsubscription.showTooltip && (
-                                                                <ClickOutside onClickOutside={(e) => hideTooltip(e)}>
-                                                                    <div
-                                                                        className="tooltip-text"
-                                                                        title={unsubscription.note}>
-                                                                        {strLimit(unsubscription.note || '-', 512)}
-                                                                    </div>
-                                                                </ClickOutside>
-                                                            )}
-                                                        </em>
+                                                        <Tooltip
+                                                            type={'primary'}
+                                                            position={'bottom'}
+                                                            text={strLimit(unsubscription.note || '-', 512)}
+                                                        />
                                                     )}
                                                 </div>
                                             </td>
@@ -380,7 +352,7 @@ export default function ProviderFundUnsubscriptionsTable({
                                                             title="Cancel"
                                                             onClick={() => cancelUnsubscriptions([unsubscription])}>
                                                             <em className="mdi mdi-close-circle-outline icon-start" />
-                                                            Cancel
+                                                            Annuleren
                                                         </button>
                                                     )}
                                                 </div>
@@ -403,11 +375,7 @@ export default function ProviderFundUnsubscriptionsTable({
             )}
 
             {!loading && fundUnsubscriptions?.meta?.total == 0 && (
-                <div className="card-section">
-                    <div className="block block-empty text-center">
-                        <div className="empty-title">{t(`provider_funds.empty_block.unsubscriptions`)}</div>
-                    </div>
-                </div>
+                <EmptyCard type={'card-section'} title={translate(`provider_funds.empty_block.unsubscriptions`)} />
             )}
 
             {fundUnsubscriptions?.meta && (

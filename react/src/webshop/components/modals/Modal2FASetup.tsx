@@ -9,7 +9,6 @@ import usePushSuccess from '../../../dashboard/hooks/usePushSuccess';
 import useTimer from '../../../dashboard/hooks/useTimer';
 import Auth2FAProvider from '../../../dashboard/props/models/Auth2FAProvider';
 import { ResponseError } from '../../../dashboard/props/ApiResponses';
-import { classList } from '../../../dashboard/helpers/utils';
 import SelectControl from '../../../dashboard/components/elements/select-control/SelectControl';
 import SelectControlOptions from '../../../dashboard/components/elements/select-control/templates/SelectControlOptions';
 import QrCode from '../../../dashboard/components/elements/qr-code/QrCode';
@@ -19,6 +18,7 @@ import PincodeControl from '../../../dashboard/components/elements/forms/control
 import BlockAuth2FAInfoBox from '../elements/block-auth-2fa-info-box/BlockAuth2FAInfoBox';
 import Icon2faPhoneConnect from '../../../../assets/forus-webshop/resources/_webshop-common/assets/img/icon-2fa-phone-connect.svg';
 import { clickOnKeyEnter } from '../../../dashboard/helpers/wcag';
+import classNames from 'classnames';
 
 export default function Modal2FASetup({
     modal,
@@ -285,13 +285,13 @@ export default function Modal2FASetup({
 
     return (
         <div
-            className={classList([
+            className={classNames(
                 'modal',
                 'modal-animated',
                 'modal-2fa-setup',
                 modal.loading ? '' : 'modal-loaded',
                 className,
-            ])}>
+            )}>
             <div className="modal-backdrop" onClick={cancel} />
             {/*Select provider*/}
             {step == 'provider_select' && (
@@ -513,6 +513,7 @@ export default function Modal2FASetup({
                                         valueType={'num'}
                                         className={'block-pincode-compact'}
                                         onChange={(code) => setConfirmationCode(code)}
+                                        ariaLabel={'Voer de tweefactorauthenticatiecode in'}
                                     />
 
                                     <FormError error={activateAuthErrors} />
@@ -606,6 +607,7 @@ export default function Modal2FASetup({
                                             valueType={'num'}
                                             className={'block-pincode-compact'}
                                             onChange={(code) => setConfirmationCode(code)}
+                                            ariaLabel={'Voer de tweefactorauthenticatiecode in'}
                                         />
                                         <FormError error={verifyAuthErrors} />
                                     </div>

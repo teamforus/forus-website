@@ -36,7 +36,7 @@ export default function SecuritySessions() {
         general: 'Onbekend',
         sponsor: 'Sponsor beheeromgeving',
         provider: 'Aanbieders beheeromgeving',
-        validator: 'Beoordelaar beheeromgevingg',
+        validator: 'Beoordelaar beheeromgeving',
         webshop: 'Webshop',
         'app-me_ap': 'Me-app',
         'app-me_ap-android': 'Me-app',

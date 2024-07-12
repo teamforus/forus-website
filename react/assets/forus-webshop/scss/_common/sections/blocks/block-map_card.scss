@@ -1,4 +1,4 @@
-&.block-map_card {
+.block.block-map_card {
     box-shadow: var(--box-shadow);
     border-radius: var(--border-radius);
     background: #fff;
@@ -7,7 +7,6 @@
 
     .map_card-header,
     .map_card-footer {
-        padding: 15px 25px;
         border-bottom: 1px solid var(--border-color);
         background: #ffffff;
         padding: 20px 25px;

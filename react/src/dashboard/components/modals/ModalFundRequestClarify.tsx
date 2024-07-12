@@ -1,6 +1,5 @@
 import React from 'react';
 import { ModalState } from '../../modules/modals/context/ModalContext';
-import { classList } from '../../helpers/utils';
 import useFormBuilder from '../../hooks/useFormBuilder';
 import FormError from '../elements/forms/errors/FormError';
 import { ResponseError } from '../../props/ApiResponses';
@@ -9,6 +8,7 @@ import FundRequest from '../../props/models/FundRequest';
 import { useFundRequestValidatorService } from '../../services/FundRequestValidatorService';
 import Organization from '../../props/models/Organization';
 import FundRequestRecord from '../../props/models/FundRequestRecord';
+import classNames from 'classnames';
 
 export default function ModalFundRequestClarify({
     modal,
@@ -56,14 +56,7 @@ export default function ModalFundRequestClarify({
     });
 
     return (
-        <div
-            className={classList([
-                'modal',
-                'modal-md',
-                'modal-animated',
-                modal.loading ? 'modal-loading' : null,
-                className,
-            ])}>
+        <div className={classNames('modal', 'modal-md', 'modal-animated', modal.loading && 'modal-loading', className)}>
             <div className="modal-backdrop" onClick={modal.close} />
 
             {fundRequest.email ? (

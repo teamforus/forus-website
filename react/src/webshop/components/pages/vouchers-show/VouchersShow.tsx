@@ -115,12 +115,13 @@ export default function VouchersShow() {
                 <VoucherQrCodePrintable
                     printable={printable}
                     voucher={voucher}
+                    webshopUrl={appConfigs?.fronts.url_webshop}
                     organization={!voucher.product ? voucher.fund.organization : voucher.product.organization}
                     assetUrl={assetUrl}
                 />
             ));
         },
-        [assetUrl, openPrintable],
+        [appConfigs?.fronts?.url_webshop, assetUrl, openPrintable],
     );
 
     const sendVoucherEmail = useCallback(
@@ -309,11 +310,7 @@ export default function VouchersShow() {
                                     <div className="card-inner">
                                         <div className="card-body">
                                             <div className="card-photo">
-                                                <img
-                                                    className="voucher-img"
-                                                    src={voucherCard.thumbnail}
-                                                    alt={voucherCard.title}
-                                                />
+                                                <img className="voucher-img" src={voucherCard.thumbnail} alt={''} />
                                             </div>
                                             <div className="card-section">
                                                 <h2 className="card-title" data-dusk="voucherTitle">
@@ -650,11 +647,7 @@ export default function VouchersShow() {
                                     <div className="card-inner">
                                         <div className="card-body">
                                             <div className="card-photo">
-                                                <img
-                                                    className="voucher-img"
-                                                    src={voucherCard.thumbnail}
-                                                    alt="{{voucherCard.title}}"
-                                                />
+                                                <img className="voucher-img" src={voucherCard.thumbnail} alt={''} />
                                             </div>
                                             <div className="card-section">
                                                 <h2 className="card-title">{strLimit(voucherCard.title, 40)}</h2>
@@ -760,7 +753,7 @@ export default function VouchersShow() {
                                         {voucherCard.records_title ? (
                                             <div className="block-card-details">
                                                 <h3 className="block-card-title block-card-title-sm text-muted-dim">
-                                                    Persoonlijke eigenschappen
+                                                    Persoonsgegevens
                                                 </h3>
                                                 <h2 className="block-card-title block-card-title-lg">
                                                     <strong>{voucherCard.records_title}</strong>
@@ -772,7 +765,7 @@ export default function VouchersShow() {
                                             </div>
                                         ) : (
                                             <div className="block-card-details">
-                                                <h3 className="block-card-title">Persoonlijke eigenschappen</h3>
+                                                <h3 className="block-card-title">Persoonsgegevens</h3>
                                             </div>
                                         )}
 

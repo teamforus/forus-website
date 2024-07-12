@@ -1,4 +1,4 @@
-&.block-markdown {
+.block.block-markdown {
     text-align: justify;
     font: 400 16px/1.5em var(--base-font);
     margin-bottom: 30px;
@@ -190,10 +190,8 @@
     &:last-child {
         margin-bottom: 0;
     }
-}
 
-@media screen and (max-width: 1000px) {
-    &.block-markdown {
+    @media screen and (max-width: 1000px) {
         font: 400 14px/22px var(--base-font) !important;
 
         h1 {

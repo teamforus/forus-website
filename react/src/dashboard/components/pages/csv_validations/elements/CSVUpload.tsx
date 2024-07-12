@@ -4,7 +4,7 @@ import { useFundService } from '../../../../services/FundService';
 import useOpenModal from '../../../../hooks/useOpenModal';
 import ModalCreatePrevalidation from '../../../modals/ModalCreatePrevalidation';
 import { useFileService } from '../../../../services/FileService';
-import ProgressBar from './ProgressBar';
+import CSVProgressBar from '../../../elements/csv-progress-bar/CSVProgressBar';
 import RecordType from '../../../../props/models/RecordType';
 import Papa from 'papaparse';
 import { isEmpty } from 'lodash';
@@ -125,7 +125,7 @@ export default function CSVUpload({
                     if (missingRecordTypes.length > 0) {
                         return `Lijn ${
                             row_key + 1
-                        }: heet ontbrekende verplichte eigenschappen: "${missingRecordTypes.join('", "')}"`;
+                        }: heet ontbrekende verplichte persoonsgegevens: "${missingRecordTypes.join('", "')}"`;
                     }
 
                     return null;
@@ -198,13 +198,15 @@ export default function CSVUpload({
 
             if (invalidRecordTypes.length > 0) {
                 return setCsvErrors(
-                    `Het .csv bestand heeft de volgende ongeldige eigenschappen: '${invalidRecordTypes.join("', '")}'`,
+                    `Het .csv bestand heeft de volgende ongeldige persoonsgegevens: '${invalidRecordTypes.join(
+                        "', '",
+                    )}'`,
                 );
             }
 
             if (missingRecordTypes.length > 0) {
                 return setCsvErrors(
-                    `In het .csv bestand ontbreken eigenschappen die verplicht zijn voor dit fonds '${
+                    `In het .csv bestand ontbreken persoonsgegevens die verplicht zijn voor dit fonds '${
                         fund.name
                     }': '${missingRecordTypes.join("', '")}'`,
                 );
@@ -212,9 +214,9 @@ export default function CSVUpload({
 
             if (optionalRecordTypes.length > 0) {
                 setCsvWarnings([
-                    `In het .csv bestand zijn eigenschappen toegevoegd die optioneel zijn voor "${fund.name}" fonds. `,
-                    'Controleer of deze eigenschappen echt nodig zijn voor de toekenning. ',
-                    `De volgende eigenschappen zijn optioneel: "${optionalRecordTypes.join("', '")}".`,
+                    `In het .csv bestand zijn persoonsgegevens toegevoegd die optioneel zijn voor "${fund.name}" fonds. `,
+                    'Controleer of deze persoonsgegevens echt nodig zijn voor de toekenning. ',
+                    `De volgende persoonsgegevens zijn optioneel: "${optionalRecordTypes.join("', '")}".`,
                 ]);
             }
 
@@ -502,7 +504,7 @@ export default function CSVUpload({
                             {csvProgress === 3 && <div className="mdi mdi-check" />}
                         </div>
 
-                        <ProgressBar progressBar={csvProgressBar} status={progressStatus} />
+                        <CSVProgressBar progressBar={csvProgressBar} status={progressStatus} />
                     </div>
                 )}
 

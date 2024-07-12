@@ -69,9 +69,7 @@
             }
 
             .select-control-search-icon {
-                padding: calc(calc(calc(var(--control-height) - 2px) - var(--control-line-height)) / 2);
-                padding-left: 10px;
-                padding-right: 6px;
+                padding: calc(calc(calc(var(--control-height) - 2px) - var(--control-line-height)) / 2) 6px calc(calc(calc(var(--control-height) - 2px) - var(--control-line-height)) / 2) 10px;
                 width: 40px;
 
                 .mdi {
@@ -96,7 +94,8 @@
                     font-size: 20px;
                 }
 
-                &[disabled], &.disabled {
+                &[disabled],
+                &.disabled {
                     color: #ccc;
                     pointer-events: none;
                 }
@@ -110,8 +109,7 @@
                 input {
                     border: none;
                     font: 500 13px / var(--control-line-height) var(--base-font);
-                    padding: calc(calc(calc(var(--control-height) - 2px) - var(--control-line-height)) / 2) 0;
-                    padding-right: 35px;
+                    padding: calc(calc(calc(var(--control-height) - 2px) - var(--control-line-height)) / 2) 35px calc(calc(calc(var(--control-height) - 2px) - var(--control-line-height)) / 2) 0;
                     color: #151b26;
                     width: 100%;
                     background-color: transparent;
@@ -169,7 +167,7 @@
 
             & + .select-control-search {
                 display: none;
-                box-shadow: 0px 1px 0px 0px #d4d9dd;
+                box-shadow: 0 1px 0 0 #d4d9dd;
             }
         }
 
@@ -182,7 +180,7 @@
             background: #fff;
             border: 1px solid #d4d9dd;
             border-top: 0;
-            box-shadow: 0px 12px 30px rgba(25, 39, 52, 0.18);
+            box-shadow: 0 12px 30px rgba(25, 39, 52, 0.18);
             border-radius: 3px;
 
             .select-control-options {
@@ -235,8 +233,8 @@
                                 top: 50%;
                                 position: absolute;
                                 transform: translate(0, -50%);
-                                content: "\F012C";
-                                font: normal normal normal 16px/1 "Material Design Icons";
+                                content: '\F012C';
+                                font: normal normal normal 16px/1 'Material Design Icons';
                             }
                         }
                     }

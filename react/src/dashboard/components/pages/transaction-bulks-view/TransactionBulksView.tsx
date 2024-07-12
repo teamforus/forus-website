@@ -1,6 +1,5 @@
 import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
 import useActiveOrganization from '../../../hooks/useActiveOrganization';
-import { useTranslation } from 'react-i18next';
 import useTransactionBulkService from '../../../services/TransactionBulkService';
 import useSetProgress from '../../../hooks/useSetProgress';
 import useEnvData from '../../../hooks/useEnvData';
@@ -20,12 +19,13 @@ import useMakeExporterService from '../../../services/exports/useMakeExporterSer
 import TransactionBulkTransactionsTable from './elements/TransactionBulkTransactionsTable';
 import Bank from '../../../props/models/Bank';
 import { ResponseError } from '../../../props/ApiResponses';
+import useTranslate from '../../../hooks/useTranslate';
 
 export default function TransactionBulksView() {
-    const { t } = useTranslation();
     const envData = useEnvData();
     const activeOrganization = useActiveOrganization();
 
+    const translate = useTranslate();
     const openModal = useOpenModal();
     const pushDanger = usePushDanger();
     const pushSuccess = usePushSuccess();
@@ -218,16 +218,17 @@ export default function TransactionBulksView() {
                 .submit(activeOrganization.id, transactionBulk.id)
                 .then((res) => {
                     if (!res.data?.data?.auth_url) {
+                        setSubmittingBulk(false);
                         onError();
                     }
 
                     document.location = res.data.data.auth_url;
                 })
-                .catch((res: ResponseError) => onError(res))
-                .finally(() => {
+                .catch((res: ResponseError) => {
+                    onError(res);
                     setSubmittingBulk(false);
-                    setProgress(100);
-                });
+                })
+                .finally(() => setProgress(100));
         });
     }, [activeOrganization.id, confirmSubmitToBNG, onError, setProgress, transactionBulk?.id, transactionBulkService]);
 
@@ -310,8 +311,9 @@ export default function TransactionBulksView() {
                 <StateNavLink
                     name={'transactions'}
                     params={{ organizationId: activeOrganization.id }}
+                    activeExact={true}
                     className="breadcrumb-item">
-                    {t('page_state_titles.transactions')}
+                    {translate('page_state_titles.transactions')}
                 </StateNavLink>
 
                 <div className="breadcrumb-item active">{`#${transactionBulk.id}`}</div>
@@ -321,7 +323,9 @@ export default function TransactionBulksView() {
                 <div className="card-header">
                     <div className="flex-row">
                         <div className="flex flex-grow">
-                            <div className="card-title">{t('financial_dashboard_transaction.labels.details')}</div>
+                            <div className="card-title">
+                                {translate('financial_dashboard_transaction.labels.details')}
+                            </div>
                         </div>
 
                         {canManageBulks && (
@@ -405,7 +409,7 @@ export default function TransactionBulksView() {
                                     {transactionBulk.voucher_transactions_amount_locale}
                                 </KeyValueItem>
 
-                                <KeyValueItem label={t('financial_dashboard_transaction.labels.id')}>
+                                <KeyValueItem label={translate('financial_dashboard_transaction.labels.id')}>
                                     {transactionBulk.id}
                                 </KeyValueItem>
 
@@ -415,37 +419,42 @@ export default function TransactionBulksView() {
                                             <Fragment>
                                                 {transactionBulk.bank.key === 'bunq' && (
                                                     <KeyValueItem
-                                                        label={t('financial_dashboard_transaction.labels.bunq_id')}>
+                                                        label={translate(
+                                                            'financial_dashboard_transaction.labels.bunq_id',
+                                                        )}>
                                                         {transactionBulk.payment_id}
                                                     </KeyValueItem>
                                                 )}
 
                                                 {transactionBulk.bank.key === 'bng' && (
                                                     <KeyValueItem
-                                                        label={t('financial_dashboard_transaction.labels.bng_id')}>
+                                                        label={translate(
+                                                            'financial_dashboard_transaction.labels.bng_id',
+                                                        )}>
                                                         {transactionBulk.payment_id}
                                                     </KeyValueItem>
                                                 )}
                                             </Fragment>
                                         )}
 
-                                        <KeyValueItem label={t('financial_dashboard_transaction.labels.bunq')}>
+                                        <KeyValueItem label={translate('financial_dashboard_transaction.labels.bunq')}>
                                             {transactionBulk.voucher_transactions_cost_locale}
                                         </KeyValueItem>
                                     </Fragment>
                                 )}
 
-                                <KeyValueItem label={t('financial_dashboard_transaction.labels.date')}>
+                                <KeyValueItem label={translate('financial_dashboard_transaction.labels.date')}>
                                     {transactionBulk.created_at_locale}
                                 </KeyValueItem>
 
                                 {transactionBulk.execution_date !== null && (
-                                    <KeyValueItem label={t('financial_dashboard_transaction.labels.execution_date')}>
+                                    <KeyValueItem
+                                        label={translate('financial_dashboard_transaction.labels.execution_date')}>
                                         {transactionBulk.execution_date_locale}
                                     </KeyValueItem>
                                 )}
 
-                                <KeyValueItem label={t('financial_dashboard_transaction.labels.status')}>
+                                <KeyValueItem label={translate('financial_dashboard_transaction.labels.status')}>
                                     <Fragment>
                                         {transactionBulk.state == 'rejected' && (
                                             <span className="label label-danger">{transactionBulk.state_locale}</span>
@@ -472,7 +481,8 @@ export default function TransactionBulksView() {
                                     transactionBulk.bank.key === 'bng' &&
                                     transactionBulk.state == 'accepted' &&
                                     activeOrganization.allow_manual_bulk_processing && (
-                                        <KeyValueItem label={t('financial_dashboard_transaction.labels.accepted')}>
+                                        <KeyValueItem
+                                            label={translate('financial_dashboard_transaction.labels.accepted')}>
                                             {transactionBulk.accepted_manually ? 'Handmatig' : 'Verstuurd naar de BNG'}
                                         </KeyValueItem>
                                     )}

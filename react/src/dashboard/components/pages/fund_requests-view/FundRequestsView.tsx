@@ -7,7 +7,6 @@ import useSetProgress from '../../../hooks/useSetProgress';
 import usePushDanger from '../../../hooks/usePushDanger';
 import usePushSuccess from '../../../hooks/usePushSuccess';
 import LoadingCard from '../../elements/loading-card/LoadingCard';
-import { useTranslation } from 'react-i18next';
 import ClickOutside from '../../elements/click-outside/ClickOutside';
 import { strLimit } from '../../../helpers/string';
 import StateNavLink from '../../../modules/state_router/StateNavLink';
@@ -31,6 +30,7 @@ import useEnvData from '../../../hooks/useEnvData';
 import Employee from '../../../props/models/Employee';
 import FundRequestRecordTabs from './elements/FundRequestRecordTabs';
 import FundRequestPerson from './elements/FundRequestPerson';
+import useTranslate from '../../../hooks/useTranslate';
 
 type FundRequestRecordLocal = FundRequestRecord & { shown?: boolean; hasContent?: boolean };
 
@@ -51,21 +51,24 @@ type FundRequestLocal = {
 } & FundRequest;
 
 export default function FundRequestsView() {
+    const authIdentity = useAuthIdentity();
     const fundRequestId = parseInt(useParams().id);
-    const [showCriteria, setShowCriteria] = useState(null);
-    const [fundRequest, setFundRequest] = useState<FundRequestLocal>(null);
-    const [employees, setEmployees] = useState<PaginationData<Employee>>(null);
 
-    const { t } = useTranslation();
     const envData = useEnvData();
+
     const openModal = useOpenModal();
+    const translate = useTranslate();
     const pushDanger = usePushDanger();
     const pushSuccess = usePushSuccess();
     const setProgress = useSetProgress();
+
     const employeeService = useEmployeeService();
     const activeOrganization = useActiveOrganization();
     const fundRequestService = useFundRequestValidatorService();
-    const authIdentity = useAuthIdentity();
+
+    const [showCriteria, setShowCriteria] = useState(null);
+    const [fundRequest, setFundRequest] = useState<FundRequestLocal>(null);
+    const [employees, setEmployees] = useState<PaginationData<Employee>>(null);
 
     const isValidatorsSupervisor = useMemo(
         () => activeOrganization?.permissions.includes('manage_validators'),
@@ -239,11 +242,11 @@ export default function FundRequestsView() {
                     .then(
                         () => {
                             reloadRequest();
-                            pushSuccess('Gelukt!', 'Eigenschap gevalideert.');
+                            pushSuccess('Gelukt!', 'Persoonsgegeven gevalideert.');
                         },
                         (res) =>
                             showInfoModal(
-                                'Fout: U kunt deze eigenschap op dit moment niet beoordelen.',
+                                'Fout: U kunt deze persoonsgegeven op dit moment niet beoordelen.',
                                 res.data.message,
                             ),
                     );
@@ -253,7 +256,7 @@ export default function FundRequestsView() {
                 <ModalNotification
                     className={'modal-md'}
                     modal={modal}
-                    title={'Weet u zeker dat u deze eigenschap wil goedkeuren?'}
+                    title={'Weet u zeker dat u deze persoonsgegeven wil goedkeuren?'}
                     description={
                         'Een beoordeling kan niet ongedaan gemaakt worden. Kijk goed of u deze actie wilt verrichten.'
                     }
@@ -276,7 +279,7 @@ export default function FundRequestsView() {
                     onSubmitted={(err) => {
                         if (err) {
                             return showInfoModal(
-                                'U kunt op dit moment deze eigenschap niet weigeren.',
+                                'U kunt op dit moment deze persoonsgegeven niet weigeren.',
                                 `Reden: ${err.data.message}`,
                             );
                         }
@@ -317,7 +320,7 @@ export default function FundRequestsView() {
             <ModalNotification
                 modal={modal}
                 className={'modal-md'}
-                title={'Weet u zeker dat u deze eigenschap wil goedkeuren?'}
+                title={'Weet u zeker dat u deze persoonsgegeven wil goedkeuren?'}
                 description={
                     'Een beoordeling kan niet ongedaan gemaakt worden. Kijk goed of u deze actie wilt verrichten.'
                 }
@@ -325,10 +328,12 @@ export default function FundRequestsView() {
                 buttonSubmit={{
                     onClick: () => {
                         modal.close();
-                        fundRequestService.approve(activeOrganization.id, fundRequest.id).then(
-                            () => reloadRequest(),
-                            (err) => showInfoModal('Validatie van eigenschap mislukt.', `Reden: ${err.data.message}`),
-                        );
+                        fundRequestService
+                            .approve(activeOrganization.id, fundRequest.id)
+                            .then(() => reloadRequest())
+                            .catch((err: ResponseError) => {
+                                showInfoModal('Validatie van persoonsgegeven mislukt.', `Reden: ${err.data.message}`);
+                            });
                     },
                 }}
             />
@@ -414,7 +419,7 @@ export default function FundRequestsView() {
                     }
 
                     reloadRequest();
-                    pushSuccess('Gelukt!', 'Eigenschap toegevoegd.');
+                    pushSuccess('Gelukt!', 'Persoonsgegeven toegevoegd.');
                 }}
             />
         ));
@@ -487,7 +492,7 @@ export default function FundRequestsView() {
                 fundRequest={fundRequest}
                 organization={activeOrganization}
                 onCreated={() => {
-                    pushSuccess('Gelukt!', 'Eigenschap toegevoegd.');
+                    pushSuccess('Gelukt!', 'Persoonsgegeven toegevoegd.');
                     reloadRequest();
                 }}
             />
@@ -503,7 +508,7 @@ export default function FundRequestsView() {
                     organization={activeOrganization}
                     fundRequestRecord={fundRequestRecord}
                     onEdit={() => {
-                        pushSuccess('Gelukt!', 'Eigenschap toegevoegd.');
+                        pushSuccess('Gelukt!', 'Persoonsgegeven toegevoegd.');
                         reloadRequest();
                     }}
                 />
@@ -553,8 +558,9 @@ export default function FundRequestsView() {
                 <StateNavLink
                     name={'fund-requests'}
                     params={{ organizationId: activeOrganization?.id }}
+                    activeExact={true}
                     className="breadcrumb-item">
-                    {t('validation_requests.header.title')}
+                    {translate('validation_requests.header.title')}
                 </StateNavLink>
                 <div className="breadcrumb-item active">{`#${fundRequest.id}`}</div>
             </div>
@@ -619,14 +625,14 @@ export default function FundRequestsView() {
                                             }`}
                                             onClick={() => assignRequest()}>
                                             <em className="mdi mdi-account-plus icon-start" />
-                                            {t('validation_requests.buttons.assign_to_me')}
+                                            {translate('validation_requests.buttons.assign_to_me')}
                                         </button>
                                     )}
 
                                     {fundRequest.is_assignable_as_supervisor && (
                                         <button className="button button-primary" onClick={assignRequestAsSupervisor}>
                                             <em className="mdi mdi-account-details-outline icon-start" />
-                                            {t('validation_requests.buttons.assign')}
+                                            {translate('validation_requests.buttons.assign')}
                                         </button>
                                     )}
 
@@ -635,7 +641,7 @@ export default function FundRequestsView() {
                                         !fundRequest.can_disregarded_undo && (
                                             <button className="button button-primary" onClick={requestApprove}>
                                                 <em className="mdi mdi-check icon-start" />
-                                                {t('validation_requests.buttons.accept_all')}
+                                                {translate('validation_requests.buttons.accept_all')}
                                             </button>
                                         )}
 
@@ -644,28 +650,28 @@ export default function FundRequestsView() {
                                         !fundRequest.can_disregarded_undo && (
                                             <button className="button button-danger" onClick={requestDecline}>
                                                 <em className="mdi mdi-close icon-start" />
-                                                {t('validation_requests.buttons.decline_all')}
+                                                {translate('validation_requests.buttons.decline_all')}
                                             </button>
                                         )}
 
                                     {fundRequest.can_disregarded && (
                                         <button className="button button-default" onClick={requestDisregard}>
                                             <em className="mdi mdi-timer-sand-empty icon-start" />
-                                            {t('validation_requests.buttons.disregard')}
+                                            {translate('validation_requests.buttons.disregard')}
                                         </button>
                                     )}
 
                                     {fundRequest.can_disregarded_undo && (
                                         <button className="button button-default" onClick={requestDisregardUndo}>
                                             <em className="mdi mdi-backup-restore icon-start" />
-                                            {t('validation_requests.buttons.disregard_undo')}
+                                            {translate('validation_requests.buttons.disregard_undo')}
                                         </button>
                                     )}
 
                                     {(fundRequest.can_resign || fundRequest.can_resign_as_supervisor) && (
                                         <button className="button button-primary-light" onClick={requestResign}>
                                             <em className="mdi mdi-account-minus icon-start" />
-                                            {t('validation_requests.buttons.resign')}
+                                            {translate('validation_requests.buttons.resign')}
                                         </button>
                                     )}
 
@@ -674,7 +680,9 @@ export default function FundRequestsView() {
                                         fundRequest.replaced && (
                                             <button className="button button-default" type="button" disabled={true}>
                                                 <em className="mdi mdi-backup-restore icon-start" />
-                                                {t('validation_requests.buttons.disregard_undo_disabled_replaced')}
+                                                {translate(
+                                                    'validation_requests.buttons.disregard_undo_disabled_replaced',
+                                                )}
                                             </button>
                                         )}
                                 </div>
@@ -690,7 +698,7 @@ export default function FundRequestsView() {
                                     <tr>
                                         <td>
                                             <strong className="text-strong text-md text-primary">
-                                                {t('validation_requests.labels.fund')}
+                                                {translate('validation_requests.labels.fund')}
                                             </strong>
                                             <br />
                                             <div className="flex flex-horizontal">
@@ -726,7 +734,7 @@ export default function FundRequestsView() {
                                         <td>
                                             <div className="block block-tooltip-details block-tooltip-hover flex-inline flex-vertical">
                                                 <strong className="text-strong text-md text-primary">
-                                                    {t('validation_requests.labels.email')}
+                                                    {translate('validation_requests.labels.email')}
                                                 </strong>
                                                 <strong className={fundRequest.email ? 'text-black' : 'text-muted'}>
                                                     {strLimit(fundRequest.email || 'Geen E-mail', 40)}
@@ -743,7 +751,7 @@ export default function FundRequestsView() {
                                         </td>
                                         <td>
                                             <strong className="text-strong text-md text-primary">
-                                                {t('validation_requests.labels.bsn')}
+                                                {translate('validation_requests.labels.bsn')}
                                             </strong>
                                             <br />
                                             <strong className={fundRequest.bsn ? 'text-black' : 'text-muted'}>
@@ -753,7 +761,7 @@ export default function FundRequestsView() {
                                         {['pending', 'disregarded'].includes(fundRequest.state) && (
                                             <td>
                                                 <strong className="text-strong text-md text-primary">
-                                                    {t('validation_requests.labels.lead_time')}
+                                                    {translate('validation_requests.labels.lead_time')}
                                                 </strong>
                                                 <br />
                                                 <strong className="text-black">{fundRequest.lead_time_locale}</strong>
@@ -762,7 +770,7 @@ export default function FundRequestsView() {
                                         {fundRequest.state == 'disregarded' && (
                                             <td>
                                                 <strong className="text-strong text-md text-primary">
-                                                    {t('validation_requests.labels.disregarded_at')}
+                                                    {translate('validation_requests.labels.disregarded_at')}
                                                 </strong>
                                                 <br />
                                                 <strong className="text-black">{fundRequest.resolved_at_locale}</strong>
@@ -771,7 +779,7 @@ export default function FundRequestsView() {
                                         {fundRequest.state == 'approved' && (
                                             <td>
                                                 <strong className="text-strong text-md text-primary">
-                                                    {t('validation_requests.labels.accepted_at')}
+                                                    {translate('validation_requests.labels.accepted_at')}
                                                 </strong>
                                                 <br />
                                                 <strong className="text-black">{fundRequest.resolved_at_locale}</strong>
@@ -780,7 +788,7 @@ export default function FundRequestsView() {
                                         {fundRequest.state == 'declined' && (
                                             <td>
                                                 <strong className="text-strong text-md text-primary">
-                                                    {t('validation_requests.labels.declined_at')}
+                                                    {translate('validation_requests.labels.declined_at')}
                                                 </strong>
                                                 <br />
                                                 <strong className="text-black">{fundRequest.resolved_at_locale}</strong>
@@ -797,7 +805,7 @@ export default function FundRequestsView() {
             {fundRequest.note && (
                 <div className="card">
                     <div className="card-header">
-                        <div className="card-title">{t('validation_requests.labels.note_title')}</div>
+                        <div className="card-title">{translate('validation_requests.labels.note_title')}</div>
                     </div>
                     <div className="card-section">
                         <div className="flex">
@@ -813,14 +821,14 @@ export default function FundRequestsView() {
                 <div className="card-header">
                     <div className="flex">
                         <div className="flex flex-grow">
-                            <div className="card-title">{t('validation_requests.labels.records')}</div>
+                            <div className="card-title">{translate('validation_requests.labels.records')}</div>
                         </div>
                         {fundRequest.can_add_partner_bsn && (
                             <div className="flex flex-self-start">
                                 <div className="flex-row">
                                     <button className="button button-primary button-sm" onClick={appendRecord}>
                                         <em className="mdi mdi-plus icon-start" />
-                                        {t('validation_requests.buttons.add_partner_bsn')}
+                                        {translate('validation_requests.buttons.add_partner_bsn')}
                                     </button>
                                 </div>
                             </div>
@@ -834,12 +842,16 @@ export default function FundRequestsView() {
                                 <thead>
                                     <tr>
                                         {fundRequest.hasContent && <th className="cell-chevron" />}
-                                        <th style={{ width: '20%' }}>{t('validation_requests.labels.type')}</th>
-                                        <th style={{ width: '20%' }}>{t('validation_requests.labels.value')}</th>
-                                        <th style={{ width: '20%' }}>{t('validation_requests.labels.date')}</th>
-                                        <th style={{ width: '20%' }}>{t('validation_requests.labels.status')}</th>
+                                        <th style={{ width: '20%' }}>{translate('validation_requests.labels.type')}</th>
+                                        <th style={{ width: '20%' }}>
+                                            {translate('validation_requests.labels.value')}
+                                        </th>
+                                        <th style={{ width: '20%' }}>{translate('validation_requests.labels.date')}</th>
+                                        <th style={{ width: '20%' }}>
+                                            {translate('validation_requests.labels.status')}
+                                        </th>
                                         <th style={{ width: '20%' }} className="text-right">
-                                            {t('validation_requests.labels.actions')}
+                                            {translate('validation_requests.labels.actions')}
                                         </th>
                                     </tr>
                                 </thead>
@@ -882,13 +894,13 @@ export default function FundRequestsView() {
                                                     className={`label label-tag label-round ${
                                                         stateLabels[record.state]
                                                     }`}>
-                                                    {t(`validation_requests.status.${record.state}`)}
+                                                    {translate(`validation_requests.status.${record.state}`)}
                                                 </div>
                                             </td>
                                             {record.state != 'pending' && (
                                                 <td className="text-right">
                                                     <div className="text-muted">
-                                                        {t(`validation_requests.status.${record.state}`)}
+                                                        {translate(`validation_requests.status.${record.state}`)}
                                                     </div>
                                                 </td>
                                             )}

@@ -47,7 +47,6 @@
 
     .form-control:not([type="radio"]):not([type="checkbox"]) {
         width: 100%;
-        border: 1px solid transparent;
         padding: var(--form-padding);
         color: var(--form-control-color);
         background-color: var(--form-control-background);
@@ -110,6 +109,11 @@
                     height: 24px;
                 }
             }
+        }
+
+        &.select-control {
+            padding: 0 !important;
+            border: none;
         }
     }
 
@@ -369,7 +373,7 @@
         @media screen and (max-width: 1000px) {
             .select-control-input {
                 --option-height: 40px;
-    
+
                 .form-control:not([type=radio]):not([type=checkbox]).select-control-search {
                     font-size: 14px;
                 }
@@ -428,7 +432,7 @@
             font: 600 16px/24px var(--base-font);
             letter-spacing: 1px;
             height: auto;
-            
+
             &::placeholder {
                 font: 400 16px/24px var(--base-font);
             }
@@ -443,7 +447,7 @@
                     background: none;
                     outline: none;
                     padding: var(--input-padding);
-                    white-space: nowrap;    
+                    white-space: nowrap;
                     height: auto;
                 }
 
@@ -472,7 +476,7 @@
 
             .form-control:not([type="radio"]):not([type="checkbox"]).phone-control-input {
                 font-size: 14px;
-            
+
                 &::placeholder {
                     font-size: 14px;
                 }
@@ -998,7 +1002,7 @@
         }
     }
 
-    
+
 
     .form-group-info {
         position: relative;

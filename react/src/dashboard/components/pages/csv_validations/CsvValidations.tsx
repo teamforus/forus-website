@@ -74,7 +74,9 @@ export default function CsvValidations() {
 
             {funds?.length == 0 && (
                 <EmptyCard
-                    description={'U bent geen validator voor een fonds dat actief is om aanvragers aan toe te voegen.'}
+                    description={
+                        'U bent geen beoordelaar voor een fonds dat actief is om aanvragers aan toe te voegen.'
+                    }
                 />
             )}
         </Fragment>

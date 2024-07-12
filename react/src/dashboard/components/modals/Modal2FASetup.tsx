@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { ModalState } from '../../modules/modals/context/ModalContext';
-import { classList } from '../../helpers/utils';
 import { useIdentity2FAService } from '../../services/Identity2FAService';
 import Identity2FA from '../../props/models/Identity2FA';
 import usePushDanger from '../../hooks/usePushDanger';
@@ -17,6 +16,7 @@ import useAssetUrl from '../../hooks/useAssetUrl';
 import useTimer from '../../hooks/useTimer';
 import { ResponseError } from '../../props/ApiResponses';
 import Auth2FAInfoBox from '../elements/auth2fa-info-box/Auth2FAInfoBox';
+import classNames from 'classnames';
 
 export default function Modal2FASetup({
     modal,
@@ -267,14 +267,14 @@ export default function Modal2FASetup({
 
     return (
         <div
-            className={classList([
+            className={classNames(
                 'modal',
                 'modal-lg',
                 'modal-animated',
                 'modal-2fa-setup',
-                modal.loading ? 'modal-loading' : null,
+                modal.loading && 'modal-loading',
                 className,
-            ])}>
+            )}>
             <div className="modal-backdrop" onClick={cancel} />
             <div className="modal-window">
                 {/*Select provider*/}
@@ -461,6 +461,7 @@ export default function Modal2FASetup({
                                         valueType={'num'}
                                         className={'block-pincode-compact'}
                                         onChange={(code) => setConfirmationCode(code)}
+                                        ariaLabel={'Voer de tweefactorauthenticatiecode in'}
                                     />
                                     <FormError error={activateAuthErrors} />
                                 </div>
@@ -544,6 +545,7 @@ export default function Modal2FASetup({
                                             valueType={'num'}
                                             className={'block-pincode-compact'}
                                             onChange={(code) => setConfirmationCode(code)}
+                                            ariaLabel={'Voer de tweefactorauthenticatiecode in'}
                                         />
                                         <FormError error={verifyAuthErrors} />
                                     </div>

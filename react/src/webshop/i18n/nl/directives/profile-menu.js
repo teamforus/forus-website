@@ -1,4 +1,4 @@
-module.exports = {
+export default {
     header: {
         title: 'Uw persoonlijke QR-code',
         subtitle: 'Laat uw persoonlijke QR-code scannen door een beoordelaar.',
@@ -13,7 +13,7 @@ module.exports = {
         bookmarks: 'Mijn verlanglijstje',
         reservations: 'Reserveringen',
         reimbursements: 'Kosten terugvragen',
-        records: 'Eigenschappen',
+        records: 'Persoonsgegevens',
         funds: 'Aanvragen',
         notifications: 'Notificaties',
         notification_preferences: 'Notificatievoorkeuren',

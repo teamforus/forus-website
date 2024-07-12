@@ -1,6 +1,6 @@
-import { classList } from '../../../helpers/utils';
 import React, { useState } from 'react';
 import ButtonType from '../../../../props/elements/ButtonType';
+import classNames from 'classnames';
 
 export type ModalButton = ButtonType;
 
@@ -26,7 +26,7 @@ export function ModalButton({
             data-dusk={dusk}
             type={submit ? 'submit' : 'button'}
             disabled={disabled || disabledByClick}
-            className={classList([`button`, `button-${button.type || type}`, button.className || null])}
+            className={classNames(`button`, `button-${button.type || type}`, button.className || null)}
             onClick={(e) => {
                 if (button.disableOnClick === true) {
                     setDisabledByClick(true);
