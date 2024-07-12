@@ -200,6 +200,7 @@ export default function ModalPhysicalCardType({
                                     blockCount={3}
                                     valueType={'num'}
                                     cantDeleteSize={3}
+                                    ariaLabel={'Voer het nummer van de fysieke pas in'}
                                 />
                                 <FormError className={'text-center'} error={activateCodeForm.errors.code} />
                                 <div className="modal-section-icon">

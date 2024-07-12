@@ -1,4 +1,62 @@
-module.exports = {
+import buttons from './nl/components/buttons';
+import topnavbar from './nl/layout/navbar';
+
+import signup_options from './nl/pages/signup-options';
+import fund from './nl/pages/fund';
+import fund_activate from './nl/pages/fund-activate';
+import fund_request from './nl/pages/fund-request';
+import fund_requests from './nl/pages/fund-requests';
+import fund_request_clarification from './nl/pages/fund-request-clarification';
+import funds from './nl/pages/funds';
+import home from './nl/pages/home';
+import signup from './nl/pages/signup';
+import meapp_index from './nl/pages/me-index';
+import product from './nl/pages/product';
+import records_validations from './nl/pages/record-validations';
+import records_create from './nl/pages/records-create';
+import records_validate from './nl/pages/records-validate';
+import records from './nl/pages/records';
+import voucher from './nl/pages/voucher';
+import vouchers from './nl/pages/vouchers';
+import reservations from './nl/pages/reservations';
+import reimbursements from './nl/pages/reimbursements';
+import notification_preferences from './nl/pages/notification-preferences';
+import email_preferences from './nl/pages/email-preferences';
+import voucher_printable from './nl/pages/voucher-printable';
+import accessibility from './nl/pages/accessibility';
+import error_page from './nl/pages/error-page';
+import privacy from './nl/pages/privacy';
+import error from './nl/pages/error';
+
+import popup_auth from './nl/modals/modal-auth';
+import logout from './nl/modals/modal-logout';
+import popup_offices from './nl/modals/modal-offices';
+import open_in_me from './nl/modals/modal-open-in-me';
+import physical_card from './nl/modals/modal-physical_card';
+import expired_identity from './nl/modals/modal-expired-identity-proxy';
+import pdf_preview from './nl/modals/modal-pdf-preview';
+import image_preview from './nl/modals/modal-image-preview';
+import modal from './nl/modals/modal';
+import modal_product_reserve from './nl/modals/modal-product-reserve';
+import modal_product_reserve_notes from './nl/modals/modal-product-reserve-notes';
+import modal_product_reserve_extra_payment from './nl/modals/modal-product-reserve-extra-payment';
+import modal_product_reserve_cancel from './nl/modals/modal-product-reserve-cancel';
+import modal_2fa_setup from './nl/modals/modal-2fa-setup';
+
+import app_footer from './nl/directives/app-footer';
+import block_products from './nl/directives/block-products';
+import block_funds from './nl/directives/block-funds';
+import block_notifications from './nl/directives/block-notifications';
+import block_providers from './nl/directives/block-providers';
+import empty_block from './nl/directives/empty-block';
+import fund_criterion from './nl/directives/fund-criterion';
+import maps from './nl/directives/google-map';
+import profile_menu from './nl/directives/profile-menu';
+import top_navbar_search from './nl/directives/top-navbar-search';
+import reservation from './nl/directives/reservation-card';
+import paginator from './nl/directives/paginator';
+
+export default {
     test: '{{name}} {{foo}}',
     page_title: 'Forus platform',
     page_state_loading_titles: {
@@ -33,14 +91,14 @@ module.exports = {
         voucher: 'Uw tegoed - {{address}}',
         reservations: 'Reserveringen',
         provider: 'Aanbieder - {{provider_name}}',
-        records: 'Eigenschappen',
+        records: 'Persoonsgegevens',
         explanation: 'Uitleg',
         start: 'Start aanmelden',
         privacy: 'Privacy statement',
         accessibility: 'Toegankelijkheidsverklaring',
-        'record-validate': 'Eigenschap goedkeuren',
+        'record-validate': 'Persoonsgegeven goedkeuren',
         'record-validations': 'Goedkeuringen',
-        'record-create': 'Eigenschap toevoegen',
+        'record-create': 'Persoonsgegevens toevoegen',
         'funds-apply': 'Aanvragen',
         'fund-apply': 'Aanvragen',
         'fund-activate': 'Activeren',
@@ -111,66 +169,66 @@ module.exports = {
     },
 
     // COMPONENTS
-    buttons: require('./nl/components/buttons'),
+    buttons: buttons,
 
     // LAYOUT
-    topnavbar: require('./nl/layout/navbar'),
+    topnavbar: topnavbar,
 
     // PAGES
-    signup_options: require('./nl/pages/signup-options'),
-    fund: require('./nl/pages/fund'),
-    fund_activate: require('./nl/pages/fund-activate'),
-    fund_request: require('./nl/pages/fund-request'),
-    fund_requests: require('./nl/pages/fund-requests'),
-    fund_request_clarification: require('./nl/pages/fund-request-clarification'),
-    funds: require('./nl/pages/funds'),
-    home: require('./nl/pages/home'),
-    signup: require('./nl/pages/signup'),
-    meapp_index: require('./nl/pages/me-index'),
-    product: require('./nl/pages/product'),
-    records_validations: require('./nl/pages/record-validations'),
-    records_create: require('./nl/pages/records-create'),
-    records_validate: require('./nl/pages/records-validate'),
-    records: require('./nl/pages/records'),
-    voucher: require('./nl/pages/voucher'),
-    vouchers: require('./nl/pages/vouchers'),
-    reservations: require('./nl/pages/reservations'),
-    reimbursements: require('./nl/pages/reimbursements'),
-    notification_preferences: require('./nl/pages/notification-preferences'),
-    email_preferences: require('./nl/pages/email-preferences'),
-    voucher_printable: require('./nl/pages/voucher-printable'),
-    accessibility: require('./nl/pages/accessibility'),
-    error_page: require('./nl/pages/error-page'),
-    privacy: require('./nl/pages/privacy'),
-    error: require('./nl/pages/error'),
+    signup_options: signup_options,
+    fund: fund,
+    fund_activate: fund_activate,
+    fund_request: fund_request,
+    fund_requests: fund_requests,
+    fund_request_clarification: fund_request_clarification,
+    funds: funds,
+    home: home,
+    signup: signup,
+    meapp_index: meapp_index,
+    product: product,
+    records_validations: records_validations,
+    records_create: records_create,
+    records_validate: records_validate,
+    records: records,
+    voucher: voucher,
+    vouchers: vouchers,
+    reservations: reservations,
+    reimbursements: reimbursements,
+    notification_preferences: notification_preferences,
+    email_preferences: email_preferences,
+    voucher_printable: voucher_printable,
+    accessibility: accessibility,
+    error_page: error_page,
+    privacy: privacy,
+    error: error,
 
     // MODALS
-    popup_auth: require('./nl/modals/modal-auth'),
-    logout: require('./nl/modals/modal-logout'),
-    popup_offices: require('./nl/modals/modal-offices'),
-    open_in_me: require('./nl/modals/modal-open-in-me'),
-    physical_card: require('./nl/modals/modal-physical_card'),
-    expired_identity: require('./nl/modals/modal-expired-identity-proxy'),
-    pdf_preview: require('./nl/modals/modal-pdf-preview'),
-    image_preview: require('./nl/modals/modal-image-preview'),
-    modal: require('./nl/modals/modal'),
-    modal_product_reserve: require('./nl/modals/modal-product-reserve'),
-    modal_product_reserve_notes: require('./nl/modals/modal-product-reserve-notes'),
-    modal_product_reserve_extra_payment: require('./nl/modals/modal-product-reserve-extra-payment'),
-    modal_product_reserve_cancel: require('./nl/modals/modal-product-reserve-cancel'),
-    modal_2fa_setup: require('./nl/modals/modal-2fa-setup'),
+    popup_auth: popup_auth,
+    logout: logout,
+    popup_offices: popup_offices,
+    open_in_me: open_in_me,
+    physical_card: physical_card,
+    expired_identity: expired_identity,
+    pdf_preview: pdf_preview,
+    image_preview: image_preview,
+    modal: modal,
+    modal_product_reserve: modal_product_reserve,
+    modal_product_reserve_notes: modal_product_reserve_notes,
+    modal_product_reserve_extra_payment: modal_product_reserve_extra_payment,
+    modal_product_reserve_cancel: modal_product_reserve_cancel,
+    modal_2fa_setup: modal_2fa_setup,
 
     // DIRECTIVES
-    app_footer: require('./nl/directives/app-footer'),
-    block_products: require('./nl/directives/block-products'),
-    block_funds: require('./nl/directives/block-funds'),
-    block_notifications: require('./nl/directives/block-notifications'),
-    block_providers: require('./nl/directives/block-providers'),
-    empty_block: require('./nl/directives/empty-block'),
-    fund_criterion: require('./nl/directives/fund-criterion'),
-    maps: require('./nl/directives/google-map'),
-    profile_menu: require('./nl/directives/profile-menu'),
-    top_navbar_search: require('./nl/directives/top-navbar-search'),
-    reservation: require('./nl/directives/reservation-card'),
-    paginator: require('./nl/directives/paginator'),
+    app_footer: app_footer,
+    block_products: block_products,
+    block_funds: block_funds,
+    block_notifications: block_notifications,
+    block_providers: block_providers,
+    empty_block: empty_block,
+    fund_criterion: fund_criterion,
+    maps: maps,
+    profile_menu: profile_menu,
+    top_navbar_search: top_navbar_search,
+    reservation: reservation,
+    paginator: paginator,
 };

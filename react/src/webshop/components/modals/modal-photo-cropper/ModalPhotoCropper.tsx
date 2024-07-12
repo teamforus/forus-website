@@ -171,9 +171,14 @@ export default function ModalPhotoCropper({
         (rawPdfFile): Promise<Blob> => {
             return new Promise((resolve) => {
                 new Response(rawPdfFile).arrayBuffer().then((data) => {
-                    window['pdfjsDist']
-                        .getDocument({ data })
-                        .promise.then((pdf: { numPages: number; getPage: (arg0: number) => Promise<any> }) => {
+                    window['pdfjsDist'].getDocument({ data }).promise.then(
+                        (pdf: {
+                            numPages: number;
+                            getPage: (arg0: number) => Promise<{
+                                getViewport: ({ scale }) => { height: number; width: number };
+                                render: ({ canvasContext, viewport }) => { promise: Promise<() => void> };
+                            }>;
+                        }) => {
                             pdf.getPage(1).then((page) => {
                                 const viewport = page.getViewport({ scale: 1.5 });
                                 const canvas = document.createElement('canvas');
@@ -186,7 +191,9 @@ export default function ModalPhotoCropper({
                                     convertPdfCanvasToPreview(canvas).toBlob((blob) => resolve(blob), 'image/jpeg');
                                 });
                             });
-                        }, console.error);
+                        },
+                        console.error,
+                    );
                 });
             });
         },

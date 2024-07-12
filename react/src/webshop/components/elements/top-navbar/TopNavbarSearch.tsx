@@ -171,6 +171,7 @@ export default function TopNavbarSearch() {
                             aria-label="Zoeken"
                             onFocus={() => setSearchFocused(true)}
                             onBlur={() => setSearchFocused(false)}
+                            aria-haspopup={true}
                         />
                         <div
                             className={`search-reset ${
@@ -182,7 +183,7 @@ export default function TopNavbarSearch() {
                         </div>
                     </div>
                     {dropdown && (
-                        <div className="search-result">
+                        <div className="search-result" role={'menu'}>
                             <div className="search-result-sidebar">
                                 {groupKeyList.map((itemGroupKey) => (
                                     <h2
@@ -190,6 +191,10 @@ export default function TopNavbarSearch() {
                                         className={`search-result-sidebar-item state-nav-link ${
                                             groupKey == itemGroupKey ? 'active' : ''
                                         }`}
+                                        aria-selected={groupKey === itemGroupKey}
+                                        aria-expanded={groupKey === itemGroupKey}
+                                        role={'button'}
+                                        tabIndex={0}
                                         onClick={() => setGroupKey(itemGroupKey)}>
                                         {itemGroupKey === 'all' && (
                                             <div className="search-result-sidebar-item-icon hide-sm">

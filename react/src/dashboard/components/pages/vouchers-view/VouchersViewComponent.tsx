@@ -145,11 +145,11 @@ export default function VouchersViewComponent() {
                     setVoucher(res.data.data);
 
                     if (action == 'deactivation') {
-                        pushSuccess('Gelukt!', 'Voucher gedeactiveerd');
+                        pushSuccess('Gelukt!', 'Tegoed gedeactiveerd');
                     }
 
                     if (action == 'activation') {
-                        pushSuccess('Gelukt!', 'Voucher geactiveerd');
+                        pushSuccess('Gelukt!', 'Tegoed geactiveerd');
                     }
                 })
                 .catch((res: ResponseError) => {

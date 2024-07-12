@@ -1,4 +1,4 @@
-module.exports = {
+export default {
     result: {
         all_label: 'All results',
         providers_label: 'Providers',

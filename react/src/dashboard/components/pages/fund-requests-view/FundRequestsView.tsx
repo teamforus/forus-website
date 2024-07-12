@@ -252,11 +252,11 @@ export default function FundRequestsView() {
                     .then(
                         () => {
                             reloadRequest();
-                            pushSuccess('Gelukt!', 'Eigenschap gevalideert.');
+                            pushSuccess('Gelukt!', 'Persoonsgegeven gevalideert.');
                         },
                         (res) =>
                             showInfoModal(
-                                'Fout: U kunt deze eigenschap op dit moment niet beoordelen.',
+                                'Fout: U kunt deze persoonsgegeven op dit moment niet beoordelen.',
                                 res.data.message,
                             ),
                     );
@@ -266,7 +266,7 @@ export default function FundRequestsView() {
                 <ModalNotification
                     className={'modal-md'}
                     modal={modal}
-                    title={'Weet u zeker dat u deze eigenschap wil goedkeuren?'}
+                    title={'Weet u zeker dat u deze persoonsgegeven wil goedkeuren?'}
                     description={
                         'Een beoordeling kan niet ongedaan gemaakt worden. Kijk goed of u deze actie wilt verrichten.'
                     }
@@ -289,7 +289,7 @@ export default function FundRequestsView() {
                     onSubmitted={(err) => {
                         if (err) {
                             return showInfoModal(
-                                'U kunt op dit moment deze eigenschap niet weigeren.',
+                                'U kunt op dit moment deze persoonsgegeven niet weigeren.',
                                 `Reden: ${err.data.message}`,
                             );
                         }
@@ -330,7 +330,7 @@ export default function FundRequestsView() {
             <ModalNotification
                 modal={modal}
                 className={'modal-md'}
-                title={'Weet u zeker dat u deze eigenschap wil goedkeuren?'}
+                title={'Weet u zeker dat u deze persoonsgegeven wil goedkeuren?'}
                 description={
                     'Een beoordeling kan niet ongedaan gemaakt worden. Kijk goed of u deze actie wilt verrichten.'
                 }
@@ -338,10 +338,12 @@ export default function FundRequestsView() {
                 buttonSubmit={{
                     onClick: () => {
                         modal.close();
-                        fundRequestService.approve(activeOrganization.id, fundRequest.id).then(
-                            () => reloadRequest(),
-                            (err) => showInfoModal('Validatie van eigenschap mislukt.', `Reden: ${err.data.message}`),
-                        );
+                        fundRequestService
+                            .approve(activeOrganization.id, fundRequest.id)
+                            .then(() => reloadRequest())
+                            .catch((err: ResponseError) => {
+                                showInfoModal('Validatie van persoonsgegeven mislukt.', `Reden: ${err.data.message}`);
+                            });
                     },
                 }}
             />
@@ -427,7 +429,7 @@ export default function FundRequestsView() {
                     }
 
                     reloadRequest();
-                    pushSuccess('Gelukt!', 'Eigenschap toegevoegd.');
+                    pushSuccess('Gelukt!', 'Persoonsgegeven toegevoegd.');
                 }}
             />
         ));
@@ -500,7 +502,7 @@ export default function FundRequestsView() {
                 fundRequest={fundRequest}
                 organization={activeOrganization}
                 onCreated={() => {
-                    pushSuccess('Gelukt!', 'Eigenschap toegevoegd.');
+                    pushSuccess('Gelukt!', 'Persoonsgegeven toegevoegd.');
                     reloadRequest();
                 }}
             />
@@ -516,7 +518,7 @@ export default function FundRequestsView() {
                     organization={activeOrganization}
                     fundRequestRecord={fundRequestRecord}
                     onEdit={() => {
-                        pushSuccess('Gelukt!', 'Eigenschap toegevoegd.');
+                        pushSuccess('Gelukt!', 'Persoonsgegeven toegevoegd.');
                         reloadRequest();
                     }}
                 />
