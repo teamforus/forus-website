@@ -53,7 +53,6 @@ export default function FileUploader({
     onFileUploaded = null,
     onFilesChange = null,
     hideButtons = false,
-    fileListCompact = false,
     isRequired = false,
 }: {
     type: 'fund_request_clarification_proof' | 'reimbursement_proof' | 'fund_request_record_proof';
@@ -66,7 +65,6 @@ export default function FileUploader({
     readOnly?: boolean;
     acceptedFiles?: Array<string>;
     hideButtons?: boolean;
-    fileListCompact?: boolean;
     isRequired?: boolean;
 } & FileItemEventsListener) {
     const fileService = useFileService();
