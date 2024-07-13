@@ -66,7 +66,7 @@ export default function ModalFundRequestRecordEdit({
 
             <form className="modal-window form" onSubmit={form.submit}>
                 <a className="mdi mdi-close modal-close" onClick={modal.close} role="button" />
-                <div className="modal-header">Eigenschap aanpassen</div>
+                <div className="modal-header">Persoonsgegevens aanpassen</div>
                 <div className="modal-body modal-body-visible">
                     <div className="modal-section form">
                         <div className="row">

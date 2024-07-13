@@ -17,11 +17,11 @@ import FilterItemToggle from '../../../elements/tables/elements/FilterItemToggle
 import DatePickerControl from '../../../elements/forms/controls/DatePickerControl';
 import { dateFormat, dateParse } from '../../../../helpers/dates';
 import { strLimit } from '../../../../helpers/string';
-import ClickOutside from '../../../elements/click-outside/ClickOutside';
 import useTableToggles from '../../../../hooks/useTableToggles';
 import usePaginatorService from '../../../../modules/paginator/services/usePaginatorService';
 import EmptyCard from '../../../elements/empty-card/EmptyCard';
 import useTranslate from '../../../../hooks/useTranslate';
+import Tooltip from '../../../elements/tooltip/Tooltip';
 
 type FundProviderUnsubscribeLocal = FundProviderUnsubscribe & {
     showTooltip?: boolean;
@@ -109,24 +109,6 @@ export default function ProviderFundUnsubscriptionsTable({
         },
         [filter, fundUnsubscribeService, onChange, openModal, organization.id, pushDanger, pushSuccess, translate],
     );
-
-    const showTooltip = useCallback((e: React.MouseEvent, target: FundProviderUnsubscribe) => {
-        e.stopPropagation();
-
-        setFundUnsubscriptions((data) => {
-            data.data.forEach((item) => (item.showTooltip = item.id == target.id));
-            return { ...data };
-        });
-    }, []);
-
-    const hideTooltip = useCallback((e: React.MouseEvent) => {
-        e.stopPropagation();
-
-        setFundUnsubscriptions((data) => {
-            data.data.forEach((item) => (item.showTooltip = false));
-            return { ...data };
-        });
-    }, []);
 
     const fetchUnsubscriptions = useCallback(
         async (filters: object) => {
@@ -328,21 +310,11 @@ export default function ProviderFundUnsubscriptionsTable({
                                                     <span>{strLimit(unsubscription.note)}</span>
                                                     &nbsp;
                                                     {unsubscription.note?.length >= 25 && (
-                                                        <em
-                                                            className={`td-icon mdi mdi-information block block-tooltip-details ${
-                                                                unsubscription.showTooltip ? 'active' : ''
-                                                            }`}
-                                                            onClick={(e) => showTooltip(e, unsubscription)}>
-                                                            {unsubscription.showTooltip && (
-                                                                <ClickOutside onClickOutside={(e) => hideTooltip(e)}>
-                                                                    <div
-                                                                        className="tooltip-text"
-                                                                        title={unsubscription.note}>
-                                                                        {strLimit(unsubscription.note || '-', 512)}
-                                                                    </div>
-                                                                </ClickOutside>
-                                                            )}
-                                                        </em>
+                                                        <Tooltip
+                                                            type={'primary'}
+                                                            position={'bottom'}
+                                                            text={strLimit(unsubscription.note || '-', 512)}
+                                                        />
                                                     )}
                                                 </div>
                                             </td>
@@ -380,7 +352,7 @@ export default function ProviderFundUnsubscriptionsTable({
                                                             title="Cancel"
                                                             onClick={() => cancelUnsubscriptions([unsubscription])}>
                                                             <em className="mdi mdi-close-circle-outline icon-start" />
-                                                            Cancel
+                                                            Annuleren
                                                         </button>
                                                     )}
                                                 </div>

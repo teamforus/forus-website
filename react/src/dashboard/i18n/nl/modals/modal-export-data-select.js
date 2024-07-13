@@ -4,7 +4,7 @@ export default {
         fields: 'Kies inbegrepen velden',
         qr_formats: 'QR-codes bijvoegen',
         data_formats: 'Kies bestandsformaat',
-        record_fields: 'Persoonlijke eigenschappen',
+        record_fields: 'Persoonsgegevens',
     },
     modal_section: {
         export_type_csv: 'Database (.CSV)',

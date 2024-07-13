@@ -1,4 +1,4 @@
-module.exports = {
+export default {
     // FUNDS = funds.pug
     header: {
         title: 'Funds',

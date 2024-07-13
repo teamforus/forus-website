@@ -102,7 +102,7 @@ export default function ModalFundRequestRecordCreate({
                     ) : (
                         <div className="modal-section">
                             <div className="modal-info">
-                                <em className="mdi mdi-information" />U voegt eigenschappen toe in naam van&nbsp;
+                                <em className="mdi mdi-information" />U voegt persoonsgegevens toe in naam van&nbsp;
                                 <strong>{organization.name}</strong>
                             </div>
                         </div>
