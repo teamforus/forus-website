@@ -61,23 +61,25 @@ export default function ModalLogEmailShow({
                             <div className="form-group">
                                 <div className="form-label">Bericht</div>
                                 <div className={'form-control form-control-dashed email-log-preview'}>
-                                    <iframe
-                                        sandbox={'allow-same-origin'}
-                                        srcDoc={!modal.loading && emailLog.content}
-                                        onLoad={(e) => {
-                                            const iframeDoc = e.currentTarget.contentWindow.document;
-                                            const iframeDocHeight = iframeDoc.documentElement.scrollHeight;
+                                    {!modal.loading && emailLog.content && (
+                                        <iframe
+                                            sandbox={'allow-same-origin'}
+                                            srcDoc={emailLog.content}
+                                            onLoad={(e) => {
+                                                const iframeDoc = e.currentTarget.contentWindow.document;
+                                                const iframeDocHeight = iframeDoc.documentElement.scrollHeight;
 
-                                            iframeDoc.querySelectorAll('a').forEach((el) => {
-                                                el.onclick = (e) => {
-                                                    e.preventDefault();
-                                                    window.open(el.href, '_blank', 'noopener,noreferrer')?.focus();
-                                                };
-                                            });
+                                                iframeDoc.querySelectorAll('a').forEach((el) => {
+                                                    el.onclick = (e) => {
+                                                        e.preventDefault();
+                                                        window.open(el.href, '_blank', 'noopener,noreferrer')?.focus();
+                                                    };
+                                                });
 
-                                            e.currentTarget.style.height = `${iframeDocHeight}px`;
-                                        }}
-                                    />
+                                                e.currentTarget.style.height = `${iframeDocHeight}px`;
+                                            }}
+                                        />
+                                    )}
                                 </div>
                             </div>
                         </div>
@@ -85,7 +87,7 @@ export default function ModalLogEmailShow({
                 </div>
                 <div className="modal-footer">
                     <div className="button-group">
-                        <div className="button button-default" onClick={close}>
+                        <div className="button button-default" onClick={modal.close}>
                             Sluiten
                         </div>
                         <div
