@@ -131,7 +131,7 @@ export default function VoucherRecords({
                                         <p>
                                             In deze fase wordt gekeken naar de huidige uitdagingen van de organisatie en
                                             hoe het toevoegen van persoonsgegevens aan het tegoed kan helpen. Ook wordt
-                                            afgestemd welke eigenschappen de organisatie graag aan het tegoed wil
+                                            afgestemd welke persoonsgegevens de organisatie graag aan het tegoed wil
                                             toevoegen.
                                         </p>
                                     </div>

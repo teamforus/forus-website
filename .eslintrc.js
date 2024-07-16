@@ -9,6 +9,11 @@ module.exports = {
         'plugin:prettier/recommended',
         'plugin:@typescript-eslint/recommended',
     ],
+    settings: {
+        react: {
+            version: 'detect',
+        },
+    },
     parser: '@typescript-eslint/parser',
     parserOptions: {
         ecmaFeatures: {
@@ -22,6 +27,6 @@ module.exports = {
         // ...
         'react-hooks/rules-of-hooks': 'error', // Checks rules of Hooks
         'react-hooks/exhaustive-deps': 'warn', // Checks effect dependencies
-        "react/react-in-jsx-scope": "off",
+        'react/react-in-jsx-scope': 'off',
     },
 };

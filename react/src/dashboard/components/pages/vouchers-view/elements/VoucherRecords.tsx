@@ -81,7 +81,7 @@ export default function VoucherRecords({ voucher, organization }: { voucher: Vou
                             modal.close();
                             voucherRecordService.destroy(organization.id, voucher.id, record.id).then(() => {
                                 fetchRecords();
-                                pushSuccess('Verwijderd!', 'Eigenschap is verwijderd!');
+                                pushSuccess('Verwijderd!', 'Persoonsgegeven is verwijderd!');
                             });
                         },
                         text: translate('modals.danger_zone.remove_voucher_record.buttons.confirm'),
@@ -211,7 +211,7 @@ export default function VoucherRecords({ voucher, organization }: { voucher: Vou
             )}
 
             {records.meta.total == 0 ? (
-                <EmptyCard title={'Geen eigenschappen gevonden'} type={'card-section'} />
+                <EmptyCard title={'Geen persoonsgegevens gevonden'} type={'card-section'} />
             ) : (
                 <div className="card-section">
                     <Paginator

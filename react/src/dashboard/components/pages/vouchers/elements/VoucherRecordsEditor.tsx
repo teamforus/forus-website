@@ -119,11 +119,11 @@ export default function VoucherRecordsEditor({
             {recordTypesAvailable?.length > 0 && (
                 <div className="block-voucher-record-add">
                     <div className="form-group form-group-inline form-group-inline-lg">
-                        <div className="form-label">Selecteer eigenschap</div>
+                        <div className="form-label">Selecteer persoonsgegevens</div>
                         {!showRecordSelector ? (
                             <div className="button button-primary" onClick={() => setShowRecordSelector(true)}>
                                 <em className="mdi mdi-plus icon-start" />
-                                Eigenschap toevoegen
+                                Persoonsgegevens toevoegen
                             </div>
                         ) : (
                             <SelectControl

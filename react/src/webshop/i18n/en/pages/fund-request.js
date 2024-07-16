@@ -1,4 +1,4 @@
-module.exports = {
+export default {
     // VALIDATION REQUEST FOR FUNDS = fund_request.pug
     sign_up: {
         block_title: '{{ fund_name }} aanvragen',

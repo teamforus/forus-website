@@ -217,7 +217,7 @@ export default function ProductsShow() {
                                         <div className="product-property-label">
                                             {translate('product.labels.category')}
                                         </div>
-                                        <h2 className="product-property-value">{product.product_category.name}</h2>
+                                        <div className="product-property-value">{product.product_category.name}</div>
                                     </div>
                                 </div>
                                 <div className="product-properties">
@@ -226,11 +226,7 @@ export default function ProductsShow() {
                                             {translate('product.labels.description')}
                                         </div>
                                         <div className="product-property-value">
-                                            <Markdown
-                                                content={product.description_html}
-                                                ariaLevel={3}
-                                                role={'heading'}
-                                            />
+                                            <Markdown content={product.description_html} />
                                         </div>
                                     </div>
                                 </div>

@@ -12,7 +12,13 @@ export default function PdfPreview({ rawPdfFile, className = '' }: { rawPdfFile?
             let numPages = null;
 
             loadingTask.promise.then(
-                function (pdf: { numPages: number; getPage: (arg0: number) => Promise<any> }) {
+                function (pdf: {
+                    numPages: number;
+                    getPage: (arg0: number) => Promise<{
+                        getViewport: ({ scale }) => { height: number; width: number };
+                        render: ({ canvasContext, viewport }) => { promise: Promise<() => void> };
+                    }>;
+                }): void {
                     // Fetch the first page
                     numPages = pdf.numPages;
 

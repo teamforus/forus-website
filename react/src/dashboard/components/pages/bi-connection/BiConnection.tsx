@@ -331,7 +331,7 @@ export default function BiConnection() {
                                                 <div className="block block-markdown">
                                                     <h4>Kies de juiste instelling</h4>
                                                     <p>
-                                                        Vul bij de header bovenstaande naam en sleutelcode in Voor het
+                                                        Vul bij de header bovenstaande naam en sleutelcode in. Voor het
                                                         instellen van de token zijn er twee opties:
                                                     </p>
                                                     <ul></ul>

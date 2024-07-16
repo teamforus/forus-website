@@ -1,4 +1,4 @@
-module.exports = {
+export default {
     // PAGE = fund-activate.pug
     header: {
         title: 'Bevestig uw inkomen',

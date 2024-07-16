@@ -1,4 +1,4 @@
-module.exports = {
+export default {
     labels: {
         title: 'Notificaties',
         subtitle:

@@ -21,12 +21,14 @@ import SiteImproveAnalytics from './modules/site_improve_analytics/SiteImproveAn
 import AwsRumScript from '../dashboard/modules/aws_rum/AwsRumScript';
 import StateHashPrefixRedirect from '../dashboard/modules/state_router/StateHashPrefixRedirect';
 import { TitleProvider } from './contexts/TitleContext';
+import i18nEN from './i18n/i18n-en';
+import i18nNL from './i18n/i18n-nl';
 
 i18n.use(initReactI18next)
     .init({
         resources: {
-            en: { translation: require('./i18n/i18n-en') },
-            nl: { translation: require('./i18n/i18n-nl') },
+            en: { translation: i18nEN },
+            nl: { translation: i18nNL },
         },
         lng: 'nl',
         fallbackLng: 'nl',

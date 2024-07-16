@@ -1,4 +1,4 @@
-module.exports = {
+export default {
     // VALIDATION REQUEST FOR FUNDS = fund_request.pug
     approved_request_exists: 'Er bestaat al een goedgekeurde aanvraag. Neem contact op met de beheerder.',
     fund_not_active: 'Het fonds waar u voor zich probeert aan te melden is niet actief.',

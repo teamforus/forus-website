@@ -1,4 +1,4 @@
-module.exports = {
+export default {
     labels: {
         code: 'Reservation code:',
         cancel: 'Cancel reservation',

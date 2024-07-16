@@ -23,7 +23,7 @@ export default function LayoutAsideSponsor({ organization }: { organization: Org
                 id={'funds'}
             />
             <LayoutAsideNavItem
-                name={'Vouchers'}
+                name={'Tegoeden'}
                 icon={'vouchers'}
                 route={'vouchers'}
                 routeParams={{ organizationId: organization?.id }}
