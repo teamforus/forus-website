@@ -11,6 +11,8 @@ module.exports = {
         actions: 'Aanbod{{wcagSuffix}}',
         voucher: 'Uw tegoed',
         provider: 'Aanbieder{{wcagSuffix}}',
+        'fund-requests': 'Aanvragen{{wcagSuffix}}',
+        'fund-request-show': 'Aanvraag{{wcagSuffix}}',
     },
     page_state_titles: {
         home: '{{implementation}}{{wcagSuffix}}',
@@ -25,7 +27,7 @@ module.exports = {
         'me-app': 'Me-app',
         portfolio: 'Portfolio',
         kindpakket: 'Portofolio - Kindpakket',
-        product: 'Aanbod - {{product_name}} van {{organization_name}}',
+        product: 'Aanbod - {{product_name}} van {{organization_name}}{{wcagSuffix}}',
         products: 'Aanbod{{fund_name}}{{wcagSuffix}}',
         actions: 'Aanbod{{fund_name}}{{wcagSuffix}}',
         providers: 'Aanbieders{{wcagSuffix}}',
@@ -60,6 +62,8 @@ module.exports = {
         'auth-link': 'Inloggen',
         sitemap: 'Sitemap',
         'sign-up': 'Aanmelden',
+        'fund-requests': 'Aanvragen{{wcagSuffix}}',
+        'fund-request-show': 'Aanvraag {{fund_name}}{{wcagSuffix}}',
     },
     custom_page_state_titles: {
         vergoedingen: {

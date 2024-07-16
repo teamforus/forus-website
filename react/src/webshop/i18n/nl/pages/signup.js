@@ -1,7 +1,7 @@
 module.exports = {
     // SIGNUP = sign-up.pug
     items: {
-        title: 'Inloggen',
+        title: 'Inloggen{{wcagSuffix}}',
         header: 'Hier logt u in',
         pane_text: 'Inloggen op een bestaand account',
         digid: 'Open het DigiD inlogscherm',
@@ -10,7 +10,7 @@ module.exports = {
         start_email: 'Start aanvraag',
         signup_option: 'Maak een keuze om verder te gaan',
         ede: {
-            title: 'Inloggen',
+            title: 'Inloggen{{wcagSuffix}}',
             header: 'Hier logt u in',
             pane_text: '',
             signup: '',
@@ -19,7 +19,7 @@ module.exports = {
             restore_header: '',
         },
         vergoedingen: {
-            title: 'Inloggen',
+            title: 'Inloggen{{wcagSuffix}}',
             restore_title: 'Account herstellen',
             signup_option: 'Log in met DigiD om verder te gaan',
         },
