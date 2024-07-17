@@ -1081,7 +1081,9 @@ export default function ModalProductReserve({
                                                     className={`overview-item-value ${
                                                         !form.values[field.key] ? 'overview-item-value-empty' : ''
                                                     }`}>
-                                                    {form.values[field.key] || emptyText}
+                                                    {field.type === 'date'
+                                                        ? dateFormat(dateParse(form.values[field.key]), 'dd-MM-yyyy')
+                                                        : form.values[field.key] || emptyText}
                                                 </div>
                                             </Fragment>
                                         ) : (
