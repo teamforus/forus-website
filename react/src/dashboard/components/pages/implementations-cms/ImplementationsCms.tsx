@@ -24,6 +24,7 @@ import { dateFormat, dateParse } from '../../../helpers/dates';
 import CheckboxControl from '../../elements/forms/controls/CheckboxControl';
 import PhotoSelectorData from '../../elements/photo-selector/types/PhotoSelectorData';
 import useTranslate from '../../../hooks/useTranslate';
+import FormGroupInfo from '../../elements/forms/elements/FormGroupInfo';
 
 export default function ImplementationsCms() {
     const { id } = useParams();
@@ -43,7 +44,6 @@ export default function ImplementationsCms() {
     const [showInfoBlock, setShowInfoBlock] = useState(false);
     const [implementation, setImplementation] = useState<Implementation>(null);
     const [initialCommunicationType, setInitialCommunicationType] = useState(null);
-    const [showPageTitleSuffixInfoBlock, setShowPageTitleSuffixInfoBlock] = useState(false);
 
     const [bannerPatterns] = useState([
         { value: 'color', label: 'Kleur' },
@@ -396,51 +396,25 @@ export default function ImplementationsCms() {
                                     </div>
                                     <FormError error={form.errors.description} />
                                 </div>
+
                                 <div className="form-group form-group-inline form-group-inline-xl tooltipped">
                                     <label className="form-label" htmlFor="page_title_suffix">
                                         {translate('implementation_edit.labels.page_title_suffix')}
                                     </label>
                                     <div className="form-offset">
-                                        <div className="form-group-info">
-                                            <div className="form-group-info-control">
-                                                <input
-                                                    id="page_title_suffix"
-                                                    type="text"
-                                                    className="form-control"
-                                                    placeholder="Browser tab postfix"
-                                                    value={form.values?.page_title_suffix || ''}
-                                                    onChange={(e) => form.update({ page_title_suffix: e.target.value })}
-                                                />
-
-                                                <div className="form-group-info-button">
-                                                    <div
-                                                        className={`button button-default button-icon pull-left ${
-                                                            showInfoBlock ? 'active' : ''
-                                                        }`}
-                                                        onClick={() =>
-                                                            setShowPageTitleSuffixInfoBlock(
-                                                                !showPageTitleSuffixInfoBlock,
-                                                            )
-                                                        }>
-                                                        <em className="mdi mdi-information" />
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        {showPageTitleSuffixInfoBlock && (
-                                            <div className="block block-info-box block-info-box-primary">
-                                                <div className="info-box-icon mdi mdi-information" />
-                                                <div className="info-box-content">
-                                                    <div className="block block-markdown">
-                                                        <p>
-                                                            You can customize title suffix in browser tab with this
-                                                            text. It must be not longer then 60 characters
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        )}
+                                        <FormGroupInfo
+                                            info={
+                                                'You can customize title suffix in browser tab with this text. It must be not longer then 60 characters'
+                                            }>
+                                            <input
+                                                id="page_title_suffix"
+                                                type="text"
+                                                className="form-control"
+                                                placeholder="Browser tab postfix"
+                                                value={form.values?.page_title_suffix || ''}
+                                                onChange={(e) => form.update({ page_title_suffix: e.target.value })}
+                                            />
+                                        </FormGroupInfo>
                                         <FormError error={form.errors.page_title_suffix} />
                                     </div>
                                 </div>
