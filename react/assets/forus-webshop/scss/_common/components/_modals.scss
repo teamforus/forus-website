@@ -166,6 +166,16 @@
                         }
                     }
 
+                    &.modal-section-icon-danger {
+                        .mdi {
+                            color: var(--color-danger);
+
+                            &::after {
+                                background-color: var(--color-danger);
+                            }
+                        }
+                    }
+
                     &.modal-section-icon-warning {
                         .mdi {
                             color: #fba31a;
