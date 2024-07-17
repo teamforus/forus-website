@@ -397,6 +397,7 @@ export default {
         labels: {
             header_title: 'Header titel',
             header_description: 'Header omschrijving',
+            page_title_suffix: 'Browser tab postfix',
             title: 'Titel',
             description: 'Uitlegpagina content',
             communication: 'Aanspreekvorm',
