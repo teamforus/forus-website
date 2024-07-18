@@ -1,4 +1,4 @@
-module.exports = {
+export default {
     // HOME = home.pug
     header: {
         title: '{{fund}} ',
@@ -66,14 +66,14 @@ module.exports = {
         steptwo: 'Step #2',
         two: 'Klik op de <u>start</u> knop om uw activatiecode in te vullen. Gebruik uw eigen e-mailadres.',
         stepthree: 'Step #3',
-        three: 'Klik daarna op ‘Aanbiedingen’. Daar vindt u alle activiteiten en cursussen. Ook kunt u uw tegoed zien. De voucher met het tegoed vindt u terug door bovenaan op ‘Mijn vouchers’ te klikken.',
+        three: 'Klik daarna op ‘Aanbiedingen’. Daar vindt u alle activiteiten en cursussen. Ook kunt u uw tegoed zien. De voucher met het tegoed vindt u terug door bovenaan op ‘Mijn tegoeden’ te klikken.',
         stepfour: 'Step #4',
-        four: "Bij ‘Mijn vouchers’ staat ook een persoonlijke QR-code. Daarmee betaalt u de aanbieder waar u een activiteit wilt doen. De QR-code kunt u uitprinten, naar uzelf mailen of altijd op uw telefoon hebben door in te loggen op de app <a href='#!/me' tartget='_blank'><u><i>Me</i></u></a>. De app <a href='#!/me' tartget='_blank'><u><i>Me</i></u></a> kunt u downloaden via de Google Playstore en de App Store.",
+        four: "Bij ‘Mijn tegoeden’ staat ook een persoonlijke QR-code. Daarmee betaalt u de aanbieder waar u een activiteit wilt doen. De QR-code kunt u uitprinten, naar uzelf mailen of altijd op uw telefoon hebben door in te loggen op de app <a href='#!/me' tartget='_blank'><u><i>Me</i></u></a>. De app <a href='#!/me' tartget='_blank'><u><i>Me</i></u></a> kunt u downloaden via de Google Playstore en de App Store.",
         stepfive: 'Step #5',
         five: "Ga naar 'Aanbiedingen' of het overzicht van alle aanbieders om te zien waar de voucher te besteden is of om een aanbieding te kopen. Ga naar de aanbieder en laat de bijbehorende QR-code zien om uw aanbieding in ontvangst te nemen.",
         westerkwartier: {
-            three: 'Klik daarna op ‘Aanbiedingen’ om het aanbod op de webshop te zien. Ook kunt u uw tegoed zien. De voucher met het tegoed vindt u terug door bovenaan op ‘Mijn vouchers’ te klikken.',
-            four: "Bij ‘Mijn vouchers’ staat ook een persoonlijke QR-code. Daarmee betaalt u de aanbieder waar u een aankoop wilt doen. De QR-code kunt u uitprinten, naar uzelf mailen of op uw telefoon hebben door in te loggen op de app <a href='#!/me' tartget='_blank'><u><i>Me</i></u></a>. De app <a href='#!/me' tartget='_blank'><u><i>Me</i></u></a> kunt u downloaden via de Google Playstore en de App Store.",
+            three: 'Klik daarna op ‘Aanbiedingen’ om het aanbod op de webshop te zien. Ook kunt u uw tegoed zien. De voucher met het tegoed vindt u terug door bovenaan op ‘Mijn tegoeden’ te klikken.',
+            four: "Bij ‘Mijn tegoeden’ staat ook een persoonlijke QR-code. Daarmee betaalt u de aanbieder waar u een aankoop wilt doen. De QR-code kunt u uitprinten, naar uzelf mailen of op uw telefoon hebben door in te loggen op de app <a href='#!/me' tartget='_blank'><u><i>Me</i></u></a>. De app <a href='#!/me' tartget='_blank'><u><i>Me</i></u></a> kunt u downloaden via de Google Playstore en de App Store.",
         },
     },
 };

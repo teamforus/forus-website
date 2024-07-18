@@ -38,6 +38,7 @@ import BlockShowcase from '../../elements/block-showcase/BlockShowcase';
 import BlockLoader from '../../elements/block-loader/BlockLoader';
 import { clickOnKeyEnter } from '../../../../dashboard/helpers/wcag';
 import FundCriterion from '../../../../dashboard/props/models/FundCriterion';
+import useSetTitle from '../../../hooks/useSetTitle';
 
 export default function FundActivate() {
     const { id } = useParams();
@@ -57,6 +58,7 @@ export default function FundActivate() {
     const identityService = useIdentityService();
     const fundRequestService = useFundRequestService();
 
+    const setTitle = useSetTitle();
     const pushInfo = usePushInfo();
     const openModal = useOpenModal();
     const pushDanger = usePushDanger();
@@ -518,6 +520,12 @@ export default function FundActivate() {
         }
     }, 1000);
 
+    useEffect(() => {
+        if (fund) {
+            setTitle(translate('page_state_titles.fund-activate', { fund_name: fund.name }));
+        }
+    }, [setTitle, translate, fund]);
+
     return (
         <BlockShowcase wrapper={true} breadcrumbs={<></>} loaderElement={<BlockLoader type={'full'} />}>
             {fund && vouchers && appConfigs && (
@@ -640,6 +648,7 @@ export default function FundActivate() {
                                                 blockCount={2}
                                                 blockSize={4}
                                                 valueType={'alphaNum'}
+                                                ariaLabel={'Voer de activatiecode van het fonds in'}
                                             />
                                             <FormError error={codeForm.errors.code} />
                                         </div>

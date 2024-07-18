@@ -197,7 +197,7 @@ export default function Start() {
 
     useEffect(() => {
         if (envData) {
-            setTitle(translate(`signup.items.${envData.client_key}.title`, null, 'Inloggen'));
+            setTitle(translate(`signup.items.${envData.client_key}.title`, null, 'signup.items.title'));
         }
     }, [envData, setTitle, translate]);
 
@@ -213,11 +213,16 @@ export default function Start() {
                             type={'email'}
                             value={authForm.values.email}
                             onChange={(e) => authForm.update({ email: e.target.value })}
+                            validationMessages={{
+                                typeMismatch: translate('signup.items.errors.email.type_mismatch'),
+                                valueMissing: translate('signup.items.errors.email.value_missing'),
+                            }}
                             placeholder={'e-mail@e-mail.nl'}
                             id={'email'}
                             name={'email'}
                             tabIndex={1}
                             autoFocus={true}
+                            required={true}
                             dataDusk={'authEmailFormEmail'}
                         />
                         <FormError error={authForm.errors.email} />

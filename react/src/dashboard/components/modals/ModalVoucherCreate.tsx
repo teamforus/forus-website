@@ -201,8 +201,8 @@ export default function ModalVoucherCreate({
                     modal={modal}
                     hero_title={'Dubbele e-mailadressen gedetecteerd.'}
                     hero_subtitle={[
-                        `Weet u zeker dat u voor ${items.length} e-mailadres(sen) een extra voucher wilt aanmaken?`,
-                        'Deze e-mailadressen bezitten al een voucher van dit fonds.',
+                        `Weet u zeker dat u voor ${items.length} e-mailadres(sen) een extra tegoed wilt aanmaken?`,
+                        'Deze e-mailadressen bezitten al een tegoed van dit fonds.',
                     ]}
                     enableToggles={true}
                     label_on={'Aanmaken'}
@@ -229,8 +229,8 @@ export default function ModalVoucherCreate({
                     modal={modal}
                     hero_title={'Dubbele bsn(s) gedetecteerd.'}
                     hero_subtitle={[
-                        `Weet u zeker dat u voor ${items.length} bsn(s) een extra voucher wilt aanmaken?`,
-                        'Deze burgerservicenummers bezitten al een voucher van dit fonds.',
+                        `Weet u zeker dat u voor ${items.length} bsn(s) een extra tegoed wilt aanmaken?`,
+                        'Deze burgerservicenummers bezitten al een tegoed van dit fonds.',
                     ]}
                     enableToggles={true}
                     label_on={'Aanmaken'}
@@ -490,7 +490,7 @@ export default function ModalVoucherCreate({
                                         <em
                                             className={`mdi ${showRecordFields ? 'mdi-menu-down' : 'mdi-menu-right'}`}
                                         />
-                                        Persoonlijke eigenschappen
+                                        Persoonsgegevens
                                     </div>
 
                                     {showRecordFields && (

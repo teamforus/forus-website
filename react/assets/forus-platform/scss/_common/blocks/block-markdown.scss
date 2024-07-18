@@ -83,6 +83,13 @@
         border-right: none;
         background-color: #fff;
 
+        & > caption {
+            font: 500 1.25em var(--base-font);
+            margin: 0 0 0.9em;
+            color: var(--htc);
+            text-align: left;
+        }
+
         thead {
             display: none;
         }

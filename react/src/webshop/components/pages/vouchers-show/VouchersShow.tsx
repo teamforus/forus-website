@@ -121,7 +121,7 @@ export default function VouchersShow() {
                 />
             ));
         },
-        [assetUrl, openPrintable],
+        [appConfigs?.fronts?.url_webshop, assetUrl, openPrintable],
     );
 
     const sendVoucherEmail = useCallback(
@@ -268,10 +268,10 @@ export default function VouchersShow() {
     }, [fetchProducts, voucher]);
 
     useEffect(() => {
-        if (voucher?.address) {
-            setTitle(translate('page_state_titles.voucher', { address: voucher?.address || '' }));
+        if (voucher?.fund) {
+            setTitle(translate('page_state_titles.voucher', { fund_name: voucher.fund.name }));
         }
-    }, [setTitle, translate, voucher?.address]);
+    }, [setTitle, translate, voucher?.fund]);
 
     return (
         <BlockShowcase
@@ -753,7 +753,7 @@ export default function VouchersShow() {
                                         {voucherCard.records_title ? (
                                             <div className="block-card-details">
                                                 <h3 className="block-card-title block-card-title-sm text-muted-dim">
-                                                    Persoonlijke eigenschappen
+                                                    Persoonsgegevens
                                                 </h3>
                                                 <h2 className="block-card-title block-card-title-lg">
                                                     <strong>{voucherCard.records_title}</strong>
@@ -765,7 +765,7 @@ export default function VouchersShow() {
                                             </div>
                                         ) : (
                                             <div className="block-card-details">
-                                                <h3 className="block-card-title">Persoonlijke eigenschappen</h3>
+                                                <h3 className="block-card-title">Persoonsgegevens</h3>
                                             </div>
                                         )}
 

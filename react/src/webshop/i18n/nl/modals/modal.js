@@ -1,4 +1,4 @@
-module.exports = {
+export default {
     buttons: {
         cancel: 'Annuleren',
         confirm: 'Bevestigen',

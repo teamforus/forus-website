@@ -1,4 +1,4 @@
-module.exports = {
+export default {
     // HOME = home.pug
     header: {
         title: '{{implementation}}',
@@ -17,9 +17,6 @@ module.exports = {
         auth_button: 'Download Me',
         signup_cta: 'Lees meer >',
         button: 'Inloggen',
-        potjeswijzer: {
-            button: 'Start aanvraag',
-        },
         westerkwartier: {
             subtitle_av:
                 'Er bestaan veel verschillende potjes binnen het Westerkwartier, vaak meer dan je denkt. Met deze website kan je potjes aanvragen, beheren en uitgeven.',
@@ -33,6 +30,7 @@ module.exports = {
                 'Er bestaan veel verschillende potjes binnen het Westerkwartier, vaak meer dan je denkt. Met deze website kan je potjes aanvragen, beheren en uitgeven.',
             cta_av: '',
             button_av: 'Start',
+            button: 'Start aanvraag',
         },
         berkelland: {
             title_multi: 'Kindregeling gemeente Berkelland',
@@ -144,13 +142,13 @@ module.exports = {
             seven: 'Nee, u hoeft het tegoed niet in een keer te besteden.',
             faq_eight: 'Hoe lang is het tegoed geldig?',
             eight: 'Door in te loggen op de webshop kunt u uw tegoed inzien. Op de pagina met het tegoed staat ook de geldigheid vermeld.',
-            faq_nine: 'Kan ik de voucher omruilen voor contant geld?',
+            faq_nine: 'Kan ik het tegoed omruilen voor contant geld?',
             nine: 'Nee, de waarde van het tegoed krijgt u niet in contact geld uitbetaald.',
             ten: 'Nee, het tegoed kan alleen uitgegeven worden bij aanbieders die op de webshop staan. U kunt een aanbieder vragen om zich aan te melden via de meedoenapplicatie of om contact op te nemen met de gemeente, (0527) 63 39 11.',
             eleven: "Het tegoed is bedoeld voor kinderen van 4 t/m 17 jaar. Is uw kind 4 jaar geworden? Dan kunt u het tegoed aanvragen, (0527) 63 39 11. Of download het aanvraagformulier: <a target='_blank' href='https://www.noordoostpolder.nl/meedoenpakket'> https://www.noordoostpolder.nl/meedoenpakket </a>",
             faq_twelve: 'Kom ik of mijn kind in aanmerking voor het tegoed?',
             twelve: "Het Meedoenpakket is bedoeld voor kinderen vanaf 4 jaar t/m 17 jaar van wie de ouders een laag inkomen hebben. Ook AOW-gerechtigden met een laag inkomen kunnen een beroep doen op het Meedoenpakket. Als u denkt dat u of uw kind(eren) recht heeft op het tegoed, dan kunt u een aanvraag doen. Bel (0527) 69 93 11 of download het aanvraagformulier: <a target='_blank' href='https://www.noordoostpolder.nl/meedoenpakket'> https://www.noordoostpolder.nl/meedoenpakket </a>",
-            faq_thirteen: 'Kan ik de voucher aan iemand anders geven?',
+            faq_thirteen: 'Kan ik het tegoed aan iemand anders geven?',
             thirteen:
                 'Nee, het tegoed is strikt persoonlijk. U mag het tegoed niet aan iemand anders geven. Maakt iemand anders wel gebruik van uw tegoed, dan gaat dit van uw eigen bedrag af.',
             faq_fourteen: 'Ik zie aanbiedingen op de webshop staan, hoe kan ik een aanbieding kopen?',
@@ -253,8 +251,8 @@ module.exports = {
             two: "Dit kan op meerdere manieren, de makkelijkste is per e-mail. Klik rechts bovenaan op 'Inloggen'. Kies voor 'Log in via e-mail'. Vul het e-mailadres in die u ook tijdens de activatie hebt gebruikt en klik op 'Versturen'. Open de e-mail en klik op de link die u heeft ontvangen om in te loggen.",
             faq_three: 'Bij welke aanbieders kan ik {{fund}} besteden?',
             three: "U kan een overzicht van alle aanbieders terugvinden op de webshop. Ga naar 'Overzicht van alle aanbieders'",
-            faq_four: 'Ik ben mijn voucher kwijt. Wat moet ik doen?',
-            four: 'U kan uw voucher altijd terugvinden door in te loggen op de webshop, het tegoed kunt u uitprinten, naar uw e-mail toesturen of altijd bij hand hebben door gebruik te maken van de Me app.',
+            faq_four: 'Ik ben mijn tegoed kwijt. Wat moet ik doen?',
+            four: 'U kan uw tegoed altijd terugvinden door in te loggen op de webshop, het tegoed kunt u uitprinten, naar uw e-mail toesturen of altijd bij hand hebben door gebruik te maken van de Me app.',
             faq_five: 'Hoe kan ik zien hoeveel tegoed ik nog over heb?',
             five: 'Na elke betaling wordt er een e-mail toegestuurd met het huidige tegoed, daarnaast kunt u het tegoed inzien door in te loggen op de webshop of door gebruik te maken van de Me app.',
             faq_six: 'Kan ik iets wat ik heb gekocht ruilen/retour brengen?',
@@ -262,7 +260,7 @@ module.exports = {
             faq_seven: 'Moet het tegoed in één keer besteed worden?',
             seven: 'Nee, u hoeft het tegoed niet in een keer te besteden.',
             faq_eight: 'Hoe lang is het tegoed geldig?',
-            eight: 'Door in te loggen op de webshop kunt u uw voucher inzien. Op de pagina van het tegoed staat ook de geldigheid vermeld.',
+            eight: 'Door in te loggen op de webshop kunt u uw tegoed inzien. Op de pagina van het tegoed staat ook de geldigheid vermeld.',
             faq_nine: 'Kan ik het tegoed omruilen voor contant geld?',
             nine: 'Nee, de waarde van het tegoed krijgt u niet in contant geld uitbetaald.',
             faq_ten: 'Kan ik iets kopen bij een andere aanbieder die niet op de webshop staat?',
@@ -276,7 +274,7 @@ module.exports = {
                 'Alle volwassen inwoners met een minimum inkomen (tot 130% bijstandsnorm) komen in aanmerking voor het Meedoenarrangement. Als u denkt in aanmerking te komen voor het Meedoenarrangement, neem dan contact op met Fijnder, 0544-474200. Zij bekijken of u voldoet aan de voorwaarden.',
             faq_thirteen: 'Kan ik het tegoed aan iemand anders geven?',
             thirteen:
-                'Nee, het tegoed is strikt persoonlijk. U mag het tegoed niet aan iemand anders geven. Maakt iemand anders wel gebruik van uw voucher, dan gaat dit van uw eigen bedrag af.',
+                'Nee, het tegoed is strikt persoonlijk. U mag het tegoed niet aan iemand anders geven. Maakt iemand anders wel gebruik van uw tegoed, dan gaat dit van uw eigen bedrag af.',
             faq_fourteen: 'Ik zie aanbod op de webshop staan, hoe kan ik een product of dienst kopen?',
             fourteen:
                 "Log in op de webshop en klik op 'Aanbod'. Kies vervolgens het aanbod dat u wilt en klik op 'Reserveer'. Kies vervolgens het tegoed om het aanbod mee te reserveren. " +
@@ -298,11 +296,7 @@ module.exports = {
         stepfour: 'Stap 4',
         four: "Met het tegoed betaalt u bij deelnemende aanbieders. De aanbieder scant uw code. Daarna wordt het tegoed automatisch afgeschreven. Via de lijst met deelnemende aanbieders en de pagina 'Aanbod' kunt u zien waar en waaraan u uw tegoed kunt besteden.",
         stepfive: 'Stap 5',
-        five: "Klik op 'Aanbod' om het aanbod te zien. Als u klikt op 'Mijn vouchers' ziet u hoeveel tegoed u heeft.",
-        westerkwartier: {
-            three: 'Klik daarna op ‘Aanbod’ om het aanbod op de webshop te zien. Ook kunt u uw tegoed zien. het tegoed met het tegoed vindt u terug door bovenaan op ‘Mijn vouchers’ te klikken.',
-            four: "Bij ‘Mijn vouchers’ staat ook een persoonlijke QR-code. Daarmee betaalt u de aanbieder waar u een aankoop wilt doen. De QR-code kunt u uitprinten, naar uzelf mailen of op uw telefoon hebben door in te loggen op de app <a href='#!/me' tartget='_blank'><u><i>Me</i></u></a>. De app <a href='#!/me' tartget='_blank'><u><i>Me</i></u></a> kunt u downloaden via de Google Playstore en de App Store.",
-        },
+        five: "Klik op 'Aanbod' om het aanbod te zien. Als u klikt op 'Mijn tegoeden' ziet u hoeveel tegoed u heeft.",
         noordoostpolder: {
             one: 'U heeft van de gemeente een brief ontvangen met een activatiecode voor het Meedoenpakket.',
             two: 'Klik op <u>Start</u> om uw e-mailadres en activatiecode in te vullen. Gebruik per activatiecode een ander e-mailadres.',
@@ -331,9 +325,9 @@ module.exports = {
             steptwo: 'Stap #2',
             two: 'Klik op de ‘Start’ knop om uw activatiecode in te vullen. Gebruik uw eigen e-mailadres.',
             stepthree: 'Stap #3',
-            three: 'Klik daarna op ‘Aanbod’. Daar vindt u alle activiteiten en cursussen. Ook kunt u uw tegoed zien. het tegoed met het tegoed vindt u terug door bovenaan op ‘Mijn vouchers’ te klikken.',
+            three: 'Klik daarna op ‘Aanbod’. Daar vindt u alle activiteiten en cursussen. Ook kunt u uw tegoed zien. het tegoed met het tegoed vindt u terug door bovenaan op ‘Mijn tegoeden’ te klikken.',
             stepfour: 'Stap #4',
-            four: "Bij ‘Mijn vouchers’ staat ook een persoonlijke QR-code. Met deze QR-code betaalt u de aanbieder waar u een activiteit wilt doen. De QR-code kunt u uitprinten, naar uzelf mailen of op uw telefoon laten zien door in te loggen op de app <a href='#!/me' tartget='_blank'><u><i>Me</i></u></a>. De app <a href='#!/me' tartget='_blank'><u><i>'Me - Forus'</i></u></a> kunt u downloaden via de Google Playstore en de App Store.",
+            four: "Bij ‘Mijn tegoeden’ staat ook een persoonlijke QR-code. Met deze QR-code betaalt u de aanbieder waar u een activiteit wilt doen. De QR-code kunt u uitprinten, naar uzelf mailen of op uw telefoon laten zien door in te loggen op de app <a href='#!/me' tartget='_blank'><u><i>Me</i></u></a>. De app <a href='#!/me' tartget='_blank'><u><i>'Me - Forus'</i></u></a> kunt u downloaden via de Google Playstore en de App Store.",
             stepfive: 'Stap #5',
             five: "Ga naar 'Aanbod' of het overzicht van alle aanbieders om te zien waar u het tegoed kunt besteden of om een product of dienst te kopen. Ga naar de aanbieder en laat de bijbehorende QR-code zien om uw product of dienst in ontvangst te nemen.",
         },
@@ -345,9 +339,9 @@ module.exports = {
             steptwo: 'Stap #2',
             two: 'Klik op de ‘Start’ knop om uw activatiecode in te vullen. Gebruik uw eigen e-mailadres.',
             stepthree: 'Stap #3',
-            three: 'Klik daarna op ‘Aanbod’. Daar vindt u alle activiteiten en cursussen. Ook kunt u uw tegoed zien. het tegoed met het tegoed vindt u terug door bovenaan op ‘Mijn vouchers’ te klikken.',
+            three: 'Klik daarna op ‘Aanbod’. Daar vindt u alle activiteiten en cursussen. Ook kunt u uw tegoed zien. het tegoed met het tegoed vindt u terug door bovenaan op ‘Mijn tegoeden’ te klikken.',
             stepfour: 'Stap #4',
-            four: "Bij ‘Mijn vouchers’ staat ook een persoonlijke QR-code. Met deze QR-code betaalt u de aanbieder waar u een activiteit wilt doen. De QR-code kunt u uitprinten, naar uzelf mailen of op uw telefoon laten zien door in te loggen op de app <a href='#!/me' tartget='_blank'><u><i>Me</i></u></a>. De app <a href='#!/me' tartget='_blank'><u><i>'Me - Forus'</i></u></a> kunt u downloaden via de Google Playstore en de App Store.",
+            four: "Bij ‘Mijn tegoeden’ staat ook een persoonlijke QR-code. Met deze QR-code betaalt u de aanbieder waar u een activiteit wilt doen. De QR-code kunt u uitprinten, naar uzelf mailen of op uw telefoon laten zien door in te loggen op de app <a href='#!/me' tartget='_blank'><u><i>Me</i></u></a>. De app <a href='#!/me' tartget='_blank'><u><i>'Me - Forus'</i></u></a> kunt u downloaden via de Google Playstore en de App Store.",
             stepfive: 'Stap #5',
             five: "Ga naar 'Aanbod' of het overzicht van alle aanbieders om te zien waar u het tegoed kunt besteden of om een product of dienst te kopen. Ga naar de aanbieder en laat de bijbehorende QR-code zien om uw product of dienst in ontvangst te nemen.",
         },
@@ -359,9 +353,9 @@ module.exports = {
             steptwo: 'Stap #2',
             two: 'Klik op de ‘Start’ knop om uw activatiecode in te vullen. Gebruik uw eigen e-mailadres.',
             stepthree: 'Stap #3',
-            three: 'Klik daarna op ‘Aanbod’. Daar vindt u alle activiteiten en cursussen. Ook kunt u uw tegoed zien. het tegoed met het tegoed vindt u terug door bovenaan op ‘Mijn vouchers’ te klikken.',
+            three: 'Klik daarna op ‘Aanbod’. Daar vindt u alle activiteiten en cursussen. Ook kunt u uw tegoed zien. het tegoed met het tegoed vindt u terug door bovenaan op ‘Mijn tegoeden’ te klikken.',
             stepfour: 'Stap #4',
-            four: "Bij ‘Mijn vouchers’ staat ook een persoonlijke QR-code. Met deze QR-code betaalt u de aanbieder waar u een activiteit wilt doen. De QR-code kunt u uitprinten, naar uzelf mailen of op uw telefoon laten zien door in te loggen op de app <a href='#!/me' tartget='_blank'><u><i>Me</i></u></a>. De app <a href='#!/me' tartget='_blank'><u><i>'Me - Forus'</i></u></a> kunt u downloaden via de Google Playstore en de App Store.",
+            four: "Bij ‘Mijn tegoeden’ staat ook een persoonlijke QR-code. Met deze QR-code betaalt u de aanbieder waar u een activiteit wilt doen. De QR-code kunt u uitprinten, naar uzelf mailen of op uw telefoon laten zien door in te loggen op de app <a href='#!/me' tartget='_blank'><u><i>Me</i></u></a>. De app <a href='#!/me' tartget='_blank'><u><i>'Me - Forus'</i></u></a> kunt u downloaden via de Google Playstore en de App Store.",
             stepfive: 'Stap #5',
             five: "Ga naar 'Aanbod' of het overzicht van alle aanbieders om te zien waar u het tegoed kunt besteden of om een product of dienst te kopen. Ga naar de aanbieder en laat de bijbehorende QR-code zien om uw product of dienst in ontvangst te nemen.",
         },
