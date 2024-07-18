@@ -1,4 +1,4 @@
-module.exports = {
+export default {
     // CRITERIA FOR FUNDS = fund-criterion.pug
     labels: {
         general: {

@@ -1,4 +1,4 @@
-module.exports = {
+export default {
     // VALIDATIONS OF THE RECORDS = record-validations.pug
     header: {
         title: 'Mijn persoonsgegevens',

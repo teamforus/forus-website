@@ -1,6 +1,5 @@
-module.exports = {
+export default {
     show_more: 'Show more',
-    send: 'Send',
     validate: 'Validate',
     add: 'Add',
     cancel: 'Cancel',

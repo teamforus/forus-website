@@ -1,4 +1,4 @@
-module.exports = {
+export default {
     // reimbursements = reimbursements.pug
     header: {
         title: 'Kosten terugvragen',

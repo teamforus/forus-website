@@ -1,4 +1,4 @@
-module.exports = {
+export default {
     // GOOGLE MAPS = google-map.pug
     cancel: 'Annuleren',
     no_data: 'Geen data',

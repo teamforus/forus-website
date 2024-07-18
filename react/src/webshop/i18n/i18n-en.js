@@ -1,4 +1,40 @@
-module.exports = {
+import fund from './en/pages/fund';
+
+import fund_request from './en/pages/fund-request';
+import funds from './en/pages/funds';
+import home from './en/pages/home';
+import meapp_index from './en/pages/me-index';
+import product from './en/pages/product';
+import records_validations from './en/pages/record-validations';
+import records_create from './en/pages/records-create';
+import records_validate from './en/pages/records-validate';
+import records from './en/pages/records';
+import voucher from './en/pages/voucher';
+import vouchers from './en/pages/vouchers';
+import reservations from './en/pages/reservations';
+import reimbursements from './en/pages/reimbursements';
+import notification_preferences from './en/pages/notification-preferences';
+import error_page from './en/pages/error-page';
+
+import buttons from './en/components/buttons';
+import topnavbar from './en/layout/navbar';
+
+import popup_auth from './en/modals/modal-auth';
+import popup_offices from './en/modals/modal-offices';
+import open_in_me from './en/modals/modal-open-in-me';
+import modal from './en/modals/modal';
+
+import app_footer from './en/directives/app-footer';
+import block_products from './en/directives/block-products';
+import block_providers from './en/directives/block-providers';
+import empty_block from './en/directives/empty-block';
+import fund_criterion from './en/directives/fund-criterion';
+import maps from './en/directives/google-map';
+import profile_menu from './en/directives/profile-menu';
+import top_navbar_search from './en/directives/top-navbar-search';
+import reservation from './nl/directives/reservation-card';
+
+export default {
     test: '{{name}} {{foo}}',
     page_title: 'Webshop',
     page_state_titles: {
@@ -40,43 +76,43 @@ module.exports = {
     },
 
     // COMPONENTS
-    buttons: require('./en/components/buttons'),
+    buttons: buttons,
 
     // LAYOUT
-    topnavbar: require('./en/layout/navbar'),
+    topnavbar: topnavbar,
 
     // PAGES
-    fund: require('./en/pages/fund'),
-    fund_request: require('./en/pages/fund-request'),
-    funds: require('./en/pages/funds'),
-    home: require('./en/pages/home'),
-    meapp_index: require('./en/pages/me-index'),
-    product: require('./en/pages/product'),
-    records_validations: require('./en/pages/record-validations'),
-    records_create: require('./en/pages/records-create'),
-    records_validate: require('./en/pages/records-validate'),
-    records: require('./en/pages/records'),
-    voucher: require('./en/pages/voucher'),
-    vouchers: require('./en/pages/vouchers'),
-    reservations: require('./en/pages/reservations'),
-    reimbursements: require('./en/pages/reimbursements'),
-    notification_preferences: require('./en/pages/notification-preferences'),
-    error_page: require('./en/pages/error-page'),
+    fund: fund,
+    fund_request: fund_request,
+    funds: funds,
+    home: home,
+    meapp_index: meapp_index,
+    product: product,
+    records_validations: records_validations,
+    records_create: records_create,
+    records_validate: records_validate,
+    records: records,
+    voucher: voucher,
+    vouchers: vouchers,
+    reservations: reservations,
+    reimbursements: reimbursements,
+    notification_preferences: notification_preferences,
+    error_page: error_page,
 
     // MODALS
-    popup_auth: require('./en/modals/modal-auth'),
-    popup_offices: require('./en/modals/modal-offices'),
-    open_in_me: require('./en/modals/modal-open-in-me'),
-    modal: require('./en/modals/modal'),
+    popup_auth: popup_auth,
+    popup_offices: popup_offices,
+    open_in_me: open_in_me,
+    modal: modal,
 
     // DIRECTIVES
-    app_footer: require('./en/directives/app-footer'),
-    block_products: require('./en/directives/block-products'),
-    block_providers: require('./en/directives/block-providers'),
-    empty_block: require('./en/directives/empty-block'),
-    fund_criterion: require('./en/directives/fund-criterion'),
-    maps: require('./en/directives/google-map'),
-    profile_menu: require('./en/directives/profile-menu'),
-    top_navbar_search: require('./en/directives/top-navbar-search'),
-    reservation: require('./nl/directives/reservation-card'),
+    app_footer: app_footer,
+    block_products: block_products,
+    block_providers: block_providers,
+    empty_block: empty_block,
+    fund_criterion: fund_criterion,
+    maps: maps,
+    profile_menu: profile_menu,
+    top_navbar_search: top_navbar_search,
+    reservation: reservation,
 };

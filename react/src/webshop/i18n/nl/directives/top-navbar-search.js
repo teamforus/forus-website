@@ -1,4 +1,4 @@
-module.exports = {
+export default {
     placeholders: {
         search_informal: 'Waar ben je naar op zoek?',
         search_formal: 'Waar bent u naar op zoek?',
