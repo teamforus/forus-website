@@ -2,69 +2,10 @@
 
 @import 'vars';
 
-@import 'includes/resetter';
-@import 'includes/helpers';
-@import 'includes/placeholders';
-
-// COMMON
-@import 'includes/common';
-@import 'includes/visibility';
-
 @import '../../forus-platform/scss/_common/dashboard.scss';
 
 // blocks
-.block {
-    @import 'blocks/block-auth-pin_code';
-    @import 'blocks/block-missing-app';
-}
-
-@media screen and (max-width: 991px) {
-    .block.block-sign_up {
-        margin: 0 -10px;
-        padding: 20px;
-
-        .sign_up-pane .sign_up-pane-body {
-            padding: 20px;
-
-            .sign_up-pane-heading {
-                font: 500 17px/25px var(--base-font);
-            }
-
-            .sign_up-pane-text {
-                font: 400 14px/20px var(--base-font)
-            }
-
-            .sign_up-options .sign_up-option {
-                padding: 10px;
-            }
-        }
-    }
-}
-
-.block.block-pincode {
-    @media screen and (max-width: 1000px) {
-        width: calc(60px * 6 + 10px * 5);
-
-        .pincode-number {
-            height: 60px;
-            width: 60px;
-            font: 600 22px/70px var(--base-font)
-        }
-    }
-
-    @media screen and (max-width: 767px) {
-        margin: 30px auto 30px;
-        width: calc(50px * 6 + 10px * 5);
-
-        .pincode-number {
-            width: 50px;
-            height: 60px;
-            font: 600 26px/60px var(--base-font);
-        }
-
-        &.block-pincode-compact .pincode-number {
-            min-width: 24px;
-            font-size: 16px;
-        }
-    }
-}
+@import 'blocks/block-auth-pin_code';
+@import 'blocks/block-missing-app';
+@import 'blocks/block-pincode';
+@import 'blocks/block-sign_up';

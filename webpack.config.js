@@ -24,8 +24,6 @@ module.exports = (env, argv) => {
 
     const { mode = 'development' } = argv;
     const distPath = 'dist';
-    const distBackend = '../forus-backend/public/assets';
-    const backendScriptPath = `app.js`;
     const scriptPath = `app-${timestamp}.js`;
 
     const entry = configs.reduce((entry, item) => {
@@ -38,32 +36,17 @@ module.exports = (env, argv) => {
             return isDevServer ? `/${item.out}${path}` : `${webRoot}${path}`;
         };
 
-        const isDashboard = ['sponsor', 'provider', 'validator'].includes(item.client_type);
-
-        return item.type === 'backend' ? null : new HtmlWebpackPlugin({
+        return item.withoutHtml ? null : new HtmlWebpackPlugin({
             template: `../../react/public/index.ejs`,
             templateParameters: {
                 title: item.default_title || 'Forus',
+                type: item.client_type,
+                timestamp: timestamp,
                 script: webPath(`/${scriptPath}`),
                 base: webPath(`/`),
+                webPath: webPath,
                 favicon: webPath(`/assets/img/favicon.ico`),
                 disable_indexing: item.config?.disable_indexing,
-                libs: {
-                    ...(isDashboard
-                        ? {
-                              summernote: {
-                                  js: webPath(`/assets/dist/js/summernote.${timestamp}.min.js`),
-                                  css: webPath(`/assets/dist/js/summernote.${timestamp}.min.css`),
-                              },
-                              jquery: {
-                                  js: webPath(`/assets/dist/js/jquery.${timestamp}.min.js`),
-                              },
-                          }
-                        : {}),
-                    mdi: {
-                        css: webPath(`/assets/dist/css/materialdesignicons.min.css`),
-                    },
-                },
                 env_data: {
                     ...item,
                     client_key: item.client_key_api || item.client_key,
@@ -83,7 +66,7 @@ module.exports = (env, argv) => {
     const copyPlugins = configs.map((item) => {
         const isDashboard = ['sponsor', 'provider', 'validator'].includes(item.client_type);
         const platform = isDashboard ? 'platform' : item.client_type === 'website' ? 'website' : (item.type === 'backend' ? 'backend' : 'webshop');
-        const assetPath = item.type === 'backend' ? distBackend : `${distPath}/${item.out}/assets`;
+        const assetPath = item.assetsPath || `${distPath}/${item.out}/assets`;
 
         return new CopyPlugin({
             patterns: [
@@ -108,22 +91,18 @@ module.exports = (env, argv) => {
                     from: resolvePath(`./node_modules/@mdi/font/css/materialdesignicons.min.css`),
                     to: resolvePath(`${assetPath}/dist/css/materialdesignicons.min.css`),
                 },
-                ...(isDashboard
-                    ? [
-                          {
-                              from: resolvePath(`./node_modules/summernote/dist/summernote-lite.min.js`),
-                              to: resolvePath(`${assetPath}/dist/js/summernote.${timestamp}.min.js`),
-                          },
-                          {
-                              from: resolvePath(`./node_modules/summernote/dist/summernote-lite.min.css`),
-                              to: resolvePath(`${assetPath}/dist/js/summernote.${timestamp}.min.css`),
-                          },
-                          {
-                              from: resolvePath(`./node_modules/jquery/dist/jquery.min.js`),
-                              to: resolvePath(`${assetPath}/dist/js/jquery.${timestamp}.min.js`),
-                          },
-                      ]
-                    : []),
+                {
+                    from: resolvePath(`./node_modules/summernote/dist/summernote-lite.min.js`),
+                    to: resolvePath(`${assetPath}/dist/js/summernote.${timestamp}.min.js`),
+                },
+                {
+                    from: resolvePath(`./node_modules/summernote/dist/summernote-lite.min.css`),
+                    to: resolvePath(`${assetPath}/dist/js/summernote.${timestamp}.min.css`),
+                },
+                {
+                    from: resolvePath(`./node_modules/jquery/dist/jquery.min.js`),
+                    to: resolvePath(`${assetPath}/dist/js/jquery.${timestamp}.min.js`),
+                },
             ],
         });
     });
@@ -161,7 +140,7 @@ module.exports = (env, argv) => {
             path: resolvePath(distPath),
             publicPath: '/',
             filename: (pathData) => {
-                return pathData.chunk.name === 'backend_general' ? `../${distBackend}/js/${backendScriptPath}` : `[name]/${scriptPath}`;
+                return fronts[pathData.chunk.name]?.appFileName || `[name]/${scriptPath}`;
             },
         },
 

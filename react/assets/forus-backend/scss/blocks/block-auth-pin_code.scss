@@ -1,4 +1,4 @@
-&.block-auth-pin_code {
+.block.block-auth-pin_code {
     display: flex;
     flex-direction: row;
     user-select: none;
@@ -67,7 +67,7 @@
                 height: 100%;
                 width: 100%;
                 position: absolute;
-                top: 0px;
+                top: 0;
                 left: 0;
                 border: none;
                 outline: none;
