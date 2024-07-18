@@ -404,7 +404,7 @@ export default function ImplementationsCms() {
                                     <div className="form-offset">
                                         <FormGroupInfo
                                             info={
-                                                'You can customize title suffix in browser tab with this text. It must be not longer then 60 characters'
+                                                'De paginatitel die zichtbaar is in het browsertabblad kan worden aangepast. De titel mag niet langer zijn dan 60 karakters.'
                                             }>
                                             <input
                                                 id="page_title_suffix"
