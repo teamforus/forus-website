@@ -37,7 +37,8 @@
         font: inherit;
     }
 
-    ul, ol {
+    ul,
+    ol {
         margin: 0 0 15px;
         padding-left: 18px;
 
@@ -84,26 +85,33 @@
         width: 100%;
         margin: 0 0 20px;
         font: inherit;
-    
+
+        & > caption {
+            font: 500 1.25em var(--hf);
+            color: var(--htc);
+            margin: 0 0 0.9em;
+            text-align: left;
+        }
+
         tr {
             text-align: left;
             font: inherit;
-    
+
             td,
             th {
                 padding: 15px 15px;
                 cursor: default;
                 border-bottom: 1px solid #d4d9dd;
                 transition: 0.3s;
-    
-                &>a {
+
+                & > a {
                     font: inherit;
                 }
-    
+
                 &:first-child {
                     padding-left: 25px;
                 }
-    
+
                 &:last-child {
                     padding-right: 25px;
                 }
@@ -120,12 +128,12 @@
                     font: inherit;
                 }
             }
-    
+
             td {
                 color: #444a4f;
                 font: inherit;
             }
-    
+
             &:last-child {
                 td {
                     border-bottom: none;
@@ -133,11 +141,10 @@
             }
         }
 
-        &>tr,
-        &>thead:last-child>tr,
-        &>tbody:last-child>tr {
+        & > tr,
+        & > thead:last-child > tr,
+        & > tbody:last-child > tr {
             &:last-child {
-
                 td,
                 th {
                     border-bottom: 0;
