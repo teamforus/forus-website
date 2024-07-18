@@ -13,8 +13,10 @@ import Modal2FASetup from '../../modals/Modal2FASetup';
 import Modal2FADeactivate from '../../modals/Modal2FADeactivate';
 import { authContext } from '../../../contexts/AuthContext';
 import { ResponseError } from '../../../props/ApiResponses';
+import useAssetUrl from '../../../hooks/useAssetUrl';
 
 export default function Security2FA() {
+    const assetUrl = useAssetUrl();
     const openModal = useOpenModal();
     const pushDanger = usePushDanger();
     const pushSuccess = usePushSuccess();
@@ -83,10 +85,11 @@ export default function Security2FA() {
                     auth2FAState={auth2FAState}
                     onReady={fetchState}
                     onCancel={null}
+                    assetUrl={assetUrl}
                 />
             ));
         },
-        [auth2FAState, fetchState, openModal],
+        [assetUrl, auth2FAState, fetchState, openModal],
     );
 
     const deactivateAuth2FA = useCallback(

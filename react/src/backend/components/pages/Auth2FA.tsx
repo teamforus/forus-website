@@ -1,6 +1,5 @@
 import React, { Fragment, useCallback, useContext, useEffect, useState } from 'react';
 import useOpenModal from '../../../dashboard/hooks/useOpenModal';
-import Modal2FASetup from '../modals/Modal2FASetup';
 import useAssetUrl from '../../hooks/useAssetUrl';
 import PincodeControl from '../../../dashboard/components/elements/forms/controls/PincodeControl';
 import { useIdentityService } from '../../../dashboard/services/IdentityService';
@@ -8,8 +7,17 @@ import { useIdentity2FAService } from '../../../dashboard/services/Identity2FASe
 import { authContext } from '../../contexts/AuthContext';
 import { ResponseError, ResponseSimple } from '../../../dashboard/props/ApiResponses';
 import Identity2FAState from '../../../dashboard/props/models/Identity2FAState';
+import Modal2FASetup from '../../../dashboard/components/modals/Modal2FASetup';
 
-export default function Auth2FA({ type, token, mobile }: { type?: string; token?: string; mobile: boolean }) {
+export default function Auth2FA({
+    type,
+    mobile,
+    exchangeToken,
+}: {
+    type?: string;
+    mobile: boolean;
+    exchangeToken?: string;
+}) {
     const [step, setStep] = useState(null);
     const [state, setState] = useState(null);
     const [pinCode, setPinCode] = useState('');
@@ -68,11 +76,13 @@ export default function Auth2FA({ type, token, mobile }: { type?: string; token?
                     modal={modal}
                     onReady={() => document.location.reload()}
                     onCancel={() => setPaneHidden(false)}
+                    assetUrl={assetUrl}
                     auth2FAState={auth2FAState}
+                    showInfoBox={false}
                 />
             ));
         },
-        [auth2FAState, openModal],
+        [assetUrl, auth2FAState, openModal],
     );
 
     const initPinCode = useCallback(() => {
@@ -146,14 +156,14 @@ export default function Auth2FA({ type, token, mobile }: { type?: string; token?
     }, [exchangeSuccess, onReady]);
 
     useEffect(() => {
-        if (!type || !token || !['email_sign_in', 'email_confirmation'].includes(type)) {
+        if (!type || !exchangeToken || !['email_sign_in', 'email_confirmation'].includes(type)) {
             return setState('error');
         }
 
         const promise =
             type === 'email_sign_in'
-                ? identityService.authorizeAuthEmailToken(token)
-                : identityService.exchangeConfirmationToken(token);
+                ? identityService.authorizeAuthEmailToken(exchangeToken)
+                : identityService.exchangeConfirmationToken(exchangeToken);
 
         promise.then(
             (res: ResponseSimple<{ access_token: string }>) => {
@@ -162,7 +172,7 @@ export default function Auth2FA({ type, token, mobile }: { type?: string; token?
             },
             () => setExchangeError(true),
         );
-    }, [identityService, onReady, setToken, token, type]);
+    }, [identityService, onReady, setToken, exchangeToken, type]);
 
     if (!state) {
         return <></>;

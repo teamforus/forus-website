@@ -1,6 +1,6 @@
 import { ModalsProvider } from '../dashboard/modules/modals/context/ModalContext';
 import { AuthProvider } from './contexts/AuthContext';
-import React, { Fragment, useContext, useEffect, useMemo } from 'react';
+import React, { Fragment, ReactElement, useContext, useEffect, useMemo } from 'react';
 import { LoadingBarProvider } from '../dashboard/modules/loading_bar/context/LoadingBarContext';
 import ApiRequestService from '../dashboard/services/ApiRequestService';
 import Auth2FA from './components/pages/Auth2FA';
@@ -16,7 +16,7 @@ import PushNotifications from '../dashboard/modules/push_notifications/component
  * @param children
  * @constructor
  */
-const Layout = ({ envData, children }: { envData: EnvDataBackend; children: React.ReactElement }) => {
+const Layout = ({ envData, children }: { envData: EnvDataBackend; children: ReactElement | ReactElement[] }) => {
     const { setEnvData } = useContext(mainContext);
 
     useEffect(() => {
@@ -33,7 +33,7 @@ const Layout = ({ envData, children }: { envData: EnvDataBackend; children: Reac
 export default function Backend(): React.ReactElement {
     const params = document.getElementById('params');
     const mobile = params.dataset.mobile === 'true';
-    const { token, type, apiUrl } = params.dataset;
+    const { exchangeToken, type, apiUrl } = params.dataset;
 
     const envData = useMemo(
         () => ({
@@ -59,11 +59,9 @@ export default function Backend(): React.ReactElement {
                     <MainProvider>
                         <AuthProvider>
                             <Layout envData={envData}>
-                                <Fragment>
-                                    <Auth2FA mobile={mobile} token={token} type={type} />
-                                    <Modals />
-                                    <PushNotifications />
-                                </Fragment>
+                                <Auth2FA mobile={mobile} exchangeToken={exchangeToken} type={type} />
+                                <Modals />
+                                <PushNotifications />
                             </Layout>
                         </AuthProvider>
                     </MainProvider>
