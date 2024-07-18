@@ -197,7 +197,7 @@ export default function Start() {
 
     useEffect(() => {
         if (envData) {
-            setTitle(translate(`signup.items.${envData.client_key}.title`, null, 'Inloggen'));
+            setTitle(translate(`signup.items.${envData.client_key}.title`, null, 'signup.items.title'));
         }
     }, [envData, setTitle, translate]);
 

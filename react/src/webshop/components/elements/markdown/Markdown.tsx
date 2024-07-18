@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 
 export default function Markdown({
     align,
@@ -15,43 +15,37 @@ export default function Markdown({
 }) {
     const ref = useRef<HTMLDivElement>(null);
 
-    const observer = useMemo(
-        () =>
-            new MutationObserver(function (mutationsList) {
-                const tables = [...mutationsList].reduce((list, mutation) => {
-                    if (mutation.type == 'childList') {
-                        return [...list, ...[...mutation.addedNodes].filter((node) => node.nodeName == 'TABLE')];
-                    }
-
-                    return list;
-                }, []);
-
-                tables.forEach((table) => {
-                    const head = table.querySelector('tHead tr');
-                    const headers = [...table.querySelectorAll('tHead tr th')];
-                    const emptyHeaders = headers.filter((th) => th.innerText == '');
-                    const firstRow = table.querySelector('tBody tr:first-child');
-
-                    if (emptyHeaders.length > 0 && emptyHeaders.length == headers.length) {
-                        [...firstRow.querySelectorAll('td')].forEach((td) => {
-                            const th = document.createElement('th');
-                            th.innerHTML = td.innerHTML;
-                            td.replaceWith(th);
-                        });
-                        head.replaceWith(firstRow);
-                    }
-                });
-            }),
-        [],
-    );
-
     useEffect(() => {
-        observer.observe(ref.current, { childList: true, subtree: true });
+        const tables = ref.current?.querySelectorAll('table');
 
-        return () => {
-            observer.disconnect();
-        };
-    }, [observer]);
+        try {
+            tables.forEach((table) => {
+                const head = table.querySelector('tHead tr');
+                const headers = [...table.querySelectorAll('tHead tr th')];
+                const emptyHeaders = headers.filter((th) => th['innerText'] == '');
+                const firstRow = table.querySelector('tBody tr:first-child');
+
+                if (emptyHeaders.length > 0 && emptyHeaders.length == headers.length) {
+                    [...firstRow.querySelectorAll('td')].forEach((td) => {
+                        const th = document.createElement('th');
+                        th.textContent = td.textContent;
+                        td.replaceWith(th);
+                    });
+                    head.replaceWith(firstRow);
+                }
+
+                if (table.previousElementSibling?.nodeName?.toLowerCase() == 'h4') {
+                    const caption = document.createElement('caption');
+                    caption.textContent = table.previousElementSibling.textContent;
+
+                    table.previousElementSibling.remove();
+                    table.insertBefore(caption, table.firstElementChild);
+                }
+            });
+        } catch (e) {
+            /* empty */
+        }
+    }, [content]);
 
     return (
         <div

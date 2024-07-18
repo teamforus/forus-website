@@ -785,8 +785,9 @@ export default function ModalProductReserve({
                                         {!field.custom && field.type === 'date' && (
                                             <DatePickerControl
                                                 value={dateParse(form.values[field.key])}
-                                                placeholder={'jjjj-MM-dd'}
+                                                placeholder={'dd-MM-jjjj'}
                                                 dateMax={dateMinLimit}
+                                                dateFormat={'dd-MM-yyyy'}
                                                 onChange={(date: Date) => {
                                                     form.update({ [field.key]: dateFormat(date) });
                                                 }}
@@ -1093,7 +1094,9 @@ export default function ModalProductReserve({
                                                     className={`overview-item-value ${
                                                         !form.values[field.key] ? 'overview-item-value-empty' : ''
                                                     }`}>
-                                                    {form.values[field.key] || emptyText}
+                                                    {field.type === 'date'
+                                                        ? dateFormat(dateParse(form.values[field.key]), 'dd-MM-yyyy')
+                                                        : form.values[field.key] || emptyText}
                                                 </div>
                                             </Fragment>
                                         ) : (
