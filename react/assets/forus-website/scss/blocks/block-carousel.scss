@@ -1,0 +1,35 @@
+.block.block-carousel {
+    margin: 0 auto;
+
+    .block-carousel-row {
+        display: flex;
+        transition: transform 0.3s ease;
+        animation: scroll 90s linear infinite;
+        gap: 30px;
+
+        .block-carousel-logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 120px;
+            padding: 32px;
+            background: #fff;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 12px 30px 0 rgba(225, 226, 232, 0.50);
+        }
+    }
+
+    @media screen and (max-width: 1000px) {
+        .block-carousel-row {
+            .block-carousel-logo {
+                height: 90px;
+                padding: 16px;
+
+                img {
+                    max-height: 26px;
+                }
+            }
+        }
+    }
+}

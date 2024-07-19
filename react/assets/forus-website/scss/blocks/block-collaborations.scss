@@ -1,0 +1,30 @@
+.block.block-collaborations {
+    margin-bottom: 100px;
+    text-align: center;
+
+    .block-collaborations-title {
+        font: 900 56px/68px var(--base-font);
+        margin-bottom: 25px;
+    }
+
+    .block-collaborations-subtitle {
+        font: 400 20px/30px var(--base-font);
+        margin-bottom: 60px;
+    }
+
+    @media screen and (max-width: 1000px) {
+        margin: 48px 0;
+        border-radius: 12px;
+        text-align: left;
+
+        .block-collaborations-title {
+            font: 900 30px/40px var(--base-font);
+            margin-bottom: 20px;
+        }
+
+        .block-collaborations-subtitle {
+            font: 400 14px/21px var(--base-font);
+            margin-bottom: 45px;
+        }
+    }
+}
