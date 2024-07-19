@@ -53,26 +53,22 @@ export default function LayoutHeader() {
                             onClick={() => setActiveMenuDropdown(null)}>
                             Home
                         </StateNavLink>
-                        <StateNavLink
-                            name={'platform'}
+                        <div
                             className="layout-header-menu-item"
-                            activeExact={true}
                             onClick={() => {
                                 setActiveMenuDropdown(activeMenuDropdown == 'platform' ? null : 'platform');
                             }}>
                             Platform
                             <em className={`mdi mdi-menu-${activeMenuDropdown === 'platform' ? 'up' : 'down'}`} />
-                        </StateNavLink>
-                        <StateNavLink
-                            name={'about'}
+                        </div>
+                        <div
                             className="layout-header-menu-item"
-                            activeExact={true}
                             onClick={() => {
                                 setActiveMenuDropdown(activeMenuDropdown == 'about' ? null : 'about');
                             }}>
                             Over ons
                             <em className={`mdi mdi-menu-${activeMenuDropdown === 'about' ? 'up' : 'down'}`} />
-                        </StateNavLink>
+                        </div>
                         <StateNavLink
                             name={'contacts'}
                             className="layout-header-menu-item"

@@ -1,0 +1,87 @@
+.block.block-our-values {
+    margin-bottom: 100px;
+
+    .block-our-values-header {
+        font: 900 56px/68px var(--base-font);
+        margin-bottom: 60px;
+    }
+
+    .block-our-values-items {
+        display: flex;
+        width: 100%;
+        flex-wrap: wrap;
+        text-align: left;
+        margin-bottom: 30px;
+
+        .block-our-values-item {
+            display: flex;
+            width: calc(50% - 35px);
+            margin-bottom: 70px;
+
+            .block-our-values-item-image {
+                margin-right: 25px;
+                margin-top: 10px;
+            }
+
+            .block-our-values-item-main {
+                .block-our-values-item-title {
+                    font: 700 26px/46px var(--base-font);
+                    margin-bottom: 10px;
+                }
+
+                .block-our-values-item-description {
+                    font: 400 16px/24px var(--base-font);
+                    color: #55575E;
+                }
+            }
+
+            &:nth-child(odd) {
+                margin-right: 70px;
+            }
+        }
+    }
+
+    @media screen and (max-width: 1000px) {
+        .block-our-values-header {
+            display: flex;
+            flex-direction: column;
+            font: 900 30px/40px var(--base-font);
+            text-align: center;
+            gap: 25px;
+        }
+
+        .block-our-values-items {
+            flex-direction: column;
+
+            .block-our-values-item {
+                width: 100%;
+                text-align: center;
+                flex-direction: column;
+                margin-bottom: 40px;
+
+                .block-our-values-item-image {
+                    margin-bottom: 15px;
+
+                    img {
+                        width: 40px;
+                    }
+                }
+
+                .block-our-values-item-main {
+                    .block-our-values-item-title {
+                        font: 700 20px/30px var(--base-font);
+                        margin-bottom: 10px;
+                    }
+
+                    .block-our-values-item-description {
+                        font: 400 14px/21px var(--base-font);
+                    }
+                }
+
+                &:nth-child(odd) {
+                    margin-right: 0;
+                }
+            }
+        }
+    }
+}

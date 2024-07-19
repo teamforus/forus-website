@@ -1,9 +1,14 @@
 import React from 'react';
 import PreviewPageFooter from '../../components/elements/PreviewPageFooter';
 import useAssetUrl from '../../hooks/useAssetUrl';
+import useSetActiveMenuDropdown from '../../hooks/useSetActiveMenuDropdown';
+import { useNavigateState } from '../../modules/state_router/Router';
 
 export default function DropdownAbout() {
     const assetUrl = useAssetUrl();
+    const navigateState = useNavigateState();
+
+    const setActiveMenuDropdown = useSetActiveMenuDropdown();
 
     return (
         <div className="block block-page-list">
@@ -29,7 +34,12 @@ export default function DropdownAbout() {
 
                     <div className="block-page-list-main-details">
                         <div className="block-page-list-main-details-list">
-                            <div className="block-page-list-main-details-list-item">
+                            <div
+                                className="block-page-list-main-details-list-item"
+                                onClick={() => {
+                                    setActiveMenuDropdown(null);
+                                    navigateState('about-us');
+                                }}>
                                 <img
                                     className="details-list-image"
                                     src={assetUrl(`/assets/img/about-us/our-story.png`)}
@@ -44,7 +54,12 @@ export default function DropdownAbout() {
                                 <em className={'mdi mdi-arrow-right'} />
                             </div>
 
-                            <div className="block-page-list-main-details-list-item">
+                            <div
+                                className="block-page-list-main-details-list-item"
+                                onClick={() => {
+                                    setActiveMenuDropdown(null);
+                                    navigateState('about-us-innovation');
+                                }}>
                                 <img
                                     className="details-list-image"
                                     src={assetUrl(`/assets/img/about-us/project.png`)}

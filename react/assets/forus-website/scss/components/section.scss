@@ -1,0 +1,97 @@
+.section {
+    text-align: center;
+    margin-bottom: 100px;
+
+    .section-title {
+        font: 900 86px/96px var(--base-font);
+        margin-bottom: 30px;
+
+        &.section-title-sm {
+            font: 900 56px/68px var(--base-font);
+        }
+    }
+
+    .section-description {
+        font: 400 26px/36px var(--base-font);
+        margin-bottom: 50px;
+    }
+
+    .section-description-sm {
+        font: 400 18px/28px var(--base-font);
+    }
+
+    .section-subtitle {
+        font: 900 48px/64px var(--base-font);
+        margin-bottom: 25px;
+    }
+
+    .section-banner {
+        width: 100%;
+        margin-bottom: 60px;
+
+        img {
+            width: 100%;
+        }
+    }
+
+    .section-details-block {
+        width: 100%;
+        display: flex;
+        gap: 100px;
+        text-align: left;
+
+        .section-details-block-main {
+            font: 700 40px/52px var(--base-font);
+            width: 50%;
+        }
+
+        .section-details-block-description {
+            font: 400 18px/28px var(--base-font);
+            width: 50%;
+        }
+    }
+
+    @media screen and (max-width: 1000px) {
+        margin-bottom: 48px;
+
+        .section-title {
+            font: 900 36px/44px var(--base-font);
+            margin-bottom: 25px;
+
+            &.section-title-sm {
+                font: 900 36px/44px var(--base-font);
+            }
+        }
+
+        .section-subtitle {
+            font: 900 30px/40px var(--base-font);
+            margin-bottom: 20px;
+        }
+
+        .section-description {
+            font: 400 16px/27px var(--base-font);
+        }
+
+        .section-banner {
+            margin-bottom: 48px;
+        }
+
+        .section-details-block {
+            flex-direction: column;
+            gap: 20px;
+
+            .section-details-block-main, .section-details-block-description {
+                width: 100%;
+            }
+
+            .section-details-block-main {
+                font: 700 20px/30px var(--base-font);
+            }
+
+            .section-details-block-description {
+                font: 400 14px/21px var(--base-font);
+                color: #333;
+            }
+        }
+    }
+}

@@ -4,6 +4,8 @@ import NotFound from '../components/pages_system/NotFound';
 import Home from '../components/pages/home/Home';
 import SignOut from '../components/pages/auth/SignOut';
 import WIP from '../components/pages_system/WIP';
+import AboutUs from '../components/pages/about-us/AboutUs';
+import AboutUsInnovation from '../components/pages/about-us/AboutUsInnovation';
 
 const router = new RouterBuilder();
 
@@ -37,8 +39,13 @@ router.state('platform', <WIP />, {
     protected: false,
 });
 
-router.state('about', <WIP />, {
-    path: `/about`,
+router.state('about-us', <AboutUs />, {
+    path: `/about-us`,
+    protected: false,
+});
+
+router.state('about-us-innovation', <AboutUsInnovation />, {
+    path: `/about-us-innovation`,
     protected: false,
 });
 
