@@ -75,6 +75,21 @@ h6 {
                 }
             }
 
+            .subnav-inner {
+                .subnav-search-button {
+                    &:hover {
+                        box-shadow: none;
+                        border: 1px solid var(--color-primary);
+
+                        .mdi {
+                            &:before {
+                                color: var(--color-primary);
+                            }
+                        }
+                    }
+                }
+            }
+
             .auth-in {
                 margin-left: 0;
                 margin-right: 15px;
@@ -165,7 +180,11 @@ h6 {
                     }
 
                     .subnav-search-button {
-                        padding-right: 30px;
+                        margin-right: 40px;
+
+                        .mdi {
+                            margin-left: -10px;
+                        }
 
                         &.active {
                             em.mdi:before {
