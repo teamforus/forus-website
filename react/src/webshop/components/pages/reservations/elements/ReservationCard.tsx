@@ -78,7 +78,7 @@ export default function ReservationCard({
                         <div className="reservation-section-column">
                             <div className="reservation-overview">
                                 <div className="reservation-overview-status">
-                                    {reservation.state === 'waiting' && stateData?.expiresIn && (
+                                    {reservation.state === 'waiting' && stateData?.expiresIn > 0 && (
                                         <div className="label label-default-outline nowrap">
                                             <span className="label-blink label-blink-primary" aria-hidden="true" />
                                             <span className="label-text">Nog {stateData.expiresIn} minuten</span>
@@ -388,7 +388,7 @@ export default function ReservationCard({
                 </div>
             )}
 
-            {reservation.state === 'waiting' && stateData.expiresIn && (
+            {reservation.state === 'waiting' && stateData.expiresIn > 0 && (
                 <div className="reservation-item-footer">
                     Houd er rekening mee dat er nog <strong>{stateData.expiresIn} minuten</strong> over zijn om de
                     bijbetaling uit te voeren. Anders zal de reservering automatisch worden geannuleerd.
