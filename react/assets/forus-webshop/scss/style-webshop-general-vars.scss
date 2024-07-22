@@ -81,6 +81,8 @@ $primaryColorLight: #305dfb;
     --color-default: #305dfb;
     --color-default-light: #4c74ff;
 
+    --color-danger: #e63b3b;
+
     --color-search-icon-medium: #{$primaryColor};
     --color-search-icon-dark: #{darken($primaryColor, 10%)};
     --color-search-icon-light: #{lighten($primaryColor, 25%)};

@@ -282,7 +282,7 @@ export default function ReservationsShow() {
                         </div>
                     )}
 
-                    {reservation?.extra_payment?.refunds && (
+                    {reservation?.extra_payment?.refunds?.length > 0 && (
                         <div className={`card card-collapsable ${showReservationRefunds ? 'open' : ''}`}>
                             <div
                                 className="card-header"

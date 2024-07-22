@@ -74,7 +74,9 @@ export default function ModalProductReserve({
     const [STEP_CONFIRM_DATA] = useState(5);
     const [STEP_EXTRA_PAYMENT] = useState(6);
     const [STEP_RESERVATION_FINISHED] = useState(7);
+    const [STEP_ERROR] = useState(8);
 
+    const [errorMessage, setErrorMessage] = useState<string>();
     const [dateMinLimit] = useState(new Date());
 
     const provider = useMemo(() => product.organization, [product?.organization]);
@@ -157,7 +159,15 @@ export default function ModalProductReserve({
 
                     setStep(STEP_RESERVATION_FINISHED);
                 })
-                .catch((err: ResponseError) => form.setErrors(err.data.errors));
+                .catch((err: ResponseError) => {
+                    pushDanger(err?.data?.message || err?.data?.errors?.product_id?.[0]);
+                    form.setErrors(err.data.errors);
+
+                    if (err.status >= 500 || err?.data?.errors?.product_id?.length > 0) {
+                        setStep(STEP_ERROR);
+                        setErrorMessage(err?.data?.message || err?.data?.errors?.product_id?.[0]);
+                    }
+                });
         },
     );
 
@@ -175,14 +185,17 @@ export default function ModalProductReserve({
     }, [modal, navigateState]);
 
     const onError = useCallback(
-        (res: ResponseError, address = false) => {
-            const { errors = {}, message } = res.data;
+        (err: ResponseError, address = false) => {
+            const { errors = {}, message } = err.data;
 
             form.setErrors(errors);
             form.setIsLocked(false);
 
             if (errors.product_id) {
                 errors.product_id?.forEach((error) => pushDanger(error));
+                setStep(STEP_ERROR);
+                setErrorMessage(err?.data?.errors?.product_id?.[0]);
+                return;
             }
 
             if (!errors.product_id && message) {
@@ -191,7 +204,7 @@ export default function ModalProductReserve({
 
             setStep(address ? STEP_FILL_ADDRESS : STEP_FILL_DATA);
         },
-        [STEP_FILL_ADDRESS, STEP_FILL_DATA, form, pushDanger],
+        [STEP_ERROR, STEP_FILL_ADDRESS, STEP_FILL_DATA, form, pushDanger],
     );
 
     const validateFields = useCallback(() => {
@@ -1234,6 +1247,34 @@ export default function ModalProductReserve({
                         <button
                             className="button button-sm button-light"
                             onClick={finish}
+                            role="button"
+                            data-dusk="btnReservationFinish">
+                            Sluiten
+                        </button>
+                    </div>
+                </div>
+            )}
+
+            {step == STEP_ERROR && (
+                <div className="modal-window" data-dusk="productReserveDanger">
+                    <div className="modal-header">
+                        <h2 className="modal-header-title">{translate('modal_product_reserve.header.title')}</h2>
+                    </div>
+                    <div className="modal-body">
+                        <div className="modal-section text-center">
+                            <div className="modal-section-icon modal-section-icon-danger">
+                                <div className="mdi mdi-check-circle-outline" />
+                            </div>
+                            <h2 className="modal-section-title">Fout!</h2>
+                            <div className="modal-section-description">
+                                {errorMessage || 'Kon de reservering niet voltooien. Probeer het later opnieuw.'}
+                            </div>
+                        </div>
+                    </div>
+                    <div className="modal-footer">
+                        <button
+                            className="button button-sm button-light"
+                            onClick={modal.close}
                             role="button"
                             data-dusk="btnReservationFinish">
                             Sluiten
