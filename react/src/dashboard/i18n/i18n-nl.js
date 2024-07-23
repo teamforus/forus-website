@@ -1950,7 +1950,7 @@ export default {
                         'Ontvang een notificatie wanneer het saldo voor een fonds lager is dan de vooraf ingestelde grens.',
                 },
                 fund_expires: {
-                    title: 'Herinnering einddatum voucher',
+                    title: 'Herinnering einddatum tegoed',
                     description: 'Ontvang een notificatie 1 maand voor de einddatum van uw tegoed.',
                 },
                 product_added: {
