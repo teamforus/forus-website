@@ -49,7 +49,9 @@ export default {
         },
     },
     labels: {
-        categorie: 'Categoriën',
+        search: 'Zoeken',
+        category: 'Categorie',
+        organization: 'Organisatie',
         criteria: 'Voorwaarden',
         location: 'Locatie',
         office: 'Zuidhorn Gemeente',

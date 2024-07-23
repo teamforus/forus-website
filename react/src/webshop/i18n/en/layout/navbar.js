@@ -1,8 +1,8 @@
 export default {
     items: {
-        funds: 'FUNDS',
-        products: 'OFFERS',
-        subsidies: 'ACTIONS',
+        funds: 'Funds',
+        products: 'Offers',
+        subsidies: 'Actions',
         identity: 'Profile',
     },
     buttons: {

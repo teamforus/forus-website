@@ -144,6 +144,9 @@ export default function Funds() {
                 tags && (
                     <div className="showcase-aside-block">
                         <div className="form-group">
+                            <label className="form-label" htmlFor="search">
+                                {translate('funds.labels.search')}
+                            </label>
                             <UIControlSearch
                                 id="search"
                                 value={filter.values.q}
@@ -154,7 +157,7 @@ export default function Funds() {
                         </div>
                         <div className="form-group">
                             <label className="form-label" htmlFor="select_organization">
-                                Organisatie
+                                {translate('funds.labels.organization')}
                             </label>
                             <SelectControl
                                 optionsComponent={SelectControlOptions}
@@ -168,7 +171,7 @@ export default function Funds() {
                         </div>
                         <div className="form-group">
                             <label className="form-label" htmlFor="select_category">
-                                Categorie
+                                {translate('funds.labels.category')}
                             </label>
                             <SelectControl
                                 optionsComponent={SelectControlOptions}

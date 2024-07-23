@@ -6,6 +6,7 @@ const support_id = false;
 const chat_id = false;
 const sessions = true;
 const google_maps_api_key = '';
+const tag_manager_id = false;
 
 const me_app_link = 'https://forus.io/DL';
 const ios_ipad_link = 'https://testflight.apple.com/join/gWw1lXyB';
@@ -159,6 +160,7 @@ fronts['website'] = {
         android_link: android_link,
         ios_iphone_link: ios_iphone_link,
         google_maps_api_key: google_maps_api_key,
+        tag_manager_id: tag_manager_id,
     },
 };
 

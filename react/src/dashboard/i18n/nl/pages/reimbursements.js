@@ -22,7 +22,7 @@ export default {
         expire_at: 'Verloopdatum',
         expired_at: 'Verlopen op',
         expired: 'Verlopen',
-        deactivated: 'Voucher deactivated',
+        deactivated: 'Tegoed deactivated',
         actions: 'Acties',
         search: 'Zoeken',
         from: 'Vanaf',

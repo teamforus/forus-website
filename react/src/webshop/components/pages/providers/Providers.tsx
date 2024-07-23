@@ -256,11 +256,14 @@ export default function Providers() {
                                 <div className="showcase-subtitle">Selecteer een aanbieder voor meer informatie</div>
                             )}
                             <div className="form-group">
+                                <label className="form-label" htmlFor="business_type_id">
+                                    {translate('providers.labels.search')}
+                                </label>
                                 <UIControlSearch
                                     value={filterValues.q}
                                     onChangeValue={(q) => filterUpdate({ q })}
-                                    ariaLabel={'Zoeken'}
-                                    placeholder={'Zoek aanbieder'}
+                                    ariaLabel={translate('providers.labels.search_aria_label')}
+                                    placeholder={translate('providers.labels.search_placeholder')}
                                 />
 
                                 <FormError error={errors?.q} />
