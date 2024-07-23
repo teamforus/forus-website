@@ -1,6 +1,6 @@
 export default {
     header: {
-        title: 'Vouchers',
+        title: 'Tegoeden',
     },
     labels: {
         state: 'Status',

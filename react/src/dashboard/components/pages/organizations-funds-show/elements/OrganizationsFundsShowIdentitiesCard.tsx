@@ -202,17 +202,17 @@ export default function OrganizationsFundsShowIdentitiesCard({
                                             <ThSortable filter={filter} label={'E-mail'} value="email" />
                                             <ThSortable
                                                 filter={filter}
-                                                label={'Totaal aantal vouchers'}
+                                                label={'Totaal aantal tegoeden'}
                                                 value="count_vouchers"
                                             />
                                             <ThSortable
                                                 filter={filter}
-                                                label={'Actieve vouchers'}
+                                                label={'Actieve tegoeden'}
                                                 value="count_vouchers_active"
                                             />
                                             <ThSortable
                                                 filter={filter}
-                                                label={'Actieve vouchers met saldo'}
+                                                label={'Actieve tegoeden met saldo'}
                                                 value="count_vouchers_active_with_balance"
                                             />
                                             <th className="nowrap text-right">
@@ -275,7 +275,7 @@ export default function OrganizationsFundsShowIdentitiesCard({
                 <div className="card-section card-section-primary">
                     <div className="card-block card-block-keyvalue card-block-keyvalue-horizontal row">
                         <div className="keyvalue-item col col-lg-4">
-                            <div className="keyvalue-key">Aanvragers met vouchers</div>
+                            <div className="keyvalue-key">Aanvragers met tegoeden</div>
                             <div className="keyvalue-value">
                                 <span>{identitiesActive}</span>
                                 <span className="icon mdi mdi-account-multiple-outline" />

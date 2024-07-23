@@ -1,5 +1,5 @@
 export default {
-    title: 'Voucher QR-Code',
+    title: 'Tegoed QR-Code',
     title_assign: 'Assign to account',
     labels: {
         sent_to_email: 'Send to e-mail address:',
