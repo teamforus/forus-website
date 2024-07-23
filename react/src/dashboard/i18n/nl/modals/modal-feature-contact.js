@@ -11,6 +11,6 @@ export default {
         },
     },
     buttons: {
-        close: 'Close',
+        close: 'Sluiten',
     },
 };
