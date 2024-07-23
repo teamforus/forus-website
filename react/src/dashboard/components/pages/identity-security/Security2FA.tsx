@@ -202,7 +202,7 @@ export default function Security2FA() {
 
                             {auth2FAState.auth_2fa_forget_force.voucher && (
                                 <div className="form-hint">
-                                    Je hebt een voucher die tweefactorauthenticatie verplicht stelt
+                                    Je hebt een tegoed die tweefactorauthenticatie verplicht stelt
                                 </div>
                             )}
 

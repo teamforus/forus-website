@@ -99,12 +99,15 @@ export default function Reservations() {
                 <div className="form form-compact">
                     <div className="profile-aside-block">
                         <div className="form-group">
+                            <label className="form-label" htmlFor="products_search">
+                                {translate('reservations.labels.search')}
+                            </label>
                             <UIControlSearch
                                 id="products_search"
                                 value={filters.values.q}
                                 onChangeValue={(q) => filters.update({ q })}
-                                placeholder="Zoek reservering"
-                                ariaLabel="search"
+                                ariaLabel={translate('reservations.labels.search_aria_label')}
+                                placeholder={translate('reservations.labels.search_placeholder')}
                             />
                         </div>
                         <div className="form-group">

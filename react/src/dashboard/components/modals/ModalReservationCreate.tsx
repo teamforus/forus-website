@@ -55,7 +55,7 @@ export default function ModalReservationCreate({
                 if (!voucher.allowed_organizations.map((item) => item.id).includes(organization.id)) {
                     // The voucher is valid but can't be used with current organization.
                     return formVouchers.setErrors({
-                        number: 'Deze voucher is geldig maar mag niet gescant worden door uw organisatie.',
+                        number: 'Deze tegoed is geldig maar mag niet gescant worden door uw organisatie.',
                     });
                 }
 
@@ -72,7 +72,7 @@ export default function ModalReservationCreate({
                         if (products.length === 0) {
                             // Voucher is valid, but there are no products available for this number.
                             return formVouchers.setErrors({
-                                number: 'Deze voucher is geldig maar er zijn tegoeden beschikbaar voor het gekozen product.',
+                                number: 'Deze tegoed is geldig maar er zijn tegoeden beschikbaar voor het gekozen product.',
                             });
                         }
 
