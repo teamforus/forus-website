@@ -15,6 +15,7 @@ import IconSearchProviders from '../../../../../assets/forus-webshop/resources/_
 import IconSearchEmptyResult from '../../../../../assets/forus-webshop/resources/_webshop-common/assets/img/icon-search/empty-search.svg';
 import TopNavbarSearchResultItem from './TopNavbarSearchResultItem';
 import useSetProgress from '../../../../dashboard/hooks/useSetProgress';
+import { clickOnKeyEnter } from '../../../../dashboard/helpers/wcag';
 
 export default function TopNavbarSearch() {
     const envData = useEnvData();
@@ -177,9 +178,12 @@ export default function TopNavbarSearch() {
                             className={`search-reset ${
                                 !envData.config?.flags?.genericSearchUseToggle ? 'show-sm' : ''
                             }`}
+                            onClick={hideSearchBox}
+                            onKeyDown={clickOnKeyEnter}
+                            tabIndex={0}
                             aria-label="Sluit zoeken"
                             role="button">
-                            <div className="mdi mdi-close" onClick={hideSearchBox} />
+                            <em className="mdi mdi-close" />
                         </div>
                     </div>
                     {dropdown && (
