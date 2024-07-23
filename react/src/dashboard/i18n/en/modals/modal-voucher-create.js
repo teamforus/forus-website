@@ -1,14 +1,14 @@
 export default {
-    title: 'Tegoed aanmaken',
+    title: 'Create Voucher',
     labels: {
-        fund: 'Fonds',
-        amount: 'Bedrag',
-        note: 'Notitie',
-        expire_at: 'Geldig tot en met',
+        fund: 'Fund',
+        amount: 'Amount',
+        note: 'Note',
+        expire_at: 'Valid until',
     },
-    info: 'Tegoed eenmaal aangemaakt kan niet verwijderd worden. Met een tegoed gemaakt via deze functie kan een gebruiker gebruik maken van een budget zonder account zolang niet toegekend.',
+    info: 'Once a voucher is created, it cannot be deleted. With a voucher created via this function, a user can use a budget without an account as long as it is not assigned.',
     buttons: {
-        cancel: 'Annuleren',
-        submit: 'Aanmaken',
+        cancel: 'Cancel',
+        submit: 'Create',
     },
 };
