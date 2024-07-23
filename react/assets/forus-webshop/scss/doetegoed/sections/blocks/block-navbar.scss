@@ -9,6 +9,8 @@
 
     .block-subnav {
         .subnav-inner {
+            margin-top: 15px;
+
             .navbar-logo {
                 img {
                     height: 55px;
@@ -47,6 +49,15 @@
     .block-auth {
         .auth-in {
             margin-left: 20px;
+        }
+    }
+
+    @media screen and (max-width: 1000px) {
+        .block-subnav {
+            .subnav-inner {
+                margin-top: 30px;
+                margin-bottom: 10px;
+            }
         }
     }
 }
