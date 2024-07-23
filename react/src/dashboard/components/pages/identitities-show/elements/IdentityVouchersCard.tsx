@@ -67,7 +67,7 @@ export default function IdentityVouchersCard({
     return (
         <div className="card">
             <div className="card-header">
-                <div className="card-title">{`${blockTitle || 'Vouchers'} (${vouchers?.meta.total})`}</div>
+                <div className="card-title">{`${blockTitle || 'Tegoeden'} (${vouchers?.meta.total})`}</div>
             </div>
 
             {vouchers?.data.length > 0 && (
@@ -196,7 +196,7 @@ export default function IdentityVouchersCard({
                 </div>
             )}
 
-            {vouchers?.meta?.total == 0 && <EmptyCard title={'Geen vouchers gevonden'} type={'card-section'} />}
+            {vouchers?.meta?.total == 0 && <EmptyCard title={'Geen tegoeden gevonden'} type={'card-section'} />}
 
             {vouchers?.meta && (
                 <div className="card-section" hidden={vouchers?.meta?.last_page < 2}>

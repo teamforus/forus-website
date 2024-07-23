@@ -91,10 +91,10 @@ export default function ImplementationsNotificationsSend() {
     );
 
     const [identityTargets] = useState([
-        { value: 'all', name: 'Alle gebruikers met een actieve voucher' },
+        { value: 'all', name: 'Alle gebruikers met een actieve tegoed' },
         {
             value: 'has_balance',
-            name: 'Alle gebruikers die nog budget beschikbaar hebben of een ongebruike reservering en/of aanbiedings voucher',
+            name: 'Alle gebruikers die nog budget beschikbaar hebben of een ongebruike reservering en/of aanbiedings tegoed',
         },
     ]);
 
@@ -613,7 +613,7 @@ export default function ImplementationsNotificationsSend() {
                             <div className="card-section card-section-primary">
                                 <div className="card-block card-block-keyvalue card-block-keyvalue-horizontal row">
                                     <div className="keyvalue-item col col-lg-3">
-                                        <div className="keyvalue-key">Met vouchers</div>
+                                        <div className="keyvalue-key">Met tegoeden</div>
                                         <div className="keyvalue-value">
                                             <span>{identities.meta.counts.active}</span>
                                             <span className="icon mdi mdi-account-multiple-outline" />
