@@ -8,6 +8,7 @@ import fund_request from './nl/pages/fund-request';
 import fund_requests from './nl/pages/fund-requests';
 import fund_request_clarification from './nl/pages/fund-request-clarification';
 import funds from './nl/pages/funds';
+import providers from './nl/pages/providers';
 import home from './nl/pages/home';
 import signup from './nl/pages/signup';
 import meapp_index from './nl/pages/me-index';
@@ -195,6 +196,7 @@ export default {
     fund_requests: fund_requests,
     fund_request_clarification: fund_request_clarification,
     funds: funds,
+    providers: providers,
     home: home,
     signup: signup,
     meapp_index: meapp_index,
