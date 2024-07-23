@@ -403,11 +403,9 @@ export default function ImplementationsCms() {
                                     </label>
                                     <div className="form-offset">
                                         <FormGroupInfo
-                                            info={
-                                                'Het eerste deel van de paginatitel, zichtbaar in het browsertabblad,
+                                            info={`Het eerste deel van de paginatitel, zichtbaar in het browsertabblad,
                                                 is standaard ingesteld. Het tweede deel kan worden aangepast.
-                                                De titel mag maximaal 60 tekens lang zijn'
-                                            }>
+                                                De titel mag maximaal 60 tekens lang zijn`}>
                                             <input
                                                 id="page_title_suffix"
                                                 type="text"
