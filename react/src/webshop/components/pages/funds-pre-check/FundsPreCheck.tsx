@@ -422,6 +422,9 @@ export default function FundsPreCheck() {
                                     <div className="showcase-aside-block">
                                         <div className="form form-compact">
                                             <div className="form-group">
+                                                <label className="form-label" htmlFor="search">
+                                                    {translate('funds.labels.search')}
+                                                </label>
                                                 <UIControlSearch
                                                     value={filter.values.q}
                                                     onChangeValue={(q) => filter.update({ q })}
@@ -432,7 +435,7 @@ export default function FundsPreCheck() {
 
                                             <div className="form-group">
                                                 <label className="form-label" htmlFor="select_organization">
-                                                    Organisatie
+                                                    {translate('funds.labels.organization')}
                                                 </label>
                                                 <SelectControl
                                                     id="select_organization"
@@ -448,7 +451,7 @@ export default function FundsPreCheck() {
 
                                             <div className="form-group">
                                                 <label className="form-label" htmlFor="select_category">
-                                                    Categorie
+                                                    {translate('funds.labels.category')}
                                                 </label>
                                                 <SelectControl
                                                     id="select_category"

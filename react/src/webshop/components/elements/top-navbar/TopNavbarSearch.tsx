@@ -154,6 +154,9 @@ export default function TopNavbarSearch() {
                 className={`search-form form ${resultsAll?.length > 0 ? 'search-form-found' : ''}`}>
                 <ClickOutside onClickOutside={hideSearchBox}>
                     <div className="search-area">
+                        <div className="navbar-search-label">
+                            {translate(`top_navbar_search.placeholders.search_${appConfigs.communication_type}`)}
+                        </div>
                         <div className={`navbar-search-icon ${searchFocused || dropdown ? 'focused' : ''}`}>
                             <div className="mdi mdi-magnify" />
                         </div>
@@ -161,9 +164,6 @@ export default function TopNavbarSearch() {
                             id="genericSearch"
                             type="text"
                             className={`form-control ${searchFocused || dropdown ? 'focused' : ''}`}
-                            placeholder={translate(
-                                `top_navbar_search.placeholders.search_${appConfigs.communication_type}`,
-                            )}
                             autoComplete={'off'}
                             value={filters.values.q}
                             onChange={(e) => filters.update({ q: e.target.value })}
