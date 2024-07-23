@@ -387,13 +387,13 @@ export const TopNavbar = ({ hideOnScroll = false, className = '' }: { hideOnScro
 
     const subNavSearchButton =
         envData.config.flags.genericSearchUseToggle && envData.config?.flags.genericSearch ? (
-            <div
+            <button
                 className={`button subnav-search-button hide-sm ${showSearchBox ? 'active' : ''}`}
                 onClick={(e) => toggleSearchBox(e)}
-                role="button"
-                aria-label="Zoeken">
+                aria-label="Zoekvak openen"
+                aria-controls="search-box">
                 <em className="mdi mdi-magnify" />
-            </div>
+            </button>
         ) : null;
 
     return (
@@ -442,7 +442,9 @@ export const TopNavbar = ({ hideOnScroll = false, className = '' }: { hideOnScro
                 </div>
             )}
 
-            <div className={`navbar-inner wrapper ${showSearchBox ? 'search-shown' : ''}`}>
+            <div
+                className={`navbar-inner wrapper ${showSearchBox ? 'search-shown' : ''}`}
+                id={envData.config?.flags?.genericSearchUseToggle ? 'search-box' : null}>
                 {!authIdentity && !showSearchBox && !mobileMenuOpened && (
                     <div className="block block-auth show-sm">
                         {envData.config.flags.showStartButton && (
