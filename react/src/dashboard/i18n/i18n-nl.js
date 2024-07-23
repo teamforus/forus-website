@@ -467,7 +467,8 @@ export default {
                 'Vul hier de contactinformatie van uw organisatie in. De tekst staat in de footer op de homepagina.',
             footer_opening_times:
                 'Vul hier de openingstijden van uw organisatie in. De tekst staat in de footer op de homepagina.',
-            footer_app_info: 'De standaard content in dit gedeelte van de Privacycontent bevat de titel, links om de Me App te downloaden voor Android of iOS, en een link voor meer informatie over de app. Je hebt de mogelijkheid om aangepaste inhoud toe te voegen vóór of na de standaard content, of deze zelfs volledig te vervangen.',
+            footer_app_info:
+                'De standaard content in dit gedeelte van de Privacycontent bevat de titel, links om de Me App te downloaden voor Android of iOS, en een link voor meer informatie over de app. Je hebt de mogelijkheid om aangepaste inhoud toe te voegen vóór of na de standaard content, of deze zelfs volledig te vervangen.',
         },
         buttons: {
             cancel: 'Annuleren',
