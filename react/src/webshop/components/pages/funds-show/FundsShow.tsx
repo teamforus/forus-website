@@ -171,55 +171,51 @@ export default function FundsShow() {
                         <div className="block block-fund">
                             <div className="fund-content">
                                 <div className="fund-card">
-                                    <div className="fund-details">
-                                        <h1 className="fund-name">{fund?.name}</h1>
+                                    <h1 className="fund-name">{fund?.name}</h1>
 
-                                        {fund?.description_short && (
-                                            <div className="fund-description">
-                                                <div className="block block-markdown">
-                                                    <p>{fund.description_short}</p>
-                                                </div>
+                                    {fund?.description_short && (
+                                        <div className="fund-description">
+                                            <div className="block block-markdown">
+                                                <p>{fund.description_short}</p>
                                             </div>
-                                        )}
+                                        </div>
+                                    )}
 
-                                        {!fund.hide_meta && (
-                                            <div className="fund-details-items">
+                                    {!fund.hide_meta && (
+                                        <div className="fund-details-items">
+                                            <div className="fund-details-item">
+                                                <div className="fund-details-item-label">Uitgifte door:</div>
+                                                <div className="fund-details-item-value">{fund.organization?.name}</div>
+                                            </div>
+                                            {fund.type == 'budget' &&
+                                                formulaList.multiply?.map((formula, index) => (
+                                                    <div key={index} className="fund-details-item">
+                                                        <div className="fund-details-item-label">
+                                                            {translate('fund.criterias.multiplied_amount')}
+                                                        </div>
+                                                        <div className="fund-details-item-value">
+                                                            {formula.amount_locale}
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            {fund.key != 'IIT' && (
                                                 <div className="fund-details-item">
-                                                    <div className="fund-details-item-label">Uitgifte door:</div>
+                                                    <div className="fund-details-item-label">Startdatum:</div>
                                                     <div className="fund-details-item-value">
-                                                        {fund.organization?.name}
+                                                        {fund.start_date_locale}
                                                     </div>
                                                 </div>
-                                                {fund.type == 'budget' &&
-                                                    formulaList.multiply?.map((formula, index) => (
-                                                        <div key={index} className="fund-details-item">
-                                                            <div className="fund-details-item-label">
-                                                                {translate('fund.criterias.multiplied_amount')}
-                                                            </div>
-                                                            <div className="fund-details-item-value">
-                                                                {formula.amount_locale}
-                                                            </div>
-                                                        </div>
-                                                    ))}
-                                                {fund.key != 'IIT' && (
-                                                    <div className="fund-details-item">
-                                                        <div className="fund-details-item-label">Startdatum:</div>
-                                                        <div className="fund-details-item-value">
-                                                            {fund.start_date_locale}
-                                                        </div>
+                                            )}
+                                            {fund.key != 'IIT' && (
+                                                <div className="fund-details-item">
+                                                    <div className="fund-details-item-label">Einddatum:</div>
+                                                    <div className="fund-details-item-value">
+                                                        {fund.end_date_locale}
                                                     </div>
-                                                )}
-                                                {fund.key != 'IIT' && (
-                                                    <div className="fund-details-item">
-                                                        <div className="fund-details-item-label">Einddatum:</div>
-                                                        <div className="fund-details-item-value">
-                                                            {fund.end_date_locale}
-                                                        </div>
-                                                    </div>
-                                                )}
-                                            </div>
-                                        )}
-                                    </div>
+                                                </div>
+                                            )}
+                                        </div>
+                                    )}
                                 </div>
 
                                 <div className="fund-actions">
