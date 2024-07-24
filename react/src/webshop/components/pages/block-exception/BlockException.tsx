@@ -20,15 +20,9 @@ export default function BlockException({ front = 'webshop' }: { front?: 'dashboa
             <div className="exception-content">
                 <h3 className="exception-content-title">Oeps, er is iets fout gegaan</h3>
                 <p className="exception-content-description">
-                    {"We're sorry, but an unexpected error has occurred. Please try one of the following actions:"}
-                    <br />
-                    <br />
-                    {'- Refreshes the current page to see if the error resolves.'}
-                    <br />
-                    {'- Try to go back to the homepage of our website.'}
-                    <br />
-                    <br />
-                    {'We apologize for any inconvenience and appreciate your patience.'}
+                    {
+                        'Onze excuses, er is een onverwachte fout opgetreden aan onze kant. Probeer het alsjeblieft opnieuw.'
+                    }
                 </p>
             </div>
 
