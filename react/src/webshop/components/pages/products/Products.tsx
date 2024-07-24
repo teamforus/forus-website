@@ -160,13 +160,13 @@ export default function Products({ fundType = 'budget' }: { fundType: 'budget' |
 
     const fetchFunds = useCallback(() => {
         fundService
-            .list({ has_products: 1 })
+            .list(fundType === 'budget' ? { has_products: 1 } : { has_subsidies: 1 })
             .then((res) => setFunds([{ id: null, name: 'Alle tegoeden...' }, ...res.data.data]));
-    }, [fundService]);
+    }, [fundService, fundType]);
 
     const fetchOrganizations = useCallback(() => {
         organizationService
-            .list({ is_employee: 0, has_products: 1, per_page: 300, used_type: fundType })
+            .list({ is_employee: 0, has_products: 1, per_page: 300, fund_type: fundType })
             .then((res) => setOrganizations([{ id: null, name: 'Selecteer aanbieder...' }, ...res.data.data]));
     }, [organizationService, fundType]);
 
