@@ -171,7 +171,7 @@ export default function Providers() {
         setProgress(0);
 
         fundService
-            .list({ has_products: 1 })
+            .list({ has_providers: 1 })
             .then((res) => setFunds([{ id: null, name: 'Alle tegoeden...' }, ...res.data.data]))
             .finally(() => setProgress(100));
     }, [fundService, setProgress]);
