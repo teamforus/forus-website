@@ -63,25 +63,6 @@
         margin-bottom: 50px;
     }
 
-    &.block-fund {
-        margin: 0 0 50px;
-        border-bottom: 1px solid #ececec;
-
-        .fund-card {
-            box-shadow: none;
-        }
-
-        .fund-content {
-            padding-bottom: 50px;
-            border-bottom: 1px solid #ececec;
-
-            .fund-details {
-                padding: 0;
-
-            }
-        }
-    }
-
     &.block-steps {    
         .block-markdown {
             a:not(.button) {

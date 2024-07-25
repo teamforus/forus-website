@@ -300,7 +300,6 @@ export default function PreferencesEmails() {
                                                         className="form-control"
                                                         type="email"
                                                         id="preferences_form_email"
-                                                        placeholder="e-mail@e-mail.nl"
                                                         value={form.values.email}
                                                         onChange={(e) => {
                                                             form.update({ email: e.target.value });

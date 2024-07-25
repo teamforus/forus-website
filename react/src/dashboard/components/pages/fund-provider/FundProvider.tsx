@@ -17,6 +17,7 @@ import BudgetFundProducts from './elements/BudgetFundProducts';
 import SubsidyFundProducts from './elements/SubsidyFundProducts';
 import Fund from '../../../props/models/Fund';
 import useTranslate from '../../../hooks/useTranslate';
+import ToggleControl from '../../elements/forms/controls/ToggleControl';
 
 export default function FundProvider() {
     const { fundId, id } = useParams();
@@ -34,7 +35,7 @@ export default function FundProvider() {
     const [submittingAllow, setSubmittingAllow] = useState<boolean>(null);
 
     const updateFundProviderAllow = useCallback(
-        (query: { allow_extra_payments: boolean }) => {
+        (query: { allow_extra_payments?: boolean; allow_extra_payments_full?: boolean }) => {
             setSubmittingAllow(true);
 
             fundService
@@ -137,27 +138,26 @@ export default function FundProvider() {
                             </div>
 
                             <div className="connection-actions">
-                                <label
-                                    className={`form-toggle ${
-                                        fundProvider.state != 'accepted' ? 'form-toggle-disabled form-toggle-off' : ''
-                                    } ${submittingAllow ? 'form-toggle-disabled' : ''}`}
-                                    htmlFor={`provider_allow_extra_payments`}>
-                                    <input
-                                        type="checkbox"
-                                        id={`provider_allow_extra_payments`}
-                                        disabled={fundProvider.state != 'accepted' || submittingAllow}
-                                        onChange={(e) =>
-                                            updateFundProviderAllow({ allow_extra_payments: e.target.checked })
-                                        }
-                                        checked={fundProvider.allow_extra_payments}
-                                    />
-                                    <div className="form-toggle-inner flex-end">
-                                        <div className="toggle-input">
-                                            <div className="toggle-input-dot" />
-                                        </div>
-                                    </div>
-                                </label>
+                                <ToggleControl
+                                    checked={fundProvider.state == 'accepted' && fundProvider.allow_extra_payments}
+                                    disabled={submittingAllow || fundProvider.state != 'accepted'}
+                                    onChange={(e) => {
+                                        updateFundProviderAllow({ allow_extra_payments: e.target.checked });
+                                    }}
+                                />
                             </div>
+                        </div>
+                    </div>
+                    <div className="card-section card-section-primary card-section-narrow form">
+                        <div className="card-block card-block-listing card-block-listing-inline card-block-listing-variant">
+                            <div className="card-block-listing-label">Betaling met tegoed zonder budget toestaan</div>
+                            <ToggleControl
+                                checked={fundProvider.allow_extra_payments_full}
+                                disabled={submittingAllow || fundProvider.state != 'accepted'}
+                                onChange={(e) => {
+                                    updateFundProviderAllow({ allow_extra_payments_full: e.target.checked });
+                                }}
+                            />
                         </div>
                     </div>
 
