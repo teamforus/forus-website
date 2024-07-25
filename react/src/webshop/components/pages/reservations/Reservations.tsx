@@ -223,7 +223,6 @@ export default function Reservations() {
                                 meta={reservations.meta}
                                 filters={filters.values}
                                 updateFilters={filters.update}
-                                buttonClass={'button-primary-outline'}
                             />
                         </div>
                     </div>

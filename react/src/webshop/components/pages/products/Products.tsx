@@ -478,7 +478,6 @@ export default function Products({ fundType = 'budget' }: { fundType: 'budget' |
                                 filters={filterValues}
                                 count-buttons={5}
                                 updateFilters={filterUpdate}
-                                buttonClass={'button-primary-outline'}
                             />
                         </div>
                     </div>

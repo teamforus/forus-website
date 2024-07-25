@@ -174,12 +174,7 @@ export default function FundRequests() {
 
                     <div className="card" hidden={fundRequests?.meta?.last_page < 2}>
                         <div className="card-section">
-                            <Paginator
-                                meta={fundRequests.meta}
-                                filters={filterValues}
-                                updateFilters={filterUpdate}
-                                buttonClass={'button-primary-outline'}
-                            />
+                            <Paginator meta={fundRequests.meta} filters={filterValues} updateFilters={filterUpdate} />
                         </div>
                     </div>
                 </Fragment>
