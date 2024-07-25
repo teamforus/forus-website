@@ -142,12 +142,7 @@ export default function BookmarkedProducts() {
 
                     <div className="card" hidden={products?.meta?.last_page < 2}>
                         <div className="card-section">
-                            <Paginator
-                                meta={products.meta}
-                                filters={filterValues}
-                                updateFilters={filterUpdate}
-                                buttonClass={'button-primary-outline'}
-                            />
+                            <Paginator meta={products.meta} filters={filterValues} updateFilters={filterUpdate} />
                         </div>
                     </div>
                 </Fragment>

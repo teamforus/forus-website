@@ -395,12 +395,7 @@ export default function Search() {
 
                     <div className="card" hidden={searchItems?.meta?.last_page < 2}>
                         <div className="card-section">
-                            <Paginator
-                                meta={searchItems.meta}
-                                filters={filterValues}
-                                updateFilters={filterUpdate}
-                                buttonClass={'button-primary-outline'}
-                            />
+                            <Paginator meta={searchItems.meta} filters={filterValues} updateFilters={filterUpdate} />
                         </div>
                     </div>
                 </Fragment>

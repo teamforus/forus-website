@@ -7,14 +7,13 @@ import SelectControl from '../../../components/elements/select-control/SelectCon
 import SelectControlOptions from '../../../components/elements/select-control/templates/SelectControlOptions';
 import { clickOnKeyEnter } from '../../../helpers/wcag';
 import useTranslate from '../../../hooks/useTranslate';
+import classNames from 'classnames';
 
 export default function Paginator({
     meta,
     filters,
     countButtons = 5,
     updateFilters,
-    buttonClass = 'button-default',
-    buttonClassActive = 'button-primary',
     perPageKey,
     className = '',
 }: {
@@ -22,8 +21,6 @@ export default function Paginator({
     filters: FilterModel;
     updateFilters: FilterSetter;
     countButtons?: number;
-    buttonClass?: string;
-    buttonClassActive?: string;
     perPageKey?: string;
     className?: string;
 }) {
@@ -85,7 +82,7 @@ export default function Paginator({
     return (
         <div className={`table-pagination form ${className}`}>
             {meta.from && meta.to && (
-                <div className="form">
+                <div className={perPageKey && 'form'}>
                     <div className="table-pagination-counter">
                         {perPageKey && (
                             <SelectControl
@@ -101,9 +98,7 @@ export default function Paginator({
 
                         <div className="table-pagination-counter-info">
                             <span className="text-strong">{`${meta.from}-${meta.to} `}</span>
-                            &nbsp;
                             {translate('paginator.labels.from')}
-                            &nbsp;
                             <span className="text-strong">{meta.total}</span>
                         </div>
                     </div>
@@ -111,34 +106,36 @@ export default function Paginator({
             )}
 
             <div className="table-pagination-navigation">
-                <div
-                    role={'button'}
+                <button
                     onClick={() => setPage(1)}
                     onKeyDown={clickOnKeyEnter}
                     tabIndex={meta.current_page === 1 ? undefined : 0}
-                    className={`button ${buttonClass} ${meta.current_page === 1 ? ' disabled' : ''}`}>
+                    disabled={meta.current_page === 1}
+                    className={`table-pagination-button`}>
                     {translate('paginator.buttons.first')}
-                </div>
+                </button>
                 {pages.map((page, key) => (
-                    <div
+                    <button
                         key={key}
-                        role={'button'}
                         tabIndex={0}
                         onClick={() => setPage(page)}
                         onKeyDown={clickOnKeyEnter}
-                        className={`button ${page === meta.current_page ? buttonClassActive : buttonClass}`}>
+                        className={classNames(
+                            'table-pagination-button',
+                            page === meta.current_page && 'table-pagination-button-active',
+                        )}>
                         <span className="wcag-hidden">{translate('paginator.buttons.wcag_page')} </span>
                         {page}
-                    </div>
+                    </button>
                 ))}
-                <div
-                    role={'button'}
+                <button
                     onClick={() => setPage(meta.last_page)}
                     onKeyDown={clickOnKeyEnter}
+                    disabled={meta.current_page === meta.last_page}
                     tabIndex={meta.current_page === meta.last_page ? undefined : 0}
-                    className={`button ${buttonClass} ${meta.current_page === meta.last_page ? ' disabled' : ''}`}>
+                    className={`table-pagination-button`}>
                     {translate('paginator.buttons.last')}
-                </div>
+                </button>
             </div>
         </div>
     );

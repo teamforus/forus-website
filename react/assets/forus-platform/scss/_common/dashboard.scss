@@ -40,6 +40,7 @@
     @import '../../../forus-webshop/scss/_common/components/ui-controls';
 }
 
+@import '../../../forus-webshop/scss/_common/components/table-pagination';
 @import '../../../forus-webshop/scss/_common/sections/blocks/block-sign_up';
 @import '../../../forus-webshop/scss/_common/sections/blocks/block-exception';
 
@@ -2321,6 +2322,8 @@ body {
     }
 
     &.block-sign_up {
+        --paginator-button-active-background: #305dfb;
+
         .card-header {
             padding-top: 0;
             margin: 10px 0 15px;
@@ -2427,14 +2430,6 @@ body {
                     font: 400 26px/36px var(--base-font);
                     color: #3561ff;
                     margin-top: 25px;
-                }
-
-                .table-pagination {
-                    .form {
-                        margin-bottom: 0;
-                        display: flex;
-                        flex-grow: 1;
-                    }
                 }
 
                 & + .sign_up-pane-body {
@@ -3083,29 +3078,6 @@ body {
 
             &:last-child {
                 margin-bottom: 0;
-            }
-        }
-
-        .table-pagination {
-            display: flex;
-            align-items: center;
-
-            .table-pagination-counter {
-                flex-grow: 1;
-            }
-
-            .table-pagination-navigation {
-                .button {
-                    font: 500 12px/14px var(--base-font);
-                    padding: 10px 15px;
-                    min-width: 40px;
-
-                    &.button-default {
-                        color: #151b26;
-                        background: #ffffff;
-                        border-color: #d4d9dd;
-                    }
-                }
             }
         }
 

@@ -227,7 +227,6 @@ export default function Funds() {
                                 filters={filter.values}
                                 count-buttons={5}
                                 updateFilters={filter.update}
-                                buttonClass={'button-primary-outline'}
                             />
                         </div>
                     </div>

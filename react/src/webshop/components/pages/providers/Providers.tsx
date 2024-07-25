@@ -473,9 +473,7 @@ export default function Providers() {
                                     <Paginator
                                         meta={providers.meta}
                                         filters={filterValues}
-                                        count-buttons={5}
                                         updateFilters={filterUpdate}
-                                        buttonClass={'button-primary-outline'}
                                     />
                                 </div>
                             </div>

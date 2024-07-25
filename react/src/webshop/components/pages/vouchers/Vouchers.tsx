@@ -131,7 +131,6 @@ export default function Vouchers() {
                                         meta={vouchers.meta}
                                         filters={filter.values}
                                         updateFilters={filter.update}
-                                        buttonClass={'button-primary-outline'}
                                     />
                                 </div>
                             </div>
