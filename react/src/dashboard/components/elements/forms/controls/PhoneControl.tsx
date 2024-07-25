@@ -18,10 +18,12 @@ const getCountryOptions = () => {
 export default function PhoneControl({
     id,
     onChange,
+    placeholder = 'Voer telefoonnummer in',
     className = '',
 }: {
     id?: string;
     onChange: (value: string) => void;
+    placeholder?: string;
     className?: string;
 }) {
     const [regEx] = useState(/[^- ()0-9]+/g);
@@ -68,7 +70,7 @@ export default function PhoneControl({
                 value={phoneNumber}
                 onKeyDown={(e) => onKeyDown(e)}
                 onChange={(e) => setPhoneNumber(e.target.value)}
-                placeholder="Enter phone number"
+                placeholder={placeholder}
             />
         </div>
     );

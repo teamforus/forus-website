@@ -114,7 +114,6 @@ export default function SelectControlOptionsVouchers<T>({
                         {showOptions && (
                             <input
                                 id={controlId}
-                                placeholder={placeholderValue || placeholder}
                                 ref={input}
                                 value={query}
                                 onClick={onInputClick}

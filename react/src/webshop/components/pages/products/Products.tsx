@@ -268,7 +268,6 @@ export default function Products({ fundType = 'budget' }: { fundType: 'budget' |
                             <UIControlText
                                 value={filterValues.q}
                                 onChangeValue={(q: string) => filterUpdate({ q })}
-                                placeholder="Zoek aanbod"
                                 ariaLabel="search"
                                 id="products_search"
                             />
@@ -284,7 +283,6 @@ export default function Products({ fundType = 'budget' }: { fundType: 'budget' |
                                 allowSearch={true}
                                 onChange={(organization_id: number) => filterUpdate({ organization_id })}
                                 options={organizations || []}
-                                placeholder={organizations?.[0]?.name}
                                 optionsComponent={SelectControlOptions}
                             />
                         </div>
@@ -301,7 +299,6 @@ export default function Products({ fundType = 'budget' }: { fundType: 'budget' |
                                 value={filterValues.product_category_id}
                                 onChange={(id: number) => filterUpdate({ product_category_id: id })}
                                 options={productCategories || []}
-                                placeholder={productCategories?.[0]?.name}
                                 optionsComponent={SelectControlOptions}
                             />
                         </div>
@@ -319,7 +316,6 @@ export default function Products({ fundType = 'budget' }: { fundType: 'budget' |
                                     onChange={(id: number) => filterUpdate({ product_sub_category_id: id })}
                                     allowSearch={true}
                                     options={productSubCategories || []}
-                                    placeholder={productSubCategories?.[0]?.name}
                                     optionsComponent={SelectControlOptions}
                                 />
                             </div>
@@ -337,7 +333,6 @@ export default function Products({ fundType = 'budget' }: { fundType: 'budget' |
                                     allowSearch={true}
                                     onChange={(fund_id: number) => filterUpdate({ fund_id })}
                                     options={funds || []}
-                                    placeholder={funds?.[0]?.name}
                                     optionsComponent={SelectControlOptions}
                                 />
                             )}
@@ -353,7 +348,6 @@ export default function Products({ fundType = 'budget' }: { fundType: 'budget' |
                                         id="postcode"
                                         value={filterValues.postcode}
                                         onChange={(e) => filterUpdate({ postcode: e.target.value })}
-                                        placeholder="Postcode"
                                         type="text"
                                         aria-label="Postcode..."
                                     />
@@ -373,7 +367,6 @@ export default function Products({ fundType = 'budget' }: { fundType: 'budget' |
                                         allowSearch={true}
                                         onChange={(distance: number) => filterUpdate({ distance })}
                                         options={distances || []}
-                                        placeholder={'Afstand...'}
                                         optionsComponent={SelectControlOptions}
                                     />
                                     <FormError error={errors?.distance} />
@@ -417,7 +410,6 @@ export default function Products({ fundType = 'budget' }: { fundType: 'budget' |
                                                 })?.value || {},
                                             );
                                         }}
-                                        placeholder="Sorteer"
                                         optionsComponent={SelectControlOptions}
                                     />
                                 </div>
@@ -478,7 +470,6 @@ export default function Products({ fundType = 'budget' }: { fundType: 'budget' |
                                 filters={filterValues}
                                 count-buttons={5}
                                 updateFilters={filterUpdate}
-                                buttonClass={'button-primary-outline'}
                             />
                         </div>
                     </div>

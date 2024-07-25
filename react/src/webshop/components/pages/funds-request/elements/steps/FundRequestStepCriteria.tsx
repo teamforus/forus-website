@@ -188,7 +188,6 @@ export default function FundRequestStepCriteria({
                                 onChange={(input_value?: string) => {
                                     setCriterion(criterion.id, { input_value: input_value });
                                 }}
-                                placeholder={`Uw ${criterion?.record_type?.name}`}
                             />
                         )}
 
@@ -229,7 +228,6 @@ export default function FundRequestStepCriteria({
                                         : new Date()
                                 }
                                 format={'dd-MM-yyyy'}
-                                placeholder={`Uw ${criterion?.record_type?.name}`}
                                 onChange={(date) => {
                                     setCriterion(criterion.id, {
                                         input_value: date ? dateFormat(date, 'dd-MM-yyyy') : '',
@@ -245,7 +243,6 @@ export default function FundRequestStepCriteria({
                                 value={criterion.input_value ? parseFloat(criterion.input_value) : null}
                                 name={criterion.record_type.key}
                                 id={`criterion_${criterion.id}`}
-                                placeholder={`Uw ${criterion?.record_type?.name}`}
                                 onChangeValue={(value) => {
                                     setCriterion(criterion.id, { input_value: (value || '').toString() });
                                 }}
@@ -258,7 +255,6 @@ export default function FundRequestStepCriteria({
                                 value={criterion.input_value}
                                 name={criterion.record_type.key}
                                 id={`criterion_${criterion.id}`}
-                                placeholder={`Uw ${criterion?.record_type?.name}`}
                                 onChange={(e) => {
                                     setCriterion(criterion.id, { input_value: e.target.value });
                                 }}
@@ -272,7 +268,6 @@ export default function FundRequestStepCriteria({
                                 min={0}
                                 name={criterion.record_type.key}
                                 id={`criterion_${criterion.id}`}
-                                placeholder={`Uw ${criterion?.record_type?.name}`}
                                 onChangeValue={(value) => {
                                     setCriterion(criterion.id, { input_value: (value || '').toString() });
                                 }}

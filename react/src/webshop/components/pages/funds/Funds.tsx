@@ -151,7 +151,6 @@ export default function Funds() {
                                 id="search"
                                 value={filter.values.q}
                                 onChangeValue={(q) => filter.update({ q })}
-                                placeholder="Zoeken..."
                                 ariaLabel="Zoeken"
                             />
                         </div>
@@ -166,7 +165,6 @@ export default function Funds() {
                                 allowSearch={true}
                                 onChange={(organization_id: number) => filter.update({ organization_id })}
                                 options={organizations || []}
-                                placeholder={organizations?.[0]?.name}
                             />
                         </div>
                         <div className="form-group">
@@ -180,7 +178,6 @@ export default function Funds() {
                                 allowSearch={true}
                                 onChange={(tag_id: number) => filter.update({ tag_id })}
                                 options={tags || []}
-                                placeholder={tags?.[0]?.name}
                             />
                         </div>
                     </div>
@@ -227,7 +224,6 @@ export default function Funds() {
                                 filters={filter.values}
                                 count-buttons={5}
                                 updateFilters={filter.update}
-                                buttonClass={'button-primary-outline'}
                             />
                         </div>
                     </div>

@@ -107,7 +107,6 @@ export default function Reservations() {
                                 value={filters.values.q}
                                 onChangeValue={(q) => filters.update({ q })}
                                 ariaLabel={translate('reservations.labels.search_aria_label')}
-                                placeholder={translate('reservations.labels.search_placeholder')}
                             />
                         </div>
                         <div className="form-group">
@@ -120,7 +119,6 @@ export default function Reservations() {
                                 value={filters.values.fund_id}
                                 options={funds}
                                 onChange={(fund_id?: number) => filters.update({ fund_id })}
-                                placeholder={funds?.[0]?.name}
                             />
                         </div>
                         <div className="form-group">
@@ -134,7 +132,6 @@ export default function Reservations() {
                                 propKey={'id'}
                                 options={organizations}
                                 onChange={(organization_id?: number) => filters.update({ organization_id })}
-                                placeholder={organizations?.[0]?.name}
                             />
                         </div>
                         <div className="form-group">
@@ -148,7 +145,6 @@ export default function Reservations() {
                                 propKey={'value'}
                                 options={states}
                                 onChange={(state?: string) => filters.update({ state })}
-                                placeholder={states?.[0]?.name}
                             />
                         </div>
                     </div>
@@ -223,7 +219,6 @@ export default function Reservations() {
                                 meta={reservations.meta}
                                 filters={filters.values}
                                 updateFilters={filters.update}
-                                buttonClass={'button-primary-outline'}
                             />
                         </div>
                     </div>

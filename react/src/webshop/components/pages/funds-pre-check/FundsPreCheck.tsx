@@ -427,7 +427,6 @@ export default function FundsPreCheck() {
                                                 <UIControlText
                                                     value={filter.values.q}
                                                     onChangeValue={(q) => filter.update({ q })}
-                                                    placeholder="Zoeken..."
                                                     ariaLabel="Zoeken"
                                                 />
                                             </div>
@@ -444,7 +443,6 @@ export default function FundsPreCheck() {
                                                     onChange={(organization_id: number) =>
                                                         filter.update({ organization_id })
                                                     }
-                                                    placeholder={organizations?.[0]?.name}
                                                 />
                                             </div>
 
@@ -458,7 +456,6 @@ export default function FundsPreCheck() {
                                                     value={filter.values.tag_id}
                                                     onChange={(tag_id: number) => filter.update({ tag_id })}
                                                     options={tags}
-                                                    placeholder={tags?.[0]?.name}
                                                 />
                                             </div>
                                         </div>
@@ -521,7 +518,6 @@ export default function FundsPreCheck() {
                                                                     recordTypesByKey[preCheckRecord.record_type_key]
                                                                         .options
                                                                 }
-                                                                placeholder={`Maak een keuze`}
                                                             />
                                                         )}
 
@@ -612,7 +608,6 @@ export default function FundsPreCheck() {
                                                                 }}
                                                                 name={preCheckRecord.record_type_key}
                                                                 id={`pre_check_record_${preCheckRecord.record_type_key}`}
-                                                                placeholder={preCheckRecord?.record_type?.name}
                                                             />
                                                         )}
 
@@ -630,7 +625,6 @@ export default function FundsPreCheck() {
                                                                 }}
                                                                 name={preCheckRecord.record_type_key}
                                                                 id={`pre_check_record_${preCheckRecord.record_type_key}`}
-                                                                placeholder={`Uw ${preCheckRecord.record_type.name}`}
                                                             />
                                                         )}
 
@@ -645,7 +639,6 @@ export default function FundsPreCheck() {
                                                                 min={0}
                                                                 name={preCheckRecord.record_type.key}
                                                                 id={`criterion_${preCheckRecord.record_type_key}`}
-                                                                placeholder={`Uw ${preCheckRecord.record_type.name}`}
                                                                 onChangeValue={(value) => {
                                                                     setPreChecks((preChecks) => {
                                                                         preChecks[activeStepIndex].record_types[
