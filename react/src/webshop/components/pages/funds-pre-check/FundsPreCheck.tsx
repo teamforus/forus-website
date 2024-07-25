@@ -518,6 +518,7 @@ export default function FundsPreCheck() {
                                                                     recordTypesByKey[preCheckRecord.record_type_key]
                                                                         .options
                                                                 }
+                                                                placeholder={`Maak een keuze`}
                                                             />
                                                         )}
 
