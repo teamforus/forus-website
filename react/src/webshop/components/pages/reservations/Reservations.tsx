@@ -8,7 +8,6 @@ import { useFundService } from '../../../services/FundService';
 import Fund from '../../../props/models/Fund';
 import { PaginationData } from '../../../../dashboard/props/ApiResponses';
 import useFilter from '../../../../dashboard/hooks/useFilter';
-import UIControlSearch from '../../../../dashboard/components/elements/forms/ui-controls/UIControlSearch';
 import Organization from '../../../../dashboard/props/models/Organization';
 import { useOrganizationService } from '../../../../dashboard/services/OrganizationService';
 import Reservation from '../../../../dashboard/props/models/Reservation';
@@ -16,6 +15,7 @@ import EmptyBlock from '../../elements/empty-block/EmptyBlock';
 import Paginator from '../../../../dashboard/modules/paginator/components/Paginator';
 import ReservationCard from './elements/ReservationCard';
 import { useProductReservationService } from '../../../services/ProductReservationService';
+import UIControlText from '../../../../dashboard/components/elements/forms/ui-controls/UIControlText';
 
 export default function Reservations() {
     const translate = useTranslate();
@@ -102,7 +102,7 @@ export default function Reservations() {
                             <label className="form-label" htmlFor="products_search">
                                 {translate('reservations.labels.search')}
                             </label>
-                            <UIControlSearch
+                            <UIControlText
                                 id="products_search"
                                 value={filters.values.q}
                                 onChangeValue={(q) => filters.update({ q })}

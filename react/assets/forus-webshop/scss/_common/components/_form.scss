@@ -37,7 +37,7 @@
 
         &.form-label-required {
             &:after {
-                content: "*";
+                content: '*';
                 color: #ff5548;
                 font: inherit;
                 margin-left: 2px;
@@ -45,7 +45,7 @@
         }
     }
 
-    .form-control:not([type="radio"]):not([type="checkbox"]) {
+    .form-control:not([type='radio']):not([type='checkbox']) {
         width: 100%;
         padding: var(--form-padding);
         color: var(--form-control-color);
@@ -61,7 +61,7 @@
             background-color: #e1e1e1;
         }
 
-        &[type="number"] {
+        &[type='number'] {
             padding-right: 0;
         }
 
@@ -99,18 +99,6 @@
             }
         }
 
-        &.ui-control-search-input {
-            padding: 0;
-            border: none;
-
-            .ui-control-clear {
-                .mdi {
-                    font-size: 16px;
-                    height: 24px;
-                }
-            }
-        }
-
         &.select-control {
             padding: 0 !important;
             border: none;
@@ -133,25 +121,25 @@
         }
     }
 
-    textarea.form-control:not([type="radio"]):not([type="checkbox"]) {
+    textarea.form-control:not([type='radio']):not([type='checkbox']) {
         padding: 6px 10px;
         line-height: initial;
         height: 80px;
         min-height: 42px;
 
         &.r-n,
-        &[resize="no"],
-        &[resize="none"] {
+        &[resize='no'],
+        &[resize='none'] {
             resize: none;
         }
 
         &.r-v,
-        &[resize="vertical"] {
+        &[resize='vertical'] {
             resize: vertical;
         }
 
         &.r-h,
-        &[resize="horizontal"] {
+        &[resize='horizontal'] {
             resize: horizontal;
         }
 
@@ -162,15 +150,14 @@
 
     select.form-control {
         background-color: #fbfbfb;
-        background-image: url("../img/select-bg.png");
+        background-image: url('../img/select-bg.png');
         background-position: 99%;
         background-repeat: no-repeat;
         background-size: 25px;
         appearance: none;
         text-indent: 1px;
-        text-overflow: "";
+        text-overflow: '';
         padding-right: 30px;
-        appearance: none;
 
         &:focus {
             outline: none;
@@ -223,10 +210,10 @@
                 transform: translate(0, -50%);
                 opacity: 1;
                 pointer-events: none;
-                transition: opacity .4s;
+                transition: opacity 0.4s;
 
                 .mdi {
-                    color: #CCD0E0;
+                    color: #ccd0e0;
                     font-size: 18px;
                     height: 18px;
                     vertical-align: bottom;
@@ -272,7 +259,8 @@
             @include webkit_scrollbar_gray();
 
             .select-control-option {
-                padding: calc(calc(var(--option-height) - 20px) / 2) 15px calc(calc(calc(var(--option-height) - 20px) / 2) - 1px);
+                padding: calc(calc(var(--option-height) - 20px) / 2) 15px
+                    calc(calc(calc(var(--option-height) - 20px) / 2) - 1px);
                 border-bottom: 1px solid whitesmoke;
                 cursor: pointer;
                 transition: 0.4s;
@@ -302,7 +290,7 @@
         }
 
         &.options {
-            .form-control:not([type="radio"]):not([type="checkbox"]) {
+            .form-control:not([type='radio']):not([type='checkbox']) {
                 border-bottom-right-radius: 0;
                 border-bottom-left-radius: 0;
             }
@@ -313,7 +301,7 @@
         .select-control-input {
             --option-height: 30px;
 
-            .form-control:not([type=radio]):not([type=checkbox]).select-control-search {
+            .form-control:not([type='radio']):not([type='checkbox']).select-control-search {
                 font: 600 16px/24px var(--base-font);
                 border: none;
                 text-align: left;
@@ -339,12 +327,12 @@
             margin-top: 2px;
             text-align: left;
 
-            .form-control:not([type=radio]):not([type=checkbox]).select-control-search {
+            .form-control:not([type='radio']):not([type='checkbox']).select-control-search {
                 padding: 6px 15px;
                 text-align: left;
                 font-weight: 600;
                 border-bottom: 1px solid var(--border-color);
-                letter-spacing: -.5px;
+                letter-spacing: -0.5px;
                 cursor: text;
             }
 
@@ -374,7 +362,7 @@
             .select-control-input {
                 --option-height: 40px;
 
-                .form-control:not([type=radio]):not([type=checkbox]).select-control-search {
+                .form-control:not([type='radio']):not([type='checkbox']).select-control-search {
                     font-size: 14px;
                 }
 
@@ -391,7 +379,7 @@
                 width: 500%;
                 max-width: calc(100vw - 40px);
 
-                .form-control:not([type=radio]):not([type=checkbox]).select-control-search {
+                .form-control:not([type='radio']):not([type='checkbox']).select-control-search {
                     padding: 8px 15px;
                 }
 
@@ -403,7 +391,7 @@
 
                     .select-control-search {
                         border-radius: inherit;
-                        background-color: #FBFBFB !important;
+                        background-color: #fbfbfb !important;
                     }
                 }
 
@@ -426,7 +414,7 @@
         flex-direction: row;
         position: relative;
 
-        .form-control:not([type="radio"]):not([type="checkbox"]).phone-control-input {
+        .form-control:not([type='radio']):not([type='checkbox']).phone-control-input {
             padding: var(--input-padding);
             padding-left: calc(var(--selector-width) + 10px);
             font: 600 16px/24px var(--base-font);
@@ -443,7 +431,7 @@
             position: absolute;
 
             .select-control-input {
-                .form-control:not([type="radio"]):not([type="checkbox"]) {
+                .form-control:not([type='radio']):not([type='checkbox']) {
                     background: none;
                     outline: none;
                     padding: var(--input-padding);
@@ -458,7 +446,7 @@
 
                     &:after {
                         display: block;
-                        content: "";
+                        content: '';
                         width: 1px;
                         background-color: #cfcfcf;
                         position: absolute;
@@ -474,7 +462,7 @@
             --selector-width: 105px;
             --input-padding: 12px 12px;
 
-            .form-control:not([type="radio"]):not([type="checkbox"]).phone-control-input {
+            .form-control:not([type='radio']):not([type='checkbox']).phone-control-input {
                 font-size: 14px;
 
                 &::placeholder {
@@ -490,7 +478,7 @@
 
         .checkbox-label {
             display: inline-block;
-            font: 400 13px/13px "Open Sans", arial, sans-serif;
+            font: 400 13px/13px 'Open Sans', arial, sans-serif;
             margin-left: 10px;
             margin-bottom: 3px;
         }
@@ -563,7 +551,7 @@
 
         &:before {
             color: #ff2100;
-            content: "*";
+            content: '*';
             margin-right: 2px;
             vertical-align: text-top;
         }
@@ -630,7 +618,7 @@
                 transition: color 0.4s;
 
                 &:before {
-                    content: "";
+                    content: '';
                     display: block;
                     width: 28px;
                     height: 28px;
@@ -681,8 +669,8 @@
                 &:not(.ng-hide):nth-child(2) {
                     margin-bottom: -10px;
 
-                    &~._720kb-datepicker-calendar-body,
-                    &~._720kb-datepicker-calendar-days-header {
+                    & ~ ._720kb-datepicker-calendar-body,
+                    & ~ ._720kb-datepicker-calendar-days-header {
                         display: none;
                     }
                 }
@@ -739,11 +727,11 @@
             cursor: pointer;
         }
 
-        input[type="checkbox"] {
+        input[type='checkbox'] {
             display: none;
         }
 
-        input[type="checkbox"]:checked + .checkbox-label {
+        input[type='checkbox']:checked + .checkbox-label {
             .checkbox-box {
                 .mdi {
                     opacity: 1;
@@ -780,7 +768,7 @@
             margin-left: -30px;
 
             &:after {
-                content: "";
+                content: '';
                 background: var(--color-primary);
                 position: absolute;
                 display: block;
@@ -804,11 +792,11 @@
             cursor: pointer;
         }
 
-        input[type="radio"] {
+        input[type='radio'] {
             display: none;
         }
 
-        input[type="radio"]:checked + .radio-label {
+        input[type='radio']:checked + .radio-label {
             .radio-circle {
                 &:after {
                     opacity: 1;
@@ -859,7 +847,7 @@
             border-radius: 20px;
 
             &:before {
-                content: "";
+                content: '';
                 position: absolute;
                 left: 3px;
                 top: 3px;
@@ -900,8 +888,8 @@
         $colorPrimary: #ddd;
         $borderRadius: 4px;
 
-        & > input[type="radio"],
-        & > input[type="checkbox"] {
+        & > input[type='radio'],
+        & > input[type='checkbox'] {
             opacity: 0;
         }
 
@@ -941,7 +929,7 @@
 
                         &:before,
                         &:after {
-                            content: "";
+                            content: '';
                             display: block;
                             background-color: #646f79;
                             height: 15px;
@@ -985,8 +973,8 @@
 
         &.active .form-toggle-inner,
         &.checked .form-toggle-inner,
-        & > input[type="radio"]:checked + .form-toggle-inner,
-        & > input[type="checkbox"]:checked + .form-toggle-inner {
+        & > input[type='radio']:checked + .form-toggle-inner,
+        & > input[type='checkbox']:checked + .form-toggle-inner {
             .toggle-input {
                 background: var(--color-primary);
                 border-color: var(--color-primary);
@@ -1002,8 +990,6 @@
         }
     }
 
-
-
     .form-group-info {
         position: relative;
         margin-bottom: 0;
@@ -1014,12 +1000,12 @@
             display: flex;
             flex-grow: 1;
 
-            .form-control:not([type=radio]):not([type=checkbox])[type=number] {
+            .form-control:not([type='radio']):not([type='checkbox'])[type='number'] {
                 padding: var(--form-padding);
             }
 
             &.has-info-btn {
-                .form-control:not([type=radio]):not([type=checkbox]) {
+                .form-control:not([type='radio']):not([type='checkbox']) {
                     padding-right: 45px;
                 }
             }
@@ -1038,7 +1024,7 @@
             cursor: pointer;
 
             .mdi {
-                color: #004D93;
+                color: #004d93;
                 font-size: 18px;
             }
 
@@ -1066,20 +1052,20 @@
             box-shadow: var(--box-shadow);
 
             &:before {
-                content: "";
+                content: '';
                 right: 11px;
                 bottom: calc(100% - 10px);
                 width: 18px;
                 height: 18px;
                 background: #fffdeb;
                 border: 1px solid var(--border-color);
-                border-radius: calc(var(--border-radius)/3) 0 0 0;
+                border-radius: calc(var(--border-radius) / 3) 0 0 0;
                 position: absolute;
                 transform: rotate(45deg);
             }
 
             &:after {
-                content: "";
+                content: '';
                 left: 0;
                 top: 0;
                 position: absolute;
@@ -1127,27 +1113,24 @@
             margin: 0 0 0;
         }
 
-        datepicker, .datepicker {
+        datepicker,
+        .datepicker {
             height: 42px;
         }
 
-        .form-control:not([type="radio"]):not([type="checkbox"]),
-        .form-control:not([type="radio"]):not([type="checkbox"]).form-control-fancy {
-            /* height: 50px; */
+        .ui-control .ui-control-clear {
+            right: 10px;
+
+            .mdi {
+                font-size: 18px;
+                height: 18px;
+            }
+        }
+
+        .form-control:not([type='radio']):not([type='checkbox']),
+        .form-control:not([type='radio']):not([type='checkbox']).form-control-fancy {
             padding: 8px 15px;
             font: 500 13px/24px var(--base-font);
-
-            &.ui-control-search-input {
-                padding: 0;
-                border: none;
-
-                .ui-control-clear {
-                    .mdi {
-                        font-size: 16px;
-                        height: 24px;
-                    }
-                }
-            }
         }
 
         ::-webkit-input-placeholder {
@@ -1180,8 +1163,8 @@
 
 @media screen and (max-width: 1000px) {
     .form {
-        .form-control:not([type="radio"]):not([type="checkbox"]),
-        .form-control:not([type="radio"]):not([type="checkbox"]).form-control-fancy {
+        .form-control:not([type='radio']):not([type='checkbox']),
+        .form-control:not([type='radio']):not([type='checkbox']).form-control-fancy {
             /* height: 50px; */
             padding: 10px 15px;
             font: 400 14px/24px var(--base-font);

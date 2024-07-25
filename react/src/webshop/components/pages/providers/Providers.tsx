@@ -6,7 +6,6 @@ import Fund from '../../../props/models/Fund';
 import ProductCategory from '../../../../dashboard/props/models/ProductCategory';
 import useProductCategoryService from '../../../../dashboard/services/ProductCategoryService';
 import StateNavLink from '../../../modules/state_router/StateNavLink';
-import UIControlSearch from '../../../../dashboard/components/elements/forms/ui-controls/UIControlSearch';
 import SelectControl from '../../../../dashboard/components/elements/select-control/SelectControl';
 import SelectControlOptions from '../../../../dashboard/components/elements/select-control/templates/SelectControlOptions';
 import FormError from '../../../../dashboard/components/elements/forms/errors/FormError';
@@ -27,6 +26,7 @@ import BlockShowcasePage from '../../elements/block-showcase/BlockShowcasePage';
 import useFilterNext from '../../../../dashboard/modules/filter_next/useFilterNext';
 import { BooleanParam, NumberParam, StringParam } from 'use-query-params';
 import { clickOnKeyEnter } from '../../../../dashboard/helpers/wcag';
+import UIControlText from '../../../../dashboard/components/elements/forms/ui-controls/UIControlText';
 
 export default function Providers() {
     const translate = useTranslate();
@@ -259,8 +259,7 @@ export default function Providers() {
                                 <label className="form-label" htmlFor="business_type_id">
                                     {translate('providers.labels.search')}
                                 </label>
-
-                                <UIControlSearch
+                                <UIControlText
                                     value={filterValues.q}
                                     onChangeValue={(q) => filterUpdate({ q })}
                                     ariaLabel={translate('providers.labels.search_aria_label')}

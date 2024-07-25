@@ -20,7 +20,6 @@ import Tag from '../../../../dashboard/props/models/Tag';
 import { useOrganizationService } from '../../../../dashboard/services/OrganizationService';
 import Organization from '../../../../dashboard/props/models/Organization';
 import ProgressPie from '../../elements/progress-pie/ProgressPie';
-import UIControlSearch from '../../../../dashboard/components/elements/forms/ui-controls/UIControlSearch';
 import SelectControl from '../../../../dashboard/components/elements/select-control/SelectControl';
 import UIControlCheckbox from '../../../../dashboard/components/elements/forms/ui-controls/UIControlCheckbox';
 import UIControlStep from '../../../../dashboard/components/elements/forms/ui-controls/UIControlStep';
@@ -425,7 +424,7 @@ export default function FundsPreCheck() {
                                                 <label className="form-label" htmlFor="search">
                                                     {translate('funds.labels.search')}
                                                 </label>
-                                                <UIControlSearch
+                                                <UIControlText
                                                     value={filter.values.q}
                                                     onChangeValue={(q) => filter.update({ q })}
                                                     ariaLabel="Zoeken"

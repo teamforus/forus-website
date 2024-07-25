@@ -8,7 +8,6 @@ import Tag from '../../../../dashboard/props/models/Tag';
 import Fund from '../../../props/models/Fund';
 import Voucher from '../../../../dashboard/props/models/Voucher';
 import Organization from '../../../../dashboard/props/models/Organization';
-import UIControlSearch from '../../../../dashboard/components/elements/forms/ui-controls/UIControlSearch';
 import SelectControl from '../../../../dashboard/components/elements/select-control/SelectControl';
 import SelectControlOptions from '../../../../dashboard/components/elements/select-control/templates/SelectControlOptions';
 import { useFundService } from '../../../services/FundService';
@@ -25,6 +24,7 @@ import useAuthIdentity from '../../../hooks/useAuthIdentity';
 import useSetTitle from '../../../hooks/useSetTitle';
 import BlockShowcasePage from '../../elements/block-showcase/BlockShowcasePage';
 import useSetProgress from '../../../../dashboard/hooks/useSetProgress';
+import UIControlText from '../../../../dashboard/components/elements/forms/ui-controls/UIControlText';
 
 export default function Funds() {
     const envData = useEnvData();
@@ -147,7 +147,7 @@ export default function Funds() {
                             <label className="form-label" htmlFor="search">
                                 {translate('funds.labels.search')}
                             </label>
-                            <UIControlSearch
+                            <UIControlText
                                 id="search"
                                 value={filter.values.q}
                                 onChangeValue={(q) => filter.update({ q })}
