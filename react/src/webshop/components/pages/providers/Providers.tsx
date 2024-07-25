@@ -259,11 +259,11 @@ export default function Providers() {
                                 <label className="form-label" htmlFor="business_type_id">
                                     {translate('providers.labels.search')}
                                 </label>
+
                                 <UIControlSearch
                                     value={filterValues.q}
                                     onChangeValue={(q) => filterUpdate({ q })}
                                     ariaLabel={translate('providers.labels.search_aria_label')}
-                                    placeholder={translate('providers.labels.search_placeholder')}
                                 />
 
                                 <FormError error={errors?.q} />
@@ -277,7 +277,6 @@ export default function Providers() {
                                     options={businessTypes}
                                     value={filterValues.business_type_id}
                                     onChange={(business_type_id?: number) => filterUpdate({ business_type_id })}
-                                    placeholder="Selecteer type..."
                                     id="business_type_id"
                                     optionsComponent={SelectControlOptions}
                                 />
@@ -296,7 +295,6 @@ export default function Providers() {
                                     value={filterValues.product_category_id}
                                     onChange={(id: number) => filterUpdate({ product_category_id: id })}
                                     options={productCategories || []}
-                                    placeholder={productCategories?.[0]?.name}
                                     optionsComponent={SelectControlOptions}
                                 />
                             </div>
@@ -314,7 +312,6 @@ export default function Providers() {
                                         onChange={(id: number) => filterUpdate({ product_sub_category_id: id })}
                                         allowSearch={true}
                                         options={productSubCategories || []}
-                                        placeholder={productSubCategories?.[0]?.name}
                                         optionsComponent={SelectControlOptions}
                                     />
                                 </div>
@@ -332,7 +329,6 @@ export default function Providers() {
                                         allowSearch={true}
                                         onChange={(fund_id: number) => filterUpdate({ fund_id })}
                                         options={funds || []}
-                                        placeholder={funds?.[0]?.name}
                                         optionsComponent={SelectControlOptions}
                                     />
                                 )}
@@ -348,7 +344,6 @@ export default function Providers() {
                                             id="postcode"
                                             value={filterValues.postcode}
                                             onChange={(e) => filterUpdate({ postcode: e.target.value })}
-                                            placeholder="Postcode"
                                             type="text"
                                             aria-label="Postcode..."
                                         />
@@ -368,7 +363,6 @@ export default function Providers() {
                                             allowSearch={true}
                                             onChange={(distance: number) => filterUpdate({ distance })}
                                             options={distances || []}
-                                            placeholder={'Afstand...'}
                                             optionsComponent={SelectControlOptions}
                                         />
                                         <FormError error={errors?.distance} />
@@ -424,7 +418,6 @@ export default function Providers() {
                                                 })?.value || {},
                                             );
                                         }}
-                                        placeholder="Sorteer"
                                         optionsComponent={SelectControlOptions}
                                     />
                                 </div>

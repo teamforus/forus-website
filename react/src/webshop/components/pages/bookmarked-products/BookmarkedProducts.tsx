@@ -89,7 +89,6 @@ export default function BookmarkedProducts() {
                                     propValue={'label'}
                                     value={sortBy}
                                     options={sortByOptions}
-                                    placeholder="Sorteer"
                                     onChange={(sortBy: number) => {
                                         setSortBy(sortByOptions?.find((item) => item.id == sortBy));
                                     }}

@@ -281,7 +281,6 @@ export default function Search() {
                                     value={filterValues.product_category_id}
                                     onChange={(id?: number) => filterUpdate({ product_category_id: id })}
                                     options={productCategories}
-                                    placeholder={productCategories?.[0]?.name}
                                 />
                             </div>
                         )}
@@ -298,7 +297,6 @@ export default function Search() {
                                     value={filterValues.fund_id}
                                     onChange={(id?: number) => filterUpdate({ fund_id: id })}
                                     options={funds}
-                                    placeholder={funds?.[0]?.name}
                                 />
                             </div>
                         )}
@@ -315,7 +313,6 @@ export default function Search() {
                                     value={filterValues.organization_id}
                                     onChange={(id?: number) => filterUpdate({ organization_id: id })}
                                     options={organizations}
-                                    placeholder={organizations?.[0]?.name}
                                 />
                             </div>
                         )}
@@ -350,7 +347,6 @@ export default function Search() {
                                         onChange={(id: number) => {
                                             filterUpdate(sortByOptions.find((option) => option.id == id)?.value || {});
                                         }}
-                                        placeholder="Sorteer"
                                     />
                                 </div>
 

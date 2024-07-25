@@ -3,7 +3,6 @@ import FundRequestRecord from '../../../../../dashboard/props/models/FundRequest
 import FormError from '../../../../../dashboard/components/elements/forms/errors/FormError';
 import useFormBuilder from '../../../../../dashboard/hooks/useFormBuilder';
 import UIControlText from '../../../../../dashboard/components/elements/forms/ui-controls/UIControlText';
-import useTranslate from '../../../../../dashboard/hooks/useTranslate';
 import FileUploader from '../../../elements/file-uploader/FileUploader';
 import FundRequest from '../../../../../dashboard/props/models/FundRequest';
 import FundRequestClarification from '../../../../../dashboard/props/models/FundRequestClarification';
@@ -22,7 +21,6 @@ export default function FundRequestRecordClarificationCard({
     clarification: FundRequestClarification;
     setFundRequest: React.Dispatch<React.SetStateAction<FundRequest>>;
 }) {
-    const translate = useTranslate();
     const pushSuccess = usePushSuccess();
 
     const fundRequestClarificationService = useFundRequestClarificationService();
@@ -132,7 +130,6 @@ export default function FundRequestRecordClarificationCard({
                                 rows={5}
                                 value={form.values.answer}
                                 onChangeValue={(answer) => form.update({ answer })}
-                                placeholder={translate('fund_request_clarification.placeholder')}
                             />
                             <FormError error={form.errors?.answer} />
                         </div>
