@@ -134,7 +134,6 @@ export default function FundRequests() {
                                     propKey={'id'}
                                     options={funds}
                                     onChange={(fund_id?: number) => filterUpdate({ fund_id })}
-                                    placeholder={funds?.[0]?.name}
                                 />
                             </div>
                         </div>

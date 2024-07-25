@@ -101,7 +101,6 @@ export default function ModalDeactivateVoucher({
                                             maxLength={140}
                                             value={note}
                                             onChange={(e) => setNote(e.target.value)}
-                                            placeholder="Reden"
                                         />
                                         <div className="form-hint">Max. 140 tekens</div>
                                         <FormError error={form.errors?.note} />

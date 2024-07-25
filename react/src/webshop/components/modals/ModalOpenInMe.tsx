@@ -98,7 +98,7 @@ export default function ModalOpenInMe({ modal }: { modal: ModalState }) {
                             </div>
 
                             <div className="modal-open-in-me-phone-control">
-                                <PhoneControl onChange={onPhoneChange} />
+                                <PhoneControl onChange={onPhoneChange} placeholder={null} />
                                 <FormError error={phoneForm.errors.phone} />
                             </div>
                             <div className="modal-section-notice-block">

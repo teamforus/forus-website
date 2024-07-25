@@ -217,7 +217,6 @@ export default function Start() {
                                 typeMismatch: translate('signup.items.errors.email.type_mismatch'),
                                 valueMissing: translate('signup.items.errors.email.value_missing'),
                             }}
-                            placeholder={'e-mail@e-mail.nl'}
                             id={'email'}
                             name={'email'}
                             tabIndex={1}
