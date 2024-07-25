@@ -11,7 +11,6 @@ import useProductCategoryService from '../../../../dashboard/services/ProductCat
 import Organization from '../../../../dashboard/props/models/Organization';
 import StateNavLink from '../../../modules/state_router/StateNavLink';
 import useAuthIdentity from '../../../hooks/useAuthIdentity';
-import UIControlSearch from '../../../../dashboard/components/elements/forms/ui-controls/UIControlSearch';
 import SelectControl from '../../../../dashboard/components/elements/select-control/SelectControl';
 import SelectControlOptions from '../../../../dashboard/components/elements/select-control/templates/SelectControlOptions';
 import FormError from '../../../../dashboard/components/elements/forms/errors/FormError';
@@ -26,6 +25,7 @@ import useFilterNext from '../../../../dashboard/modules/filter_next/useFilterNe
 import { BooleanParam, NumberParam, StringParam } from 'use-query-params';
 import { clickOnKeyEnter } from '../../../../dashboard/helpers/wcag';
 import useSetTitle from '../../../hooks/useSetTitle';
+import UIControlText from '../../../../dashboard/components/elements/forms/ui-controls/UIControlText';
 
 export default function Products({ fundType = 'budget' }: { fundType: 'budget' | 'subsidies' }) {
     const appConfigs = useAppConfigs();
@@ -265,7 +265,7 @@ export default function Products({ fundType = 'budget' }: { fundType: 'budget' |
                             <label className="form-label" htmlFor="products_search">
                                 Zoek aanbod
                             </label>
-                            <UIControlSearch
+                            <UIControlText
                                 value={filterValues.q}
                                 onChangeValue={(q: string) => filterUpdate({ q })}
                                 placeholder="Zoek aanbod"
