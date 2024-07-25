@@ -378,9 +378,6 @@ export default function ModalPhysicalCardType({
                                             <input
                                                 className="form-control"
                                                 id="physical_card.modal_section.request_new_card.address"
-                                                placeholder={translate(
-                                                    'physical_card.modal_section.request_new_card.address_placeholder',
-                                                )}
                                                 value={requestPhysicalCardForm.values.address}
                                                 onChange={(e) => {
                                                     requestPhysicalCardForm.update({ address: e.target.value });
@@ -399,9 +396,6 @@ export default function ModalPhysicalCardType({
                                             <input
                                                 className="form-control"
                                                 id="physical_card.modal_section.request_new_card.house"
-                                                placeholder={translate(
-                                                    'physical_card.modal_section.request_new_card.house_placeholder',
-                                                )}
                                                 value={requestPhysicalCardForm.values.house}
                                                 onChange={(e) => {
                                                     requestPhysicalCardForm.update({ house: e.target.value });
@@ -420,9 +414,6 @@ export default function ModalPhysicalCardType({
                                             <input
                                                 className="form-control"
                                                 id="physical_card.modal_section.request_new_card.house_addition"
-                                                placeholder={translate(
-                                                    'physical_card.modal_section.request_new_card.house_addition_placeholder',
-                                                )}
                                                 value={requestPhysicalCardForm.values.house_addition}
                                                 onChange={(e) => {
                                                     requestPhysicalCardForm.update({ house_addition: e.target.value });
@@ -441,9 +432,6 @@ export default function ModalPhysicalCardType({
                                             <input
                                                 className="form-control"
                                                 id="physical_card.modal_section.request_new_card.postcode"
-                                                placeholder={translate(
-                                                    'physical_card.modal_section.request_new_card.postcode_placeholder',
-                                                )}
                                                 value={requestPhysicalCardForm.values.postcode}
                                                 onChange={(e) => {
                                                     requestPhysicalCardForm.update({ postcode: e.target.value });
@@ -460,9 +448,6 @@ export default function ModalPhysicalCardType({
                                             <input
                                                 className="form-control"
                                                 id="physical_card.modal_section.request_new_card.city"
-                                                placeholder={translate(
-                                                    'physical_card.modal_section.request_new_card.city_placeholder',
-                                                )}
                                                 value={requestPhysicalCardForm.values.city}
                                                 onChange={(e) => {
                                                     requestPhysicalCardForm.update({ city: e.target.value });

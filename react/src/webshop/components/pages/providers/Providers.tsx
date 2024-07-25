@@ -6,7 +6,6 @@ import Fund from '../../../props/models/Fund';
 import ProductCategory from '../../../../dashboard/props/models/ProductCategory';
 import useProductCategoryService from '../../../../dashboard/services/ProductCategoryService';
 import StateNavLink from '../../../modules/state_router/StateNavLink';
-import UIControlSearch from '../../../../dashboard/components/elements/forms/ui-controls/UIControlSearch';
 import SelectControl from '../../../../dashboard/components/elements/select-control/SelectControl';
 import SelectControlOptions from '../../../../dashboard/components/elements/select-control/templates/SelectControlOptions';
 import FormError from '../../../../dashboard/components/elements/forms/errors/FormError';
@@ -27,6 +26,7 @@ import BlockShowcasePage from '../../elements/block-showcase/BlockShowcasePage';
 import useFilterNext from '../../../../dashboard/modules/filter_next/useFilterNext';
 import { BooleanParam, NumberParam, StringParam } from 'use-query-params';
 import { clickOnKeyEnter } from '../../../../dashboard/helpers/wcag';
+import UIControlText from '../../../../dashboard/components/elements/forms/ui-controls/UIControlText';
 
 export default function Providers() {
     const translate = useTranslate();
@@ -259,11 +259,10 @@ export default function Providers() {
                                 <label className="form-label" htmlFor="business_type_id">
                                     {translate('providers.labels.search')}
                                 </label>
-                                <UIControlSearch
+                                <UIControlText
                                     value={filterValues.q}
                                     onChangeValue={(q) => filterUpdate({ q })}
                                     ariaLabel={translate('providers.labels.search_aria_label')}
-                                    placeholder={translate('providers.labels.search_placeholder')}
                                 />
 
                                 <FormError error={errors?.q} />
@@ -277,7 +276,6 @@ export default function Providers() {
                                     options={businessTypes}
                                     value={filterValues.business_type_id}
                                     onChange={(business_type_id?: number) => filterUpdate({ business_type_id })}
-                                    placeholder="Selecteer type..."
                                     id="business_type_id"
                                     optionsComponent={SelectControlOptions}
                                 />
@@ -296,7 +294,6 @@ export default function Providers() {
                                     value={filterValues.product_category_id}
                                     onChange={(id: number) => filterUpdate({ product_category_id: id })}
                                     options={productCategories || []}
-                                    placeholder={productCategories?.[0]?.name}
                                     optionsComponent={SelectControlOptions}
                                 />
                             </div>
@@ -314,7 +311,6 @@ export default function Providers() {
                                         onChange={(id: number) => filterUpdate({ product_sub_category_id: id })}
                                         allowSearch={true}
                                         options={productSubCategories || []}
-                                        placeholder={productSubCategories?.[0]?.name}
                                         optionsComponent={SelectControlOptions}
                                     />
                                 </div>
@@ -332,7 +328,6 @@ export default function Providers() {
                                         allowSearch={true}
                                         onChange={(fund_id: number) => filterUpdate({ fund_id })}
                                         options={funds || []}
-                                        placeholder={funds?.[0]?.name}
                                         optionsComponent={SelectControlOptions}
                                     />
                                 )}
@@ -348,7 +343,6 @@ export default function Providers() {
                                             id="postcode"
                                             value={filterValues.postcode}
                                             onChange={(e) => filterUpdate({ postcode: e.target.value })}
-                                            placeholder="Postcode"
                                             type="text"
                                             aria-label="Postcode..."
                                         />
@@ -368,7 +362,6 @@ export default function Providers() {
                                             allowSearch={true}
                                             onChange={(distance: number) => filterUpdate({ distance })}
                                             options={distances || []}
-                                            placeholder={'Afstand...'}
                                             optionsComponent={SelectControlOptions}
                                         />
                                         <FormError error={errors?.distance} />
@@ -424,7 +417,6 @@ export default function Providers() {
                                                 })?.value || {},
                                             );
                                         }}
-                                        placeholder="Sorteer"
                                         optionsComponent={SelectControlOptions}
                                     />
                                 </div>
@@ -473,9 +465,7 @@ export default function Providers() {
                                     <Paginator
                                         meta={providers.meta}
                                         filters={filterValues}
-                                        count-buttons={5}
                                         updateFilters={filterUpdate}
-                                        buttonClass={'button-primary-outline'}
                                     />
                                 </div>
                             </div>
