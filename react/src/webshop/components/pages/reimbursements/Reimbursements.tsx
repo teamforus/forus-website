@@ -114,7 +114,6 @@ export default function Reimbursements() {
                                     value={filters.values.fund_id}
                                     options={funds}
                                     onChange={(fund_id?: number) => filters.update({ fund_id })}
-                                    placeholder={funds?.[0]?.name}
                                 />
                             </div>
                         </div>
@@ -286,7 +285,6 @@ export default function Reimbursements() {
                                     meta={reimbursements.meta}
                                     filters={filters.values}
                                     updateFilters={filters.update}
-                                    buttonClass={'button-primary-outline'}
                                 />
                             </div>
                         </div>

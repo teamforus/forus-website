@@ -27,4 +27,5 @@ export default interface FundProvider {
     last_activity: string;
     last_activity_locale: string;
     allow_extra_payments?: boolean;
+    allow_extra_payments_full?: boolean;
 }

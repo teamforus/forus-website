@@ -77,7 +77,6 @@ export default function FundRequestStepEmailSetup({
                                             onChangeValue={(email) => {
                                                 emailForm.update({ email });
                                             }}
-                                            placeholder="e-mail@e-mail.nl"
                                             tabIndex={1}
                                         />
                                         <FormError error={emailForm.errors.email} />

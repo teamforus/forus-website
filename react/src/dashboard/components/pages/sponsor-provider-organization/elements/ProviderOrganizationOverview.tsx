@@ -8,6 +8,7 @@ import { useFundService } from '../../../../services/FundService';
 import usePushDanger from '../../../../hooks/usePushDanger';
 import usePushSuccess from '../../../../hooks/usePushSuccess';
 import useSetProgress from '../../../../hooks/useSetProgress';
+import ToggleControl from '../../../elements/forms/controls/ToggleControl';
 
 export default function ProviderOrganizationOverview({
     organization,
@@ -175,57 +176,25 @@ export default function ProviderOrganizationOverview({
                                         <div className="flex-col">
                                             <div className="card-block card-block-listing card-block-listing-inline card-block-listing-variant">
                                                 <div className="card-block-listing-label">Accepteer budget</div>
-                                                <label
-                                                    className={`form-toggle ${
-                                                        fundProvider.state != 'accepted'
-                                                            ? 'form-toggle-disabled form-toggle-off'
-                                                            : ''
-                                                    } ${submittingAllow ? 'form-toggle-disabled' : ''}`}
-                                                    htmlFor="provider_allow_budget">
-                                                    <input
-                                                        type="checkbox"
-                                                        id="provider_allow_budget"
-                                                        disabled={fundProvider.state != 'accepted' || submittingAllow}
-                                                        onChange={(e) => {
-                                                            updateFundProviderAllow({ allow_budget: e.target.checked });
-                                                        }}
-                                                        checked={fundProvider.allow_budget}
-                                                    />
-                                                    <div className="form-toggle-inner flex-end">
-                                                        <div className="toggle-input">
-                                                            <div className="toggle-input-dot"></div>
-                                                        </div>
-                                                    </div>
-                                                </label>
+                                                <ToggleControl
+                                                    checked={fundProvider.allow_budget}
+                                                    disabled={submittingAllow || fundProvider.state != 'accepted'}
+                                                    onChange={(e) => {
+                                                        updateFundProviderAllow({ allow_budget: e.target.checked });
+                                                    }}
+                                                />
                                             </div>
                                         </div>
                                         <div className="flex-col">
                                             <div className="card-block card-block-listing card-block-listing-inline card-block-listing-variant">
                                                 <div className="card-block-listing-label">Accepteer aanbiedingen</div>
-                                                <label
-                                                    className={`form-toggle ${
-                                                        fundProvider.state != 'accepted'
-                                                            ? 'form-toggle-disabled form-toggle-off'
-                                                            : ''
-                                                    } ${submittingAllow ? 'form-toggle-disabled' : ''}`}
-                                                    htmlFor="provider_allow_products">
-                                                    <input
-                                                        type="checkbox"
-                                                        id="provider_allow_products"
-                                                        disabled={fundProvider.state != 'accepted' || submittingAllow}
-                                                        onChange={(e) =>
-                                                            updateFundProviderAllow({
-                                                                allow_products: e.target.checked,
-                                                            })
-                                                        }
-                                                        checked={fundProvider.allow_products}
-                                                    />
-                                                    <div className="form-toggle-inner flex-end">
-                                                        <div className="toggle-input">
-                                                            <div className="toggle-input-dot"></div>
-                                                        </div>
-                                                    </div>
-                                                </label>
+                                                <ToggleControl
+                                                    checked={fundProvider.allow_products}
+                                                    disabled={submittingAllow || fundProvider.state != 'accepted'}
+                                                    onChange={(e) => {
+                                                        updateFundProviderAllow({ allow_products: e.target.checked });
+                                                    }}
+                                                />
                                             </div>
                                         </div>
                                     </Fragment>
@@ -234,28 +203,13 @@ export default function ProviderOrganizationOverview({
                                 <div className="flex-col">
                                     <div className="card-block card-block-listing card-block-listing-inline card-block-listing-variant">
                                         <div className="card-block-listing-label">Verborgen op webshop</div>
-                                        <label
-                                            className={`form-toggle ${
-                                                fundProvider.state != 'accepted'
-                                                    ? 'form-toggle-disabled form-toggle-off'
-                                                    : ''
-                                            } ${submittingExcluded ? 'form-toggle-disabled' : ''}`}
-                                            htmlFor="provider_excluded">
-                                            <input
-                                                type="checkbox"
-                                                id="provider_excluded"
-                                                disabled={fundProvider.state != 'accepted' || submittingExcluded}
-                                                onChange={(e) => {
-                                                    updateFundProviderExcluded({ excluded: e.target.checked });
-                                                }}
-                                                checked={fundProvider.excluded}
-                                            />
-                                            <div className="form-toggle-inner flex-end">
-                                                <div className="toggle-input">
-                                                    <div className="toggle-input-dot" />
-                                                </div>
-                                            </div>
-                                        </label>
+                                        <ToggleControl
+                                            checked={fundProvider.excluded}
+                                            disabled={submittingExcluded || fundProvider.state != 'accepted'}
+                                            onChange={(e) => {
+                                                updateFundProviderExcluded({ excluded: e.target.checked });
+                                            }}
+                                        />
                                     </div>
                                 </div>
                             </div>

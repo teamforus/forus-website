@@ -30,7 +30,6 @@ export default {
                 'Er bestaan veel verschillende potjes binnen het Westerkwartier, vaak meer dan je denkt. Met deze website kan je potjes aanvragen, beheren en uitgeven.',
             cta_av: '',
             button_av: 'Start',
-            button: 'Start aanvraag',
         },
         berkelland: {
             title_multi: 'Kindregeling gemeente Berkelland',

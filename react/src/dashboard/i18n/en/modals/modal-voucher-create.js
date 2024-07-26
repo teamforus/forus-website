@@ -1,14 +1,14 @@
 export default {
-    title: 'Voucher aanmaken',
+    title: 'Create Voucher',
     labels: {
-        fund: 'Fonds',
-        amount: 'Bedrag',
-        note: 'Notitie',
-        expire_at: 'Geldig tot en met',
+        fund: 'Fund',
+        amount: 'Amount',
+        note: 'Note',
+        expire_at: 'Valid until',
     },
-    info: 'Voucher eenmaal aangemaakt kan niet verwijderd worden. Met een voucher gemaakt via deze functie kan een gebruiker gebruik maken van een budget zonder account zolang niet toegekend.',
+    info: 'Once a voucher is created, it cannot be deleted. With a voucher created via this function, a user can use a budget without an account as long as it is not assigned.',
     buttons: {
-        cancel: 'Annuleren',
-        submit: 'Aanmaken',
+        cancel: 'Cancel',
+        submit: 'Create',
     },
 };

@@ -1,7 +1,9 @@
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import useCustomInputValidationMessage, {
     InputValidationTexts,
 } from '../../../../hooks/useCustomInputValidationMessage';
+import classNames from 'classnames';
+import { clickOnKeyEnter } from '../../../../helpers/wcag';
 
 export default function UIControlNumber({
     id = '',
@@ -15,12 +17,12 @@ export default function UIControlNumber({
     onChange = null,
     onChangeValue = null,
     inputRef = null,
-    tabIndex = null,
+    tabIndex = 0,
     autoFocus = false,
+    dataDusk = null,
     min = null,
     max = null,
     step = 0.01,
-    dusk = null,
     precision = 2,
     validationMessages = null,
 }: {
@@ -37,31 +39,31 @@ export default function UIControlNumber({
     inputRef?: React.RefObject<HTMLInputElement>;
     tabIndex?: number;
     autoFocus?: boolean;
+    dataDusk?: string;
     min?: number;
     max?: number;
     step?: number;
-    dusk?: string;
     precision?: number;
     validationMessages?: InputValidationTexts;
 }) {
     const innerInputRef = useRef<HTMLInputElement>(null);
     const customInputValidationMessage = useCustomInputValidationMessage();
 
-    // todo: poc
-    /*const [showClear, setShowClear] = useState(false);*/
+    const [showClear, setShowClear] = useState(false);
 
     const reset = useCallback(() => {
-        (inputRef || innerInputRef).current.value = '';
+        const input = (inputRef || innerInputRef).current;
+
+        Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set.call(input, '');
+        input.dispatchEvent(new Event('change', { bubbles: true }));
     }, [inputRef]);
 
     return (
         <div
-            /*onFocus={() => setShowClear(true)}
+            onFocus={() => setShowClear(true)}
             onBlur={(e) => {
-                if (!e.currentTarget.contains(e.relatedTarget)) {
-                    setShowClear(false);
-                }
-            }}*/
+                !e.currentTarget.contains(e.relatedTarget) && setShowClear(false);
+            }}
             className={`ui-control ui-control-text ${type === 'currency' ? 'ui-control-currency' : ''} ${className}`}
             aria-label={ariaLabel}>
             {type === 'currency' && <div className="ui-control-currency-icon">€</div>}
@@ -85,20 +87,23 @@ export default function UIControlNumber({
                 value={value || ''}
                 tabIndex={tabIndex}
                 autoFocus={autoFocus}
-                data-dusk={dusk}
+                data-dusk={dataDusk}
             />
 
-            {/*{showClear && (*/}
             <div
-                onClick={reset}
-                onKeyDown={(e) => (e.key == 'Enter' ? reset() : null)}
-                className="ui-control-clear"
+                onClick={(e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+
+                    reset();
+                }}
+                onKeyDown={clickOnKeyEnter}
+                className={classNames('ui-control-clear', showClear && 'ui-control-clear-visible')}
                 aria-label="cancel"
                 role={'button'}
-                tabIndex={0}>
-                <div className="mdi mdi-close-circle" />
+                tabIndex={tabIndex}>
+                <em className="mdi mdi-close-circle" />
             </div>
-            {/*)}*/}
         </div>
     );
 }

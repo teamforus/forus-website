@@ -472,6 +472,14 @@ export default function FundActivate() {
     }, [handleDigiDResponse]);
 
     useEffect(() => {
+        if (!fund || !vouchers || !fundRequests) {
+            return;
+        }
+
+        initState(fund);
+    }, [fund, initState, vouchers, fundRequests]);
+
+    useEffect(() => {
         if (!fund || !vouchersActive || !fundRequests) {
             return;
         }
@@ -502,14 +510,6 @@ export default function FundActivate() {
                 .catch(() => navigateState('fund', { id: fund.id }));
         }
     }, [applyFund, fund, navigateState, vouchersActive, fundRequests]);
-
-    useEffect(() => {
-        if (!fund || !vouchers) {
-            return;
-        }
-
-        initState(fund);
-    }, [fund, initState, vouchers]);
 
     useInterval(() => {
         const { timeToSkipBsn } = getTimeToSkip();

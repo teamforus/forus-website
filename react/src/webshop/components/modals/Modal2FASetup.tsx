@@ -446,7 +446,10 @@ export default function Modal2FASetup({
                                         <div className="modal-separator" />
                                         <div className="form-group">
                                             <div className="form-label text-strong">Telefoonnummer</div>
-                                            <PhoneControl onChange={(value) => setPhoneNumber(value)} />
+                                            <PhoneControl
+                                                onChange={(value) => setPhoneNumber(value)}
+                                                placeholder={null}
+                                            />
                                             <FormError error={phoneNumberError} />
                                         </div>
                                     </div>
