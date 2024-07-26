@@ -27,7 +27,7 @@ export default function FundsListItemList({
                         fund?.logo?.sizes?.small ||
                         assetUrl('/assets/img/placeholders/fund-thumbnail.png')
                     }
-                    alt={`Dit is de afbeelding van ${fund.name}`}
+                    alt=""
                 />
             </div>
             <div className="fund-content">
