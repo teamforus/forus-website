@@ -12,7 +12,7 @@ import { strLimit } from '../../../../dashboard/helpers/string';
 import { authContext } from '../../../contexts/AuthContext';
 import ClickOutside from '../../../../dashboard/components/elements/click-outside/ClickOutside';
 import useAuthIdentity2FAState from '../../../hooks/useAuthIdentity2FAState';
-import { useNavigateState } from '../../../modules/state_router/Router';
+import { useNavigateState, useStateRoutes } from '../../../modules/state_router/Router';
 import TopNavbarSearch from './TopNavbarSearch';
 import Announcements from '../announcements/Announcements';
 import ModalAuthPincode from '../../modals/ModalAuthPincode';
@@ -32,6 +32,7 @@ export const TopNavbar = ({ hideOnScroll = false, className = '' }: { hideOnScro
 
     const assetUrl = useAssetUrl();
     const openModal = useOpenModal();
+    const { route } = useStateRoutes();
     const navigateState = useNavigateState();
     const menuRef = useRef<HTMLDivElement>(null);
 
@@ -414,7 +415,11 @@ export const TopNavbar = ({ hideOnScroll = false, className = '' }: { hideOnScro
                             : translate('topnavbar.items.menu.show')}
                     </div>
 
-                    <StateNavLink name={'home'} className="navbar-logo show-sm" title={`Terug naar hoofdpagina`}>
+                    <StateNavLink
+                        name={'home'}
+                        className="navbar-logo show-sm"
+                        title={`Terug naar hoofdpagina`}
+                        disabled={route?.state?.name === 'home'}>
                         <img
                             src={assetUrl(`/assets/img/logo-normal${logoExtension}`)}
                             alt={translate(`logo_alt_text.${envData.client_key}`, {}, envData.client_key)}
@@ -478,7 +483,10 @@ export const TopNavbar = ({ hideOnScroll = false, className = '' }: { hideOnScro
             {(showSearchBox || envData.config.flags.genericSearchUseToggle) && (
                 <div id="navbar-search" className={`block block-subnav ${showSearchBox ? 'search-shown' : ''}`}>
                     <div className="subnav-inner wrapper">
-                        <StateNavLink name={'home'} className="navbar-logo hide-sm">
+                        <StateNavLink
+                            name={'home'}
+                            className="navbar-logo hide-sm"
+                            disabled={route?.state?.name === 'home'}>
                             <img
                                 src={assetUrl(`/assets/img/logo-normal${logoExtension}`)}
                                 alt={translate(`logo_alt_text.${envData.client_key}`, {}, envData.client_key)}
