@@ -33,7 +33,7 @@ export default function UIControlStep({
         <div
             className={`ui-control ui-control-step ${className}`}
             role={role}
-            aria-label="adjust"
+            aria-label="Aanpassen"
             aria-valuenow={value}
             aria-valuemin={min}
             aria-valuemax={max}>
