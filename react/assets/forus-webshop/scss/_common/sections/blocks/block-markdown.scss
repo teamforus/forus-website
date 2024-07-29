@@ -1,5 +1,5 @@
 .block.block-markdown {
-    text-align: justify;
+    text-align: left;
     font: 400 16px/1.5em var(--base-font);
     margin-bottom: 30px;
 
@@ -33,7 +33,7 @@
 
     p {
         margin-bottom: 15px;
-        text-align: justify;
+        text-align: left;
         font: inherit;
     }
 
@@ -78,6 +78,11 @@
     img {
         max-width: 100% !important;
         height: auto !important;
+    }
+
+    .table-wrap {
+        width: 100%;
+        overflow: auto;
     }
 
     table {

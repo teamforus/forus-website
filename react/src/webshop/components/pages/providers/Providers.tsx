@@ -344,7 +344,7 @@ export default function Providers() {
                                             value={filterValues.postcode}
                                             onChange={(e) => filterUpdate({ postcode: e.target.value })}
                                             type="text"
-                                            aria-label="Postcode..."
+                                            aria-label="Postcode"
                                         />
                                         <FormError error={errors?.postcode} />
                                     </div>

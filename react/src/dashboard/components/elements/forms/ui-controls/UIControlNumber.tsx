@@ -99,7 +99,7 @@ export default function UIControlNumber({
                 }}
                 onKeyDown={clickOnKeyEnter}
                 className={classNames('ui-control-clear', showClear && 'ui-control-clear-visible')}
-                aria-label="cancel"
+                aria-label="Annuleren"
                 role={'button'}
                 tabIndex={tabIndex}>
                 <em className="mdi mdi-close-circle" />

@@ -290,7 +290,7 @@ h6 {
                 .button {
                     background-color: var(--tc-auth-menu);
                     color: var(--tc-var);
-                    text-transform: var(--text_format);
+                    text-transform: inherit;
 
                     svg {
                         path {
@@ -301,7 +301,7 @@ h6 {
                     &:hover {
                         box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
                         color: var(--tc-var);
-                        text-transform: var(--text_format);
+                        text-transform: inherit;
                         background-color: var(--color-primary-light);
 
                         svg {
