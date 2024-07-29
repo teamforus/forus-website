@@ -468,7 +468,7 @@ export const TopNavbar = ({ hideOnScroll = false, className = '' }: { hideOnScro
                             aria-label="login"
                             id="login_mobile">
                             <em className="mdi mdi-account icon-start" />
-                            {translate('topnavbar.buttons.login')}
+                            {translate(`topnavbar.buttons.${envData.client_key}.login`, {}, 'topnavbar.buttons.login')}
                         </button>
                     </div>
                 )}
