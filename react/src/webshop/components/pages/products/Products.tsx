@@ -268,7 +268,7 @@ export default function Products({ fundType = 'budget' }: { fundType: 'budget' |
                             <UIControlText
                                 value={filterValues.q}
                                 onChangeValue={(q: string) => filterUpdate({ q })}
-                                ariaLabel="search"
+                                ariaLabel="Zoeken"
                                 id="products_search"
                             />
                         </div>
