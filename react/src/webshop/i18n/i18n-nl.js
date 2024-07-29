@@ -130,6 +130,9 @@ export default {
         vergoedingen: {
             funds: 'Alle vergoedingen{{pageTitleSuffix}}',
         },
+        goereeoverflakkee: {
+            funds: 'Regelingen{{pageTitleSuffix}}',
+        },
     },
     implementation_name: {
         general: 'General',
