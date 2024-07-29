@@ -318,7 +318,7 @@ export default function LayoutMobileMenu() {
                                 className="button button-primary button-sm"
                                 role="button"
                                 onClick={() => startFundRequest({})}
-                                aria-label="login"
+                                aria-label="Inloggen"
                                 id="login_mobile">
                                 <em className="mdi mdi-account icon-start" />
                                 {translate('topnavbar.buttons.login')}

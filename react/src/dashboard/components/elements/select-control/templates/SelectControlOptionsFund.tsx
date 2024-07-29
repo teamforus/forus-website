@@ -111,7 +111,7 @@ export default function SelectControlOptionsFund<T>({
                                     setQuery('');
                                     searchInputChanged();
                                 }}
-                                aria-label="cancel">
+                                aria-label="Annuleren">
                                 <em className="mdi mdi-close-circle" />
                             </div>
                         )}

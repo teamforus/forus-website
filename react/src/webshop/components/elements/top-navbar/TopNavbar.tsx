@@ -465,7 +465,7 @@ export const TopNavbar = ({ hideOnScroll = false, className = '' }: { hideOnScro
                             className="button button-primary button-xs show-sm"
                             onClick={() => startFundRequest()}
                             role="button"
-                            aria-label="login"
+                            aria-label="Start aanvrag"
                             id="login_mobile">
                             <em className="mdi mdi-account icon-start" />
                             {translate('topnavbar.buttons.login')}
