@@ -14,6 +14,7 @@ import DropdownPlatform from './DropdownPlatform';
 import DropdownAbout from './DropdownAbout';
 import useActiveMenuDropdown from '../../hooks/useActiveMenuDropdown';
 import HelpCenter from '../../components/elements/HelpCenter';
+import { useNavigateState } from '../../modules/state_router/Router';
 
 export default function LayoutHeader() {
     const authIdentity = useAuthIdentity();
@@ -22,6 +23,7 @@ export default function LayoutHeader() {
     const location = useLocation();
 
     const assetUrl = useAssetUrl();
+    const navigateState = useNavigateState();
     const activeMenuDropdown = useActiveMenuDropdown();
     const setActiveMenuDropdown = useSetActiveMenuDropdown();
 
@@ -375,7 +377,12 @@ export default function LayoutHeader() {
 
                         {shownMenuGroup == 'about' && (
                             <div className="mobile-menu-items">
-                                <a className="mobile-menu-item">
+                                <a
+                                    className="mobile-menu-item"
+                                    onClick={() => {
+                                        navigateState('about-us');
+                                        setShowMobileMenu(false);
+                                    }}>
                                     <img
                                         className="mobile-menu-item-img"
                                         src={assetUrl(`/assets/img/about-us/our-story.png`)}
@@ -389,7 +396,12 @@ export default function LayoutHeader() {
                                     </div>
                                     <em className={`mdi mdi-arrow-right`} />
                                 </a>
-                                <a className="mobile-menu-item">
+                                <a
+                                    className="mobile-menu-item"
+                                    onClick={() => {
+                                        navigateState('about-us-innovation');
+                                        setShowMobileMenu(false);
+                                    }}>
                                     <img
                                         className="mobile-menu-item-img"
                                         src={assetUrl(`/assets/img/about-us/project.png`)}

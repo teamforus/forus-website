@@ -83,7 +83,8 @@ export default function DropdownAbout() {
                 <PreviewPageFooter />
             </div>
 
-            <div className="block-page-list-preview">
+            <div className="block-page-list-preview" />
+            <div className="dropdown-close">
                 <em className="mdi mdi-close" />
             </div>
         </div>

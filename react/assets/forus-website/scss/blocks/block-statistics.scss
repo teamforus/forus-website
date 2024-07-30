@@ -26,13 +26,13 @@
             width: 100%;
             gap: 150px;
             align-items: center;
-            border-radius: 10px;
 
             .block-statistics-figures-list-item-main {
                 width: calc(50% - 75px);
                 background: var(--Linear, linear-gradient(180deg, #F9F9F9 0%, rgba(249, 249, 249, 0.00) 100%));
                 text-align: center;
                 padding: 80px;
+                border-radius: 10px;
 
                 .block-statistics-figures-list-item-title {
                     font: 500 80px/96px var(--base-font);
@@ -44,7 +44,7 @@
             }
 
             .block-statistics-figures-list-item-details {
-                width: 50%;
+                width: calc(50% - 75px);
                 font: 400 18px/29px var(--base-font);
             }
 

@@ -36,5 +36,12 @@ export default function Strategy() {
         },
     ];
 
-    return <Slider title={'De weg naar een succesvolle lancering'} elements={elements} showBackgroundImage={true} />;
+    return (
+        <Slider
+            title={'De weg naar een succesvolle lancering'}
+            elements={elements}
+            showBackgroundImage={true}
+            showActionButton={true}
+        />
+    );
 }
