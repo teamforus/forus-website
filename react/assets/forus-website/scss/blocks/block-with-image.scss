@@ -24,6 +24,7 @@
         text-align: left;
 
         .block-with-image-info {
+            width: 50%;
             font: 400 26px/36px var(--base-font);
             margin-bottom: 50px;
 
@@ -38,8 +39,10 @@
         }
 
         .block-with-image-image {
+            width: 50%;
+
             img {
-                width: auto;
+                width: 100%;
             }
         }
     }
@@ -91,6 +94,7 @@
             gap: 36px;
 
             .block-with-image-info {
+                width: 100%;
                 margin-bottom: 25px;
 
                 .block-with-image-title {
@@ -104,9 +108,7 @@
             }
 
             .block-with-image-image {
-                img {
-                    width: 100%;
-                }
+                width: 100%;
             }
         }
 

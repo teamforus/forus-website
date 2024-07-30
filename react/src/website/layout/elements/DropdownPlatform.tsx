@@ -8,11 +8,10 @@ import { useNavigateState } from '../../modules/state_router/Router';
 export default function DropdownPlatform() {
     const assetUrl = useAssetUrl();
     const navigateState = useNavigateState();
+    const setActiveMenuDropdown = useSetActiveMenuDropdown();
 
     const [activeItem, setActiveItem] = useState('basic-functions');
     const [activeSubItem, setActiveSubItem] = useState('');
-
-    const setActiveMenuDropdown = useSetActiveMenuDropdown();
 
     return (
         <div className="block block-page-list">
@@ -244,7 +243,11 @@ export default function DropdownPlatform() {
 
                 <PreviewPageFooter />
             </div>
+
             <div className="block-page-list-preview" />
+            <div className="dropdown-close" onClick={() => setActiveMenuDropdown(null)}>
+                <em className="mdi mdi-close" />
+            </div>
         </div>
     );
 }

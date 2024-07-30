@@ -9,6 +9,7 @@
         display: flex;
         flex-direction: column;
         gap: 10px;
+        width: 50%;
 
         .block-social-initiatives-title {
             font: 700 40px/52px var(--base-font);
@@ -57,6 +58,8 @@
     }
 
     .block-social-initiatives-img {
+        width: 50%;
+
         img {
             width: 100%;
         }
@@ -67,6 +70,8 @@
         margin: 48px 0;
 
         .block-social-initiatives-main {
+            width: 100%;
+
             .block-social-initiatives-title {
                 font: 900 30px/40px var(--base-font);
                 margin: 0 0 20px 0;
@@ -84,6 +89,10 @@
             .block-social-initiatives-extra {
                 font: 400 14px/21px var(--base-font);
             }
+        }
+
+        .block-social-initiatives-img {
+            width: 100%;
         }
     }
 }

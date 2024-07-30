@@ -6,9 +6,8 @@ import { useNavigateState } from '../../modules/state_router/Router';
 
 export default function DropdownAbout() {
     const assetUrl = useAssetUrl();
-    const navigateState = useNavigateState();
-
     const setActiveMenuDropdown = useSetActiveMenuDropdown();
+    const navigateState = useNavigateState();
 
     return (
         <div className="block block-page-list">
@@ -83,7 +82,8 @@ export default function DropdownAbout() {
                 <PreviewPageFooter />
             </div>
 
-            <div className="block-page-list-preview">
+            <div className="block-page-list-preview" />
+            <div className="dropdown-close" onClick={() => setActiveMenuDropdown(null)}>
                 <em className="mdi mdi-close" />
             </div>
         </div>

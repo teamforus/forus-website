@@ -11,7 +11,12 @@
         background-image: url("./assets/img/ellipse.png");
         background-size: contain;
 
+        .block-slider-actions {
+            margin-top: 30px;
+        }
+
         .block-slider-arrows {
+            margin-bottom: 30px;
             display: flex;
 
             .block-slider-arrow {
@@ -112,6 +117,15 @@
                 left: -15px;
                 transform: rotate(45deg);
             }
+
+            .block-slider-list-item-title {
+                font: 700 30px/46px var(--base-font);
+                margin-bottom: 20px;
+            }
+
+            .block-slider-list-item-description {
+                font: 400 18px/27px var(--base-font);
+            }
         }
 
         .block-slider-numeration {
@@ -134,7 +148,7 @@
     }
 
     @media screen and (max-width: 1000px) {
-        margin: 0 0 48px 0;
+        margin: 0;
         padding: 48px 0;
         text-align: left;
         display: flex;
@@ -145,6 +159,9 @@
             margin-right: 0;
             padding-right: 0;
             border-right: 0;
+            display: flex;
+            flex-direction: column;
+            background-image: none;
 
             .block-slider-title {
                 font: 900 30px/40px var(--base-font);
@@ -157,7 +174,14 @@
             }
 
             .block-slider-arrows {
-                display: none;
+                order: 2;
+                justify-content: center;
+
+                .block-slider-arrow {
+                    width: 40px;
+                    height: 40px;
+                    background-size: contain;
+                }
             }
 
             .block-slider-separator {
@@ -188,8 +212,8 @@
 
             .block-slider-list-item {
                 margin-bottom: 0;
-                flex-direction: column;
-                gap: 20px;
+                transform: translateX(0%) scaleX(1);
+                opacity: 1;
 
                 .block-slider-numeration {
                     top: -60px;

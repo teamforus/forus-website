@@ -397,7 +397,12 @@ export default function LayoutHeader() {
 
                         {shownMenuGroup == 'about' && (
                             <div className="mobile-menu-items">
-                                <a className="mobile-menu-item">
+                                <a
+                                    className="mobile-menu-item"
+                                    onClick={() => {
+                                        navigateState('about-us');
+                                        setShowMobileMenu(false);
+                                    }}>
                                     <img
                                         className="mobile-menu-item-img"
                                         src={assetUrl(`/assets/img/about-us/our-story.png`)}
@@ -411,7 +416,12 @@ export default function LayoutHeader() {
                                     </div>
                                     <em className={`mdi mdi-arrow-right`} />
                                 </a>
-                                <a className="mobile-menu-item">
+                                <a
+                                    className="mobile-menu-item"
+                                    onClick={() => {
+                                        navigateState('about-us-innovation');
+                                        setShowMobileMenu(false);
+                                    }}>
                                     <img
                                         className="mobile-menu-item-img"
                                         src={assetUrl(`/assets/img/about-us/project.png`)}
