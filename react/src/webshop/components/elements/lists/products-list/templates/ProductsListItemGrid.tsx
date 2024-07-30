@@ -28,7 +28,7 @@ export default function ProductsListItemGrid({
                     role={'button'}
                     tabIndex={0}
                     className={`block block-bookmark-toggle ${product.bookmarked ? 'active' : ''}`}
-                    aria-label="toevoegen aan verlanglijstje"
+                    aria-label="Toevoegen aan verlanglijstje"
                     aria-pressed={product.bookmarked}>
                     {product.bookmarked ? (
                         <em className="mdi mdi-cards-heart" />
