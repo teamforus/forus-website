@@ -216,6 +216,22 @@ img {
     @include fill_parent();
 }
 
+.full-width {
+    width: 100%;
+}
+
+.main-content {
+    position: relative;
+}
+
+.background-overlay {
+    width: 50%;
+    height: 100%;
+    position: absolute;
+    top: -100px;
+    background-repeat: no-repeat;
+}
+
 @-moz-keyframes spin {
     from {
         -moz-transform: rotate(0deg);

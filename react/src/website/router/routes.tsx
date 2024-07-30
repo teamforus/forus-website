@@ -6,6 +6,11 @@ import SignOut from '../components/pages/auth/SignOut';
 import WIP from '../components/pages_system/WIP';
 import AboutUs from '../components/pages/about-us/AboutUs';
 import AboutUsInnovation from '../components/pages/about-us/AboutUsInnovation';
+import RolesMain from '../components/pages/roles/RolesMain';
+import RolesRequester from '../components/pages/roles/RolesRequester';
+import RolesProvider from '../components/pages/roles/RolesProvider';
+import RolesSponsor from '../components/pages/roles/RolesSponsor';
+import RolesValidator from '../components/pages/roles/RolesValidator';
 
 const router = new RouterBuilder();
 
@@ -46,6 +51,31 @@ router.state('about-us', <AboutUs />, {
 
 router.state('about-us-innovation', <AboutUsInnovation />, {
     path: `/about-us-innovation`,
+    protected: false,
+});
+
+router.state('roles-main', <RolesMain />, {
+    path: `/roles-main`,
+    protected: false,
+});
+
+router.state('roles-requester', <RolesRequester />, {
+    path: `/roles-requester`,
+    protected: false,
+});
+
+router.state('roles-provider', <RolesProvider />, {
+    path: `/roles-provider`,
+    protected: false,
+});
+
+router.state('roles-sponsor', <RolesSponsor />, {
+    path: `/roles-sponsor`,
+    protected: false,
+});
+
+router.state('roles-validator', <RolesValidator />, {
+    path: `/roles-validator`,
     protected: false,
 });
 

@@ -26,77 +26,77 @@ export default function SocialImpact() {
             </div>
 
             <div className="block-social-impact-details">
-                <div className="block-social-impact-list">
-                    <div className="block-social-impact-list-item">
-                        <div className="block-social-impact-list-item-image">
+                <div className="block block-overview-list">
+                    <div className="block block-overview-list-item">
+                        <div className="block block-overview-list-item-image">
                             <img
                                 src={assetUrl(`/assets/img/requester.svg`)}
                                 alt="Icoon van de deelnemersrol in het Forus-systeem"
                             />
                         </div>
-                        <div className="block-social-impact-list-item-info">
-                            <div className="block-social-impact-list-item-title">Deelnemer</div>
-                            <div className="block-social-impact-list-item-description">
+                        <div className="block block-overview-list-item-info">
+                            <div className="block block-overview-list-item-title">Deelnemer</div>
+                            <div className="block block-overview-list-item-description">
                                 Voor mensen die in aanmerking komen voor een regeling, fonds of potje.
                             </div>
-                            <div className="block-social-impact-list-item-read-more">
+                            <div className="block block-overview-list-item-read-more">
                                 Lees meer
                                 <em className={'mdi mdi-arrow-right'} />
                             </div>
                         </div>
                     </div>
 
-                    <div className="block-social-impact-list-item">
-                        <div className="block-social-impact-list-item-image">
+                    <div className="block block-overview-list-item">
+                        <div className="block block-overview-list-item-image">
                             <img
                                 src={assetUrl(`/assets/img/provider.svg`)}
                                 alt="Icoon van de aanbiedersrol in het Forus-systeem"
                             />
                         </div>
-                        <div className="block-social-impact-list-item-info">
-                            <div className="block-social-impact-list-item-title">Aanbieder</div>
-                            <div className="block-social-impact-list-item-description">
+                        <div className="block block-overview-list-item-info">
+                            <div className="block block-overview-list-item-title">Aanbieder</div>
+                            <div className="block block-overview-list-item-description">
                                 Voor medewerkers van organisaties die aanbod aanbieden in een webshop.
                             </div>
-                            <div className="block-social-impact-list-item-read-more">
+                            <div className="block block-overview-list-item-read-more">
                                 Lees meer
                                 <em className={'mdi mdi-arrow-right'} />
                             </div>
                         </div>
                     </div>
 
-                    <div className="block-social-impact-list-item">
-                        <div className="block-social-impact-list-item-image">
+                    <div className="block block-overview-list-item">
+                        <div className="block block-overview-list-item-image">
                             <img
                                 src={assetUrl(`/assets/img/sponsor.svg`)}
                                 alt="Icoon van de sponsorrol in het Forus-systeem"
                             />
                         </div>
-                        <div className="block-social-impact-list-item-info">
-                            <div className="block-social-impact-list-item-title">Sponsor</div>
-                            <div className="block-social-impact-list-item-description">
+                        <div className="block block-overview-list-item-info">
+                            <div className="block block-overview-list-item-title">Sponsor</div>
+                            <div className="block block-overview-list-item-description">
                                 Voor medewerkers van gemeenten en goede doelen die regelingen uitgeven.
                             </div>
-                            <div className="block-social-impact-list-item-read-more">
+                            <div className="block block-overview-list-item-read-more">
                                 Lees meer
                                 <em className={'mdi mdi-arrow-right'} />
                             </div>
                         </div>
                     </div>
 
-                    <div className="block-social-impact-list-item">
-                        <div className="block-social-impact-list-item-image">
+                    <div className="block block-overview-list-item">
+                        <div className="block block-overview-list-item-image">
                             <img
                                 src={assetUrl(`/assets/img/validator.svg`)}
                                 alt="Icoon van de beoordelaardsrol in het Forus-systeem"
                             />
                         </div>
-                        <div className="block-social-impact-list-item-info">
-                            <div className="block-social-impact-list-item-title">Beoordelaar</div>
-                            <div className="block-social-impact-list-item-description">
+                        <div className="block block-overview-list-item-info">
+                            <div className="block block-overview-list-item-title">Beoordelaar</div>
+                            <div className="block block-overview-list-item-description">
                                 Voor medewerkers van gemeenten en goede doelen die aanvragen van regelingen beoordelen.
                             </div>
-                            <div className="block-social-impact-list-item-read-more">
+                            <div className="block block-overview-list-item-read-more">
                                 Lees meer
                                 <em className={'mdi mdi-arrow-right'} />
                             </div>

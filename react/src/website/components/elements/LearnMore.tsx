@@ -4,13 +4,15 @@ export default function LearnMore({
     title,
     description,
     buttons,
+    backgroundColor = '#E9F1FD',
 }: {
     title: string;
     description?: string;
     buttons?: { title: string; type?: string }[];
+    backgroundColor?: string;
 }) {
     return (
-        <div className="block block-learn-more">
+        <div className="block block-learn-more" style={{ backgroundColor: backgroundColor }}>
             <div className="block-learn-more-info">
                 <div className="block-learn-more-title">{title}</div>
                 <div className="block-learn-more-subtitle">{description}</div>

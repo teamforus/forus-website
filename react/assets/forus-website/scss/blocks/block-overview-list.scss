@@ -1,0 +1,103 @@
+.block.block-overview-list {
+    display: flex;
+    flex-wrap: wrap;
+    background-image: url("./assets/img/background-roles.png");
+    background-repeat: no-repeat, repeat;
+    background-size: contain;
+    background-position: top right;
+    margin-bottom: 100px;
+
+    .block-overview-list-item {
+        display: flex;
+        flex-direction: column;
+        width: calc(50% - 25px);
+        height: auto;
+        padding: 25px;
+        margin: 0 25px 25px 0;
+        border-radius: 12px;
+        border: 1px solid var(--border-color);
+        background: #FFF;
+        box-shadow: 0 1px 0 0 rgba(0, 0, 0, 0.08), 0 3px 4px 0 rgba(0, 0, 0, 0.08);
+
+        .block-overview-list-item-image {
+            margin-bottom: 5px;
+        }
+
+        .block-overview-list-item-info {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+
+            .block-overview-list-item-title {
+                font: 700 20px/30px var(--base-font);
+                margin-bottom: 15px;
+            }
+
+            .block-overview-list-item-description {
+                font: 400 14px/21px var(--base-font);
+                margin-bottom: 15px;
+                flex-grow: 1;
+            }
+
+            .block-overview-list-item-read-more {
+                display: flex;
+                font: 700 14px/21px var(--base-font);
+                color: var(--color-primary);
+
+                .mdi {
+                    margin-left: 5px;
+                }
+            }
+        }
+
+        &:hover {
+            box-shadow: 0 12px 30px 0 #E1E2E8;
+
+            .block-overview-list-item-read-more {
+                .button {
+                    background: var(--color-primary);
+                    color: #FFF;
+
+                    a {
+                        color: #FFF;
+                    }
+                }
+            }
+        }
+
+        &:last-child {
+            margin-right: 0;
+        }
+    }
+
+    @media screen and (max-width: 1000px) {
+        background-image: none;
+
+        .block-overview-list-item {
+            width: 100%;
+            display: flex;
+            margin-right: 0;
+
+            .block-overview-list-item-image {
+                margin-right: 20px;
+                margin-top: 5px;
+            }
+
+            .block-overview-list-item-info {
+                .block-overview-list-item-title {
+                    font: 700 20px/30px var(--base-font);
+                    margin-bottom: 10px;
+                }
+
+                .block-overview-list-item-description {
+                    font: 400 14px/21px var(--base-font);
+                    margin-bottom: 0;
+                }
+
+                .block-overview-list-item-read-more {
+                    display: none;
+                }
+            }
+        }
+    }
+}

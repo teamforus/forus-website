@@ -2,9 +2,18 @@
     text-align: center;
     margin-bottom: 100px;
 
+    .section-icon {
+        margin-bottom: 50px;
+        width: 72px;
+
+        img {
+            width: 100%;
+        }
+    }
+
     .section-title {
         font: 900 86px/96px var(--base-font);
-        margin-bottom: 30px;
+        margin: 0 0 30px 0;
 
         &.section-title-sm {
             font: 900 56px/68px var(--base-font);
@@ -51,6 +60,57 @@
         }
     }
 
+    &.section-banner-right {
+        display: flex;
+        margin-right: calc(-1 * (100vw - var(--wrapper-width) - 15px) / 2);
+        text-align: left;
+
+        .section-main {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            width: 40%;
+        }
+
+        .section-banner {
+            width: 60%;
+
+            img {
+                width: 100%;
+            }
+        }
+
+        .section-details-block {
+            flex-direction: row-reverse;
+        }
+    }
+
+    &.section-overview {
+        .section-title {
+            text-align: left;
+        }
+
+        .section-description {
+            font: 400 18px/28px var(--base-font);
+            margin: 30px 0 45px;
+        }
+
+        .section-separator {
+            border: 2px dashed var(--border-color);
+            position: relative;
+
+            .line {
+                position: absolute;
+                height: 4px;
+                width: 50px;
+                background: #315EFD;
+                left: 0;
+                top: -2px;
+                border-radius: var(--border-radius);
+            }
+        }
+    }
+
     @media screen and (max-width: 1000px) {
         margin-bottom: 48px;
 
@@ -91,6 +151,47 @@
             .section-details-block-description {
                 font: 400 14px/21px var(--base-font);
                 color: #333;
+            }
+        }
+
+        &.section-banner-right {
+            margin-right: 0;
+            flex-direction: column;
+
+            .section-main {
+                padding: 0 24px;
+                order: 2;
+                width: 100%;
+                text-align: center;
+                position: relative;
+
+                .section-title {
+                    text-align: center;
+                }
+
+                .section-icon {
+                    position: absolute;
+                    top: -82px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                }
+            }
+
+            .section-banner {
+                order: 1;
+                width: 100%;
+            }
+
+            .section-details-block {
+                flex-direction: column;
+            }
+
+            .button-group {
+                flex-direction: column;
+
+                .button {
+                    display: block;
+                }
             }
         }
     }

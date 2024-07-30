@@ -29,56 +29,6 @@
         }
     }
 
-    .block-social-impact-details {
-        .block-social-impact-list {
-            display: flex;
-            flex-wrap: wrap;
-            background-image: url("./assets/img/background-roles.png");
-            background-repeat: no-repeat, repeat;
-            background-size: contain;
-            background-position: top right;
-
-            .block-social-impact-list-item {
-                width: calc(50% - 25px);
-                height: fit-content;
-                padding: 25px;
-                margin: 0 25px 25px 0;
-                border-radius: 12px;
-                border: 1px solid var(--Basic-Separator-Light, #F4F4F4);
-                background: #FFF;
-                box-shadow: 0 1px 0 0 rgba(0, 0, 0, 0.08), 0 3px 4px 0 rgba(0, 0, 0, 0.08);
-
-                .block-social-impact-list-item-image {
-                    margin-bottom: 5px;
-                }
-
-                .block-social-impact-list-item-title {
-                    font: 700 20px/30px var(--base-font);
-                    margin-bottom: 15px;
-                }
-
-                .block-social-impact-list-item-description {
-                    font: 400 14px/21px var(--base-font);
-                    margin-bottom: 15px;
-                }
-
-                .block-social-impact-list-item-read-more {
-                    display: flex;
-                    font: 700 14px/21px var(--base-font);
-                    color: var(--color-primary);
-
-                    .mdi {
-                        margin-left: 5px;
-                    }
-                }
-
-                &:last-child {
-                    margin-right: 0;
-                }
-            }
-        }
-    }
-
     @media screen and (max-width: 1000px) {
         flex-direction: column;
         margin: 0;
@@ -110,39 +60,6 @@
                     margin-right: 0;
                     width: 100%;
                     display: inline-block;
-                }
-            }
-        }
-
-        .block-social-impact-details {
-            .block-social-impact-list {
-                background-image: none;
-
-                .block-social-impact-list-item {
-                    width: 100%;
-                    display: flex;
-                    margin-right: 0;
-
-                    .block-social-impact-list-item-image {
-                        margin-right: 20px;
-                        margin-top: 5px;
-                    }
-
-                    .block-social-impact-list-item-info {
-                        .block-social-impact-list-item-title {
-                            font: 700 20px/30px var(--base-font);
-                            margin-bottom: 10px;
-                        }
-
-                        .block-social-impact-list-item-description {
-                            font: 400 14px/21px var(--base-font);
-                            margin-bottom: 0;
-                        }
-
-                        .block-social-impact-list-item-read-more {
-                            display: none;
-                        }
-                    }
                 }
             }
         }
