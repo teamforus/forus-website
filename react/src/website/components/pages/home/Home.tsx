@@ -55,18 +55,16 @@ export default function Home() {
                     <SocialImpact />
                 </div>
 
-                <div className="wrapper">
-                    <div className="separator-dashed">
-                        <img src={assetUrl(`/assets/img/icon-forus.svg`)} alt="" />
-                    </div>
-                </div>
-
-                <div className="wrapper">
-                    <PlatformAspects />
+                <div className="separator-dashed">
+                    <img src={assetUrl(`/assets/img/icon-forus.svg`)} alt="" />
                 </div>
 
                 <div className="wrapper">
                     <SocialDomain />
+                </div>
+
+                <div className="wrapper">
+                    <PlatformAspects />
                 </div>
 
                 <div className="wrapper">

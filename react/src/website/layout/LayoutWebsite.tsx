@@ -33,7 +33,6 @@ export const LayoutWebsite = ({ children }: { children: React.ReactElement }) =>
     }, [route, route.pathname]);
 
     useEffect(() => {
-        bodyRef?.current?.style.setProperty('visibility', activeMenuDropdown ? 'hidden' : 'visible');
         footerRef?.current?.style.setProperty('visibility', activeMenuDropdown ? 'hidden' : 'visible');
     }, [activeMenuDropdown, route, route.pathname]);
 
@@ -58,6 +57,7 @@ export const LayoutWebsite = ({ children }: { children: React.ReactElement }) =>
                     <LayoutHeader />
                     <div className="layout-body" ref={bodyRef}>
                         {children}
+                        {activeMenuDropdown && <div className="layout-overlay" />}
                     </div>
                     <div ref={footerRef}>
                         <LayoutFooter />
