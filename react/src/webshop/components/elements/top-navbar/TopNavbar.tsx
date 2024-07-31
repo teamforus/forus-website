@@ -456,6 +456,7 @@ export const TopNavbar = ({ hideOnScroll = false, className = '' }: { hideOnScro
                             <button
                                 className="button button-primary-outline button-start button-xs show-sm"
                                 onClick={() => startFundRequest({ restore_with_email: 1 })}
+                                aria-label={envData.config.flags.showStartButtonText || 'Start'}
                                 role="button">
                                 <em className="mdi mdi-plus-circle icon-start" />
                                 {envData.config.flags.showStartButtonText || 'Start'}
@@ -465,7 +466,7 @@ export const TopNavbar = ({ hideOnScroll = false, className = '' }: { hideOnScro
                             className="button button-primary button-xs show-sm"
                             onClick={() => startFundRequest()}
                             role="button"
-                            aria-label="Start aanvrag"
+                            aria-label={translate('topnavbar.buttons.login')}
                             id="login_mobile">
                             <em className="mdi mdi-account icon-start" />
                             {translate(`topnavbar.buttons.${envData.client_key}.login`, {}, 'topnavbar.buttons.login')}
@@ -514,6 +515,7 @@ export const TopNavbar = ({ hideOnScroll = false, className = '' }: { hideOnScro
                                         <button
                                             className="button button-primary-outline"
                                             onClick={() => startFundRequest({ restore_with_email: 1 })}
+                                            aria-label={envData.config.flags.showStartButtonText || 'Start'}
                                             role="button">
                                             <svg
                                                 xmlns="http://www.w3.org/2000/svg"
@@ -550,6 +552,11 @@ export const TopNavbar = ({ hideOnScroll = false, className = '' }: { hideOnScro
                                             className="button button-primary"
                                             onClick={() => startFundRequest({ reset: 1 })}
                                             role="button"
+                                            aria-label={translate(
+                                                `home.header.${envData.client_key}.button`,
+                                                {},
+                                                'home.header.button',
+                                            )}
                                             id="start_modal"
                                             data-dusk="btnStart">
                                             <em className="mdi mdi-account icon-start" />
