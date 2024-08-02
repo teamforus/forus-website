@@ -59,12 +59,19 @@ export default function SponsorProviderOrganizations() {
         { value: 'name', name: 'Naam aflopend' },
     ]);
 
+    const [stateGroups] = useState<Array<{ key: string; label: string }>>([
+        { key: 'pending', label: 'Actie benodigd' },
+        { key: 'active', label: 'Actief' },
+        { key: 'rejected', label: 'Inactief' },
+    ]);
+
     const [filterValues, filterActiveValues, filterUpdate, filter] = useFilterNext<{
         q?: string;
         page?: number;
         fund_id?: number;
         per_page?: number;
         order_by?: string;
+        state_group?: string;
         allow_budget?: '0' | '1';
         has_products?: '0' | '1';
         allow_products?: '0' | '1' | '-1';
@@ -77,6 +84,7 @@ export default function SponsorProviderOrganizations() {
             fund_id: null,
             order_by: orderByOptions[0].value,
             per_page: paginatorService.getPerPage(paginatorKey),
+            state_group: stateGroups[0].key,
             allow_budget: null,
             has_products: null,
             allow_products: null,
@@ -91,6 +99,7 @@ export default function SponsorProviderOrganizations() {
                 per_page: NumberParam,
                 order_by: StringParam,
                 fund_id: NumberParam,
+                state_group: StringParam,
                 allow_budget: createEnumParam(['0', '1']),
                 has_products: createEnumParam(['0', '1']),
                 allow_products: createEnumParam(['0', '1', '-1']),
@@ -253,6 +262,25 @@ export default function SponsorProviderOrganizations() {
                         </div>
                         <div className="flex-row">
                             <div className="block block-inline-filters">
+                                <div className="flex form">
+                                    <div>
+                                        <div className="block block-label-tabs">
+                                            <div className="label-tab-set">
+                                                {stateGroups?.map((stateGroup) => (
+                                                    <div
+                                                        key={stateGroup.key}
+                                                        onClick={() => filterUpdate({ state_group: stateGroup.key })}
+                                                        className={`label-tab label-tab-sm ${
+                                                            filterValues.state_group === stateGroup.key ? 'active' : ''
+                                                        }`}>
+                                                        {stateGroup.label}
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
                                 {filter.show && (
                                     <div className="button button-text" onClick={filter.resetFilters}>
                                         <em className="mdi mdi-close icon-start" />
