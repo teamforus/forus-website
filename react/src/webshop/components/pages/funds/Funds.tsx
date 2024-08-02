@@ -8,7 +8,6 @@ import Tag from '../../../../dashboard/props/models/Tag';
 import Fund from '../../../props/models/Fund';
 import Voucher from '../../../../dashboard/props/models/Voucher';
 import Organization from '../../../../dashboard/props/models/Organization';
-import UIControlSearch from '../../../../dashboard/components/elements/forms/ui-controls/UIControlSearch';
 import SelectControl from '../../../../dashboard/components/elements/select-control/SelectControl';
 import SelectControlOptions from '../../../../dashboard/components/elements/select-control/templates/SelectControlOptions';
 import { useFundService } from '../../../services/FundService';
@@ -25,6 +24,7 @@ import useAuthIdentity from '../../../hooks/useAuthIdentity';
 import useSetTitle from '../../../hooks/useSetTitle';
 import BlockShowcasePage from '../../elements/block-showcase/BlockShowcasePage';
 import useSetProgress from '../../../../dashboard/hooks/useSetProgress';
+import UIControlText from '../../../../dashboard/components/elements/forms/ui-controls/UIControlText';
 
 export default function Funds() {
     const envData = useEnvData();
@@ -147,11 +147,10 @@ export default function Funds() {
                             <label className="form-label" htmlFor="search">
                                 {translate('funds.labels.search')}
                             </label>
-                            <UIControlSearch
+                            <UIControlText
                                 id="search"
                                 value={filter.values.q}
                                 onChangeValue={(q) => filter.update({ q })}
-                                placeholder="Zoeken..."
                                 ariaLabel="Zoeken"
                             />
                         </div>
@@ -166,7 +165,6 @@ export default function Funds() {
                                 allowSearch={true}
                                 onChange={(organization_id: number) => filter.update({ organization_id })}
                                 options={organizations || []}
-                                placeholder={organizations?.[0]?.name}
                             />
                         </div>
                         <div className="form-group">
@@ -180,7 +178,6 @@ export default function Funds() {
                                 allowSearch={true}
                                 onChange={(tag_id: number) => filter.update({ tag_id })}
                                 options={tags || []}
-                                placeholder={tags?.[0]?.name}
                             />
                         </div>
                     </div>
@@ -227,7 +224,6 @@ export default function Funds() {
                                 filters={filter.values}
                                 count-buttons={5}
                                 updateFilters={filter.update}
-                                buttonClass={'button-primary-outline'}
                             />
                         </div>
                     </div>

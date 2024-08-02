@@ -1,6 +1,8 @@
 import React, { CSSProperties, useCallback, useState } from 'react';
 import BlockShowcase from './BlockShowcase';
 import BlockLoader from '../block-loader/BlockLoader';
+import ErrorBoundaryHandler from '../../../../dashboard/components/elements/error-boundary-handler/ErrorBoundaryHandler';
+import classNames from 'classnames';
 
 export default function BlockShowcasePage({
     aside = null,
@@ -49,19 +51,25 @@ export default function BlockShowcasePage({
                     </div>
                 </div>
 
-                {breadcrumbs}
+                <div className={'hide-sm'}>{breadcrumbs}</div>
 
-                <div className="showcase-layout">
-                    <div
-                        className={`showcase-aside form form-compact ${showModalFilters ? 'show-mobile' : ''}`}
-                        id={'aside-mobile'}>
-                        {aside || <BlockLoader />}
-                    </div>
+                <ErrorBoundaryHandler>
+                    <div className="showcase-layout">
+                        <div
+                            className={classNames(
+                                'showcase-aside form form-compact',
+                                showModalFilters && 'show-mobile',
+                            )}
+                            id={'aside-mobile'}>
+                            {aside || <BlockLoader />}
+                        </div>
 
-                    <div className="showcase-content" style={contentStyles}>
-                        {children || <BlockLoader />}
+                        <div className="showcase-content" style={contentStyles}>
+                            <div className={'show-sm'}>{breadcrumbs}</div>
+                            <ErrorBoundaryHandler>{children || <BlockLoader />}</ErrorBoundaryHandler>
+                        </div>
                     </div>
-                </div>
+                </ErrorBoundaryHandler>
             </div>
         </BlockShowcase>
     );

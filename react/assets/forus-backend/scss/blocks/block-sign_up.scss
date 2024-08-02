@@ -1,0 +1,22 @@
+.block.block-sign_up {
+    @media screen and (max-width: 991px) {
+        margin: 0 -10px;
+        padding: 20px;
+
+        .sign_up-pane .sign_up-pane-body {
+            padding: 20px;
+
+            .sign_up-pane-heading {
+                font: 500 17px/25px var(--base-font);
+            }
+
+            .sign_up-pane-text {
+                font: 400 14px/20px var(--base-font)
+            }
+
+            .sign_up-options .sign_up-option {
+                padding: 10px;
+            }
+        }
+    }
+}

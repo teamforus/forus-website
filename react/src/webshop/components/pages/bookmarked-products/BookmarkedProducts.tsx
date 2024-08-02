@@ -89,7 +89,6 @@ export default function BookmarkedProducts() {
                                     propValue={'label'}
                                     value={sortBy}
                                     options={sortByOptions}
-                                    placeholder="Sorteer"
                                     onChange={(sortBy: number) => {
                                         setSortBy(sortByOptions?.find((item) => item.id == sortBy));
                                     }}
@@ -142,12 +141,7 @@ export default function BookmarkedProducts() {
 
                     <div className="card" hidden={products?.meta?.last_page < 2}>
                         <div className="card-section">
-                            <Paginator
-                                meta={products.meta}
-                                filters={filterValues}
-                                updateFilters={filterUpdate}
-                                buttonClass={'button-primary-outline'}
-                            />
+                            <Paginator meta={products.meta} filters={filterValues} updateFilters={filterUpdate} />
                         </div>
                     </div>
                 </Fragment>

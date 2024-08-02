@@ -20,7 +20,6 @@ import Tag from '../../../../dashboard/props/models/Tag';
 import { useOrganizationService } from '../../../../dashboard/services/OrganizationService';
 import Organization from '../../../../dashboard/props/models/Organization';
 import ProgressPie from '../../elements/progress-pie/ProgressPie';
-import UIControlSearch from '../../../../dashboard/components/elements/forms/ui-controls/UIControlSearch';
 import SelectControl from '../../../../dashboard/components/elements/select-control/SelectControl';
 import UIControlCheckbox from '../../../../dashboard/components/elements/forms/ui-controls/UIControlCheckbox';
 import UIControlStep from '../../../../dashboard/components/elements/forms/ui-controls/UIControlStep';
@@ -425,10 +424,9 @@ export default function FundsPreCheck() {
                                                 <label className="form-label" htmlFor="search">
                                                     {translate('funds.labels.search')}
                                                 </label>
-                                                <UIControlSearch
+                                                <UIControlText
                                                     value={filter.values.q}
                                                     onChangeValue={(q) => filter.update({ q })}
-                                                    placeholder="Zoeken..."
                                                     ariaLabel="Zoeken"
                                                 />
                                             </div>
@@ -445,7 +443,6 @@ export default function FundsPreCheck() {
                                                     onChange={(organization_id: number) =>
                                                         filter.update({ organization_id })
                                                     }
-                                                    placeholder={organizations?.[0]?.name}
                                                 />
                                             </div>
 
@@ -459,7 +456,6 @@ export default function FundsPreCheck() {
                                                     value={filter.values.tag_id}
                                                     onChange={(tag_id: number) => filter.update({ tag_id })}
                                                     options={tags}
-                                                    placeholder={tags?.[0]?.name}
                                                 />
                                             </div>
                                         </div>
@@ -613,7 +609,6 @@ export default function FundsPreCheck() {
                                                                 }}
                                                                 name={preCheckRecord.record_type_key}
                                                                 id={`pre_check_record_${preCheckRecord.record_type_key}`}
-                                                                placeholder={preCheckRecord?.record_type?.name}
                                                             />
                                                         )}
 
@@ -631,7 +626,6 @@ export default function FundsPreCheck() {
                                                                 }}
                                                                 name={preCheckRecord.record_type_key}
                                                                 id={`pre_check_record_${preCheckRecord.record_type_key}`}
-                                                                placeholder={`Uw ${preCheckRecord.record_type.name}`}
                                                             />
                                                         )}
 
@@ -646,7 +640,6 @@ export default function FundsPreCheck() {
                                                                 min={0}
                                                                 name={preCheckRecord.record_type.key}
                                                                 id={`criterion_${preCheckRecord.record_type_key}`}
-                                                                placeholder={`Uw ${preCheckRecord.record_type.name}`}
                                                                 onChangeValue={(value) => {
                                                                     setPreChecks((preChecks) => {
                                                                         preChecks[activeStepIndex].record_types[
