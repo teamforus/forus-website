@@ -65,6 +65,29 @@ export default function VouchersTableRow({
                 </td>
             )}
 
+            {columnKeys.includes('type_voucher') && (
+                <td>
+                    <div className="text-md text-muted-dark text-medium">{voucher.product ? 'Aaanbod' : 'Bedrag'}</div>
+                </td>
+            )}
+
+            {columnKeys.includes('type_credit') && (
+                <Fragment>
+                    {!voucher.product ? (
+                        <td>{currencyFormat(parseFloat(voucher.amount_total))}</td>
+                    ) : (
+                        <td>
+                            <div className="text-primary text-medium">
+                                {strLimit(voucher.product.organization.name, 32)}
+                            </div>
+                            <div className="text-strong text-md text-muted-dark">
+                                {strLimit(voucher.product.name, 32)}
+                            </div>
+                        </td>
+                    )}
+                </Fragment>
+            )}
+
             {columnKeys.includes('amount') && <td>{currencyFormat(parseFloat(voucher.amount_total))}</td>}
 
             {columnKeys.includes('note') && (

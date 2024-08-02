@@ -582,6 +582,14 @@
         }
     }
 
+    &.modal-csv-vouchers {
+        .modal-window {
+            .block-csv {
+                border: none;
+            }
+        }
+    }
+
     &.modal-voucher_qr {
         .modal-window {
             width: 540px;

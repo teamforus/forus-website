@@ -52,7 +52,7 @@ export default function Vouchers() {
             has_payouts: null,
             count_per_identity_min: null,
             count_per_identity_max: null,
-            type: 'fund_voucher',
+            type: 'all',
             source: 'all',
             fund_id: null,
             implementation_id: null,
@@ -184,7 +184,7 @@ export default function Vouchers() {
                                                 {columns.map((column, index: number) => (
                                                     <th
                                                         key={index}
-                                                        onMouseOver={() => showTableTooltip(column.tooltip.key)}
+                                                        onMouseOver={() => showTableTooltip(column.tooltip?.key)}
                                                         onMouseLeave={() => hideTableTooltip()}>
                                                         {translate(column.label)}
                                                     </th>

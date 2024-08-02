@@ -10,7 +10,6 @@ import Fund from '../../../../props/models/Fund';
 import VouchersTableFilters, { VouchersTableFiltersProps } from './VouchersTableFilters';
 import SelectControlOptionsFund from '../../../elements/select-control/templates/SelectControlOptionsFund';
 import useOpenModal from '../../../../hooks/useOpenModal';
-import ModalFundSelect from '../../../modals/ModalFundSelect';
 import ModalVoucherCreate from '../../../modals/ModalVoucherCreate';
 import ModalVouchersUpload from '../../../modals/ModalVouchersUpload';
 
@@ -35,50 +34,23 @@ export default function VouchersTableHeader({
     const openModal = useOpenModal();
 
     const createVoucher = useCallback(
-        (funds: Array<Partial<Fund>>, fundId?: number, onCreate?: () => void) => {
-            const fundsList = funds.filter((fund) => fund.id);
-
+        (funds: Array<Partial<Fund>>, onCreate?: () => void) => {
             openModal((modal) => (
-                <ModalFundSelect
+                <ModalVoucherCreate
+                    funds={funds.filter((fund) => fund.id)}
                     modal={modal}
-                    fundId={fundId || fundsList[0].id}
-                    funds={fundsList}
-                    onSelect={(fund) => {
-                        openModal((modal) => (
-                            <ModalVoucherCreate
-                                fund={fund}
-                                type={type}
-                                modal={modal}
-                                onCreated={onCreate}
-                                organization={organization}
-                            />
-                        ));
-                    }}
+                    onCreated={onCreate}
+                    organization={organization}
                 />
             ));
         },
-        [openModal, organization, type],
+        [openModal, organization],
     );
 
     const uploadVouchers = useCallback(
-        (funds: Array<Partial<Fund>>, fundId?: number, onCreate?: () => void) => {
+        (funds: Array<Partial<Fund>>, onCreate?: () => void) => {
             openModal((modal) => (
-                <ModalFundSelect
-                    modal={modal}
-                    funds={funds}
-                    fundId={fundId}
-                    onSelect={(fund) => {
-                        openModal((modal) => (
-                            <ModalVouchersUpload
-                                modal={modal}
-                                fund={fund}
-                                funds={!fund?.id ? funds : funds.filter((item) => item.id === fund?.id)}
-                                organization={organization}
-                                onCompleted={onCreate}
-                            />
-                        ));
-                    }}
-                />
+                <ModalVouchersUpload modal={modal} funds={funds} organization={organization} onCompleted={onCreate} />
             ));
         },
         [openModal, organization],
@@ -109,7 +81,7 @@ export default function VouchersTableHeader({
                                     id="create_voucher"
                                     className="button button-primary"
                                     disabled={funds?.filter((fund) => fund.id)?.length < 1}
-                                    onClick={() => createVoucher(funds, filter.activeValues?.fund_id, fetchVouchers)}>
+                                    onClick={() => createVoucher(funds, fetchVouchers)}>
                                     <em className="mdi mdi-plus-circle icon-start" />
                                     {translate('vouchers.buttons.add_new')}
                                 </button>
@@ -118,7 +90,7 @@ export default function VouchersTableHeader({
                                     id="voucher_upload_csv"
                                     className="button button-primary"
                                     disabled={funds?.filter((fund) => fund.id)?.length < 1}
-                                    onClick={() => uploadVouchers(funds, filter.activeValues?.fund_id, fetchVouchers)}
+                                    onClick={() => uploadVouchers(funds, fetchVouchers)}
                                     data-dusk="uploadVouchersBatchButton">
                                     <em className="mdi mdi-upload icon-start" />
                                     {translate('vouchers.buttons.upload_csv')}
