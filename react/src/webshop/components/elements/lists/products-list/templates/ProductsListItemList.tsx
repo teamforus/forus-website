@@ -43,7 +43,7 @@ export default function ProductsListItemList({
                             onKeyDown={clickOnKeyEnter}
                             role={'button'}
                             tabIndex={0}
-                            aria-label="toevoegen aan verlanglijstje"
+                            aria-label="Toevoegen aan verlanglijstje"
                             aria-pressed={product.bookmarked}>
                             <em className="mdi mdi-cards-heart" />
                         </div>

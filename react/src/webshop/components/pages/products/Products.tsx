@@ -11,7 +11,6 @@ import useProductCategoryService from '../../../../dashboard/services/ProductCat
 import Organization from '../../../../dashboard/props/models/Organization';
 import StateNavLink from '../../../modules/state_router/StateNavLink';
 import useAuthIdentity from '../../../hooks/useAuthIdentity';
-import UIControlSearch from '../../../../dashboard/components/elements/forms/ui-controls/UIControlSearch';
 import SelectControl from '../../../../dashboard/components/elements/select-control/SelectControl';
 import SelectControlOptions from '../../../../dashboard/components/elements/select-control/templates/SelectControlOptions';
 import FormError from '../../../../dashboard/components/elements/forms/errors/FormError';
@@ -25,6 +24,8 @@ import BlockShowcasePage from '../../elements/block-showcase/BlockShowcasePage';
 import useFilterNext from '../../../../dashboard/modules/filter_next/useFilterNext';
 import { BooleanParam, NumberParam, StringParam } from 'use-query-params';
 import { clickOnKeyEnter } from '../../../../dashboard/helpers/wcag';
+import useSetTitle from '../../../hooks/useSetTitle';
+import UIControlText from '../../../../dashboard/components/elements/forms/ui-controls/UIControlText';
 
 export default function Products({ fundType = 'budget' }: { fundType: 'budget' | 'subsidies' }) {
     const appConfigs = useAppConfigs();
@@ -35,6 +36,7 @@ export default function Products({ fundType = 'budget' }: { fundType: 'budget' |
     const organizationService = useOrganizationService();
     const productCategoryService = useProductCategoryService();
 
+    const setTitle = useSetTitle();
     const translate = useTranslate();
     const setProgress = useSetProgress();
 
@@ -115,6 +117,10 @@ export default function Products({ fundType = 'budget' }: { fundType: 'budget' |
         ].filter((value) => value).length;
     }, [filterValues]);
 
+    const fundFiltered = useMemo(() => {
+        return filterValuesActive?.fund_id && funds?.find((item) => item.id === filterValuesActive?.fund_id);
+    }, [filterValuesActive?.fund_id, funds]);
+
     const [products, setProducts] = useState<PaginationData<Product>>(null);
 
     const buildQuery = useCallback(
@@ -154,13 +160,13 @@ export default function Products({ fundType = 'budget' }: { fundType: 'budget' |
 
     const fetchFunds = useCallback(() => {
         fundService
-            .list({ has_products: 1 })
+            .list(fundType === 'budget' ? { has_products: 1 } : { has_subsidies: 1 })
             .then((res) => setFunds([{ id: null, name: 'Alle tegoeden...' }, ...res.data.data]));
-    }, [fundService]);
+    }, [fundService, fundType]);
 
     const fetchOrganizations = useCallback(() => {
         organizationService
-            .list({ is_employee: 0, has_products: 1, per_page: 300, used_type: fundType })
+            .list({ is_employee: 0, has_products: 1, per_page: 300, fund_type: fundType })
             .then((res) => setOrganizations([{ id: null, name: 'Selecteer aanbieder...' }, ...res.data.data]));
     }, [organizationService, fundType]);
 
@@ -203,6 +209,10 @@ export default function Products({ fundType = 'budget' }: { fundType: 'budget' |
         }
     }, [filterUpdate, fundType, filterValues.product_category_id, productCategoryService]);
 
+    useEffect(() => {
+        setTitle(translate('page_state_titles.products', { fund_name: fundFiltered ? ` ${fundFiltered.name}` : '' }));
+    }, [fundFiltered, setTitle, translate]);
+
     return (
         <BlockShowcasePage
             countFiltersApplied={countFiltersApplied}
@@ -244,7 +254,7 @@ export default function Products({ fundType = 'budget' }: { fundType: 'budget' |
                                     onKeyDown={clickOnKeyEnter}
                                     role="button"
                                     tabIndex={0}
-                                    aria-label="toevoegen aan verlanglijstje"
+                                    aria-label="Toevoegen aan verlanglijstje"
                                     aria-pressed={!!filterValues.bookmarked}>
                                     <em className="mdi mdi-cards-heart-outline" />
                                     Mijn verlanglijstje
@@ -255,11 +265,10 @@ export default function Products({ fundType = 'budget' }: { fundType: 'budget' |
                             <label className="form-label" htmlFor="products_search">
                                 Zoek aanbod
                             </label>
-                            <UIControlSearch
+                            <UIControlText
                                 value={filterValues.q}
                                 onChangeValue={(q: string) => filterUpdate({ q })}
-                                placeholder="Zoek aanbod"
-                                ariaLabel="search"
+                                ariaLabel="Zoeken"
                                 id="products_search"
                             />
                         </div>
@@ -274,7 +283,6 @@ export default function Products({ fundType = 'budget' }: { fundType: 'budget' |
                                 allowSearch={true}
                                 onChange={(organization_id: number) => filterUpdate({ organization_id })}
                                 options={organizations || []}
-                                placeholder={organizations?.[0]?.name}
                                 optionsComponent={SelectControlOptions}
                             />
                         </div>
@@ -291,7 +299,6 @@ export default function Products({ fundType = 'budget' }: { fundType: 'budget' |
                                 value={filterValues.product_category_id}
                                 onChange={(id: number) => filterUpdate({ product_category_id: id })}
                                 options={productCategories || []}
-                                placeholder={productCategories?.[0]?.name}
                                 optionsComponent={SelectControlOptions}
                             />
                         </div>
@@ -309,7 +316,6 @@ export default function Products({ fundType = 'budget' }: { fundType: 'budget' |
                                     onChange={(id: number) => filterUpdate({ product_sub_category_id: id })}
                                     allowSearch={true}
                                     options={productSubCategories || []}
-                                    placeholder={productSubCategories?.[0]?.name}
                                     optionsComponent={SelectControlOptions}
                                 />
                             </div>
@@ -327,7 +333,6 @@ export default function Products({ fundType = 'budget' }: { fundType: 'budget' |
                                     allowSearch={true}
                                     onChange={(fund_id: number) => filterUpdate({ fund_id })}
                                     options={funds || []}
-                                    placeholder={funds?.[0]?.name}
                                     optionsComponent={SelectControlOptions}
                                 />
                             )}
@@ -343,9 +348,8 @@ export default function Products({ fundType = 'budget' }: { fundType: 'budget' |
                                         id="postcode"
                                         value={filterValues.postcode}
                                         onChange={(e) => filterUpdate({ postcode: e.target.value })}
-                                        placeholder="Postcode"
                                         type="text"
-                                        aria-label="Postcode..."
+                                        aria-label="Postcode"
                                     />
                                     <FormError error={errors?.postcode} />
                                 </div>
@@ -363,7 +367,6 @@ export default function Products({ fundType = 'budget' }: { fundType: 'budget' |
                                         allowSearch={true}
                                         onChange={(distance: number) => filterUpdate({ distance })}
                                         options={distances || []}
-                                        placeholder={'Afstand...'}
                                         optionsComponent={SelectControlOptions}
                                     />
                                     <FormError error={errors?.distance} />
@@ -407,7 +410,6 @@ export default function Products({ fundType = 'budget' }: { fundType: 'budget' |
                                                 })?.value || {},
                                             );
                                         }}
-                                        placeholder="Sorteer"
                                         optionsComponent={SelectControlOptions}
                                     />
                                 </div>
@@ -468,7 +470,6 @@ export default function Products({ fundType = 'budget' }: { fundType: 'budget' |
                                 filters={filterValues}
                                 count-buttons={5}
                                 updateFilters={filterUpdate}
-                                buttonClass={'button-primary-outline'}
                             />
                         </div>
                     </div>

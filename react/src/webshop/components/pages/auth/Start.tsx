@@ -197,7 +197,7 @@ export default function Start() {
 
     useEffect(() => {
         if (envData) {
-            setTitle(translate(`signup.items.${envData.client_key}.title`, null, 'Inloggen'));
+            setTitle(translate(`signup.items.${envData.client_key}.page_title`, null, 'signup.items.page_title'));
         }
     }, [envData, setTitle, translate]);
 
@@ -217,7 +217,6 @@ export default function Start() {
                                 typeMismatch: translate('signup.items.errors.email.type_mismatch'),
                                 valueMissing: translate('signup.items.errors.email.value_missing'),
                             }}
-                            placeholder={'e-mail@e-mail.nl'}
                             id={'email'}
                             name={'email'}
                             tabIndex={1}

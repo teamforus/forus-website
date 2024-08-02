@@ -299,7 +299,7 @@ export default function VouchersViewComponent() {
                         params={{ organizationId: activeOrganization.id }}
                         activeExact={true}
                         className="breadcrumb-item">
-                        Vouchers
+                        Tegoeden
                     </StateNavLink>
                 )}
 
@@ -531,7 +531,7 @@ export default function VouchersViewComponent() {
                     <div className="flex">
                         <div className="flex flex-grow">
                             <div className="card-title">
-                                <div className="flex flex-vertical flex-center">Voucher details</div>
+                                <div className="flex flex-vertical flex-center">Tegoed details</div>
                             </div>
                         </div>
                     </div>
@@ -540,7 +540,7 @@ export default function VouchersViewComponent() {
                 <div className="card-section">
                     <div className="card-block card-block-table">
                         <div className="table-wrapper">
-                            <table className="table table-fixed table-align-top">
+                            <table className="table table-fixed">
                                 <tbody>
                                     <tr>
                                         <td>

@@ -15,6 +15,8 @@ import IconSearchProviders from '../../../../../assets/forus-webshop/resources/_
 import IconSearchEmptyResult from '../../../../../assets/forus-webshop/resources/_webshop-common/assets/img/icon-search/empty-search.svg';
 import TopNavbarSearchResultItem from './TopNavbarSearchResultItem';
 import useSetProgress from '../../../../dashboard/hooks/useSetProgress';
+import { clickOnKeyEnter } from '../../../../dashboard/helpers/wcag';
+import classNames from 'classnames';
 
 export default function TopNavbarSearch() {
     const envData = useEnvData();
@@ -154,21 +156,21 @@ export default function TopNavbarSearch() {
                 className={`search-form form ${resultsAll?.length > 0 ? 'search-form-found' : ''}`}>
                 <ClickOutside onClickOutside={hideSearchBox}>
                     <div className="search-area">
-                        <div className={`navbar-search-icon ${searchFocused || dropdown ? 'focused' : ''}`}>
+                        <label id="search-label" htmlFor="genericSearch" className="navbar-search-label">
+                            {translate(`top_navbar_search.placeholders.search_${appConfigs.communication_type}`)}
+                        </label>
+                        <div className={classNames('navbar-search-icon', (searchFocused || dropdown) && 'focused')}>
                             <div className="mdi mdi-magnify" />
                         </div>
                         <input
                             id="genericSearch"
                             type="text"
-                            className={`form-control ${searchFocused || dropdown ? 'focused' : ''}`}
-                            placeholder={translate(
-                                `top_navbar_search.placeholders.search_${appConfigs.communication_type}`,
-                            )}
+                            className={classNames('form-control', (searchFocused || dropdown) && 'focused')}
                             autoComplete={'off'}
                             value={filters.values.q}
                             onChange={(e) => filters.update({ q: e.target.value })}
                             onKeyDown={cancelSearch}
-                            aria-label="Zoeken"
+                            aria-labelledby="search-label"
                             onFocus={() => setSearchFocused(true)}
                             onBlur={() => setSearchFocused(false)}
                             aria-haspopup={true}
@@ -177,9 +179,12 @@ export default function TopNavbarSearch() {
                             className={`search-reset ${
                                 !envData.config?.flags?.genericSearchUseToggle ? 'show-sm' : ''
                             }`}
+                            onClick={hideSearchBox}
+                            onKeyDown={clickOnKeyEnter}
+                            tabIndex={0}
                             aria-label="Sluit zoeken"
                             role="button">
-                            <div className="mdi mdi-close" onClick={hideSearchBox} />
+                            <em className="mdi mdi-close" />
                         </div>
                     </div>
                     {dropdown && (

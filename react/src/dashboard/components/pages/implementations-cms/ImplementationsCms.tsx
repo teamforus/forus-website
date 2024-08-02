@@ -24,6 +24,7 @@ import { dateFormat, dateParse } from '../../../helpers/dates';
 import CheckboxControl from '../../elements/forms/controls/CheckboxControl';
 import PhotoSelectorData from '../../elements/photo-selector/types/PhotoSelectorData';
 import useTranslate from '../../../hooks/useTranslate';
+import FormGroupInfo from '../../elements/forms/elements/FormGroupInfo';
 
 export default function ImplementationsCms() {
     const { id } = useParams();
@@ -107,6 +108,7 @@ export default function ImplementationsCms() {
     const form = useFormBuilder<{
         title?: string;
         description?: string;
+        page_title_suffix?: string;
         banner_media_uid?: string;
         description_html?: string;
         description_alignment?: string;
@@ -259,6 +261,7 @@ export default function ImplementationsCms() {
                 title: implementation.title,
                 description: implementation.description,
                 description_html: implementation.description_html,
+                page_title_suffix: implementation.page_title_suffix,
                 description_alignment: implementation.description_alignment,
                 informal_communication: implementation.informal_communication,
                 announcement: {
@@ -392,6 +395,28 @@ export default function ImplementationsCms() {
                                         />
                                     </div>
                                     <FormError error={form.errors.description} />
+                                </div>
+
+                                <div className="form-group form-group-inline form-group-inline-xl tooltipped">
+                                    <label className="form-label" htmlFor="page_title_suffix">
+                                        {translate('implementation_edit.labels.page_title_suffix')}
+                                    </label>
+                                    <div className="form-offset">
+                                        <FormGroupInfo
+                                            info={`Het eerste deel van de paginatitel, zichtbaar in het browsertabblad,
+                                                is standaard ingesteld. Het tweede deel kan worden aangepast.
+                                                De titel mag maximaal 60 tekens lang zijn`}>
+                                            <input
+                                                id="page_title_suffix"
+                                                type="text"
+                                                className="form-control"
+                                                placeholder="Browser tab postfix"
+                                                value={form.values?.page_title_suffix || ''}
+                                                onChange={(e) => form.update({ page_title_suffix: e.target.value })}
+                                            />
+                                        </FormGroupInfo>
+                                        <FormError error={form.errors.page_title_suffix} />
+                                    </div>
                                 </div>
                             </div>
                         </div>

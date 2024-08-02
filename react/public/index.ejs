@@ -9,9 +9,9 @@
     <meta name="robots" content="noindex">
     <% } %>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:300,400,400i,500,600,700">
-    <link href="<%= libs.mdi.css %>" rel="stylesheet">
-    <% if (libs?.summernote?.css) { %>
-        <link href="<%= libs.summernote.css %>" rel="stylesheet">
+    <link href="<%= webPath(`/assets/dist/css/materialdesignicons.min.css`) %>" rel="stylesheet">
+    <% if (['sponsor', 'provider', 'validator'].includes(type)) { %>
+        <link href="<%= webPath(`/assets/dist/js/summernote.${timestamp}.min.css`) %>" rel="stylesheet">
     <% } %>
     <link rel="shortcut icon" type="image/x-icon" href="<%= favicon %>">
     <title><%= title %></title>
@@ -20,6 +20,16 @@
 
 <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
+    <% if (env_data?.config?.tag_manager_id) { %>
+        <noscript>
+            <iframe
+                src="https://www.googletagmanager.com/ns.html?id=<%= env_data?.config?.tag_manager_id %>"
+                height="0"
+                width="0"
+                style="display:none;visibility:hidden">
+            </iframe>
+        </noscript>
+    <% } %>
     <div id="root"></div>
     <script>const env_data = JSON.parse('<%= JSON.stringify(env_data) %>');</script>
     <% if (env_data?.client_type !== 'website') { %>
@@ -29,30 +39,16 @@
             window.pdfjsDist = pdfjsDist;
         </script>
     <% } %>
-    <% if (libs?.jquery?.js) { %>
-        <script src="<%= libs.jquery.js %>"></script>
+
+    <% if (['sponsor', 'provider', 'validator'].includes(type)) { %>
+        <script src="<%= webPath(`/assets/dist/js/jquery.${timestamp}.min.js`) %>"></script>
+        <script src="<%= webPath(`/assets/dist/js/summernote.${timestamp}.min.js`) %>"></script>
     <% } %>
-    <% if (libs?.summernote?.js) { %>
-        <script src="<%= libs.summernote.js %>"></script>
-    <% } %>
+
     <script src="<%= script %>"></script>
 
     <% if (env_data?.config?.chat_id) { %>
-        <script>
-            (() => {
-                window.$zoho = window.$zoho || {};
-                window.$zoho.salesiq = window.$zoho.salesiq || { widgetcode: `<%= env_data?.config?.chat_id %>`, values: {}, ready: function () { } };
-                const d = document;
-                const s = d.createElement("script");
-                s.type = "text/javascript";
-                s.id = "zsiqscript";
-                s.defer = true;
-                s.src = "https://salesiq.zoho.eu/widget";
-                const t = d.getElementsByTagName("script")[0];
-                t.parentNode.insertBefore(s, t);
-                d.write("<div id='zsiqwidget'></div>");
-            })();
-        </script>
+        <script id="ze-snippet" src="https://static.zdassets.com/ekr/snippet.js?key=<%= env_data?.config?.chat_id %>"></script>
     <% } %>
 </body>
 

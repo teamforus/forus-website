@@ -46,7 +46,6 @@ export default function FundRequestStepContactInformation({
                                 className="form-control r-n"
                                 id="fund_request_contact_info"
                                 rows={5}
-                                placeholder="Contactgegevens invullen..."
                                 value={contactInformation}
                                 onChange={(e) => setContactInformation(e.target.value)}
                                 required={shouldAddContactInfoRequired}

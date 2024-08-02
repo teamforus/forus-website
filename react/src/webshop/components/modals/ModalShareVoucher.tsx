@@ -83,11 +83,10 @@ export default function ModalShareVoucher({ modal, voucher }: { modal: ModalStat
                                         {translate('voucher.share_voucher.labels.share_note')}
                                     </label>
                                     <textarea
-                                        className="form-control"
                                         id="share_note"
+                                        className="form-control"
                                         value={shareVoucherForm.values.reason}
                                         onChange={(e) => shareVoucherForm.update({ reason: e.target.value })}
-                                        placeholder={translate('voucher.share_voucher.reason_placeholder')}
                                     />
                                     <FormError error={shareVoucherForm.errors.reason} />
                                 </div>

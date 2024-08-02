@@ -2,6 +2,7 @@ export default {
     // SIGNUP = sign-up.pug
     items: {
         title: 'Inloggen',
+        page_title: 'Inloggen{{pageTitleSuffix}}',
         header: 'Hier logt u in',
         pane_text: 'Inloggen op een bestaand account',
         digid: 'Open het DigiD inlogscherm',

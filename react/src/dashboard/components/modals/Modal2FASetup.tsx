@@ -12,7 +12,6 @@ import QrCode from '../elements/qr-code/QrCode';
 import FormError from '../elements/forms/errors/FormError';
 import PincodeControl from '../elements/forms/controls/PincodeControl';
 import PhoneControl from '../elements/forms/controls/PhoneControl';
-import useAssetUrl from '../../hooks/useAssetUrl';
 import useTimer from '../../hooks/useTimer';
 import { ResponseError } from '../../props/ApiResponses';
 import Auth2FAInfoBox from '../elements/auth2fa-info-box/Auth2FAInfoBox';
@@ -25,7 +24,9 @@ export default function Modal2FASetup({
     className,
     onReady,
     onCancel,
+    assetUrl,
     auth2FAState,
+    showInfoBox = true,
 }: {
     modal: ModalState;
     type: string;
@@ -33,9 +34,10 @@ export default function Modal2FASetup({
     className?: string;
     onReady: () => void;
     onCancel: () => void;
+    assetUrl: (uri?: string) => string;
+    showInfoBox?: boolean;
     auth2FAState: Identity2FAState;
 }) {
-    const assetUrl = useAssetUrl();
     const [isLocked, setIsLocked] = useState(false);
     const [unlockEvent, setUnlockEvent] = useState(null);
 
@@ -367,7 +369,7 @@ export default function Modal2FASetup({
                             </div>
                         </div>
                         <div className="modal-section modal-section-collapse">
-                            <Auth2FAInfoBox className="flex-center block-info-box-borderless" />
+                            {showInfoBox && <Auth2FAInfoBox className="flex-center block-info-box-borderless" />}
                         </div>
                         <div className="modal-footer">
                             <div className="button-group">
@@ -410,7 +412,7 @@ export default function Modal2FASetup({
                                             <FormError error={phoneNumberError} />
                                         </div>
                                     </div>
-                                    <Auth2FAInfoBox className="flex-center" />
+                                    {showInfoBox && <Auth2FAInfoBox className="flex-center" />}
                                 </div>
                             </div>
                         </div>
@@ -481,7 +483,7 @@ export default function Modal2FASetup({
                                     </button>
                                 </div>
                             )}
-                            <Auth2FAInfoBox className="flex-center" />
+                            {showInfoBox && <Auth2FAInfoBox className="flex-center" />}
                         </div>
                         <div className="modal-footer">
                             <div className="button-group">
@@ -567,7 +569,7 @@ export default function Modal2FASetup({
                                         </button>
                                     </div>
                                 )}
-                                <Auth2FAInfoBox className="flex-center" />
+                                {showInfoBox && <Auth2FAInfoBox className="flex-center" />}
                             </div>
                             <div className="modal-footer">
                                 <div className="button-group">
