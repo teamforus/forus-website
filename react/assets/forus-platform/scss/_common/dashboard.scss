@@ -40,7 +40,9 @@
     @import '../../../forus-webshop/scss/_common/components/ui-controls';
 }
 
+@import '../../../forus-webshop/scss/_common/components/table-pagination';
 @import '../../../forus-webshop/scss/_common/sections/blocks/block-sign_up';
+@import '../../../forus-webshop/scss/_common/sections/blocks/block-exception';
 
 .block {
     @import 'blocks/block-fund_types';
@@ -2278,7 +2280,6 @@ body {
             }
 
             &.tooltip-bottom {
-                left: 100%;
                 top: 100%;
                 left: 8px;
                 margin-top: 10px;
@@ -2321,6 +2322,8 @@ body {
     }
 
     &.block-sign_up {
+        --paginator-button-active-background: #305dfb;
+
         .card-header {
             padding-top: 0;
             margin: 10px 0 15px;
@@ -2429,14 +2432,6 @@ body {
                     margin-top: 25px;
                 }
 
-                .table-pagination {
-                    .form {
-                        margin-bottom: 0;
-                        display: flex;
-                        flex-grow: 1;
-                    }
-                }
-
                 & + .sign_up-pane-body {
                     border-top: 1px solid #edeef0;
                 }
@@ -2447,9 +2442,7 @@ body {
                     &.button-text {
                         font-weight: 500;
                         font-size: 16px;
-                        line-height: 20px;
                         color: #3561ff;
-
                         line-height: 30px;
 
                         .mdi {
@@ -3085,29 +3078,6 @@ body {
 
             &:last-child {
                 margin-bottom: 0;
-            }
-        }
-
-        .table-pagination {
-            display: flex;
-            align-items: center;
-
-            .table-pagination-counter {
-                flex-grow: 1;
-            }
-
-            .table-pagination-navigation {
-                .button {
-                    font: 500 12px/14px var(--base-font);
-                    padding: 10px 15px;
-                    min-width: 40px;
-
-                    &.button-default {
-                        color: #151b26;
-                        background: #ffffff;
-                        border-color: #d4d9dd;
-                    }
-                }
             }
         }
 
@@ -4879,7 +4849,6 @@ body {
             .inline-filters-dropdown-content {
                 width: 260px;
                 min-height: 100px;
-                display: block;
                 position: absolute;
                 top: 100%;
                 margin-top: 15px;
@@ -5538,7 +5507,6 @@ body {
         z-index: 25;
 
         .notification {
-            background: #fff;
             box-shadow: 5px 10px 30px rgba(#000, 0.2);
             border-radius: 6px;
             margin: 0 0 -59px;

@@ -43,6 +43,13 @@ export default function Markdown({
                     table.previousElementSibling.remove();
                     table.insertBefore(caption, table.firstElementChild);
                 }
+
+                if (table.parentNode) {
+                    const wrapper = document.createElement('div');
+                    wrapper.classList.add('table-wrap');
+                    table.parentNode.insertBefore(wrapper, table);
+                    wrapper.appendChild(table);
+                }
             });
         } catch (e) {
             /* empty */

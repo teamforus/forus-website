@@ -74,6 +74,7 @@ export default {
         },
         vergoedingen: {
             activate: 'Vergoedingen',
+            login: 'Inloggen / registreren',
         },
         ede: {
             activate: 'Regelingen',

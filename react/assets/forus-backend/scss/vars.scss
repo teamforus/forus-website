@@ -1,0 +1,27 @@
+/*==========  Style Sheet - Vars  ==========*/
+:root {
+    // base font
+    --base-font: 'Montserrat', arial, sans-serif;
+    --second-font: 'Open Sans', var(--base-font);
+
+    --text-color: #353535;
+
+    --base-color: #305dfb;
+    --base-color-hover: #fff;
+
+    --placeholder-color: #9b9b9b;
+
+    --border-color: #ddd;
+    --border-color-light: #e5e5e5;
+    --border-radius: 4px;
+
+    --color-primary: #134478;
+    --color-primary-light: #305dfb;
+
+    --color-danger: #e63b3b;
+
+    --color-default: #134478;
+    --color-default-light: #2987fd;
+
+    --box-shadow: 1px 1px 6px 0 rgba(0, 0, 0, 0.1);
+}
