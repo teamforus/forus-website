@@ -164,7 +164,7 @@ export default function TopNavbarSearch() {
                         </div>
                         <input
                             id="genericSearch"
-                            type="search"
+                            type="text"
                             className={classNames('form-control', (searchFocused || dropdown) && 'focused')}
                             autoComplete={'off'}
                             value={filters.values.q}

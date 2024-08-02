@@ -653,9 +653,6 @@ export default function ModalProductReserve({
                                         type="text"
                                         value={form.values.first_name ?? ''}
                                         onChange={(e) => form.update({ first_name: e.target.value })}
-                                        placeholder={translate(
-                                            'modal_product_reserve_notes.fill_notes.placeholders.first_name',
-                                        )}
                                         data-dusk="productReserveFormFirstName"
                                     />
                                     <FormError error={form.errors.first_name} />
@@ -670,9 +667,6 @@ export default function ModalProductReserve({
                                         type="text"
                                         value={form.values.last_name ?? ''}
                                         onChange={(e) => form.update({ last_name: e.target.value })}
-                                        placeholder={translate(
-                                            'modal_product_reserve_notes.fill_notes.placeholders.last_name',
-                                        )}
                                         data-dusk="productReserveFormLastName"
                                     />
                                     <FormError error={form.errors.last_name} />
@@ -708,7 +702,6 @@ export default function ModalProductReserve({
                                                                 form.values.custom_fields[field.key] = e.target.value;
                                                                 form.update({ ...form.values });
                                                             }}
-                                                            placeholder={field.placeholder}
                                                             data-dusk={field.dusk}
                                                         />
                                                     )}
@@ -725,7 +718,6 @@ export default function ModalProductReserve({
                                                                 form.values.custom_fields[field.key] = e.target.value;
                                                                 form.update({ ...form.values });
                                                             }}
-                                                            placeholder={field.placeholder}
                                                             data-dusk={field.dusk}
                                                         />
                                                     )}
@@ -777,7 +769,6 @@ export default function ModalProductReserve({
                                                 onChange={(e) => {
                                                     form.update({ [field.key]: e.target.value });
                                                 }}
-                                                placeholder={field.placeholder}
                                                 data-dusk={field.dusk}
                                             />
                                         )}
@@ -785,7 +776,6 @@ export default function ModalProductReserve({
                                         {!field.custom && field.type === 'date' && (
                                             <DatePickerControl
                                                 value={dateParse(form.values[field.key])}
-                                                placeholder={'dd-MM-jjjj'}
                                                 dateMax={dateMinLimit}
                                                 dateFormat={'dd-MM-yyyy'}
                                                 onChange={(date: Date) => {
@@ -871,9 +861,6 @@ export default function ModalProductReserve({
                                         type="text"
                                         value={form.values.street}
                                         onChange={(e) => form.update({ street: e.target.value })}
-                                        placeholder={translate(
-                                            'modal_product_reserve_notes.fill_notes.placeholders.street',
-                                        )}
                                         data-dusk="productReserveFormStreet"
                                     />
                                     <FormError error={form.errors.street} />
@@ -888,7 +875,6 @@ export default function ModalProductReserve({
                                         type="text"
                                         value={form.values.house_nr}
                                         onChange={(e) => form.update({ house_nr: e.target.value })}
-                                        placeholder="70, 1234, 2"
                                         data-dusk="productReserveFormHouseNumber"
                                     />
                                     <FormError error={form.errors.house_nr} />
@@ -903,7 +889,6 @@ export default function ModalProductReserve({
                                         type="text"
                                         value={form.values.house_nr_addition}
                                         onChange={(e) => form.update({ house_nr_addition: e.target.value })}
-                                        placeholder="C, -2, -12, AB"
                                         data-dusk="productReserveFormHouseNumberAddition"
                                     />
                                     <FormError error={form.errors.house_nr_addition} />
@@ -921,9 +906,6 @@ export default function ModalProductReserve({
                                         type="text"
                                         value={form.values.postal_code}
                                         onChange={(e) => form.update({ postal_code: e.target.value })}
-                                        placeholder={translate(
-                                            'modal_product_reserve_notes.fill_notes.placeholders.postal_code',
-                                        )}
                                         data-dusk="productReserveFormPostalCode"
                                     />
                                     <FormError error={form.errors.postal_code} />
@@ -938,9 +920,6 @@ export default function ModalProductReserve({
                                         type="text"
                                         value={form.values.city}
                                         onChange={(e) => form.update({ city: e.target.value })}
-                                        placeholder={translate(
-                                            'modal_product_reserve_notes.fill_notes.placeholders.city',
-                                        )}
                                         data-dusk="productReserveFormCity"
                                     />
                                     <FormError error={form.errors.city} />
@@ -1011,7 +990,6 @@ export default function ModalProductReserve({
                                     className="form-control"
                                     id="reservation_modal_user_note"
                                     value={form.values.user_note ?? ''}
-                                    placeholder={translate('modal_product_reserve_notes.fill_notes.placeholders.notes')}
                                     onChange={(e) => form.update({ user_note: e.target.value })}
                                     data-dusk="productReserveFormNote"
                                 />

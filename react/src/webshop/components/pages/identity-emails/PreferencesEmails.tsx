@@ -256,7 +256,7 @@ export default function PreferencesEmails() {
                                                                 type={'button'}
                                                                 disabled={emailDisabled[email.id]}
                                                                 className="button button-primary-outline button-icon"
-                                                                aria-label="verwijder"
+                                                                aria-label="Verwijder"
                                                                 onClick={() => deleteEmail(email)}
                                                                 data-dusk="btnDeleteIdentityEmail">
                                                                 <em className="mdi mdi-trash-can-outline"></em>
@@ -300,7 +300,6 @@ export default function PreferencesEmails() {
                                                         className="form-control"
                                                         type="email"
                                                         id="preferences_form_email"
-                                                        placeholder="e-mail@e-mail.nl"
                                                         value={form.values.email}
                                                         onChange={(e) => {
                                                             form.update({ email: e.target.value });
