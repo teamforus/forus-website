@@ -131,7 +131,7 @@ export default function VoucherRecords({
                                         <p>
                                             In deze fase wordt gekeken naar de huidige uitdagingen van de organisatie en
                                             hoe het toevoegen van persoonsgegevens aan het tegoed kan helpen. Ook wordt
-                                            afgestemd welke eigenschappen de organisatie graag aan het tegoed wil
+                                            afgestemd welke persoonsgegevens de organisatie graag aan het tegoed wil
                                             toevoegen.
                                         </p>
                                     </div>
@@ -215,9 +215,9 @@ export default function VoucherRecords({
                             <p>
                                 Het implementatietraject is inbegrepen met een korte training op de testomgeving om de
                                 organisatie uit te leggen hoe de functionaliteit werkt. We schatten dat het
-                                implementatietraject het toevoegen van persoonsgegevens aan een tegoed ongeveer
-                                twee weken in beslag neemt. Echter, de tijdsinvestering die van uw kant 
-                                gevraagd wordt, zal hoogstwaarschijnlijk niet meer dan een paar uur bedragen.
+                                implementatietraject het toevoegen van persoonsgegevens aan een tegoed ongeveer twee
+                                weken in beslag neemt. Echter, de tijdsinvestering die van uw kant gevraagd wordt, zal
+                                hoogstwaarschijnlijk niet meer dan een paar uur bedragen.
                             </p>
                         </FaqItem>
 

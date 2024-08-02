@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import Organization from '../../../../props/models/Organization';
 import Paginator from '../../../../modules/paginator/components/Paginator';
 import useFilter from '../../../../hooks/useFilter';
@@ -10,6 +9,8 @@ import { PaginationData } from '../../../../props/ApiResponses';
 import Tag from '../../../../props/models/Tag';
 import useAssetUrl from '../../../../hooks/useAssetUrl';
 import UIControlCheckbox from '../../../elements/forms/ui-controls/UIControlCheckbox';
+import EmptyCard from '../../../elements/empty-card/EmptyCard';
+import useTranslate from '../../../../hooks/useTranslate';
 
 type FundLocal = Fund & { applied?: boolean };
 
@@ -22,7 +23,7 @@ export default function SignUpAvailableFunds({
     externalFilters?: { fund_id?: number; organization_id?: number; tag?: string };
     onApply: () => void;
 }) {
-    const { t } = useTranslation();
+    const translate = useTranslate();
 
     const [tags, setTags] = useState<Array<Partial<Tag>>>([]);
     const [organizations, setOrganizations] = useState<Array<Partial<Organization>>>([]);
@@ -34,7 +35,13 @@ export default function SignUpAvailableFunds({
     const providerFundService = useProviderFundService();
     const assetUrl = useAssetUrl();
 
-    const filter = useFilter({
+    const filter = useFilter<{
+        q?: string;
+        page?: number;
+        tag?: string;
+        per_page?: number;
+        organization_id?: number;
+    }>({
         q: '',
         page: 1,
         tag: null,
@@ -92,14 +99,24 @@ export default function SignUpAvailableFunds({
             ?.then((res) => {
                 setFunds(res.data);
 
-                const allTags = { key: null, name: t('provider_funds.filters.options.all_labels') };
-                const allOrganizations = { id: null, name: t('provider_funds.filters.options.all_organizations') };
+                const allTags = { key: null, name: translate('provider_funds.filters.options.all_labels') };
+                const allOrganizations = {
+                    id: null,
+                    name: translate('provider_funds.filters.options.all_organizations'),
+                };
 
-                setTags([allTags, ...res.data.meta.tags]);
-                setOrganizations([allOrganizations, ...res.data.meta.organizations]);
+                setTags((tags) => {
+                    return tags.length > 0 ? tags : [allTags, { key: 'lorem', name: 'ipsum' }, ...res.data.meta.tags];
+                });
+
+                setOrganizations((organizations) => {
+                    return organizations.length > 0
+                        ? organizations
+                        : [allOrganizations, ...res.data.meta.organizations];
+                });
             })
             .finally(() => setProgress(100));
-    }, [fetchAvailableFunds, filter.activeValues, organization, setProgress, t]);
+    }, [fetchAvailableFunds, filter.activeValues, organization, setProgress, translate]);
 
     return (
         <div className="sign_up-funds-card">
@@ -109,13 +126,13 @@ export default function SignUpAvailableFunds({
                         <div className="row">
                             <div className="form-group col col-lg-6 col-xs-12">
                                 <label className="form-label">
-                                    {t('sign_up_provider.filters.labels.organizations')}
+                                    {translate('sign_up_provider.filters.labels.organizations')}
                                 </label>
                                 <select
                                     className="form-control"
-                                    value={filter.values.organization_id}
+                                    value={filter.values.organization_id || ''}
                                     onChange={(e) => {
-                                        filter.update({ organization_id: parseInt(e.target.value) });
+                                        filter.update({ organization_id: parseInt(e.target.value) || null });
                                     }}>
                                     {organizations.map((organization) => (
                                         <option key={organization.id} value={organization.id}>
@@ -125,15 +142,17 @@ export default function SignUpAvailableFunds({
                                 </select>
                             </div>
                             <div className="form-group col col-lg-6 col-xs-12">
-                                <label className="form-label">{t('sign_up_provider.filters.labels.tags')}</label>
+                                <label className="form-label">
+                                    {translate('sign_up_provider.filters.labels.tags')}
+                                </label>
                                 <select
                                     className="form-control"
-                                    value={filter.values.tag}
+                                    value={filter.values.tag || ''}
                                     onChange={(e) => {
-                                        filter.update({ tag: e.target.value });
+                                        filter.update({ tag: e.target.value === 'all' ? null : e.target.value });
                                     }}>
                                     {tags.map((tag) => (
-                                        <option key={tag.key} value={tag.key}>
+                                        <option key={tag.key || 'all'} value={tag.key || 'all'}>
                                             {tag.name}
                                         </option>
                                     ))}
@@ -148,7 +167,7 @@ export default function SignUpAvailableFunds({
                     <div className="flex">
                         <div className="flex flex-grow">
                             <div className="card-title">
-                                <span>{t('sign_up_provider.funds.title')}</span>
+                                <span>{translate('sign_up_provider.funds.title')}</span>
                                 {selected?.length > 0 ? (
                                     <span className="total-count">{`${selected.length}/${funds?.data.length}`}</span>
                                 ) : (
@@ -160,7 +179,7 @@ export default function SignUpAvailableFunds({
                             <div className="block block-inline-filters">
                                 {selected.length > 0 && (
                                     <div className="button button-primary" onClick={() => applyFunds()}>
-                                        {t('sign_up_provider.buttons.join')}
+                                        {translate('sign_up_provider.buttons.join')}
                                     </div>
                                 )}
 
@@ -168,7 +187,7 @@ export default function SignUpAvailableFunds({
                                     <div
                                         className="button button-secondary button-sm"
                                         onClick={(e) => toggleAll(e, funds.data)}>
-                                        {t('sign_up_provider.buttons.select_all')}
+                                        {translate('sign_up_provider.buttons.select_all')}
                                     </div>
                                 )}
 
@@ -176,7 +195,7 @@ export default function SignUpAvailableFunds({
                                     <div
                                         className="button button-secondary button-sm"
                                         onClick={(e) => toggleAll(e, funds.data)}>
-                                        {t('sign_up_provider.buttons.deselect_all')}
+                                        {translate('sign_up_provider.buttons.deselect_all')}
                                     </div>
                                 )}
                             </div>
@@ -191,6 +210,7 @@ export default function SignUpAvailableFunds({
                             }`}>
                             <div className="card-block-checkbox">
                                 <UIControlCheckbox
+                                    className="ui-control-checkbox-primary"
                                     checked={selected.includes(fund.id)}
                                     onChange={(e) => toggle(e, fund)}
                                 />
@@ -212,7 +232,7 @@ export default function SignUpAvailableFunds({
                             </div>
                             <div className="card-section-actions">
                                 <button className="button button-primary button-sm" onClick={() => applyFunds(fund)}>
-                                    {t(
+                                    {translate(
                                         fund.applied
                                             ? 'fund_card_provider_finances.status.hold'
                                             : 'sign_up_provider.buttons.join',
@@ -220,13 +240,13 @@ export default function SignUpAvailableFunds({
                                 </button>
                             </div>
                         </div>
-                        {fund?.implementation?.has_provider_terms_page && (
+                        {fund?.implementation?.url_provider_terms_page && (
                             <div className="card-section">
                                 <div className="card-text">
-                                    Door u aan te melden gaat u akkoord met de
+                                    Door u aan te melden gaat u akkoord met de{' '}
                                     <a
                                         className="card-text-link"
-                                        href={`${fund.implementation.url_webshop}/aanbieders/aanmelden`}
+                                        href={fund.implementation.url_provider_terms_page}
                                         target="_blank"
                                         rel="noreferrer">
                                         algemene voorwaarden
@@ -244,9 +264,7 @@ export default function SignUpAvailableFunds({
                 )}
 
                 {funds?.meta?.total == 0 && (
-                    <div className="block block-empty text-center">
-                        <div className="empty-details">Er zijn momenteel geen actieve fondsen.</div>
-                    </div>
+                    <EmptyCard title="Er zijn momenteel geen actieve fondsen." type={'card-section'} />
                 )}
             </div>
         </div>

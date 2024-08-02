@@ -1,4 +1,4 @@
-module.exports = {
+export default {
     // FUNDS = funds.pug
     header: {
         title: 'Aanvragen',
@@ -7,10 +7,6 @@ module.exports = {
             title: 'Potjes',
             subtitle:
                 'Hieronder ziet u een deel van de potjes die u kan aanvragen. Bent u benieuwd welke er nog meer zijn? Neem dan contact op met: xxxx',
-        },
-        westerkwartier: {
-            title: 'Potjes',
-            subtitle: 'Hieronder ziet u de regelingen die u kan activeren.',
         },
         berkelland: {
             title: 'Activeren',
@@ -29,9 +25,6 @@ module.exports = {
         potjeswijzer: {
             title: 'Potjes',
         },
-        westerkwartier: {
-            title: 'Potjes',
-        },
         berkelland: {
             title: 'Activeren',
         },
@@ -47,9 +40,17 @@ module.exports = {
         schagen: {
             title: 'Regelingen',
         },
+        goereeoverflakkee: {
+            title: 'Regelingen',
+        },
+        vergoedingen: {
+            title: 'Alle vergoedingen',
+        },
     },
     labels: {
-        categorie: 'Categoriën',
+        search: 'Zoeken',
+        category: 'Categorie',
+        organization: 'Organisatie',
         criteria: 'Voorwaarden',
         location: 'Locatie',
         office: 'Zuidhorn Gemeente',
@@ -59,7 +60,7 @@ module.exports = {
         age: '< 18 jaar oud',
         income: 'Inkomensgrens',
         amount: '< € 1118.46',
-        categories_label: 'U kunt uw voucher activeren tot en met:',
+        categories_label: 'U kunt uw tegoed activeren tot en met:',
     },
     criteria: {
         key: '{{key}}',
@@ -72,9 +73,6 @@ module.exports = {
             start_request: 'Aanvragen',
         },
         potjeswijzer: {
-            start_request: 'Aanvragen',
-        },
-        westerkwartier: {
             start_request: 'Aanvragen',
         },
         more: 'Bekijk meer',

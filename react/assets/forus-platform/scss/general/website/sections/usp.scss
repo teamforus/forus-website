@@ -1,18 +1,18 @@
 .usp {
-    padding: 20px 0px;
+    padding: 20px 0;
     height: 100%;
     @media screen and (min-width: 992px) {
         padding: 20px 50px 10px 50px;
         min-height: 200px;
         &:before {
-            content: "";
+            content: '';
             position: absolute;
             margin-top: -32px;
             left: -30px;
             height: 70px;
             width: 70px;
             background-repeat: no-repeat;
-            background-image: url("../img/icon-usp.svg");
+            background-image: url('../img/icon-usp.svg');
         }
         /*&__sp-1 {
             &:before {
@@ -53,7 +53,7 @@
             &:before {
                 background-image: url("../img/icon-samenwerking.svg");
             }       
-        }*/   
+        }*/
     }
 }
 .phone-m {

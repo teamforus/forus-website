@@ -3,13 +3,13 @@ import ReservationField from '../../../../props/models/ReservationField';
 import { ResponseErrorData } from '../../../../props/ApiResponses';
 import useOpenModal from '../../../../hooks/useOpenModal';
 import ModalDangerZone from '../../../modals/ModalDangerZone';
-import { useTranslation } from 'react-i18next';
 import FormError from '../../../elements/forms/errors/FormError';
 import FormGroupInfo from '../../../elements/forms/elements/FormGroupInfo';
 import SelectControl from '../../../elements/select-control/SelectControl';
 import SelectControlOptions from '../../../elements/select-control/templates/SelectControlOptions';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import useTranslate from '../../../../hooks/useTranslate';
 
 type FieldsLocal = ReservationField & { expanded?: boolean };
 
@@ -28,7 +28,7 @@ export default function ReservationFieldItem({
     index: number;
     id: string;
 }) {
-    const { t } = useTranslation();
+    const translate = useTranslate();
     const openModal = useOpenModal();
 
     const [types] = useState([
@@ -41,14 +41,14 @@ export default function ReservationFieldItem({
             openModal((modal) => (
                 <ModalDangerZone
                     modal={modal}
-                    title={t('modals.danger_zone.remove_reservation_field.title')}
-                    description={t('modals.danger_zone.remove_reservation_field.description')}
+                    title={translate('modals.danger_zone.remove_reservation_field.title')}
+                    description={translate('modals.danger_zone.remove_reservation_field.description')}
                     buttonCancel={{
-                        text: t('modals.danger_zone.remove_reservation_field.buttons.cancel'),
+                        text: translate('modals.danger_zone.remove_reservation_field.buttons.cancel'),
                         onClick: modal.close,
                     }}
                     buttonSubmit={{
-                        text: t('modals.danger_zone.remove_reservation_field.buttons.confirm'),
+                        text: translate('modals.danger_zone.remove_reservation_field.buttons.confirm'),
                         onClick: () => {
                             onConfirm();
                             modal.close();
@@ -57,7 +57,7 @@ export default function ReservationFieldItem({
                 />
             ));
         },
-        [openModal, t],
+        [openModal, translate],
     );
 
     const removeField = useCallback(
@@ -97,7 +97,7 @@ export default function ReservationFieldItem({
                                 onChange([...fields]);
                             }}>
                             <em className="mdi mdi-arrow-collapse-vertical icon-start" />
-                            {t('reservation_settings.buttons.collapse')}
+                            {translate('reservation_settings.buttons.collapse')}
                         </div>
                     ) : (
                         <div
@@ -107,13 +107,13 @@ export default function ReservationFieldItem({
                                 onChange([...fields]);
                             }}>
                             <em className="mdi mdi-arrow-expand-vertical icon-start" />
-                            {t('reservation_settings.buttons.expand')}
+                            {translate('reservation_settings.buttons.expand')}
                         </div>
                     )}
 
                     <div className="button button-danger button-sm" onClick={() => removeField(index)}>
                         <em className="mdi mdi-trash-can-outline icon-start" />
-                        {t('reservation_settings.buttons.delete')}
+                        {translate('reservation_settings.buttons.delete')}
                     </div>
                 </div>
             </div>
@@ -122,7 +122,7 @@ export default function ReservationFieldItem({
                     <div className="form">
                         <div className="form-group">
                             <label className="form-label form-label-required">
-                                {t('reservation_settings.labels.label')}
+                                {translate('reservation_settings.labels.label')}
                             </label>
                             <FormGroupInfo
                                 info={
@@ -142,7 +142,7 @@ export default function ReservationFieldItem({
                                         field.label = e.target.value;
                                         onChange([...fields]);
                                     }}
-                                    placeholder={t('reservation_settings.labels.label')}
+                                    placeholder={translate('reservation_settings.labels.label')}
                                 />
                             </FormGroupInfo>
                             <div className="form-hint">Max. 200 tekens</div>
@@ -150,7 +150,7 @@ export default function ReservationFieldItem({
                         </div>
 
                         <div className="form-group">
-                            <label className="form-label">{t('reservation_settings.labels.description')}</label>
+                            <label className="form-label">{translate('reservation_settings.labels.description')}</label>
                             <FormGroupInfo
                                 info={
                                     <Fragment>
@@ -168,7 +168,7 @@ export default function ReservationFieldItem({
                                         field.description = e.target.value;
                                         onChange([...fields]);
                                     }}
-                                    placeholder={t('reservation_settings.labels.description')}
+                                    placeholder={translate('reservation_settings.labels.description')}
                                 />
                             </FormGroupInfo>
                             <div className="form-hint">Max. 1000 tekens</div>
@@ -177,7 +177,7 @@ export default function ReservationFieldItem({
 
                         <div className="form-group">
                             <label className="form-label form-label-required">
-                                {t('reservation_settings.labels.type')}
+                                {translate('reservation_settings.labels.type')}
                             </label>
 
                             <FormGroupInfo
@@ -221,7 +221,7 @@ export default function ReservationFieldItem({
                                     <div className="checkbox-box">
                                         <div className="mdi mdi-check" />
                                     </div>
-                                    {t('reservation_settings.labels.required')}
+                                    {translate('reservation_settings.labels.required')}
                                 </div>
                             </label>
                         </div>

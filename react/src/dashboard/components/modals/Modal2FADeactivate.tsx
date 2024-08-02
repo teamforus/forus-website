@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { ModalState } from '../../modules/modals/context/ModalContext';
-import { classList } from '../../helpers/utils';
 import { useIdentity2FAService } from '../../services/Identity2FAService';
 import Identity2FA from '../../props/models/Identity2FA';
 import usePushDanger from '../../hooks/usePushDanger';
@@ -9,6 +8,7 @@ import FormError from '../elements/forms/errors/FormError';
 import PincodeControl from '../elements/forms/controls/PincodeControl';
 import Auth2FAInfoBox from '../elements/auth2fa-info-box/Auth2FAInfoBox';
 import useTimer from '../../hooks/useTimer';
+import classNames from 'classnames';
 
 export default function Modal2FADeactivate({
     modal,
@@ -117,14 +117,14 @@ export default function Modal2FADeactivate({
 
     return (
         <div
-            className={classList([
+            className={classNames(
                 'modal',
                 'modal-lg',
                 'modal-animated',
                 'modal-2fa-setup',
-                modal.loading ? 'modal-loading' : null,
+                modal.loading && 'modal-loading',
                 className,
-            ])}>
+            )}>
             <div className="modal-backdrop" onClick={cancel} />
             <div className="modal-window">
                 {step == 'confirmation' && (
@@ -160,6 +160,7 @@ export default function Modal2FADeactivate({
                                             valueType={'num'}
                                             blockSize={3}
                                             blockCount={2}
+                                            ariaLabel={'Voer de tweefactorauthenticatiecode in voor deactivering'}
                                         />
 
                                         <FormError error={errorCode} />

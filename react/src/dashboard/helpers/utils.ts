@@ -1,5 +1,4 @@
 import Organization from '../props/models/Organization';
-import { HTMLAttributes } from 'react';
 
 export const hasPermission = (organization: Organization, permissions: string | Array<string>, all = false) => {
     if (!organization || !organization.permissions) {
@@ -25,13 +24,9 @@ export const hasPermission = (organization: Organization, permissions: string | 
     );
 };
 
-/**
- * @param classNames
- * @deprecated
- */
-export const classList = (classNames: Array<string> | HTMLAttributes<HTMLElement>['className'] | null) => {
-    return (Array.isArray(classNames) ? classNames : [classNames])
-        .filter((className) => className)
-        .map((className) => className.trim())
-        .join(' ');
+export const extractText = (html: string) => {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, 'text/html');
+
+    return doc.body.textContent || '';
 };

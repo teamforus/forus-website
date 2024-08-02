@@ -1,7 +1,7 @@
 import React from 'react';
 import { ModalState } from '../../modules/modals/context/ModalContext';
-import { classList } from '../../helpers/utils';
-import { useTranslation } from 'react-i18next';
+import useTranslate from '../../hooks/useTranslate';
+import classNames from 'classnames';
 
 export default function ModalImagePreview({
     modal,
@@ -12,22 +12,22 @@ export default function ModalImagePreview({
     className?: string;
     imageSrc?: string;
 }) {
-    const { t } = useTranslation();
+    const translate = useTranslate();
 
     return (
         <div
-            className={classList([
+            className={classNames(
                 'modal',
                 'modal-animated',
                 'modal-image-preview',
-                modal.loading ? 'modal-loading' : null,
+                modal.loading && 'modal-loading',
                 className,
-            ])}>
+            )}>
             <div className="modal-backdrop" onClick={modal.close} />
 
             <div className="modal-window">
                 <a className="mdi mdi-close modal-close" onClick={modal.close} role="button" />
-                <div className="modal-header">{t('modal_image_preview.header.title')}</div>
+                <div className="modal-header">{translate('modal_image_preview.header.title')}</div>
                 <div className="modal-body">
                     <div className="modal-section">
                         <div className="img-block">

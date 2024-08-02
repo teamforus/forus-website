@@ -1,23 +1,24 @@
 import RecordType from './RecordType';
+import FundCriterionExternalValidator from './FundCriterionExternalValidator';
+import FundCriterionRule from './FundCriterionRule';
 
 export default interface FundCriterion {
-    id: number;
+    id?: number;
+    record_type_key?: string;
+    operator: '<' | '<=' | '>' | '>=' | '!=' | '=' | '*';
+    show_attachment: boolean;
+    order?: number;
+    title?: string;
     description?: string;
     description_html?: string;
-    external_validators: Array<{
-        accepted: boolean;
-        organization_id: number;
-        organization_validator_id: number;
-    }>;
-    has_record: boolean;
-    is_valid?: boolean;
-    max?: number;
-    min?: number;
-    operator: '<' | '<=' | '>' | '>=' | '!=' | '=' | '*';
-    optional: boolean;
     record_type?: RecordType;
+    min?: string;
+    max?: string;
+    optional: boolean;
     value?: string;
-    show_attachment: boolean;
-    title?: string;
-    record_type_key?: string;
+    has_record?: boolean;
+    is_valid?: boolean;
+    fund_criteria_step_id?: number;
+    rules?: Array<FundCriterionRule>;
+    external_validators?: Array<FundCriterionExternalValidator>;
 }

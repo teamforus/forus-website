@@ -1,4 +1,4 @@
-module.exports = {
+export default {
     modal_section: {
         type_selection: {
             title: 'Gebruik mijn QR-code',

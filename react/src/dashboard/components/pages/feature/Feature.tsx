@@ -74,6 +74,7 @@ export default function Feature() {
                 <StateNavLink
                     name={'features'}
                     params={{ organizationId: activeOrganization.id }}
+                    activeExact={true}
                     className="breadcrumb-item">
                     Marketplace
                 </StateNavLink>

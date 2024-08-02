@@ -68,7 +68,7 @@ export default function useComposeVoucherCardData() {
     }, []);
 
     const getVoucherThumbnail = useCallback(
-        (voucher) => {
+        (voucher: Voucher) => {
             if (voucher.type == 'regular') {
                 if (voucher.fund?.logo) {
                     return voucher.fund?.logo?.sizes?.thumbnail;

@@ -3,6 +3,7 @@ import Product from '../../../../../props/models/Product';
 import useAssetUrl from '../../../../../hooks/useAssetUrl';
 import useAuthIdentity from '../../../../../hooks/useAuthIdentity';
 import { clickOnKeyEnter } from '../../../../../../dashboard/helpers/wcag';
+import { useProductService } from '../../../../../services/ProductService';
 
 export default function ProductsListItemList({
     price,
@@ -16,19 +17,21 @@ export default function ProductsListItemList({
     const assetUrl = useAssetUrl();
     const authIdentity = useAuthIdentity();
 
+    const productService = useProductService();
+
     return (
         <Fragment>
             <div className="product-photo">
                 <img
                     src={product.photo?.sizes?.thumbnail || assetUrl('/assets/img/placeholders/product-thumbnail.png')}
-                    alt={product.alternative_text}
+                    alt={productService.transformProductAlternativeText(product)}
                 />
             </div>
             <div className="product-content">
                 <div className="product-details">
-                    <h2 className="product-title" data-dusk="productName">
+                    <h3 className="product-title" data-dusk="productName">
                         {product.name}
-                    </h2>
+                    </h3>
                     <div className="product-subtitle">{product.organization.name}</div>
                     <div className="product-price">{price}</div>
                 </div>
@@ -40,7 +43,7 @@ export default function ProductsListItemList({
                             onKeyDown={clickOnKeyEnter}
                             role={'button'}
                             tabIndex={0}
-                            aria-label="toevoegen aan verlanglijstje"
+                            aria-label="Toevoegen aan verlanglijstje"
                             aria-pressed={product.bookmarked}>
                             <em className="mdi mdi-cards-heart" />
                         </div>

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { ModalState } from '../../modules/modals/context/ModalContext';
-import { classList } from '../../helpers/utils';
 import Organization from '../../props/models/Organization';
 import Reservation from '../../props/models/Reservation';
 import Product from '../../props/models/Product';
@@ -8,10 +7,11 @@ import useFormBuilder from '../../hooks/useFormBuilder';
 import useVoucherService from '../../services/VoucherService';
 import useProductReservationService from '../../services/ProductReservationService';
 import FormError from '../elements/forms/errors/FormError';
-import { useTranslation } from 'react-i18next';
 import SelectControl from '../elements/select-control/SelectControl';
 import SelectControlOptions from '../elements/select-control/templates/SelectControlOptions';
 import FormGroupInfo from '../elements/forms/elements/FormGroupInfo';
+import useTranslate from '../../hooks/useTranslate';
+import classNames from 'classnames';
 
 export default function ModalReservationCreate({
     modal,
@@ -24,7 +24,7 @@ export default function ModalReservationCreate({
     onCreated: (reservation: Reservation) => void;
     organization: Organization;
 }) {
-    const { t } = useTranslation();
+    const translate = useTranslate();
     const voucherService = useVoucherService();
     const productReservationService = useProductReservationService();
 
@@ -55,7 +55,7 @@ export default function ModalReservationCreate({
                 if (!voucher.allowed_organizations.map((item) => item.id).includes(organization.id)) {
                     // The voucher is valid but can't be used with current organization.
                     return formVouchers.setErrors({
-                        number: 'Deze voucher is geldig maar mag niet gescant worden door uw organisatie.',
+                        number: 'Deze tegoed is geldig maar mag niet gescant worden door uw organisatie.',
                     });
                 }
 
@@ -72,7 +72,7 @@ export default function ModalReservationCreate({
                         if (products.length === 0) {
                             // Voucher is valid, but there are no products available for this number.
                             return formVouchers.setErrors({
-                                number: 'Deze voucher is geldig maar er zijn tegoeden beschikbaar voor het gekozen product.',
+                                number: 'Deze tegoed is geldig maar er zijn tegoeden beschikbaar voor het gekozen product.',
                             });
                         }
 
@@ -122,13 +122,13 @@ export default function ModalReservationCreate({
 
     return (
         <div
-            className={classList([
+            className={classNames(
                 'modal',
                 'modal-animated',
                 'modal-reservation-create',
-                modal.loading ? 'modal-loading' : null,
+                modal.loading && 'modal-loading',
                 className,
-            ])}>
+            )}>
             <div className="modal-backdrop" onClick={modal.close} />
             {step === 'voucher' && (
                 <form className="modal-window form" onSubmit={formVouchers.submit}>
@@ -161,10 +161,10 @@ export default function ModalReservationCreate({
                     </div>
                     <div className="modal-footer text-center">
                         <button className="button button-default" type="button" onClick={() => modal.close()}>
-                            {t('modals.modal_voucher_create.buttons.cancel')}
+                            {translate('modals.modal_voucher_create.buttons.cancel')}
                         </button>
                         <button className="button button-primary" type="submit">
-                            {t('modals.modal_voucher_create.buttons.submit')}
+                            {translate('modals.modal_voucher_create.buttons.submit')}
                         </button>
                     </div>
                 </form>
@@ -184,7 +184,7 @@ export default function ModalReservationCreate({
                                     <div className="form-group form-group-inline form-group-inline-md">
                                         <label className="form-label">Aanbod</label>
                                         <div className="form-offset">
-                                            <FormGroupInfo info={t('reservation_create.tooltips.product')}>
+                                            <FormGroupInfo info={translate('reservation_create.tooltips.product')}>
                                                 <SelectControl
                                                     className="form-control"
                                                     propKey={'id'}

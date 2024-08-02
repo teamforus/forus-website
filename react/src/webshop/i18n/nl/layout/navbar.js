@@ -1,4 +1,4 @@
-module.exports = {
+export default {
     items: {
         home: 'Home',
         funds: 'Activeren',
@@ -9,12 +9,16 @@ module.exports = {
         identity: 'Profiel',
         signup: 'Uitleg aanbieders',
         search: 'Zoek',
-        menu: 'Meer',
+        menu: {
+            show: 'Meer',
+            close: 'Sluiten',
+        },
         westerkwartier: {
             funds: 'Potjes',
         },
         groningen: {
             funds: 'Aanvragen',
+            explanation: 'Hoe werkt het?',
         },
         waalwijk: {
             funds: 'Aanvragen',
@@ -47,9 +51,6 @@ module.exports = {
         noordoostpolder: {
             funds: 'Regelingen',
         },
-        groningen: {
-            explanation: 'Hoe werkt het?',
-        },
     },
     buttons: {
         westerkwartier: {
@@ -73,6 +74,7 @@ module.exports = {
         },
         vergoedingen: {
             activate: 'Vergoedingen',
+            login: 'Inloggen / registreren',
         },
         ede: {
             activate: 'Regelingen',
@@ -84,7 +86,7 @@ module.exports = {
         voucher: 'Mijn tegoeden',
         reimbursements: 'Kosten terugvragen',
         profile: 'Profiel >',
-        records: 'Mijn eigenschappen',
+        records: 'Mijn persoonsgegevens',
         authorize: 'Log in op de app',
         logout: 'Uitloggen',
         products: 'Aanbod',
@@ -145,7 +147,7 @@ module.exports = {
                     funds: 'Activeren',
                 },
                 noordoostpolder: {
-                    funds: 'Activeren',
+                    funds: 'Regelingen',
                 },
                 vergoedingen: {
                     funds: 'Vergoedingen',
@@ -154,9 +156,6 @@ module.exports = {
                     funds: 'Regelingen',
                 },
                 ede: {
-                    funds: 'Regelingen',
-                },
-                noordoostpolder: {
                     funds: 'Regelingen',
                 },
             },

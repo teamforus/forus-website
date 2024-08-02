@@ -47,11 +47,12 @@ export default function Auth2FA() {
                     modal={modal}
                     onReady={goDashboard}
                     onCancel={showPane}
+                    assetUrl={assetUrl}
                     auth2FAState={auth2FAState}
                 />
             ));
         },
-        [auth2FAState, goDashboard, openModal, hidePane, showPane],
+        [hidePane, openModal, goDashboard, showPane, assetUrl, auth2FAState],
     );
 
     useEffect(() => {

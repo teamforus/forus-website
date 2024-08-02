@@ -281,7 +281,6 @@ export default function Search() {
                                     value={filterValues.product_category_id}
                                     onChange={(id?: number) => filterUpdate({ product_category_id: id })}
                                     options={productCategories}
-                                    placeholder={productCategories?.[0]?.name}
                                 />
                             </div>
                         )}
@@ -298,7 +297,6 @@ export default function Search() {
                                     value={filterValues.fund_id}
                                     onChange={(id?: number) => filterUpdate({ fund_id: id })}
                                     options={funds}
-                                    placeholder={funds?.[0]?.name}
                                 />
                             </div>
                         )}
@@ -315,7 +313,6 @@ export default function Search() {
                                     value={filterValues.organization_id}
                                     onChange={(id?: number) => filterUpdate({ organization_id: id })}
                                     options={organizations}
-                                    placeholder={organizations?.[0]?.name}
                                 />
                             </div>
                         )}
@@ -326,14 +323,9 @@ export default function Search() {
                 <Fragment>
                     <div className="showcase-content-header">
                         <div className="showcase-filters-title">
+                            Zoekresultaten
+                            {filterValuesActive.q && <Fragment> gevonden voor {`"${filterValuesActive.q}"`}</Fragment>}
                             <div className="showcase-filters-title-count">{searchItems?.meta?.total}</div>
-                            {filterValuesActive.q ? (
-                                <div className="ellipsis">
-                                    Zoekresultaten gevonden voor {`"${filterValuesActive.q}"`}
-                                </div>
-                            ) : (
-                                <div className="ellipsis">Zoekresultaten</div>
-                            )}
                         </div>
                         <div className="showcase-filters-block">
                             <div className="block block-label-tabs form">
@@ -355,7 +347,6 @@ export default function Search() {
                                         onChange={(id: number) => {
                                             filterUpdate(sortByOptions.find((option) => option.id == id)?.value || {});
                                         }}
-                                        placeholder="Sorteer"
                                     />
                                 </div>
 
@@ -400,12 +391,7 @@ export default function Search() {
 
                     <div className="card" hidden={searchItems?.meta?.last_page < 2}>
                         <div className="card-section">
-                            <Paginator
-                                meta={searchItems.meta}
-                                filters={filterValues}
-                                updateFilters={filterUpdate}
-                                buttonClass={'button-primary-outline'}
-                            />
+                            <Paginator meta={searchItems.meta} filters={filterValues} updateFilters={filterUpdate} />
                         </div>
                     </div>
                 </Fragment>

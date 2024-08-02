@@ -14,6 +14,7 @@ import { ResponseError } from '../../props/ApiResponses';
 import { dateFormat, dateParse } from '../../helpers/dates';
 import useSetProgress from '../../hooks/useSetProgress';
 import usePushDanger from '../../hooks/usePushDanger';
+import TableEmptyValue from '../elements/table-empty-value/TableEmptyValue';
 
 export default function ModalCreatePrevalidation({
     fund,
@@ -183,7 +184,7 @@ export default function ModalCreatePrevalidation({
                                                     {form.values[fundRecord] ? (
                                                         form.values[fundRecord]
                                                     ) : (
-                                                        <span className={'text-muted'}>-</span>
+                                                        <TableEmptyValue />
                                                     )}
                                                 </div>
                                             </div>
@@ -292,7 +293,7 @@ export default function ModalCreatePrevalidation({
 
                                     {showNewRecord && (
                                         <Fragment>
-                                            <label className="form-label">Selecteer eigenschap</label>
+                                            <label className="form-label">Selecteer persoonsgegevens</label>
                                             <div className="flex-row">
                                                 <div className="flex-col flex-grow">
                                                     <div className="form-offset">
@@ -327,7 +328,7 @@ export default function ModalCreatePrevalidation({
                                                 type="button"
                                                 onClick={() => setShowNewRecord(true)}>
                                                 <em className="mdi mdi-plus icon-start" />
-                                                Eigenschap toevoegen
+                                                Persoonsgegevens toevoegen
                                             </button>
                                         </div>
                                     )}

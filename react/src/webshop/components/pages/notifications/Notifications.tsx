@@ -132,7 +132,6 @@ export default function Notifications() {
                                 meta={notifications.meta}
                                 filters={filter.values}
                                 updateFilters={filter.update}
-                                buttonClass={'button-primary-outline'}
                             />
                         </div>
                     </div>

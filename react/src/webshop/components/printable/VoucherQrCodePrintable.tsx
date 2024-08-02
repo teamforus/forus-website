@@ -1,24 +1,29 @@
 import React, { useEffect } from 'react';
 import Voucher from '../../../dashboard/props/models/Voucher';
 import Organization from '../../../dashboard/props/models/Organization';
-import useAppConfigs from '../../hooks/useAppConfigs';
 import { PrintableState } from '../../../dashboard/modules/printable/context/PrintableContext';
 import useTranslate from '../../../dashboard/hooks/useTranslate';
 import QrCode from '../../../dashboard/components/elements/qr-code/QrCode';
+import Fund from '../../../dashboard/props/models/Fund';
 
 export default function VoucherQrCodePrintable({
+    fund,
     voucher,
     assetUrl,
     printable,
+    webshopUrl,
     organization,
+    showConditions = false,
 }: {
+    fund?: Partial<Fund>;
     voucher: Voucher;
     assetUrl: (uri: string) => string;
     printable: PrintableState;
+    webshopUrl?: string;
     organization: Organization;
+    showConditions?: boolean;
 }) {
     const translate = useTranslate();
-    const appConfigs = useAppConfigs();
 
     const voucherType = voucher.product ? 'product' : 'budget';
     const printableTitle = voucher.product ? voucher.product.name : voucher.fund.name;
@@ -43,12 +48,7 @@ export default function VoucherQrCodePrintable({
                 <div className="printable-logo">
                     <img src={assetUrl('/assets/img/implementation-logo.png')} alt={''} />
                 </div>
-                <QrCode
-                    value={JSON.stringify({
-                        type: 'voucher',
-                        value: voucher.address,
-                    })}
-                />
+                <QrCode value={JSON.stringify({ type: 'voucher', value: voucher.address })} />
                 <div className="printable-title">{printableTitle}</div>
                 <div className="printable-description">
                     {translate(`voucher_printable.${voucherType}_voucher.labels.description`, {
@@ -57,13 +57,20 @@ export default function VoucherQrCodePrintable({
                 </div>
             </div>
             <div className="printable-additional-info">
+                {showConditions && fund && !voucher?.product && (
+                    <div className="printable-condition">
+                        {translate(
+                            `voucher_printable.budget_voucher.labels.${fund?.implementation?.key}.condition`,
+                            null,
+                            'voucher_printable.budget_voucher.labels.condition',
+                        )}
+                    </div>
+                )}
                 <div className="notice">{translate('voucher_printable.default.labels.purchases_notice')}</div>
                 <div className="description">
                     {translate(`voucher_printable.${voucherType}_voucher.labels.show_to`)}
                 </div>
-                <div className="reference">
-                    {voucherType != 'product' ? appConfigs?.fronts.url_webshop : organization.name}
-                </div>
+                <div className="reference">{voucherType != 'product' ? webshopUrl : organization?.name}</div>
             </div>
             <div className="printable-organization-info">
                 <div className="contact">

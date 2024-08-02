@@ -4,19 +4,19 @@ import useTranslate from '../../../../../../dashboard/hooks/useTranslate';
 import StateNavLink from '../../../../../modules/state_router/StateNavLink';
 import { strLimit } from '../../../../../../dashboard/helpers/string';
 import FundsListItemModel from '../../../../../services/types/FundsListItemModel';
+import { uniqueId } from 'lodash';
 
 export default function FundsListItemList({
     fund,
     applyFund,
-    searchParams,
 }: {
     fund?: FundsListItemModel;
     applyFund?: (event: React.MouseEvent, fund: FundsListItemModel) => void;
-    searchParams?: object;
 }) {
     const assetUrl = useAssetUrl();
     const translate = useTranslate();
     const [showMore, setShowMore] = useState(false);
+    const [showMoreId] = useState(uniqueId('fund_description_short_'));
 
     return (
         <Fragment>
@@ -27,7 +27,7 @@ export default function FundsListItemList({
                         fund?.logo?.sizes?.small ||
                         assetUrl('/assets/img/placeholders/fund-thumbnail.png')
                     }
-                    alt={`Dit is de afbeelding van ${fund.name}`}
+                    alt=""
                 />
             </div>
             <div className="fund-content">
@@ -54,27 +54,25 @@ export default function FundsListItemList({
                         )}
                     </div>
 
-                    <h2 className="fund-name">
-                        <StateNavLink
-                            name={'fund'}
-                            params={{ id: fund.id }}
-                            state={{ searchParams: searchParams || null }}>
-                            {fund.name}
-                        </StateNavLink>
-                    </h2>
+                    <h2 className="fund-name">{fund.name}</h2>
 
                     {fund.description_short && (
                         <div className="fund-description">
-                            <span id="fund_description_short">
+                            <span id={showMoreId}>
                                 {showMore ? fund.description_short : strLimit(fund.description_short, 190)}
                             </span>
                             <br />
                             {fund.description_short.length > 190 && (
                                 <button
+                                    type={'button'}
                                     className="button button-text button-xs"
-                                    onClick={() => setShowMore(!showMore)}
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        setShowMore(!showMore);
+                                    }}
                                     aria-expanded={showMore}
-                                    aria-controls="fund_description_short">
+                                    aria-controls={showMoreId}>
                                     {showMore ? 'Toon minder' : 'Toon meer'}
                                     <em
                                         className={`mdi ${showMore ? 'mdi-chevron-up' : 'mdi-chevron-down'} icon-right`}
@@ -88,8 +86,8 @@ export default function FundsListItemList({
                 {fund.showActivateButton && (
                     <div className="fund-actions">
                         <button
-                            className="button button-primary button-xs"
                             type="button"
+                            className="button button-primary button-xs"
                             onClick={(e) => applyFund(e, fund)}>
                             {translate('funds.buttons.is_applicable')}
                             <em className="mdi mdi-arrow-right icon-right" aria-hidden="true" />
@@ -100,10 +98,10 @@ export default function FundsListItemList({
                 {fund.showPendingButton && (
                     <div className="fund-actions">
                         <StateNavLink
+                            customElement={'button'}
                             name={'fund-requests'}
                             params={{ fund_id: fund.id }}
                             className="button button-text button-xs"
-                            role="button"
                             ng-click="$dir.goToFundRequests($event)">
                             {translate('funds.buttons.check_status')}
                             <em className="mdi mdi-chevron-right icon-right" aria-hidden="true" />

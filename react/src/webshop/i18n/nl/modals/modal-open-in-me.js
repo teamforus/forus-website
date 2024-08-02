@@ -1,4 +1,4 @@
-module.exports = {
+export default {
     header: {
         title: 'Open de in Me app',
     },

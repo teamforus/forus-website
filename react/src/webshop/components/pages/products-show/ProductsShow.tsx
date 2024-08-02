@@ -24,6 +24,8 @@ import useEnvData from '../../../hooks/useEnvData';
 import BlockShowcase from '../../elements/block-showcase/BlockShowcase';
 import useSetProgress from '../../../../dashboard/hooks/useSetProgress';
 import { clickOnKeyEnter } from '../../../../dashboard/helpers/wcag';
+import Fund from '../../../props/models/Fund';
+import { useFundService } from '../../../services/FundService';
 
 export default function ProductsShow() {
     const { id } = useParams();
@@ -39,10 +41,12 @@ export default function ProductsShow() {
     const navigateState = useNavigateState();
     const bookmarkProductToggle = useBookmarkProductToggle();
 
+    const fundService = useFundService();
     const productService = useProductService();
     const voucherService = useVoucherService();
     const providerService = useProviderService();
 
+    const [funds, setFunds] = useState<Array<Fund>>(null);
     const [product, setProduct] = useState<Product>(null);
     const [provider, setProvider] = useState<Provider>(null);
     const [vouchers, setVouchers] = useState<Array<Voucher>>(null);
@@ -101,6 +105,20 @@ export default function ProductsShow() {
             .then((res) => setVouchers(res.data.data))
             .finally(() => setProgress(100));
     }, [authIdentity, voucherService, setProgress, id]);
+
+    const fetchFunds = useCallback(() => {
+        if (!product?.funds.length) {
+            return;
+        }
+
+        fundService
+            .list({ per_page: 100, check_criteria: 1, fund_ids: product?.funds.map((fund) => fund.id) })
+            .then((res) => setFunds(res.data.data));
+    }, [fundService, product?.funds]);
+
+    useEffect(() => {
+        fetchFunds();
+    }, [fetchFunds]);
 
     useEffect(() => {
         fetchProduct();
@@ -170,7 +188,7 @@ export default function ProductsShow() {
                     </div>
                 )
             }>
-            {product && (
+            {product && funds && vouchers && (
                 <section className="section section-product">
                     <div className="block block-product">
                         <div className="product-card">
@@ -199,7 +217,7 @@ export default function ProductsShow() {
                                         <div className="product-property-label">
                                             {translate('product.labels.category')}
                                         </div>
-                                        <h2 className="product-property-value">{product.product_category.name}</h2>
+                                        <div className="product-property-value">{product.product_category.name}</div>
                                     </div>
                                 </div>
                                 <div className="product-properties">
@@ -208,11 +226,7 @@ export default function ProductsShow() {
                                             {translate('product.labels.description')}
                                         </div>
                                         <div className="product-property-value">
-                                            <Markdown
-                                                content={product.description_html}
-                                                ariaLevel={3}
-                                                role={'heading'}
-                                            />
+                                            <Markdown content={product.description_html} />
                                         </div>
                                     </div>
                                 </div>
@@ -225,14 +239,14 @@ export default function ProductsShow() {
                                     onKeyDown={clickOnKeyEnter}
                                     role={'button'}
                                     tabIndex={0}
-                                    aria-label="toevoegen aan verlanglijstje"
+                                    aria-label="Toevoegen aan verlanglijstje"
                                     aria-pressed={product.bookmarked}>
                                     <em className="mdi mdi-cards-heart" />
                                 </div>
                             )}
                         </div>
 
-                        {product && vouchers && <ProductFundsCard product={product} vouchers={vouchers} />}
+                        <ProductFundsCard product={product} vouchers={vouchers} funds={funds} />
 
                         {provider && (
                             <div className="block block-organizations">

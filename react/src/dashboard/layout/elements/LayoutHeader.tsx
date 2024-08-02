@@ -81,7 +81,7 @@ export const LayoutHeader = () => {
     const [roles] = useState({
         provider: 'Aanbieder',
         sponsor: 'Sponsor',
-        validator: 'Validator',
+        validator: 'Beoordelaar',
     });
 
     const openAuthPincodeModal = useCallback(

@@ -188,6 +188,7 @@ export type AppConfigProp = {
     show_office_map: boolean;
     show_voucher_map: boolean;
     show_product_map: boolean;
+    page_title_suffix?: string;
 };
 
 export class ConfigService<T = AppConfigProp> {
