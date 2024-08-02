@@ -1,10 +1,10 @@
 import React, { Fragment, useCallback, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { currencyFormat, strLimit } from '../../../../helpers/string';
 import Fund from '../../../../props/models/Fund';
+import useTranslate from '../../../../hooks/useTranslate';
 
 export default function FinancialOverviewFundsBudgetTableItem({ fund }: { fund: Fund }) {
-    const { t } = useTranslation();
+    const translate = useTranslate();
 
     const [collapsed, setCollapsed] = useState(false);
 
@@ -79,7 +79,7 @@ export default function FinancialOverviewFundsBudgetTableItem({ fund }: { fund: 
                 <Fragment>
                     <tr className="table-highlight-grey">
                         <td>
-                            <strong>{t('financial_dashboard_overview.labels.total_percentage')}</strong>
+                            <strong>{translate('financial_dashboard_overview.labels.total_percentage')}</strong>
                         </td>
                         <td>{fundBudget.percentage_total} %</td>
                         <td>{fundBudget.percentage_active} %</td>
@@ -91,7 +91,7 @@ export default function FinancialOverviewFundsBudgetTableItem({ fund }: { fund: 
 
                     <tr className="table-highlight-grey">
                         <td>
-                            <strong>{t('financial_dashboard_overview.labels.total_count')}</strong>
+                            <strong>{translate('financial_dashboard_overview.labels.total_count')}</strong>
                         </td>
                         <td>{fundBudget.vouchers_count}</td>
                         <td>{fundBudget.active_vouchers_count}</td>
@@ -128,7 +128,7 @@ export default function FinancialOverviewFundsBudgetTableItem({ fund }: { fund: 
                     {fundBudget.children_count > 0 && (
                         <tr className="table-highlight-grey">
                             <td>
-                                <strong>Eigenschappen</strong>
+                                <strong>Persoonsgegevens</strong>
                             </td>
                             <td colSpan={6}>
                                 <div>Aantal kinderen</div>
@@ -141,7 +141,7 @@ export default function FinancialOverviewFundsBudgetTableItem({ fund }: { fund: 
 
                     <tr className="table-highlight-grey">
                         <td>
-                            <strong>{t('financial_dashboard_overview.labels.product_vouchers')}</strong>
+                            <strong>{translate('financial_dashboard_overview.labels.product_vouchers')}</strong>
                         </td>
                         <td>{fund.product_vouchers.vouchers_amount_locale}</td>
                         <td>{fund.product_vouchers.active_vouchers_amount_locale}</td>

@@ -1,4 +1,4 @@
-module.exports = {
+export default {
     header: {
         title_budget: 'Aanbod',
         title_subsidies: 'Aanbod',

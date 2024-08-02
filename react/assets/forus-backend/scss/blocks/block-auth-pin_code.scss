@@ -1,0 +1,212 @@
+.block.block-auth-pin_code {
+    display: flex;
+    flex-direction: row;
+    user-select: none;
+    padding: 25px 0;
+    margin: 0 0 25px;
+
+    .pin_code-content {
+        display: flex;
+        flex-grow: 1;
+        flex-direction: column;
+        padding: 80px 25px 80px 25px;
+
+        .pin_code-title {
+            font: 500 44px/50px var(--base-font);
+            margin: 0 0 15px;
+        }
+
+        .pin_code-subtitle {
+            font: 400 18px/26px var(--base-font);
+            margin: 0 0 30px;
+        }
+
+        .pin_code-link {
+            font: 500 18px/24px var(--base-font);
+            text-align: center;
+            color: #4C73FF;
+        }
+
+        .pin_code-media {
+            &.pin_code-media-small {
+                img {
+                    width: 188px;
+                }
+            }
+        }
+
+        .pin_code-details-block {
+            margin-top: 30px;
+            text-align: center;
+            color: #222530;
+
+            .pin_code-details-title {
+                font: 500 21px/26px var(--base-font);
+            }
+
+            .pin_code-details-info {
+                margin-top: 15px;
+                font: 400 18px/27px var(--base-font);
+            }
+        }
+
+        .pin_code-input {
+            display: flex;
+            flex-direction: row;
+            background: #f5f5f5;
+            border-radius: 8px;
+            padding: 20px 25px;
+            margin: 0 0 30px;
+            width: 460px;
+            max-width: 460px;
+            cursor: default;
+            position: relative;
+
+            .hidden-input {
+                opacity: 0;
+                height: 100%;
+                width: 100%;
+                position: absolute;
+                top: 0;
+                left: 0;
+                border: none;
+                outline: none;
+                background: none;
+                z-index: -1;
+            }
+
+            .pin_code-input-digits {
+                display: flex;
+                flex-direction: row;
+            }
+
+            .pin_code-input-digit {
+                display: inline-flex;
+                flex-grow: 1;
+                font: 400 50px/60px var(--second-font);
+                color: #000000;
+                position: relative;
+                padding-left: 35px;
+                text-align: center;
+                justify-content: center;
+                width: 75px;
+                transition: all .4s;
+
+                &:before {
+                    content: ' ';
+                    width: 6px;
+                    height: 6px;
+                    border-radius: 6px;
+                    background: #bbbbbb;
+                    position: absolute;
+                    left: 17.5px;
+                    top: 50%;
+                    display: block;
+                    transform: translate(-50%, -50%);
+                }
+
+                &:after {
+                    width: 2px;
+                    height: 40px;
+                    border-radius: 6px;
+                    background: #3561FF;
+                    position: absolute;
+                    left: 35px;
+                    top: 50%;
+                    display: block;
+                    transform: translate(0, -50%);
+                    @include anim_blink();
+                    transition: opacity .4s;
+                }
+
+                &:first-child {
+                    padding-left: 0;
+                    width: 40px;
+
+                    &:before {
+                        display: none;
+                    }
+
+                    &:after {
+                        left: 0;
+                    }
+                }
+
+                &.empty {
+                    color: #bbbbbb;
+                }
+
+                &.active {
+                    color: #3561FF;
+
+                    &:after {
+                        content: ' ';
+                    }
+                }
+            }
+        }
+
+        .pin_code-input-error {
+            font: 500 14px/24px var(--base-font);
+            color: var(--color-danger);
+            margin: -25px 0 30px;
+
+            &:first-letter {
+                text-transform: uppercase
+            }
+        }
+    }
+
+    .pin_code-instruction {
+        display: flex;
+        flex-direction: column;
+        position: relative;
+
+        .pin_code-instruction-image {
+            position: relative;
+        }
+
+        .pin_code-instruction-desc {
+            font: 400 16px/22px var(--base-font);
+            position: absolute;
+            left: 50%;
+            bottom: 0;
+            transform: translate(-50%);
+
+            img {
+                margin-left: -30px;
+                height: 16px;
+                float: left;
+                display: block;
+                padding: 0 6px 0 10px;
+                margin-top: 2px;
+            }
+        }
+    }
+
+    @media screen and (max-width: 1000px) {
+        .pin_code-content {
+            padding: 0;
+            width: 100%;
+
+            .pin_code-title {
+                font: 600 28px/36px var(--base-font);
+                margin: 0 0 15px;
+            }
+
+            .pin_code-subtitle {
+                font: 400 16px/26px var(--base-font);
+                margin: 0 0 15px;
+            }
+
+            .pin_code-media {
+                width: 100%;
+
+                .pin_code-media-img {
+                    width: 100%;
+                    display: block;
+                }
+            }
+        }   
+    }
+}

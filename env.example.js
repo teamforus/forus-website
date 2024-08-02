@@ -6,6 +6,7 @@ const support_id = false;
 const chat_id = false;
 const sessions = true;
 const google_maps_api_key = '';
+const tag_manager_id = false;
 
 const me_app_link = 'https://forus.io/DL';
 const ios_ipad_link = 'https://testflight.apple.com/join/gWw1lXyB';
@@ -34,6 +35,7 @@ fronts['webshop.general'] = {
     client_key: 'general',
     client_type: 'webshop',
     name: 'General webshop',
+    default_title: 'General webshop',
     useHashRouter: use_hash_router,
     config: {
         api_url: api_url,
@@ -60,6 +62,7 @@ fronts['webshop.nijmegen'] = {
     client_key: 'nijmegen',
     client_type: 'webshop',
     name: 'Nijmegen webshop',
+    default_title: 'Nijmegen webshop',
     useHashRouter: use_hash_router,
 };
 
@@ -69,6 +72,7 @@ fronts['dashboard.sponsor'] = {
     client_type: 'sponsor',
     // webRoot: 'dashboard.sponsor',
     name: 'Sponsor dashboard',
+    default_title: 'Sponsor dashboard',
     useHashRouter: use_hash_router,
     config: {
         api_url: api_url,
@@ -94,6 +98,7 @@ fronts['dashboard.provider'] = {
     client_key: 'general',
     client_type: 'provider',
     name: 'Provider dashboard',
+    default_title: 'Provider dashboard',
     // webRoot: 'dashboard.provider',
     useHashRouter: use_hash_router,
     config: {
@@ -120,6 +125,7 @@ fronts['dashboard.validator'] = {
     client_key: baseImplementationKey,
     client_type: 'validator',
     name: 'Validator dashboard',
+    default_title: 'Validator dashboard',
     // webRoot: 'dashboard.validator',
     useHashRouter: use_hash_router,
     config: {
@@ -139,6 +145,35 @@ fronts['dashboard.validator'] = {
 
         sessions: sessions,
         single_record_validation: true,
+    },
+};
+
+fronts['website'] = {
+    type: 'website',
+    client_key: 'general',
+    client_type: 'website',
+    name: 'Website',
+    webRoot: 'website',
+    useHashRouter: use_hash_router,
+    config: {
+        api_url: api_url,
+        android_link: android_link,
+        ios_iphone_link: ios_iphone_link,
+        google_maps_api_key: google_maps_api_key,
+        tag_manager_id: tag_manager_id,
+    },
+};
+
+fronts['backend'] = {
+    type: 'backend',
+    name: 'Backend',
+    client_key: 'general',
+    assetsPath: '../forus-backend/public/assets',
+    appFileName: '../../forus-backend/public/assets/js/app.js',
+    withoutHtml: true,
+    client_type: 'pin_code-auth',
+    config: {
+        api_url: api_url,
     },
 };
 

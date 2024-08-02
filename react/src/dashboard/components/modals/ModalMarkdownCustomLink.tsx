@@ -1,12 +1,12 @@
 import React, { ChangeEvent, useCallback, useRef, useState } from 'react';
 import { ModalState } from '../../modules/modals/context/ModalContext';
-import { classList } from '../../helpers/utils';
-import { useTranslation } from 'react-i18next';
 import useFormBuilder from '../../hooks/useFormBuilder';
 import { useMediaService } from '../../services/MediaService';
 import { ResponseError } from '../../props/ApiResponses';
 import FormError from '../elements/forms/errors/FormError';
 import useSetProgress from '../../hooks/useSetProgress';
+import useTranslate from '../../hooks/useTranslate';
+import classNames from 'classnames';
 
 export default function ModalMarkdownCustomLink({
     type,
@@ -21,11 +21,13 @@ export default function ModalMarkdownCustomLink({
     success: (values: { url?: string; text?: string; uid?: string; alt?: string }) => void;
     className?: string;
 }) {
-    const { t } = useTranslation();
+    const translate = useTranslate();
+    const setProgress = useSetProgress();
+
+    const mediaService = useMediaService();
+
     const input = useRef(null);
     const [errors, setErrors] = useState(null);
-    const mediaService = useMediaService();
-    const setProgress = useSetProgress();
 
     const form = useFormBuilder(
         {
@@ -75,21 +77,21 @@ export default function ModalMarkdownCustomLink({
     );
 
     return (
-        <div className={classList(['modal', 'modal-animated', modal.loading ? 'modal-loading' : null, className])}>
+        <div className={classNames('modal', 'modal-animated', modal.loading && 'modal-loading', className)}>
             <div className="modal-backdrop" onClick={modal.close} />
 
             <form className="modal-window form" onSubmit={form.submit}>
                 <div className="modal-close mdi mdi-close" onClick={modal.close} role="button" />
                 {type == 'imageLink' && (
-                    <div className="modal-header">{t('modals.modal_markdown_custom_link.header.image')}</div>
+                    <div className="modal-header">{translate('modals.modal_markdown_custom_link.header.image')}</div>
                 )}
 
                 {type == 'customLink' && (
-                    <div className="modal-header">{t('modals.modal_markdown_custom_link.header.link')}</div>
+                    <div className="modal-header">{translate('modals.modal_markdown_custom_link.header.link')}</div>
                 )}
 
                 {type == 'youtubeLink' && (
-                    <div className="modal-header">{t('modals.modal_markdown_custom_link.header.youtube')}</div>
+                    <div className="modal-header">{translate('modals.modal_markdown_custom_link.header.youtube')}</div>
                 )}
 
                 <div className="modal-body">
@@ -97,7 +99,7 @@ export default function ModalMarkdownCustomLink({
                         {type === 'customLink' && (
                             <div className="form-group">
                                 <label className="form-label" htmlFor="link_text">
-                                    {t('modals.modal_markdown_custom_link.labels.desc')}
+                                    {translate('modals.modal_markdown_custom_link.labels.desc')}
                                 </label>
                                 <input
                                     type="text"
@@ -112,7 +114,7 @@ export default function ModalMarkdownCustomLink({
                         {(type === 'customLink' || type === 'youtubeLink') && (
                             <div className="form-group">
                                 <label className="form-label" htmlFor="link_url">
-                                    {t('modals.modal_markdown_custom_link.labels.url')}
+                                    {translate('modals.modal_markdown_custom_link.labels.url')}
                                 </label>
                                 <input
                                     type="text"
@@ -129,7 +131,7 @@ export default function ModalMarkdownCustomLink({
                                 <div className="flex-row">
                                     <div className="flex-col flex-grow">
                                         <label className="form-label" htmlFor="media_url">
-                                            {t('modals.modal_markdown_custom_link.labels.url_image')}
+                                            {translate('modals.modal_markdown_custom_link.labels.url_image')}
                                         </label>
                                         <input
                                             className="form-control"
@@ -147,7 +149,7 @@ export default function ModalMarkdownCustomLink({
                                             type="button"
                                             onClick={selectMedia}>
                                             <em className="mdi mdi-upload icon-start" />
-                                            {t('modals.modal_markdown_custom_link.buttons.upload_image')}
+                                            {translate('modals.modal_markdown_custom_link.buttons.upload_image')}
                                         </button>
                                     </div>
                                 </div>
@@ -157,7 +159,7 @@ export default function ModalMarkdownCustomLink({
                         {type === 'imageLink' && (
                             <div className="form-group">
                                 <label className="form-label" htmlFor="media_alt">
-                                    {t('modals.modal_markdown_custom_link.labels.alt_text')}
+                                    {translate('modals.modal_markdown_custom_link.labels.alt_text')}
                                 </label>
                                 <input
                                     className="form-control"
@@ -172,10 +174,10 @@ export default function ModalMarkdownCustomLink({
                 </div>
                 <div className="modal-footer text-center">
                     <button className="button button-primary" type="submit">
-                        {t('modal.buttons.confirm')}
+                        {translate('modal.buttons.confirm')}
                     </button>
                     <button className="button button-default" type="button" onClick={modal.close}>
-                        {t('modal.buttons.close')}
+                        {translate('modal.buttons.close')}
                     </button>
                 </div>
             </form>

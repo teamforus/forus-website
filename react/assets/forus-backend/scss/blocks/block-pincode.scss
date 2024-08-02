@@ -1,0 +1,27 @@
+.block.block-pincode {
+    @media screen and (max-width: 1000px) {
+        width: calc(60px * 6 + 10px * 5);
+
+        .pincode-number {
+            height: 60px;
+            width: 60px;
+            font: 600 22px/70px var(--base-font)
+        }
+    }
+
+    @media screen and (max-width: 767px) {
+        margin: 30px auto 30px;
+        width: calc(50px * 6 + 10px * 5);
+
+        .pincode-number {
+            width: 50px;
+            height: 60px;
+            font: 600 26px/60px var(--base-font);
+        }
+
+        &.block-pincode-compact .pincode-number {
+            min-width: 24px;
+            font-size: 16px;
+        }
+    }
+}

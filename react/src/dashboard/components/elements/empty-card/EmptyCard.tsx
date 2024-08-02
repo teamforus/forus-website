@@ -14,6 +14,8 @@ interface EmptyButtonType {
 export default function EmptyCard({
     title,
     description,
+    imageIcon,
+    imageIconImg,
     textAlign,
     button = null,
     buttons = [],
@@ -21,6 +23,8 @@ export default function EmptyCard({
 }: {
     title?: string;
     description?: string;
+    imageIcon?: string;
+    imageIconImg?: string;
     textAlign?: 'left' | 'center' | 'right';
     button?: EmptyButtonType;
     buttons?: Array<EmptyButtonType>;
@@ -35,6 +39,18 @@ export default function EmptyCard({
         type == 'card' ? { className: 'card' } : {},
         <div className="card-section">
             <div className={`block block-empty text-${textAlign || 'center'}`}>
+                {imageIconImg && (
+                    <div className="empty-icon">
+                        <img className="empty-icon-img empty-icon-img-border" src={imageIconImg} alt={''} />
+                    </div>
+                )}
+
+                {imageIcon && (
+                    <div className="empty-image">
+                        <img src={imageIcon} alt="" />
+                    </div>
+                )}
+
                 {title && <div className="empty-title">{title}</div>}
 
                 {descriptionLines.length > 0 && (
@@ -58,7 +74,7 @@ export default function EmptyCard({
                                     onClick={button.onClick}
                                     className={`button button-${button.type || 'default'}`}
                                     data-dusk={button.dusk || 'btnEmptyBlock'}>
-                                    {button.icon && button.iconPosition == 'start' && (
+                                    {button.icon && (!button.iconPosition || button.iconPosition == 'start') && (
                                         <em className={`mdi mdi-${button.icon} icon-start`} />
                                     )}
                                     {button.text}

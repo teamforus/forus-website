@@ -1,7 +1,8 @@
-module.exports = {
+export default {
     // SIGNUP = sign-up.pug
     items: {
         title: 'Inloggen',
+        page_title: 'Inloggen{{pageTitleSuffix}}',
         header: 'Hier logt u in',
         pane_text: 'Inloggen op een bestaand account',
         digid: 'Open het DigiD inlogscherm',
@@ -9,6 +10,12 @@ module.exports = {
         restore_header: '',
         start_email: 'Start aanvraag',
         signup_option: 'Maak een keuze om verder te gaan',
+        errors: {
+            email: {
+                type_mismatch: 'Vul alstublieft een geldig e-mailadres in, bijvoorbeeld naam@voorbeeld.com',
+                value_missing: 'Vul alstublieft een geldig e-mailadres in, bijvoorbeeld naam@voorbeeld.com.',
+            },
+        },
         ede: {
             title: 'Inloggen',
             header: 'Hier logt u in',

@@ -3,6 +3,7 @@ import ClickOutside from '../../click-outside/ClickOutside';
 import { uniqueId } from 'lodash';
 import { SelectControlOptionsProp } from '../SelectControl';
 import SelectControlOptionItem from './elements/SelectControlOptionItem';
+import classNames from 'classnames';
 
 export default function SelectControlOptions<T>({
     id,
@@ -22,6 +23,7 @@ export default function SelectControlOptions<T>({
     setShowOptions,
     searchInputChanged,
     onOptionsScroll,
+    disabled,
 }: SelectControlOptionsProp<T>) {
     const [controlId] = useState('select_control_' + uniqueId());
     const input = useRef(null);
@@ -31,7 +33,7 @@ export default function SelectControlOptions<T>({
     return (
         <div
             id={id}
-            className={'select-control ' + (className ? className : '')}
+            className={classNames('form-control', 'select-control', disabled && 'disabled', className)}
             tabIndex={0}
             role="button"
             data-dusk={dusk}
@@ -91,7 +93,7 @@ export default function SelectControlOptions<T>({
                                     setQuery('');
                                     searchInputChanged();
                                 }}
-                                aria-label="cancel">
+                                aria-label="Annuleren">
                                 <em className="mdi mdi-close-circle" />
                             </div>
                         )}

@@ -5,7 +5,7 @@ import FundProvider from '../props/models/FundProvider';
 import Fund from '../props/models/Fund';
 import Organization from '../props/models/Organization';
 import Tag from '../props/models/Tag';
-import Implementation from "../props/models/Implementation";
+import Implementation from '../props/models/Implementation';
 
 export class ProviderFundService<T = FundProvider> {
     /**

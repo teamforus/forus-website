@@ -12,7 +12,7 @@ import IconMeLogo from '../../../../assets/forus-webshop/resources/_webshop-comm
 import ModalAuthPincode from './ModalAuthPincode';
 import useOpenModal from '../../../dashboard/hooks/useOpenModal';
 import TranslateHtml from '../../../dashboard/components/elements/translate-html/TranslateHtml';
-import {clickOnKeyEnter} from "../../../dashboard/helpers/wcag";
+import { clickOnKeyEnter } from '../../../dashboard/helpers/wcag';
 
 export default function ModalOpenInMe({ modal }: { modal: ModalState }) {
     const translate = useTranslate();
@@ -98,7 +98,7 @@ export default function ModalOpenInMe({ modal }: { modal: ModalState }) {
                             </div>
 
                             <div className="modal-open-in-me-phone-control">
-                                <PhoneControl onChange={onPhoneChange} />
+                                <PhoneControl onChange={onPhoneChange} placeholder={null} />
                                 <FormError error={phoneForm.errors.phone} />
                             </div>
                             <div className="modal-section-notice-block">

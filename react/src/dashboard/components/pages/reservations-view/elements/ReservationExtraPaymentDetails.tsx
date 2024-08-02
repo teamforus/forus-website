@@ -3,7 +3,6 @@ import Organization from '../../../../props/models/Organization';
 import Reservation from '../../../../props/models/Reservation';
 import ExtraPayment from '../../../../props/models/ExtraPayment';
 import KeyValueItem from '../../../elements/key-value/KeyValueItem';
-import { useTranslation } from 'react-i18next';
 import useSetProgress from '../../../../hooks/useSetProgress';
 import usePushSuccess from '../../../../hooks/usePushSuccess';
 import usePushDanger from '../../../../hooks/usePushDanger';
@@ -12,26 +11,29 @@ import { ResponseError } from '../../../../props/ApiResponses';
 import ModalDangerZone from '../../../modals/ModalDangerZone';
 import useOpenModal from '../../../../hooks/useOpenModal';
 import useEnvData from '../../../../hooks/useEnvData';
+import useTranslate from '../../../../hooks/useTranslate';
 
 export default function ReservationExtraPaymentDetails({
-    organization,
-    reservation,
     payment,
     onUpdate,
+    reservation,
+    organization,
 }: {
-    organization: Organization;
-    reservation: Reservation;
     payment: ExtraPayment;
     onUpdate?: (reservation: Reservation) => void;
+    reservation: Reservation;
+    organization: Organization;
 }) {
-    const { t } = useTranslation();
     const envData = useEnvData();
     const isProvider = useMemo(() => envData.client_type == 'provider', [envData.client_type]);
-    const productReservationService = useProductReservationService();
+
+    const openModal = useOpenModal();
+    const translate = useTranslate();
+    const pushDanger = usePushDanger();
     const setProgress = useSetProgress();
     const pushSuccess = usePushSuccess();
-    const pushDanger = usePushDanger();
-    const openModal = useOpenModal();
+
+    const productReservationService = useProductReservationService();
 
     const fetchExtraPayment = useCallback(() => {
         setProgress(0);
@@ -51,11 +53,11 @@ export default function ReservationExtraPaymentDetails({
             openModal((modal) => (
                 <ModalDangerZone
                     modal={modal}
-                    title={t('modals.danger_zone.confirm_extra_payment_refund.title')}
-                    description={t('modals.danger_zone.confirm_extra_payment_refund.description')}
+                    title={translate('modals.danger_zone.confirm_extra_payment_refund.title')}
+                    description={translate('modals.danger_zone.confirm_extra_payment_refund.description')}
                     buttonCancel={{
                         onClick: modal.close,
-                        text: t('modals.danger_zone.confirm_extra_payment_refund.buttons.cancel'),
+                        text: translate('modals.danger_zone.confirm_extra_payment_refund.buttons.cancel'),
                     }}
                     buttonSubmit={{
                         onClick: () => {
@@ -73,13 +75,13 @@ export default function ReservationExtraPaymentDetails({
                                     modal.close();
                                 });
                         },
-                        text: t('modals.danger_zone.confirm_extra_payment_refund.buttons.confirm'),
+                        text: translate('modals.danger_zone.confirm_extra_payment_refund.buttons.confirm'),
                     }}
                 />
             ));
         },
         [
-            t,
+            translate,
             onUpdate,
             openModal,
             pushDanger,
@@ -124,7 +126,7 @@ export default function ReservationExtraPaymentDetails({
 
             <div className="card-section">
                 <div className="card-block card-block-keyvalue">
-                    <KeyValueItem label={t('reservation.labels.status')}>
+                    <KeyValueItem label={translate('reservation.labels.status')}>
                         {!payment.is_fully_refunded && payment.is_paid && (
                             <div className="label label-success">{payment.state_locale}</div>
                         )}
@@ -140,17 +142,23 @@ export default function ReservationExtraPaymentDetails({
                         {payment.is_fully_refunded && <div className="label label-danger">Terugbetaald</div>}
                     </KeyValueItem>
 
-                    <KeyValueItem label={t('reservation.labels.amount')}>{reservation.amount_locale}</KeyValueItem>
+                    <KeyValueItem label={translate('reservation.labels.amount')}>
+                        {reservation.amount_locale}
+                    </KeyValueItem>
 
-                    <KeyValueItem label={t('reservation.labels.amount_extra')}>{payment.amount_locale}</KeyValueItem>
+                    <KeyValueItem label={translate('reservation.labels.amount_extra')}>
+                        {payment.amount_locale}
+                    </KeyValueItem>
 
-                    <KeyValueItem label={t('reservation.labels.price')}>{reservation.price_locale}</KeyValueItem>
+                    <KeyValueItem label={translate('reservation.labels.price')}>
+                        {reservation.price_locale}
+                    </KeyValueItem>
 
-                    <KeyValueItem label={t('reservation.labels.extra_payment_paid_at')}>
+                    <KeyValueItem label={translate('reservation.labels.extra_payment_paid_at')}>
                         {payment.paid_at_locale}
                     </KeyValueItem>
 
-                    <KeyValueItem label={t('reservation.labels.method')}>{payment.method}</KeyValueItem>
+                    <KeyValueItem label={translate('reservation.labels.method')}>{payment.method}</KeyValueItem>
                 </div>
             </div>
         </div>

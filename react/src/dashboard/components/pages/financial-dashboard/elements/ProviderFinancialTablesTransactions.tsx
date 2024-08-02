@@ -1,5 +1,4 @@
 import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import ThSortable from '../../../elements/tables/ThSortable';
 import { strLimit } from '../../../../helpers/string';
 import Transaction from '../../../../props/models/Transaction';
@@ -14,6 +13,8 @@ import LoadingCard from '../../../elements/loading-card/LoadingCard';
 import useTransactionService from '../../../../services/TransactionService';
 import useSetProgress from '../../../../hooks/useSetProgress';
 import usePushDanger from '../../../../hooks/usePushDanger';
+import EmptyCard from '../../../elements/empty-card/EmptyCard';
+import useTranslate from '../../../../hooks/useTranslate';
 
 export default function ProviderFinancialTablesTransactions({
     provider,
@@ -24,9 +25,9 @@ export default function ProviderFinancialTablesTransactions({
     organization: Organization;
     externalFilters?: object;
 }) {
-    const { t } = useTranslation();
-
     const envData = useEnvData();
+
+    const translate = useTranslate();
     const pushDanger = usePushDanger();
     const setProgress = useSetProgress();
     const navigateState = useNavigateState();
@@ -91,10 +92,13 @@ export default function ProviderFinancialTablesTransactions({
                     <tbody>
                         <tr>
                             <ThSortable label="Aanbieder" />
-                            <ThSortable label={t('fund_card_provider_finances.labels.price')} />
-                            <ThSortable label={t('fund_card_provider_finances.labels.product_name')} />
-                            <ThSortable label={t('fund_card_provider_finances.labels.date')} />
-                            <ThSortable className="text-right" label={t('fund_card_provider_finances.labels.status')} />
+                            <ThSortable label={translate('fund_card_provider_finances.labels.price')} />
+                            <ThSortable label={translate('fund_card_provider_finances.labels.product_name')} />
+                            <ThSortable label={translate('fund_card_provider_finances.labels.date')} />
+                            <ThSortable
+                                className="text-right"
+                                label={translate('fund_card_provider_finances.labels.status')}
+                            />
                         </tr>
 
                         {transactions.data.map((transaction) => (
@@ -137,13 +141,7 @@ export default function ProviderFinancialTablesTransactions({
                     </tbody>
                 </table>
             ) : (
-                <div className="card">
-                    <div className="card-section">
-                        <div className="block block-empty text-center">
-                            <div className="empty-details">Geen transacties.</div>
-                        </div>
-                    </div>
-                </div>
+                <EmptyCard title={'Geen transacties.'} />
             )}
         </Fragment>
     );

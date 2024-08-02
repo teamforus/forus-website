@@ -38,6 +38,7 @@ import BlockShowcase from '../../elements/block-showcase/BlockShowcase';
 import BlockLoader from '../../elements/block-loader/BlockLoader';
 import { clickOnKeyEnter } from '../../../../dashboard/helpers/wcag';
 import FundCriterion from '../../../../dashboard/props/models/FundCriterion';
+import useSetTitle from '../../../hooks/useSetTitle';
 
 export default function FundActivate() {
     const { id } = useParams();
@@ -57,6 +58,7 @@ export default function FundActivate() {
     const identityService = useIdentityService();
     const fundRequestService = useFundRequestService();
 
+    const setTitle = useSetTitle();
     const pushInfo = usePushInfo();
     const openModal = useOpenModal();
     const pushDanger = usePushDanger();
@@ -470,6 +472,14 @@ export default function FundActivate() {
     }, [handleDigiDResponse]);
 
     useEffect(() => {
+        if (!fund || !vouchers || !fundRequests) {
+            return;
+        }
+
+        initState(fund);
+    }, [fund, initState, vouchers, fundRequests]);
+
+    useEffect(() => {
         if (!fund || !vouchersActive || !fundRequests) {
             return;
         }
@@ -501,14 +511,6 @@ export default function FundActivate() {
         }
     }, [applyFund, fund, navigateState, vouchersActive, fundRequests]);
 
-    useEffect(() => {
-        if (!fund || !vouchers) {
-            return;
-        }
-
-        initState(fund);
-    }, [fund, initState, vouchers]);
-
     useInterval(() => {
         const { timeToSkipBsn } = getTimeToSkip();
 
@@ -517,6 +519,12 @@ export default function FundActivate() {
             pushInfo('DigiD session expired.', 'You need to confirm your Identity by DigiD again.');
         }
     }, 1000);
+
+    useEffect(() => {
+        if (fund) {
+            setTitle(translate('page_state_titles.fund-activate', { fund_name: fund.name }));
+        }
+    }, [setTitle, translate, fund]);
 
     return (
         <BlockShowcase wrapper={true} breadcrumbs={<></>} loaderElement={<BlockLoader type={'full'} />}>
@@ -584,7 +592,7 @@ export default function FundActivate() {
                                                     <img
                                                         className="sign_up-option-media-img"
                                                         src={assetUrl('/assets/img/icon-auth/icon-auth-digid.svg')}
-                                                        alt=""
+                                                        alt="logo DigiD"
                                                     />
                                                 </div>
                                                 <div className="sign_up-option-details">
@@ -640,6 +648,7 @@ export default function FundActivate() {
                                                 blockCount={2}
                                                 blockSize={4}
                                                 valueType={'alphaNum'}
+                                                ariaLabel={'Voer de activatiecode van het fonds in'}
                                             />
                                             <FormError error={codeForm.errors.code} />
                                         </div>
@@ -670,13 +679,13 @@ export default function FundActivate() {
                         {state == 'digid' && !fetchingData && (
                             <div className="sign_up-pane">
                                 <div className="sign_up-pane-header">
-                                    <h2 className="sign_up-pane-header-title">
+                                    <h1 className="sign_up-pane-header-title">
                                         {translate(
                                             `fund_activate.header.${envData.client_key}.title`,
                                             null,
                                             `fund_activate.header.title`,
                                         )}
-                                    </h2>
+                                    </h1>
                                 </div>
                                 <div className="sign_up-pane-body">
                                     <div className="form">

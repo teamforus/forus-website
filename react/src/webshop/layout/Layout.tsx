@@ -12,6 +12,7 @@ import useAppConfigs from '../hooks/useAppConfigs';
 import LayoutFooter from './elements/LayoutFooter';
 import LayoutMobileMenu from './elements/LayoutMobileMenu';
 import Printable from '../../dashboard/modules/printable/components/Printable';
+import ErrorBoundaryHandler from '../../dashboard/components/elements/error-boundary-handler/ErrorBoundaryHandler';
 
 export const Layout = ({ children }: { children: React.ReactElement }) => {
     const { route } = useStateRoutes();
@@ -33,8 +34,12 @@ export const Layout = ({ children }: { children: React.ReactElement }) => {
         pageScrollRef?.current?.scrollTo({ top: 0 });
     }, [route?.pathname]);
 
+    if (!envData?.config) {
+        return null;
+    }
+
     return (
-        <Fragment>
+        <ErrorBoundaryHandler type={'main'}>
             <div
                 className={`${route?.state?.name == 'fund-request' ? 'signup-layout' : ''}`}
                 ref={pageScrollRef}
@@ -69,6 +74,6 @@ export const Layout = ({ children }: { children: React.ReactElement }) => {
             </div>
 
             <Printable />
-        </Fragment>
+        </ErrorBoundaryHandler>
     );
 };

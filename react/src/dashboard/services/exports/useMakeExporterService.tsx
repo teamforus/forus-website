@@ -14,30 +14,63 @@ export default function useMakeExporterService() {
     const pushSuccess = usePushSuccess();
     const setProgress = useSetProgress();
 
-    const [dataFormats] = useState<Array<ExportFieldProp>>([
+    const [defaultDataFormats] = useState<Array<ExportFieldProp>>([
         { value: 'csv', label: 'Exporteren CSV', icon: 'file-delimited-outline' },
         { value: 'xls', label: 'Exporteren XLS', icon: 'file-excel-outline' },
     ]);
 
     const makeSections = useCallback(
-        (fields: Array<ExportFieldProp>): Array<ExportSectionProp> => [
-            {
-                type: 'radio',
-                key: 'data_format',
-                fields: dataFormats,
-                value: 'csv',
-                title: 'Kies bestandsformaat',
-            },
-            {
-                type: 'checkbox',
-                key: 'fields',
-                fields,
-                fieldsPerRow: 3,
-                selectAll: true,
-                title: 'Kies inbegrepen velden',
-            },
-        ],
-        [dataFormats],
+        (
+            fields: Array<ExportFieldProp>,
+            record_fields = [],
+            data_formats: Array<ExportFieldProp> = null,
+            qr_formats: Array<ExportFieldProp> = null,
+        ): Array<ExportSectionProp> => {
+            const sections: Array<ExportSectionProp> = [
+                {
+                    type: 'radio',
+                    key: 'data_format',
+                    fields: data_formats ? data_formats : defaultDataFormats,
+                    value: 'csv',
+                    title: 'Kies bestandsformaat',
+                },
+                {
+                    type: 'checkbox',
+                    key: 'fields',
+                    fields,
+                    fieldsPerRow: 3,
+                    selectAll: true,
+                    title: 'Kies inbegrepen velden',
+                    collapsable: true,
+                },
+            ];
+
+            if (record_fields?.length > 0) {
+                sections.push({
+                    type: 'checkbox',
+                    key: 'extra_fields',
+                    fields: record_fields,
+                    fieldsPerRow: 3,
+                    selectAll: true,
+                    title: 'Persoonsgegevens',
+                    collapsable: true,
+                    collapsed: true,
+                });
+            }
+
+            if (qr_formats?.length > 0) {
+                sections.push({
+                    type: 'radio',
+                    key: 'qr_format',
+                    fields: qr_formats,
+                    value: 'null',
+                    title: 'QR-codes bijvoegen',
+                });
+            }
+
+            return sections;
+        },
+        [defaultDataFormats],
     );
 
     const saveExportedData = useCallback(

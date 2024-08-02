@@ -1,4 +1,4 @@
-&.block-cms-funds {
+.block.block-cms-funds {
     width: 100%;
 
     .fund-item {
@@ -32,22 +32,25 @@
             .fund-label {
                 margin: 0 0 5px;
                 line-height: 20px;
+                order: 1;
             }
     
             .fund-title {
                 font: 400 24px/36px var(--base-font);
-                margin-top: 5px;
                 color: var(--htc);
                 margin: 0 0 20px;
+                order: 2;
             }
     
             .fund-description {
                 font: 400 18px/28px var(--base-font);
                 margin: 0 0 20px;
+                order: 3;
             }
     
             .fund-button {
                 text-align: left;
+                order: 4;
 
                 .fund-button-link {
                     display: none;

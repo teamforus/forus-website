@@ -1,6 +1,5 @@
 import React, { Fragment, useCallback, useEffect, useState } from 'react';
 import useActiveOrganization from '../../../hooks/useActiveOrganization';
-import { useTranslation } from 'react-i18next';
 import LoadingCard from '../../elements/loading-card/LoadingCard';
 import usePushSuccess from '../../../hooks/usePushSuccess';
 import usePushDanger from '../../../hooks/usePushDanger';
@@ -19,19 +18,22 @@ import useConfirmReservationRejection from '../../../services/helpers/reservatio
 import TransactionDetails from '../transactions-view/elements/TransactionDetails';
 import ReservationExtraPaymentRefunds from './elements/ReservationExtraPaymentRefunds';
 import ReservationExtraPaymentDetails from './elements/ReservationExtraPaymentDetails';
+import useTranslate from '../../../hooks/useTranslate';
+import TableEmptyValue from '../../elements/table-empty-value/TableEmptyValue';
 
 export default function ReservationsView() {
-    const { t } = useTranslation();
     const { id } = useParams();
+
     const envData = useEnvData();
     const activeOrganization = useActiveOrganization();
 
-    const transactionService = useTransactionService();
-    const productReservationService = useProductReservationService();
-
+    const translate = useTranslate();
     const pushDanger = usePushDanger();
     const pushSuccess = usePushSuccess();
     const setProgress = useSetProgress();
+
+    const transactionService = useTransactionService();
+    const productReservationService = useProductReservationService();
 
     const [transaction, setTransaction] = useState<Transaction>(null);
     const [reservation, setReservation] = useState<Reservation>(null);
@@ -162,6 +164,7 @@ export default function ReservationsView() {
                 <StateNavLink
                     name={'reservations'}
                     params={{ organizationId: activeOrganization.id }}
+                    activeExact={true}
                     className="breadcrumb-item">
                     Reservations
                 </StateNavLink>
@@ -236,28 +239,28 @@ export default function ReservationsView() {
                                     <tr>
                                         <td>
                                             <strong className="text-strong text-md text-primary">
-                                                {t('reservation.labels.price')}
+                                                {translate('reservation.labels.price')}
                                             </strong>
                                             <br />
                                             <strong className="text-black">{reservation.price_locale}</strong>
                                         </td>
                                         <td>
                                             <strong className="text-strong text-md text-primary">
-                                                {t('reservation.labels.fund')}
+                                                {translate('reservation.labels.fund')}
                                             </strong>
                                             <br />
                                             <strong className="text-black">{reservation.fund.name}</strong>
                                         </td>
                                         <td>
                                             <strong className="text-strong text-md text-primary">
-                                                {t('reservation.labels.sponsor_organization')}
+                                                {translate('reservation.labels.sponsor_organization')}
                                             </strong>
                                             <br />
                                             <strong className="text-black">{reservation.fund.organization.name}</strong>
                                         </td>
                                         <td>
                                             <strong className="text-strong text-md text-primary">
-                                                {t('reservation.labels.product')}
+                                                {translate('reservation.labels.product')}
                                             </strong>
                                             <br />
                                             <strong className="text-black">{reservation.product.name}</strong>
@@ -266,7 +269,7 @@ export default function ReservationsView() {
                                     <tr>
                                         <td>
                                             <strong className="text-strong text-md text-primary">
-                                                {t('reservation.labels.created_at')}
+                                                {translate('reservation.labels.created_at')}
                                             </strong>
 
                                             <br />
@@ -274,31 +277,31 @@ export default function ReservationsView() {
                                         </td>
                                         <td>
                                             <strong className="text-strong text-md text-primary">
-                                                {t('reservation.labels.expire_at')}
+                                                {translate('reservation.labels.expire_at')}
                                             </strong>
                                             <br />
                                             <strong className="text-black">{reservation.expire_at_locale}</strong>
                                         </td>
                                         <td>
                                             <strong className="text-strong text-md text-primary">
-                                                {t('reservation.labels.accepted_at')}
+                                                {translate('reservation.labels.accepted_at')}
                                             </strong>
                                             <br />
                                             {reservation.accepted_at ? (
                                                 <strong className="text-black">{reservation.accepted_at_locale}</strong>
                                             ) : (
-                                                <span className="text-muted">-</span>
+                                                <TableEmptyValue />
                                             )}
                                         </td>
                                         <td>
                                             <strong className="text-strong text-md text-primary">
-                                                {t('reservation.labels.rejected_at')}
+                                                {translate('reservation.labels.rejected_at')}
                                             </strong>
                                             <br />
                                             {reservation.rejected_at ? (
                                                 <strong className="text-black">{reservation.rejected_at_locale}</strong>
                                             ) : (
-                                                <span className="text-muted">-</span>
+                                                <TableEmptyValue />
                                             )}
                                         </td>
                                     </tr>
@@ -318,32 +321,32 @@ export default function ReservationsView() {
                         <div className="flex">
                             <div className="card-block card-block-keyvalue">
                                 <div className="keyvalue-item">
-                                    <div className="keyvalue-key">{t('reservation.labels.email')}</div>
+                                    <div className="keyvalue-key">{translate('reservation.labels.email')}</div>
                                     <div className="keyvalue-value">{reservation.identity_email}</div>
                                 </div>
                                 <div className="keyvalue-item">
-                                    <div className="keyvalue-key">{t('reservation.labels.first_name')}</div>
+                                    <div className="keyvalue-key">{translate('reservation.labels.first_name')}</div>
                                     <div className="keyvalue-value">{reservation.first_name}</div>
                                 </div>
                                 <div className="keyvalue-item">
-                                    <div className="keyvalue-key">{t('reservation.labels.last_name')}</div>
+                                    <div className="keyvalue-key">{translate('reservation.labels.last_name')}</div>
                                     <div className="keyvalue-value">{reservation.last_name}</div>
                                 </div>
                                 {reservation.phone && (
                                     <div className="keyvalue-item">
-                                        <div className="keyvalue-key">{t('reservation.labels.phone')}</div>
+                                        <div className="keyvalue-key">{translate('reservation.labels.phone')}</div>
                                         <div className="keyvalue-value">{reservation.phone}</div>
                                     </div>
                                 )}
                                 {reservation.address && (
                                     <div className="keyvalue-item">
-                                        <div className="keyvalue-key">{t('reservation.labels.address')}</div>
+                                        <div className="keyvalue-key">{translate('reservation.labels.address')}</div>
                                         <div className="keyvalue-value">{reservation.address}</div>
                                     </div>
                                 )}
                                 {reservation.birth_date && (
                                     <div className="keyvalue-item">
-                                        <div className="keyvalue-key">{t('reservation.labels.birth_date')}</div>
+                                        <div className="keyvalue-key">{translate('reservation.labels.birth_date')}</div>
                                         <div className="keyvalue-value">{reservation.birth_date_locale}</div>
                                     </div>
                                 )}
@@ -355,7 +358,7 @@ export default function ReservationsView() {
                                 ))}
                                 {reservation.user_note && (
                                     <div className="keyvalue-item">
-                                        <div className="keyvalue-key">{t('reservation.labels.user_note')}</div>
+                                        <div className="keyvalue-key">{translate('reservation.labels.user_note')}</div>
                                         <div className="keyvalue-value">{reservation.user_note}</div>
                                     </div>
                                 )}

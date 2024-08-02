@@ -8,6 +8,7 @@ const timestamp = new Date().getTime();
 const isDevServer = process.env.WEBPACK_SERVE;
 const CopyPlugin = require('copy-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
+const ESLintPlugin = require('eslint-webpack-plugin');
 const envData = require('./env.js');
 const { info: logInfo } = console;
 
@@ -35,26 +36,17 @@ module.exports = (env, argv) => {
             return isDevServer ? `/${item.out}${path}` : `${webRoot}${path}`;
         };
 
-        return new HtmlWebpackPlugin({
+        return item.withoutHtml ? null : new HtmlWebpackPlugin({
             template: `../../react/public/index.ejs`,
             templateParameters: {
-                title: `Forus ${item.client_type} app`,
+                title: item.default_title || 'Forus',
+                type: item.client_type,
+                timestamp: timestamp,
                 script: webPath(`/${scriptPath}`),
                 base: webPath(`/`),
+                webPath: webPath,
                 favicon: webPath(`/assets/img/favicon.ico`),
                 disable_indexing: item.config?.disable_indexing,
-                libs: {
-                    summernote: {
-                        js: webPath(`/assets/dist/js/summernote.${timestamp}.min.js`),
-                        css: webPath(`/assets/dist/js/summernote.${timestamp}.min.css`),
-                    },
-                    jquery: {
-                        js: webPath(`/assets/dist/js/jquery.${timestamp}.min.js`),
-                    },
-                    mdi: {
-                        css: webPath(`/assets/dist/css/materialdesignicons.min.css`),
-                    },
-                },
                 env_data: {
                     ...item,
                     client_key: item.client_key_api || item.client_key,
@@ -65,7 +57,7 @@ module.exports = (env, argv) => {
             filename: item.out + '/index.html',
             inject: false,
         });
-    });
+    }).filter((i) => i !== null);
 
     const resolvePath = (path) => {
         return _path.resolve(__dirname, path);
@@ -73,42 +65,43 @@ module.exports = (env, argv) => {
 
     const copyPlugins = configs.map((item) => {
         const isDashboard = ['sponsor', 'provider', 'validator'].includes(item.client_type);
-        const platform = isDashboard ? 'platform' : 'webshop';
+        const platform = isDashboard ? 'platform' : item.client_type === 'website' ? 'website' : (item.type === 'backend' ? 'backend' : 'webshop');
+        const assetPath = item.assetsPath || `${distPath}/${item.out}/assets`;
 
         return new CopyPlugin({
             patterns: [
                 {
                     context: `../assets/forus-${platform}/resources/_${platform}-common/assets`,
                     from: `**/**.*`,
-                    to: resolvePath(`${distPath}/${item.out}/assets`),
+                    to: resolvePath(assetPath),
                     noErrorOnMissing: true,
                 },
                 {
                     context: `../assets/forus-${platform}/resources/${platform}-${item.client_key}/assets`,
                     from: `**/**.*`,
-                    to: resolvePath(`${distPath}/${item.out}/assets`),
+                    to: resolvePath(assetPath),
                     noErrorOnMissing: true,
                     force: true,
                 },
                 {
-                    from: resolvePath(`./node_modules/summernote/dist/summernote-lite.min.js`),
-                    to: resolvePath(`${distPath}/${item.out}/assets/dist/js/summernote.${timestamp}.min.js`),
-                },
-                {
-                    from: resolvePath(`./node_modules/summernote/dist/summernote-lite.min.css`),
-                    to: resolvePath(`${distPath}/${item.out}/assets/dist/js/summernote.${timestamp}.min.css`),
-                },
-                {
-                    from: resolvePath(`./node_modules/jquery/dist/jquery.min.js`),
-                    to: resolvePath(`${distPath}/${item.out}/assets/dist/js/jquery.${timestamp}.min.js`),
-                },
-                {
                     from: resolvePath(`./node_modules/@mdi/font/fonts`),
-                    to: resolvePath(`${distPath}/${item.out}/assets/dist/fonts`),
+                    to: resolvePath(`${assetPath}/dist/fonts`),
                 },
                 {
                     from: resolvePath(`./node_modules/@mdi/font/css/materialdesignicons.min.css`),
-                    to: resolvePath(`${distPath}/${item.out}/assets/dist/css/materialdesignicons.min.css`),
+                    to: resolvePath(`${assetPath}/dist/css/materialdesignicons.min.css`),
+                },
+                {
+                    from: resolvePath(`./node_modules/summernote/dist/summernote-lite.min.js`),
+                    to: resolvePath(`${assetPath}/dist/js/summernote.${timestamp}.min.js`),
+                },
+                {
+                    from: resolvePath(`./node_modules/summernote/dist/summernote-lite.min.css`),
+                    to: resolvePath(`${assetPath}/dist/js/summernote.${timestamp}.min.css`),
+                },
+                {
+                    from: resolvePath(`./node_modules/jquery/dist/jquery.min.js`),
+                    to: resolvePath(`${assetPath}/dist/js/jquery.${timestamp}.min.js`),
                 },
             ],
         });
@@ -146,7 +139,9 @@ module.exports = (env, argv) => {
         output: {
             path: resolvePath(distPath),
             publicPath: '/',
-            filename: `[name]/${scriptPath}`,
+            filename: (pathData) => {
+                return fronts[pathData.chunk.name]?.appFileName || `[name]/${scriptPath}`;
+            },
         },
 
         resolve: {
@@ -240,6 +235,14 @@ module.exports = (env, argv) => {
             buildGzipFiles ? new CompressionPlugin({ algorithm: 'gzip', test: /\.js(\?.*)?$/i }) : null,
             new DefinePlugin({ __REACT_DEVTOOLS_GLOBAL_HOOK__: '({ isDisabled: true })' }),
             new ProvidePlugin({ React: 'react' }),
+            new ESLintPlugin({
+                extensions: ['js', 'mjs', 'jsx', 'ts', 'tsx'],
+                eslintPath: require.resolve('eslint'),
+                failOnError: true,
+                failOnWarning: true,
+                cache: true,
+                resolvePluginsRelativeTo: __dirname,
+            }),
         ].filter((plugin) => plugin),
 
         optimization: {
