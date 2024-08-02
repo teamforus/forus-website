@@ -97,7 +97,7 @@
     "easyqrcodejs": "^4.4.13",
     "file-saver": "^2.0.5",
     "i18n-iso-countries": "^7.6.0",
-    "i18next": "^23.2.11",
+    "i18next": "^23.12.2",
     "jquery": "^3.6.3",
     "jszip": "^3.10.1",
     "libphonenumber-js": "^1.10.41",
