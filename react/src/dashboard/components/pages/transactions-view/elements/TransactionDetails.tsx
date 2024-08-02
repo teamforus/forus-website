@@ -183,7 +183,7 @@ export default function TransactionDetails({
                                         }}
                                         className="button button-primary">
                                         <em className="mdi mdi-eye-outline icon-start" />
-                                        Voucher details
+                                        Tegoed details
                                     </StateNavLink>
                                 )}
                             </div>

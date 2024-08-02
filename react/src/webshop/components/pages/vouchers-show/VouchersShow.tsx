@@ -268,10 +268,10 @@ export default function VouchersShow() {
     }, [fetchProducts, voucher]);
 
     useEffect(() => {
-        if (voucher?.address) {
-            setTitle(translate('page_state_titles.voucher', { address: voucher?.address || '' }));
+        if (voucher?.fund) {
+            setTitle(translate('page_state_titles.voucher', { fund_name: voucher.fund.name }));
         }
-    }, [setTitle, translate, voucher?.address]);
+    }, [setTitle, translate, voucher?.fund]);
 
     return (
         <BlockShowcase

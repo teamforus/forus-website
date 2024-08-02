@@ -1,0 +1,11 @@
+@import url('https://fonts.googleapis.com/css?family=Montserrat:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i');
+
+@import 'vars';
+
+@import '../../forus-platform/scss/_common/dashboard.scss';
+
+// blocks
+@import 'blocks/block-auth-pin_code';
+@import 'blocks/block-missing-app';
+@import 'blocks/block-pincode';
+@import 'blocks/block-sign_up';

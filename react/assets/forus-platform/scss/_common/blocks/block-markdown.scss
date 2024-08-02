@@ -1,5 +1,5 @@
 &.block-markdown {
-    text-align: justify;
+    text-align: left;
     font: 400 14px/24px var(--base-font) !important;
 
     h1 {
@@ -28,7 +28,7 @@
 
     p {
         margin-bottom: 15px;
-        text-align: justify;
+        text-align: left;
         font: inherit;
     }
 
@@ -82,6 +82,13 @@
         border: 1px solid #d4d9dd;
         border-right: none;
         background-color: #fff;
+
+        & > caption {
+            font: 500 1.25em var(--base-font);
+            margin: 0 0 0.9em;
+            color: var(--htc);
+            text-align: left;
+        }
 
         thead {
             display: none;

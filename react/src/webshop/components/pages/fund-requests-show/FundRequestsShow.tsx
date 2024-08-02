@@ -7,10 +7,12 @@ import { useParams } from 'react-router-dom';
 import FundRequestRecordCard from './elements/FundRequestRecordCard';
 import BlockShowcaseProfile from '../../elements/block-showcase/BlockShowcaseProfile';
 import useSetProgress from '../../../../dashboard/hooks/useSetProgress';
+import useSetTitle from '../../../hooks/useSetTitle';
 
 export default function FundRequestsShow() {
     const { id } = useParams();
 
+    const setTitle = useSetTitle();
     const translate = useTranslate();
     const setProgress = useSetProgress();
 
@@ -31,6 +33,12 @@ export default function FundRequestsShow() {
     useEffect(() => {
         fetchFundRequest();
     }, [fetchFundRequest]);
+
+    useEffect(() => {
+        if (fundRequest) {
+            setTitle(translate('page_state_titles.fund-request-show', { fund_name: fundRequest.fund.name }));
+        }
+    }, [fundRequest, setTitle, translate]);
 
     return (
         <BlockShowcaseProfile

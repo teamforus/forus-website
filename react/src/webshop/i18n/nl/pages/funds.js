@@ -8,10 +8,6 @@ export default {
             subtitle:
                 'Hieronder ziet u een deel van de potjes die u kan aanvragen. Bent u benieuwd welke er nog meer zijn? Neem dan contact op met: xxxx',
         },
-        westerkwartier: {
-            title: 'Potjes',
-            subtitle: 'Hieronder ziet u de regelingen die u kan activeren.',
-        },
         berkelland: {
             title: 'Activeren',
             subtitle: 'Hieronder ziet u de regelingen die u kan activeren.',
@@ -29,9 +25,6 @@ export default {
         potjeswijzer: {
             title: 'Potjes',
         },
-        westerkwartier: {
-            title: 'Potjes',
-        },
         berkelland: {
             title: 'Activeren',
         },
@@ -47,9 +40,17 @@ export default {
         schagen: {
             title: 'Regelingen',
         },
+        goereeoverflakkee: {
+            title: 'Regelingen',
+        },
+        vergoedingen: {
+            title: 'Alle vergoedingen',
+        },
     },
     labels: {
-        categorie: 'Categoriën',
+        search: 'Zoeken',
+        category: 'Categorie',
+        organization: 'Organisatie',
         criteria: 'Voorwaarden',
         location: 'Locatie',
         office: 'Zuidhorn Gemeente',
@@ -72,9 +73,6 @@ export default {
             start_request: 'Aanvragen',
         },
         potjeswijzer: {
-            start_request: 'Aanvragen',
-        },
-        westerkwartier: {
             start_request: 'Aanvragen',
         },
         more: 'Bekijk meer',
