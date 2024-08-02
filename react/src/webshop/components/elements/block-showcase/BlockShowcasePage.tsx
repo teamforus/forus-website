@@ -51,7 +51,7 @@ export default function BlockShowcasePage({
                     </div>
                 </div>
 
-                {breadcrumbs}
+                <div className={'hide-sm'}>{breadcrumbs}</div>
 
                 <ErrorBoundaryHandler>
                     <div className="showcase-layout">
@@ -65,6 +65,7 @@ export default function BlockShowcasePage({
                         </div>
 
                         <div className="showcase-content" style={contentStyles}>
+                            <div className={'show-sm'}>{breadcrumbs}</div>
                             <ErrorBoundaryHandler>{children || <BlockLoader />}</ErrorBoundaryHandler>
                         </div>
                     </div>

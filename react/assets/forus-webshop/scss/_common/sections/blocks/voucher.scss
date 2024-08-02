@@ -9,12 +9,12 @@
             border-radius: var(--border-radius);
             box-shadow: var(--box-shadow);
             cursor: default;
-            @include cf();
             position: relative;
             overflow: hidden;
             flex-direction: row;
             display: flex;
             min-height: 200px;
+            @include cf();
 
             .label {
                 margin-bottom: 10px;
@@ -53,7 +53,7 @@
                             text-align: center;
                             border: 1px solid var(--color-primary);
                             background: transparent;
-                            text-transform: var(--text_format);
+                            text-transform: inherit;
                             color: var(--color-primary);
                             font-size: 20px;
                             transition: 0.4s;

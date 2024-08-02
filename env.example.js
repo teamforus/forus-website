@@ -165,6 +165,19 @@ fronts['website'] = {
     },
 };
 
+fronts['backend'] = {
+    type: 'backend',
+    name: 'Backend',
+    client_key: 'general',
+    assetsPath: '../forus-backend/public/assets',
+    appFileName: '../../forus-backend/public/assets/js/app.js',
+    withoutHtml: true,
+    client_type: 'pin_code-auth',
+    config: {
+        api_url: api_url,
+    },
+};
+
 // eslint-disable-next-line no-undef
 module.exports = {
     fronts: fronts,

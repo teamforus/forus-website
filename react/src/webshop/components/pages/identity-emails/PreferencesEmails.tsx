@@ -256,7 +256,7 @@ export default function PreferencesEmails() {
                                                                 type={'button'}
                                                                 disabled={emailDisabled[email.id]}
                                                                 className="button button-primary-outline button-icon"
-                                                                aria-label="verwijder"
+                                                                aria-label="Verwijder"
                                                                 onClick={() => deleteEmail(email)}
                                                                 data-dusk="btnDeleteIdentityEmail">
                                                                 <em className="mdi mdi-trash-can-outline"></em>

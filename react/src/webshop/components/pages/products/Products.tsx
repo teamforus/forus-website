@@ -254,7 +254,7 @@ export default function Products({ fundType = 'budget' }: { fundType: 'budget' |
                                     onKeyDown={clickOnKeyEnter}
                                     role="button"
                                     tabIndex={0}
-                                    aria-label="toevoegen aan verlanglijstje"
+                                    aria-label="Toevoegen aan verlanglijstje"
                                     aria-pressed={!!filterValues.bookmarked}>
                                     <em className="mdi mdi-cards-heart-outline" />
                                     Mijn verlanglijstje
@@ -268,7 +268,7 @@ export default function Products({ fundType = 'budget' }: { fundType: 'budget' |
                             <UIControlText
                                 value={filterValues.q}
                                 onChangeValue={(q: string) => filterUpdate({ q })}
-                                ariaLabel="search"
+                                ariaLabel="Zoeken"
                                 id="products_search"
                             />
                         </div>
@@ -349,7 +349,7 @@ export default function Products({ fundType = 'budget' }: { fundType: 'budget' |
                                         value={filterValues.postcode}
                                         onChange={(e) => filterUpdate({ postcode: e.target.value })}
                                         type="text"
-                                        aria-label="Postcode..."
+                                        aria-label="Postcode"
                                     />
                                     <FormError error={errors?.postcode} />
                                 </div>

@@ -40,7 +40,7 @@ export default function UIControlDate({
                 onClick={reset}
                 onKeyDown={(e) => (e.key == 'Enter' ? reset() : null)}
                 className="ui-control-clear"
-                aria-label="cancel"
+                aria-label="Annuleren"
                 role={'button'}
                 tabIndex={0}>
                 <div className="mdi mdi-close-circle" />
