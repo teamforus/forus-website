@@ -421,6 +421,7 @@ export default function Home() {
                                             type="budget"
                                             large={true}
                                             display="grid"
+                                            showCustomDescription={true}
                                         />
                                     </div>
                                 )}
