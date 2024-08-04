@@ -24,6 +24,8 @@ import useTranslate from '../../hooks/useTranslate';
 import SelectControl from '../elements/select-control/SelectControl';
 import SelectControlOptionsFund from '../elements/select-control/templates/SelectControlOptionsFund';
 import SelectControlOptions from '../elements/select-control/templates/SelectControlOptions';
+import classNames from 'classnames';
+import FormGroupInfo from '../elements/forms/elements/FormGroupInfo';
 
 type CSVErrorProp = {
     csvHasBsnWhileNotAllowed?: boolean;
@@ -105,8 +107,6 @@ export default function ModalVouchersUpload({
     const [progressBar, setProgressBar] = useState<number>(0);
     const [progressStatus, setProgressStatus] = useState<string>('');
     const [acceptedFiles] = useState(['.csv']);
-    const [showFundsTooltip, setShowFundsTooltip] = useState(false);
-    const [showTypeTooltip, setShowTypeTooltip] = useState(false);
 
     const types = useMemo(
         () => [
@@ -155,8 +155,8 @@ export default function ModalVouchersUpload({
         setProgressStatus(status);
     }, []);
 
-    const reset = useCallback(() => {
-        abortRef.current = true;
+    const reset = useCallback((abortRefValue = true) => {
+        abortRef.current = abortRefValue;
 
         setCsvFile(null);
         setCsvErrors({});
@@ -852,52 +852,44 @@ export default function ModalVouchersUpload({
 
     return (
         <div
-            className={`modal modal-md modal-csv-vouchers modal-animated ${
-                modal.loading || hideModal ? 'modal-loading' : ''
-            } ${isDragOver ? 'is-dragover' : ''} ${className}`}
+            className={classNames(
+                'modal',
+                step == STEP_SET_UP ? 'modal-md' : 'modal-lg',
+                'modal-animated',
+                (modal.loading || hideModal) && 'modal-loading',
+                isDragOver && 'is-dragover',
+                className,
+            )}
+            key={`step_${step}`}
             data-dusk="modalVoucherUpload">
             <div className="modal-backdrop" onClick={closeModal} />
             <div className="modal-window">
                 <a className="mdi mdi-close modal-close" onClick={closeModal} role="button" />
                 <div className="modal-header">Upload CSV-bestand</div>
-                <div className="modal-body modal-body-visible form">
+                <div
+                    className={classNames(
+                        'modal-body',
+                        classNames(step === STEP_SET_UP ? 'modal-body-visible' : ''),
+                        'form',
+                    )}>
                     {step == STEP_SET_UP && (
                         <div className="modal-section form">
                             <div className="form-group form-group-inline form-group-inline-lg">
                                 <div className="form-label">{translate('modals.modal_voucher_create.labels.fund')}</div>
                                 <div className="form-offset">
-                                    <div className="form-group-info">
-                                        <div className="form-group-info-control">
-                                            <SelectControl
-                                                className="flex-grow"
-                                                value={fund.id}
-                                                propKey={'id'}
-                                                onChange={(fund_id: number) =>
-                                                    setFund(funds.find((fund) => fund.id === fund_id))
-                                                }
-                                                options={funds}
-                                                allowSearch={false}
-                                                optionsComponent={SelectControlOptionsFund}
-                                            />
-
-                                            <div className="form-group-info-button">
-                                                <div
-                                                    className="button button-default button-icon pull-left"
-                                                    onClick={() => setShowFundsTooltip(!showFundsTooltip)}>
-                                                    <em className="mdi mdi-information" />
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    {showFundsTooltip && (
-                                        <div className="block block-info-box block-info-box-primary">
-                                            <div className="info-box-icon mdi mdi-information" />
-                                            <div className="info-box-content">
-                                                <div>{translate('csv_upload.tooltips.funds')}</div>
-                                            </div>
-                                        </div>
-                                    )}
+                                    <FormGroupInfo info={translate('csv_upload.tooltips.funds')}>
+                                        <SelectControl
+                                            className="flex-grow"
+                                            value={fund.id}
+                                            propKey={'id'}
+                                            onChange={(fund_id: number) => {
+                                                setFund(funds.find((fund) => fund.id === fund_id));
+                                            }}
+                                            options={funds}
+                                            allowSearch={false}
+                                            optionsComponent={SelectControlOptionsFund}
+                                        />
+                                    </FormGroupInfo>
                                 </div>
                             </div>
 
@@ -906,235 +898,208 @@ export default function ModalVouchersUpload({
                                     {translate('modals.modal_voucher_create.labels.credit_type')}
                                 </div>
                                 <div className="form-offset">
-                                    <div className="form-group-info">
-                                        <div className="form-group-info-control">
-                                            <SelectControl
-                                                value={type}
-                                                propKey={'key'}
-                                                onChange={(type: 'fund_voucher' | 'product_voucher') => setType(type)}
-                                                options={types}
-                                                allowSearch={false}
-                                                optionsComponent={SelectControlOptions}
-                                            />
-
-                                            <div className="form-group-info-button">
-                                                <div
-                                                    className="button button-default button-icon pull-left"
-                                                    onClick={() => setShowTypeTooltip(!showTypeTooltip)}>
-                                                    <em className="mdi mdi-information" />
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    {showTypeTooltip && (
-                                        <div className="block block-info-box block-info-box-primary">
-                                            <div className="info-box-icon mdi mdi-information" />
-                                            <div className="info-box-content">
-                                                <div>{translate('csv_upload.tooltips.type')}</div>
-                                            </div>
-                                        </div>
-                                    )}
+                                    <FormGroupInfo info={translate('csv_upload.tooltips.funds')}>
+                                        <SelectControl
+                                            value={type}
+                                            propKey={'key'}
+                                            onChange={(type: 'fund_voucher' | 'product_voucher') => setType(type)}
+                                            options={types}
+                                            allowSearch={false}
+                                            optionsComponent={SelectControlOptions}
+                                        />
+                                    </FormGroupInfo>
                                 </div>
                             </div>
                         </div>
                     )}
+
                     {step == STEP_UPLOAD && (
-                        <Fragment>
-                            {fund && (
-                                <div
-                                    className="block block-csv condensed"
-                                    onDragOver={(e) => onDragEvent(e, true)}
-                                    onDragEnter={(e) => onDragEvent(e, true)}
-                                    onDragLeave={(e) => onDragEvent(e, false)}
-                                    onDragEnd={(e) => onDragEvent(e, false)}
-                                    onDrop={(e) => {
-                                        onDragEvent(e, false);
-                                        uploadFile(filterSelectedFiles(e.dataTransfer.files)?.[0]).then();
-                                    }}>
-                                    <div className="csv-inner">
-                                        <input
-                                            hidden={true}
-                                            ref={inputRef}
-                                            type="file"
-                                            data-dusk={'inputUpload'}
-                                            accept={(acceptedFiles || []).join(',')}
-                                            onChange={(e) => {
-                                                uploadFile(filterSelectedFiles(e.target.files)?.[0]).then();
-                                                e.target.value = null;
-                                            }}
-                                        />
+                        <div
+                            className="block block-csv condensed"
+                            onDragOver={(e) => onDragEvent(e, true)}
+                            onDragEnter={(e) => onDragEvent(e, true)}
+                            onDragLeave={(e) => onDragEvent(e, false)}
+                            onDragEnd={(e) => onDragEvent(e, false)}
+                            onDrop={(e) => {
+                                onDragEvent(e, false);
+                                uploadFile(filterSelectedFiles(e.dataTransfer.files)?.[0]).then();
+                            }}>
+                            <div className="csv-inner">
+                                <input
+                                    hidden={true}
+                                    ref={inputRef}
+                                    type="file"
+                                    data-dusk={'inputUpload'}
+                                    accept={(acceptedFiles || []).join(',')}
+                                    onChange={(e) => {
+                                        uploadFile(filterSelectedFiles(e.target.files)?.[0]).then();
+                                        e.target.value = null;
+                                    }}
+                                />
 
-                                        {csvProgress <= 1 && (
-                                            <div className="csv-upload-btn" onClick={() => inputRef.current.click()}>
-                                                <div className="csv-upload-icon">
-                                                    <div className="mdi mdi-upload" />
-                                                </div>
-                                                <div className="csv-upload-text">
-                                                    {translate('csv_upload.labels.upload')}
-                                                    <br />
-                                                    <span>{translate('csv_upload.labels.swipe')}</span>
-                                                </div>
-                                            </div>
-                                        )}
-                                        <div className="button-group flex-center">
-                                            {csvProgress <= 1 && (
-                                                <button
-                                                    className="button button-default"
-                                                    onClick={() => downloadExampleCsv()}>
-                                                    <em className="mdi mdi-file-table-outline icon-start"> </em>
-                                                    <span>{translate('product_vouchers.buttons.download_csv')}</span>
-                                                </button>
-                                            )}
-                                            {csvProgress <= 1 && (
-                                                <button
-                                                    className="button button-primary"
-                                                    onClick={() => {
-                                                        inputRef.current.click();
-                                                    }}
-                                                    data-dusk="selectFileButton">
-                                                    <em className="mdi mdi-upload icon-start"> </em>
-                                                    <span>{translate('vouchers.buttons.upload_csv')}</span>
-                                                </button>
-                                            )}
+                                {csvProgress <= 1 && (
+                                    <div className="csv-upload-btn" onClick={() => inputRef.current.click()}>
+                                        <div className="csv-upload-icon">
+                                            <div className="mdi mdi-upload" />
                                         </div>
-                                        {csvProgress >= 2 && (
-                                            <div className={`csv-upload-progress ${csvProgress == 3 ? 'done' : ''}`}>
-                                                <div className="csv-upload-icon">
-                                                    {csvProgress == 2 && <div className="mdi mdi-loading" />}
-                                                    {csvProgress == 3 && (
-                                                        <div className="mdi mdi-check" data-dusk="successUploadIcon" />
-                                                    )}
-                                                </div>
-                                                <CSVProgressBar progressBar={progressBar} status={progressStatus} />
-                                            </div>
-                                        )}
-                                        <div className="csv-upload-actions">
-                                            {csvFile && csvProgress < 2 && (
-                                                <div className="csv-file">
-                                                    <div
-                                                        className={`block block-file flex ${
-                                                            csvIsValid ? '' : 'has-error'
-                                                        }`}>
-                                                        <div className="file-info flex-grow">
-                                                            <div className="file-error mdi mdi-close-circle" />
-                                                            <div className="file-name">{csvFile.name}</div>
-                                                            <div className="file-size">{fileSize(csvFile.size)}</div>
-                                                            <div
-                                                                className="file-remove mdi mdi-close"
-                                                                onClick={() => reset()}
-                                                            />
-                                                        </div>
-                                                    </div>
-
-                                                    {!csvIsValid && type == 'fund_voucher' && (
-                                                        <div className="text-left">
-                                                            {csvErrors.csvHasBsnWhileNotAllowed && (
-                                                                <div className="form-error">
-                                                                    BSN field is present while BSN is not enabled for
-                                                                    the organization
-                                                                </div>
-                                                            )}
-                                                            {csvErrors.csvAmountMissing && (
-                                                                <div className="form-error">
-                                                                    De kolom `amount` mist in het bulkbestand.
-                                                                </div>
-                                                            )}
-                                                            {csvErrors.csvProductIdPresent && (
-                                                                <div className="form-error">
-                                                                    De kolom `product_id` mag niet in het bestand
-                                                                    zitten.
-                                                                </div>
-                                                            )}
-                                                            {csvErrors.invalidAmountField && (
-                                                                <div className="form-error">
-                                                                    Het totaal aantal budget van het gewenste aantal
-                                                                    tegoeden overschrijd het gestorte bedrag op het
-                                                                    fonds.
-                                                                </div>
-                                                            )}
-                                                            {csvErrors.invalidPerVoucherAmount && (
-                                                                <div className="form-error">
-                                                                    Één of meer tegoeden gaan over het maximale bedrag
-                                                                    per tegoed. (limiet is:{' '}
-                                                                    {fund.limit_per_voucher_locale}).
-                                                                </div>
-                                                            )}
-                                                            {csvErrors.hasInvalidFundIds && (
-                                                                <div className="form-error">
-                                                                    De kolom `fund_id` in het bulkbestand bevat
-                                                                    verkeerde fonds identificatienummers
-                                                                    {` '${csvErrors.hasInvalidFundIdsList}'`}. Deze
-                                                                    nummers horen niet bij de door u geselecteerde
-                                                                    organisatie.
-                                                                </div>
-                                                            )}
-                                                        </div>
-                                                    )}
-
-                                                    {!csvIsValid && type == 'product_voucher' && (
-                                                        <div className="text-left">
-                                                            {csvErrors.csvHasBsnWhileNotAllowed && (
-                                                                <div className="form-error">
-                                                                    BSN field is present while BSN is not enabled for
-                                                                    the organization
-                                                                </div>
-                                                            )}
-                                                            {csvErrors.csvHasMissingProductId && (
-                                                                <div className="form-error">
-                                                                    De kolom `product_id` mist in het bestand.
-                                                                </div>
-                                                            )}
-                                                            {csvErrors.hasAmountField && (
-                                                                <div className="form-error">
-                                                                    De kolom `amount` mag niet in het bestand zitten.
-                                                                </div>
-                                                            )}
-                                                            {csvErrors.csvProductsInvalidUnknownIds.length > 0 && (
-                                                                <div className="form-error">
-                                                                    De kolom `product_id` in het bulkbestand bevat
-                                                                    verkeerde product identificatienummers
-                                                                    {` '${csvErrors.csvProductsInvalidUnknownIdsList}'`}
-                                                                    . De nummers van deze producten zijn incorrect of de
-                                                                    producten zijn uitverkocht.
-                                                                </div>
-                                                            )}
-                                                            {csvErrors.csvProductsInvalidStockIds.length > 0 && (
-                                                                <div className="form-error">
-                                                                    De kolom `product_id` in het bulkbestand bevat
-                                                                    identificatienummers
-                                                                    {` '${csvErrors.csvProductsInvalidStockIdsList}'`}.
-                                                                    van aanbod aanbod dat uitverkocht is.
-                                                                </div>
-                                                            )}
-                                                            {csvErrors.hasInvalidFundIds && (
-                                                                <div className="form-error">
-                                                                    De kolom `fund_id` in het bulkbestand bevat
-                                                                    verkeerde fonds identificatienummers
-                                                                    {` '${csvErrors.hasInvalidFundIdsList}'`}. Deze
-                                                                    nummers horen niet bij de door u geselecteerde
-                                                                    organisatie.
-                                                                </div>
-                                                            )}
-                                                        </div>
-                                                    )}
-                                                </div>
-                                            )}
+                                        <div className="csv-upload-text">
+                                            {translate('csv_upload.labels.upload')}
+                                            <br />
+                                            <span>{translate('csv_upload.labels.swipe')}</span>
                                         </div>
                                     </div>
+                                )}
+
+                                <div className="button-group flex-center">
+                                    {csvProgress <= 1 && (
+                                        <button className="button button-default" onClick={downloadExampleCsv}>
+                                            <em className="mdi mdi-file-table-outline icon-start"> </em>
+                                            <span>{translate('vouchers.buttons.download_csv')}</span>
+                                        </button>
+                                    )}
+                                    {csvProgress <= 1 && (
+                                        <button
+                                            className="button button-primary"
+                                            onClick={() => inputRef.current.click()}
+                                            data-dusk="selectFileButton">
+                                            <em className="mdi mdi-upload icon-start" />
+                                            <span>{translate('vouchers.buttons.upload_csv')}</span>
+                                        </button>
+                                    )}
                                 </div>
-                            )}
-                        </Fragment>
+
+                                {csvProgress >= 2 && (
+                                    <div className={`csv-upload-progress ${csvProgress == 3 ? 'done' : ''}`}>
+                                        <div className="csv-upload-icon">
+                                            {csvProgress == 2 && <div className="mdi mdi-loading" />}
+                                            {csvProgress == 3 && (
+                                                <div className="mdi mdi-check" data-dusk="successUploadIcon" />
+                                            )}
+                                        </div>
+                                        <CSVProgressBar progressBar={progressBar} status={progressStatus} />
+                                    </div>
+                                )}
+
+                                {csvFile && csvProgress < 2 && (
+                                    <div className="csv-upload-actions">
+                                        <div className={classNames(`block block-file`, !csvIsValid && 'has-error')}>
+                                            <div className="file-icon">
+                                                {csvIsValid ? (
+                                                    <div className="mdi mdi-file-outline" />
+                                                ) : (
+                                                    <div className="mdi mdi-close-circle" />
+                                                )}
+                                            </div>
+                                            <div className="file-details">
+                                                <div className="file-name">{csvFile.name}</div>
+                                                <div className="file-size">{fileSize(csvFile.size)}</div>
+                                            </div>
+                                            <div className="file-remove mdi mdi-close" onClick={() => reset(false)} />
+                                        </div>
+
+                                        {!csvIsValid && type == 'fund_voucher' && (
+                                            <Fragment>
+                                                {csvErrors.csvHasBsnWhileNotAllowed && (
+                                                    <div className="form-error">
+                                                        BSN field is present while BSN is not enabled for the
+                                                        organization
+                                                    </div>
+                                                )}
+                                                {csvErrors.csvAmountMissing && (
+                                                    <div className="form-error">
+                                                        De kolom `amount` mist in het bulkbestand.
+                                                    </div>
+                                                )}
+                                                {csvErrors.csvProductIdPresent && (
+                                                    <div className="form-error">
+                                                        De kolom `product_id` mag niet in het bestand zitten.
+                                                    </div>
+                                                )}
+                                                {csvErrors.invalidAmountField && (
+                                                    <div className="form-error">
+                                                        Het totaal aantal budget van het gewenste aantal tegoeden
+                                                        overschrijd het gestorte bedrag op het fonds.
+                                                    </div>
+                                                )}
+                                                {csvErrors.invalidPerVoucherAmount && (
+                                                    <div className="form-error">
+                                                        Één of meer tegoeden gaan over het maximale bedrag per tegoed.
+                                                        (limiet is: {fund.limit_per_voucher_locale}).
+                                                    </div>
+                                                )}
+                                                {csvErrors.hasInvalidFundIds && (
+                                                    <div className="form-error">
+                                                        De kolom `fund_id` in het bulkbestand bevat verkeerde fonds
+                                                        identificatienummers
+                                                        {` '${csvErrors.hasInvalidFundIdsList}'`}. Deze nummers horen
+                                                        niet bij de door u geselecteerde organisatie.
+                                                    </div>
+                                                )}
+                                            </Fragment>
+                                        )}
+
+                                        {!csvIsValid && type == 'product_voucher' && (
+                                            <div className="text-left">
+                                                {csvErrors.csvHasBsnWhileNotAllowed && (
+                                                    <div className="form-error">
+                                                        BSN field is present while BSN is not enabled for the
+                                                        organization
+                                                    </div>
+                                                )}
+                                                {csvErrors.csvHasMissingProductId && (
+                                                    <div className="form-error">
+                                                        De kolom `product_id` mist in het bestand.
+                                                    </div>
+                                                )}
+                                                {csvErrors.hasAmountField && (
+                                                    <div className="form-error">
+                                                        De kolom `amount` mag niet in het bestand zitten.
+                                                    </div>
+                                                )}
+                                                {csvErrors.csvProductsInvalidUnknownIds?.length > 0 && (
+                                                    <div className="form-error">
+                                                        De kolom `product_id` in het bulkbestand bevat verkeerde product
+                                                        identificatienummers
+                                                        {` '${csvErrors.csvProductsInvalidUnknownIdsList}'`}. De nummers
+                                                        van deze producten zijn incorrect of de producten zijn
+                                                        uitverkocht.
+                                                    </div>
+                                                )}
+                                                {csvErrors.csvProductsInvalidStockIds?.length > 0 && (
+                                                    <div className="form-error">
+                                                        De kolom `product_id` in het bulkbestand bevat
+                                                        identificatienummers
+                                                        {` '${csvErrors.csvProductsInvalidStockIdsList}'`}. van aanbod
+                                                        aanbod dat uitverkocht is.
+                                                    </div>
+                                                )}
+                                                {csvErrors.hasInvalidFundIds && (
+                                                    <div className="form-error">
+                                                        De kolom `fund_id` in het bulkbestand bevat verkeerde fonds
+                                                        identificatienummers
+                                                        {` '${csvErrors.hasInvalidFundIdsList}'`}. Deze nummers horen
+                                                        niet bij de door u geselecteerde organisatie.
+                                                    </div>
+                                                )}
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
+                            </div>
+                        </div>
                     )}
                 </div>
+
                 <div className="modal-footer text-center">
-                    <button
-                        className="button button-default"
-                        onClick={closeModal}
-                        id="close"
-                        data-dusk="closeModalButton">
-                        Annuleren
-                    </button>
+                    {csvProgress < 2 && (
+                        <button
+                            className="button button-default"
+                            onClick={closeModal}
+                            id="close"
+                            data-dusk="closeModalButton">
+                            Annuleren
+                        </button>
+                    )}
 
                     <div className="flex-grow" />
 
@@ -1147,23 +1112,35 @@ export default function ModalVouchersUpload({
                         </button>
 
                         {step == STEP_SET_UP && (
-                            <button className="button button-primary" onClick={() => setStep(STEP_UPLOAD)}>
+                            <button
+                                className="button button-primary"
+                                onClick={() => setStep(STEP_UPLOAD)}
+                                data-dusk={'modalFundSelectSubmit'}>
                                 Bevestigen
                             </button>
                         )}
 
                         {step == STEP_UPLOAD && (
-                            <div className="text-center">
-                                {!loading && (
+                            <Fragment>
+                                {csvProgress < 3 ? (
                                     <button
                                         className="button button-primary"
                                         onClick={uploadToServer}
-                                        disabled={csvProgress != 1 || !csvIsValid}
+                                        disabled={csvProgress != 1 || loading || !csvIsValid}
                                         data-dusk="uploadFileButton">
                                         Bevestigen
                                     </button>
+                                ) : (
+                                    <button
+                                        type={'button'}
+                                        className="button button-primary"
+                                        disabled={loading}
+                                        onClick={modal.close}
+                                        data-dusk="closeModalButton">
+                                        Sluiten
+                                    </button>
                                 )}
-                            </div>
+                            </Fragment>
                         )}
                     </div>
                 </div>

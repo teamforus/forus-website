@@ -77,10 +77,10 @@ export default function VouchersTableRow({
                         <td>{currencyFormat(parseFloat(voucher.amount_total))}</td>
                     ) : (
                         <td>
-                            <div className="text-primary text-medium">
+                            <div className="text-primary text-medium" title={voucher.product.organization.name}>
                                 {strLimit(voucher.product.organization.name, 32)}
                             </div>
-                            <div className="text-strong text-md text-muted-dark">
+                            <div className="text-strong text-md text-muted-dark" title={voucher.product.name}>
                                 {strLimit(voucher.product.name, 32)}
                             </div>
                         </td>
@@ -143,7 +143,7 @@ export default function VouchersTableRow({
                             ) : (
                                 <Fragment>
                                     <em className="mdi mdi-close" />
-                                    {translate('product_vouchers.labels.no')}
+                                    {translate('vouchers.labels.no')}
                                 </Fragment>
                             )}
                         </div>

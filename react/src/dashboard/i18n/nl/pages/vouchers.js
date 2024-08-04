@@ -45,6 +45,7 @@ export default {
         has_payouts: 'Heeft uitbetalingen',
         type_voucher: 'Type',
         type_credit: 'Soort tegoed',
+        product: 'Aanbod',
     },
     events: {
         created_budget: 'Aangemaakt',
@@ -55,6 +56,7 @@ export default {
     buttons: {
         add_new: 'Aanmaken',
         upload_csv: 'Upload bulkbestand',
+        download_csv: 'Download voorbeeld bulkbestand',
         export: 'Export',
         clear_filter: 'Wis filter',
         physical_card_add: 'Plastic pas koppelen',

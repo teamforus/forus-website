@@ -167,7 +167,6 @@ export default function Vouchers() {
                 funds={funds}
                 loading={loading}
                 fetchVouchers={fetchVouchers}
-                type={'vouchers'}
             />
 
             {!loading && vouchers.data.length > 0 && (

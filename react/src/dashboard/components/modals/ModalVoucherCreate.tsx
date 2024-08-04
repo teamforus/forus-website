@@ -21,16 +21,19 @@ import Product from '../../props/models/Product';
 import useProductService from '../../services/ProductService';
 import ModalNotification from './ModalNotification';
 import SelectControlOptionsFund from '../elements/select-control/templates/SelectControlOptionsFund';
+import FormGroupInfo from '../elements/forms/elements/FormGroupInfo';
 
 export default function ModalVoucherCreate({
     funds,
     modal,
+    fundId,
     className,
     onCreated,
     organization,
 }: {
     funds: Array<Partial<Fund>>;
     modal: ModalState;
+    fundId?: number;
     className?: string;
     onCreated: () => void;
     organization: Organization;
@@ -47,9 +50,6 @@ export default function ModalVoucherCreate({
     const [products, setProducts] = useState<Array<Partial<Product>>>(null);
     const [showRecordFields, setShowRecordFields] = useState<boolean>(false);
     const [showGeneralFields, setShowGeneralFields] = useState<boolean>(true);
-    const [showFundsTooltip, setShowFundsTooltip] = useState(false);
-    const [showTypeTooltip, setShowTypeTooltip] = useState(false);
-    const [showAssignTypeTooltip, setShowAssignTypeTooltip] = useState(false);
 
     const assignTypes = useMemo(
         () => [
@@ -69,7 +69,7 @@ export default function ModalVoucherCreate({
     );
 
     const [assignType, setAssignType] = useState(assignTypes[0]);
-    const [fund, setFund] = useState(funds[0]);
+    const [fund, setFund] = useState(funds.find((fund) => fund.id === fundId) || funds?.[0]);
 
     const form = useFormBuilder<{
         bsn?: string;
@@ -78,7 +78,6 @@ export default function ModalVoucherCreate({
         amount: string;
         records?: Array<Record>;
         type?: 'vouchers' | 'product_vouchers';
-        fund_id: number;
         expire_at: string;
         client_uid?: string;
         product_id?: number;
@@ -91,8 +90,7 @@ export default function ModalVoucherCreate({
             amount: null,
             records: [],
             type: 'vouchers',
-            fund_id: fund?.id,
-            expire_at: funds[0]?.end_date,
+            expire_at: fund?.end_date,
             client_uid: null,
             product_id: null,
             limit_multiplier: 1,
@@ -107,6 +105,7 @@ export default function ModalVoucherCreate({
                     bsn: { activate: 1, activation_code: 0 },
                     activation_code: { activate: 0, activation_code: 1 },
                 }[assignType.key],
+                fund_id: fund.id,
                 assign_by_type: assignType.key,
                 records: form.values.records.reduce(
                     (records, record) => ({ ...records, [record.key]: record.value }),
@@ -343,46 +342,24 @@ export default function ModalVoucherCreate({
                                                 {translate('modals.modal_voucher_create.labels.fund')}
                                             </div>
                                             <div className="form-offset">
-                                                <div className="form-group-info">
-                                                    <div className="form-group-info-control">
-                                                        <SelectControl
-                                                            className={'flex-grow'}
-                                                            value={fund.id}
-                                                            propKey={'id'}
-                                                            onChange={(fund_id: number) =>
-                                                                setFund(funds.find((fund) => fund.id === fund_id))
-                                                            }
-                                                            options={funds}
-                                                            allowSearch={false}
-                                                            optionsComponent={SelectControlOptionsFund}
-                                                        />
-
-                                                        <div className="form-group-info-button">
-                                                            <div
-                                                                className="button button-default button-icon pull-left"
-                                                                onClick={() =>
-                                                                    setShowAssignTypeTooltip(!showAssignTypeTooltip)
-                                                                }>
-                                                                <em className="mdi mdi-information" />
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                {showAssignTypeTooltip && (
-                                                    <div className="block block-info-box block-info-box-primary">
-                                                        <div className="info-box-icon mdi mdi-information" />
-                                                        <div className="info-box-content">
-                                                            <div>
-                                                                {translate(
-                                                                    'modals.modal_voucher_create.tooltips.assign_type',
-                                                                )}
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                )}
+                                                <FormGroupInfo
+                                                    info={translate(
+                                                        'modals.modal_voucher_create.tooltips.assign_type',
+                                                    )}>
+                                                    <SelectControl
+                                                        className={'flex-grow'}
+                                                        value={fund.id}
+                                                        propKey={'id'}
+                                                        onChange={(fund_id: number) => {
+                                                            setFund(funds.find((fund) => fund.id === fund_id));
+                                                        }}
+                                                        options={funds}
+                                                        allowSearch={false}
+                                                        optionsComponent={SelectControlOptionsFund}
+                                                    />
+                                                    <FormError error={form.errors?.fund_id} />
+                                                </FormGroupInfo>
                                             </div>
-                                            <FormError error={form.errors?.fund_id} />
                                         </div>
 
                                         <div className="form-group form-group-inline form-group-inline-lg">
@@ -390,41 +367,21 @@ export default function ModalVoucherCreate({
                                                 {translate('modals.modal_voucher_create.labels.credit_type')}
                                             </div>
                                             <div className="form-offset">
-                                                <div className="form-group-info">
-                                                    <div className="form-group-info-control">
-                                                        <SelectControl
-                                                            value={form.values.type}
-                                                            propKey={'key'}
-                                                            onChange={(type: 'vouchers' | 'product_vouchers') =>
-                                                                form.update({ type })
-                                                            }
-                                                            options={creditTypes}
-                                                            allowSearch={false}
-                                                            optionsComponent={SelectControlOptions}
-                                                        />
-
-                                                        <div className="form-group-info-button">
-                                                            <div
-                                                                className="button button-default button-icon pull-left"
-                                                                onClick={() => setShowTypeTooltip(!showTypeTooltip)}>
-                                                                <em className="mdi mdi-information" />
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                {showTypeTooltip && (
-                                                    <div className="block block-info-box block-info-box-primary">
-                                                        <div className="info-box-icon mdi mdi-information" />
-                                                        <div className="info-box-content">
-                                                            <div>
-                                                                {translate('modals.modal_voucher_create.tooltips.type')}
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                )}
+                                                <FormGroupInfo
+                                                    info={translate('modals.modal_voucher_create.tooltips.type')}>
+                                                    <SelectControl
+                                                        value={form.values.type}
+                                                        propKey={'key'}
+                                                        onChange={(type: 'vouchers' | 'product_vouchers') => {
+                                                            form.update({ type });
+                                                        }}
+                                                        options={creditTypes}
+                                                        allowSearch={false}
+                                                        optionsComponent={SelectControlOptions}
+                                                    />
+                                                    <FormError error={form.errors?.type} />
+                                                </FormGroupInfo>
                                             </div>
-                                            <FormError error={form.errors?.type} />
                                         </div>
 
                                         {fund.type === 'budget' && form.values.type == 'vouchers' && (
@@ -479,41 +436,19 @@ export default function ModalVoucherCreate({
                                                 {translate('modals.modal_voucher_create.labels.assign_by_type')}
                                             </div>
                                             <div className="form-offset">
-                                                <div className="form-group-info">
-                                                    <div className="form-group-info-control">
-                                                        <SelectControl
-                                                            value={assignType}
-                                                            propValue={'label'}
-                                                            onChange={setAssignType}
-                                                            options={assignTypes}
-                                                            allowSearch={false}
-                                                            optionsComponent={SelectControlOptions}
-                                                        />
-
-                                                        <div className="form-group-info-button">
-                                                            <div
-                                                                className="button button-default button-icon pull-left"
-                                                                onClick={() => setShowFundsTooltip(!showFundsTooltip)}>
-                                                                <em className="mdi mdi-information" />
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                {showFundsTooltip && (
-                                                    <div className="block block-info-box block-info-box-primary">
-                                                        <div className="info-box-icon mdi mdi-information" />
-                                                        <div className="info-box-content">
-                                                            <div>
-                                                                {translate(
-                                                                    'modals.modal_voucher_create.tooltips.funds',
-                                                                )}
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                )}
+                                                <FormGroupInfo
+                                                    info={translate('modals.modal_voucher_create.tooltips.funds')}>
+                                                    <SelectControl
+                                                        value={assignType}
+                                                        propValue={'label'}
+                                                        onChange={setAssignType}
+                                                        options={assignTypes}
+                                                        allowSearch={false}
+                                                        optionsComponent={SelectControlOptions}
+                                                    />
+                                                    <FormError error={form.errors?.assign_by_type} />
+                                                </FormGroupInfo>
                                             </div>
-                                            <FormError error={form.errors?.assign_by_type} />
                                         </div>
 
                                         {assignType.hasInput && (

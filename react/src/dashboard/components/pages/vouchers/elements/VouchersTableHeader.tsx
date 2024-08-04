@@ -20,7 +20,6 @@ export default function VouchersTableHeader({
     funds,
     loading,
     fetchVouchers,
-    type = 'vouchers',
 }: {
     organization: Organization;
     vouchers: PaginationData<Voucher>;
@@ -28,16 +27,18 @@ export default function VouchersTableHeader({
     funds: Array<Partial<Fund>>;
     loading: boolean;
     fetchVouchers: () => void;
-    type?: 'vouchers' | 'product_vouchers';
 }) {
     const translate = useTranslate();
     const openModal = useOpenModal();
 
     const createVoucher = useCallback(
-        (funds: Array<Partial<Fund>>, onCreate?: () => void) => {
+        (funds: Array<Partial<Fund>>, fundId?: number, onCreate?: () => void) => {
+            const fundsList = funds.filter((fund) => fund.id);
+
             openModal((modal) => (
                 <ModalVoucherCreate
-                    funds={funds.filter((fund) => fund.id)}
+                    fundId={fundId || fundsList[0].id}
+                    funds={fundsList}
                     modal={modal}
                     onCreated={onCreate}
                     organization={organization}
@@ -60,17 +61,9 @@ export default function VouchersTableHeader({
         <div className={`card-header ${loading ? 'card-header-inactive' : ''}`}>
             <div className="flex">
                 <div className="flex flex-grow">
-                    {type == 'vouchers' && (
-                        <div className="card-title" data-dusk="vouchersTitle">
-                            {translate('vouchers.header.title')} ({vouchers?.meta?.total})
-                        </div>
-                    )}
-
-                    {type == 'product_vouchers' && (
-                        <div className="card-title" data-dusk="vouchersTitle">
-                            {translate('product_vouchers.header.title')} ({vouchers?.meta?.total})
-                        </div>
-                    )}
+                    <div className="card-title" data-dusk="vouchersTitle">
+                        {translate('vouchers.header.title')} ({vouchers?.meta?.total})
+                    </div>
                 </div>
 
                 <div className="flex">
@@ -81,7 +74,7 @@ export default function VouchersTableHeader({
                                     id="create_voucher"
                                     className="button button-primary"
                                     disabled={funds?.filter((fund) => fund.id)?.length < 1}
-                                    onClick={() => createVoucher(funds, fetchVouchers)}>
+                                    onClick={() => createVoucher(funds, filter.activeValues?.fund_id, fetchVouchers)}>
                                     <em className="mdi mdi-plus-circle icon-start" />
                                     {translate('vouchers.buttons.add_new')}
                                 </button>
@@ -118,7 +111,6 @@ export default function VouchersTableHeader({
                             organization={organization}
                             vouchers={vouchers}
                             funds={funds}
-                            type={type}
                         />
                     </div>
                 </div>
