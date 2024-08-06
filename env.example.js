@@ -1,5 +1,5 @@
 const fronts = {};
-const api_url = 'http://localhost:8000/api/v1';
+const api_url = 'http://forus-backend-app/api/v1';
 
 const baseImplementationKey = 'general';
 const support_id = false;
