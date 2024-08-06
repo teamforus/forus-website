@@ -62,7 +62,7 @@ export default function FundRequestStepEmailSetup({
             {emailSubmitted ? (
                 <div className="sign_up-pane">
                     <h1 className="sr-only">Er is een e-mail te bevestiging verstuurd</h1>
-                    <h2 className="sign_up-pane-header">Confirmation email sent</h2>
+                    <h2 className="sign_up-pane-header">E-mail verstuurd</h2>
 
                     <div className="sign_up-pane-body">
                         <div className="sign_up-email_sent">
