@@ -34,15 +34,17 @@ export default function BlockProducts({
     return (
         <section className="section section-products" id="products">
             {products.length != 0 && (
-                <StateNavLink name={type == 'budget' ? 'products' : 'actions'} params={filters}>
-                    <h2
-                        className={classNames(
-                            'section-title',
-                            cmsBlock ? `text-${cmsBlock.description_alignment}` : '',
-                        )}>
-                        {cmsBlock?.title || translate(`block_products.header.title_${type}`)}
-                    </h2>
-                </StateNavLink>
+                <div className={'wrapper'}>
+                    <StateNavLink name={type == 'budget' ? 'products' : 'actions'} params={filters}>
+                        <h2
+                            className={classNames(
+                                'section-title',
+                                cmsBlock ? `text-${cmsBlock.description_alignment}` : '',
+                            )}>
+                            {cmsBlock?.title || translate(`block_products.header.title_${type}`)}
+                        </h2>
+                    </StateNavLink>
+                </div>
             )}
 
             {cmsBlock && <CmsBlocks page={cmsBlock} />}

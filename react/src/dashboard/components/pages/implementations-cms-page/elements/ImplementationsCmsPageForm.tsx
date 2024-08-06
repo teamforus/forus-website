@@ -387,6 +387,18 @@ export default function ImplementationsCmsPageForm({
                         </div>
                     </div>
 
+                    {pageTypeConfig.key == 'home' && (
+                        <div className="card-section card-section-primary">
+                            <ImplementationsCmsHomeProductsBlockEditor
+                                activeOrganization={activeOrganization}
+                                implementation={implementation}
+                                pageBlock={pageBlock}
+                                setPageBlock={setPageBlock}
+                                saveBlockRef={cmsBlockEditorRef}
+                            />
+                        </div>
+                    )}
+
                     {pageTypeConfig.blocks && !form.values?.external && (
                         <div className="card-section card-section-primary">
                             <div className="form-group form-group-inline form-group-inline-xl">
@@ -417,18 +429,6 @@ export default function ImplementationsCmsPageForm({
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    )}
-
-                    {pageTypeConfig.key == 'home' && (
-                        <div className="card-section card-section-primary">
-                            <ImplementationsCmsHomeProductsBlockEditor
-                                activeOrganization={activeOrganization}
-                                implementation={implementation}
-                                pageBlock={pageBlock}
-                                setPageBlock={setPageBlock}
-                                saveBlockRef={cmsBlockEditorRef}
-                            />
                         </div>
                     )}
 
