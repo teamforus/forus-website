@@ -98,6 +98,7 @@ export default function LayoutMobileMenu() {
                                     params={menuItem.stateParams}
                                     target={menuItem.target || '_blank'}
                                     activeExact={true}
+                                    tabIndex={0}
                                     onClick={hideMobileMenu}>
                                     <em className="mobile-menu-item-icon mdi mdi-arrow-right" aria-hidden="true" />
                                     {translate(
@@ -113,6 +114,7 @@ export default function LayoutMobileMenu() {
                                     className="mobile-menu-item"
                                     href={menuItem.href}
                                     target={menuItem.target || '_blank'}
+                                    tabIndex={0}
                                     onClick={hideMobileMenu}>
                                     <em className="mobile-menu-item-icon mdi mdi-arrow-right" aria-hidden="true" />
                                     {translate(
