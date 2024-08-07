@@ -421,7 +421,7 @@ export default function Home() {
                                             type="budget"
                                             large={true}
                                             display="grid"
-                                            showCustomDescription={true}
+                                            showCustomDescription={subsidies?.data.length === 0}
                                         />
                                     </div>
                                 )}
@@ -439,6 +439,7 @@ export default function Home() {
                                             type="subsidies"
                                             large={true}
                                             display="grid"
+                                            showCustomDescription={true}
                                         />
                                     </div>
                                 )}

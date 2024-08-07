@@ -426,6 +426,10 @@ h6 {
 }
 
 .section {
+    .section-title {
+        text-align: left;
+    }
+
     &.section-header {
         width: 1280px;
         background-position: top center;

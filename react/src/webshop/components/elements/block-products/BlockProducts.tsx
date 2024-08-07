@@ -6,7 +6,6 @@ import EmptyBlock from '../empty-block/EmptyBlock';
 import ProductsList from '../lists/products-list/ProductsList';
 import CmsBlocks from '../cms-blocks/CmsBlocks';
 import useAppConfigs from '../../../hooks/useAppConfigs';
-import classNames from 'classnames';
 
 export default function BlockProducts({
     type = 'budget',
@@ -36,11 +35,7 @@ export default function BlockProducts({
             {products.length != 0 && (
                 <div className={'wrapper'}>
                     <StateNavLink name={type == 'budget' ? 'products' : 'actions'} params={filters}>
-                        <h2
-                            className={classNames(
-                                'section-title',
-                                cmsBlock ? `text-${cmsBlock.description_alignment}` : '',
-                            )}>
+                        <h2 className={'section-title'}>
                             {cmsBlock?.title || translate(`block_products.header.title_${type}`)}
                         </h2>
                     </StateNavLink>
