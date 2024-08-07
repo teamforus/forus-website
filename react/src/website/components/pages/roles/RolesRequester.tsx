@@ -35,7 +35,7 @@ export default function RolesRequester() {
             <div className="main-content">
                 <div
                     className="background-overlay hide-sm"
-                    style={{ backgroundImage: 'url("./assets/img/background-requester.png")' }}
+                    style={{ backgroundImage: 'url("./assets/img/background-requester.svg")' }}
                 />
 
                 <div className="wrapper">
@@ -43,6 +43,9 @@ export default function RolesRequester() {
 
                     <div className="section section-overview">
                         <div className="section-title section-title-sm text-left">Functionaliteiten en overzicht</div>
+                        <div className="section-separator">
+                            <div className="line" />
+                        </div>
                         <div className="section-description text-left">
                             Mensen raken door de vele initiatieven, zoals tegemoetkomingen en regelingen, het overzicht
                             kwijt. Ingewikkelde aanvraagprocedures leiden vaak tot stress en onnodig niet-gebruik van

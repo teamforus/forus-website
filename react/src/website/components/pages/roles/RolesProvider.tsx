@@ -31,14 +31,14 @@ export default function RolesProvider() {
                 <RolesBanner type={'provider'} title={bannerTitle} description={bannerDescription} />
             </div>
 
-            <div className="show-sm">
-                <RolesBanner type={'provider'} title={bannerTitle} description={bannerDescription} />
-            </div>
-
             <div className="main-content">
+                <div className="show-sm">
+                    <RolesBanner type={'provider'} title={bannerTitle} description={bannerDescription} />
+                </div>
+
                 <div
                     className="background-overlay hide-sm"
-                    style={{ backgroundImage: 'url("./assets/img/background-provider.png")' }}
+                    style={{ backgroundImage: 'url("./assets/img/background-provider.svg")' }}
                 />
 
                 <div className="wrapper">
@@ -46,6 +46,9 @@ export default function RolesProvider() {
 
                     <div className="section section-overview">
                         <div className="section-title section-title-sm text-left">Functionaliteiten en overzicht</div>
+                        <div className="section-separator">
+                            <div className="line" />
+                        </div>
                     </div>
                 </div>
 

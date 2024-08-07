@@ -38,7 +38,7 @@ export default function RolesSponsor() {
             <div className="main-content">
                 <div
                     className="background-overlay hide-sm"
-                    style={{ backgroundImage: 'url("./assets/img/background-sponsor.png")' }}
+                    style={{ backgroundImage: 'url("./assets/img/background-sponsor.svg")' }}
                 />
 
                 <div className="wrapper">
@@ -46,6 +46,9 @@ export default function RolesSponsor() {
 
                     <div className="section section-overview">
                         <div className="section-title section-title-sm text-left">Functionaliteiten en overzicht</div>
+                        <div className="section-separator">
+                            <div className="line" />
+                        </div>
                     </div>
                 </div>
 

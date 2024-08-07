@@ -38,7 +38,7 @@ export default function RolesValidator() {
             <div className="main-content">
                 <div
                     className="background-overlay hide-sm"
-                    style={{ backgroundImage: 'url("./assets/img/background-validator.png")' }}
+                    style={{ backgroundImage: 'url("./assets/img/background-validator.svg")' }}
                 />
 
                 <div className="wrapper">
