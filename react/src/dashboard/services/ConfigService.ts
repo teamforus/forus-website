@@ -163,6 +163,7 @@ export type AppConfigProp = {
         provider: ImplementationPage;
         providers: ImplementationPage;
         explanation: ImplementationPage;
+        block_home_products: ImplementationPage;
         footer_app_info: ImplementationPage;
         footer_opening_times: ImplementationPage;
         footer_contact_details: ImplementationPage;

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import LoadingCard from '../../../elements/loading-card/LoadingCard';
 import usePushSuccess from '../../../../hooks/usePushSuccess';
 import usePushDanger from '../../../../hooks/usePushDanger';
@@ -20,6 +20,10 @@ export default function ImplementationsCmsPages({ implementation }: { implementa
     const pushSuccess = usePushSuccess();
 
     const implementationPageService = useImplementationPageService();
+
+    const pageTypes = useMemo(() => {
+        return implementation.page_types.filter((type) => type.type !== 'block');
+    }, [implementation.page_types]);
 
     const [pagesByKey, setPagesByKey] = useState<{ [key: string]: ImplementationPage }>(null);
 
@@ -86,7 +90,7 @@ export default function ImplementationsCmsPages({ implementation }: { implementa
                                     <ThSortable className="th-narrow text-right" label="Opties" />
                                 </tr>
 
-                                {implementation.page_types.map((pageType) => (
+                                {pageTypes.map((pageType) => (
                                     <tr key={pageType.key}>
                                         <td>{translate(`implementation_edit.labels.${pageType.key}`)}</td>
                                         {pageType.type === 'static' && <td className="text-muted">Standaard pagina</td>}
