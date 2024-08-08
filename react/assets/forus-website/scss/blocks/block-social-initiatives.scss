@@ -2,23 +2,22 @@
     display: flex;
     flex-direction: row;
     gap: 180px;
-    margin: 100px 0;
+    margin: 0 0 60px;
     align-items: center;
 
     .block-social-initiatives-main {
         display: flex;
         flex-direction: column;
-        gap: 10px;
-        width: 50%;
+        flex: 0 0 calc(50% - 90px);
 
         .block-social-initiatives-title {
             font: 700 40px/52px var(--base-font);
-            margin: 0 0 35px 0;
+            margin: 0 0 35px;
         }
 
         .block-social-initiatives-description {
             font: 400 18px/28px var(--base-font);
-            margin-bottom: 30px;
+            margin: 0 0 30px;
             color: #333;
         }
 
@@ -29,21 +28,21 @@
             align-items: flex-start;
             gap: 25px;
             border-radius: 10px;
-            background: #F9F9F9;
-
+            background: #f9f9f9;
             color: #333;
             font: 400 18px/28px var(--base-font);
 
             .button {
                 width: 100%;
-                border: 1px solid #D6D7DB;
+                border: 1px solid #d6d7db;
             }
 
-            .button, .button a {
+            .button,
+            .button a {
                 display: flex;
                 justify-content: center;
                 font: 700 14px/21px var(--base-font);
-                color: #2A2B2D;
+                color: #2a2b2d;
             }
         }
 
@@ -58,36 +57,40 @@
     }
 
     .block-social-initiatives-img {
-        width: 50%;
+        flex: 0 0 calc(50% - 90px);
 
         img {
             width: 100%;
+            display: block;
         }
     }
 
     @media screen and (max-width: 1000px) {
         flex-direction: column;
         margin: 48px 0;
+        gap: 20px;
 
         .block-social-initiatives-main {
             width: 100%;
 
             .block-social-initiatives-title {
                 font: 900 30px/40px var(--base-font);
-                margin: 0 0 20px 0;
+                margin: 0 0 20px;
             }
 
             .block-social-initiatives-description {
                 font: 400 14px/21px var(--base-font);
-                margin-bottom: 20px;
+                margin: 0 0 20px;
             }
 
             .block-social-initiatives-actions {
                 font: 400 14px/21px var(--base-font);
+                margin: 0 0 20px;
             }
 
             .block-social-initiatives-extra {
                 font: 400 14px/21px var(--base-font);
+                margin: 0 0 20px;
             }
         }
 

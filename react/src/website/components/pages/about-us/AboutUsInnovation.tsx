@@ -2,6 +2,7 @@ import React, { Fragment, useEffect } from 'react';
 import useSetTitle from '../../../hooks/useSetTitle';
 import useAssetUrl from '../../../hooks/useAssetUrl';
 import LearnMore from '../../elements/LearnMore';
+import BlockDashedSeparator from '../home/elements/BlockDashedSeparator';
 
 export default function AboutUsInnovation() {
     const setTitle = useSetTitle();
@@ -63,9 +64,7 @@ export default function AboutUsInnovation() {
                 </div>
             </div>
 
-            <div className="separator-dashed">
-                <img src={assetUrl(`/assets/img/icon-forus.svg`)} alt="" />
-            </div>
+            <BlockDashedSeparator />
 
             <div className={'wrapper'}>
                 <div className="block block-with-image">
@@ -153,9 +152,7 @@ export default function AboutUsInnovation() {
                 </div>
             </div>
 
-            <div className="separator-dashed">
-                <img src={assetUrl(`/assets/img/icon-forus.svg`)} alt="" />
-            </div>
+            <BlockDashedSeparator />
 
             <div className="wrapper">
                 <div className="block block-with-image block-with-image-background">
@@ -176,9 +173,7 @@ export default function AboutUsInnovation() {
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <div className="wrapper">
                 <LearnMore
                     title={'Heeft u vragen of wilt u aanvullende informatie over het Innovatiebudget project?'}
                     description={'Neem gerust contact met ons op. We staan klaar om uw vragen te beantwoorden.'}
@@ -191,7 +186,7 @@ export default function AboutUsInnovation() {
                 />
             </div>
 
-            <div className="separator-dashed" />
+            <BlockDashedSeparator image={false} />
             <br />
             <br />
             <br />
