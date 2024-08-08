@@ -74,7 +74,7 @@
         display: flex;
         flex-direction: row;
         padding-top: 0;
-        margin-right: calc(-1 * (100vw - var(--wrapper-width) - 15px) / 2);
+        margin-right: calc(-1 * (100vw - var(--wrapper-width)) / 2);
         text-align: left;
 
         .section-main {
@@ -82,6 +82,7 @@
             flex-direction: column;
             justify-content: center;
             width: 40%;
+            padding: 20px 0;
         }
 
         .section-banner {
@@ -119,7 +120,7 @@
                 position: absolute;
                 height: 4px;
                 width: 50px;
-                background: #315EFD;
+                background: #315efd;
                 left: 0;
                 top: -2px;
                 border-radius: var(--border-radius);

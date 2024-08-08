@@ -4,6 +4,7 @@ import useAssetUrl from '../../hooks/useAssetUrl';
 import HelpCenter from '../../components/elements/HelpCenter';
 import useSetActiveMenuDropdown from '../../hooks/useSetActiveMenuDropdown';
 import { useNavigateState } from '../../modules/state_router/Router';
+import StateNavLink from '../../modules/state_router/StateNavLink';
 
 export default function DropdownPlatform() {
     const assetUrl = useAssetUrl();
@@ -155,13 +156,11 @@ export default function DropdownPlatform() {
                             </div>
                         ) : (
                             <div className="block-page-list-main-details-list">
-                                <div
+                                <StateNavLink
+                                    name={'roles-requester'}
                                     className="block-page-list-main-details-list-item"
                                     onMouseOver={() => setActiveSubItem('requester')}
-                                    onClick={() => {
-                                        setActiveMenuDropdown(null);
-                                        navigateState('roles-requester');
-                                    }}>
+                                    onClick={() => setActiveMenuDropdown(null)}>
                                     <img
                                         className="details-list-image"
                                         src={assetUrl(
@@ -173,15 +172,13 @@ export default function DropdownPlatform() {
                                     />
                                     Deelnemer / Aanvrager
                                     <em className={'mdi mdi-arrow-right'} />
-                                </div>
+                                </StateNavLink>
 
-                                <div
+                                <StateNavLink
+                                    name={'roles-provider'}
                                     className="block-page-list-main-details-list-item"
                                     onMouseOver={() => setActiveSubItem('provider')}
-                                    onClick={() => {
-                                        setActiveMenuDropdown(null);
-                                        navigateState('roles-provider');
-                                    }}>
+                                    onClick={() => setActiveMenuDropdown(null)}>
                                     <img
                                         className="details-list-image"
                                         src={assetUrl(
@@ -193,15 +190,13 @@ export default function DropdownPlatform() {
                                     />
                                     Aanbieder
                                     <em className={'mdi mdi-arrow-right'} />
-                                </div>
+                                </StateNavLink>
 
-                                <div
+                                <StateNavLink
+                                    name={'roles-validator'}
                                     className="block-page-list-main-details-list-item"
                                     onMouseOver={() => setActiveSubItem('sponsor')}
-                                    onClick={() => {
-                                        setActiveMenuDropdown(null);
-                                        navigateState('roles-sponsor');
-                                    }}>
+                                    onClick={() => setActiveMenuDropdown(null)}>
                                     <img
                                         className="details-list-image"
                                         src={assetUrl(
@@ -213,15 +208,13 @@ export default function DropdownPlatform() {
                                     />
                                     Sponsor
                                     <em className={'mdi mdi-arrow-right'} />
-                                </div>
+                                </StateNavLink>
 
-                                <div
+                                <StateNavLink
+                                    name={'roles-validator'}
                                     className="block-page-list-main-details-list-item"
                                     onMouseOver={() => setActiveSubItem('validator')}
-                                    onClick={() => {
-                                        setActiveMenuDropdown(null);
-                                        navigateState('roles-validator');
-                                    }}>
+                                    onClick={() => setActiveMenuDropdown(null)}>
                                     <img
                                         className="details-list-image"
                                         src={assetUrl(
@@ -233,7 +226,7 @@ export default function DropdownPlatform() {
                                     />
                                     Beoordelaar
                                     <em className={'mdi mdi-arrow-right'} />
-                                </div>
+                                </StateNavLink>
                             </div>
                         )}
 
