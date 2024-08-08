@@ -13,7 +13,7 @@ export default function RolesRequester() {
     const [bannerDescription] = useState(
         [
             'Binnen het Forus-systeem wordt iemand die een aanvraag voor een regeling indient, gezien als',
-            'een &amp aanvrager &amp. Zodra deze aanvraag is goedgekeurd, verandert de status van deze',
+            'een & aanvrager &amp. Zodra deze aanvraag is goedgekeurd, verandert de status van deze',
             'persoon in het systeem naar &amp deelnemer &amp.',
         ].join(''),
     );

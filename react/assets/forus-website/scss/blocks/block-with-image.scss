@@ -1,6 +1,6 @@
 .block.block-with-image {
     text-align: left;
-    margin: 100px 0;
+    margin: 0 0 60px;
 
     .block-with-image-title {
         font: 900 56px/68px var(--base-font);
@@ -10,7 +10,7 @@
     .block-with-image-label {
         font: 400 30px/46px var(--base-font);
         margin-bottom: 20px;
-        color: #315EFD;
+        color: #315efd;
 
         &.block-with-image-label-sm {
             font: 500 18px/27px var(--base-font);
@@ -26,7 +26,6 @@
         .block-with-image-info {
             width: 50%;
             font: 400 26px/36px var(--base-font);
-            margin-bottom: 50px;
 
             .block-with-image-title {
                 font: 700 40px/52px var(--base-font);
@@ -42,6 +41,7 @@
             width: 50%;
 
             img {
+                display: block;
                 width: 100%;
             }
         }
@@ -50,7 +50,7 @@
     &.block-with-image-background {
         border-radius: 20px;
         border: 1px solid var(--border-color);
-        background: #FFF;
+        background: #fff;
         box-shadow: 0 20px 55px 0 rgba(115, 120, 145, 0.06);
 
         .block-with-image-wrapper {
@@ -95,7 +95,6 @@
 
             .block-with-image-info {
                 width: 100%;
-                margin-bottom: 25px;
 
                 .block-with-image-title {
                     font: 700 20px/30px var(--base-font);

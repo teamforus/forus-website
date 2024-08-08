@@ -6,14 +6,12 @@ export default function SocialDomain() {
             <div className="block-social-domain-banner">
                 <div className="block-social-domain-banner-main">
                     <div className="block-social-domain-banner-info">
-                        <div className="flex flex-vertical flex-grow">
-                            <div className="block-social-domain-banner-subtitle">Samenwerken binnen het</div>
-                            <div className="block-social-domain-banner-title">Sociaal Domein</div>
-                        </div>
+                        <div className="block-social-domain-banner-subtitle">Samenwerken binnen het</div>
+                        <div className="block-social-domain-banner-title">Sociaal Domein</div>
+                    </div>
 
-                        <div className="block-social-domain-banner-actions">
-                            <div className="button button-light">Laten we kennismaken</div>
-                        </div>
+                    <div className="block-social-domain-banner-actions">
+                        <div className="button button-light">Laten we kennismaken</div>
                     </div>
                 </div>
             </div>
@@ -30,7 +28,7 @@ export default function SocialDomain() {
                 <div className="block-social-domain-info-actions">
                     <div className="button button-light">
                         Lees meer
-                        <em className={'mdi mdi-chevron-down'} />
+                        <em className={'mdi mdi-chevron-down icon-right'} />
                     </div>
                 </div>
             </div>

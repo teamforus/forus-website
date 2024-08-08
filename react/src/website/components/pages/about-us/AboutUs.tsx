@@ -2,6 +2,7 @@ import React, { Fragment, useEffect } from 'react';
 import useSetTitle from '../../../hooks/useSetTitle';
 import useAssetUrl from '../../../hooks/useAssetUrl';
 import Slider from '../../elements/Slider';
+import BlockDashedSeparator from '../home/elements/BlockDashedSeparator';
 
 export default function AboutUs() {
     const setTitle = useSetTitle();
@@ -138,7 +139,7 @@ export default function AboutUs() {
                 </div>
             </div>
 
-            <div className="separator-dashed" />
+            <BlockDashedSeparator image={false} />
 
             <div className="wrapper">
                 <div className="block block-social-initiatives">
@@ -170,18 +171,20 @@ export default function AboutUs() {
                             Forus werkt samen vanuit het gedachtegoed van “One Solution, Two Entities”, waar Forus
                             Operations B.V. als ‘werkmaatschappij’ functioneert en Stichting Forus zich richt op het
                             waarborgen van de publiek inzichtelijke code.
-                            <div className="button">
-                                <a href={'https://github.com/teamforus'} target={'_blank'} rel="noreferrer">
-                                    <em className={'mdi mdi-github'} />
-                                    Bekijk onze GitHub pagina
-                                    <em className="mdi mdi-arrow-right icon-end" />
-                                </a>
-                            </div>
+                            <a
+                                href={'https://github.com/teamforus'}
+                                className={'button'}
+                                target={'_blank'}
+                                rel="noreferrer">
+                                <em className={'mdi mdi-github'} />
+                                Bekijk onze GitHub pagina
+                                <em className="mdi mdi-arrow-right icon-end" />
+                            </a>
                         </div>
                     </div>
 
                     <div className="block-social-initiatives-img">
-                        <img src={assetUrl('/assets/img/social-initiatives.png')} alt="Social initiatives" />
+                        <img src={assetUrl('/assets/img/social-initiatives.svg')} alt="Social initiatives" />
                     </div>
                 </div>
 
@@ -191,13 +194,11 @@ export default function AboutUs() {
                     showActionButton={false}
                     elements={elements}
                 />
-            </div>
 
-            <div className="wrapper">
                 <div className="block block-our-values">
                     <div className="block-our-values-header">
                         Onze waarden
-                        <div className="button button-light button-sm pull-right">Gratis demo</div>
+                        <div className="button button-light button-sm block-our-values-header-button">Gratis demo</div>
                     </div>
 
                     <div className="block-our-values-items">
@@ -305,9 +306,7 @@ export default function AboutUs() {
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <div className="wrapper">
                 <div className="block block-statistics">
                     <div className="block-statistics-main-info">
                         <div className="block-statistics-main-info-title">Cijfers waar we trots op zijn</div>
@@ -317,7 +316,7 @@ export default function AboutUs() {
                     </div>
 
                     <div className="block-statistics-figures-list">
-                        <div className="block-statistics-figures-list-item blue">
+                        <div className="block-statistics-figures-list-item block-statistics-figures-list-item-blue">
                             <div className="block-statistics-figures-list-item-main">
                                 <div className="block-statistics-figures-list-item-title">56</div>
                                 <div className="block-statistics-figures-list-item-subtitle">
@@ -332,7 +331,7 @@ export default function AboutUs() {
                             </div>
                         </div>
 
-                        <div className="block-statistics-figures-list-item purple">
+                        <div className="block-statistics-figures-list-item block-statistics-figures-list-item-purple">
                             <div className="block-statistics-figures-list-item-details">
                                 Via het Forus-platform kunnen lokale ondernemingen en landelijke winkelketens hun
                                 producten of diensten aanbieden, wat onze deelnemers een breed scala aan mogelijkheden
@@ -346,7 +345,7 @@ export default function AboutUs() {
                             </div>
                         </div>
 
-                        <div className="block-statistics-figures-list-item blue-light">
+                        <div className="block-statistics-figures-list-item block-statistics-figures-list-item-blue-light">
                             <div className="block-statistics-figures-list-item-main">
                                 <div className="block-statistics-figures-list-item-title">8,4/10</div>
                                 <div className="block-statistics-figures-list-item-subtitle">
@@ -362,9 +361,7 @@ export default function AboutUs() {
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <div className="wrapper">
                 <div className="block block-map">
                     <img src={assetUrl('/assets/img/map.png')} alt="Map" />
                     <div className="block-map-info">
@@ -374,7 +371,7 @@ export default function AboutUs() {
                 </div>
             </div>
 
-            <div className="separator-dashed" />
+            <BlockDashedSeparator image={false} />
             <br />
             <br />
             <br />
