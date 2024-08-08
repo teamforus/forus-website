@@ -264,9 +264,19 @@
 
     @media screen and (max-width: 992px) {
         .layout-header {
+            position: sticky;
+            z-index: 999;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            border-bottom: none;
+            flex-direction: column;
+
             .layout-header-wrapper {
                 display: flex;
                 padding: 18px 24px;
+                background-color: #fff;
+                flex: auto;
 
                 .layout-header-logo {
                     flex-grow: 1;

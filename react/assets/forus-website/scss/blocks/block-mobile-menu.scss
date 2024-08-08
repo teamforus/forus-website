@@ -37,6 +37,10 @@
                     width: 100%;
                 }
             }
+
+            .mobile-menu-items {
+                padding: 0 16px;
+            }
         }
 
         .mobile-menu-group-header {
@@ -63,7 +67,7 @@
         .mobile-menu-items {
             width: 100%;
             overflow: scroll;
-            padding: 0 24px;
+            padding: 0;
 
             .mobile-menu-item {
                 font: 600 14px/var(--item-line-height) var(--base-font);
