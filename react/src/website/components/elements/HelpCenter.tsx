@@ -18,9 +18,11 @@ export default function HelpCenter() {
                     platform.
                 </div>
 
-                <div className="button button-text button-text-padless button-read-more">
-                    Lees meer
-                    <em className="mdi mdi-arrow-right icon-end" />
+                <div>
+                    <div className="button button-text button-text-padless button-read-more">
+                        Lees meer
+                        <em className="mdi mdi-arrow-right icon-end" />
+                    </div>
                 </div>
             </div>
         </div>

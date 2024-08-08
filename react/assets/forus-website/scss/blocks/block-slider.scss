@@ -1,22 +1,26 @@
 .block.block-slider {
     display: flex;
+    flex-direction: row;
     border-radius: 30px;
     margin-bottom: 100px;
 
     .block-slider-main {
+        display: flex;
+        flex-direction: column;
         position: relative;
-        width: calc(50% - 65px);
+        flex: 0 0 50%;
         background-position: center 0;
         background-repeat: no-repeat;
-        background-image: url("./assets/img/ellipse.png");
+        background-image: url('./assets/img/ellipse.png');
         background-size: contain;
+        padding: 0 65px 0 0;
+        gap: 30px;
 
         .block-slider-actions {
             margin-top: 30px;
         }
 
         .block-slider-arrows {
-            margin-bottom: 30px;
             display: flex;
 
             .block-slider-arrow {
@@ -25,19 +29,19 @@
                 cursor: pointer;
 
                 &.block-slider-arrow-left {
-                    background-image: url("./assets/img/icon-arrow-left-normal.svg");
+                    background-image: url('./assets/img/icon-arrow-left-normal.svg');
                     margin-right: 10px;
 
                     &:hover {
-                        background-image: url("./assets/img/icon-arrow-left-hover.svg");
+                        background-image: url('./assets/img/icon-arrow-left-hover.svg');
                     }
                 }
 
                 &.block-slider-arrow-right {
-                    background-image: url("./assets/img/icon-arrow-right-normal.svg");
+                    background-image: url('./assets/img/icon-arrow-right-normal.svg');
 
                     &:hover {
-                        background-image: url("./assets/img/icon-arrow-right-hover.svg");
+                        background-image: url('./assets/img/icon-arrow-right-hover.svg');
                     }
                 }
 
@@ -48,13 +52,13 @@
         }
 
         .block-slider-title {
-            font: 900 56px/68px var(--base-font);
-            margin-bottom: 30px;
+            font: 900 50px/60px var(--base-font);
+            margin: 0 0;
         }
 
         .block-slider-description {
             font: 400 26px/38px var(--base-font);
-            margin-bottom: 30px;
+            margin: 0 0;
         }
 
         &.hide-background {
@@ -63,24 +67,35 @@
     }
 
     .block-slider-list {
-        width: calc(50% - 65px);
-        margin-left: 65px;
+        flex: 0 0 50%;
         display: flex;
-        border-left: 3px dotted #E1E2E8;
+        flex-direction: column;
+        border-left: 3px dotted #e1e2e8;
         position: relative;
+        justify-content: center;
 
         .block-slider-list-item {
             display: flex;
             height: 0;
+            display: flex;
+            flex-direction: column;
             position: relative;
             padding: 30px;
             border-radius: 10px;
-            background-color: #F6F7F8;
-            min-width: 100%;
+            background-color: #f6f7f8;
             visibility: hidden;
             opacity: 0;
             transition: visibility 0s, opacity 0.5s linear;
-            transform: scale3d(.3,.3,.3);
+            gap: 15px;
+
+            .block-slider-list-item-title {
+                font: 700 30px/46px var(--base-font);
+                margin: 0 0;
+            }
+
+            .block-slider-list-item-description {
+                font: 400 18px/27px var(--base-font);
+            }
 
             .block-slider-list-item-image {
                 margin-left: 30px;
@@ -102,35 +117,25 @@
             &.active {
                 height: fit-content;
                 margin-left: 65px;
-                padding-left: 65px;
                 visibility: visible;
                 opacity: 1;
             }
 
             &:after {
-                content: " ";
+                content: ' ';
                 position: absolute;
-                background: #F6F7F8;
+                background: #f6f7f8;
                 width: 30px;
                 height: 30px;
                 top: 50%;
                 left: -15px;
                 transform: rotate(45deg);
             }
-
-            .block-slider-list-item-title {
-                font: 700 30px/46px var(--base-font);
-                margin-bottom: 20px;
-            }
-
-            .block-slider-list-item-description {
-                font: 400 18px/27px var(--base-font);
-            }
         }
 
         .block-slider-numeration {
             position: absolute;
-            content: " ";
+            content: ' ';
             top: 50%;
             left: -86px;
             width: 40px;
@@ -148,8 +153,7 @@
     }
 
     @media screen and (max-width: 1000px) {
-        margin: 0;
-        padding: 48px 0;
+        margin: 0 0 30px;
         text-align: left;
         display: flex;
         flex-direction: column;
@@ -165,12 +169,10 @@
 
             .block-slider-title {
                 font: 900 30px/40px var(--base-font);
-                margin-bottom: 20px;
             }
 
             .block-slider-description {
                 font: 400 14px/21px var(--base-font);
-                margin-bottom: 20px;
             }
 
             .block-slider-arrows {
@@ -184,12 +186,7 @@
                 }
             }
 
-            .block-slider-separator {
-                display: none;
-            }
-
             .block-slider-actions {
-                margin: 0 0 20px 0;
                 position: relative;
 
                 .button {
@@ -205,7 +202,7 @@
 
         .block-slider-list {
             width: 100%;
-            border-top: 3px dotted #E1E2E8;
+            border-top: 3px dotted #e1e2e8;
             border-left: none;
             padding: 40px 0 0 0;
             margin: 30px 0 0 0;
@@ -214,6 +211,15 @@
                 margin-bottom: 0;
                 transform: translateX(0%) scaleX(1);
                 opacity: 1;
+                padding: 24px;
+
+                .block-slider-list-item-title {
+                    font: 700 20px/30px var(--base-font);
+                }
+
+                .block-slider-list-item-description {
+                    font: 400 16px/22px var(--base-font);
+                }
 
                 .block-slider-numeration {
                     top: -60px;
@@ -231,7 +237,6 @@
 
                 &.active {
                     margin-left: 0;
-                    padding: 30px;
                 }
 
                 &:after {

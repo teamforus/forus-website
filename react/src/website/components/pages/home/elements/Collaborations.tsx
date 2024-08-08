@@ -1,11 +1,11 @@
 import React from 'react';
 
-import Carousel from '../../../elements/Carousel';
+import CollaborationsCarousel from '../../../elements/CollaborationsCarousel';
 
 export default function Collaborations() {
     return (
         <div className="block block-collaborations">
-            <div className="wrapper">
+            <div className="block-collaborations-content">
                 <div className="block-collaborations-title">Samenwerkingen</div>
                 <div className="block-collaborations-subtitle">
                     Forus werkt samen met en laat zich inspireren door diverse organisaties die bijdragen aan
@@ -14,7 +14,7 @@ export default function Collaborations() {
                 </div>
             </div>
 
-            <Carousel />
+            <CollaborationsCarousel />
         </div>
     );
 }

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 
 export default function Slider({
     label,
@@ -16,48 +16,8 @@ export default function Slider({
     elements: { title: string; description: string; imgSrc?: string; imgAlt?: string }[];
 }) {
     const $element = useRef<HTMLDivElement>(null);
+    const [count] = useState(3);
     const [activeItem, setActiveItem] = useState(1);
-
-    const switchSlide = useCallback((activeItem) => {
-        if ($element.current) {
-            const $items = $element.current.getElementsByClassName(
-                'block-slider-list-item',
-            ) as HTMLCollectionOf<HTMLElement>;
-
-            for (let i = 0; i < $items.length; i++) {
-                $items[i].style.removeProperty('transform');
-            }
-            $items[activeItem - 1].style.transform = `translateX(-${(activeItem - 1) * 100}%) scaleX(1)`;
-        }
-    }, []);
-
-    useEffect(() => {
-        if ($element.current) {
-            const $items = $element.current.querySelectorAll('.block-slider-list-item');
-            const $arrows = $element.current.querySelectorAll('.block-slider-arrow');
-
-            $arrows[0]?.addEventListener('click', () => {
-                if (activeItem === 1) {
-                    setActiveItem($items.length);
-                } else {
-                    switchSlide(activeItem - 1);
-                    setActiveItem(activeItem - 1);
-                }
-            });
-
-            $arrows[1]?.addEventListener('click', () => {
-                if (activeItem === $items.length) {
-                    setActiveItem(1);
-                } else {
-                    setActiveItem(activeItem + 1);
-                }
-            });
-        }
-    }, [activeItem, switchSlide]);
-
-    useEffect(() => {
-        switchSlide(activeItem);
-    }, [activeItem, switchSlide]);
 
     return (
         <div className="block block-slider" ref={$element}>
@@ -72,8 +32,26 @@ export default function Slider({
                     </div>
                 )}
                 <div className="block-slider-arrows">
-                    <div className="block-slider-arrow block-slider-arrow-left" />
-                    <div className="block-slider-arrow block-slider-arrow-right" />
+                    <div
+                        className="block-slider-arrow block-slider-arrow-left"
+                        onClick={() => {
+                            if (activeItem === 1) {
+                                setActiveItem(count);
+                            } else {
+                                setActiveItem(activeItem - 1);
+                            }
+                        }}
+                    />
+                    <div
+                        className="block-slider-arrow block-slider-arrow-right"
+                        onClick={() => {
+                            if (activeItem === count) {
+                                setActiveItem(1);
+                            } else {
+                                setActiveItem(activeItem + 1);
+                            }
+                        }}
+                    />
                 </div>
                 {showActionButton && (
                     <div className="block-slider-actions">
