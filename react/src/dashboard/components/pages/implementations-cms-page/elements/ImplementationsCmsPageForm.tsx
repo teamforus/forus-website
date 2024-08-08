@@ -435,7 +435,7 @@ export default function ImplementationsCmsPageForm({
                     {pageTypeConfig.faq && !form.values?.external && (
                         <div className="card-section card-section-primary">
                             <div className="form-group form-group-inline form-group-inline-xl">
-                                <label className="form-label">Aanbod sectie</label>
+                                <label className="form-label">Veel gestelde vragen</label>
                                 <div className="form-offset">
                                     <FaqEditor
                                         faq={faq}
