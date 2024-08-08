@@ -70,7 +70,7 @@ export default function DropdownAbout() {
                 <PreviewPageFooter />
             </div>
 
-            <div className="block-page-list-preview" />
+            <div className="block-page-list-backdrop" />
             <div className="dropdown-close" onClick={() => setActiveMenuDropdown(null)}>
                 <em className="mdi mdi-close" />
             </div>

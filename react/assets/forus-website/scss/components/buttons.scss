@@ -9,6 +9,7 @@
     border-radius: var(--btn-border-radius);
     text-align: center;
     box-shadow: none;
+    justify-content: center;
 
     .mdi {
         font-size: 1.4em;
@@ -248,5 +249,9 @@
         & > .mdi {
             margin: 0 -5px;
         }
+    }
+
+    @media screen and (max-width: 1000px) {
+        font-size: 15px;
     }
 }

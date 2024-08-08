@@ -1,13 +1,20 @@
-import React from 'react';
+import React, { CSSProperties, useEffect, useRef, useState } from 'react';
 
 import useAssetUrl from '../../hooks/useAssetUrl';
 
-export default function Carousel() {
+export default function CollaborationsCarousel() {
     const assetUrl = useAssetUrl();
+    const rowRef = useRef<HTMLDivElement>(null);
+    const [countElements, setCountElements] = useState(rowRef.current?.children?.length);
+
+    useEffect(() => {
+        setCountElements(rowRef.current?.children?.length);
+        rowRef.current.parentNode.append(rowRef.current.cloneNode(true));
+    }, []);
 
     return (
-        <div className="block block-carousel">
-            <div className="block-carousel-row">
+        <div className="block block-carousel" style={{ '--carousel-size': countElements } as CSSProperties}>
+            <div className="block-carousel-row" ref={rowRef}>
                 <div className="block-carousel-logo">
                     <img
                         src={assetUrl(`/assets/img/collaboration-logos/datawise.png`)}

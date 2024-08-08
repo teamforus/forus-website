@@ -170,7 +170,7 @@ export default function LayoutHeader() {
                         {showMobileMenu ? (
                             <em className="mdi mdi-close menu-icon-close" onClick={() => setShowMobileMenu(false)} />
                         ) : (
-                            <em className="mdi mdi-menu" onClick={() => setShowMobileMenu(true)} />
+                            <em className="mdi mdi-menu menu-icon-toggle" onClick={() => setShowMobileMenu(true)} />
                         )}
                     </div>
                 </div>
