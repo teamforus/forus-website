@@ -145,6 +145,8 @@
 }
 
 @mixin anim_blink() {
+    animation: blink 1.5s ease-in-out infinite;
+
     @keyframes blink {
         0% {
             opacity: 0;
@@ -180,8 +182,6 @@
             opacity: 0;
         }
     }
-
-    animation: blink 1.5s ease-in-out infinite;
 }
 
 @function assetUrl($url) {

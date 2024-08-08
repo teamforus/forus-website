@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useMemo, useRef, useState } from 'react';
+import React, { Fragment, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import useActiveOrganization from '../../../../hooks/useActiveOrganization';
 import useFormBuilder from '../../../../hooks/useFormBuilder';
 import usePushSuccess from '../../../../hooks/usePushSuccess';
@@ -21,6 +21,7 @@ import FaqEditor from '../../../elements/faq-editor-funds/FaqEditor';
 import Faq from '../../../../props/models/Faq';
 import { uniqueId } from 'lodash';
 import LoadingCard from '../../../elements/loading-card/LoadingCard';
+import ImplementationsCmsHomeProductsBlockEditor from './ImplementationsCmsHomeProductsBlockEditor';
 
 export default function ImplementationsCmsPageForm({
     page,
@@ -46,6 +47,9 @@ export default function ImplementationsCmsPageForm({
 
     const [blocks, setBlocks] = useState<Array<ImplementationPageBlock>>(page?.blocks || []);
 
+    const [pageBlock, setPageBlock] = useState<ImplementationPage>(null);
+
+    const cmsBlockEditorRef = useRef<() => Promise<boolean>>();
     const faqEditorValidateRef = useRef<() => Promise<boolean>>();
     const blockEditorValidateRef = useRef<() => Promise<boolean>>();
 
@@ -106,8 +110,13 @@ export default function ImplementationsCmsPageForm({
             const data = { ...values, blocks, faq };
 
             try {
-                await faqEditorValidateRef.current?.();
-                await blockEditorValidateRef.current?.();
+                if (
+                    (cmsBlockEditorRef?.current && !(await cmsBlockEditorRef?.current())) ||
+                    (faqEditorValidateRef?.current && !(await faqEditorValidateRef?.current())) ||
+                    (blockEditorValidateRef?.current && !(await blockEditorValidateRef?.current()))
+                ) {
+                    return form.setIsLocked(false);
+                }
             } catch (e) {
                 pushDanger('Error!', typeof e == 'string' ? e : e.message || '');
                 return form.setIsLocked(false);
@@ -144,8 +153,25 @@ export default function ImplementationsCmsPageForm({
         },
     );
 
+    const fetchPageByKey = useCallback(
+        (key: string) => {
+            implementationPageService
+                .list(implementation.organization_id, implementation.id, { key })
+                .then((res) => {
+                    setPageBlock(
+                        res.data.data?.find((page) => page.page_type === key) || {
+                            title: '',
+                            description: '',
+                        },
+                    );
+                })
+                .catch((err: ResponseError) => pushDanger('Mislukt!', err.data.message));
+        },
+        [implementation, implementationPageService, pushDanger],
+    );
+
     useEffect(() => {
-        if (!pageTypeConfig) {
+        if (!pageTypeConfig?.key) {
             pushDanger('Mislukt!', 'Ongeldig paginatype.');
 
             return navigateState('implementations-cms', {
@@ -153,9 +179,15 @@ export default function ImplementationsCmsPageForm({
                 organizationId: activeOrganization.id,
             });
         }
-    }, [activeOrganization?.id, implementation.id, navigateState, pageTypeConfig, pushDanger]);
+    }, [activeOrganization?.id, implementation.id, navigateState, pageTypeConfig?.key, pushDanger]);
 
-    if (!pageTypeConfig) {
+    useEffect(() => {
+        if (pageTypeConfig?.key === 'home') {
+            fetchPageByKey('block_home_products');
+        }
+    }, [pageTypeConfig?.key, fetchPageByKey]);
+
+    if (!pageTypeConfig || (pageTypeConfig?.key === 'home' && !pageBlock)) {
         return <LoadingCard />;
     }
 
@@ -355,6 +387,18 @@ export default function ImplementationsCmsPageForm({
                         </div>
                     </div>
 
+                    {pageTypeConfig.key == 'home' && (
+                        <div className="card-section card-section-primary">
+                            <ImplementationsCmsHomeProductsBlockEditor
+                                activeOrganization={activeOrganization}
+                                implementation={implementation}
+                                pageBlock={pageBlock}
+                                setPageBlock={setPageBlock}
+                                saveBlockRef={cmsBlockEditorRef}
+                            />
+                        </div>
+                    )}
+
                     {pageTypeConfig.blocks && !form.values?.external && (
                         <div className="card-section card-section-primary">
                             <div className="form-group form-group-inline form-group-inline-xl">
@@ -410,10 +454,7 @@ export default function ImplementationsCmsPageForm({
                         <div className="button-group flex-center">
                             <StateNavLink
                                 name={'implementations-cms'}
-                                params={{
-                                    id: implementation.id,
-                                    organizationId: activeOrganization.id,
-                                }}
+                                params={{ id: implementation.id, organizationId: activeOrganization.id }}
                                 className="button button-default">
                                 {translate('funds_edit.buttons.cancel')}
                             </StateNavLink>

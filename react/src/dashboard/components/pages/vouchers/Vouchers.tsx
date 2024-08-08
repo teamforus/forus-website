@@ -101,10 +101,12 @@ export default function Vouchers() {
 
     const columns = useMemo(() => {
         return voucherService.getColumns().filter((column) => {
+            if (!filterValuesActive.fund_id && column.resourceType) {
+                return funds?.filter((fund) => fund.type === column.resourceType).length;
+            }
+
             return (
-                !filterValuesActive.fund_id ||
-                !column.resourceType ||
-                keyBy(funds, 'id')?.[filterValuesActive?.fund_id]?.type == column.resourceType
+                !column.resourceType || keyBy(funds, 'id')?.[filterValuesActive?.fund_id]?.type === column.resourceType
             );
         });
     }, [filterValuesActive?.fund_id, funds, voucherService]);

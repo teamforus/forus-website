@@ -3,6 +3,7 @@ import Media from '../../../dashboard/props/models/Media';
 type ImplementationPage = {
     page_type?: string;
     external: boolean;
+    title?: string;
     description_position: 'after' | 'before' | 'replace';
     description_alignment: 'left' | 'center' | 'right';
     blocks_per_row: number;

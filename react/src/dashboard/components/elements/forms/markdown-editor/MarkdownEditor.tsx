@@ -29,6 +29,7 @@ export default function MarkdownEditor({
     buttons,
     placeholder = null,
     alignment = null,
+    onChangeAlignment = null,
     onMediaUploaded = null,
     disabled = false,
     allowLists = true,
@@ -45,6 +46,7 @@ export default function MarkdownEditor({
     modal?: string;
     buttons?: Array<{ key: string; handler: CallableFunction; iconKey: string; icon: string }>;
     alignment?: string;
+    onChangeAlignment?: (alignment: string) => void;
     onUpdatedRaw?: (data: { data: { content?: string; content_html?: string } }) => void;
     disabled?: boolean;
     placeholder?: string;
@@ -140,54 +142,60 @@ export default function MarkdownEditor({
         [openModal],
     );
 
-    const AlignButton = useCallback((icon = 'left') => {
-        return function () {
-            const ui = $.summernote.ui;
-            const btnIcon = `mdi mdi-align-horizontal-${icon}`;
+    const AlignButton = useCallback(
+        (icon = 'left') => {
+            return function () {
+                const ui = $.summernote.ui;
+                const btnIcon = `mdi mdi-align-horizontal-${icon}`;
 
-            const makeLabelItem = (text: string, action: string, icon = null): string => {
-                const inner = [
-                    icon ? `<em class="mdi mdi-${icon}"></em>` : '',
-                    `<span class="note-dropdown-label">${text}</span>`,
-                ].join('');
+                const makeLabelItem = (text: string, action: string, icon = null): string => {
+                    const inner = [
+                        icon ? `<em class="mdi mdi-${icon}"></em>` : '',
+                        `<span class="note-dropdown-label">${text}</span>`,
+                    ].join('');
 
-                return `<div data-action="${action}">${inner}</div>`;
+                    return `<div data-action="${action}">${inner}</div>`;
+                };
+
+                const event = ui.buttonGroup([
+                    ui.button({
+                        contents: `<em class="${btnIcon}"/></em>`,
+                        data: { toggle: 'dropdown' },
+                    }),
+                    ui.dropdown({
+                        items: [
+                            makeLabelItem('Tekst links uitlijnen', 'left', 'align-horizontal-left'),
+                            makeLabelItem('Tekst in het midden uitlijnen', 'center', 'align-horizontal-center'),
+                            makeLabelItem('Tekst rechts uitlijnen', 'right', 'align-horizontal-right'),
+                        ],
+                        callback: function (items: Array<HTMLElement>) {
+                            $(items)
+                                .find('.note-dropdown-item [data-action]')
+                                .on('click', function (e) {
+                                    const option = $(this);
+                                    const parent = $(items[0]).parent();
+                                    const dropdownBtn = parent.find('.note-btn');
+                                    const dropdownBtnIcon = dropdownBtn.find('.mdi');
+                                    const direction = option.data('action');
+
+                                    dropdownBtnIcon.attr('class', option.find('.mdi').attr('class'));
+
+                                    window.setTimeout(() => {
+                                        setBlockAlignment(direction);
+                                        onChangeAlignment?.(direction);
+                                    }, 0);
+                                    e.preventDefault();
+                                });
+                        },
+                    }),
+                ]);
+
+                // return button as jquery object
+                return event.render();
             };
-
-            const event = ui.buttonGroup([
-                ui.button({
-                    contents: `<em class="${btnIcon}"/></em>`,
-                    data: { toggle: 'dropdown' },
-                }),
-                ui.dropdown({
-                    items: [
-                        makeLabelItem('Tekst links uitlijnen', 'left', 'align-horizontal-left'),
-                        makeLabelItem('Tekst in het midden uitlijnen', 'center', 'align-horizontal-center'),
-                        makeLabelItem('Tekst rechts uitlijnen', 'right', 'align-horizontal-right'),
-                    ],
-                    callback: function (items: Array<HTMLElement>) {
-                        $(items)
-                            .find('.note-dropdown-item [data-action]')
-                            .on('click', function (e) {
-                                const option = $(this);
-                                const parent = $(items[0]).parent();
-                                const dropdownBtn = parent.find('.note-btn');
-                                const dropdownBtnIcon = dropdownBtn.find('.mdi');
-                                const direction = option.data('action');
-
-                                dropdownBtnIcon.attr('class', option.find('.mdi').attr('class'));
-
-                                window.setTimeout(() => setBlockAlignment(direction), 0);
-                                e.preventDefault();
-                            });
-                    },
-                }),
-            ]);
-
-            // return button as jquery object
-            return event.render();
-        };
-    }, []);
+        },
+        [onChangeAlignment],
+    );
 
     const CmsButton = useCallback(
         (type = 'customLink', icon = 'link') => {
