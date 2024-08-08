@@ -40,7 +40,7 @@ export default interface Implementation {
     announcement?: Announcement;
     page_types?: Array<{
         key: string;
-        type: string;
+        type: 'element' | 'block' | 'extra' | 'static';
         blocks: boolean;
         faq: boolean;
         webshop_url: string;
