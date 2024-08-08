@@ -181,7 +181,9 @@ export default function LayoutHeader() {
             {showMobileMenu && (
                 <div className="block block-mobile-menu show-sm">
                     <div className={`mobile-menu-group active`}>
-                        <div className="mobile-menu-group-header">Home</div>
+                        <StateNavLink name="home" className="mobile-menu-group-header">
+                            Home
+                        </StateNavLink>
                     </div>
 
                     <div
@@ -441,7 +443,9 @@ export default function LayoutHeader() {
                     </div>
 
                     <div className={`mobile-menu-group`}>
-                        <div className="mobile-menu-group-header">Contact</div>
+                        <StateNavLink name="contacts" className={`mobile-menu-group-header`}>
+                            Contact
+                        </StateNavLink>
                     </div>
                 </div>
             )}
