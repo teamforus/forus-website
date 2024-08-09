@@ -11,6 +11,11 @@
         font: 400 30px/46px var(--base-font);
         margin-bottom: 20px;
         color: #315efd;
+
+        &.block-with-image-label-sm {
+            font: 500 18px/27px var(--base-font);
+            margin-bottom: 25px;
+        }
     }
 
     .block-with-image-wrapper {
@@ -28,7 +33,7 @@
             }
 
             .block-with-image-description {
-                font: 400 18px/28px var(--base-font);
+                font: 400 18px/27px var(--base-font);
             }
         }
 

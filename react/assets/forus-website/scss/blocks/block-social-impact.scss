@@ -41,72 +41,6 @@
         }
     }
 
-    .block-social-impact-details {
-        .block-social-impact-list {
-            display: flex;
-            flex-wrap: wrap;
-            background-image: url('./assets/img/background-roles.png');
-            background-repeat: no-repeat, repeat;
-            background-size: contain;
-            background-position: center center;
-            gap: 24px;
-
-            .block-social-impact-list-item {
-                display: flex;
-                flex: 0 0 calc(50% - 12px);
-                flex-direction: column;
-
-                .block-social-impact-list-item-content {
-                    display: flex;
-                    flex-direction: column;
-                    height: fit-content;
-                    padding: 25px;
-                    border-radius: 12px;
-                    border: 1px solid var(--Basic-Separator-Light, #f4f4f4);
-                    background: #fff;
-                    box-shadow: 0 1px 0 0 rgba(0, 0, 0, 0.08), 0 3px 4px 0 rgba(0, 0, 0, 0.08);
-                    gap: 10px;
-                }
-
-                .block-social-impact-list-item-image {
-                    img {
-                        display: block;
-                    }
-                }
-
-                .block-social-impact-list-item-info {
-                    display: flex;
-                    flex-direction: column;
-                    gap: 10px;
-                }
-
-                .block-social-impact-list-item-title {
-                    font: 700 20px/30px var(--base-font);
-                    margin: 0 0;
-                }
-
-                .block-social-impact-list-item-description {
-                    font: 400 14px/21px var(--base-font);
-                    margin: 0 0;
-                }
-
-                .block-social-impact-list-item-read-more {
-                    display: flex;
-                    flex-direction: row;
-                    align-items: center;
-                    font: 700 14px/21px var(--base-font);
-                    color: var(--color-primary);
-                    gap: 5px;
-                }
-
-                &:nth-child(1),
-                &:nth-child(2) {
-                    justify-content: flex-end;
-                }
-            }
-        }
-    }
-
     @media screen and (max-width: 1200px) {
         .block-social-impact-main-info {
             flex: 0 0 460px;
@@ -141,32 +75,6 @@
             .block-social-impact-actions {
                 .button {
                     width: 100%;
-                }
-            }
-        }
-
-        .block-social-impact-details {
-            .block-social-impact-list {
-                background: none;
-                display: flex;
-                flex-direction: column;
-                gap: 15px;
-
-                .block-social-impact-list-item {
-                    .block-social-impact-list-item-info {
-                        gap: 5px;
-                        margin: -5px 0;
-                    }
-
-                    .block-social-impact-list-item-content {
-                        flex-direction: row;
-                        padding: 20px;
-                        gap: 20px;
-                    }
-
-                    .block-social-impact-list-item-read-more {
-                        display: none;
-                    }
                 }
             }
         }

@@ -316,7 +316,12 @@ export default function LayoutHeader() {
                                     {shownSubMenuGroup == 'roles' && (
                                         <Fragment>
                                             <div className="mobile-menu-items">
-                                                <a className="mobile-menu-item">
+                                                <a
+                                                    className="mobile-menu-item"
+                                                    onClick={() => {
+                                                        navigateState('roles-requester');
+                                                        setShowMobileMenu(false);
+                                                    }}>
                                                     <img
                                                         className="mobile-menu-item-icon"
                                                         src={assetUrl(`/assets/img/icons-roles/requester.svg`)}
@@ -325,7 +330,12 @@ export default function LayoutHeader() {
                                                     Deelnemer / Aanvrager
                                                     <em className={`mdi mdi-arrow-right`} />
                                                 </a>
-                                                <a className="mobile-menu-item">
+                                                <a
+                                                    className="mobile-menu-item"
+                                                    onClick={() => {
+                                                        navigateState('roles-provider');
+                                                        setShowMobileMenu(false);
+                                                    }}>
                                                     <img
                                                         className="mobile-menu-item-icon"
                                                         src={assetUrl(`/assets/img/icons-roles/provider.svg`)}
@@ -334,7 +344,12 @@ export default function LayoutHeader() {
                                                     Aanbieder
                                                     <em className={`mdi mdi-arrow-right`} />
                                                 </a>
-                                                <a className="mobile-menu-item">
+                                                <a
+                                                    className="mobile-menu-item"
+                                                    onClick={() => {
+                                                        navigateState('roles-sponsor');
+                                                        setShowMobileMenu(false);
+                                                    }}>
                                                     <img
                                                         className="mobile-menu-item-icon"
                                                         src={assetUrl(`/assets/img/icons-roles/sponsor.svg`)}
@@ -343,7 +358,12 @@ export default function LayoutHeader() {
                                                     Sponsor
                                                     <em className={`mdi mdi-arrow-right`} />
                                                 </a>
-                                                <a className="mobile-menu-item">
+                                                <a
+                                                    className="mobile-menu-item"
+                                                    onClick={() => {
+                                                        navigateState('roles-validator');
+                                                        setShowMobileMenu(false);
+                                                    }}>
                                                     <img
                                                         className="mobile-menu-item-icon"
                                                         src={assetUrl(`/assets/img/icons-roles/validator.svg`)}
