@@ -6,7 +6,7 @@ import PlatformAspects from './elements/PlatformAspects';
 import Strategy from './elements/Strategy';
 import Municipalities from './elements/Municipalities';
 import Collaborations from './elements/Collaborations';
-import LearnMore from './elements/LearnMore';
+import LearnMore from '../../elements/LearnMore';
 import BlockMainBanner from './elements/BlockMainBanner';
 import BlockProject from './elements/BlockProject';
 import BlockDashedSeparator from './elements/BlockDashedSeparator';
@@ -39,7 +39,12 @@ export default function Home() {
             <Collaborations />
 
             <div className="wrapper">
-                <LearnMore />
+                <LearnMore
+                    title={'Klaar om uw impact te vergroten?'}
+                    description={
+                        'Laten we samen kijken naar de mogelijkheden en de optimale manier om uw regelingen uit te geven.'
+                    }
+                />
             </div>
         </Fragment>
     );

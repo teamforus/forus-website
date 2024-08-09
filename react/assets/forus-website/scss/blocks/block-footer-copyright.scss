@@ -12,7 +12,9 @@
         flex-direction: row;
         align-items: flex-start;
         justify-content: space-between;
-        flex: 0 0 var(--wrapper-width);
+        max-width: calc(var(--wrapper-width) + 40px);
+        width: 100%;
+        padding: 0 20px;
     }
 
     .footer-copyright-value {
@@ -32,6 +34,7 @@
             flex: auto;
             flex-direction: column;
             align-items: center;
+            gap: 40px;
 
             .footer-copyright-value {
                 flex-grow: 1;
@@ -41,7 +44,6 @@
 
             .footer-copyright-privacy {
                 order: 1;
-                margin-bottom: 45px;
                 font: 500 16px/24px var(--base-font);
             }
         }
