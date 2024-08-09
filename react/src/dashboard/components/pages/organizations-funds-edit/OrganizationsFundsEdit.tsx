@@ -206,7 +206,7 @@ export default function OrganizationsFundsEdit() {
             contact_info_required: true,
             contact_info_message_custom: false,
             contact_info_message_text: '',
-            voucher_amount_visible: true,
+            voucher_amount_visible: false,
         },
         async (values) => {
             const data = JSON.parse(JSON.stringify(values));
@@ -529,7 +529,7 @@ export default function OrganizationsFundsEdit() {
                     <div className="row">
                         <div className="col col-lg-9 col-xs-12">
                             <div className="form-group form-group-inline tooltipped">
-                                <label className="form-label">Totaalbedrag tonen in de Me-app</label>
+                                <label className="form-label">Totaalbedrag tonen (Me-app)</label>
                                 <CheckboxControl
                                     id={'voucher_amount_visible'}
                                     checked={!!form.values.voucher_amount_visible}
