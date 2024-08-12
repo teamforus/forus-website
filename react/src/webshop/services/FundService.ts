@@ -98,7 +98,6 @@ export class FundService<T = Fund> {
             'children_nth',
             'waa_kind_0_tm_4_2021_eligible_nth',
             'waa_kind_4_tm_18_2021_eligible_nth',
-            'adults_nth',
             'eem_kind_0_tm_4_eligible_nth',
             'eem_kind_4_tm_12_eligible_nth',
             'eem_kind_12_tm_14_eligible_nth',
@@ -155,7 +154,6 @@ export class FundService<T = Fund> {
         return {
             ui_control_checkbox: null,
             ui_control_date: init_date ? format(new Date(), 'dd-MM-yyyy') : null,
-            ui_control_step: record_type?.key == 'adults_nth' ? '1' : '0',
             ui_control_number: undefined,
             ui_control_currency: undefined,
             ui_control_text: '',
