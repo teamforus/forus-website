@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { FormEvent, useCallback, useState } from 'react';
 import { ModalState } from '../../modules/modals/context/ModalContext';
 import useFormBuilder from '../../hooks/useFormBuilder';
 import useSetProgress from '../../hooks/useSetProgress';
@@ -63,28 +63,32 @@ export default function ModalOrderPhysicalCard({
         },
     );
 
-    const requestCard = useCallback(() => {
-        setProgress(0);
+    const requestCard = useCallback(
+        (e?: FormEvent<HTMLFormElement>) => {
+            e?.preventDefault();
+            setProgress(0);
 
-        physicalCardsRequestService
-            .validate(voucher.fund.organization_id, voucher.address, form.values)
-            .then(() => {
-                const { address, house, house_addition, postcode, city } = form.values;
+            physicalCardsRequestService
+                .validate(voucher.fund.organization_id, voucher.address, form.values)
+                .then(() => {
+                    const { address, house, house_addition, postcode, city } = form.values;
 
-                form.setErrors(null);
-                setState('confirmation');
+                    form.setErrors(null);
+                    setState('confirmation');
 
-                setAddressPreview([
-                    [address, house, house_addition].filter((value) => value).join(' '),
-                    [postcode, city].filter((value) => value).join(' '),
-                ]);
-            })
-            .catch((err: ResponseError) => {
-                form.setErrors(err.data.errors);
-                pushDanger('Mislukt!', err.data.message);
-            })
-            .finally(() => setProgress(100));
-    }, [form, physicalCardsRequestService, pushDanger, setProgress, voucher.address, voucher.fund.organization_id]);
+                    setAddressPreview([
+                        [address, house, house_addition].filter((value) => value).join(' '),
+                        [postcode, city].filter((value) => value).join(' '),
+                    ]);
+                })
+                .catch((err: ResponseError) => {
+                    form.setErrors(err.data.errors);
+                    pushDanger('Mislukt!', err.data.message);
+                })
+                .finally(() => setProgress(100));
+        },
+        [form, physicalCardsRequestService, pushDanger, setProgress, voucher.address, voucher.fund.organization_id],
+    );
 
     return (
         <div
