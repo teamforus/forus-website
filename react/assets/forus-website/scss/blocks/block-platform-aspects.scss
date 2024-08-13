@@ -36,6 +36,11 @@
                 transition: 0.4s color;
                 align-items: center;
 
+                .block-platform-aspects-list-item-main {
+                    display: flex;
+                    gap: 10px;
+                }
+
                 .block-platform-aspects-list-item-image {
                     display: flex;
                     align-items: center;
@@ -71,6 +76,7 @@
         }
 
         .block-platform-aspects-image {
+            position: relative;
             padding: 0 70px;
             border-radius: 20px;
             background: var(--Linear, linear-gradient(149deg, #f1f2f4 43.4%, rgba(241, 242, 244, 0) 100%));
@@ -84,6 +90,21 @@
                 margin-top: 70px;
                 margin-bottom: -70px;
                 max-width: 90%;
+            }
+
+            .block-platform-image-details {
+                border-radius: 15px;
+                background: #2A20E6;
+                box-shadow: 0 24px 40px 0 #E1E2E8;
+                color: #fff;
+                padding: 25px;
+                font: 300 14px/24px var(--base-font);
+                position: absolute;
+                top: 60%;
+                transform: translate(0, -60%);
+                left: -25px;
+                min-width: 200px;
+                max-width: 290px;
             }
         }
     }
@@ -116,11 +137,28 @@
                 flex: auto;
 
                 .block-platform-aspects-list-item {
+                    display: flex;
+                    flex-direction: column;
                     font: 700 20px/27px var(--base-font);
                     padding: 15px 0;
 
+                    .block-platform-aspects-list-item-main {
+                        gap: 10px;
+                        margin-bottom: 20px;
+                    }
+
                     .block-platform-aspects-list-item-icon {
                         display: none;
+                    }
+
+                    .block-platform-aspects-list-item-title {
+                        font: 600 18px/27px var(--base-font);
+                        gap: 20px;
+                    }
+
+                    .block-platform-aspects-list-item-details {
+                        color: #131313;
+                        font: 300 14px/21px var(--base-font);
                     }
                 }
             }

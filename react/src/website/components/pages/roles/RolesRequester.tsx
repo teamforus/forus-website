@@ -24,13 +24,7 @@ export default function RolesRequester() {
 
     return (
         <Fragment>
-            <div className="wrapper hide-sm">
-                <RolesBanner type={'requester'} title={bannerTitle} description={bannerDescription} />
-            </div>
-
-            <div className="show-sm">
-                <RolesBanner type={'requester'} title={bannerTitle} description={bannerDescription} />
-            </div>
+            <RolesBanner type={'requester'} title={bannerTitle} description={bannerDescription} />
 
             <div className="main-content">
                 <div
@@ -169,7 +163,7 @@ export default function RolesRequester() {
                                 <img src={assetUrl('/assets/img/role-requester/requester-6.jpg')} alt="" />
                             </div>
                         </div>
-                        <div className="block-image-list-left">
+                        <div className="block-image-list-right">
                             <div className="block-with-image-image">
                                 <img src={assetUrl('/assets/img/role-requester/requester-1.jpg')} alt="" />
                             </div>

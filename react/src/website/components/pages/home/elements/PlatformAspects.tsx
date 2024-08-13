@@ -1,75 +1,112 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import useAssetUrl from '../../../../hooks/useAssetUrl';
 
 export default function PlatformAspects() {
     const assetUrl = useAssetUrl();
 
+    const [activeItem, setActiveItem] = useState(0);
+
+    const [items] = useState([
+        {
+            title: 'Efficiënte uitbetalingen',
+            icon: 'payouts.svg',
+            description: [
+                'Financiële transacties voor regelingen worden snel en efficiënt verwerkt door onze bankintegratie. ',
+                'Dit bespaart tijd en het verkleint het risico op fouten doordat handmatige handelingen worden geautomatiseerd.',
+            ].join(''),
+        },
+        {
+            title: 'Snelle afhandeling van aanvragen',
+            icon: 'request-processing.svg',
+            description: [
+                'Ons platform verzorgt voor een efficiënte verwerking van aanvragen. ',
+                'Aanvragers voeren hun gegevens in, waarna vervolgens een controle volgt. Bij goedkeuring ontvangen zij snel hun tegoed.',
+            ].join(''),
+        },
+        {
+            title: 'Toegankelijk voor iedereen',
+            icon: 'thumbs-up.svg',
+            description: [
+                'Het systeem biedt diverse uitgifteopties: digitaal, op papier of via een pas. ',
+                'Hierdoor speelt het flexibel in op verschillende voorkeuren en is het toegankelijk voor alle gebruikers.',
+            ].join(''),
+        },
+        {
+            title: 'Doelmatige besteding',
+            icon: 'efficiency.svg',
+            description: [
+                'Ons platform stelt sponsors in staat om effectief in te zetten. ',
+                "Variërend van een vrij te investeren bedrag in euro's tot de toekenning van een tegoed dat kan worden besteed aan een specifiek product of dienst.",
+            ].join(''),
+        },
+        {
+            title: 'Hulp en ondersteuning',
+            icon: 'support.svg',
+            description: [
+                'Ons helpcentrum staat open voor alle gebruikersvragen. ',
+                'Ons team van experts is altijd beschikbaar om assistentie te verlenen waar nodig. U kunt hulp aanvragen via chat, telefoon of e-mail.',
+            ].join(''),
+        },
+        {
+            title: 'Herkenbaar en vertrouwd',
+            icon: 'webshop.svg',
+            description: [
+                'De website wordt ontworpen in de huisstijl van de organisatie, ',
+                'zodat deze perfect aansluit bij de doelgroep en hen de mogelijkheid biedt zich ermee te identificeren.',
+            ].join(''),
+        },
+        {
+            title: 'Real-time managementinformatie',
+            icon: 'real-time.svg',
+            description: [
+                'Via onze beheeromgeving krijgen organisaties direct inzicht in real-time data over de uitgifte van regelingen. ',
+                'Zo maakt u gemakkelijk managementrapportages en faciliteert u datagedreven besluitvorming.',
+            ].join(''),
+        },
+        {
+            title: 'Samenwerking en best-pratices',
+            icon: 'user-association.svg',
+            description: [
+                'Het platform faciliteert brede samenwerking tussen organisaties. ',
+                'We werken samen aan nieuwe producten en diensten op basis van best-practices en standaarden.',
+            ].join(''),
+        },
+    ]);
+
     return (
         <div className="block block-platform-aspects">
             <div className="block-platform-aspects-title">Unieke aspecten van ons platform</div>
             <div className="block-platform-aspects-main">
                 <div className="block-platform-aspects-list">
-                    <div className="block-platform-aspects-list-item">
-                        <div className="block-platform-aspects-list-item-image">
-                            <img src={assetUrl(`/assets/img/payouts.svg`)} alt="" />
+                    {items.map((item, index) => (
+                        <div
+                            key={index}
+                            className="block-platform-aspects-list-item"
+                            onClick={() => setActiveItem(index)}>
+                            <div className="block-platform-aspects-list-item-info">
+                                <div className="block-platform-aspects-list-item-main">
+                                    <div className="block-platform-aspects-list-item-image">
+                                        <img src={assetUrl(`/assets/img/${item.icon}`)} alt="" />
+                                    </div>
+                                    <div className="block-platform-aspects-list-item-title">{item.title}</div>
+                                </div>
+                                <div className="hide-sm block-platform-aspects-list-item-icon mdi mdi-arrow-right" />
+                                <div className="show-sm block-platform-aspects-list-item-details">
+                                    {items[activeItem].description}
+                                </div>
+                            </div>
+
+                            <div className="show-sm block-platform-aspects-image">
+                                <img src={assetUrl(`/assets/img/unique-aspects/aspects-${index + 1}.png`)} alt="" />
+                            </div>
                         </div>
-                        Efficiënte uitbetalingen
-                        <div className="block-platform-aspects-list-item-icon mdi mdi-arrow-right" />
-                    </div>
-                    <div className="block-platform-aspects-list-item">
-                        <div className="block-platform-aspects-list-item-image">
-                            <img src={assetUrl(`/assets/img/request-processing.svg`)} alt="" />
-                        </div>
-                        Snelle afhandeling van aanvragen
-                        <div className="block-platform-aspects-list-item-icon mdi mdi-arrow-right" />
-                    </div>
-                    <div className="block-platform-aspects-list-item">
-                        <div className="block-platform-aspects-list-item-image">
-                            <img src={assetUrl(`/assets/img/thumbs-up.svg`)} alt="" />
-                        </div>
-                        Toegankelijk voor iedereen
-                        <div className="block-platform-aspects-list-item-icon mdi mdi-arrow-right" />
-                    </div>
-                    <div className="block-platform-aspects-list-item">
-                        <div className="block-platform-aspects-list-item-image">
-                            <img src={assetUrl(`/assets/img/efficiency.svg`)} alt="" />
-                        </div>
-                        Doelmatige besteding
-                        <div className="block-platform-aspects-list-item-icon mdi mdi-arrow-right" />
-                    </div>
-                    <div className="block-platform-aspects-list-item">
-                        <div className="block-platform-aspects-list-item-image">
-                            <img src={assetUrl(`/assets/img/support.svg`)} alt="" />
-                        </div>
-                        Hulp en ondersteuning
-                        <div className="block-platform-aspects-list-item-icon mdi mdi-arrow-right" />
-                    </div>
-                    <div className="block-platform-aspects-list-item">
-                        <div className="block-platform-aspects-list-item-image">
-                            <img src={assetUrl(`/assets/img/webshop.svg`)} alt="" />
-                        </div>
-                        Herkenbaar en vertrouwd
-                        <div className="block-platform-aspects-list-item-icon mdi mdi-arrow-right" />
-                    </div>
-                    <div className="block-platform-aspects-list-item">
-                        <div className="block-platform-aspects-list-item-image">
-                            <img src={assetUrl(`/assets/img/real-time.svg`)} alt="" />
-                        </div>
-                        Real-time managementinformatie
-                        <div className="block-platform-aspects-list-item-icon mdi mdi-arrow-right" />
-                    </div>
-                    <div className="block-platform-aspects-list-item">
-                        <div className="block-platform-aspects-list-item-image">
-                            <img src={assetUrl(`/assets/img/user-association.svg`)} alt="" />
-                        </div>
-                        Samenwerking en best-pratices
-                        <div className="block-platform-aspects-list-item-icon mdi mdi-arrow-right" />
-                    </div>
+                    ))}
                 </div>
 
-                <div className="block-platform-aspects-image">
-                    <img src={assetUrl(`/assets/img/phone.png`)} alt="" />
+                <div className="hide-sm block-platform-aspects-image">
+                    <img src={assetUrl(`/assets/img/unique-aspects/aspects-${activeItem + 1}.png`)} alt="" />
+                    <div className="block-platform-image-details">{items[activeItem].description}</div>
                 </div>
             </div>
 

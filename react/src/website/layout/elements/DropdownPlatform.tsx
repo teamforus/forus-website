@@ -193,7 +193,7 @@ export default function DropdownPlatform() {
                                 </StateNavLink>
 
                                 <StateNavLink
-                                    name={'roles-validator'}
+                                    name={'roles-sponsor'}
                                     className="block-page-list-main-details-list-item"
                                     onMouseOver={() => setActiveSubItem('sponsor')}
                                     onClick={() => setActiveMenuDropdown(null)}>

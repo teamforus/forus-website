@@ -16,21 +16,21 @@
     }
 
     .section-title {
-        font: 900 86px/96px var(--base-font);
+        font: 800 82px/96px var(--base-font);
         margin: 0 0 30px 0;
 
         &.section-title-sm {
-            font: 800 50px/68px var(--base-font);
+            font: 700 46px/68px var(--base-font);
         }
     }
 
     .section-description {
-        font: 400 24px/36px var(--base-font);
+        font: 300 22px/36px var(--base-font);
         margin: 0 0 30px;
     }
 
     .section-description-sm {
-        font: 400 18px/28px var(--base-font);
+        font: 300 16px/28px var(--base-font);
         margin: 0 0 30px;
 
         &:last-child {

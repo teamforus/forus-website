@@ -27,13 +27,7 @@ export default function RolesSponsor() {
 
     return (
         <Fragment>
-            <div className="wrapper hide-sm">
-                <RolesBanner type={'sponsor'} title={bannerTitle} description={bannerDescription} />
-            </div>
-
-            <div className="show-sm">
-                <RolesBanner type={'sponsor'} title={bannerTitle} description={bannerDescription} />
-            </div>
+            <RolesBanner type={'sponsor'} title={bannerTitle} description={bannerDescription} />
 
             <div className="main-content">
                 <div
@@ -203,7 +197,7 @@ export default function RolesSponsor() {
                                 </div>
                             </div>
                         </div>
-                        <div className="block-image-list-left">
+                        <div className="block-image-list-right">
                             <div className="block-with-image-info">
                                 <div className="block-with-image-label block-with-image-label-sm">Stap 1</div>
                                 <div className="block-with-image-title">Oriëntatie en onderzoek</div>

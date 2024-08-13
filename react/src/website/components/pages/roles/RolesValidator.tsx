@@ -27,13 +27,7 @@ export default function RolesValidator() {
 
     return (
         <Fragment>
-            <div className="wrapper hide-sm">
-                <RolesBanner type={'validator'} title={bannerTitle} description={bannerDescription} />
-            </div>
-
-            <div className="show-sm">
-                <RolesBanner type={'validator'} title={bannerTitle} description={bannerDescription} />
-            </div>
+            <RolesBanner type={'validator'} title={bannerTitle} description={bannerDescription} />
 
             <div className="main-content">
                 <div

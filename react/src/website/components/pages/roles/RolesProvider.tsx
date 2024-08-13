@@ -27,15 +27,9 @@ export default function RolesProvider() {
 
     return (
         <Fragment>
-            <div className="wrapper hide-sm">
-                <RolesBanner type={'provider'} title={bannerTitle} description={bannerDescription} />
-            </div>
+            <RolesBanner type={'provider'} title={bannerTitle} description={bannerDescription} />
 
             <div className="main-content">
-                <div className="show-sm">
-                    <RolesBanner type={'provider'} title={bannerTitle} description={bannerDescription} />
-                </div>
-
                 <div
                     className="background-overlay hide-sm"
                     style={{ backgroundImage: 'url("./assets/img/background-provider.svg")' }}

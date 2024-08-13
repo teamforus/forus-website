@@ -29,25 +29,13 @@ export default function RolesMain() {
 
     return (
         <Fragment>
-            <div className="wrapper hide-sm">
-                <RolesBanner
-                    type={'main'}
-                    title={bannerTitle}
-                    description={bannerDescription}
-                    showActions={false}
-                    showIcon={false}
-                />
-            </div>
-
-            <div className="show-sm">
-                <RolesBanner
-                    type={'main'}
-                    title={bannerTitle}
-                    description={bannerDescription}
-                    showActions={false}
-                    showIcon={false}
-                />
-            </div>
+            <RolesBanner
+                type={'main'}
+                title={bannerTitle}
+                description={bannerDescription}
+                showActions={false}
+                showIcon={false}
+            />
 
             <div className="main-content">
                 <div className="wrapper">
