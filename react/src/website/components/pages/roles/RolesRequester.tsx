@@ -12,9 +12,8 @@ export default function RolesRequester() {
     const [bannerTitle] = useState('Aanvrager /Deelnemer');
     const [bannerDescription] = useState(
         [
-            'Binnen het Forus-systeem wordt iemand die een aanvraag voor een regeling indient, gezien als',
-            'een & aanvrager &amp. Zodra deze aanvraag is goedgekeurd, verandert de status van deze',
-            'persoon in het systeem naar &amp deelnemer &amp.',
+            "Binnen het Forus-systeem wordt iemand die een aanvraag voor een regeling indient, gezien als een 'aanvrager'.",
+            "Zodra deze aanvraag is goedgekeurd, verandert de status van deze persoon in het systeem naar 'deelnemer'.",
         ].join(''),
     );
 

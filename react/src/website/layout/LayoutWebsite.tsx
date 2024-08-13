@@ -58,7 +58,6 @@ export const LayoutWebsite = ({ children }: { children: React.ReactElement }) =>
                     <LayoutHeader />
                     <div className="layout-body" ref={bodyRef}>
                         {children}
-                        {activeMenuDropdown && <div className="layout-overlay" />}
                     </div>
                     <div ref={footerRef}>
                         <LayoutFooter />

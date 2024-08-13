@@ -15,7 +15,10 @@
             display: flex;
             flex-direction: row;
             align-items: center;
-            flex: 0 1 var(--wrapper-width);
+            flex: 0 1 calc(var(--wrapper-width) + 40px);
+            width: 100%;
+            margin: 0 auto;
+            padding: 0 20px;
         }
 
         .layout-header-logo {
@@ -217,16 +220,6 @@
         display: flex;
         flex-direction: column;
         flex: 1 1 auto;
-
-        .layout-overlay {
-            width: calc(60% + 10px);
-            height: 100vh;
-            position: absolute;
-            top: 85px;
-            left: 0;
-            opacity: 1;
-            background: #fff;
-        }
     }
 
     .layout-footer {

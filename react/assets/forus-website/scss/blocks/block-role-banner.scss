@@ -1,58 +1,33 @@
 .block.block-role-banner {
     position: relative;
-    display: block;
+    display: flex;
     text-align: center;
-    padding: 0 0 100px 0;
-    width: calc(100vw - 10px - (100vw - var(--wrapper-width)) / 2);
-    margin-right: 0;
-    margin-left: auto;
-
-    .banner-image {
-        mask: url('./assets/img/roles-banner-mask.svg') no-repeat;
-        flex-grow: 1;
-        height: 650px;
-        mask-size: auto 100%;
-        position: relative;
-
-        .overlay {
-            position: absolute;
-            background: linear-gradient(21deg, #009EF4 7%, rgba(0, 0, 0, 0.00) 60%);
-            width: 100%;
-            height: 100%;
-            background-size: cover;
-            z-index: 1;
-        }
-
-        .image {
-            background: url('./assets/img/roles-requester-banner.jpg');
-            background-position: center;
-            background-size: cover;
-            height: 100%;
-            width: 100%;
-        }
-    }
 
     .banner-content {
         display: flex;
         flex-direction: row;
-        padding: 0;
         text-align: left;
         text-shadow: 1px 2px 2px rgba(223, 177, 177, 0.15);
-        width: 100%;
         margin: auto;
         gap: 50px;
+        padding: 0 20px;
+        width: 100%;
+        max-width: calc(var(--wrapper-width) + 40px);
 
         .banner-info {
             display: flex;
             flex-direction: column;
             gap: 20px;
             max-width: 640px;
-            padding-top: 60px;
+            padding: 30px 0;
+            min-height: 700px;
+            justify-content: center;
 
             .banner-icon {
-                width: 72px;
+                width: 70px;
 
                 img {
+                    display: block;
                     width: 100%;
                 }
             }
@@ -83,62 +58,88 @@
         }
     }
 
+    .banner-media {
+        mask: url('./assets/img/roles-banner-mask.svg') no-repeat;
+        flex-grow: 1;
+        height: 640px;
+        mask-size: auto 100%;
+        position: absolute;
+        right: 0;
+        left: calc(50vw + 50px);
+        top: 0;
+
+        .banner-media-overlay {
+            position: absolute;
+            background: linear-gradient(21deg, #009ef4 7%, rgba(0, 0, 0, 0) 60%);
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            z-index: 1;
+        }
+
+        .banner-media-image {
+            background: url('./assets/img/roles-requester-banner.jpg') center 35%;
+            background-size: cover;
+            height: 100%;
+            width: 100%;
+        }
+    }
 
     &.block-role-banner-main {
-        .banner-image {
-            .overlay {
-                background: linear-gradient(21deg, #009EF4 7%, rgba(0, 0, 0, 0.00) 60%);
+        .banner-media {
+            .banner-media-overlay {
+                background: linear-gradient(21deg, #009ef4 7%, rgba(0, 0, 0, 0) 60%);
             }
 
-            .image {
+            .banner-media-image {
                 background-image: url('./assets/img/roles-main-banner.jpg');
             }
         }
     }
 
     &.block-role-banner-requester {
-        .banner-image {
-            .overlay {
-                background: linear-gradient(21deg, #009EF4 7%, rgba(0, 0, 0, 0.00) 60%);
+        .banner-media {
+            .banner-media-overlay {
+                background: linear-gradient(21deg, #009ef4 7%, rgba(0, 0, 0, 0) 60%);
             }
 
-            .image {
+            .banner-media-image {
                 background-image: url('./assets/img/roles-requester-banner.jpg');
             }
         }
     }
 
     &.block-role-banner-sponsor {
-        .banner-image {
-            .overlay {
-                background: linear-gradient(21deg, #7A0E7D 7%, rgba(0, 0, 0, 0.00) 60%);
+        .banner-media {
+            .banner-media-overlay {
+                background: linear-gradient(21deg, #7a0e7d 7%, rgba(0, 0, 0, 0) 60%);
             }
 
-            .image {
+            .banner-media-image {
                 background-image: url('./assets/img/roles-sponsor-banner.jpg');
             }
         }
     }
 
     &.block-role-banner-provider {
-        .banner-image {
-            .overlay {
-                background: linear-gradient(21deg, #F5D28D 7%, rgba(0, 0, 0, 0.00) 60%);
+        .banner-media {
+            .banner-media-overlay {
+                background: linear-gradient(21deg, #f5d28d 7%, rgba(0, 0, 0, 0) 60%);
             }
 
-            .image {
+            .banner-media-image {
                 background-image: url('./assets/img/roles-provider-banner.jpg');
             }
         }
     }
 
     &.block-role-banner-validator {
-        .banner-image {
-            .overlay {
-                background: linear-gradient(21deg, #009EF4 7%, rgba(0, 0, 0, 0.00) 60%);
+        .banner-media {
+            .banner-media-overlay {
+                background: linear-gradient(21deg, #009ef4 7%, rgba(0, 0, 0, 0) 60%);
             }
 
-            .image {
+            .banner-media-image {
                 background-image: url('./assets/img/roles-validator-banner.jpg');
             }
         }
@@ -146,10 +147,10 @@
 
     @media screen and (max-width: 992px) {
         width: 100%;
-        padding: 0 0 50px 0;
+        flex-direction: column-reverse;
 
         .banner-content {
-            flex-direction: column;
+            padding: 0 0;
 
             .banner-info {
                 width: 100%;
@@ -158,14 +159,15 @@
                 order: 2;
                 max-width: 100%;
                 background: #fff;
-                padding: 0 25px;
+                padding: 0 25px 25px;
                 border-top-left-radius: 30px;
                 border-top-right-radius: 30px;
-                gap: 40px;
+                gap: 30px;
                 text-align: center;
+                min-height: auto;
 
                 .banner-icon {
-                    margin: -35px auto 0 auto;
+                    margin: -35px auto 0;
                 }
 
                 .banner-title {
@@ -180,18 +182,19 @@
 
                 .banner-actions {
                     width: 100%;
-                    padding: 0 25px;
                     margin: 0 auto;
                     flex-direction: column;
                 }
             }
+        }
 
-            .banner-image {
-                height: 300px;
-                width: 100%;
-                mask: none;
-                order: 1;
-            }
+        .banner-media {
+            position: relative;
+            height: 300px;
+            width: 100%;
+            mask: none;
+            order: 1;
+            left: 0;
         }
     }
 }

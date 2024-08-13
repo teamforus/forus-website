@@ -10,12 +10,13 @@
     bottom: 0;
 
     .block-page-list-main {
-        width: 60%;
+        width: 65%;
         display: flex;
         flex-direction: column;
         align-items: flex-start;
         justify-content: space-between;
         height: 100%;
+        background: #fff;
 
         .block-page-list-main-section {
             display: flex;
@@ -265,5 +266,19 @@
             background: rgba(255, 255, 255, 0.2);
             cursor: pointer;
         }
+    }
+
+    @media screen and (max-width: 1200px) {
+        .block-page-list-main {
+            width: 100%;
+        }
+
+        .block-page-list-backdrop {
+            display: none;
+        }
+    }
+
+    @media screen and (max-width: 1000px) {
+        display: none;
     }
 }
