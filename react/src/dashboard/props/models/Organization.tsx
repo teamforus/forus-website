@@ -105,5 +105,6 @@ export default interface Organization {
         bank_branch_name?: boolean;
         bank_fund_name?: boolean;
         bank_note?: boolean;
+        bank_separator?: string;
     };
 }
