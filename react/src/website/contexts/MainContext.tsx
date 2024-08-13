@@ -26,6 +26,8 @@ interface AuthMemoProps {
     setShowMobileMenu?: React.Dispatch<React.SetStateAction<boolean>>;
     activeMenuDropdown?: string;
     setActiveMenuDropdown?: React.Dispatch<React.SetStateAction<string>>;
+    showUserAuthDropdown?: boolean;
+    setShowUserAuthDropdown?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const mainContext = createContext<AuthMemoProps>(null);
@@ -40,6 +42,7 @@ const MainProvider = ({ children }: { children: React.ReactElement }) => {
     const [userMenuOpened, setUserMenuOpened] = useState(false);
     const [showMobileMenu, setShowMobileMenu] = useState(false);
     const [activeMenuDropdown, setActiveMenuDropdown] = useState(null);
+    const [showUserAuthDropdown, setShowUserAuthDropdown] = useState(null);
     const { route } = useStateRoutes();
 
     const configService = useConfigService();
@@ -88,6 +91,8 @@ const MainProvider = ({ children }: { children: React.ReactElement }) => {
                 setShowMobileMenu,
                 activeMenuDropdown,
                 setActiveMenuDropdown,
+                showUserAuthDropdown,
+                setShowUserAuthDropdown,
             }}>
             {children}
         </Provider>
