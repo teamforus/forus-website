@@ -26,9 +26,15 @@ export default function FormGroupInfo({
                     <div className="info-box-icon mdi mdi-information" />
                     <div className="info-box-content">
                         <div className="block block-markdown">
-                            {typeof info === 'string'
-                                ? info.split('\n').map((line, index) => <div key={index}>{line}</div>)
-                                : info}
+                            {typeof info === 'string' ? (
+                                info
+                                    .split('\n')
+                                    .map((line, index) => (
+                                        <div key={index} dangerouslySetInnerHTML={{ __html: line }} />
+                                    ))
+                            ) : (
+                                <div dangerouslySetInnerHTML={{ __html: info }} />
+                            )}
                         </div>
                     </div>
                 </div>

@@ -12,9 +12,29 @@ export default {
         credit_type: 'Soort',
     },
     tooltips: {
-        funds: 'Funds tooltip',
-        type: 'Voucher type tooltip',
-        assign_type: 'Voucher assign type tooltip',
+        funds: [
+            'Selecteer de manier waarop het tegoed aan een ontvanger wordt gekoppeld.',
+            '<br/><br/><ul>',
+            '<li><strong>Activatiecode</strong>: De ontvanger activeert het tegoed door de activatiecode op de website in te voeren.</li>',
+            '<li><strong>BSN</strong>: Wanneer de ontvanger met DigiD is ingelogd, wordt het tegoed automatisch gekoppeld aan het BSN.</li>',
+            '<li><strong>E-mailadres</strong>: Het tegoed wordt gekoppeld aan het e-mailadres van de ontvanger.</li>',
+            '</ul>',
+            '\n<br/>De bovenstaande methoden betreffen de eerste koppeling van het tegoed. Op een later moment kunnen aanvullende gegevens worden gekoppeld aan het tegoed.',
+        ].join(''),
+        type: [
+            'Selecteer het type tegoed. Er zijn drie opties:',
+            '<br/><br/><ul>',
+            '<li><strong>Budget</strong>: Een bedrag dat onder specifieke voorwaarden kan worden besteed.</li>',
+            '<li><strong>Product</strong>: Een tegoed voor een specifiek product of dienst.</li>',
+            '<li><strong>Korting</strong>: Het recht op een korting op een bepaald product of dienst.</li>',
+            '</ul>',
+        ].join(''),
+        assign_type: [
+            'Selecteer het fonds waarvoor het tegoed wordt aangemaakt. ',
+            'De regels die op dit fonds van toepassing zijn, ',
+            'worden automatisch overgenomen voor het tegoed. ',
+            'Hierdoor kan bijvoorbeeld worden bepaald bij welke aanbieders het tegoed kan worden besteed.',
+        ].join(''),
     },
     modal_section: {
         choose_title: 'Selecteer op welke manier u een tegoed wilt aanmaken.',
