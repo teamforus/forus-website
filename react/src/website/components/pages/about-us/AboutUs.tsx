@@ -3,9 +3,11 @@ import useSetTitle from '../../../hooks/useSetTitle';
 import useAssetUrl from '../../../hooks/useAssetUrl';
 import Slider from '../../elements/Slider';
 import BlockDashedSeparator from '../home/elements/BlockDashedSeparator';
+import useSetMetaDescription from '../../../hooks/useSetMetaDescription';
 
 export default function AboutUs() {
     const setTitle = useSetTitle();
+    const setMetaDescription = useSetMetaDescription();
 
     const assetUrl = useAssetUrl();
 
@@ -101,26 +103,32 @@ export default function AboutUs() {
     ];
 
     useEffect(() => {
-        setTitle('About us page.');
-    }, [setTitle]);
+        setTitle('Ons verhaal | Verbinden en bijdragen aan sociale initiatieven');
+        setMetaDescription(
+            [
+                'Forus is het platform voor sociale initiatieven. ',
+                'Samen met overheidsorganisaties en goede doelen vergroten we sociale impact - for us all, by us all.',
+            ].join(''),
+        );
+    }, [setMetaDescription, setTitle]);
 
     return (
         <Fragment>
             <div className="wrapper">
-                <div className="section">
-                    <h2 className="section-title">Ons verhaal</h2>
+                <div className="block block-text">
+                    <h2 className="block-text-title">Ons verhaal</h2>
 
-                    <div className="section-description">
+                    <div className="block-text-description">
                         De reis naar het vinden vinden van best-practices om te verbinden en sociale impact te vergroten
                     </div>
 
-                    <div className="section-banner">
+                    <div className="block-text-banner">
                         <img src={assetUrl('/assets/img/about-us-banner.jpg')} alt="About us banner" />
                     </div>
 
-                    <div className="section-subtitle">Do Good Better</div>
+                    <div className="block-text-subtitle">Do Good Better</div>
 
-                    <div className="section-description-sm">
+                    <div className="block-text-description-sm">
                         Forus ziet dat er tal van initiatieven zijn waarbij men zich inzet om goed te doen. Er is veel
                         maatschappelijke bereidheid om sociale problemen aan te pakken. In de loop van de tijd is een
                         landschap van ondersteuning ontstaan dat nog ver van ideaal is. Er is sprake van fragmentatie in

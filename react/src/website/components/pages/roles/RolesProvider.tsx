@@ -4,9 +4,11 @@ import useAssetUrl from '../../../hooks/useAssetUrl';
 import LearnMore from '../../elements/LearnMore';
 import RolesSelector from './elements/RolesSelector';
 import RolesBanner from './elements/RolesBanner';
+import useSetMetaDescription from '../../../hooks/useSetMetaDescription';
 
 export default function RolesProvider() {
     const setTitle = useSetTitle();
+    const setMetaDescription = useSetMetaDescription();
 
     const assetUrl = useAssetUrl();
 
@@ -22,8 +24,11 @@ export default function RolesProvider() {
     );
 
     useEffect(() => {
-        setTitle('Provider role page.');
-    }, [setTitle]);
+        setTitle('Platform voor Aanbieders | Efficiënt beheer van producten & transacties');
+        setMetaDescription(
+            'Het Forus-platform biedt aanbieders de mogelijkheid om zelfstandig hun producten of diensten aan te bieden en te beheren.',
+        );
+    }, [setMetaDescription, setTitle]);
 
     return (
         <Fragment>
@@ -38,9 +43,11 @@ export default function RolesProvider() {
                 <div className="wrapper">
                     <RolesSelector activeType={'provider'} />
 
-                    <div className="section section-overview">
-                        <div className="section-title section-title-sm text-left">Functionaliteiten en overzicht</div>
-                        <div className="section-separator">
+                    <div className="block block-text block-text-overview">
+                        <div className="block-text-title block-text-title-sm text-left">
+                            Functionaliteiten en overzicht
+                        </div>
+                        <div className="block-text-separator">
                             <div className="line" />
                         </div>
                     </div>

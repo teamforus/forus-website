@@ -4,10 +4,12 @@ import useAssetUrl from '../../../hooks/useAssetUrl';
 import LearnMore from '../../elements/LearnMore';
 import RolesSelector from './elements/RolesSelector';
 import RolesBanner from './elements/RolesBanner';
+import useSetMetaDescription from '../../../hooks/useSetMetaDescription';
 
 export default function RolesRequester() {
     const setTitle = useSetTitle();
     const assetUrl = useAssetUrl();
+    const setMetaDescription = useSetMetaDescription();
 
     const [bannerTitle] = useState('Aanvrager /Deelnemer');
     const [bannerDescription] = useState(
@@ -18,8 +20,11 @@ export default function RolesRequester() {
     );
 
     useEffect(() => {
-        setTitle('Requester role page.');
-    }, [setTitle]);
+        setTitle('Platform voor Deelnemers | Laagdrempelige toegang tot hulp');
+        setMetaDescription(
+            'Met het Forus-platform krijgen deelnemers makkelijk en snel toegang tot de hulp die ze nodig hebben.',
+        );
+    }, [setMetaDescription, setTitle]);
 
     return (
         <Fragment>
@@ -34,12 +39,14 @@ export default function RolesRequester() {
                 <div className="wrapper">
                     <RolesSelector activeType={'requester'} />
 
-                    <div className="section section-overview">
-                        <div className="section-title section-title-sm text-left">Functionaliteiten en overzicht</div>
-                        <div className="section-separator">
+                    <div className="block block-text block-text-overview">
+                        <div className="block-text-title block-text-title-sm text-left">
+                            Functionaliteiten en overzicht
+                        </div>
+                        <div className="block-text-separator">
                             <div className="line" />
                         </div>
-                        <div className="section-description text-left">
+                        <div className="block-text-description text-left">
                             Mensen raken door de vele initiatieven, zoals tegemoetkomingen en regelingen, het overzicht
                             kwijt. Ingewikkelde aanvraagprocedures leiden vaak tot stress en onnodig niet-gebruik van
                             deze voorzieningen.

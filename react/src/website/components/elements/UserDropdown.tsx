@@ -17,8 +17,6 @@ export default function UserDropdown() {
         return null;
     }
 
-    console.log('showUserAuthDropdown: ', showUserAuthDropdown);
-
     return (
         <div className="layout-header-auth-menu" onClick={(e) => e.stopPropagation()}>
             {appConfigs?.fronts?.url_sponsor && (

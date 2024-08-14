@@ -10,13 +10,21 @@ import LearnMore from '../../elements/LearnMore';
 import BlockMainBanner from './elements/BlockMainBanner';
 import BlockProject from './elements/BlockProject';
 import BlockDashedSeparator from './elements/BlockDashedSeparator';
+import useSetMetaDescription from '../../../hooks/useSetMetaDescription';
 
 export default function Home() {
     const setTitle = useSetTitle();
+    const setMetaDescription = useSetMetaDescription();
 
     useEffect(() => {
-        setTitle('Home page.');
-    }, [setTitle]);
+        setTitle('Forus | Het platform voor de uitgifte van sociale regelingen');
+        setMetaDescription(
+            [
+                'Forus is het flexibele platform voor sociale regelingen, ',
+                'dat het uitgifteproces faciliteert om laagdrempelige hulp en zelfredzaamheid te bevorderen',
+            ].join(''),
+        );
+    }, [setMetaDescription, setTitle]);
 
     return (
         <Fragment>

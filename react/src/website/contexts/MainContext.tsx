@@ -9,6 +9,8 @@ import { useStateRoutes } from '../modules/state_router/Router';
 interface AuthMemoProps {
     title: string;
     setTitle?: React.Dispatch<React.SetStateAction<string>>;
+    metaDescription: string;
+    setMetaDescription?: React.Dispatch<React.SetStateAction<string>>;
     envData?: EnvDataWebshopProp;
     setEnvData?: React.Dispatch<React.SetStateAction<EnvDataWebshopProp>>;
     appConfigs?: AppConfigProp;
@@ -36,6 +38,7 @@ const { Provider } = mainContext;
 const MainProvider = ({ children }: { children: React.ReactElement }) => {
     const [envData, setEnvData] = useState<EnvDataWebshopProp>(null);
     const [title, setTitle] = useState(null);
+    const [metaDescription, setMetaDescription] = useState('');
     const [appConfigs, setAppConfigs] = useState(null);
     const [showSearchBox, setShowSearchBox] = useState(false);
     const [mobileMenuOpened, setMobileMenuOpened] = useState(false);
@@ -69,13 +72,16 @@ const MainProvider = ({ children }: { children: React.ReactElement }) => {
 
     useEffect(() => {
         document.title = title;
-    }, [title]);
+        document.querySelector('meta[name="description"]').setAttribute('content', metaDescription);
+    }, [metaDescription, title]);
 
     return (
         <Provider
             value={{
                 title,
                 setTitle,
+                metaDescription,
+                setMetaDescription,
                 envData,
                 setEnvData,
                 appConfigs,

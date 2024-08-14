@@ -4,10 +4,12 @@ import useAssetUrl from '../../../hooks/useAssetUrl';
 import LearnMore from '../../elements/LearnMore';
 import StateNavLink from '../../../modules/state_router/StateNavLink';
 import RolesBanner from './elements/RolesBanner';
+import useSetMetaDescription from '../../../hooks/useSetMetaDescription';
 
 export default function RolesMain() {
     const setTitle = useSetTitle();
     const assetUrl = useAssetUrl();
+    const setMetaDescription = useSetMetaDescription();
 
     const [bannerTitle] = useState('Vier rollen, één systeem');
     const [bannerDescription] = useState(
@@ -24,8 +26,14 @@ export default function RolesMain() {
     );
 
     useEffect(() => {
-        setTitle('Roles page.');
-    }, [setTitle]);
+        setTitle('Het Forus-platform | Eén systeem, vier rollen');
+        setMetaDescription(
+            [
+                'Het Forus-platform faciliteert samenwerking tussen overheidsinstanties, goede doelen, ',
+                'bedrijven en deelnemers door middel van een vier-rol model.\n',
+            ].join(''),
+        );
+    }, [setMetaDescription, setTitle]);
 
     return (
         <Fragment>

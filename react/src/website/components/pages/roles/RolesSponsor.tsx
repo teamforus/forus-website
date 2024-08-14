@@ -4,9 +4,11 @@ import useAssetUrl from '../../../hooks/useAssetUrl';
 import LearnMore from '../../elements/LearnMore';
 import RolesSelector from './elements/RolesSelector';
 import RolesBanner from './elements/RolesBanner';
+import useSetMetaDescription from '../../../hooks/useSetMetaDescription';
 
 export default function RolesSponsor() {
     const setTitle = useSetTitle();
+    const setMetaDescription = useSetMetaDescription();
 
     const assetUrl = useAssetUrl();
 
@@ -22,8 +24,11 @@ export default function RolesSponsor() {
     );
 
     useEffect(() => {
-        setTitle('Sponsor role page.');
-    }, [setTitle]);
+        setTitle('Platform voor Sponsors | Effectieve uitgifte van regelingen');
+        setMetaDescription(
+            'Het Forus platform is zorgvuldig ontworpen om het volledige proces van uitgifte van sociale regelingen te ondersteunen.',
+        );
+    }, [setMetaDescription, setTitle]);
 
     return (
         <Fragment>
@@ -38,9 +43,11 @@ export default function RolesSponsor() {
                 <div className="wrapper">
                     <RolesSelector activeType={'sponsor'} />
 
-                    <div className="section section-overview">
-                        <div className="section-title section-title-sm text-left">Functionaliteiten en overzicht</div>
-                        <div className="section-separator">
+                    <div className="block block-text block-text-overview">
+                        <div className="block-text-title block-text-title-sm text-left">
+                            Functionaliteiten en overzicht
+                        </div>
+                        <div className="block-text-separator">
                             <div className="line" />
                         </div>
                     </div>
