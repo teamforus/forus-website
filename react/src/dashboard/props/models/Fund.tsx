@@ -117,4 +117,5 @@ export default interface Fund {
     allow_reimbursements?: boolean;
     allow_physical_cards?: boolean;
     allow_blocking_vouchers?: boolean;
+    provider_products_required?: boolean;
 }

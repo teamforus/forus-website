@@ -253,6 +253,13 @@ export class FundService<T = Fund> {
         return this.apiRequest.get(`${this.prefix}/${company_id}/funds/${fund_id}/identities/export-fields`, data);
     }
 
+    public listFundsProviderProductsRequired(organization_id: number, query: object = {}): Promise<ApiResponse<Fund>> {
+        return this.apiRequest.get(`${this.prefix}/${organization_id}/funds/product-required`, {
+            per_page: 100,
+            ...query,
+        });
+    }
+
     public getStates(): Array<{ value: string; name: string }> {
         return [
             { name: 'Waiting', value: 'waiting' },

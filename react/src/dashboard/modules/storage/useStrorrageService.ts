@@ -58,11 +58,43 @@ export default function useStorageService() {
         localStorage.setItem(collection_name, JSON.stringify({}));
     }, []);
 
+    const setCollectionWithExpiry = useCallback((key: string, value, ttl: number) => {
+        const now = new Date();
+
+        const item = {
+            value: value,
+            expiry: now.getTime() + ttl * 60 * 1000,
+        };
+
+        localStorage.setItem(key, JSON.stringify(item));
+    }, []);
+
+    const getCollectionWithExpiry = useCallback((key: string) => {
+        const itemStr = localStorage.getItem(key);
+
+        if (!itemStr) {
+            return null;
+        }
+
+        const item = JSON.parse(itemStr);
+        const now = new Date();
+
+        if (item?.expiry && now.getTime() > item.expiry) {
+            localStorage.removeItem(key);
+
+            return null;
+        }
+
+        return item?.value;
+    }, []);
+
     return {
         getCollectionAll,
         setCollectionItem,
         getCollectionItem,
         setCollectionAll,
         resetCollection,
+        setCollectionWithExpiry,
+        getCollectionWithExpiry,
     };
 }

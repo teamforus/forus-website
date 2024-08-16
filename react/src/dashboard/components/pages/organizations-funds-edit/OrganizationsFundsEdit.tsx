@@ -186,6 +186,7 @@ export default function OrganizationsFundsEdit() {
         contact_info_required?: boolean;
         contact_info_message_custom?: boolean;
         contact_info_message_text?: string;
+        provider_products_required?: boolean;
     }>(
         {
             description_position: descriptionPositions[0]?.value,
@@ -205,6 +206,7 @@ export default function OrganizationsFundsEdit() {
             contact_info_required: true,
             contact_info_message_custom: false,
             contact_info_message_text: '',
+            provider_products_required: false,
         },
         async (values) => {
             const data = JSON.parse(JSON.stringify(values));
@@ -833,6 +835,30 @@ export default function OrganizationsFundsEdit() {
                         </div>
                     </div>
                 )}
+
+                <div className="card-section card-section-primary">
+                    <div className="row">
+                        <div className="col col-lg-9 col-xs-12">
+                            <div className="form-group form-group-inline tooltipped">
+                                <label className="form-label">Aanbod plaatsen verzoek</label>
+                                <CheckboxControl
+                                    id={'provider_products_required'}
+                                    checked={!!form.values.provider_products_required}
+                                    onChange={(e) => form.update({ provider_products_required: e.target.checked })}
+                                    title={
+                                        'Vraag aanbieders om ten minste één aanbod toe te voegen om deel te nemen aan dit fonds.'
+                                    }
+                                />
+                                <Tooltip
+                                    text={
+                                        'Wanneer u het vakje aanvinkt, ontvangen aanbieders die zich proberen in te schrijven voor dit fonds een melding om hun aanbod toe te voegen.'
+                                    }
+                                />
+                                <FormError error={form.errors?.provider_products_required} />
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
                 {!form.values.external_page && (
                     <div className="card-section card-section-primary">

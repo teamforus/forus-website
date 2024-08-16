@@ -19,6 +19,7 @@ import AwsRumScript from './modules/aws_rum/AwsRumScript';
 import { PrintableProvider } from './modules/printable/context/PrintableContext';
 import i18nEN from './i18n/i18n-en';
 import i18nNL from './i18n/i18n-nl';
+import ProviderNotificationProductRequired from './modules/provider_notification_product_required/ProviderNotificationProductRequired';
 
 i18n.use(initReactI18next)
     .init({
@@ -84,6 +85,9 @@ export default function Dashboard({ envData }: { envData: EnvDataProp }): React.
                                         <QueryParamProvider adapter={ReactRouter6Adapter}>
                                             <StateHashPrefixRedirect />
                                             <RouterLayout envData={envData} />
+                                            {envData.client_type === 'provider' && (
+                                                <ProviderNotificationProductRequired />
+                                            )}
                                         </QueryParamProvider>
                                     </MainProvider>
                                 </ModalsProvider>

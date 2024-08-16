@@ -1,0 +1,48 @@
+.block.block-info-with-icon {
+    display: grid;
+    grid-template-columns: 1fr auto;
+
+    .button-group {
+        .button-text {
+            padding-left: 5px;
+
+            &:not([disabled]) {
+                .mdi {
+                    color: #8fa2a5;
+                }
+            }
+        }
+    }
+
+    .info-content {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 20px;
+
+        .info-content-details {
+            .block-markdown,
+            .info-content-title,
+            .info-content-description {
+                margin: 0 0 5px;
+
+                &:last-child {
+                    margin-bottom: 0;
+                }
+            }
+
+            .info-content-title {
+                font: 600 16px/24px var(--base-font);
+                display: flex;
+            }
+
+            .info-content-description {
+                font: 400 13px/18px var(--base-font);
+                margin: 0 0 20px;
+
+                &:last-child {
+                    margin-bottom: 0;
+                }
+            }
+        }
+    }
+}
