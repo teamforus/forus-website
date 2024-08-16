@@ -68,6 +68,12 @@ export default function TableTopScroller({
         };
     }, [scrollableRootSelector, updateState]);
 
+    useEffect(() => {
+        window.setTimeout(() => {
+            tableScrollTopRef?.current?.scrollTo({ left: tableScrollWrapperRef?.current?.scrollLeft });
+        }, 0);
+    }, [showTopScroll]);
+
     return (
         <div className="table-wrapper">
             <div className={classNames('table-container', showTopScroll && 'table-container-scroll-top')}>
