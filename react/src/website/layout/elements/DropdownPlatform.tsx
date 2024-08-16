@@ -4,6 +4,7 @@ import useAssetUrl from '../../hooks/useAssetUrl';
 import HelpCenter from '../../components/elements/HelpCenter';
 import useSetActiveMenuDropdown from '../../hooks/useSetActiveMenuDropdown';
 import { useNavigateState } from '../../modules/state_router/Router';
+import StateNavLink from '../../modules/state_router/StateNavLink';
 
 export default function DropdownPlatform() {
     const assetUrl = useAssetUrl();
@@ -61,7 +62,7 @@ export default function DropdownPlatform() {
                             className="block-page-list-main-details-title"
                             onClick={() => {
                                 setActiveMenuDropdown(null);
-                                navigateState('roles-main');
+                                navigateState(activeItem == 'basic-functions' ? 'basic-functions' : 'roles-main');
                             }}>
                             <img
                                 className="details-list-image"
@@ -73,9 +74,11 @@ export default function DropdownPlatform() {
 
                         {activeItem == 'basic-functions' ? (
                             <div className="block-page-list-main-details-list">
-                                <div
+                                <StateNavLink
+                                    name={'funds'}
                                     className="block-page-list-main-details-list-item"
-                                    onMouseOver={() => setActiveSubItem('funds')}>
+                                    onMouseOver={() => setActiveSubItem('funds')}
+                                    onClick={() => setActiveMenuDropdown(null)}>
                                     <img
                                         className="details-list-image"
                                         src={assetUrl(
@@ -87,11 +90,13 @@ export default function DropdownPlatform() {
                                     />
                                     Fondsen
                                     <em className={'mdi mdi-arrow-right'} />
-                                </div>
+                                </StateNavLink>
 
-                                <div
+                                <StateNavLink
+                                    name={'website'}
                                     className="block-page-list-main-details-list-item"
-                                    onMouseOver={() => setActiveSubItem('websites')}>
+                                    onMouseOver={() => setActiveSubItem('websites')}
+                                    onClick={() => setActiveMenuDropdown(null)}>
                                     <img
                                         className="details-list-image"
                                         src={assetUrl(
@@ -103,11 +108,13 @@ export default function DropdownPlatform() {
                                     />
                                     Websites
                                     <em className={'mdi mdi-arrow-right'} />
-                                </div>
+                                </StateNavLink>
 
-                                <div
+                                <StateNavLink
+                                    name={'cms'}
                                     className="block-page-list-main-details-list-item"
-                                    onMouseOver={() => setActiveSubItem('cms')}>
+                                    onMouseOver={() => setActiveSubItem('cms')}
+                                    onClick={() => setActiveMenuDropdown(null)}>
                                     <img
                                         className="details-list-image"
                                         src={assetUrl(
@@ -119,11 +126,13 @@ export default function DropdownPlatform() {
                                     />
                                     CMS
                                     <em className={'mdi mdi-arrow-right'} />
-                                </div>
+                                </StateNavLink>
 
-                                <div
+                                <StateNavLink
+                                    name={'me-app'}
                                     className="block-page-list-main-details-list-item"
-                                    onMouseOver={() => setActiveSubItem('me-app')}>
+                                    onMouseOver={() => setActiveSubItem('me-app')}
+                                    onClick={() => setActiveMenuDropdown(null)}>
                                     <img
                                         className="details-list-image"
                                         src={assetUrl(
@@ -135,23 +144,25 @@ export default function DropdownPlatform() {
                                     />
                                     Me-app
                                     <em className={'mdi mdi-arrow-right'} />
-                                </div>
+                                </StateNavLink>
 
-                                <div
+                                <StateNavLink
+                                    name={'information'}
                                     className="block-page-list-main-details-list-item"
-                                    onMouseOver={() => setActiveSubItem('notifications')}>
+                                    onMouseOver={() => setActiveSubItem('notifications')}
+                                    onClick={() => setActiveMenuDropdown(null)}>
                                     <img
                                         className="details-list-image"
                                         src={assetUrl(
                                             `/assets/img/icons-platform/notifications${
-                                                activeSubItem == 'notifications' ? '-active' : ''
+                                                activeSubItem == 'cms' ? '-active' : ''
                                             }.svg`,
                                         )}
                                         alt=""
                                     />
                                     Managementinformatie
                                     <em className={'mdi mdi-arrow-right'} />
-                                </div>
+                                </StateNavLink>
                             </div>
                         ) : (
                             <div className="block-page-list-main-details-list">

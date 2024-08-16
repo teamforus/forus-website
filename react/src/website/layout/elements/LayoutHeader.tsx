@@ -234,7 +234,12 @@ export default function LayoutHeader() {
                                     {shownSubMenuGroup == 'basic-functions' && (
                                         <Fragment>
                                             <div className="mobile-menu-items">
-                                                <a className="mobile-menu-item">
+                                                <a
+                                                    className="mobile-menu-item"
+                                                    onClick={() => {
+                                                        navigateState('funds');
+                                                        setShowMobileMenu(false);
+                                                    }}>
                                                     <img
                                                         className="mobile-menu-item-icon"
                                                         src={assetUrl(`/assets/img/icons-platform/funds.svg`)}
@@ -243,7 +248,12 @@ export default function LayoutHeader() {
                                                     Fondsen
                                                     <em className={`mdi mdi-arrow-right`} />
                                                 </a>
-                                                <a className="mobile-menu-item">
+                                                <a
+                                                    className="mobile-menu-item"
+                                                    onClick={() => {
+                                                        navigateState('website');
+                                                        setShowMobileMenu(false);
+                                                    }}>
                                                     <img
                                                         className="mobile-menu-item-icon"
                                                         src={assetUrl(`/assets/img/icons-platform/websites.svg`)}
@@ -252,7 +262,12 @@ export default function LayoutHeader() {
                                                     Websites
                                                     <em className={`mdi mdi-arrow-right`} />
                                                 </a>
-                                                <a className="mobile-menu-item">
+                                                <a
+                                                    className="mobile-menu-item"
+                                                    onClick={() => {
+                                                        navigateState('cms');
+                                                        setShowMobileMenu(false);
+                                                    }}>
                                                     <img
                                                         className="mobile-menu-item-icon"
                                                         src={assetUrl(`/assets/img/icons-platform/cms.svg`)}
@@ -261,7 +276,12 @@ export default function LayoutHeader() {
                                                     CMS
                                                     <em className={`mdi mdi-arrow-right`} />
                                                 </a>
-                                                <a className="mobile-menu-item">
+                                                <a
+                                                    className="mobile-menu-item"
+                                                    onClick={() => {
+                                                        navigateState('me-app');
+                                                        setShowMobileMenu(false);
+                                                    }}>
                                                     <img
                                                         className="mobile-menu-item-icon"
                                                         src={assetUrl(`/assets/img/icons-platform/me-app.svg`)}
@@ -270,7 +290,12 @@ export default function LayoutHeader() {
                                                     Me-app
                                                     <em className={`mdi mdi-arrow-right`} />
                                                 </a>
-                                                <a className="mobile-menu-item">
+                                                <a
+                                                    className="mobile-menu-item"
+                                                    onClick={() => {
+                                                        navigateState('information');
+                                                        setShowMobileMenu(false);
+                                                    }}>
                                                     <img
                                                         className="mobile-menu-item-icon"
                                                         src={assetUrl(`/assets/img/icons-platform/notifications.svg`)}

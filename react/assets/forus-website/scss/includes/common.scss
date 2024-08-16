@@ -182,6 +182,27 @@ img {
     }
 }
 
+.block-separator {
+    margin: 0 0 60px 0;
+    border: 2px dashed var(--border-color);
+    position: relative;
+
+    .line {
+        position: absolute;
+        height: 4px;
+        width: 50px;
+        background: #315efd;
+        left: 0;
+        top: -2px;
+        border-radius: var(--border-radius);
+
+        &.line-center {
+            left: 50%;
+            transform: translateX(-50%);
+        }
+    }
+}
+
 img {
     border: none;
 }

@@ -5,6 +5,10 @@
     .block-with-image-title {
         font: 900 56px/68px var(--base-font);
         margin-bottom: 60px;
+
+        &.block-with-image-title-sm {
+            font: 600 46px/55px var(--base-font);
+        }
     }
 
     .block-with-image-label {
@@ -28,13 +32,54 @@
             font: 400 26px/36px var(--base-font);
             margin-bottom: 50px;
 
+            .block-label-tabs {
+                margin-bottom: 50px;
+            }
+
             .block-with-image-title {
                 font: 700 40px/52px var(--base-font);
                 margin-bottom: 30px;
+
+                &.block-with-image-title-md {
+                    font: 700 52px/60px var(--base-font);
+                }
+
+                &.block-with-image-title-lg {
+                    font: 700 65px/80px var(--base-font);
+                }
             }
 
             .block-with-image-description {
                 font: 400 18px/27px var(--base-font);
+            }
+
+            .block-with-image-actions {
+                margin-top: 55px;
+            }
+
+            .block-with-image-list {
+                margin-top: 35px;
+
+                .block-with-image-list-item {
+                    display: flex;
+                    padding: 25px;
+                    color: #55575E;
+                    font: 600 21px/28px var(--base-font);
+
+                    .item-icon {
+                        display: block;
+                        width: 28px;
+                        margin-right: 15px;
+                    }
+
+                    .block-with-image-list-item-name {
+                        flex-grow: 1;
+                    }
+
+                    .mdi {
+                        color: #D6D7DB;
+                    }
+                }
             }
         }
 
@@ -43,6 +88,21 @@
 
             img {
                 width: 100%;
+            }
+        }
+    }
+
+    &.block-with-image-image-sm {
+        .block-with-image-wrapper {
+            align-items: center;
+
+            .block-with-image-info {
+                width: 65%;
+                margin-bottom: 0;
+            }
+
+            .block-with-image-image {
+                width: 35%;
             }
         }
     }
@@ -82,6 +142,10 @@
         .block-with-image-title {
             font: 900 30px/40px var(--base-font);
             margin-bottom: 30px;
+
+            &.block-with-image-title-sm {
+                font: 700 26px/36px var(--base-font);
+            }
         }
 
         .block-with-image-label {
@@ -100,10 +164,28 @@
                 .block-with-image-title {
                     font: 700 20px/30px var(--base-font);
                     margin-bottom: 20px;
+
+                    &.block-with-image-title-md {
+                        font: 700 24px/32px var(--base-font);
+                        margin-bottom: 20px;
+                        text-align: center;
+                    }
+
+                    &.block-with-image-title-lg {
+                        font: 700 28px/36px var(--base-font);
+                    }
                 }
 
                 .block-with-image-description {
                     font: 400 14px/21px var(--base-font);
+
+                    &.block-with-image-description-sm {
+                        text-align: center;
+                    }
+                }
+
+                .block-with-image-actions {
+                    text-align: center;
                 }
             }
 
@@ -128,6 +210,23 @@
                     padding: 25px;
                     border-radius: 0 0 20px 20px;
                     margin-bottom: 0;
+                }
+            }
+        }
+
+        &.block-with-image-image-sm {
+            .block-with-image-wrapper {
+                .block-with-image-image, .block-with-image-info {
+                    width: 100%;
+                    align-items: center;
+                    text-align: center;
+                }
+
+                .block-with-image-image {
+                    img {
+                        padding: 20px;
+                        width: 80%;
+                    }
                 }
             }
         }

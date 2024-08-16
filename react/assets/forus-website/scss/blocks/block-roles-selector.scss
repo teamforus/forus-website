@@ -42,4 +42,14 @@
             background: linear-gradient(90deg, rgba(255, 255, 255, 0.00) 15%, #E1E2E8 50%, rgba(255, 255, 255, 0.00) 85%);
         }
     }
+
+    @media screen and (max-width: 1000px) {
+        overflow: scroll;
+        margin-bottom: 60px;
+
+        .block-roles-selector-item {
+            min-width: 90px;
+            overflow: hidden;
+        }
+    }
 }

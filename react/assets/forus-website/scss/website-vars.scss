@@ -42,4 +42,16 @@
     // Labels
     --label-default-color: #fff;
     --label-default-background: #595959;
+
+    // Label sets
+    --label-set-border-radius: 7px;
+    --label-set-border-color: #9e9e9e;
+    --label-set-color: #272525;
+    --label-set-background: #ffffff;
+    --label-set-active-color: #ffffff;
+    --label-set-active-background: var(--color-primary);
+    --label-set-hover-color: #131313;
+    --label-set-hover-background: #E1E2E8;
+    --label-set-focus-color: #272525;
+    --label-set-focus-background: #F4F5F7;
 }

@@ -30,7 +30,13 @@ export default function RolesMain() {
     return (
         <Fragment>
             <div className="wrapper hide-sm">
-                <RolesBanner type={'main'} title={bannerTitle} description={bannerDescription} showActions={false} />
+                <RolesBanner
+                    type={'main'}
+                    title={bannerTitle}
+                    description={bannerDescription}
+                    showActions={false}
+                    showIcon={false}
+                />
             </div>
 
             <div className="show-sm">
@@ -40,90 +46,95 @@ export default function RolesMain() {
             <div className="main-content">
                 <div className="wrapper">
                     <div className="block block-overview-list">
-                        <div className="block block-overview-list-item">
-                            <div className="block block-overview-list-item-image">
-                                <img
-                                    src={assetUrl(`/assets/img/requester.svg`)}
-                                    alt="Icoon van de deelnemersrol in het Forus-systeem"
-                                />
-                            </div>
-                            <div className="block block-overview-list-item-info">
-                                <div className="block block-overview-list-item-title">Deelnemer / Aanvrager</div>
-                                <div className="block block-overview-list-item-description">
-                                    Een persoon die mogelijk recht heeft op ondersteuning of een regeling heeft
-                                    aangevraagd. Een aanvrager wordt een deelnemer na toekenning. Deelnemers hebben een
-                                    account in het platform en vinden hier waar ze voor in aanmerking komen, kunnen een
-                                    aanvraag indienen en budgetten uitgeven.
+                        <div className="block-overview-list-row">
+                            <div className="block block-overview-list-item">
+                                <div className="block block-overview-list-item-image">
+                                    <img
+                                        src={assetUrl(`/assets/img/requester.svg`)}
+                                        alt="Icoon van de deelnemersrol in het Forus-systeem"
+                                    />
                                 </div>
-                                <div className="block block-overview-list-item-read-more">
-                                    <button className="button button-light button-sm">
-                                        <StateNavLink name={'roles-requester'}>Lees meer</StateNavLink>
-                                    </button>
+                                <div className="block block-overview-list-item-info">
+                                    <div className="block block-overview-list-item-title">Deelnemer / Aanvrager</div>
+                                    <div className="block block-overview-list-item-description">
+                                        Een persoon die mogelijk recht heeft op ondersteuning of een regeling heeft
+                                        aangevraagd. Een aanvrager wordt een deelnemer na toekenning. Deelnemers hebben
+                                        een account in het platform en vinden hier waar ze voor in aanmerking komen,
+                                        kunnen een aanvraag indienen en budgetten uitgeven.
+                                    </div>
+                                    <div className="block block-overview-list-item-read-more">
+                                        <button className="button button-light button-sm">
+                                            <StateNavLink name={'roles-requester'}>Lees meer</StateNavLink>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="block block-overview-list-item">
+                                <div className="block block-overview-list-item-image">
+                                    <img
+                                        src={assetUrl(`/assets/img/provider.svg`)}
+                                        alt="Icoon van de aanbiedersrol in het Forus-systeem"
+                                    />
+                                </div>
+                                <div className="block block-overview-list-item-info">
+                                    <div className="block block-overview-list-item-title">Aanbieder</div>
+                                    <div className="block block-overview-list-item-description">
+                                        Een organisatie die producten en/of diensten aanbiedt in het Forus-systeem.
+                                    </div>
+                                    <div className="block block-overview-list-item-read-more">
+                                        <button className="button button-light button-sm">
+                                            <StateNavLink name={'roles-provider'}>Lees meer</StateNavLink>
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div className="block block-overview-list-item">
-                            <div className="block block-overview-list-item-image">
-                                <img
-                                    src={assetUrl(`/assets/img/provider.svg`)}
-                                    alt="Icoon van de aanbiedersrol in het Forus-systeem"
-                                />
-                            </div>
-                            <div className="block block-overview-list-item-info">
-                                <div className="block block-overview-list-item-title">Aanbieder</div>
-                                <div className="block block-overview-list-item-description">
-                                    Een organisatie die producten en/of diensten aanbiedt in het Forus-systeem.
+                        <div className="block-overview-list-row">
+                            <div className="block block-overview-list-item">
+                                <div className="block block-overview-list-item-image">
+                                    <img
+                                        src={assetUrl(`/assets/img/sponsor.svg`)}
+                                        alt="Icoon van de sponsorrol in het Forus-systeem"
+                                    />
                                 </div>
-                                <div className="block block-overview-list-item-read-more">
-                                    <button className="button button-light button-sm">
-                                        <StateNavLink name={'roles-provider'}>Lees meer</StateNavLink>
-                                    </button>
+                                <div className="block block-overview-list-item-info">
+                                    <div className="block block-overview-list-item-title">Sponsor</div>
+                                    <div className="block block-overview-list-item-description">
+                                        Een organisatie die financiële steun verleent aan deelnemers. Deze rol kan
+                                        uitgevoerd worden door gemeenten (zoals een gemeente die een stadspas of een
+                                        kindregeling wilt uitgeven) alsook sociale ketenpartners (zoals een lokaal goed
+                                        doel).
+                                    </div>
+                                    <div className="block block-overview-list-item-read-more">
+                                        <button className="button button-light button-sm">
+                                            <StateNavLink name={'roles-sponsor'}>Lees meer</StateNavLink>
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <div className="block block-overview-list-item">
-                            <div className="block block-overview-list-item-image">
-                                <img
-                                    src={assetUrl(`/assets/img/sponsor.svg`)}
-                                    alt="Icoon van de sponsorrol in het Forus-systeem"
-                                />
-                            </div>
-                            <div className="block block-overview-list-item-info">
-                                <div className="block block-overview-list-item-title">Sponsor</div>
-                                <div className="block block-overview-list-item-description">
-                                    Een organisatie die financiële steun verleent aan deelnemers. Deze rol kan
-                                    uitgevoerd worden door gemeenten (zoals een gemeente die een stadspas of een
-                                    kindregeling wilt uitgeven) alsook sociale ketenpartners (zoals een lokaal goed
-                                    doel).
+                            <div className="block block-overview-list-item">
+                                <div className="block block-overview-list-item-image">
+                                    <img
+                                        src={assetUrl(`/assets/img/validator.svg`)}
+                                        alt="Icoon van de beoordelaardsrol in het Forus-systeem"
+                                    />
                                 </div>
-                                <div className="block block-overview-list-item-read-more">
-                                    <button className="button button-light button-sm">
-                                        <StateNavLink name={'roles-sponsor'}>Lees meer</StateNavLink>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="block block-overview-list-item">
-                            <div className="block block-overview-list-item-image">
-                                <img
-                                    src={assetUrl(`/assets/img/validator.svg`)}
-                                    alt="Icoon van de beoordelaardsrol in het Forus-systeem"
-                                />
-                            </div>
-                            <div className="block block-overview-list-item-info">
-                                <div className="block block-overview-list-item-title">Beoordelaar</div>
-                                <div className="block block-overview-list-item-description">
-                                    Een instelling die de gegevens van de aanvrager beoordeelt en bepaalt of de aanvraag
-                                    toegekend of afgewezen moet worden. Dit kan de gemeente zelf zijn, maar ook andere
-                                    organisaties zoals sociale ketenpartners of andere overheidsorganisaties.
-                                </div>
-                                <div className="block block-overview-list-item-read-more">
-                                    <button className="button button-light button-sm">
-                                        <StateNavLink name={'roles-validator'}>Lees meer</StateNavLink>
-                                    </button>
+                                <div className="block block-overview-list-item-info">
+                                    <div className="block block-overview-list-item-title">Beoordelaar</div>
+                                    <div className="block block-overview-list-item-description">
+                                        Een instelling die de gegevens van de aanvrager beoordeelt en bepaalt of de
+                                        aanvraag toegekend of afgewezen moet worden. Dit kan de gemeente zelf zijn, maar
+                                        ook andere organisaties zoals sociale ketenpartners of andere
+                                        overheidsorganisaties.
+                                    </div>
+                                    <div className="block block-overview-list-item-read-more">
+                                        <button className="button button-light button-sm">
+                                            <StateNavLink name={'roles-validator'}>Lees meer</StateNavLink>
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>

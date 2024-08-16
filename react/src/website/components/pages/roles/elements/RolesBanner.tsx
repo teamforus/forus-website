@@ -6,11 +6,13 @@ export default function RolesBanner({
     title,
     description,
     showActions = true,
+    showIcon = true,
 }: {
     type: string;
     title: string;
     description: string;
     showActions?: boolean;
+    showIcon?: boolean;
 }) {
     const assetUrl = useAssetUrl();
 
@@ -30,12 +32,14 @@ export default function RolesBanner({
     return (
         <div className="section section-banner-right">
             <div className="section-main">
-                <div className="section-icon">
-                    <img
-                        src={assetUrl(`/assets/img/icons-roles/selector/${type}-active.svg`)}
-                        alt={`Icoon van de ${iconTypeText}rol in het Forus-systeem`}
-                    />
-                </div>
+                {showIcon && (
+                    <div className="section-icon">
+                        <img
+                            src={assetUrl(`/assets/img/icons-roles/selector/${type}-active.svg`)}
+                            alt={`Icoon van de ${iconTypeText}rol in het Forus-systeem`}
+                        />
+                    </div>
+                )}
                 <h2 className="section-title">{title}</h2>
                 <div className="section-description section-description-sm">{description}</div>
 

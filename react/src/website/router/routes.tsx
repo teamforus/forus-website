@@ -11,6 +11,12 @@ import RolesRequester from '../components/pages/roles/RolesRequester';
 import RolesProvider from '../components/pages/roles/RolesProvider';
 import RolesSponsor from '../components/pages/roles/RolesSponsor';
 import RolesValidator from '../components/pages/roles/RolesValidator';
+import BasicFunctions from '../components/pages/basic-functions/BasicFunctions';
+import MeApp from '../components/pages/basic-functions/MeApp';
+import CMS from '../components/pages/basic-functions/CMS';
+import Funds from '../components/pages/basic-functions/Funds';
+import Website from '../components/pages/basic-functions/Website';
+import Information from '../components/pages/basic-functions/Information';
 
 const router = new RouterBuilder();
 
@@ -29,8 +35,33 @@ router.state('sign-out', <SignOut />, {
     protected: false,
 });
 
-router.state('basic-functions', <WIP />, {
+router.state('basic-functions', <BasicFunctions />, {
     path: `/basic-functions`,
+    protected: false,
+});
+
+router.state('me-app', <MeApp />, {
+    path: `/me-app`,
+    protected: false,
+});
+
+router.state('cms', <CMS />, {
+    path: `/cms`,
+    protected: false,
+});
+
+router.state('funds', <Funds />, {
+    path: `/funds`,
+    protected: false,
+});
+
+router.state('website', <Website />, {
+    path: `/website`,
+    protected: false,
+});
+
+router.state('information', <Information />, {
+    path: `/information`,
     protected: false,
 });
 
