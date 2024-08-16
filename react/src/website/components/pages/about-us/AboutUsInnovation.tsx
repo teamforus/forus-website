@@ -2,40 +2,49 @@ import React, { Fragment, useEffect } from 'react';
 import useSetTitle from '../../../hooks/useSetTitle';
 import useAssetUrl from '../../../hooks/useAssetUrl';
 import LearnMore from '../../elements/LearnMore';
+import BlockDashedSeparator from '../home/elements/BlockDashedSeparator';
+import useSetMetaDescription from '../../../hooks/useSetMetaDescription';
 
 export default function AboutUsInnovation() {
     const setTitle = useSetTitle();
+    const setMetaDescription = useSetMetaDescription();
 
     const assetUrl = useAssetUrl();
 
     useEffect(() => {
-        setTitle('About us page.');
-    }, [setTitle]);
+        setTitle('Naar een merkbaar en meetbaar verschil! | Innovatiebudget 2023');
+        setMetaDescription(
+            [
+                'Project gefinancierd door het Innovatiebudget 2023 richt zich op ',
+                'armoedebestrijding via een digitaal platform voor toegankelijke financiële ondersteuning.',
+            ].join(''),
+        );
+    }, [setMetaDescription, setTitle]);
 
     return (
         <Fragment>
             <div className="wrapper">
-                <div className="section">
-                    <h2 className="section-title section-title-sm">Naar een merkbaar en meetbaar verschil!</h2>
+                <div className="block block-text">
+                    <h2 className="block-text-title block-text-title-sm">Naar een merkbaar en meetbaar verschil!</h2>
 
-                    <div className="section-description">
+                    <div className="block-text-description">
                         Project gefinancierd door het Innovatiebudget 2023 in samenwerking met Gemeente Eemsdelta en
                         Gemeente Westerkwartier.
                     </div>
 
-                    <div className="section-banner">
+                    <div className="block-text-banner">
                         <img
                             src={assetUrl('/assets/img/about-us-innovations-banner.jpg')}
                             alt="About us innovations banner"
                         />
                     </div>
 
-                    <div className="section-details-block">
-                        <div className="section-details-block-main">
+                    <div className="block-text-details-block">
+                        <div className="block-text-details-block-main">
                             Project gefinancierd door het Innovatiebudget 2023 in samenwerking met Gemeente Eemsdelta en
                             Gemeente Westerkwartier.
                         </div>
-                        <div className="section-details-block-description">
+                        <div className="block-text-details-block-description">
                             Het bestrijden van armoede is een complexe uitdaging. In Nederland zijn er diverse nationale
                             en lokale regelingen en voorzieningen die worden aangeboden door fondsen en stichtingen.
                             Door de vele regelingen raken veel mensen het overzicht kwijt, wat leidt tot stress en
@@ -63,9 +72,7 @@ export default function AboutUsInnovation() {
                 </div>
             </div>
 
-            <div className="separator-dashed">
-                <img src={assetUrl(`/assets/img/icon-forus.svg`)} alt="" />
-            </div>
+            <BlockDashedSeparator />
 
             <div className={'wrapper'}>
                 <div className="block block-with-image">
@@ -153,9 +160,7 @@ export default function AboutUsInnovation() {
                 </div>
             </div>
 
-            <div className="separator-dashed">
-                <img src={assetUrl(`/assets/img/icon-forus.svg`)} alt="" />
-            </div>
+            <BlockDashedSeparator />
 
             <div className="wrapper">
                 <div className="block block-with-image block-with-image-background">
@@ -176,9 +181,7 @@ export default function AboutUsInnovation() {
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <div className="wrapper">
                 <LearnMore
                     title={'Heeft u vragen of wilt u aanvullende informatie over het Innovatiebudget project?'}
                     description={'Neem gerust contact met ons op. We staan klaar om uw vragen te beantwoorden.'}
@@ -191,7 +194,7 @@ export default function AboutUsInnovation() {
                 />
             </div>
 
-            <div className="separator-dashed" />
+            <BlockDashedSeparator image={false} />
             <br />
             <br />
             <br />

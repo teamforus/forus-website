@@ -39,6 +39,10 @@ export default function Strategy() {
     return (
         <Slider
             title={'De weg naar een succesvolle lancering'}
+            description={[
+                'Wilt u een regeling uitgeven? We gaan graag met u in gesprek en werken toe naar een plan voor de implementatie.',
+                'Ook na de lancering staan wij voor u klaar.',
+            ].join(' ')}
             elements={elements}
             showBackgroundImage={true}
             showActionButton={true}

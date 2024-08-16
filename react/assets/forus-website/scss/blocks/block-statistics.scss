@@ -1,26 +1,36 @@
 .block.block-statistics {
     display: flex;
     flex-direction: column;
-    margin-bottom: 100px;
+    gap: 100px;
+    margin: 0 0 60px;
 
     .block-statistics-main-info {
         display: flex;
-        margin-bottom: 100px;
+        flex-direction: row;
+        justify-content: space-between;
         align-items: center;
+        gap: 100px;
 
         .block-statistics-main-info-title {
-            font: 900 56px/68px var(--base-font);
-            margin-right: 100px;
+            flex: 1 1 auto;
+            font: 800 50px/68px var(--base-font);
         }
-    }
 
-    .block-statistics-main-info-image {
-        img {
-            width: 100%;
+        .block-statistics-main-info-image {
+            flex: 0 0 560px;
+
+            img {
+                display: block;
+                width: 100%;
+            }
         }
     }
 
     .block-statistics-figures-list {
+        display: flex;
+        flex-direction: column;
+        gap: 25px;
+
         .block-statistics-figures-list-item {
             display: flex;
             width: 100%;
@@ -29,17 +39,19 @@
 
             .block-statistics-figures-list-item-main {
                 width: calc(50% - 75px);
-                background: var(--Linear, linear-gradient(180deg, #F9F9F9 0%, rgba(249, 249, 249, 0.00) 100%));
+                background: var(--Linear, linear-gradient(180deg, #f9f9f9 0%, rgba(249, 249, 249, 0) 100%));
                 text-align: center;
                 padding: 80px;
                 border-radius: 10px;
 
                 .block-statistics-figures-list-item-title {
                     font: 500 80px/96px var(--base-font);
+                    margin: 0 0;
                 }
 
                 .block-statistics-figures-list-item-subtitle {
                     font: 400 20px/30px var(--base-font);
+                    margin: 0 0;
                 }
             }
 
@@ -48,41 +60,56 @@
                 font: 400 18px/29px var(--base-font);
             }
 
-            &.blue {
+            &.block-statistics-figures-list-item-blue {
                 .block-statistics-figures-list-item-main {
                     .block-statistics-figures-list-item-title {
-                        color: #315EFD;
+                        color: #315efd;
                     }
                 }
             }
 
-            &.purple {
+            &.block-statistics-figures-list-item-purple {
                 .block-statistics-figures-list-item-main {
                     .block-statistics-figures-list-item-title {
-                        color: #760DC9;
+                        color: #760dc9;
                     }
                 }
             }
 
-            &.blue-light {
+            &.block-statistics-figures-list-item-blue-light {
                 .block-statistics-figures-list-item-main {
                     .block-statistics-figures-list-item-title {
-                        color: #0071B8;
+                        color: #0071b8;
                     }
                 }
             }
         }
     }
 
+    @media screen and (max-width: 1600px) {
+        .block-statistics-main-info {
+            gap: 60px;
+
+            .block-statistics-main-info-image {
+                flex: 0 0 460px;
+            }
+        }
+    }
+
     @media screen and (max-width: 1000px) {
+        margin: 0 0 30px;
+        gap: 50px;
+
         .block-statistics-main-info {
             flex-direction: column;
-            margin-bottom: 48px;
+            gap: 30px;
 
             .block-statistics-main-info-title {
                 font: 900 30px/40px var(--base-font);
-                margin-right: 0;
-                margin-bottom: 25px;
+            }
+
+            .block-statistics-main-info-image {
+                flex: 0 0 auto;
             }
         }
 
@@ -107,6 +134,10 @@
                 .block-statistics-figures-list-item-details {
                     width: 100%;
                     font: 400 14px/21px var(--base-font);
+                }
+
+                &.block-statistics-figures-list-item-purple {
+                    flex-direction: column-reverse;
                 }
             }
         }

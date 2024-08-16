@@ -4,9 +4,11 @@ import useAssetUrl from '../../../hooks/useAssetUrl';
 import LearnMore from '../../elements/LearnMore';
 import RolesSelector from './elements/RolesSelector';
 import RolesBanner from './elements/RolesBanner';
+import useSetMetaDescription from '../../../hooks/useSetMetaDescription';
 
 export default function RolesValidator() {
     const setTitle = useSetTitle();
+    const setMetaDescription = useSetMetaDescription();
 
     const assetUrl = useAssetUrl();
 
@@ -22,31 +24,28 @@ export default function RolesValidator() {
     );
 
     useEffect(() => {
-        setTitle('Validator role page.');
-    }, [setTitle]);
+        setTitle('Platform voor Beoordelaars | Efficiënt beheer van aanvragen');
+        setMetaDescription(
+            'Het Forus-platform faciliteert beoordelaars bij het controleren van deelnemersgegevens en het goedkeuren of afwijzen van aanvragen.',
+        );
+    }, [setMetaDescription, setTitle]);
 
     return (
         <Fragment>
-            <div className="wrapper hide-sm">
-                <RolesBanner type={'validator'} title={bannerTitle} description={bannerDescription} />
-            </div>
-
-            <div className="show-sm">
-                <RolesBanner type={'validator'} title={bannerTitle} description={bannerDescription} />
-            </div>
+            <RolesBanner type={'validator'} title={bannerTitle} description={bannerDescription} />
 
             <div className="main-content">
                 <div
                     className="background-overlay hide-sm"
-                    style={{ backgroundImage: 'url("./assets/img/background-validator.png")' }}
+                    style={{ backgroundImage: 'url("./assets/img/background-validator.svg")' }}
                 />
 
                 <div className="wrapper">
                     <RolesSelector activeType={'validator'} />
 
-                    <div className="section section-overview">
-                        <div className="section-title section-title-sm">Functionaliteiten en overzicht</div>
-                        <div className="section-separator">
+                    <div className="block block-text block-text-overview">
+                        <div className="block-text-title block-text-title-sm">Functionaliteiten en overzicht</div>
+                        <div className="block-text-separator">
                             <div className="line" />
                         </div>
                     </div>

@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import useAssetUrl from '../../../../hooks/useAssetUrl';
+import classNames from 'classnames';
 
 export default function RolesBanner({
     type,
@@ -8,7 +9,7 @@ export default function RolesBanner({
     showActions = true,
     showIcon = true,
 }: {
-    type: string;
+    type: 'requester' | 'sponsor' | 'provider' | 'validator' | 'main';
     title: string;
     description: string;
     showActions?: boolean;
@@ -30,38 +31,40 @@ export default function RolesBanner({
     }, [type]);
 
     return (
-        <div className="section section-banner-right">
-            <div className="section-main">
-                {showIcon && (
-                    <div className="section-icon">
-                        <img
-                            src={assetUrl(`/assets/img/icons-roles/selector/${type}-active.svg`)}
-                            alt={`Icoon van de ${iconTypeText}rol in het Forus-systeem`}
-                        />
-                    </div>
-                )}
-                <h2 className="section-title">{title}</h2>
-                <div className="section-description section-description-sm">{description}</div>
+        <div
+            className={classNames(
+                'block',
+                'block-role-banner',
+                type === 'requester' && 'block-role-banner-requester',
+                type === 'sponsor' && 'block-role-banner-sponsor',
+                type === 'provider' && 'block-role-banner-provider',
+                type === 'validator' && 'block-role-banner-validator',
+            )}>
+            <div className="banner-content">
+                <div className="banner-info">
+                    {showIcon && (
+                        <div className="banner-icon">
+                            <img
+                                src={assetUrl(`/assets/img/icons-roles/selector/${type}-active.svg`)}
+                                alt={`Icoon van de ${iconTypeText}rol in het Forus-systeem`}
+                            />
+                        </div>
+                    )}
+                    <h2 className="banner-title">{title}</h2>
+                    <div className="banner-description banner-description-sm">{description}</div>
 
-                {showActions && (
-                    <div className="button-group">
-                        <div className="button button-primary">Gratis demo</div>
-                        <div className="button button-dark">Lees ons verhaal</div>
-                    </div>
-                )}
+                    {showActions && (
+                        <div className="banner-actions">
+                            <div className="button button-primary">Gratis demo</div>
+                            <div className="button button-dark">Lees ons verhaal</div>
+                        </div>
+                    )}
+                </div>
             </div>
 
-            <div className="section-banner">
-                <img
-                    className="hide-sm"
-                    src={assetUrl(`/assets/img/roles-${type}-banner.png`)}
-                    alt={`${type} role banner`}
-                />
-                <img
-                    className="show-sm"
-                    src={assetUrl(`/assets/img/roles-${type}-banner-mobile.jpg`)}
-                    alt={`${type} role banner`}
-                />
+            <div className="banner-media">
+                <div className="banner-media-overlay" />
+                <div className="banner-media-image" />
             </div>
         </div>
     );

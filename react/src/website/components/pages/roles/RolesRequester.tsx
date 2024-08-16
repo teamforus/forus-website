@@ -4,46 +4,49 @@ import useAssetUrl from '../../../hooks/useAssetUrl';
 import LearnMore from '../../elements/LearnMore';
 import RolesSelector from './elements/RolesSelector';
 import RolesBanner from './elements/RolesBanner';
+import useSetMetaDescription from '../../../hooks/useSetMetaDescription';
 
 export default function RolesRequester() {
     const setTitle = useSetTitle();
     const assetUrl = useAssetUrl();
+    const setMetaDescription = useSetMetaDescription();
 
     const [bannerTitle] = useState('Aanvrager /Deelnemer');
     const [bannerDescription] = useState(
         [
-            'Binnen het Forus-systeem wordt iemand die een aanvraag voor een regeling indient, gezien als',
-            'een &amp aanvrager &amp. Zodra deze aanvraag is goedgekeurd, verandert de status van deze',
-            'persoon in het systeem naar &amp deelnemer &amp.',
+            "Binnen het Forus-systeem wordt iemand die een aanvraag voor een regeling indient, gezien als een 'aanvrager'.",
+            "Zodra deze aanvraag is goedgekeurd, verandert de status van deze persoon in het systeem naar 'deelnemer'.",
         ].join(''),
     );
 
     useEffect(() => {
-        setTitle('Requester role page.');
-    }, [setTitle]);
+        setTitle('Platform voor Deelnemers | Laagdrempelige toegang tot hulp');
+        setMetaDescription(
+            'Met het Forus-platform krijgen deelnemers makkelijk en snel toegang tot de hulp die ze nodig hebben.',
+        );
+    }, [setMetaDescription, setTitle]);
 
     return (
         <Fragment>
-            <div className="wrapper hide-sm">
-                <RolesBanner type={'requester'} title={bannerTitle} description={bannerDescription} />
-            </div>
-
-            <div className="show-sm">
-                <RolesBanner type={'requester'} title={bannerTitle} description={bannerDescription} />
-            </div>
+            <RolesBanner type={'requester'} title={bannerTitle} description={bannerDescription} />
 
             <div className="main-content">
                 <div
                     className="background-overlay hide-sm"
-                    style={{ backgroundImage: 'url("./assets/img/background-requester.png")' }}
+                    style={{ backgroundImage: 'url("./assets/img/background-requester.svg")' }}
                 />
 
                 <div className="wrapper">
                     <RolesSelector activeType={'requester'} />
 
-                    <div className="section section-overview">
-                        <div className="section-title section-title-sm text-left">Functionaliteiten en overzicht</div>
-                        <div className="section-description text-left">
+                    <div className="block block-text block-text-overview">
+                        <div className="block-text-title block-text-title-sm text-left">
+                            Functionaliteiten en overzicht
+                        </div>
+                        <div className="block-text-separator">
+                            <div className="line" />
+                        </div>
+                        <div className="block-text-description text-left">
                             Mensen raken door de vele initiatieven, zoals tegemoetkomingen en regelingen, het overzicht
                             kwijt. Ingewikkelde aanvraagprocedures leiden vaak tot stress en onnodig niet-gebruik van
                             deze voorzieningen.
@@ -166,7 +169,7 @@ export default function RolesRequester() {
                                 <img src={assetUrl('/assets/img/role-requester/requester-6.jpg')} alt="" />
                             </div>
                         </div>
-                        <div className="block-image-list-left">
+                        <div className="block-image-list-right">
                             <div className="block-with-image-image">
                                 <img src={assetUrl('/assets/img/role-requester/requester-1.jpg')} alt="" />
                             </div>

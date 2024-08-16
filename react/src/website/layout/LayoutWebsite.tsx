@@ -10,6 +10,7 @@ import useAppConfigs from '../hooks/useAppConfigs';
 import LayoutFooter from './elements/LayoutFooter';
 import LayoutHeader from './elements/LayoutHeader';
 import useActiveMenuDropdown from '../hooks/useActiveMenuDropdown';
+import UserDropdown from '../components/elements/UserDropdown';
 
 export const LayoutWebsite = ({ children }: { children: React.ReactElement }) => {
     const { route } = useStateRoutes();
@@ -57,7 +58,6 @@ export const LayoutWebsite = ({ children }: { children: React.ReactElement }) =>
                     <LayoutHeader />
                     <div className="layout-body" ref={bodyRef}>
                         {children}
-                        {activeMenuDropdown && <div className="layout-overlay" />}
                     </div>
                     <div ref={footerRef}>
                         <LayoutFooter />
@@ -67,6 +67,7 @@ export const LayoutWebsite = ({ children }: { children: React.ReactElement }) =>
 
             <Modals />
             <PushNotifications group={'default'} />
+            <UserDropdown />
         </div>
     );
 };

@@ -18,8 +18,9 @@
 @import 'components/label';
 @import 'components/modals';
 @import 'components/layout';
-@import 'components/section';
 
+@import "blocks/block-main-banner";
+@import "blocks/block-dashed-separator";
 @import "blocks/block-page-list";
 @import "blocks/block-project";
 @import "blocks/block-social-impact";
@@ -43,8 +44,9 @@
 @import "blocks/block-image-list";
 @import "blocks/block-overview-list";
 @import "blocks/block-roles-selector";
-@import "blocks/block-basic-functions-banner";
+@import "blocks/block-role-banner";
 @import "blocks/block-text";
+@import "blocks/block-basic-functions-banner";
 @import "blocks/block-label-tabs";
 @import "blocks/block-with-columns";
 @import "blocks/block-app-instructions";

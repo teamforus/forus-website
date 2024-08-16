@@ -4,9 +4,11 @@ import useAssetUrl from '../../../hooks/useAssetUrl';
 import LearnMore from '../../elements/LearnMore';
 import RolesSelector from './elements/RolesSelector';
 import RolesBanner from './elements/RolesBanner';
+import useSetMetaDescription from '../../../hooks/useSetMetaDescription';
 
 export default function RolesSponsor() {
     const setTitle = useSetTitle();
+    const setMetaDescription = useSetMetaDescription();
 
     const assetUrl = useAssetUrl();
 
@@ -22,30 +24,32 @@ export default function RolesSponsor() {
     );
 
     useEffect(() => {
-        setTitle('Sponsor role page.');
-    }, [setTitle]);
+        setTitle('Platform voor Sponsors | Effectieve uitgifte van regelingen');
+        setMetaDescription(
+            'Het Forus platform is zorgvuldig ontworpen om het volledige proces van uitgifte van sociale regelingen te ondersteunen.',
+        );
+    }, [setMetaDescription, setTitle]);
 
     return (
         <Fragment>
-            <div className="wrapper hide-sm">
-                <RolesBanner type={'sponsor'} title={bannerTitle} description={bannerDescription} />
-            </div>
-
-            <div className="show-sm">
-                <RolesBanner type={'sponsor'} title={bannerTitle} description={bannerDescription} />
-            </div>
+            <RolesBanner type={'sponsor'} title={bannerTitle} description={bannerDescription} />
 
             <div className="main-content">
                 <div
                     className="background-overlay hide-sm"
-                    style={{ backgroundImage: 'url("./assets/img/background-sponsor.png")' }}
+                    style={{ backgroundImage: 'url("./assets/img/background-sponsor.svg")' }}
                 />
 
                 <div className="wrapper">
                     <RolesSelector activeType={'sponsor'} />
 
-                    <div className="section section-overview">
-                        <div className="section-title section-title-sm text-left">Functionaliteiten en overzicht</div>
+                    <div className="block block-text block-text-overview">
+                        <div className="block-text-title block-text-title-sm text-left">
+                            Functionaliteiten en overzicht
+                        </div>
+                        <div className="block-text-separator">
+                            <div className="line" />
+                        </div>
                     </div>
                 </div>
 
@@ -200,7 +204,7 @@ export default function RolesSponsor() {
                                 </div>
                             </div>
                         </div>
-                        <div className="block-image-list-left">
+                        <div className="block-image-list-right">
                             <div className="block-with-image-info">
                                 <div className="block-with-image-label block-with-image-label-sm">Stap 1</div>
                                 <div className="block-with-image-title">Oriëntatie en onderzoek</div>

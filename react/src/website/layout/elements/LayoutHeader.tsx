@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { Fragment, useState } from 'react';
 import useAppConfigs from '../../hooks/useAppConfigs';
 import useAssetUrl from '../../hooks/useAssetUrl';
 import useAuthIdentity from '../../hooks/useAuthIdentity';
@@ -6,35 +6,29 @@ import classNames from 'classnames';
 import useSetActiveMenuDropdown from '../../hooks/useSetActiveMenuDropdown';
 
 import StateNavLink from '../../modules/state_router/StateNavLink';
-import IconSponsor from '../../../../assets/forus-website/resources/_website-common/assets/img/header-menu/sponsor-icon.svg';
-import IconProvider from '../../../../assets/forus-website/resources/_website-common/assets/img/header-menu/provider-icon.svg';
-import IconValidator from '../../../../assets/forus-website/resources/_website-common/assets/img/header-menu/validator-icon.svg';
-import { useLocation } from 'react-router-dom';
 import DropdownPlatform from './DropdownPlatform';
 import DropdownAbout from './DropdownAbout';
 import useActiveMenuDropdown from '../../hooks/useActiveMenuDropdown';
 import HelpCenter from '../../components/elements/HelpCenter';
 import { useNavigateState } from '../../modules/state_router/Router';
+import UserDropdown from '../../components/elements/UserDropdown';
+import useUserAuthDropdown from '../../hooks/useUserAuthDropdown';
+import useSetUserAuthDropdown from '../../hooks/useSetUserAuthDropdown';
 
 export default function LayoutHeader() {
     const authIdentity = useAuthIdentity();
     const appConfigs = useAppConfigs();
 
-    const location = useLocation();
-
     const assetUrl = useAssetUrl();
     const navigateState = useNavigateState();
     const activeMenuDropdown = useActiveMenuDropdown();
     const setActiveMenuDropdown = useSetActiveMenuDropdown();
+    const showUserAuthDropdown = useUserAuthDropdown();
+    const setShowUserAuthDropdown = useSetUserAuthDropdown();
 
-    const [showMenu, setShowMenu] = useState(true);
     const [showMobileMenu, setShowMobileMenu] = useState(false);
     const [shownMenuGroup, setShownMenuGroup] = useState('home');
     const [shownSubMenuGroup, setShownSubMenuGroup] = useState('basic-functions');
-
-    useEffect(() => {
-        setShowMenu(false);
-    }, [location]);
 
     if (!appConfigs) {
         return null;
@@ -81,8 +75,8 @@ export default function LayoutHeader() {
                     </div>
                     {authIdentity ? (
                         <div
-                            className={classNames('layout-header-auth clickable', showMenu && 'active')}
-                            onClick={() => setShowMenu(!showMenu)}>
+                            className={classNames('layout-header-auth clickable', showUserAuthDropdown && 'active')}
+                            onClick={() => setShowUserAuthDropdown(!showUserAuthDropdown)}>
                             <div className="layout-header-auth-content">
                                 <div className="layout-header-auth-details">
                                     <div className="layout-header-auth-details-identifier">
@@ -97,46 +91,7 @@ export default function LayoutHeader() {
                             <div className="layout-header-auth-toggle">
                                 <em className="mdi mdi-menu-down" />
                             </div>
-                            {showMenu && (
-                                <div className="layout-header-auth-menu" onClick={(e) => e.stopPropagation()}>
-                                    {appConfigs.fronts?.url_sponsor && (
-                                        <a
-                                            className="layout-header-auth-menu-item"
-                                            href={appConfigs.fronts?.url_sponsor}
-                                            onClick={() => setShowMenu(false)}
-                                            target={'_blank'}
-                                            rel="noreferrer">
-                                            <IconSponsor />
-                                            Sponsor
-                                        </a>
-                                    )}
-                                    {appConfigs.fronts?.url_provider && (
-                                        <a
-                                            className="layout-header-auth-menu-item"
-                                            href={appConfigs.fronts?.url_provider}
-                                            onClick={() => setShowMenu(false)}
-                                            target={'_blank'}
-                                            rel="noreferrer">
-                                            <IconProvider /> Aanbieder
-                                        </a>
-                                    )}
-                                    {appConfigs.fronts?.url_validator && (
-                                        <a
-                                            className="layout-header-auth-menu-item"
-                                            href={appConfigs.fronts?.url_validator}
-                                            onClick={() => setShowMenu(false)}
-                                            target={'_blank'}
-                                            rel="noreferrer">
-                                            <IconValidator /> Beoordelaar
-                                        </a>
-                                    )}
-                                    <div className="layout-header-auth-menu-separator" />
-                                    <StateNavLink name={'sign-out'} className="layout-header-auth-menu-item">
-                                        <em className="mdi mdi-logout" />
-                                        Uitloggen
-                                    </StateNavLink>
-                                </div>
-                            )}
+                            {showUserAuthDropdown && <UserDropdown />}
                         </div>
                     ) : (
                         <div className="layout-header-auth">
@@ -156,7 +111,13 @@ export default function LayoutHeader() {
                     </StateNavLink>
                     <div className="layout-header-menu">
                         {authIdentity ? (
-                            <span className={`layout-header-identifier`}>{authIdentity?.email}</span>
+                            <Fragment>
+                                <span
+                                    className={`layout-header-identifier`}
+                                    onClick={() => setShowUserAuthDropdown(!showUserAuthDropdown)}>
+                                    {authIdentity?.email}
+                                </span>
+                            </Fragment>
                         ) : (
                             <Fragment>
                                 <img
@@ -172,7 +133,7 @@ export default function LayoutHeader() {
                         {showMobileMenu ? (
                             <em className="mdi mdi-close menu-icon-close" onClick={() => setShowMobileMenu(false)} />
                         ) : (
-                            <em className="mdi mdi-menu" onClick={() => setShowMobileMenu(true)} />
+                            <em className="mdi mdi-menu menu-icon-toggle" onClick={() => setShowMobileMenu(true)} />
                         )}
                     </div>
                 </div>
@@ -181,7 +142,9 @@ export default function LayoutHeader() {
             {showMobileMenu && (
                 <div className="block block-mobile-menu show-sm">
                     <div className={`mobile-menu-group active`}>
-                        <div className="mobile-menu-group-header">Home</div>
+                        <StateNavLink name="home" className="mobile-menu-group-header">
+                            Home
+                        </StateNavLink>
                     </div>
 
                     <div
@@ -466,7 +429,9 @@ export default function LayoutHeader() {
                     </div>
 
                     <div className={`mobile-menu-group`}>
-                        <div className="mobile-menu-group-header">Contact</div>
+                        <StateNavLink name="contacts" className={`mobile-menu-group-header`}>
+                            Contact
+                        </StateNavLink>
                     </div>
                 </div>
             )}

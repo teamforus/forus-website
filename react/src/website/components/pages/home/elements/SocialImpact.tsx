@@ -9,17 +9,22 @@ export default function SocialImpact() {
         <div className="block block-social-impact">
             <div className="block-social-impact-main-info">
                 <div className="block-social-impact-label">Wat we doen</div>
-                <div className="block-social-impact-title">Samenwerken aan het maximaliseren van sociale impact</div>
-                <div className="block-social-impact-description">
-                    Forus biedt een gebruiksvriendelijk online platform waarmee mensen en organisaties kunnen
-                    samenwerken en bijdragen aan sociale initiatieven. Ons platform vergemakkelijkt de samenwerking
-                    tussen overheidsorganisaties, goede doelen organisaties, bedrijven en individuen, zodat ze een
-                    positieve en meetbare impact kunnen hebben.
-                    <br />
-                    Het platform is gebaseerd op een vier-rollen model waarbij sponsors middelen kunnen doneren,
-                    aanvragers aanvragen kunnen indienen, beoordelaars gegevens kunnen verifiëren, en aanbieders
-                    producten of diensten kunnen leveren.
+                <div className="block-social-impact-details">
+                    <div className="block-social-impact-title">
+                        Samenwerken aan het maximaliseren van sociale impact
+                    </div>
+                    <div className="block-social-impact-description">
+                        Forus biedt een gebruiksvriendelijk online platform waarmee mensen en organisaties kunnen
+                        samenwerken en bijdragen aan sociale initiatieven. Ons platform vergemakkelijkt de samenwerking
+                        tussen overheidsorganisaties, goede doelen organisaties, bedrijven en individuen, zodat ze een
+                        positieve en meetbare impact kunnen hebben.
+                        <br />
+                        Het platform is gebaseerd op een vier-rollen model waarbij sponsors middelen kunnen doneren,
+                        aanvragers aanvragen kunnen indienen, beoordelaars gegevens kunnen verifiëren, en aanbieders
+                        producten of diensten kunnen leveren.
+                    </div>
                 </div>
+
                 <div className="block-social-impact-actions">
                     <div className="button button-primary">Meer informatie over de vier rollen</div>
                 </div>
