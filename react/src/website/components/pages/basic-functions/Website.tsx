@@ -4,9 +4,11 @@ import useAssetUrl from '../../../hooks/useAssetUrl';
 import PageSelector from './elements/PageSelector';
 import Banner from './elements/Banner';
 import SliderDetailed from '../../elements/SliderDetailed';
+import useSetMetaDescription from '../../../hooks/useSetMetaDescription';
 
 export default function Website() {
     const setTitle = useSetTitle();
+    const setMetaDescription = useSetMetaDescription();
 
     const assetUrl = useAssetUrl();
 
@@ -58,7 +60,13 @@ export default function Website() {
 
     useEffect(() => {
         setTitle('Een website in huisstijl van uw organisatie | Forus');
-    }, [setTitle]);
+        setMetaDescription(
+            [
+                'Op het Forus-platform: creëer een website voor deelnemers van uw regeling. ',
+                'Ontwerp in huisstijl van uw organisatie, zelfstandig beheerbaar.',
+            ].join(''),
+        );
+    }, [setMetaDescription, setTitle]);
 
     return (
         <Fragment>

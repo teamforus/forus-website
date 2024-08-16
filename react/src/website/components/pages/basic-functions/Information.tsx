@@ -5,9 +5,11 @@ import PageSelector from './elements/PageSelector';
 import Banner from './elements/Banner';
 import BlockLabelsInformationGeneral from './elements/information/BlockLabelsInformationGeneral';
 import BlockLabelsFinancialDashboard from './elements/information/BlockLabelsFinancialDashboard';
+import useSetMetaDescription from '../../../hooks/useSetMetaDescription';
 
 export default function Information() {
     const setTitle = useSetTitle();
+    const setMetaDescription = useSetMetaDescription();
 
     const assetUrl = useAssetUrl();
 
@@ -22,7 +24,13 @@ export default function Information() {
 
     useEffect(() => {
         setTitle('Real-time managementinformatie: Impact monitoren en evalueren');
-    }, [setTitle]);
+        setMetaDescription(
+            [
+                'Monitor en evalueer de impact van uw regelingen met real-time statistieken. ',
+                'Verkrijg waardevolle inzichten in hoe de bijdragen van uw organisatie worden besteed.',
+            ].join(''),
+        );
+    }, [setMetaDescription, setTitle]);
 
     return (
         <Fragment>

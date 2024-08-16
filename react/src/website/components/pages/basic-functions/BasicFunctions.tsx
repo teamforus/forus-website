@@ -3,10 +3,12 @@ import useSetTitle from '../../../hooks/useSetTitle';
 import useAssetUrl from '../../../hooks/useAssetUrl';
 import StateNavLink from '../../../modules/state_router/StateNavLink';
 import Banner from './elements/Banner';
+import useSetMetaDescription from '../../../hooks/useSetMetaDescription';
 
 export default function BasicFunctions() {
     const setTitle = useSetTitle();
     const assetUrl = useAssetUrl();
+    const setMetaDescription = useSetMetaDescription();
 
     const [bannerTitle] = useState('Leer meer over ons platform');
     const [bannerDescription] = useState(
@@ -15,7 +17,13 @@ export default function BasicFunctions() {
 
     useEffect(() => {
         setTitle('Leer meer over het Forus-plaform | Basisfuncties');
-    }, [setTitle]);
+        setMetaDescription(
+            [
+                'Ontdek de basisfuncties van het Forus-platform en hoe ',
+                'ze waardevol voor uw organisatie kunnen zijn bij het beheren van sociale regelingen.',
+            ].join(''),
+        );
+    }, [setMetaDescription, setTitle]);
 
     return (
         <Fragment>

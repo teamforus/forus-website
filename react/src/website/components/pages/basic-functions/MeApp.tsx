@@ -3,9 +3,11 @@ import useSetTitle from '../../../hooks/useSetTitle';
 import useAssetUrl from '../../../hooks/useAssetUrl';
 import PageSelector from './elements/PageSelector';
 import Banner from './elements/Banner';
+import useSetMetaDescription from '../../../hooks/useSetMetaDescription';
 
 export default function MeApp() {
     const setTitle = useSetTitle();
+    const setMetaDescription = useSetMetaDescription();
 
     const assetUrl = useAssetUrl();
 
@@ -20,8 +22,14 @@ export default function MeApp() {
     const [activeTab, setActiveTab] = useState('attendees');
 
     useEffect(() => {
-        setTitle('Me-App page.');
-    }, [setTitle]);
+        setTitle('Me-app | Digitale portemonnee en kassa in één\n');
+        setMetaDescription(
+            [
+                'De Me-app fungeert voor deelnemers als een tool om hun tegoeden te beheren, ',
+                'terwijl het aanbieders mogelijk maakt betalingen te verrichten.',
+            ].join(''),
+        );
+    }, [setMetaDescription, setTitle]);
 
     return (
         <Fragment>

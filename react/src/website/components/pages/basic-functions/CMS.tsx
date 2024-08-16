@@ -7,9 +7,11 @@ import SliderCompact from '../../elements/SliderCompact';
 import BlockLabelsGeneral from './elements/cms/BlockLabelsGeneral';
 import BlockLabelsBlockManagement from './elements/cms/BlockLabelsBlockManagement';
 import BlockLabelsFAQ from './elements/cms/BlockLabelsFAQ';
+import useSetMetaDescription from '../../../hooks/useSetMetaDescription';
 
 export default function CMS() {
     const setTitle = useSetTitle();
+    const setMetaDescription = useSetMetaDescription();
 
     const assetUrl = useAssetUrl();
 
@@ -62,7 +64,13 @@ export default function CMS() {
 
     useEffect(() => {
         setTitle('Krachtig CMS: Personaliseer uw website | het Forus-platform');
-    }, [setTitle]);
+        setMetaDescription(
+            [
+                'Personaliseer uw website voor sociale regelingen met ons flexibele CMS. ',
+                'Pas content aan, beheer blokken en voeg FAQ&apos;s toe voor een betere gebruikerservaring.',
+            ].join(''),
+        );
+    }, [setMetaDescription, setTitle]);
 
     return (
         <Fragment>

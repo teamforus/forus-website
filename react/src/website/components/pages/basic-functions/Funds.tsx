@@ -6,9 +6,11 @@ import Banner from './elements/Banner';
 import BlockLabelsFundGeneral from './elements/funds/BlockLabelsFundGeneral';
 import StateNavLink from '../../../modules/state_router/StateNavLink';
 import BlockLabelsFAQ from './elements/funds/BlockLabelsFaq';
+import useSetMetaDescription from '../../../hooks/useSetMetaDescription';
 
 export default function Funds() {
     const setTitle = useSetTitle();
+    const setMetaDescription = useSetMetaDescription();
 
     const assetUrl = useAssetUrl();
 
@@ -27,7 +29,13 @@ export default function Funds() {
 
     useEffect(() => {
         setTitle('Fondsen opzetten en beheren: eenvoudig en effectief | Forus');
-    }, [setTitle]);
+        setMetaDescription(
+            [
+                'Ontdek een platform voor het opzetten en beheren van sociale regelingen. ',
+                'Creëer fondsen die bestaan uit tegoeden specifiek voor geselecteerde doelgroepen.',
+            ].join(''),
+        );
+    }, [setMetaDescription, setTitle]);
 
     return (
         <Fragment>
