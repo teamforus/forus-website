@@ -9,6 +9,7 @@ import { useOrganizationService } from '../../../services/OrganizationService';
 import { ResponseError } from '../../../props/ApiResponses';
 import SelectControlOptions from '../../elements/select-control/templates/SelectControlOptions';
 import SelectControl from '../../elements/select-control/SelectControl';
+import Tooltip from '../../elements/tooltip/Tooltip';
 
 export default function TransactionSettings() {
     const activeOrganization = useActiveOrganization();
@@ -77,8 +78,8 @@ export default function TransactionSettings() {
 
                     <div className="card-section card-section-primary">
                         <div className="row">
-                            <div className="col col-xs-12 col-md-12">
-                                <div className="form-group form-group-inline form-group-inline-xl">
+                            <div className="col col-xs-5 col-md-5">
+                                <div className="form-group form-group-inline form-group-inline-xl tooltipped">
                                     <label className="form-label">Select data</label>
                                     <div className="form-offset flex flex-vertical">
                                         <CheckboxControl
@@ -99,30 +100,66 @@ export default function TransactionSettings() {
                                             checked={!!form.values?.bank_transaction_time}
                                             onChange={(e) => form.update({ bank_transaction_time: e.target.checked })}
                                         />
-                                        <CheckboxControl
-                                            id="bank_reservation_number"
-                                            title="Reserveringsnummer"
-                                            checked={!!form.values?.bank_reservation_number}
-                                            onChange={(e) => form.update({ bank_reservation_number: e.target.checked })}
-                                        />
-                                        <CheckboxControl
-                                            id="bank_branch_number"
-                                            title="Vestigingsnummer"
-                                            checked={!!form.values?.bank_branch_number}
-                                            onChange={(e) => form.update({ bank_branch_number: e.target.checked })}
-                                        />
-                                        <CheckboxControl
-                                            id="bank_branch_id"
-                                            title="Vestiging ID"
-                                            checked={!!form.values?.bank_branch_id}
-                                            onChange={(e) => form.update({ bank_branch_id: e.target.checked })}
-                                        />
-                                        <CheckboxControl
-                                            id="bank_branch_name"
-                                            title="Vestigingsnaam"
-                                            checked={!!form.values?.bank_branch_name}
-                                            onChange={(e) => form.update({ bank_branch_name: e.target.checked })}
-                                        />
+                                        <div className="form-group form-group-last tooltipped">
+                                            <CheckboxControl
+                                                id="bank_reservation_number"
+                                                title="Reserveringsnummer"
+                                                checked={!!form.values?.bank_reservation_number}
+                                                onChange={(e) =>
+                                                    form.update({ bank_reservation_number: e.target.checked })
+                                                }
+                                            />
+                                            <Tooltip
+                                                text={
+                                                    'Reserveringsnummer wordt alleen weergegeven wanneer de transactie is gestart via een reservering.'
+                                                }
+                                            />
+                                        </div>
+                                        <div className="form-group form-group-last tooltipped">
+                                            <CheckboxControl
+                                                id="bank_branch_number"
+                                                title="Vestigingsnummer"
+                                                checked={!!form.values?.bank_branch_number}
+                                                onChange={(e) => form.update({ bank_branch_number: e.target.checked })}
+                                            />
+                                            <Tooltip
+                                                text={
+                                                    'Vestigingsnummer wordt alleen weergegeven wanneer:<br>' +
+                                                    '<ul><li>Het is geconfigureerd in de instellingen van de vestiging (op de <strong>Vestigingen</strong> pagina).</li>' +
+                                                    '<li>Een vestiging is geselecteerd voor elke medewerker (op de <strong>Medewerkers</strong> pagina).</li></ul>'
+                                                }
+                                            />
+                                        </div>
+                                        <div className="form-group form-group-last tooltipped">
+                                            <CheckboxControl
+                                                id="bank_branch_id"
+                                                title="Vestiging ID"
+                                                checked={!!form.values?.bank_branch_id}
+                                                onChange={(e) => form.update({ bank_branch_id: e.target.checked })}
+                                            />
+                                            <Tooltip
+                                                text={
+                                                    'Vestiging ID wordt alleen weergegeven wanneer:<br>' +
+                                                    '<ul><li>Het is geconfigureerd in de instellingen van de vestiging (op de <strong>Vestigingen</strong> pagina).</li>' +
+                                                    '<li>Een vestiging is geselecteerd voor elke medewerker (op de <strong>Medewerkers</strong> pagina).</li></ul>'
+                                                }
+                                            />
+                                        </div>
+                                        <div className="form-group form-group-last tooltipped">
+                                            <CheckboxControl
+                                                id="bank_branch_name"
+                                                title="Vestigingsnaam"
+                                                checked={!!form.values?.bank_branch_name}
+                                                onChange={(e) => form.update({ bank_branch_name: e.target.checked })}
+                                            />
+                                            <Tooltip
+                                                text={
+                                                    'Vestigingsnaam wordt alleen weergegeven wanneer:<br>' +
+                                                    '<ul><li>Het is geconfigureerd in de instellingen van de vestiging (op de <strong>Vestigingen</strong> pagina).</li>' +
+                                                    '<li>Een vestiging is geselecteerd voor elke medewerker (op de <strong>Medewerkers</strong> pagina).</li></ul>'
+                                                }
+                                            />
+                                        </div>
                                         <CheckboxControl
                                             id="bank_fund_name"
                                             title="Fondsnaam"
@@ -137,7 +174,9 @@ export default function TransactionSettings() {
                                         />
                                     </div>
                                 </div>
+                            </div>
 
+                            <div className="col col-xs-12 col-md-12">
                                 <div className="form-group form-group-inline form-group-inline-xl">
                                     <label className="form-label">Scheidingsteken</label>
                                     <div className="form-offset flex flex-vertical">

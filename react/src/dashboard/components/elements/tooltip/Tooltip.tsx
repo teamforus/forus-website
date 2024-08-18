@@ -46,7 +46,7 @@ export default function Tooltip({
             </div>
             <div className={'tooltip'}>
                 {[].concat(text).map((line, index) => (
-                    <div key={index}>{line}</div>
+                    <div key={index} dangerouslySetInnerHTML={{ __html: line }} />
                 ))}
             </div>
         </div>
