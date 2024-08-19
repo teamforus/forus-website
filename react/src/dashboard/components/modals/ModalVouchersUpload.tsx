@@ -898,7 +898,7 @@ export default function ModalVouchersUpload({
                                     {translate('modals.modal_voucher_create.labels.credit_type')}
                                 </div>
                                 <div className="form-offset">
-                                    <FormGroupInfo info={translate('csv_upload.tooltips.funds')}>
+                                    <FormGroupInfo info={translate('csv_upload.tooltips.type')}>
                                         <SelectControl
                                             value={type}
                                             propKey={'key'}

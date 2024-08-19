@@ -86,14 +86,13 @@ export default {
             'Een tegoed kan worden aangemaakt door een deelnemer zelf of door een medewerker.',
         ].join(''),
         type_voucher: [
-            'Lorem ipsum odor amet, consectetuer adipiscing elit.',
-            'At cursus duis, amet proin non scelerisque.',
-            'Praesent tristique consectetur diam tortor sit mauris nisi ad.',
+            'Bepaalt welk soort verstrekking is gedaan. ',
+            'Het bevat de waarde "aanbod" voor een specifieke QR-code voor een product of dienst, ',
+            'of "budget" voor een tegoed in de vorm van een QR-code dat onder bepaalde voorwaarden kan worden besteed.',
         ].join(''),
         type_credit: [
-            'At phasellus enim sapien aptent erat metus etiam.',
-            'Ac taciti lectus in tristique quis.',
-            'Nisi laoreet facilisis pellentesque laoreet habitant.',
+            'Geeft aan welke vorm van tegoed is verstrekt. Dit kan variëren van een QR-code voor een budget, ',
+            'tot een QR-code voor een specifiek aanbod, product, of dienst.',
         ].join(''),
         amount: [
             'Het totaal toegekende bedrag op dit tegoed. ',
