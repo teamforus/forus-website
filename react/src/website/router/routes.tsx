@@ -17,6 +17,7 @@ import CMS from '../components/pages/basic-functions/CMS';
 import Funds from '../components/pages/basic-functions/Funds';
 import Website from '../components/pages/basic-functions/Website';
 import Information from '../components/pages/basic-functions/Information';
+import Privacy from '../components/pages/privacy/Privacy';
 
 const router = new RouterBuilder();
 
@@ -115,8 +116,8 @@ router.state('contacts', <WIP />, {
     protected: false,
 });
 
-router.state('privacy', <WIP />, {
-    path: `/contacts`,
+router.state('privacy', <Privacy />, {
+    path: `/privacy`,
     protected: false,
 });
 
