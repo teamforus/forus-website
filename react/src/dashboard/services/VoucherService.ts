@@ -212,12 +212,12 @@ export class VoucherService<T = Voucher> {
             {
                 key: 'type_voucher',
                 label: 'vouchers.labels.type_voucher',
-                tooltip: { key: 'type_voucher', title: 'Type', description: 'vouchers.tooltips.type_voucher' },
+                tooltip: { key: 'type_voucher', title: 'Soort tegoed', description: 'vouchers.tooltips.type_voucher' },
             },
             {
                 key: 'type_credit',
                 label: 'vouchers.labels.type_credit',
-                tooltip: { key: 'type_credit', title: 'Soort tegoed', description: 'vouchers.tooltips.type_credit' },
+                tooltip: { key: 'type_credit', title: 'Tegoed waarde', description: 'vouchers.tooltips.type_credit' },
             },
             {
                 key: 'note',

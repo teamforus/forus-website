@@ -43,8 +43,8 @@ export default {
         expire_at: 'Geldig tot en met',
         in_use: 'In gebruik',
         has_payouts: 'Heeft uitbetalingen',
-        type_voucher: 'Type',
-        type_credit: 'Soort tegoed',
+        type_voucher: 'Soort tegoed',
+        type_credit: 'Tegoed waarde',
         product: 'Aanbod',
     },
     events: {
@@ -86,13 +86,12 @@ export default {
             'Een tegoed kan worden aangemaakt door een deelnemer zelf of door een medewerker.',
         ].join(''),
         type_voucher: [
-            'Bepaalt welk soort verstrekking is gedaan. ',
-            'Het bevat de waarde "aanbod" voor een specifieke QR-code voor een product of dienst, ',
-            'of "budget" voor een tegoed in de vorm van een QR-code dat onder bepaalde voorwaarden kan worden besteed.',
+            'Geeft aan welk type tegoed is verstrekt. ',
+            'Dit kan een Budget tegoed zijn met een bepaald bedrag of een Product tegoed met een specifiek product of dienst.',
         ].join(''),
         type_credit: [
-            'Geeft aan welke vorm van tegoed is verstrekt. Dit kan variëren van een QR-code voor een budget, ',
-            'tot een QR-code voor een specifiek aanbod, product, of dienst.',
+            'Geeft de waarde van het tegoed aan. ',
+            'Dit kan een bedrag zijn voor een Budget tegoed of een product of dienst, inclusief de bijbehorende aanbieder bij een Product tegoed.',
         ].join(''),
         amount: [
             'Het totaal toegekende bedrag op dit tegoed. ',
