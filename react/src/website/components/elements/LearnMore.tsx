@@ -5,11 +5,13 @@ export default function LearnMore({
     description,
     buttons,
     backgroundColor = '#E9F1FD',
+    hideAboutUsButton = false,
 }: {
     title: string;
     description?: string;
     buttons?: { title: string; type?: string }[];
     backgroundColor?: string;
+    hideAboutUsButton?: boolean;
 }) {
     return (
         <div className="block block-learn-more" style={{ backgroundColor: backgroundColor }}>
@@ -22,10 +24,12 @@ export default function LearnMore({
                 <div className="block-learn-more-actions">
                     <div className="button-group flex flex-vertical">
                         <div className="button button-primary text-center">Gratis demo aanvragen</div>
-                        <div className="button button-gray text-center hide-sm">
-                            Leer meer over ons platform
-                            <em className="mdi mdi-arrow-right icon-right" />
-                        </div>
+                        {!hideAboutUsButton && (
+                            <div className="button button-gray text-center hide-sm">
+                                Leer meer over ons platform
+                                <em className="mdi mdi-arrow-right icon-right" />
+                            </div>
+                        )}
                     </div>
                 </div>
             ) : (
