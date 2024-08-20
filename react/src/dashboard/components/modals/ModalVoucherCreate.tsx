@@ -62,8 +62,8 @@ export default function ModalVoucherCreate({
 
     const creditTypes = useMemo(
         () => [
-            { key: 'vouchers', name: 'Bedrag' },
-            { key: 'product_vouchers', name: 'Aanbod' },
+            { key: 'vouchers', name: 'Budget' },
+            { key: 'product_vouchers', name: 'Product' },
         ],
         [],
     );

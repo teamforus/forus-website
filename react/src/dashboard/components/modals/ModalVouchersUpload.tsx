@@ -110,8 +110,8 @@ export default function ModalVouchersUpload({
 
     const types = useMemo(
         () => [
-            { key: 'fund_voucher', name: 'Bedrag' },
-            { key: 'product_voucher', name: 'Aanbod' },
+            { key: 'fund_voucher', name: 'Budget' },
+            { key: 'product_voucher', name: 'Product' },
         ],
         [],
     );

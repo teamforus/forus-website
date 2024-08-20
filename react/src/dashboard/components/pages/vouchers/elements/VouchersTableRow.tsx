@@ -77,7 +77,7 @@ export default function VouchersTableRow({
 
             {columnKeys.includes('type_voucher') && (
                 <td>
-                    <div className="text-md text-muted-dark text-medium">{voucher.product ? 'Aaanbod' : 'Bedrag'}</div>
+                    <div className="text-md text-muted-dark text-medium">{voucher.product ? 'Product' : 'Budget'}</div>
                 </td>
             )}
 
