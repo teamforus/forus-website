@@ -1,0 +1,33 @@
+&.modal-bulk-upload {
+    .modal-window {
+        width: 760px;
+
+        .modal-header {
+            padding: 15px 20px;
+        }
+
+        .modal-body {
+            .block.block-csv {
+                background: none;
+
+                .csv-inner {
+                    padding: 75px 20px 20px;
+                    width: fit-content;
+                    background-position-y: 30px;
+
+                    .block.block-file {
+                        background: #fff;
+                    }
+                }
+            }
+        }
+    }
+
+    .modal-footer {
+        padding: 20px;
+
+        .flex-row {
+            width: 100%;
+        }
+    }
+}

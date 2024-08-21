@@ -399,7 +399,7 @@ export default function ModalVoucherTransactionsUpload({
 
     return (
         <div
-            className={`modal modal-animated ${modal.loading || hideModal ? 'modal-loading' : ''} ${className}`}
+            className={`modal modal-animated modal-bulk-upload ${modal.loading || hideModal ? 'modal-loading' : ''} ${className}`}
             data-dusk="modalTransactionUpload">
             <div className="modal-backdrop" onClick={closeModal} />
             <div className="modal-window">
@@ -417,7 +417,7 @@ export default function ModalVoucherTransactionsUpload({
                     <Fragment>
                         <div
                             ref={dropBlock}
-                            className="block block-csv condensed"
+                            className="block block-csv"
                             onDragLeave={(e) => {
                                 e?.preventDefault();
                                 dropBlock?.current?.classList.remove('on-dragover');
@@ -478,56 +478,51 @@ export default function ModalVoucherTransactionsUpload({
                                     </div>
                                 )}
 
-                                {((csvFile && progress < 2) || (progress == 1 && isValid)) && (
+                                {csvFile && progress < 2 && (
                                     <div className="csv-upload-actions">
-                                        {csvFile && progress < 2 && (
-                                            <Fragment>
-                                                <div
-                                                    className={classNames(`block block-file`, !isValid && 'has-error')}>
-                                                    <div className="file-icon">
-                                                        {isValid ? (
-                                                            <div className="mdi mdi-file-outline" />
-                                                        ) : (
-                                                            <div className="mdi mdi-close-circle" />
-                                                        )}
-                                                    </div>
-                                                    <div className="file-details">
-                                                        <div className="file-name">{csvFile.name}</div>
-                                                        <div className="file-size">{fileSize(csvFile.size)}</div>
-                                                    </div>
-                                                    <div className="file-remove mdi mdi-close" onClick={reset} />
+                                        <div className={classNames(`block block-file`, !isValid && 'has-error')}>
+                                            <div className="block-file-details">
+                                                <div className="file-icon">
+                                                    {isValid ? (
+                                                        <div className="mdi mdi-file-outline" />
+                                                    ) : (
+                                                        <div className="mdi mdi-close-circle" />
+                                                    )}
                                                 </div>
-
-                                                {!isValid && error && <div className="form-error">{error}</div>}
-                                            </Fragment>
-                                        )}
-
-                                        {progress == 1 && isValid && (
-                                            <div className="text-center">
-                                                {!loading && (
-                                                    <button
-                                                        className="button button-primary"
-                                                        onClick={uploadToServer}
-                                                        data-dusk="uploadFileButton">
-                                                        {translate('csv_upload.buttons.upload')}
-                                                    </button>
-                                                )}
+                                                <div className="file-details">
+                                                    <div className="file-name">{csvFile.name}</div>
+                                                    <div className="file-size">{fileSize(csvFile.size)}</div>
+                                                </div>
+                                                <div className="file-remove mdi mdi-close" onClick={reset} />
                                             </div>
-                                        )}
+                                        </div>
+
+                                        {!isValid && error && <div className="form-error">{error}</div>}
                                     </div>
                                 )}
                             </div>
                         </div>
                     </Fragment>
                 </div>
-                <div className="modal-footer text-center">
+
+                <div className="modal-footer">
                     <button
-                        className="button button-primary"
+                        className="button button-default"
                         onClick={closeModal}
                         disabled={loading}
                         id="close"
                         data-dusk="closeModalButton">
-                        {translate('modal_funds_add.buttons.close')}
+                        Annuleren
+                    </button>
+
+                    <div className="flex-grow" />
+
+                    <button
+                        className="button button-primary"
+                        disabled={loading || !(progress == 1 && isValid)}
+                        onClick={uploadToServer}
+                        data-dusk="uploadFileButton">
+                        {translate('csv_upload.buttons.upload')}
                     </button>
                 </div>
             </div>

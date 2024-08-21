@@ -854,7 +854,7 @@ export default function ModalVouchersUpload({
         <div
             className={classNames(
                 'modal',
-                step == STEP_SET_UP ? 'modal-md' : 'modal-lg',
+                step == STEP_SET_UP ? 'modal-md' : 'modal-lg modal-bulk-upload',
                 'modal-animated',
                 (modal.loading || hideModal) && 'modal-loading',
                 isDragOver && 'is-dragover',
@@ -915,7 +915,7 @@ export default function ModalVouchersUpload({
 
                     {step == STEP_UPLOAD && (
                         <div
-                            className="block block-csv condensed"
+                            className="block block-csv"
                             onDragOver={(e) => onDragEvent(e, true)}
                             onDragEnter={(e) => onDragEvent(e, true)}
                             onDragLeave={(e) => onDragEvent(e, false)}
@@ -983,22 +983,27 @@ export default function ModalVouchersUpload({
                                 {csvFile && csvProgress < 2 && (
                                     <div className="csv-upload-actions">
                                         <div className={classNames(`block block-file`, !csvIsValid && 'has-error')}>
-                                            <div className="file-icon">
-                                                {csvIsValid ? (
-                                                    <div className="mdi mdi-file-outline" />
-                                                ) : (
-                                                    <div className="mdi mdi-close-circle" />
-                                                )}
+                                            <div className="block-file-details">
+                                                <div className="file-icon">
+                                                    {csvIsValid ? (
+                                                        <div className="mdi mdi-file-outline" />
+                                                    ) : (
+                                                        <div className="mdi mdi-close-circle" />
+                                                    )}
+                                                </div>
+                                                <div className="file-details">
+                                                    <div className="file-name">{csvFile.name}</div>
+                                                    <div className="file-size">{fileSize(csvFile.size)}</div>
+                                                </div>
+                                                <div
+                                                    className="file-remove mdi mdi-close"
+                                                    onClick={() => reset(false)}
+                                                />
                                             </div>
-                                            <div className="file-details">
-                                                <div className="file-name">{csvFile.name}</div>
-                                                <div className="file-size">{fileSize(csvFile.size)}</div>
-                                            </div>
-                                            <div className="file-remove mdi mdi-close" onClick={() => reset(false)} />
                                         </div>
 
                                         {!csvIsValid && type == 'fund_voucher' && (
-                                            <Fragment>
+                                            <div className="text-left">
                                                 {csvErrors.csvHasBsnWhileNotAllowed && (
                                                     <div className="form-error">
                                                         BSN field is present while BSN is not enabled for the
@@ -1035,7 +1040,7 @@ export default function ModalVouchersUpload({
                                                         niet bij de door u geselecteerde organisatie.
                                                     </div>
                                                 )}
-                                            </Fragment>
+                                            </div>
                                         )}
 
                                         {!csvIsValid && type == 'product_voucher' && (
