@@ -801,11 +801,16 @@ export default function Transactions() {
                                             value={'fund_name'}
                                             filter={filter}
                                         />
-                                        <ThSortable
-                                            label={translate('transactions.labels.product_name')}
-                                            value={'product_name'}
-                                            filter={filter}
-                                        />
+                                        {isProvider && (
+                                            <ThSortable
+                                                label={translate('transactions.labels.product_name')}
+                                                value={'product_name'}
+                                                filter={filter}
+                                            />
+                                        )}
+                                        {isSponsor && (
+                                            <ThSortable label={translate('transactions.labels.payment_type')} />
+                                        )}
                                         {isSponsor && (
                                             <ThSortable
                                                 label={translate('transactions.labels.provider')}
@@ -924,13 +929,27 @@ export default function Transactions() {
                                             <td title={transaction.fund.name || ''}>
                                                 {strLimit(transaction.fund.name, 25)}
                                             </td>
-                                            <td title={transaction.product?.name || '-'}>
-                                                {transaction.product?.name ? (
-                                                    strLimit(transaction.product?.name || '', 25)
-                                                ) : (
-                                                    <div className={'text-muted'}>-</div>
-                                                )}
-                                            </td>
+                                            {isProvider && (
+                                                <td title={transaction.product?.name || '-'}>
+                                                    {transaction.product?.name ? (
+                                                        strLimit(transaction.product?.name || '', 25)
+                                                    ) : (
+                                                        <div className={'text-muted'}>-</div>
+                                                    )}
+                                                </td>
+                                            )}
+                                            {isSponsor && (
+                                                <td>
+                                                    <div className="text-medium text-primary">
+                                                        {transaction.payment_type_locale.title}
+                                                    </div>
+                                                    <div
+                                                        className="text-strong text-md text-muted-dark"
+                                                        title={transaction.payment_type_locale.subtitle || ''}>
+                                                        {strLimit(transaction.payment_type_locale.subtitle)}
+                                                    </div>
+                                                </td>
+                                            )}
                                             {isSponsor && (
                                                 <td
                                                     title={transaction.organization?.name || '-'}
@@ -1129,7 +1148,7 @@ export default function Transactions() {
             {viewType.key == 'bulks' && transactionBulks.meta.total > 0 && (
                 <div className="card-section">
                     <div className="card-block card-block-table">
-                        <div className="table-wrapper">
+                        <TableTopScroller>
                             <table className="table">
                                 <tbody>
                                     <tr>
@@ -1142,7 +1161,7 @@ export default function Transactions() {
                                             filter={bulkFilter}
                                         />
                                         <ThSortable label={'Status'} value={'state'} filter={bulkFilter} />
-                                        <ThSortable label={'Acties'} className="th-narrow text-right" />
+                                        <ThSortable label={''} />
                                     </tr>
 
                                     {transactionBulks.data?.map((transactionBulk) => (
@@ -1190,22 +1209,50 @@ export default function Transactions() {
                                                     </div>
                                                 )}
                                             </td>
-                                            <td className="td-narrow text-right">
-                                                <StateNavLink
-                                                    name={'transaction-bulk'}
-                                                    className="button button-sm button-primary button-icon pull-right"
-                                                    params={{
-                                                        organizationId: activeOrganization.id,
-                                                        id: transactionBulk.id,
-                                                    }}>
-                                                    <em className="mdi mdi-eye-outline icon-start" />
-                                                </StateNavLink>
+
+                                            <td
+                                                className={'table-td-actions text-right'}
+                                                style={{ zIndex: showActionMenu === transactionBulk.id ? 1 : 0 }}>
+                                                <div
+                                                    className={`actions ${
+                                                        showActionMenu === transactionBulk.id ? 'active' : ''
+                                                    }`}>
+                                                    <button
+                                                        className="button button-text button-menu"
+                                                        type="button"
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            setShowActionMenu(transactionBulk.id);
+                                                        }}>
+                                                        <em className="mdi mdi-dots-horizontal" />
+
+                                                        {showActionMenu === transactionBulk.id && (
+                                                            <ClickOutside onClickOutside={hideActionMenu}>
+                                                                <div className="menu-dropdown">
+                                                                    <div className="menu-dropdown-arrow" />
+                                                                    <div className="dropdown dropdown-actions">
+                                                                        <StateNavLink
+                                                                            name={'transaction-bulk'}
+                                                                            className="dropdown-item"
+                                                                            params={{
+                                                                                organizationId: activeOrganization.id,
+                                                                                id: transactionBulk.id,
+                                                                            }}>
+                                                                            <em className="mdi mdi-eye icon-start" />{' '}
+                                                                            Bekijken
+                                                                        </StateNavLink>
+                                                                    </div>
+                                                                </div>
+                                                            </ClickOutside>
+                                                        )}
+                                                    </button>
+                                                </div>
                                             </td>
                                         </tr>
                                     ))}
                                 </tbody>
                             </table>
-                        </div>
+                        </TableTopScroller>
                     </div>
                 </div>
             )}
