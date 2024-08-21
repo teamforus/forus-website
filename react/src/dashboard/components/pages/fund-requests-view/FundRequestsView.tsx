@@ -41,7 +41,6 @@ type FundRequestRecordLocal = FundRequestRecord & { shown?: boolean; hasContent?
 type FundRequestLocal = {
     is_assigned?: boolean;
     is_assignable?: boolean;
-    is_sponsor_employee?: boolean;
     is_assignable_as_supervisor?: boolean;
     can_disregarded?: boolean;
     can_disregarded_undo?: boolean;
@@ -134,7 +133,6 @@ export default function FundRequestsView() {
             const assignedPendingRecords = assignedRecords.filter((record) => record.state === 'pending');
             const assignedDisregardedRecords = assignedRecords.filter((record) => record.state === 'disregarded');
 
-            const isSponsorEmployee = activeOrganization.id === fundRequest.fund.organization_id;
             const hasAssignableRecords = assignableRecords.length > 0;
 
             const hasAssignableEmployees =
@@ -142,8 +140,7 @@ export default function FundRequestsView() {
 
             const isAssigned = assignedPendingRecords.length > 0 || assignedDisregardedRecords.length > 0;
             const hasPartnerBSN = recordTypes.includes('partner_bsn');
-            const canAddPartnerBsn =
-                isSponsorEmployee && activeOrganization.bsn_enabled && isAssigned && !hasPartnerBSN;
+            const canAddPartnerBsn = activeOrganization.bsn_enabled && isAssigned && !hasPartnerBSN;
 
             const hasPendingInternallyAssignedRecords =
                 pendingRecords.filter((record) => {
@@ -161,11 +158,10 @@ export default function FundRequestsView() {
                     return record.files?.length || record.clarifications?.length || record.history?.length;
                 }).length > 0;
 
-            fundRequest.can_disregarded = isPending && isSponsorEmployee && assignedPendingRecords.length > 0;
-            fundRequest.can_disregarded_undo = isSponsorEmployee && assignedDisregardedRecords.length > 0 && !replaced;
+            fundRequest.can_disregarded = isPending && assignedPendingRecords.length > 0;
+            fundRequest.can_disregarded_undo = assignedDisregardedRecords.length > 0 && !replaced;
 
             fundRequest.is_assignable = isPending && hasAssignableRecords;
-            fundRequest.is_sponsor_employee = isSponsorEmployee;
             fundRequest.is_assignable_as_supervisor = isPending && hasAssignableEmployees && isValidatorsSupervisor;
 
             fundRequest.is_assigned = isAssigned;
@@ -999,12 +995,9 @@ export default function FundRequestsView() {
                     </div>
                 </div>
 
-                {fundRequest.fund.has_person_bsn_api &&
-                    fundRequest.bsn &&
-                    fundRequest.is_sponsor_employee &&
-                    fundRequest.is_assigned && (
-                        <FundRequestPerson organization={activeOrganization} request={fundRequest} />
-                    )}
+                {fundRequest.fund.has_person_bsn_api && fundRequest.bsn && fundRequest.is_assigned && (
+                    <FundRequestPerson organization={activeOrganization} request={fundRequest} />
+                )}
             </div>
 
             <BlockCardNotes

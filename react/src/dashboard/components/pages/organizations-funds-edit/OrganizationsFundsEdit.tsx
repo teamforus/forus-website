@@ -6,7 +6,7 @@ import useActiveOrganization from '../../../hooks/useActiveOrganization';
 import { useParams } from 'react-router-dom';
 import StateNavLink from '../../../modules/state_router/StateNavLink';
 import useFormBuilder from '../../../hooks/useFormBuilder';
-import { PaginationData, ResponseError, ResponseErrorData } from '../../../props/ApiResponses';
+import { ResponseError, ResponseErrorData } from '../../../props/ApiResponses';
 import usePushSuccess from '../../../hooks/usePushSuccess';
 import PhotoSelector from '../../elements/photo-selector/PhotoSelector';
 import { useMediaService } from '../../../services/MediaService';
@@ -32,8 +32,6 @@ import { useRecordTypeService } from '../../../services/RecordTypeService';
 import { useEmployeeService } from '../../../services/EmployeeService';
 import FundCriterion from '../../../props/models/FundCriterion';
 import FundCriteriaEditor from '../../elements/fund-criteria-editor/FundCriteriaEditor';
-import Organization from '../../../props/models/Organization';
-import { useOrganizationService } from '../../../services/OrganizationService';
 import FundConfigContactInfoEditor from './elements/FundConfigContactInfoEditor';
 import { useNavigateState } from '../../../modules/state_router/Router';
 import MultiSelectControl from '../../elements/forms/controls/MultiSelectControl';
@@ -63,7 +61,6 @@ export default function OrganizationsFundsEdit() {
     const productService = useProductService();
     const employeeService = useEmployeeService();
     const recordTypeService = useRecordTypeService();
-    const organizationService = useOrganizationService();
 
     const [faq, setFaq] = useState<Array<Faq & { uid: string }>>([]);
     const [fund, setFund] = useState<Fund>(null);
@@ -74,7 +71,6 @@ export default function OrganizationsFundsEdit() {
     const [showInfoBlock, setShowInfoBlock] = useState<boolean>(false);
     const [recordTypes, setRecordTypes] = useState<Array<RecordType>>(null);
     const [products, setProducts] = useState<Array<Partial<Product>>>(null);
-    const [validatorOrganizations, setValidatorOrganizations] = useState<PaginationData<Organization>>(null);
     const [fundStates] = useState(fundService.getStates());
     const faqEditorBlock = useRef<() => Promise<boolean>>();
     const criteriaBlockRef = useRef<() => Promise<Array<FundCriterion> | null>>();
@@ -222,11 +218,7 @@ export default function OrganizationsFundsEdit() {
                     const criteria = await criteriaBlockRef.current();
 
                     if (criteria != null) {
-                        data.criteria = criteria.map((item: FundCriterion) => ({
-                            ...item,
-                            validators:
-                                item.external_validators?.map((validator) => validator.organization_validator_id) || [],
-                        }));
+                        data.criteria = criteria;
                     } else {
                         return form.setIsLocked(false);
                     }
@@ -332,15 +324,6 @@ export default function OrganizationsFundsEdit() {
             .finally(() => setProgress(100));
     }, [activeOrganization.id, employeeService, setProgress]);
 
-    const fetchValidatorOrganizations = useCallback(() => {
-        setProgress(0);
-
-        organizationService
-            .readListValidators(activeOrganization.id, { per_page: 100 })
-            .then((res) => setValidatorOrganizations(res.data))
-            .finally(() => setProgress(100));
-    }, [activeOrganization.id, organizationService, setProgress]);
-
     const fetchProducts = useCallback(() => {
         setProgress(0);
 
@@ -419,10 +402,6 @@ export default function OrganizationsFundsEdit() {
     useEffect(() => {
         fetchValidatorEmployees();
     }, [fetchValidatorEmployees]);
-
-    useEffect(() => {
-        fetchValidatorOrganizations();
-    }, [fetchValidatorOrganizations]);
 
     useEffect(() => {
         if (fundId) {
@@ -1069,7 +1048,6 @@ export default function OrganizationsFundsEdit() {
                                             isEditable={!fundId || fund.criteria_editable}
                                             setCriteria={(criteria) => form.update({ criteria })}
                                             recordTypes={recordTypes}
-                                            validatorOrganizations={validatorOrganizations?.data}
                                             saveCriteriaRef={criteriaBlockRef}
                                         />
                                     </div>
