@@ -10,7 +10,6 @@ import Fund from '../../../../props/models/Fund';
 import VouchersTableFilters, { VouchersTableFiltersProps } from './VouchersTableFilters';
 import SelectControlOptionsFund from '../../../elements/select-control/templates/SelectControlOptionsFund';
 import useOpenModal from '../../../../hooks/useOpenModal';
-import ModalFundSelect from '../../../modals/ModalFundSelect';
 import ModalVoucherCreate from '../../../modals/ModalVoucherCreate';
 import ModalVouchersUpload from '../../../modals/ModalVouchersUpload';
 
@@ -21,7 +20,6 @@ export default function VouchersTableHeader({
     funds,
     loading,
     fetchVouchers,
-    type = 'vouchers',
 }: {
     organization: Organization;
     vouchers: PaginationData<Voucher>;
@@ -29,7 +27,6 @@ export default function VouchersTableHeader({
     funds: Array<Partial<Fund>>;
     loading: boolean;
     fetchVouchers: () => void;
-    type?: 'vouchers' | 'product_vouchers';
 }) {
     const translate = useTranslate();
     const openModal = useOpenModal();
@@ -39,45 +36,27 @@ export default function VouchersTableHeader({
             const fundsList = funds.filter((fund) => fund.id);
 
             openModal((modal) => (
-                <ModalFundSelect
-                    modal={modal}
+                <ModalVoucherCreate
                     fundId={fundId || fundsList[0].id}
                     funds={fundsList}
-                    onSelect={(fund) => {
-                        openModal((modal) => (
-                            <ModalVoucherCreate
-                                fund={fund}
-                                type={type}
-                                modal={modal}
-                                onCreated={onCreate}
-                                organization={organization}
-                            />
-                        ));
-                    }}
+                    modal={modal}
+                    onCreated={onCreate}
+                    organization={organization}
                 />
             ));
         },
-        [openModal, organization, type],
+        [openModal, organization],
     );
 
     const uploadVouchers = useCallback(
         (funds: Array<Partial<Fund>>, fundId?: number, onCreate?: () => void) => {
             openModal((modal) => (
-                <ModalFundSelect
+                <ModalVouchersUpload
                     modal={modal}
+                    fundId={fundId || funds[0].id}
                     funds={funds}
-                    fundId={fundId}
-                    onSelect={(fund) => {
-                        openModal((modal) => (
-                            <ModalVouchersUpload
-                                modal={modal}
-                                fund={fund}
-                                funds={!fund?.id ? funds : funds.filter((item) => item.id === fund?.id)}
-                                organization={organization}
-                                onCompleted={onCreate}
-                            />
-                        ));
-                    }}
+                    organization={organization}
+                    onCompleted={onCreate}
                 />
             ));
         },
@@ -88,17 +67,9 @@ export default function VouchersTableHeader({
         <div className={`card-header ${loading ? 'card-header-inactive' : ''}`}>
             <div className="flex">
                 <div className="flex flex-grow">
-                    {type == 'vouchers' && (
-                        <div className="card-title" data-dusk="vouchersTitle">
-                            {translate('vouchers.header.title')} ({vouchers?.meta?.total})
-                        </div>
-                    )}
-
-                    {type == 'product_vouchers' && (
-                        <div className="card-title" data-dusk="vouchersTitle">
-                            {translate('product_vouchers.header.title')} ({vouchers?.meta?.total})
-                        </div>
-                    )}
+                    <div className="card-title" data-dusk="vouchersTitle">
+                        {translate('vouchers.header.title')} ({vouchers?.meta?.total})
+                    </div>
                 </div>
 
                 <div className="flex">
@@ -146,7 +117,6 @@ export default function VouchersTableHeader({
                             organization={organization}
                             vouchers={vouchers}
                             funds={funds}
-                            type={type}
                         />
                     </div>
                 </div>

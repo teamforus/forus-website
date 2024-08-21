@@ -1609,6 +1609,20 @@ export default {
             upload: 'Upload .csv bestand',
             done: 'Klaar',
         },
+        tooltips: {
+            funds: [
+                'Selecteer het fonds waarvoor het tegoed wordt aangemaakt. ',
+                'De regels die op dit fonds van toepassing zijn, worden automatisch overgenomen voor de tegoeden. ',
+                'Hierdoor kan bijvoorbeeld worden bepaald bij welke aanbieders een tegoed kan worden besteed.',
+            ].join(''),
+            type: [
+                'Selecteer het type tegoeden. Er zijn twee opties:',
+                '<br/><br/><ul>',
+                '<li><strong>Budget</strong>: Een bedrag dat onder specifieke voorwaarden kan worden besteed.</li>',
+                '<li><strong>Product</strong>: Een tegoed voor een specifiek product of dienst.</li>',
+                '</ul>',
+            ].join(''),
+        },
     },
 
     // EMPTY BLOCK = empty-block.pug
