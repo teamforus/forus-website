@@ -17,7 +17,7 @@ import ModalNotification from '../../modals/ModalNotification';
 import FundRequestRecord from '../../../props/models/FundRequestRecord';
 import { ModalState } from '../../../modules/modals/context/ModalContext';
 import useAuthIdentity from '../../../hooks/useAuthIdentity';
-import { PaginationData, ResponseError } from '../../../props/ApiResponses';
+import { ResponseError } from '../../../props/ApiResponses';
 import ModalFundRequestClarify from '../../modals/ModalFundRequestClarify';
 import ModalFundRequestRecordDecline from '../../modals/ModalFundRequestRecordDecline';
 import ModalFundRequestRecordsDecline from '../../modals/ModalFundRequestRecordsDecline';
@@ -26,32 +26,14 @@ import ModalFundRequestRecordCreate from '../../modals/ModalFundRequestRecordCre
 import ModalFundRequestDisregard from '../../modals/ModalFundRequestDisregard';
 import ModalFundRequestDisregardUndo from '../../modals/ModalFundRequestDisregardUndo';
 import ModalFundRequestAssignValidator from '../../modals/ModalFundRequestAssignValidator';
-import { useEmployeeService } from '../../../services/EmployeeService';
 import useEnvData from '../../../hooks/useEnvData';
-import Employee from '../../../props/models/Employee';
 import FundRequestRecordTabs from './elements/FundRequestRecordTabs';
 import FundRequestPerson from './elements/FundRequestPerson';
 import useTranslate from '../../../hooks/useTranslate';
 import EmailLog from '../../../props/models/EmailLog';
 import { useFileService } from '../../../services/FileService';
 import usePushApiError from '../../../hooks/usePushApiError';
-
-type FundRequestRecordLocal = FundRequestRecord & { shown?: boolean; hasContent?: boolean };
-
-type FundRequestLocal = {
-    is_assigned?: boolean;
-    is_assignable?: boolean;
-    is_assignable_as_supervisor?: boolean;
-    can_disregarded?: boolean;
-    can_disregarded_undo?: boolean;
-    can_resign?: boolean;
-    can_resign_as_supervisor?: boolean;
-    can_add_partner_bsn?: boolean;
-    hasContent?: boolean;
-    collapsed?: boolean;
-    records?: Array<FundRequestRecordLocal>;
-    bsn_expanded?: boolean;
-} & FundRequest;
+import classNames from 'classnames';
 
 export default function FundRequestsView() {
     const authIdentity = useAuthIdentity();
@@ -67,18 +49,77 @@ export default function FundRequestsView() {
     const setProgress = useSetProgress();
 
     const fileService = useFileService();
-    const employeeService = useEmployeeService();
     const activeOrganization = useActiveOrganization();
     const fundRequestService = useFundRequestValidatorService();
 
-    const [employees, setEmployees] = useState<PaginationData<Employee>>(null);
-    const [fundRequest, setFundRequest] = useState<FundRequestLocal>(null);
+    const [fundRequest, setFundRequest] = useState<FundRequest>(null);
     const [showCriteria, setShowCriteria] = useState(null);
+    const [collapsedRecords, setCollapsedRecords] = useState<Array<number>>([]);
 
     const isValidatorsSupervisor = useMemo(
         () => activeOrganization?.permissions.includes('manage_validators'),
         [activeOrganization],
     );
+
+    const fundRequestMeta = useMemo(() => {
+        if (!fundRequest) {
+            return;
+        }
+
+        const { state, records, allowed_employees, employee } = fundRequest;
+        const isPending = state == 'pending';
+        const isDisregarded = state == 'disregarded';
+
+        const recordTypes = records.map((record) => record.record_type_key);
+
+        const assignableEmployees = allowed_employees.filter((item) => {
+            return item.identity_address !== authIdentity?.address && item.id !== employee?.id;
+        });
+
+        const hasAssignableEmployees = assignableEmployees.length > 0;
+        const isAssigned = employee?.identity_address === authIdentity?.address;
+        const hasPartnerBSN = recordTypes.includes('partner_bsn');
+
+        fundRequest.fund.criteria = fundRequest.fund.criteria.map((criterion) => {
+            const operators = {
+                '>': 'moet meer dan',
+                '>=': 'more or equal',
+                '<': 'moet minder dan',
+                '<=': 'less or equal',
+                '*': 'elke waarde',
+            };
+
+            const operator = operators[criterion.operator] || 'moet';
+            const value = `${criterion.record_type.key === 'net_worth' ? '€' : ''}${criterion.value}`;
+
+            return { ...criterion, description: `${criterion.record_type.name} ${operator} ${value} zijn.` };
+        });
+
+        return {
+            ...fundRequest,
+            hasContent:
+                records.filter((record) => {
+                    return record.files?.length || record.clarifications?.length || record.history?.length;
+                }).length > 0,
+            records: fundRequest.records.map((record) => ({
+                ...record,
+                hasContent: record.files.length > 0 || record.clarifications.length > 0 || record.history.length > 0,
+            })),
+
+            assignable_employees: assignableEmployees,
+            can_disregarded: isAssigned && isPending,
+            can_disregarded_undo: isAssigned && isDisregarded,
+
+            is_assignable: isPending && !employee,
+            is_assignable_as_supervisor: !employee && isPending && hasAssignableEmployees && isValidatorsSupervisor,
+
+            is_assigned: isAssigned,
+            can_add_partner_bsn: activeOrganization.bsn_enabled && isPending && isAssigned && !hasPartnerBSN,
+
+            can_resign: isPending && isAssigned,
+            can_resign_as_supervisor: isPending && employee && isValidatorsSupervisor,
+        };
+    }, [activeOrganization.bsn_enabled, authIdentity?.address, fundRequest, isValidatorsSupervisor]);
 
     const [stateLabels] = useState({
         pending: 'label-primary-variant',
@@ -118,126 +159,22 @@ export default function FundRequestsView() {
         [openModal],
     );
 
-    const mapRequestFlags = useCallback(
-        (fundRequest: FundRequestLocal) => {
-            const { state, records, replaced, allowed_employees } = fundRequest;
-            const isPending = state == 'pending';
-
-            const recordTypes = records.map((record) => record.record_type_key);
-            const pendingRecords = records.filter((record) => record.state == 'pending');
-            const assignedRecords = records.filter(
-                (record) => record.employee?.identity_address === authIdentity.address,
-            );
-            const assignableRecords = pendingRecords.filter((record) => record.is_assignable);
-
-            const assignedPendingRecords = assignedRecords.filter((record) => record.state === 'pending');
-            const assignedDisregardedRecords = assignedRecords.filter((record) => record.state === 'disregarded');
-
-            const hasAssignableRecords = assignableRecords.length > 0;
-
-            const hasAssignableEmployees =
-                allowed_employees.filter((employee) => employee.identity_address !== authIdentity?.address).length > 0;
-
-            const isAssigned = assignedPendingRecords.length > 0 || assignedDisregardedRecords.length > 0;
-            const hasPartnerBSN = recordTypes.includes('partner_bsn');
-            const canAddPartnerBsn = activeOrganization.bsn_enabled && isAssigned && !hasPartnerBSN;
-
-            const hasPendingInternallyAssignedRecords =
-                pendingRecords.filter((record) => {
-                    return record.employee?.organization_id === activeOrganization.id;
-                }).length > 0;
-
-            fundRequest.records = fundRequest.records.map((record) => ({
-                ...record,
-                shown: true,
-                hasContent: record.files.length > 0 || record.clarifications.length > 0 || record.history.length > 0,
-            }));
-
-            fundRequest.hasContent =
-                records.filter((record) => {
-                    return record.files?.length || record.clarifications?.length || record.history?.length;
-                }).length > 0;
-
-            fundRequest.can_disregarded = isPending && assignedPendingRecords.length > 0;
-            fundRequest.can_disregarded_undo = assignedDisregardedRecords.length > 0 && !replaced;
-
-            fundRequest.is_assignable = isPending && hasAssignableRecords;
-            fundRequest.is_assignable_as_supervisor = isPending && hasAssignableEmployees && isValidatorsSupervisor;
-
-            fundRequest.is_assigned = isAssigned;
-            fundRequest.can_add_partner_bsn = canAddPartnerBsn;
-
-            fundRequest.can_resign = assignedPendingRecords.length > 0 && assignedDisregardedRecords.length == 0;
-            fundRequest.can_resign_as_supervisor =
-                isPending && isValidatorsSupervisor && hasPendingInternallyAssignedRecords;
-
-            fundRequest.fund.criteria = fundRequest.fund.criteria.map((criterion) => {
-                const operators = {
-                    '>': 'moet meer dan',
-                    '>=': 'more or equal',
-                    '<': 'moet minder dan',
-                    '<=': 'less or equal',
-                    '*': 'elke waarde',
-                };
-
-                const operator = operators[criterion.operator] || 'moet';
-                const value = `${criterion.record_type.key === 'net_worth' ? '€' : ''}${criterion.value}`;
-
-                return { ...criterion, description: `${criterion.record_type.name} ${operator} ${value} zijn.` };
-            });
-
-            return { ...fundRequest };
-        },
-        [activeOrganization, authIdentity, isValidatorsSupervisor],
-    );
-
-    const fetchEmployees = useCallback(() => {
-        setProgress(0);
-
-        employeeService
-            .list(activeOrganization.id, { per_page: 100, permission: 'validate_records' })
-            .then((res) => setEmployees(res.data))
-            .catch((res) => pushDanger('Error', res?.data?.message || 'Unknwon error.'))
-            .finally(() => setProgress(100));
-    }, [activeOrganization.id, employeeService, pushDanger, setProgress]);
-
     const fetchFundRequest = useCallback(() => {
         setProgress(0);
 
         fundRequestService
             .read(activeOrganization.id, fundRequestId)
-            .then((res) => setFundRequest(mapRequestFlags(res.data.data)))
-            .catch((res) => pushDanger('Error', res?.data?.message || 'Unknwon error.'))
+            .then((res) => setFundRequest(res.data.data))
+            .catch(pushApiError)
             .finally(() => setProgress(100));
-    }, [mapRequestFlags, fundRequestService, activeOrganization, fundRequestId, setProgress, pushDanger]);
+    }, [fundRequestService, activeOrganization, fundRequestId, setProgress, pushApiError]);
 
     const reloadRequest = useCallback(() => {
-        fundRequestService.read(activeOrganization.id, fundRequest.id).then((res) => {
-            fundRequest.records.forEach((record) => {
-                const newRecord: FundRequestRecord & { shown?: boolean } = res.data.data.records.filter(
-                    (_record) => _record.id == record.id,
-                )[0];
-
-                if (newRecord) {
-                    newRecord.shown = record.shown;
-                }
-            });
-
-            setFundRequest(
-                mapRequestFlags({
-                    ...res.data.data,
-                    ...{
-                        hasContent: fundRequest.hasContent,
-                        person: fundRequest.person,
-                        person_relative: fundRequest.person_relative,
-                        person_breadcrumbs: fundRequest.person_breadcrumbs,
-                    },
-                }),
-            );
-
+        fundRequestService.read(activeOrganization.id, fundRequestMeta.id).then((res) => {
+            setFundRequest(res.data.data);
             fetchEmailsRef?.current?.();
         }, console.error);
-    }, [activeOrganization.id, fundRequest, fundRequestService, mapRequestFlags]);
+    }, [activeOrganization.id, fundRequestMeta, fundRequestService]);
 
     const approveRecord = useCallback(
         (requestRecord: FundRequestRecord) => {
@@ -279,7 +216,7 @@ export default function FundRequestsView() {
             openModal((modal) => (
                 <ModalFundRequestRecordDecline
                     modal={modal}
-                    fundRequest={fundRequest}
+                    fundRequest={fundRequestMeta}
                     organization={activeOrganization}
                     fundRequestRecord={requestRecord}
                     onSubmitted={(err) => {
@@ -296,7 +233,7 @@ export default function FundRequestsView() {
                 />
             ));
         },
-        [activeOrganization, fundRequest, openModal, pushSuccess, reloadRequest, showInfoModal],
+        [activeOrganization, fundRequestMeta, openModal, pushSuccess, reloadRequest, showInfoModal],
     );
 
     const clarifyRecord = useCallback(
@@ -304,7 +241,7 @@ export default function FundRequestsView() {
             openModal((modal) => (
                 <ModalFundRequestClarify
                     modal={modal}
-                    fundRequest={fundRequest}
+                    fundRequest={fundRequestMeta}
                     organization={activeOrganization}
                     fundRequestRecord={requestRecord}
                     onSubmitted={(err) => {
@@ -318,7 +255,7 @@ export default function FundRequestsView() {
                 />
             ));
         },
-        [activeOrganization, fundRequest, openModal, pushSuccess, reloadRequest, showInfoModal],
+        [activeOrganization, fundRequestMeta, openModal, pushSuccess, reloadRequest, showInfoModal],
     );
 
     const requestApprove = useCallback(() => {
@@ -335,7 +272,7 @@ export default function FundRequestsView() {
                     onClick: () => {
                         modal.close();
                         fundRequestService
-                            .approve(activeOrganization.id, fundRequest.id)
+                            .approve(activeOrganization.id, fundRequestMeta.id)
                             .then(() => reloadRequest())
                             .catch((err: ResponseError) => {
                                 showInfoModal('Validatie van persoonsgegeven mislukt.', `Reden: ${err.data.message}`);
@@ -344,13 +281,13 @@ export default function FundRequestsView() {
                 }}
             />
         ));
-    }, [activeOrganization?.id, fundRequest?.id, fundRequestService, openModal, reloadRequest, showInfoModal]);
+    }, [activeOrganization?.id, fundRequestMeta?.id, fundRequestService, openModal, reloadRequest, showInfoModal]);
 
     const requestDecline = useCallback(() => {
         openModal((modal) => (
             <ModalFundRequestRecordsDecline
                 modal={modal}
-                fundRequest={fundRequest}
+                fundRequest={fundRequestMeta}
                 organization={activeOrganization}
                 onSubmitted={(err) => {
                     if (err) {
@@ -365,13 +302,13 @@ export default function FundRequestsView() {
                 }}
             />
         ));
-    }, [activeOrganization, fundRequest, openModal, pushSuccess, reloadRequest, showInfoModal]);
+    }, [activeOrganization, fundRequestMeta, openModal, pushSuccess, reloadRequest, showInfoModal]);
 
     const requestDisregard = useCallback(() => {
         openModal((modal) => (
             <ModalFundRequestDisregard
                 modal={modal}
-                fundRequest={fundRequest}
+                fundRequest={fundRequestMeta}
                 organization={activeOrganization}
                 onSubmitted={(err) => {
                     if (err) {
@@ -386,13 +323,13 @@ export default function FundRequestsView() {
                 }}
             />
         ));
-    }, [activeOrganization, fundRequest, openModal, pushSuccess, reloadRequest, showInfoModal]);
+    }, [activeOrganization, fundRequestMeta, openModal, pushSuccess, reloadRequest, showInfoModal]);
 
     const requestDisregardUndo = useCallback(() => {
         openModal((modal) => (
             <ModalFundRequestDisregardUndo
                 modal={modal}
-                fundRequest={fundRequest}
+                fundRequest={fundRequestMeta}
                 organization={activeOrganization}
                 onSubmitted={(err) => {
                     if (err) {
@@ -407,15 +344,15 @@ export default function FundRequestsView() {
                 }}
             />
         ));
-    }, [activeOrganization, fundRequest, openModal, pushSuccess, reloadRequest, showInfoModal]);
+    }, [activeOrganization, fundRequestMeta, openModal, pushSuccess, reloadRequest, showInfoModal]);
 
     const assignRequestAsSupervisor = useCallback(() => {
         openModal((modal) => (
             <ModalFundRequestAssignValidator
                 modal={modal}
-                fundRequest={fundRequest}
+                fundRequest={fundRequestMeta}
                 organization={activeOrganization}
-                employees={employees.data.filter((employee) => employee.identity_address != authIdentity.address)}
+                employees={fundRequestMeta.assignable_employees}
                 onSubmitted={(err) => {
                     if (err) {
                         return showInfoModal(
@@ -429,21 +366,12 @@ export default function FundRequestsView() {
                 }}
             />
         ));
-    }, [
-        openModal,
-        fundRequest,
-        activeOrganization,
-        employees,
-        authIdentity.address,
-        reloadRequest,
-        pushSuccess,
-        showInfoModal,
-    ]);
+    }, [openModal, fundRequestMeta, activeOrganization, reloadRequest, pushSuccess, showInfoModal]);
 
     const assignRequest = useCallback(
         () =>
             fundRequestService
-                .assign(activeOrganization?.id, fundRequest.id)
+                .assign(activeOrganization?.id, fundRequestMeta.id)
                 .then(() => {
                     pushSuccess('Gelukt!', 'U bent nu toegewezen aan deze aanvraag.');
                     reloadRequest();
@@ -452,12 +380,12 @@ export default function FundRequestsView() {
                     pushDanger('Mislukt!', 'U kunt op dit moment geen aanvullingsverzoek doen.');
                     console.error(res);
                 }),
-        [fundRequestService, activeOrganization?.id, fundRequest?.id, pushSuccess, reloadRequest, pushDanger],
+        [fundRequestService, activeOrganization?.id, fundRequestMeta?.id, pushSuccess, reloadRequest, pushDanger],
     );
 
     const requestResignAllEmployeesAsSupervisor = useCallback(() => {
         fundRequestService
-            .resignAllEmployeesAsSupervisor(activeOrganization.id, fundRequest.id)
+            .resignAllEmployeesAsSupervisor(activeOrganization.id, fundRequestMeta.id)
             .then(() => {
                 pushSuccess('Gelukt!', 'U heeft zich afgemeld van deze aanvraag.');
                 reloadRequest();
@@ -465,15 +393,15 @@ export default function FundRequestsView() {
             .catch((res: ResponseError) => {
                 pushDanger('Mislukt!', res?.data?.message);
             });
-    }, [activeOrganization.id, fundRequest, fundRequestService, pushDanger, pushSuccess, reloadRequest]);
+    }, [activeOrganization.id, fundRequestMeta, fundRequestService, pushDanger, pushSuccess, reloadRequest]);
 
     const requestResign = useCallback(() => {
-        if (!fundRequest.can_resign) {
+        if (!fundRequestMeta.can_resign) {
             return requestResignAllEmployeesAsSupervisor();
         }
 
         fundRequestService
-            .resign(activeOrganization.id, fundRequest.id)
+            .resign(activeOrganization.id, fundRequestMeta.id)
             .then(() => {
                 pushSuccess('Gelukt!', 'U heeft zich afgemeld van deze aanvraag.');
                 reloadRequest();
@@ -483,7 +411,7 @@ export default function FundRequestsView() {
             });
     }, [
         activeOrganization,
-        fundRequest,
+        fundRequestMeta,
         fundRequestService,
         pushDanger,
         pushSuccess,
@@ -495,7 +423,7 @@ export default function FundRequestsView() {
         openModal((modal) => (
             <ModalFundRequestRecordCreate
                 modal={modal}
-                fundRequest={fundRequest}
+                fundRequest={fundRequestMeta}
                 organization={activeOrganization}
                 onCreated={() => {
                     pushSuccess('Gelukt!', 'Persoonsgegeven toegevoegd.');
@@ -503,14 +431,14 @@ export default function FundRequestsView() {
                 }}
             />
         ));
-    }, [activeOrganization, fundRequest, openModal, pushSuccess, reloadRequest]);
+    }, [activeOrganization, fundRequestMeta, openModal, pushSuccess, reloadRequest]);
 
     const editRecord = useCallback(
         (fundRequestRecord: FundRequestRecord) => {
             openModal((modal) => (
                 <ModalFundRequestRecordEdit
                     modal={modal}
-                    fundRequest={fundRequest}
+                    fundRequest={fundRequestMeta}
                     organization={activeOrganization}
                     fundRequestRecord={fundRequestRecord}
                     onEdit={() => {
@@ -520,59 +448,47 @@ export default function FundRequestsView() {
                 />
             ));
         },
-        [activeOrganization, fundRequest, openModal, pushSuccess, reloadRequest],
+        [activeOrganization, fundRequestMeta, openModal, pushSuccess, reloadRequest],
     );
 
     const fetchNotes = useCallback(
-        (query = {}) => fundRequestService.notes(activeOrganization.id, fundRequest.id, query),
-        [activeOrganization?.id, fundRequest?.id, fundRequestService],
+        (query = {}) => fundRequestService.notes(activeOrganization.id, fundRequestMeta.id, query),
+        [activeOrganization?.id, fundRequestMeta?.id, fundRequestService],
     );
 
     const fetchEmailLogs = useCallback(
-        (query = {}) => fundRequestService.emailLogs(activeOrganization.id, fundRequest.id, query),
-        [activeOrganization?.id, fundRequest?.id, fundRequestService],
+        (query = {}) => fundRequestService.emailLogs(activeOrganization.id, fundRequestMeta.id, query),
+        [activeOrganization?.id, fundRequestMeta?.id, fundRequestService],
     );
 
     const exportEmailLog = useCallback(
         (emailLog: EmailLog) => {
             fundRequestService
-                .emailLogExport(activeOrganization.id, fundRequest.id, emailLog.id)
+                .emailLogExport(activeOrganization.id, fundRequestMeta.id, emailLog.id)
                 .then((res) => fileService.downloadFile(`email-log-${emailLog.id}.pdf`, res.data))
                 .catch(pushApiError)
                 .finally(() => setProgress(100));
 
             setProgress(0);
         },
-        [activeOrganization?.id, fileService, fundRequest?.id, fundRequestService, pushApiError, setProgress],
+        [activeOrganization?.id, fileService, fundRequestMeta?.id, fundRequestService, pushApiError, setProgress],
     );
 
     const deleteNote = useCallback(
-        (note) => fundRequestService.noteDestroy(activeOrganization.id, fundRequest.id, note.id),
-        [activeOrganization?.id, fundRequest?.id, fundRequestService],
+        (note) => fundRequestService.noteDestroy(activeOrganization.id, fundRequestMeta.id, note.id),
+        [activeOrganization?.id, fundRequestMeta?.id, fundRequestService],
     );
 
     const storeNote = useCallback(
-        (data) => fundRequestService.storeNote(activeOrganization.id, fundRequest.id, data),
-        [activeOrganization?.id, fundRequest?.id, fundRequestService],
+        (data) => fundRequestService.storeNote(activeOrganization.id, fundRequestMeta.id, data),
+        [activeOrganization?.id, fundRequestMeta?.id, fundRequestService],
     );
-
-    const fundRequestRecord = useCallback((record: FundRequestRecordLocal, values: Partial<FundRequestRecordLocal>) => {
-        setFundRequest((request) => {
-            Object.assign(request.records?.find((item) => item.id == record.id) || {}, values);
-
-            return { ...request };
-        });
-    }, []);
-
-    useEffect(() => {
-        fetchEmployees();
-    }, [fetchEmployees]);
 
     useEffect(() => {
         fetchFundRequest();
     }, [fetchFundRequest]);
 
-    if (!fundRequest) {
+    if (!fundRequestMeta) {
         return <LoadingCard />;
     }
 
@@ -586,7 +502,7 @@ export default function FundRequestsView() {
                     className="breadcrumb-item">
                     {translate('validation_requests.header.title')}
                 </StateNavLink>
-                <div className="breadcrumb-item active">{`#${fundRequest.id}`}</div>
+                <div className="breadcrumb-item active">{`#${fundRequestMeta.id}`}</div>
             </div>
 
             <div className="card">
@@ -599,26 +515,28 @@ export default function FundRequestsView() {
                                         <div className="flex flex-vertical">
                                             <div className="flex text-strong">
                                                 <span className="text-muted">ID:&nbsp;</span>
-                                                {fundRequest.id}&nbsp;&nbsp;
+                                                {fundRequestMeta.id}&nbsp;&nbsp;
                                             </div>
                                         </div>
                                         <div className="flex flex-vertical flex-center">
                                             <div className="flex flex-horizontal">
-                                                {!(fundRequest.state == 'pending' && fundRequest.is_assigned) && (
+                                                {!(
+                                                    fundRequestMeta.state == 'pending' && fundRequestMeta.is_assigned
+                                                ) && (
                                                     <div
                                                         className={`label label-tag label-round ${
-                                                            stateLabels[fundRequest.state] || ''
+                                                            stateLabels[fundRequestMeta.state] || ''
                                                         }`}>
                                                         <em
                                                             className={`mdi mdi-${
-                                                                stateLabelIcons[fundRequest.state]
+                                                                stateLabelIcons[fundRequestMeta.state]
                                                             } icon-start`}
                                                         />
-                                                        <span>{fundRequest.state_locale}</span>
+                                                        <span>{fundRequestMeta.state_locale}</span>
                                                     </div>
                                                 )}
 
-                                                {fundRequest.state == 'pending' && fundRequest.is_assigned && (
+                                                {fundRequestMeta.state == 'pending' && fundRequestMeta.is_assigned && (
                                                     <div className="label label-tag label-round label-warning">
                                                         <span className="mdi mdi-circle-outline icon-start" />
                                                         <span>In behandeling</span>
@@ -631,19 +549,19 @@ export default function FundRequestsView() {
                                 <div className="card-subtitle">
                                     <div className="flex text-muted-dark">
                                         <div className="mdi mdi-clock-outline text-muted-dark" />
-                                        {fundRequest.created_at_locale}
+                                        {fundRequestMeta.created_at_locale}
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        {['pending', 'disregarded'].includes(fundRequest.state) && (
+                        {['pending', 'disregarded'].includes(fundRequestMeta.state) && (
                             <div className="flex flex-self-start">
                                 <div className="flex-row">
-                                    {fundRequest.is_assignable && (
+                                    {fundRequestMeta.is_assignable && (
                                         <button
                                             className={`button ${
-                                                fundRequest.is_assignable_as_supervisor
+                                                fundRequestMeta.is_assignable_as_supervisor
                                                     ? 'button-default'
                                                     : 'button-primary'
                                             }`}
@@ -653,55 +571,55 @@ export default function FundRequestsView() {
                                         </button>
                                     )}
 
-                                    {fundRequest.is_assignable_as_supervisor && (
+                                    {fundRequestMeta.is_assignable_as_supervisor && (
                                         <button className="button button-primary" onClick={assignRequestAsSupervisor}>
                                             <em className="mdi mdi-account-details-outline icon-start" />
                                             {translate('validation_requests.buttons.assign')}
                                         </button>
                                     )}
 
-                                    {fundRequest.state == 'pending' &&
-                                        fundRequest.is_assigned &&
-                                        !fundRequest.can_disregarded_undo && (
+                                    {fundRequestMeta.state == 'pending' &&
+                                        fundRequestMeta.is_assigned &&
+                                        !fundRequestMeta.can_disregarded_undo && (
                                             <button className="button button-primary" onClick={requestApprove}>
                                                 <em className="mdi mdi-check icon-start" />
                                                 {translate('validation_requests.buttons.accept_all')}
                                             </button>
                                         )}
 
-                                    {fundRequest.state == 'pending' &&
-                                        fundRequest.is_assigned &&
-                                        !fundRequest.can_disregarded_undo && (
+                                    {fundRequestMeta.state == 'pending' &&
+                                        fundRequestMeta.is_assigned &&
+                                        !fundRequestMeta.can_disregarded_undo && (
                                             <button className="button button-danger" onClick={requestDecline}>
                                                 <em className="mdi mdi-close icon-start" />
                                                 {translate('validation_requests.buttons.decline_all')}
                                             </button>
                                         )}
 
-                                    {fundRequest.can_disregarded && (
+                                    {fundRequestMeta.can_disregarded && (
                                         <button className="button button-default" onClick={requestDisregard}>
                                             <em className="mdi mdi-timer-sand-empty icon-start" />
                                             {translate('validation_requests.buttons.disregard')}
                                         </button>
                                     )}
 
-                                    {fundRequest.can_disregarded_undo && (
+                                    {fundRequestMeta.can_disregarded_undo && (
                                         <button className="button button-default" onClick={requestDisregardUndo}>
                                             <em className="mdi mdi-backup-restore icon-start" />
                                             {translate('validation_requests.buttons.disregard_undo')}
                                         </button>
                                     )}
 
-                                    {(fundRequest.can_resign || fundRequest.can_resign_as_supervisor) && (
+                                    {(fundRequestMeta.can_resign || fundRequestMeta.can_resign_as_supervisor) && (
                                         <button className="button button-primary-light" onClick={requestResign}>
                                             <em className="mdi mdi-account-minus icon-start" />
                                             {translate('validation_requests.buttons.resign')}
                                         </button>
                                     )}
 
-                                    {fundRequest.state == 'disregarded' &&
-                                        !fundRequest.can_disregarded_undo &&
-                                        fundRequest.replaced && (
+                                    {fundRequestMeta.state == 'disregarded' &&
+                                        !fundRequestMeta.can_disregarded_undo &&
+                                        fundRequestMeta.replaced && (
                                             <button className="button button-default" type="button" disabled={true}>
                                                 <em className="mdi mdi-backup-restore icon-start" />
                                                 {translate(
@@ -727,7 +645,7 @@ export default function FundRequestsView() {
                                             <br />
                                             <div className="flex flex-horizontal">
                                                 <div className="flex">
-                                                    <strong className="text-black">{fundRequest.fund.name}</strong>
+                                                    <strong className="text-black">{fundRequestMeta.fund.name}</strong>
                                                 </div>
                                                 <div className="flex flex-vertical">
                                                     <a
@@ -740,7 +658,7 @@ export default function FundRequestsView() {
                                                                 className="tooltip-content"
                                                                 onClickOutside={hideFundCriteria}>
                                                                 <ul className="tooltip-list">
-                                                                    {fundRequest.fund.criteria.map((criterion) => (
+                                                                    {fundRequestMeta.fund.criteria.map((criterion) => (
                                                                         <li
                                                                             key={criterion.id}
                                                                             className="tooltip-list-item">
@@ -760,14 +678,14 @@ export default function FundRequestsView() {
                                                 <strong className="text-strong text-md text-primary">
                                                     {translate('validation_requests.labels.email')}
                                                 </strong>
-                                                <strong className={fundRequest.email ? 'text-black' : 'text-muted'}>
-                                                    {strLimit(fundRequest.email || 'Geen E-mail', 40)}
+                                                <strong className={fundRequestMeta.email ? 'text-black' : 'text-muted'}>
+                                                    {strLimit(fundRequestMeta.email || 'Geen E-mail', 40)}
                                                 </strong>
-                                                {fundRequest.email?.length > 40 && (
+                                                {fundRequestMeta.email?.length > 40 && (
                                                     <div className="tooltip-content tooltip-content-fit tooltip-content-bottom">
                                                         <div className="triangle" />
                                                         <div className="nowrap">
-                                                            {fundRequest.email || 'Geen E-mail'}
+                                                            {fundRequestMeta.email || 'Geen E-mail'}
                                                         </div>
                                                     </div>
                                                 )}
@@ -778,44 +696,52 @@ export default function FundRequestsView() {
                                                 {translate('validation_requests.labels.bsn')}
                                             </strong>
                                             <br />
-                                            <strong className={fundRequest.bsn ? 'text-black' : 'text-muted'}>
-                                                {fundRequest.bsn || 'Geen BSN'}
+                                            <strong className={fundRequestMeta.bsn ? 'text-black' : 'text-muted'}>
+                                                {fundRequestMeta.bsn || 'Geen BSN'}
                                             </strong>
                                         </td>
-                                        {['pending', 'disregarded'].includes(fundRequest.state) && (
+                                        {['pending', 'disregarded'].includes(fundRequestMeta.state) && (
                                             <td>
                                                 <strong className="text-strong text-md text-primary">
                                                     {translate('validation_requests.labels.lead_time')}
                                                 </strong>
                                                 <br />
-                                                <strong className="text-black">{fundRequest.lead_time_locale}</strong>
+                                                <strong className="text-black">
+                                                    {fundRequestMeta.lead_time_locale}
+                                                </strong>
                                             </td>
                                         )}
-                                        {fundRequest.state == 'disregarded' && (
+                                        {fundRequestMeta.state == 'disregarded' && (
                                             <td>
                                                 <strong className="text-strong text-md text-primary">
                                                     {translate('validation_requests.labels.disregarded_at')}
                                                 </strong>
                                                 <br />
-                                                <strong className="text-black">{fundRequest.resolved_at_locale}</strong>
+                                                <strong className="text-black">
+                                                    {fundRequestMeta.resolved_at_locale}
+                                                </strong>
                                             </td>
                                         )}
-                                        {fundRequest.state == 'approved' && (
+                                        {fundRequestMeta.state == 'approved' && (
                                             <td>
                                                 <strong className="text-strong text-md text-primary">
                                                     {translate('validation_requests.labels.accepted_at')}
                                                 </strong>
                                                 <br />
-                                                <strong className="text-black">{fundRequest.resolved_at_locale}</strong>
+                                                <strong className="text-black">
+                                                    {fundRequestMeta.resolved_at_locale}
+                                                </strong>
                                             </td>
                                         )}
-                                        {fundRequest.state == 'declined' && (
+                                        {fundRequestMeta.state == 'declined' && (
                                             <td>
                                                 <strong className="text-strong text-md text-primary">
                                                     {translate('validation_requests.labels.declined_at')}
                                                 </strong>
                                                 <br />
-                                                <strong className="text-black">{fundRequest.resolved_at_locale}</strong>
+                                                <strong className="text-black">
+                                                    {fundRequestMeta.resolved_at_locale}
+                                                </strong>
                                             </td>
                                         )}
                                     </tr>
@@ -826,7 +752,7 @@ export default function FundRequestsView() {
                 </div>
             </div>
 
-            {fundRequest.note && (
+            {fundRequestMeta.note && (
                 <div className="card">
                     <div className="card-header">
                         <div className="card-title">{translate('validation_requests.labels.note_title')}</div>
@@ -834,7 +760,7 @@ export default function FundRequestsView() {
                     <div className="card-section">
                         <div className="flex">
                             <div className="flex">
-                                <div className="card-block">{fundRequest.note}</div>
+                                <div className="card-block">{fundRequestMeta.note}</div>
                             </div>
                         </div>
                     </div>
@@ -847,7 +773,7 @@ export default function FundRequestsView() {
                         <div className="flex flex-vertical flex-center flex-grow">
                             <div className="card-title">{translate('validation_requests.labels.records')}</div>
                         </div>
-                        {fundRequest.can_add_partner_bsn && (
+                        {fundRequestMeta.can_add_partner_bsn && (
                             <div className="flex flex-row">
                                 <button className="button button-primary button-sm" onClick={appendRecord}>
                                     <em className="mdi mdi-plus icon-start" />
@@ -863,7 +789,7 @@ export default function FundRequestsView() {
                             <table className="table">
                                 <thead>
                                     <tr>
-                                        {fundRequest.hasContent && <th className="cell-chevron" />}
+                                        {fundRequestMeta.hasContent && <th className="cell-chevron" />}
                                         <th style={{ width: '20%' }}>{translate('validation_requests.labels.type')}</th>
                                         <th style={{ width: '20%' }}>
                                             {translate('validation_requests.labels.value')}
@@ -877,18 +803,26 @@ export default function FundRequestsView() {
                                         </th>
                                     </tr>
                                 </thead>
-                                {fundRequest.records.map((record) => (
+                                {fundRequestMeta.records.map((record) => (
                                     <tbody key={record.id}>
                                         <tr>
-                                            {fundRequest.hasContent && (
+                                            {fundRequestMeta.hasContent && (
                                                 <td className="cell-chevron">
                                                     {record.hasContent && (
                                                         <a
-                                                            className={`mdi mdi-menu-${
-                                                                record.shown ? 'up' : 'down'
-                                                            } td-menu-icon`}
+                                                            className={classNames(
+                                                                'mdi',
+                                                                'td-menu-icon',
+                                                                !collapsedRecords.includes(record.id)
+                                                                    ? 'mdi-menu-up'
+                                                                    : 'mdi-menu-down',
+                                                            )}
                                                             onClick={() => {
-                                                                fundRequestRecord(record, { shown: !record?.shown });
+                                                                setCollapsedRecords((shownRecords) => {
+                                                                    return shownRecords?.includes(record.id)
+                                                                        ? shownRecords?.filter((id) => id !== record.id)
+                                                                        : [...shownRecords, record.id];
+                                                                });
                                                             }}
                                                         />
                                                     )}
@@ -926,29 +860,25 @@ export default function FundRequestsView() {
                                                     </div>
                                                 </td>
                                             )}
-                                            {record.state == 'pending' && !record.is_assigned && (
+                                            {record.state == 'pending' && !fundRequestMeta.is_assigned && (
                                                 <td className="text-right">
-                                                    {record.employee_id && (
+                                                    {fundRequestMeta.employee ? (
                                                         <div className="td-text-insert text-muted">
                                                             <span>Toegewezen aan</span>
                                                             <div className="text-strong nowrap">
                                                                 {strLimit(
-                                                                    record.employee?.email ||
-                                                                        record.employee?.identity_address,
+                                                                    fundRequestMeta.employee?.email ||
+                                                                        fundRequestMeta.employee?.identity_address,
                                                                     32,
                                                                 )}
                                                             </div>
                                                         </div>
-                                                    )}
-                                                    {!record.employee_id && record.is_assignable && (
+                                                    ) : (
                                                         <div className="text-muted">Zelf toewijzen</div>
-                                                    )}
-                                                    {!record.employee_id && !record.is_assignable && (
-                                                        <div className="text-muted">Niet beschikbaar</div>
                                                     )}
                                                 </td>
                                             )}
-                                            {record.state == 'pending' && record.is_assigned && (
+                                            {record.state == 'pending' && fundRequestMeta.is_assigned && (
                                                 <td className="text-right">
                                                     <div className="button-group flex-end">
                                                         {activeOrganization.allow_fund_request_record_edit && (
@@ -981,7 +911,7 @@ export default function FundRequestsView() {
                                                 </td>
                                             )}
                                         </tr>
-                                        {record.hasContent && record.shown && (
+                                        {record.hasContent && !collapsedRecords.includes(record.id) && (
                                             <tr className="dim">
                                                 <td className="collapse-content" colSpan={6}>
                                                     <FundRequestRecordTabs fundRequestRecord={record} />
@@ -995,13 +925,13 @@ export default function FundRequestsView() {
                     </div>
                 </div>
 
-                {fundRequest.fund.has_person_bsn_api && fundRequest.bsn && fundRequest.is_assigned && (
-                    <FundRequestPerson organization={activeOrganization} request={fundRequest} />
+                {fundRequestMeta.fund.has_person_bsn_api && fundRequestMeta.bsn && fundRequestMeta.is_assigned && (
+                    <FundRequestPerson organization={activeOrganization} request={fundRequestMeta} />
                 )}
             </div>
 
             <BlockCardNotes
-                isAssigned={fundRequest.is_assigned}
+                isAssigned={fundRequestMeta.is_assigned}
                 fetchNotes={fetchNotes}
                 deleteNote={deleteNote}
                 storeNote={storeNote}
