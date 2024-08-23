@@ -18,6 +18,7 @@ import Funds from '../components/pages/basic-functions/Funds';
 import Website from '../components/pages/basic-functions/Website';
 import Information from '../components/pages/basic-functions/Information';
 import Privacy from '../components/pages/privacy/Privacy';
+import Contacts from '../components/pages/contacts/Contacts';
 
 const router = new RouterBuilder();
 
@@ -111,7 +112,7 @@ router.state('roles-validator', <RolesValidator />, {
     protected: false,
 });
 
-router.state('contacts', <WIP />, {
+router.state('contacts', <Contacts />, {
     path: `/contacts`,
     protected: false,
 });
