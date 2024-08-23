@@ -99,7 +99,9 @@ export default function LayoutHeader() {
                                 <StateNavLink name={'sign-in'} className="button button-light button-sm">
                                     Inloggen
                                 </StateNavLink>
-                                <div className="button button-primary button-sm">Gratis demo</div>
+                                <StateNavLink name={'book-demo'} className="button button-primary">
+                                    Gratis demo
+                                </StateNavLink>
                             </div>
                         </div>
                     )}

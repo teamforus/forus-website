@@ -19,6 +19,7 @@ import Website from '../components/pages/basic-functions/Website';
 import Information from '../components/pages/basic-functions/Information';
 import Privacy from '../components/pages/privacy/Privacy';
 import Contacts from '../components/pages/contacts/Contacts';
+import BookDemo from '../components/pages/book-demo/BookDemo';
 
 const router = new RouterBuilder();
 
@@ -119,6 +120,11 @@ router.state('contacts', <Contacts />, {
 
 router.state('privacy', <Privacy />, {
     path: `/privacy`,
+    protected: false,
+});
+
+router.state('book-demo', <BookDemo />, {
+    path: `/demo-aanvragen`,
     protected: false,
 });
 

@@ -2,6 +2,7 @@ import React, { Fragment, useEffect } from 'react';
 import useSetTitle from '../../../hooks/useSetTitle';
 import useSetMetaDescription from '../../../hooks/useSetMetaDescription';
 import useAssetUrl from '../../../hooks/useAssetUrl';
+import StateNavLink from '../../../modules/state_router/StateNavLink';
 
 export default function Privacy() {
     const setTitle = useSetTitle();
@@ -260,10 +261,10 @@ export default function Privacy() {
                                         Laten we eens kijken naar het optimale gebruik van ons platform voor uw
                                         organisatie
                                     </div>
-                                    <div className="block-privacy-image-info-link">
+                                    <StateNavLink name={'book-demo'} className="block-privacy-image-info-link">
                                         Gratis demo
                                         <em className="mdi mdi-arrow-right" />
-                                    </div>
+                                    </StateNavLink>
                                 </div>
                             </div>
                         </div>

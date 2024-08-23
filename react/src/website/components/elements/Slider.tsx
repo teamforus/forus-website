@@ -1,4 +1,5 @@
 import React, { useRef, useState } from 'react';
+import StateNavLink from '../../modules/state_router/StateNavLink';
 
 export default function Slider({
     label,
@@ -49,7 +50,9 @@ export default function Slider({
                 </div>
                 {showActionButton && (
                     <div className="block-slider-actions">
-                        <div className="button button-primary">Gratis demo aanvragen</div>
+                        <StateNavLink name={'book-demo'} className="button button-primary">
+                            Gratis demo aanvragen
+                        </StateNavLink>
                     </div>
                 )}
             </div>

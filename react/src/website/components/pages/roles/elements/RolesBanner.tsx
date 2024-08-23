@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import useAssetUrl from '../../../../hooks/useAssetUrl';
 import classNames from 'classnames';
+import StateNavLink from '../../../../modules/state_router/StateNavLink';
 
 export default function RolesBanner({
     type,
@@ -55,7 +56,9 @@ export default function RolesBanner({
 
                     {showActions && (
                         <div className="banner-actions">
-                            <div className="button button-primary">Gratis demo</div>
+                            <StateNavLink name={'book-demo'} className="button button-primary">
+                                Gratis demo
+                            </StateNavLink>
                             <div className="button button-dark">Lees ons verhaal</div>
                         </div>
                     )}

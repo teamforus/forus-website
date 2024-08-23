@@ -6,6 +6,7 @@ import Banner from './elements/Banner';
 import BlockLabelsInformationGeneral from './elements/information/BlockLabelsInformationGeneral';
 import BlockLabelsFinancialDashboard from './elements/information/BlockLabelsFinancialDashboard';
 import useSetMetaDescription from '../../../hooks/useSetMetaDescription';
+import StateNavLink from '../../../modules/state_router/StateNavLink';
 
 export default function Information() {
     const setTitle = useSetTitle();
@@ -111,7 +112,9 @@ export default function Information() {
                                     Vraag een gratis demo aan
                                 </div>
                                 <div className="block-with-image-actions">
-                                    <button className="button button-primary">Gratis demo aanvragen</button>
+                                    <StateNavLink name={'book-demo'} className="button button-primary">
+                                        Gratis demo aanvragen
+                                    </StateNavLink>
                                 </div>
                             </div>
 

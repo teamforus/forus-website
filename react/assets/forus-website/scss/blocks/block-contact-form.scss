@@ -5,6 +5,12 @@
     margin: 80px 0 100px 0;
 
     .block-contact-form-info {
+        .block-contact-form-label {
+            font: 300 28px/42px var(--base-font);
+            margin-bottom: 30px;
+            color: #315EFD;
+        }
+
         .block-contact-form-title {
             font: 700 56px/68px var(--base-font);
             margin-bottom: 60px;
@@ -19,11 +25,16 @@
 
     .block-contact-form-main {
         padding: 40px;
-        flex: 0 0 640px;
+        flex: 0 0 560px;
         border-radius: 20px;
         border: 1px solid #F4F4F4;
         background: #FFF;
         box-shadow: 0 20px 55px 0 rgba(115, 120, 145, 0.06);
+
+        .block-contact-form-title {
+            font: 600 25px/36px var(--base-font);
+            margin-bottom: 35px;
+        }
 
         .form {
             .form-label {
@@ -34,6 +45,11 @@
             .form-control:not([type=radio]):not([type=checkbox]) {
                 padding: 12px;
                 border: 1px solid #D6D7DB;
+            }
+
+            .select-control-country-codes {
+                width: 100px;
+                margin-right: 5px;
             }
 
             .form-group {
@@ -74,6 +90,11 @@
         gap: 30px;
 
         .block-contact-form-info {
+            .block-contact-form-label {
+                font: 300 20px/30px var(--base-font);
+                margin-bottom: 20px;
+            }
+
             .block-contact-form-title {
                 font: 700 30px/40px var(--base-font);
                 margin-bottom: 20px;
@@ -93,6 +114,10 @@
             .button {
                 width: 100%;
             }
+
+            .block-contact-form-title {
+                font: 600 20px/30px var(--base-font);
+            }
         }
 
         .block-contact-form-success, .block-contact-form-error {
@@ -110,6 +135,16 @@
             .block-contact-form-success-description {
                 font: 300 13px/21px var(--base-font);
                 margin-bottom: 30px;
+            }
+        }
+
+        &.block-contact-form-book-demo {
+            margin: 5px 0;
+
+            .block-contact-form-info, .block-contact-form-main {
+                padding: 48px 24px;
+                box-shadow: 0px -1px 0px 0px #F4F4F4;
+                border-radius: 0;
             }
         }
     }

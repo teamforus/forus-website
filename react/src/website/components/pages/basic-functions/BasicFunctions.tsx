@@ -143,7 +143,9 @@ export default function BasicFunctions() {
                                     en we bespreken de mogelijkheden.
                                 </div>
                                 <div className="block-with-image-actions">
-                                    <button className="button button-primary">Gratis demo aanvragen</button>
+                                    <StateNavLink name={'book-demo'} className="button button-primary">
+                                        Gratis demo aanvragen
+                                    </StateNavLink>
                                 </div>
                             </div>
                             <div className="block-with-image-image">

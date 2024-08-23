@@ -4,6 +4,7 @@ import useAssetUrl from '../../../hooks/useAssetUrl';
 import Slider from '../../elements/Slider';
 import BlockDashedSeparator from '../home/elements/BlockDashedSeparator';
 import useSetMetaDescription from '../../../hooks/useSetMetaDescription';
+import StateNavLink from '../../../modules/state_router/StateNavLink';
 
 export default function AboutUs() {
     const setTitle = useSetTitle();
@@ -206,7 +207,11 @@ export default function AboutUs() {
                 <div className="block block-our-values">
                     <div className="block-our-values-header">
                         Onze waarden
-                        <div className="button button-light button-sm block-our-values-header-button">Gratis demo</div>
+                        <StateNavLink
+                            name={'book-demo'}
+                            className="button button-light button-sm block-our-values-header-button">
+                            Gratis demo
+                        </StateNavLink>
                     </div>
 
                     <div className="block-our-values-items">

@@ -1,5 +1,6 @@
 import React from 'react';
 import useAssetUrl from '../../hooks/useAssetUrl';
+import StateNavLink from '../../modules/state_router/StateNavLink';
 
 export default function PreviewPageFooter() {
     const assetUrl = useAssetUrl();
@@ -26,10 +27,10 @@ export default function PreviewPageFooter() {
                     Inloggen
                 </div>
 
-                <div className="block-page-list-footer-auth-option">
+                <StateNavLink name={'book-demo'} className="block-page-list-footer-auth-option">
                     <img src={assetUrl(`/assets/img/demo-icon.svg`)} alt="" />
                     Gratis demo
-                </div>
+                </StateNavLink>
             </div>
         </div>
     );

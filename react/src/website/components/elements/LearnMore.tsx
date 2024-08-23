@@ -1,4 +1,5 @@
 import React from 'react';
+import StateNavLink from '../../modules/state_router/StateNavLink';
 
 export default function LearnMore({
     title,
@@ -23,7 +24,9 @@ export default function LearnMore({
             {!buttons ? (
                 <div className="block-learn-more-actions">
                     <div className="button-group flex flex-vertical">
-                        <div className="button button-primary text-center">Gratis demo aanvragen</div>
+                        <StateNavLink name={'book-demo'} className="button button-primary text-center">
+                            Gratis demo aanvragen
+                        </StateNavLink>
                         {!hideAboutUsButton && (
                             <div className="button button-gray text-center hide-sm">
                                 Leer meer over ons platform

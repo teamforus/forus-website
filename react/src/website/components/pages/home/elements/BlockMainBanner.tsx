@@ -1,4 +1,5 @@
 import React from 'react';
+import StateNavLink from '../../../../modules/state_router/StateNavLink';
 
 export default function BlockMainBanner() {
     return (
@@ -13,7 +14,9 @@ export default function BlockMainBanner() {
                     </div>
                 </div>
                 <div className="banner-actions">
-                    <div className="button button-primary">Gratis demo</div>
+                    <StateNavLink name={'book-demo'} className="button button-primary">
+                        Gratis demo
+                    </StateNavLink>
                     <div className="button button-dark">Ontdek de functies van ons platform</div>
                 </div>
             </div>

@@ -8,6 +8,7 @@ import BlockLabelsGeneral from './elements/cms/BlockLabelsGeneral';
 import BlockLabelsBlockManagement from './elements/cms/BlockLabelsBlockManagement';
 import BlockLabelsFAQ from './elements/cms/BlockLabelsFAQ';
 import useSetMetaDescription from '../../../hooks/useSetMetaDescription';
+import StateNavLink from '../../../modules/state_router/StateNavLink';
 
 export default function CMS() {
     const setTitle = useSetTitle();
@@ -211,7 +212,9 @@ export default function CMS() {
                                     Vraag een gratis demo aan
                                 </div>
                                 <div className="block-with-image-actions">
-                                    <button className="button button-primary">Gratis demo</button>
+                                    <StateNavLink name={'book-demo'} className="button button-primary">
+                                        Gratis demo aanvragen
+                                    </StateNavLink>
                                 </div>
                             </div>
 

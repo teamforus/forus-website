@@ -5,6 +5,7 @@ import PageSelector from './elements/PageSelector';
 import Banner from './elements/Banner';
 import SliderDetailed from '../../elements/SliderDetailed';
 import useSetMetaDescription from '../../../hooks/useSetMetaDescription';
+import StateNavLink from '../../../modules/state_router/StateNavLink';
 
 export default function Website() {
     const setTitle = useSetTitle();
@@ -152,7 +153,9 @@ export default function Website() {
                                     en we bespreken de mogelijkheden.
                                 </div>
                                 <div className="block-with-image-actions">
-                                    <button className="button button-primary">Gratis demo aanvragen</button>
+                                    <StateNavLink name={'book-demo'} className="button button-primary">
+                                        Gratis demo aanvragen
+                                    </StateNavLink>
                                 </div>
                             </div>
 

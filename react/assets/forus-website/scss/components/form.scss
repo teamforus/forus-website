@@ -61,7 +61,7 @@
             background-color: #e1e1e1;
         }
 
-        &[type='number'] {
+        &[type="number"] {
             padding-right: 0;
         }
 
@@ -110,6 +110,11 @@
                 }
             }
         }
+
+        &.select-control {
+            padding: 0 !important;
+            border: none !important;
+        }
     }
 
     .form-control-checked + .form-control {
@@ -156,14 +161,16 @@
     }
 
     select.form-control {
-        appearance: none;
         background-color: #fbfbfb;
+        background-image: url("../img/select-bg.png");
         background-position: 99%;
         background-repeat: no-repeat;
         background-size: 25px;
+        appearance: none;
         text-indent: 1px;
-        text-overflow: '';
+        text-overflow: "";
         padding-right: 30px;
+        appearance: none;
 
         &:focus {
             outline: none;
@@ -173,6 +180,132 @@
 
         &::-ms-expand {
             display: none;
+        }
+    }
+
+    .select-control-input {
+        --option-height: 40px;
+        position: relative;
+
+        .form-control {
+            display: block;
+
+            &:focus {
+                border: 1px solid black;
+                box-shadow: 0 3px 5px rgba(0, 0, 0, 0.3);
+            }
+        }
+
+        .select-control-search {
+            cursor: pointer;
+
+            .select-control-search-placeholder {
+                display: block;
+                color: var(--form-control-color);
+                line-height: 24px;
+            }
+
+            &:focus {
+                border: 1px solid black;
+                box-shadow: 0 3px 5px rgba(0, 0, 0, 0.3);
+            }
+        }
+
+        .select-control-search-container {
+            position: relative;
+
+            .select-control-search-clear {
+                position: absolute;
+                right: 0;
+                width: 25px;
+                top: 50%;
+                text-align: left;
+                transform: translate(0, -50%);
+                opacity: 1;
+                pointer-events: none;
+                transition: opacity .4s;
+
+                .mdi {
+                    color: #CCD0E0;
+                    font-size: 18px;
+                    height: 18px;
+                    vertical-align: bottom;
+                    cursor: pointer;
+                }
+            }
+        }
+
+        .select-control-icon {
+            position: absolute;
+            right: 0;
+            top: 0;
+            height: 100%;
+            line-height: inherit;
+            padding-top: inherit;
+            padding-bottom: inherit;
+            padding-right: 5px;
+            display: flex;
+            flex-direction: column;
+
+            .mdi {
+                display: flex;
+                font-size: 20px;
+                margin-top: 2px;
+                color: #646464;
+            }
+        }
+
+        .select-control-options {
+            z-index: 100;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            background: #fff;
+            border: 1px solid #d4d9dd;
+            border-top: none;
+            border-bottom-right-radius: var(--border-radius);
+            border-bottom-left-radius: var(--border-radius);
+            overflow: auto;
+            max-height: calc(var(--option-height) * 5);
+            margin-bottom: 30px;
+            @include webkit_scrollbar_gray();
+
+            .select-control-option {
+                padding: calc(calc(var(--option-height) - 20px) / 2) 15px calc(calc(calc(var(--option-height) - 20px) / 2) - 1px);
+                border-bottom: 1px solid whitesmoke;
+                cursor: pointer;
+                transition: 0.4s;
+                height: var(--option-height);
+                font: var(--dropdown-item-font);
+                line-height: 20px;
+                color: var(--dropdown-item-color);
+                background: var(--dropdown-item-background);
+                @include ellipsis();
+
+                strong,
+                b {
+                    color: #000;
+                    font-weight: 700;
+                }
+
+                &:hover,
+                &:focus {
+                    background: var(--dropdown-item-hover-background);
+                    color: var(--dropdown-item-hover-color);
+                }
+
+                &:last-child {
+                    border-bottom: none;
+                }
+            }
+        }
+
+        &.options {
+            .form-control:not([type="radio"]):not([type="checkbox"]) {
+                border-bottom-right-radius: 0;
+                border-bottom-left-radius: 0;
+            }
         }
     }
 
