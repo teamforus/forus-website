@@ -80,11 +80,18 @@
     }
 
     &.block-basic-functions-banner-main {
+        margin-bottom: 40px;
+
         .banner-media {
             order: 1;
             position: relative;
             right: auto;
             left: auto;
+            height: 520px;
+
+            .banner-media-image {
+                background-position: top left;
+            }
         }
 
         .banner-content {

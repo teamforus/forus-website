@@ -5,6 +5,7 @@ import LearnMore from '../../elements/LearnMore';
 import RolesSelector from './elements/RolesSelector';
 import RolesBanner from './elements/RolesBanner';
 import useSetMetaDescription from '../../../hooks/useSetMetaDescription';
+import StateNavLink from '../../../modules/state_router/StateNavLink';
 
 export default function RolesSponsor() {
     const setTitle = useSetTitle();
@@ -15,10 +16,10 @@ export default function RolesSponsor() {
     const [bannerTitle] = useState('Sponsor');
     const [bannerDescription] = useState(
         [
-            'Een organisatie die financiële middelen beschikbaar stelt voor deelnemers in het',
-            'Forus-systeem, zoals gemeenten of sociale ketenpartners.',
-            'Het Forus-platform is ontwikkeld om het volledige proces van regelingenuitgifte te',
-            'faciliteren, van de opzet van de regelingen en aanvraagprocedure tot het monitoren en',
+            'Een organisatie die financiële middelen beschikbaar stelt voor deelnemers in het ',
+            'Forus-systeem, zoals gemeenten of sociale ketenpartners. ',
+            '<br /><br />Het Forus-platform is ontwikkeld om het volledige proces van regelingenuitgifte te ',
+            'faciliteren, van de opzet van de regelingen en aanvraagprocedure tot het monitoren en ',
             'evalueren van de impact.',
         ].join(''),
     );
@@ -134,13 +135,15 @@ export default function RolesSponsor() {
                                             Content Management System (CMS):
                                         </div>
                                         Sponsors hebben de mogelijkheid om de website volledig aan te passen en fondsen
-                                        toe te voegen met behulp van het CMS. Ze kunnen de communicatie op de website
-                                        volledig personaliseren en in hun eigen huisstijl vormgeven.
+                                        toe te voegen met behulp <StateNavLink name={'cms'}>van het CMS</StateNavLink>.
+                                        Ze kunnen de communicatie op de website volledig personaliseren en in hun eigen
+                                        huisstijl vormgeven.
                                     </div>
                                     <div className="block-with-image-list-item">
                                         <div className="block-with-image-list-item-title">Website:</div>
-                                        De voorkant van het systeem geeft deelnemers een overzicht van alle benodigde
-                                        informatie en biedt de mogelijkheid om in te loggen op hun persoonlijke account.
+                                        <StateNavLink name={'website'}>De voorkant van het systeem</StateNavLink> geeft
+                                        deelnemers een overzicht van alle benodigde informatie en biedt de mogelijkheid
+                                        om in te loggen op hun persoonlijke account.
                                     </div>
                                 </div>
                             </div>
@@ -184,9 +187,8 @@ export default function RolesSponsor() {
                                 <div className="block-with-image-label block-with-image-label-sm">Stap 10</div>
                                 <div className="block-with-image-title">Toegang tot support en nieuws</div>
                                 <div className="block-with-image-description">
-                                    De sponsor monitort en evalueert de impact van de fondsen door gebruik te maken van
-                                    de statistiekenpagina in de beheeromgeving. Ook gebruikt de sponsor de website
-                                    analytics koppeling voor het monitoren en optimaliseren van de website.
+                                    Sponsors hebben toegang tot de support en het helpcenter van Forus, en worden op de
+                                    hoogte gehouden van alle nieuwe ontwikkelingen via onze nieuwsbrief.
                                 </div>
 
                                 <div className="block-with-image-list">
@@ -243,7 +245,7 @@ export default function RolesSponsor() {
                                         Een sponsor kan in enkele eenvoudige stappen een nieuw fonds opzetten. Hier
                                         kiest de sponsor onder andere het type fonds en de aanvraagmethode, en stelt hij
                                         de voorwaarden voor deelname in. Voor meer informatie over de fondsen, ga naar
-                                        de Fondsenpagina.
+                                        de <StateNavLink name={'funds'}>Fondsenpagina</StateNavLink>.
                                     </div>
                                 </div>
                             </div>
@@ -310,10 +312,11 @@ export default function RolesSponsor() {
                                 <div className="block-with-image-list">
                                     <div className="block-with-image-list-item">
                                         <div className="block-with-image-list-item-title">Statistieken:</div>
-                                        In de beheeromgeving beheren sponsors hun fondsen en bekijken ze financiële
-                                        statistieken. Er zijn verschillende filteropties beschikbaar, bijvoorbeeld het
-                                        filteren op fondsen of aanbieders. Voor meer informatie naar de
-                                        Managementinformatiepagina.
+                                        In de beheeromgeving beheren sponsors hun fondsen en bekijken ze{' '}
+                                        <StateNavLink name={'information'}>financiële statistieken</StateNavLink>. Er
+                                        zijn verschillende filteropties beschikbaar, bijvoorbeeld het filteren op
+                                        fondsen of aanbieders. Voor meer informatie naar de{' '}
+                                        <StateNavLink name={'information'}>Managementinformatiepagina</StateNavLink>.
                                     </div>
                                     <div className="block-with-image-list-item">
                                         <div className="block-with-image-list-item-title">
@@ -337,7 +340,7 @@ export default function RolesSponsor() {
                         description={
                             'Laten we eens kijken naar de mogelijkheden en de optimale manier om uw regelingen uit te geven.'
                         }
-                        buttons={[{ title: 'Gratis demo aanvragen', type: 'dark' }]}
+                        buttons={[{ title: 'Gratis demo aanvragen', type: 'dark', stateName: 'book-demo' }]}
                         backgroundColor={'#EBE9FE'}
                     />
                 </div>

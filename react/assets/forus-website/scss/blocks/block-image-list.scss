@@ -44,6 +44,10 @@
                 margin-left: 20px;
                 position: relative;
 
+                a {
+                    font: 300 15px/24px var(--base-font);
+                }
+
                 .block-with-image-list-item-title {
                     display: inline-block;
                     font-weight: 600;

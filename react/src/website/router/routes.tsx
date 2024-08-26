@@ -29,7 +29,7 @@ router.state('home', <Home />, {
 });
 
 router.state('sign-in', <WIP />, {
-    path: `/sign-in`,
+    path: `/login`,
     protected: false,
 });
 
@@ -39,7 +39,7 @@ router.state('sign-out', <SignOut />, {
 });
 
 router.state('basic-functions', <BasicFunctions />, {
-    path: `/basic-functions`,
+    path: `/basisfuncties`,
     protected: false,
 });
 
@@ -54,7 +54,7 @@ router.state('cms', <CMS />, {
 });
 
 router.state('funds', <Funds />, {
-    path: `/funds`,
+    path: `/fondsen`,
     protected: false,
 });
 
@@ -64,62 +64,52 @@ router.state('website', <Website />, {
 });
 
 router.state('information', <Information />, {
-    path: `/information`,
-    protected: false,
-});
-
-router.state('roles', <WIP />, {
-    path: `/roles`,
-    protected: false,
-});
-
-router.state('platform', <WIP />, {
-    path: `/platform`,
+    path: `/managementinformatie`,
     protected: false,
 });
 
 router.state('about-us', <AboutUs />, {
-    path: `/about-us`,
+    path: `/ons-verhaal`,
     protected: false,
 });
 
 router.state('about-us-innovation', <AboutUsInnovation />, {
-    path: `/about-us-innovation`,
+    path: `/project-innovatiebudget-2023`,
     protected: false,
 });
 
 router.state('roles-main', <RolesMain />, {
-    path: `/roles-main`,
+    path: `/rollen`,
     protected: false,
 });
 
 router.state('roles-requester', <RolesRequester />, {
-    path: `/roles-requester`,
+    path: `/rollen/deelnemer`,
     protected: false,
 });
 
 router.state('roles-provider', <RolesProvider />, {
-    path: `/roles-provider`,
+    path: `/rollen/aanbieder`,
     protected: false,
 });
 
 router.state('roles-sponsor', <RolesSponsor />, {
-    path: `/roles-sponsor`,
+    path: `/rollen/sponsor`,
     protected: false,
 });
 
 router.state('roles-validator', <RolesValidator />, {
-    path: `/roles-validator`,
+    path: `/rollen/beoordelaar`,
     protected: false,
 });
 
 router.state('contacts', <Contacts />, {
-    path: `/contacts`,
+    path: `/contact`,
     protected: false,
 });
 
 router.state('privacy', <Privacy />, {
-    path: `/privacy`,
+    path: `/privacyverklaring`,
     protected: false,
 });
 

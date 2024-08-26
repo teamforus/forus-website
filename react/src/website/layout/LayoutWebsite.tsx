@@ -12,6 +12,7 @@ import LayoutHeader from './elements/LayoutHeader';
 import useActiveMenuDropdown from '../hooks/useActiveMenuDropdown';
 import UserDropdown from '../components/elements/UserDropdown';
 import CookiesPopup from '../components/elements/CookiesPopup';
+import useUserAuthDropdown from '../hooks/useUserAuthDropdown';
 
 export const LayoutWebsite = ({ children }: { children: React.ReactElement }) => {
     const { route } = useStateRoutes();
@@ -20,6 +21,7 @@ export const LayoutWebsite = ({ children }: { children: React.ReactElement }) =>
     const envData = useEnvData();
     const appConfigs = useAppConfigs();
     const activeMenuDropdown = useActiveMenuDropdown();
+    const showUserAuthDropdown = useUserAuthDropdown();
 
     const authIdentity = useAuthIdentity();
     const pageScrollRef = useRef<HTMLDivElement>(null);
@@ -50,7 +52,7 @@ export const LayoutWebsite = ({ children }: { children: React.ReactElement }) =>
                 width: '100%',
                 height: '100%',
                 position: 'fixed',
-                overflow: modals.length > 0 ? 'hidden' : 'auto',
+                overflow: modals.length > 0 || showUserAuthDropdown ? 'hidden' : 'auto',
             }}>
             <LoadingBar />
 

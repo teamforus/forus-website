@@ -5,6 +5,7 @@ import LearnMore from '../../elements/LearnMore';
 import RolesSelector from './elements/RolesSelector';
 import RolesBanner from './elements/RolesBanner';
 import useSetMetaDescription from '../../../hooks/useSetMetaDescription';
+import StateNavLink from '../../../modules/state_router/StateNavLink';
 
 export default function RolesRequester() {
     const setTitle = useSetTitle();
@@ -14,8 +15,8 @@ export default function RolesRequester() {
     const [bannerTitle] = useState('Aanvrager /Deelnemer');
     const [bannerDescription] = useState(
         [
-            "Binnen het Forus-systeem wordt iemand die een aanvraag voor een regeling indient, gezien als een 'aanvrager'.",
-            "Zodra deze aanvraag is goedgekeurd, verandert de status van deze persoon in het systeem naar 'deelnemer'.",
+            "Binnen het Forus-systeem wordt iemand die een aanvraag voor een regeling indient, gezien als een <i>'aanvrager'</i>. ",
+            "Zodra deze aanvraag is goedgekeurd, verandert de status van deze persoon in het systeem naar <i>'deelnemer'</i>.",
         ].join(''),
     );
 
@@ -163,6 +164,12 @@ export default function RolesRequester() {
                                         volledige bedrag niet hoeven te betalen. We zoeken naar gemeenten om dit samen
                                         te implementeren.
                                     </div>
+                                    <div className="block-with-image-list-item-actions">
+                                        <StateNavLink name="book-demo" className="button button-fill button-primary">
+                                            Ik wil meer weten
+                                            <em className="mdi mdi-arrow-right icon-end" />
+                                        </StateNavLink>
+                                    </div>
                                 </div>
                             </div>
                             <div className="block-with-image-image">
@@ -297,7 +304,7 @@ export default function RolesRequester() {
                         description={
                             'Laten we eens kijken naar de mogelijkheden en de optimale manier om uw regelingen uit te geven.'
                         }
-                        buttons={[{ title: 'Gratis demo aanvragen', type: 'dark' }]}
+                        buttons={[{ title: 'Gratis demo aanvragen', type: 'dark', stateName: 'book-demo' }]}
                         backgroundColor={'#E0F4FF'}
                     />
                 </div>

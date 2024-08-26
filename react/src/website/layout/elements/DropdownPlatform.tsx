@@ -77,91 +77,111 @@ export default function DropdownPlatform() {
                                 <StateNavLink
                                     name={'funds'}
                                     className="block-page-list-main-details-list-item"
-                                    onMouseOver={() => setActiveSubItem('funds')}
                                     onClick={() => setActiveMenuDropdown(null)}>
-                                    <img
-                                        className="details-list-image"
-                                        src={assetUrl(
-                                            `/assets/img/icons-platform/funds${
-                                                activeSubItem == 'funds' ? '-active' : ''
-                                            }.svg`,
-                                        )}
-                                        alt=""
-                                    />
-                                    Fondsen
-                                    <em className={'mdi mdi-arrow-right'} />
+                                    <div
+                                        className="flex flex-grow"
+                                        onMouseOver={() => setActiveSubItem('funds')}
+                                        onMouseLeave={() => setActiveSubItem(null)}>
+                                        <img
+                                            className="details-list-image"
+                                            src={assetUrl(
+                                                `/assets/img/icons-platform/funds${
+                                                    activeSubItem == 'funds' ? '-active' : ''
+                                                }.svg`,
+                                            )}
+                                            alt=""
+                                        />
+                                        Fondsen
+                                        <em className={'mdi mdi-arrow-right'} />
+                                    </div>
                                 </StateNavLink>
 
                                 <StateNavLink
                                     name={'website'}
                                     className="block-page-list-main-details-list-item"
-                                    onMouseOver={() => setActiveSubItem('websites')}
                                     onClick={() => setActiveMenuDropdown(null)}>
-                                    <img
-                                        className="details-list-image"
-                                        src={assetUrl(
-                                            `/assets/img/icons-platform/websites${
-                                                activeSubItem == 'websites' ? '-active' : ''
-                                            }.svg`,
-                                        )}
-                                        alt=""
-                                    />
-                                    Websites
-                                    <em className={'mdi mdi-arrow-right'} />
+                                    <div
+                                        className="flex flex-grow"
+                                        onMouseOver={() => setActiveSubItem('websites')}
+                                        onMouseLeave={() => setActiveSubItem(null)}>
+                                        <img
+                                            className="details-list-image"
+                                            src={assetUrl(
+                                                `/assets/img/icons-platform/websites${
+                                                    activeSubItem == 'websites' ? '-active' : ''
+                                                }.svg`,
+                                            )}
+                                            alt=""
+                                        />
+                                        Websites
+                                        <em className={'mdi mdi-arrow-right'} />
+                                    </div>
                                 </StateNavLink>
 
                                 <StateNavLink
                                     name={'cms'}
                                     className="block-page-list-main-details-list-item"
-                                    onMouseOver={() => setActiveSubItem('cms')}
                                     onClick={() => setActiveMenuDropdown(null)}>
-                                    <img
-                                        className="details-list-image"
-                                        src={assetUrl(
-                                            `/assets/img/icons-platform/cms${
-                                                activeSubItem == 'cms' ? '-active' : ''
-                                            }.svg`,
-                                        )}
-                                        alt=""
-                                    />
-                                    CMS
-                                    <em className={'mdi mdi-arrow-right'} />
+                                    <div
+                                        className="flex flex-grow"
+                                        onMouseOver={() => setActiveSubItem('cms')}
+                                        onMouseLeave={() => setActiveSubItem(null)}>
+                                        <img
+                                            className="details-list-image"
+                                            src={assetUrl(
+                                                `/assets/img/icons-platform/cms${
+                                                    activeSubItem == 'cms' ? '-active' : ''
+                                                }.svg`,
+                                            )}
+                                            alt=""
+                                        />
+                                        CMS
+                                        <em className={'mdi mdi-arrow-right'} />
+                                    </div>
                                 </StateNavLink>
 
                                 <StateNavLink
                                     name={'me-app'}
                                     className="block-page-list-main-details-list-item"
-                                    onMouseOver={() => setActiveSubItem('me-app')}
                                     onClick={() => setActiveMenuDropdown(null)}>
-                                    <img
-                                        className="details-list-image"
-                                        src={assetUrl(
-                                            `/assets/img/icons-platform/me-app${
-                                                activeSubItem == 'cms' ? '-active' : ''
-                                            }.svg`,
-                                        )}
-                                        alt=""
-                                    />
-                                    Me-app
-                                    <em className={'mdi mdi-arrow-right'} />
+                                    <div
+                                        className="flex flex-grow"
+                                        onMouseOver={() => setActiveSubItem('me-app')}
+                                        onMouseLeave={() => setActiveSubItem(null)}>
+                                        <img
+                                            className="details-list-image"
+                                            src={assetUrl(
+                                                `/assets/img/icons-platform/me-app${
+                                                    activeSubItem == 'me-app' ? '-active' : ''
+                                                }.svg`,
+                                            )}
+                                            alt=""
+                                        />
+                                        Me-app
+                                        <em className={'mdi mdi-arrow-right'} />
+                                    </div>
                                 </StateNavLink>
 
                                 <StateNavLink
                                     name={'information'}
                                     className="block-page-list-main-details-list-item"
-                                    onMouseOver={() => setActiveSubItem('notifications')}
                                     onClick={() => setActiveMenuDropdown(null)}>
-                                    <img
-                                        className="details-list-image"
-                                        src={assetUrl(
-                                            `/assets/img/icons-platform/notifications${
-                                                activeSubItem == 'cms' ? '-active' : ''
-                                            }.svg`,
-                                        )}
-                                        alt=""
-                                    />
-                                    Managementinformatie
-                                    <em className={'mdi mdi-arrow-right'} />
+                                    <div
+                                        className="flex flex-grow"
+                                        onMouseOver={() => setActiveSubItem('notifications')}
+                                        onMouseLeave={() => setActiveSubItem(null)}>
+                                        <img
+                                            className="details-list-image"
+                                            src={assetUrl(
+                                                `/assets/img/icons-platform/notifications${
+                                                    activeSubItem == 'notifications' ? '-active' : ''
+                                                }.svg`,
+                                            )}
+                                            alt=""
+                                        />
+                                        Managementinformatie
+                                        <em className={'mdi mdi-arrow-right'} />
+                                    </div>
                                 </StateNavLink>
                             </div>
                         ) : (
@@ -169,73 +189,89 @@ export default function DropdownPlatform() {
                                 <StateNavLink
                                     name={'roles-requester'}
                                     className="block-page-list-main-details-list-item"
-                                    onMouseOver={() => setActiveSubItem('requester')}
                                     onClick={() => setActiveMenuDropdown(null)}>
-                                    <img
-                                        className="details-list-image"
-                                        src={assetUrl(
-                                            `/assets/img/icons-roles/requester${
-                                                activeSubItem == 'requester' ? '-active' : ''
-                                            }.svg`,
-                                        )}
-                                        alt=""
-                                    />
-                                    Deelnemer / Aanvrager
-                                    <em className={'mdi mdi-arrow-right'} />
+                                    <div
+                                        className="flex flex-grow"
+                                        onMouseOver={() => setActiveSubItem('requester')}
+                                        onMouseLeave={() => setActiveSubItem(null)}>
+                                        <img
+                                            className="details-list-image"
+                                            src={assetUrl(
+                                                `/assets/img/icons-roles/requester${
+                                                    activeSubItem == 'requester' ? '-active' : ''
+                                                }.svg`,
+                                            )}
+                                            alt=""
+                                        />
+                                        Deelnemer / Aanvrager
+                                        <em className={'mdi mdi-arrow-right'} />
+                                    </div>
                                 </StateNavLink>
 
                                 <StateNavLink
                                     name={'roles-provider'}
                                     className="block-page-list-main-details-list-item"
-                                    onMouseOver={() => setActiveSubItem('provider')}
                                     onClick={() => setActiveMenuDropdown(null)}>
-                                    <img
-                                        className="details-list-image"
-                                        src={assetUrl(
-                                            `/assets/img/icons-roles/provider${
-                                                activeSubItem == 'provider' ? '-active' : ''
-                                            }.svg`,
-                                        )}
-                                        alt=""
-                                    />
-                                    Aanbieder
-                                    <em className={'mdi mdi-arrow-right'} />
+                                    <div
+                                        className="flex flex-grow"
+                                        onMouseOver={() => setActiveSubItem('provider')}
+                                        onMouseLeave={() => setActiveSubItem(null)}>
+                                        <img
+                                            className="details-list-image"
+                                            src={assetUrl(
+                                                `/assets/img/icons-roles/provider${
+                                                    activeSubItem == 'provider' ? '-active' : ''
+                                                }.svg`,
+                                            )}
+                                            alt=""
+                                        />
+                                        Aanbieder
+                                        <em className={'mdi mdi-arrow-right'} />
+                                    </div>
                                 </StateNavLink>
 
                                 <StateNavLink
                                     name={'roles-sponsor'}
                                     className="block-page-list-main-details-list-item"
-                                    onMouseOver={() => setActiveSubItem('sponsor')}
                                     onClick={() => setActiveMenuDropdown(null)}>
-                                    <img
-                                        className="details-list-image"
-                                        src={assetUrl(
-                                            `/assets/img/icons-roles/sponsor${
-                                                activeSubItem == 'sponsor' ? '-active' : ''
-                                            }.svg`,
-                                        )}
-                                        alt=""
-                                    />
-                                    Sponsor
-                                    <em className={'mdi mdi-arrow-right'} />
+                                    <div
+                                        className="flex flex-grow"
+                                        onMouseOver={() => setActiveSubItem('sponsor')}
+                                        onMouseLeave={() => setActiveSubItem(null)}>
+                                        <img
+                                            className="details-list-image"
+                                            src={assetUrl(
+                                                `/assets/img/icons-roles/sponsor${
+                                                    activeSubItem == 'sponsor' ? '-active' : ''
+                                                }.svg`,
+                                            )}
+                                            alt=""
+                                        />
+                                        Sponsor
+                                        <em className={'mdi mdi-arrow-right'} />
+                                    </div>
                                 </StateNavLink>
 
                                 <StateNavLink
                                     name={'roles-validator'}
                                     className="block-page-list-main-details-list-item"
-                                    onMouseOver={() => setActiveSubItem('validator')}
                                     onClick={() => setActiveMenuDropdown(null)}>
-                                    <img
-                                        className="details-list-image"
-                                        src={assetUrl(
-                                            `/assets/img/icons-roles/validator${
-                                                activeSubItem == 'validator' ? '-active' : ''
-                                            }.svg`,
-                                        )}
-                                        alt=""
-                                    />
-                                    Beoordelaar
-                                    <em className={'mdi mdi-arrow-right'} />
+                                    <div
+                                        className="flex flex-grow"
+                                        onMouseOver={() => setActiveSubItem('validator')}
+                                        onMouseLeave={() => setActiveSubItem(null)}>
+                                        <img
+                                            className="details-list-image"
+                                            src={assetUrl(
+                                                `/assets/img/icons-roles/validator${
+                                                    activeSubItem == 'validator' ? '-active' : ''
+                                                }.svg`,
+                                            )}
+                                            alt=""
+                                        />
+                                        Beoordelaar
+                                        <em className={'mdi mdi-arrow-right'} />
+                                    </div>
                                 </StateNavLink>
                             </div>
                         )}

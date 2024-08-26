@@ -17,7 +17,9 @@ export default function BlockMainBanner() {
                     <StateNavLink name={'book-demo'} className="button button-primary">
                         Gratis demo
                     </StateNavLink>
-                    <div className="button button-dark">Ontdek de functies van ons platform</div>
+                    <StateNavLink name={'basic-functions'} className="button button-dark">
+                        Ontdek de functies van ons platform
+                    </StateNavLink>
                 </div>
             </div>
         </div>

@@ -1,4 +1,6 @@
 .block.block-labels-list {
+    margin-bottom: 60px;
+
     .block-labels-list-title {
         font: 600 38px/48px var(--base-font);
         margin-bottom: 45px;
@@ -29,6 +31,11 @@
     }
 
     @media screen and (max-width: 1000px) {
+        .block-labels-list-title {
+            font: 600 20px/30px var(--base-font);
+            margin-bottom: 25px;
+        }
+
         .block-labels-list-items {
             .block-labels-list-item {
                 padding: 5px 15px 5px 5px;

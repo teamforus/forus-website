@@ -4,11 +4,12 @@ import useAssetUrl from '../../hooks/useAssetUrl';
 import BlockDashedSeparator from '../pages/home/elements/BlockDashedSeparator';
 import LearnMore from '../elements/LearnMore';
 import { useNavigateState } from '../../modules/state_router/Router';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 export default function NotFound({ error = '404' }: { error?: string }) {
     const assetUrl = useAssetUrl();
     const navigateState = useNavigateState();
+    const navigate = useNavigate();
     const location = useLocation();
 
     useEffect(() => {
@@ -40,9 +41,9 @@ export default function NotFound({ error = '404' }: { error?: string }) {
                         De pagina die u probeert te bereiken bestaat niet (meer).
                     </div>
                     <div className="page-not-found-actions">
-                        <StateNavLink name="home" className="button button-primary">
+                        <div className="button button-primary" onClick={() => navigate(-1)}>
                             <span>Ga terug</span>
-                        </StateNavLink>
+                        </div>
                         <StateNavLink name="home" className="button button-dark">
                             <span>Naar home</span>
                         </StateNavLink>

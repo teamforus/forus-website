@@ -4,6 +4,8 @@ import useAssetUrl from '../../../hooks/useAssetUrl';
 import PageSelector from './elements/PageSelector';
 import Banner from './elements/Banner';
 import useSetMetaDescription from '../../../hooks/useSetMetaDescription';
+import BlockDashedSeparator from '../home/elements/BlockDashedSeparator';
+import StateNavLink from '../../../modules/state_router/StateNavLink';
 
 export default function MeApp() {
     const setTitle = useSetTitle();
@@ -39,12 +41,14 @@ export default function MeApp() {
                 <div className="wrapper">
                     <PageSelector activeType={'me-app'} />
 
-                    <div className="section section-overview">
-                        <div className="section-title section-title-sm text-left">Feature overzicht</div>
-                        <div className="section-separator">
+                    <div className="block block-text block-text-overview">
+                        <div className="block-text-title block-text-title-sm text-left">Feature overzicht</div>
+                        <div className="block-text-separator">
                             <div className="line" />
                         </div>
                     </div>
+                    <br />
+                    <br />
                 </div>
 
                 <div className="wrapper">
@@ -94,9 +98,7 @@ export default function MeApp() {
                     </div>
                 </div>
 
-                <div className="separator-dashed">
-                    <img src={assetUrl(`/assets/img/icon-forus.svg`)} alt="" />
-                </div>
+                <BlockDashedSeparator image={true} />
 
                 <div className="wrapper">
                     <div className="block block-with-columns">
@@ -193,7 +195,10 @@ export default function MeApp() {
                         </div>
                     </div>
 
-                    <div className="button button-primary">Gratis demo</div>
+                    <StateNavLink name={'book-demo'}>
+                        <div className="hide-sm button button-primary">Gratis demo</div>
+                        <div className="show-sm button button-fill button-primary">Gratis demo</div>
+                    </StateNavLink>
 
                     <div className="block block-me-app-download">
                         <div className="block-me-app-download-info">

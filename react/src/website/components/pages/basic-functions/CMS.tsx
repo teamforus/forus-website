@@ -9,6 +9,7 @@ import BlockLabelsBlockManagement from './elements/cms/BlockLabelsBlockManagemen
 import BlockLabelsFAQ from './elements/cms/BlockLabelsFAQ';
 import useSetMetaDescription from '../../../hooks/useSetMetaDescription';
 import StateNavLink from '../../../modules/state_router/StateNavLink';
+import BlockDashedSeparator from '../home/elements/BlockDashedSeparator';
 
 export default function CMS() {
     const setTitle = useSetTitle();
@@ -83,11 +84,9 @@ export default function CMS() {
 
                     <SliderCompact description={sliderDescription} elements={sliderElements} />
 
-                    <div className="separator-dashed">
-                        <img src={assetUrl(`/assets/img/icon-forus.svg`)} alt="" />
-                    </div>
+                    <BlockDashedSeparator image={true} />
 
-                    <div className="block block-text" style={{ marginTop: '100px' }}>
+                    <div className="block block-text">
                         <div className="block-text-title block-text-title-sm">Content aanpassen</div>
                         <div className="block-text-description block-text-description-sm">
                             Met ons CMS pas u eenvoudig de content van uw website pagina&apos;s aan. U kunt tekst,
@@ -197,9 +196,7 @@ export default function CMS() {
                     </div>
                 </div>
 
-                <div className="separator-dashed">
-                    <img src={assetUrl(`/assets/img/icon-forus.svg`)} alt="" />
-                </div>
+                <BlockDashedSeparator image={true} />
 
                 <div className="wrapper">
                     <div className="block block-with-image">

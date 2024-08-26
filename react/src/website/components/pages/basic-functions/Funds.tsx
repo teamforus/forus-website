@@ -7,6 +7,7 @@ import BlockLabelsFundGeneral from './elements/funds/BlockLabelsFundGeneral';
 import StateNavLink from '../../../modules/state_router/StateNavLink';
 import BlockLabelsFAQ from './elements/funds/BlockLabelsFaq';
 import useSetMetaDescription from '../../../hooks/useSetMetaDescription';
+import BlockDashedSeparator from '../home/elements/BlockDashedSeparator';
 
 export default function Funds() {
     const setTitle = useSetTitle();
@@ -72,9 +73,7 @@ export default function Funds() {
                     </div>
                 </div>
 
-                <div className="separator-dashed" style={{ marginTop: '100px' }}>
-                    <img src={assetUrl(`/assets/img/icon-forus.svg`)} alt="" />
-                </div>
+                <BlockDashedSeparator image={true} />
 
                 <div className="wrapper">
                     <div className="block block-with-image">
@@ -354,9 +353,7 @@ export default function Funds() {
                     </div>
                 </div>
 
-                <div className="separator-dashed">
-                    <img src={assetUrl(`/assets/img/icon-forus.svg`)} alt="" />
-                </div>
+                <BlockDashedSeparator image={true} />
 
                 <div className="wrapper">
                     <div className="block block-with-image">

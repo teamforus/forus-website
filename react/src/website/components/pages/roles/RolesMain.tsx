@@ -152,7 +152,7 @@ export default function RolesMain() {
                         description={
                             'Laten we eens kijken naar de mogelijkheden en de optimale manier om uw regelingen uit te geven.'
                         }
-                        buttons={[{ title: 'Gratis demo aanvragen', type: 'primary' }]}
+                        buttons={[{ title: 'Gratis demo aanvragen', type: 'primary', stateName: 'book-demo' }]}
                     />
                 </div>
             </div>

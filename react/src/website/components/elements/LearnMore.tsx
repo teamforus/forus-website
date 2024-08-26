@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import StateNavLink from '../../modules/state_router/StateNavLink';
 
 export default function LearnMore({
@@ -10,7 +10,7 @@ export default function LearnMore({
 }: {
     title: string;
     description?: string;
-    buttons?: { title: string; type?: string }[];
+    buttons?: { title: string; type?: string; stateName?: string }[];
     backgroundColor?: string;
     hideAboutUsButton?: boolean;
 }) {
@@ -28,19 +28,30 @@ export default function LearnMore({
                             Gratis demo aanvragen
                         </StateNavLink>
                         {!hideAboutUsButton && (
-                            <div className="button button-gray text-center hide-sm">
+                            <StateNavLink name={'book-demo'} className="button button-gray text-center hide-sm">
                                 Leer meer over ons platform
                                 <em className="mdi mdi-arrow-right icon-right" />
-                            </div>
+                            </StateNavLink>
                         )}
                     </div>
                 </div>
             ) : (
                 <div className="block-learn-more-actions">
                     {buttons.map((button, index) => (
-                        <div key={index} className="button-group flex flex-vertical">
-                            <div className={`button button-${button.type} text-center`}>{button.title}</div>
-                        </div>
+                        <Fragment key={index}>
+                            {button.stateName ? (
+                                <StateNavLink
+                                    key={index}
+                                    name={button.stateName}
+                                    className="button-group flex flex-vertical">
+                                    <div className={`button button-${button.type} text-center`}>{button.title}</div>
+                                </StateNavLink>
+                            ) : (
+                                <div className="button-group flex flex-vertical">
+                                    <div className={`button button-${button.type} text-center`}>{button.title}</div>
+                                </div>
+                            )}
+                        </Fragment>
                     ))}
                 </div>
             )}

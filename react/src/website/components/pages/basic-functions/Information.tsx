@@ -7,6 +7,7 @@ import BlockLabelsInformationGeneral from './elements/information/BlockLabelsInf
 import BlockLabelsFinancialDashboard from './elements/information/BlockLabelsFinancialDashboard';
 import useSetMetaDescription from '../../../hooks/useSetMetaDescription';
 import StateNavLink from '../../../modules/state_router/StateNavLink';
+import BlockDashedSeparator from '../home/elements/BlockDashedSeparator';
 
 export default function Information() {
     const setTitle = useSetTitle();
@@ -73,9 +74,7 @@ export default function Information() {
                     </div>
                 </div>
 
-                <div className="separator-dashed" style={{ marginTop: '100px' }}>
-                    <img src={assetUrl(`/assets/img/icon-forus.svg`)} alt="" />
-                </div>
+                <BlockDashedSeparator image={true} />
 
                 <div className="wrapper">
                     <div className="block block-with-image">

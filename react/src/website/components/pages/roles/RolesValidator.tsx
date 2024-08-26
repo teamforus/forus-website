@@ -15,10 +15,10 @@ export default function RolesValidator() {
     const [bannerTitle] = useState('Beoordelaar');
     const [bannerDescription] = useState(
         [
-            'Een organisatie die de gegevens van de aanvrager doorneemt om te beslissen of een aanvraag',
-            'toegekend of afgewezen wordt. Dit is een belangrijke taak waarbij gekeken wordt naar alle',
-            'details om te bepalen of iemand recht heeft op wat hij of zij aanvraagt. Deze rol kan door',
-            'de gemeente zelf vervuld worden, maar soms komt het ook voor dat andere partijen zoals',
+            'Een organisatie die de gegevens van de aanvrager doorneemt om te beslissen of een aanvraag ',
+            'toegekend of afgewezen wordt. Dit is een belangrijke taak waarbij gekeken wordt naar alle ',
+            'details om te bepalen of iemand recht heeft op wat hij of zij aanvraagt. Deze rol kan door ',
+            'de gemeente zelf vervuld worden, maar soms komt het ook voor dat andere partijen zoals ',
             'sociale ketenpartners of andere overheidsorganisaties deze taak op zich nemen.',
         ].join(''),
     );
@@ -224,8 +224,7 @@ export default function RolesValidator() {
                                     <div className="block-with-image-list-item">
                                         <div className="block-with-image-list-item-title">Aanvullingsverzoek:</div>
                                         Beoordelaars kunnen via het Forus-platform extra informatie of bewijsmateriaal
-                                        opvragen van de aanvrager.&nbspDit is nodig om de aanvraag compleet te
-                                        beoordelen.
+                                        opvragen van de aanvrager. Dit is nodig om de aanvraag compleet te beoordelen.
                                     </div>
                                 </div>
                             </div>
@@ -262,7 +261,7 @@ export default function RolesValidator() {
                         description={
                             'Laten we eens kijken naar de mogelijkheden en de optimale manier om uw regelingen uit te geven.'
                         }
-                        buttons={[{ title: 'Gratis demo aanvragen', type: 'dark' }]}
+                        buttons={[{ title: 'Gratis demo aanvragen', type: 'dark', stateName: 'book-demo' }]}
                         backgroundColor={'#DEF5DF'}
                     />
                 </div>

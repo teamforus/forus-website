@@ -3,12 +3,14 @@ import useAppConfigs from '../../hooks/useAppConfigs';
 import useAssetUrl from '../../hooks/useAssetUrl';
 import StateNavLink from '../../modules/state_router/StateNavLink';
 import useEnvData from '../../hooks/useEnvData';
+import useSetActiveMenuDropdown from '../../hooks/useSetActiveMenuDropdown';
 
 export default function LayoutFooter() {
     const envData = useEnvData();
     const appConfigs = useAppConfigs();
 
     const assetUrl = useAssetUrl();
+    const setActiveMenuDropdown = useSetActiveMenuDropdown();
 
     if (!appConfigs) {
         return null;
@@ -18,7 +20,10 @@ export default function LayoutFooter() {
         <div className="layout-footer">
             <div className="wrapper">
                 <div className="block block-footer-apps">
-                    <StateNavLink name={'home'} className="footer-apps-logo">
+                    <StateNavLink
+                        name={'home'}
+                        className="footer-apps-logo"
+                        onClick={() => setActiveMenuDropdown(null)}>
                         <img src={assetUrl('/assets/img/logo.svg')} alt="" />
                     </StateNavLink>
 
@@ -27,17 +32,17 @@ export default function LayoutFooter() {
                         <div className="footer-apps-detail-links">
                             <a
                                 className="footer-apps-details-link"
-                                href={envData?.config?.ios_iphone_link}
-                                target={'_blank'}
-                                rel="noreferrer">
-                                <img src={assetUrl('/assets/img/icon-app-ios.svg')} alt={''} />
-                            </a>
-                            <a
-                                className="footer-apps-details-link"
                                 href={envData?.config?.android_link}
                                 target={'_blank'}
                                 rel="noreferrer">
                                 <img src={assetUrl('/assets/img/icon-app-android.svg')} alt={''} />
+                            </a>
+                            <a
+                                className="footer-apps-details-link"
+                                href={envData?.config?.ios_iphone_link}
+                                target={'_blank'}
+                                rel="noreferrer">
+                                <img src={assetUrl('/assets/img/icon-app-ios.svg')} alt={''} />
                             </a>
                         </div>
                     </div>
@@ -82,16 +87,16 @@ export default function LayoutFooter() {
                         <StateNavLink name={'basic-functions'} className="footer-menu-col-item">
                             Basisfuncties
                         </StateNavLink>
-                        <StateNavLink name={'roles'} className="footer-menu-col-item">
+                        <StateNavLink name={'roles-main'} className="footer-menu-col-item">
                             Rollen
                         </StateNavLink>
                     </div>
                     <div className="footer-menu-col">
                         <div className="footer-menu-col-title">Over ons</div>
-                        <StateNavLink name={'platform'} className="footer-menu-col-item">
+                        <StateNavLink name={'about-us'} className="footer-menu-col-item">
                             Ons verhaal
                         </StateNavLink>
-                        <StateNavLink name={'about'} className="footer-menu-col-item">
+                        <StateNavLink name={'about-us-innovation'} className="footer-menu-col-item">
                             Project Innovatiebudget 2023
                         </StateNavLink>
                         <StateNavLink name={'contacts'} className="footer-menu-col-item">
@@ -100,15 +105,27 @@ export default function LayoutFooter() {
                     </div>
                     <div className="footer-menu-col">
                         <div className="footer-menu-col-title">Social</div>
-                        <a href="https://nl.linkedin.com/company/stichtingforus" className="footer-menu-col-item">
+                        <a
+                            href="https://nl.linkedin.com/company/stichtingforus"
+                            className="footer-menu-col-item"
+                            target="_blank"
+                            rel="noreferrer">
                             <img src={assetUrl('/assets/img/footer-menu/footer-social-linkedin.svg')} alt={''} />
                             LinkedIn
                         </a>
-                        <a href="https://github.com/teamforus" className="footer-menu-col-item">
+                        <a
+                            href="https://github.com/teamforus"
+                            className="footer-menu-col-item"
+                            target="_blank"
+                            rel="noreferrer">
                             <img src={assetUrl('/assets/img/footer-menu/footer-social-github.svg')} alt={''} />
                             Github
                         </a>
-                        <a href="https://discord.forus.io" className="footer-menu-col-item">
+                        <a
+                            href="https://discord.forus.io"
+                            className="footer-menu-col-item"
+                            target="_blank"
+                            rel="noreferrer">
                             <img src={assetUrl('/assets/img/footer-menu/footer-social-discord.svg')} alt={''} />
                             Discord
                         </a>
