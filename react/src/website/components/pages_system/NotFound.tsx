@@ -1,11 +1,35 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useEffect } from 'react';
 import StateNavLink from '../../modules/state_router/StateNavLink';
 import useAssetUrl from '../../hooks/useAssetUrl';
 import BlockDashedSeparator from '../pages/home/elements/BlockDashedSeparator';
 import LearnMore from '../elements/LearnMore';
+import { useNavigateState } from '../../modules/state_router/Router';
+import { useLocation } from 'react-router-dom';
 
 export default function NotFound({ error = '404' }: { error?: string }) {
     const assetUrl = useAssetUrl();
+    const navigateState = useNavigateState();
+    const location = useLocation();
+
+    useEffect(() => {
+        switch (location.pathname) {
+            case '/news':
+                navigateState('about-us-innovation');
+                break;
+            case '/research':
+                navigateState('about-us-innovation');
+                break;
+            case '/systeem':
+                navigateState('basic-functions');
+                break;
+            case '/me':
+                navigateState('me-app');
+                break;
+            case '/nu':
+                navigateState('about');
+                break;
+        }
+    }, [location, location.hash, navigateState]);
 
     return (
         <Fragment>
