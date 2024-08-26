@@ -84,7 +84,7 @@ export default function SelectControlOptionsCountryCodes<T>({
                                         setQuery('');
                                         searchInputChanged();
                                     }}
-                                    aria-label="cancel">
+                                    aria-label="Annuleren">
                                     <em className="mdi mdi-close-circle" />
                                 </div>
                             ) : (
@@ -103,9 +103,15 @@ export default function SelectControlOptionsCountryCodes<T>({
                                 e.stopPropagation();
                                 setShowOptions(false);
                             }}>
-                            {optionsFiltered.slice(0, visibleCount)?.map((option) => (
-                                <SelectControlOptionItem key={option.id} option={option} selectOption={selectOption} />
-                            ))}
+                            {optionsFiltered
+                                .slice(0, visibleCount)
+                                ?.map((option) => (
+                                    <SelectControlOptionItem
+                                        key={option.id}
+                                        option={option}
+                                        selectOption={selectOption}
+                                    />
+                                ))}
                         </ClickOutside>
                     </div>
                 )}

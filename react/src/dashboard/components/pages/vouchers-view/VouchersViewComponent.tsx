@@ -293,25 +293,13 @@ export default function VouchersViewComponent() {
     return (
         <Fragment>
             <div className="block block-breadcrumbs">
-                {!voucher.product && (
-                    <StateNavLink
-                        name={'vouchers'}
-                        params={{ organizationId: activeOrganization.id }}
-                        activeExact={true}
-                        className="breadcrumb-item">
-                        Vouchers
-                    </StateNavLink>
-                )}
-
-                {voucher.product && (
-                    <StateNavLink
-                        name={'product-vouchers'}
-                        params={{ organizationId: activeOrganization.id }}
-                        activeExact={true}
-                        className="breadcrumb-item">
-                        Aanbiedingsvouchers
-                    </StateNavLink>
-                )}
+                <StateNavLink
+                    name={'vouchers'}
+                    params={{ organizationId: activeOrganization.id }}
+                    activeExact={true}
+                    className="breadcrumb-item">
+                    Tegoeden
+                </StateNavLink>
 
                 <div className="breadcrumb-item active">{`${strLimit(voucher.fund.name, 50)} #${voucher.id}`}</div>
             </div>
@@ -531,7 +519,7 @@ export default function VouchersViewComponent() {
                     <div className="flex">
                         <div className="flex flex-grow">
                             <div className="card-title">
-                                <div className="flex flex-vertical flex-center">Voucher details</div>
+                                <div className="flex flex-vertical flex-center">Tegoed details</div>
                             </div>
                         </div>
                     </div>
@@ -540,7 +528,7 @@ export default function VouchersViewComponent() {
                 <div className="card-section">
                     <div className="card-block card-block-table">
                         <div className="table-wrapper">
-                            <table className="table table-fixed table-align-top">
+                            <table className="table table-fixed">
                                 <tbody>
                                     <tr>
                                         <td>
@@ -574,8 +562,8 @@ export default function VouchersViewComponent() {
                                             <em className="mdi mdi-close text-black" />
                                             <strong className="text-black">
                                                 {!voucher.in_use
-                                                    ? translate('product_vouchers.labels.no')
-                                                    : translate('product_vouchers.labels.yes')}
+                                                    ? translate('vouchers.labels.no')
+                                                    : translate('vouchers.labels.yes')}
                                             </strong>
                                         </td>
                                         <td>
@@ -593,7 +581,7 @@ export default function VouchersViewComponent() {
                                                 <div>
                                                     <em className="mdi mdi-close text-black" />
                                                     <strong className="text-black">
-                                                        {translate('product_vouchers.labels.no')}
+                                                        {translate('vouchers.labels.no')}
                                                     </strong>
                                                 </div>
                                             )}

@@ -6,7 +6,6 @@
 @import "doetegoed/includes/fonts";
 @import "doetegoed/includes/form";
 @import "doetegoed/includes/buttons";
-@import "doetegoed/includes/pagination";
 
 // COMPONENTS
 @import "doetegoed/components/labels";
@@ -41,11 +40,11 @@ body {
 
     &.block-funds-list .fund-item,
     &.block-search-results .search-item {
-        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.06);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.06);
         transition: 0.4s;
 
         &:hover {
-            box-shadow: 0px 10px 22px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 10px 22px rgba(0, 0, 0, 0.2);
         }
     }
 
@@ -73,3 +72,4 @@ body {
 @import "doetegoed/sections/blocks/block-markdown";
 @import "doetegoed/sections/blocks/block-profile";
 @import "doetegoed/sections/blocks/block-empty";
+@import "doetegoed/sections/blocks/block-navbar-search";

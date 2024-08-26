@@ -1,11 +1,12 @@
 const fronts = {};
-const api_url = 'http://localhost:8000/api/v1';
+const api_url = 'http://forus-backend-app/api/v1';
 
 const baseImplementationKey = 'general';
 const support_id = false;
 const chat_id = false;
 const sessions = true;
 const google_maps_api_key = '';
+const tag_manager_id = false;
 
 const me_app_link = 'https://forus.io/DL';
 const ios_ipad_link = 'https://testflight.apple.com/join/gWw1lXyB';
@@ -33,6 +34,7 @@ fronts['webshop.general'] = {
     type: 'webshop',
     client_key: 'general',
     client_type: 'webshop',
+    webRoot: 'webshop.general',
     name: 'General webshop',
     default_title: 'General webshop',
     useHashRouter: use_hash_router,
@@ -69,7 +71,7 @@ fronts['dashboard.sponsor'] = {
     type: 'dashboard',
     client_key: 'general',
     client_type: 'sponsor',
-    // webRoot: 'dashboard.sponsor',
+    webRoot: 'dashboard.sponsor',
     name: 'Sponsor dashboard',
     default_title: 'Sponsor dashboard',
     useHashRouter: use_hash_router,
@@ -159,13 +161,27 @@ fronts['website'] = {
         android_link: android_link,
         ios_iphone_link: ios_iphone_link,
         google_maps_api_key: google_maps_api_key,
+        tag_manager_id: tag_manager_id,
+    },
+};
+
+fronts['backend'] = {
+    type: 'backend',
+    name: 'Backend',
+    client_key: 'general',
+    assetsPath: '../forus-backend/public/assets',
+    appFileName: '../../forus-backend/public/assets/js/app.js',
+    withoutHtml: true,
+    client_type: 'pin_code-auth',
+    config: {
+        api_url: api_url,
     },
 };
 
 // eslint-disable-next-line no-undef
 module.exports = {
     fronts: fronts,
-    enableOnly: [/*'dashboard.sponsor', 'dashboard.provider', */ 'dashboard.validator'],
+    enableOnly: ['webshop.general', 'dashboard.sponsor', 'dashboard.provider', 'dashboard.validator'],
     httpsKey: null,
     httpsCert: null,
     buildGzipFiles: false,

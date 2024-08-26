@@ -9,29 +9,29 @@
 
     .ui-control-clear {
         position: absolute;
-        right: 0;
-        width: 25px;
         top: 50%;
         text-align: left;
         transform: translate(0, -50%);
         opacity: 0;
+        right: 12px;
         pointer-events: none;
-        transition: opacity .4s;
+        transition: opacity 0.4s;
 
         .mdi {
-            color: #CCD0E0;
+            display: block;
+            color: #848484;
             font-size: 22px;
             height: 24px;
             vertical-align: bottom;
             cursor: pointer;
         }
 
-        @media screen and (max-width: 1000px) {
-            right: 5px;
+        &.ui-control-clear-visible {
+            opacity: 1;
         }
     }
 
-    .form-control:not([type="radio"]):not([type="checkbox"]) {
+    .form-control:not([type='radio']):not([type='checkbox']) {
         appearance: none;
 
         &::-webkit-outer-spin-button,
@@ -40,7 +40,10 @@
         }
     }
 
-    &:focus, &:hover, &:active, .form-control:focus {
+    &:focus,
+    &:hover,
+    &:active,
+    .form-control:focus {
         .ui-control-clear {
             opacity: 1;
             pointer-events: initial;
@@ -66,20 +69,20 @@
             z-index: 2;
         }
 
-        .form-control:not([type="radio"]):not([type="checkbox"]) {
+        .form-control:not([type='radio']):not([type='checkbox']) {
             padding-left: 40px;
             margin: 0;
         }
     }
 
-
     &.ui-control-text,
     &.ui-control-number,
     &.ui-control-currency,
     &.ui-control-textarea {
-        .form-control:not([type="radio"]):not([type="checkbox"]) {
-            &:focus, &:active {
-                &+.ui-control-clear {
+        .form-control:not([type='radio']):not([type='checkbox']) {
+            &:focus,
+            &:active {
+                & + .ui-control-clear {
                     opacity: 1;
                     pointer-events: initial;
                 }
@@ -93,7 +96,7 @@
 
     &.ui-control-textarea {
         .ui-control-clear {
-            top: 0px;
+            top: 0;
             height: 40px;
             width: 40px;
             transform: none;
@@ -105,7 +108,7 @@
     &.ui-control-step {
         @extend .ui-control;
         display: flex;
-        background-color: #EFF2F4;
+        background-color: #eff2f4;
         border-radius: 8px;
         font-size: 0;
         position: relative;
@@ -119,11 +122,11 @@
             padding-right: 20px;
             text-align: center;
             cursor: pointer;
-            opacity: .7;
+            opacity: 0.7;
             font-size: 24px;
             line-height: 20px;
-            @include cf();
             transition: opacity .4s;
+            @include cf();
 
             &:hover {
                 opacity: 1;
@@ -150,7 +153,7 @@
             flex-grow: 1;
         }
 
-        &:not(.ui-control-step-fill)+.ui-control-step {
+        &:not(.ui-control-step-fill) + .ui-control-step {
             margin-left: 10px;
         }
 
@@ -166,7 +169,7 @@
             background: transparent;
 
             .ui-control-step-icon {
-                background-color: #EFF2F4;
+                background-color: #eff2f4;
                 border-radius: 50px;
                 height: 28px;
                 width: 28px;
@@ -197,8 +200,7 @@
             position: relative;
             margin-right: 5px;
             margin-left: -30px;
-            float: left;
-            transition: background-color .4s, border-color .4s;
+            transition: background-color 0.4s, border-color 0.4s;
 
             .mdi {
                 color: #262626;
@@ -207,7 +209,7 @@
                 top: 50%;
                 transform: translate3d(-50%, -50%, 0);
                 font-size: 20px;
-                transition: .4s;
+                transition: 0.4s;
                 opacity: 0;
             }
         }
@@ -217,7 +219,7 @@
             color: #45535e;
             display: inline-block;
             vertical-align: middle;
-            transition: color .4s;
+            transition: color 0.4s;
             cursor: pointer;
         }
 
@@ -225,7 +227,7 @@
             display: none;
         }
 
-        input[type=checkbox]:checked+.ui-checkbox-label {
+        input[type='checkbox']:checked + .ui-checkbox-label {
             .ui-checkbox-box {
                 border-color: #333333;
 
@@ -239,21 +241,21 @@
             padding-right: 5px;
 
             .ui-checkbox-box {
-                background: #FBFBFB;
+                background: #fbfbfb;
                 border-color: #848484;
                 width: 16px;
                 height: 16px;
 
                 .mdi {
                     font-size: 16px;
-                    color: #FFFFFF;
+                    color: #ffffff;
                 }
             }
 
-            input[type=checkbox]:checked+.ui-checkbox-label {
+            input[type='checkbox']:checked + .ui-checkbox-label {
                 .ui-checkbox-box {
-                    background: #315EFD;
-                    border-color: #315EFD;
+                    background: #315efd;
+                    border-color: #315efd;
 
                     .mdi {
                         opacity: 1;
@@ -263,8 +265,8 @@
         }
 
         &.ui-control-checkbox-slim {
-            padding-top: 5px;
-            padding-bottom: 5px;
+            padding-top: 0;
+            padding-bottom: 0;
         }
 
         &.ui-control-checkbox-disabled {
@@ -277,18 +279,6 @@
             .ui-checkbox-box {
                 background: #fafafa;
                 border-color: #e5e6ec;
-            }
-        }
-    }
-
-    &.ui-control-search-input {
-        .ui-control-clear {
-            opacity: 1;
-            pointer-events: initial;
-
-            .mdi {
-                font-size: 18px;
-                height: 18px;
             }
         }
     }

@@ -467,7 +467,8 @@ export default {
                 'Vul hier de contactinformatie van uw organisatie in. De tekst staat in de footer op de homepagina.',
             footer_opening_times:
                 'Vul hier de openingstijden van uw organisatie in. De tekst staat in de footer op de homepagina.',
-            footer_app_info: 'Download de Me-app content tooltip',
+            footer_app_info:
+                'De standaard content in dit gedeelte van de Privacycontent bevat de titel, links om de Me App te downloaden voor Android of iOS, en een link voor meer informatie over de app. Je hebt de mogelijkheid om aangepaste inhoud toe te voegen vóór of na de standaard content, of deze zelfs volledig te vervangen.',
         },
         buttons: {
             cancel: 'Annuleren',
@@ -1608,6 +1609,20 @@ export default {
             upload: 'Upload .csv bestand',
             done: 'Klaar',
         },
+        tooltips: {
+            funds: [
+                'Selecteer het fonds waarvoor het tegoed wordt aangemaakt. ',
+                'De regels die op dit fonds van toepassing zijn, worden automatisch overgenomen voor de tegoeden. ',
+                'Hierdoor kan bijvoorbeeld worden bepaald bij welke aanbieders een tegoed kan worden besteed.',
+            ].join(''),
+            type: [
+                'Selecteer het type tegoeden. Er zijn twee opties:',
+                '<br/><br/><ul>',
+                '<li><strong>Budget</strong>: Een bedrag dat onder specifieke voorwaarden kan worden besteed.</li>',
+                '<li><strong>Product</strong>: Een tegoed voor een specifiek product of dienst.</li>',
+                '</ul>',
+            ].join(''),
+        },
     },
 
     // EMPTY BLOCK = empty-block.pug
@@ -1949,7 +1964,7 @@ export default {
                         'Ontvang een notificatie wanneer het saldo voor een fonds lager is dan de vooraf ingestelde grens.',
                 },
                 fund_expires: {
-                    title: 'Herinnering einddatum voucher',
+                    title: 'Herinnering einddatum tegoed',
                     description: 'Ontvang een notificatie 1 maand voor de einddatum van uw tegoed.',
                 },
                 product_added: {

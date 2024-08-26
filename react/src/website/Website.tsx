@@ -14,6 +14,7 @@ import { getRoutes } from './modules/state_router/Router';
 import EnvDataWebshopProp from '../props/EnvDataWebshopProp';
 import { LoadScript } from '@react-google-maps/api';
 import StateHashPrefixRedirect from '../dashboard/modules/state_router/StateHashPrefixRedirect';
+import GoogleTagManager from './modules/google_tag_manager/GoogleTagManager';
 
 /**
  * @param envData
@@ -76,6 +77,8 @@ export default function Website({ envData }: { envData: EnvDataWebshopProp }): R
                     </RouterSelector>
                 </PushNotificationsProvider>
             </LoadScript>
+
+            <GoogleTagManager envData={envData} />
         </Fragment>
     );
 }

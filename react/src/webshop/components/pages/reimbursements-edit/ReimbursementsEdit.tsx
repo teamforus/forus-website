@@ -310,7 +310,6 @@ export default function ReimbursementsEdit() {
                                         acceptedFiles={['.pdf', '.png', '.jpg', '.jpeg']}
                                         cropMedia={true}
                                         multiple={true}
-                                        fileListCompact={false}
                                         isRequired={true}
                                         onFilesChange={({ files }) => setFiles(files)}
                                     />
@@ -349,7 +348,6 @@ export default function ReimbursementsEdit() {
                                                         onChange={(voucher_id?: number) => form.update({ voucher_id })}
                                                         options={vouchers}
                                                         optionsComponent={SelectControlOptionsVouchers}
-                                                        placeholder="Select voucher"
                                                     />
                                                     <FormError error={form.errors.voucher_id} />
                                                     {selectedVoucher?.records?.length > 0 && (
@@ -379,7 +377,6 @@ export default function ReimbursementsEdit() {
                                                     type="text"
                                                     value={form.values.title || ''}
                                                     onChange={(e) => form.update({ title: e.target.value })}
-                                                    placeholder="Wat heeft u gekocht?"
                                                     maxLength={200}
                                                 />
                                                 <FormError error={form.errors.title} />
@@ -397,7 +394,6 @@ export default function ReimbursementsEdit() {
                                                     min="0.01"
                                                     value={form.values.amount ?? ''}
                                                     onChange={(e) => form.update({ amount: e.target.value })}
-                                                    placeholder="Welk bedrag wilt u terugvragen?"
                                                 />
                                                 <FormError error={form.errors.amount} />
                                             </div>
@@ -411,7 +407,6 @@ export default function ReimbursementsEdit() {
                                                     value={form.values.description || ''}
                                                     onChange={(e) => form.update({ description: e.target.value })}
                                                     name="description"
-                                                    placeholder="Wilt u nog iets kwijt?"
                                                     style={{ resize: 'vertical' }}
                                                     maxLength={2000}
                                                 />
@@ -438,7 +433,6 @@ export default function ReimbursementsEdit() {
                                                     name="iban"
                                                     value={form.values.iban || ''}
                                                     onChange={(e) => form.update({ iban: e.target.value })}
-                                                    placeholder="IBAN nummer"
                                                     maxLength={34}
                                                 />
                                                 <FormError error={form.errors.iban} />
@@ -454,7 +448,6 @@ export default function ReimbursementsEdit() {
                                                     name="iban_name"
                                                     value={form.values.iban_name || ''}
                                                     onChange={(e) => form.update({ iban_name: e.target.value })}
-                                                    placeholder="Op welke naam staat uw bankrekening?"
                                                     maxLength={45}
                                                 />
                                                 <FormError error={form.errors.iban_name} />

@@ -4,7 +4,7 @@ export default {
         title: 'Funds',
     },
     labels: {
-        categorie: 'CATEGORIES',
+        categorie: 'Categories',
         criteria: 'Criteria ({{ nth }})',
         location: 'Location',
         office: 'Municipality of Zuidhorn',
@@ -17,7 +17,7 @@ export default {
     },
     buttons: {
         join: 'Apply',
-        more: 'SHOW MORE',
+        more: 'Show more',
     },
     status: {
         active: 'Active',

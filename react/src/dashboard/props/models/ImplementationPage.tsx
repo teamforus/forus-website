@@ -8,11 +8,12 @@ export default interface ImplementationPage {
     faq?: Array<Faq>;
     external?: boolean;
     page_type?: string;
+    title?: string;
     description?: string;
     external_url?: string;
     blocks_per_row?: number;
     description_html?: string;
     implementation_id?: number;
     description_position?: string;
-    description_alignment?: string;
+    description_alignment?: 'left' | 'center' | 'right';
 }

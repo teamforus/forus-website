@@ -35,6 +35,18 @@
                 box-shadow: var(--box-shadow);
             }
         }
+
+        .navbar-search-label {
+            color: var(--tc);
+            text-align: center;
+            font: 500 14px/14px var(--base-font);
+            position: absolute;
+            top: -7px;
+            left: 16px;
+            z-index: 10;
+            background: #ffffff;
+            padding: 0 4px;
+        }
     }
 
     .search-result {
@@ -256,13 +268,6 @@
     }
 
     &.block-navbar-search-results {
-        .search-form.form {
-            .form-control {
-                border-bottom-left-radius: 0;
-                border-bottom-right-radius: 0;
-            }
-        }
-
         .search-result {
             border-top-left-radius: 0;
             border-top-right-radius: 0;
@@ -278,7 +283,7 @@
     }
 
     @media screen and (max-width: 1000px) {
-        margin: 0 -20px 0;
+        margin: 15px -20px;
         width: 100%;
 
         .search-form.form {
@@ -286,13 +291,20 @@
             width: 100%;
             flex-grow: 1;
             flex-direction: column;
+            background: #ffffff;
 
             .form-control {
-                border-radius: 0;
-                padding-top: 10px;
-                padding-bottom: 10px;
-                border-left: 0;
-                border-right: 0;
+                padding-top: 12px;
+                padding-bottom: 12px;
+                font-weight: 700;
+                font-size: 12px;
+                line-height: 18px;
+            }
+
+            .navbar-search-label {
+                font: 600 12px/12px var(--base-font);
+                top: -6px;
+                left: 10px;
             }
 
             &.search-form-found {
@@ -302,8 +314,9 @@
 
         .search-area {
             display: flex;
-            min-height: 50px;
+            min-height: 42px;
             position: relative;
+            margin: 0 15px;
 
             .navbar-search-icon {
                 z-index: 99;
@@ -311,10 +324,6 @@
 
             input {
                 &.form-control {
-                    border: none;
-                    background-color: #fbfbfb;
-                    box-shadow: inset 0px 1px 0px #e5e5e5, inset 0px -1px 0px #e5e5e5;
-
                     &:focus {
                         border: none;
                     }
@@ -334,6 +343,7 @@
         }
 
         .search-result {
+            border: none;
             border-radius: 0;
             display: flex;
             flex-direction: column;
@@ -341,6 +351,7 @@
             position: initial;
             width: 100%;
             max-height: initial;
+            box-shadow: none;
 
             .search-result-sidebar {
                 display: flex;
@@ -348,7 +359,7 @@
                 justify-content: space-between;
                 background-color: #fff;
                 overflow: scroll;
-                padding: 10px;
+                padding: 15px 15px 10px 15px;
 
                 .search-result-sidebar-item {
                     width: auto;
@@ -359,7 +370,6 @@
                     border-radius: 5px;
                     font: 600 13px/13px var(--base-font);
                     background: #f5f5f5;
-                    border-radius: 5px;
                     color: #353535;
                     flex-grow: 1;
                     margin-right: 10px;

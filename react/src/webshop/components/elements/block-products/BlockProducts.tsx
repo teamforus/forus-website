@@ -4,6 +4,8 @@ import StateNavLink from '../../../modules/state_router/StateNavLink';
 import Product from '../../../../dashboard/props/models/Product';
 import EmptyBlock from '../empty-block/EmptyBlock';
 import ProductsList from '../lists/products-list/ProductsList';
+import CmsBlocks from '../cms-blocks/CmsBlocks';
+import useAppConfigs from '../../../hooks/useAppConfigs';
 
 export default function BlockProducts({
     type = 'budget',
@@ -13,6 +15,7 @@ export default function BlockProducts({
     products = null,
     setProducts = null,
     showLoadMore = true,
+    showCustomDescription = false,
 }: {
     type: 'budget' | 'subsidies';
     display?: 'grid' | 'list';
@@ -21,16 +24,25 @@ export default function BlockProducts({
     products?: Array<Product>;
     setProducts?: (products: Array<Product>) => void;
     showLoadMore?: boolean;
+    showCustomDescription?: boolean;
 }) {
     const translate = useTranslate();
+    const appConfigs = useAppConfigs();
+    const cmsBlock = showCustomDescription && appConfigs?.pages?.home ? appConfigs?.pages?.block_home_products : null;
 
     return (
         <section className="section section-products" id="products">
             {products.length != 0 && (
-                <StateNavLink name={type == 'budget' ? 'products' : 'actions'} params={filters}>
-                    <h2 className="section-title">{translate(`block_products.header.title_${type}`)}</h2>
-                </StateNavLink>
+                <div className={'wrapper'}>
+                    <StateNavLink name={type == 'budget' ? 'products' : 'actions'} params={filters}>
+                        <h2 className={'section-title'}>
+                            {cmsBlock?.title || translate(`block_products.header.title_${type}`)}
+                        </h2>
+                    </StateNavLink>
+                </div>
             )}
+
+            {cmsBlock && <CmsBlocks page={cmsBlock} />}
 
             {products?.length > 0 && (
                 <ProductsList

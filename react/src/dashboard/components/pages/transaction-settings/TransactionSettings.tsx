@@ -7,6 +7,8 @@ import CheckboxControl from '../../elements/forms/controls/CheckboxControl';
 import useFormBuilder from '../../../hooks/useFormBuilder';
 import { useOrganizationService } from '../../../services/OrganizationService';
 import { ResponseError } from '../../../props/ApiResponses';
+import SelectControlOptions from '../../elements/select-control/templates/SelectControlOptions';
+import SelectControl from '../../elements/select-control/SelectControl';
 
 export default function TransactionSettings() {
     const activeOrganization = useActiveOrganization();
@@ -30,6 +32,17 @@ export default function TransactionSettings() {
         bank_note: 'Voorbeeld van een notitie van een medewerker',
     });
 
+    const [separatorOptions] = useState([
+        { key: '-', value: '-' },
+        { key: '/', value: '/' },
+        { key: '+', value: '+' },
+        { key: ':', value: ':' },
+        { key: '--', value: '--' },
+        { key: '//', value: '//' },
+        { key: '++', value: '++' },
+        { key: '::', value: '::' },
+    ]);
+
     const form = useFormBuilder(activeOrganization.bank_statement_details, (values) => {
         organizationService
             .updateBankFields(activeOrganization.id, values)
@@ -51,7 +64,7 @@ export default function TransactionSettings() {
             form.values.bank_note ? testData.bank_note : null,
         ]
             .filter((value) => value)
-            .join(' | ');
+            .join(` ${form.values.bank_separator} `);
     }, [testData, form.values]);
 
     return (
@@ -121,6 +134,22 @@ export default function TransactionSettings() {
                                             title="Notitie"
                                             checked={!!form.values?.bank_note}
                                             onChange={(e) => form.update({ bank_note: e.target.checked })}
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="form-group form-group-inline form-group-inline-xl">
+                                    <label className="form-label">Scheidingsteken</label>
+                                    <div className="form-offset flex flex-vertical">
+                                        <SelectControl
+                                            className="form-control"
+                                            propValue={'value'}
+                                            propKey={'key'}
+                                            allowSearch={false}
+                                            value={form.values?.bank_separator}
+                                            onChange={(bank_separator: string) => form.update({ bank_separator })}
+                                            options={separatorOptions}
+                                            optionsComponent={SelectControlOptions}
                                         />
                                     </div>
                                 </div>

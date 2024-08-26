@@ -2,7 +2,7 @@ export default {
     sms: {
         title: 'Download <i>Me</i> on your smartphone.',
         description: 'Enter your phone number to receive a downloadlink.',
-        subdescription: "Visit https://www.forus.io/DL to download <i>Me<i> if you didn't receive the sms.",
+        subscription: "Visit https://www.forus.io/DL to download <i>Me<i> if you didn't receive the sms.",
         sent: 'Sms has been succesfully sent.',
         sent_description: "Visit https://www.forus.io/DL to download <i>Me<i> if you didn't receive the message.",
         button: {

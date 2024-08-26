@@ -114,7 +114,6 @@ export default function SelectControlOptionsVouchers<T>({
                         {showOptions && (
                             <input
                                 id={controlId}
-                                placeholder={placeholderValue || placeholder}
                                 ref={input}
                                 value={query}
                                 onClick={onInputClick}
@@ -130,7 +129,7 @@ export default function SelectControlOptionsVouchers<T>({
                                     setQuery('');
                                     searchInputChanged();
                                 }}
-                                aria-label="cancel">
+                                aria-label="Annuleren">
                                 <em className="mdi mdi-close-circle" />
                             </div>
                         )}
@@ -150,13 +149,15 @@ export default function SelectControlOptionsVouchers<T>({
                             setShowOptions(false);
                         }}>
                         <div className="block block-vouchers block-vouchers-select">
-                            {optionsFiltered.slice(0, visibleCount)?.map((option) => (
-                                <SelectControlOptionItemVoucher
-                                    key={option.id}
-                                    option={option}
-                                    selectOption={selectOption}
-                                />
-                            ))}
+                            {optionsFiltered
+                                .slice(0, visibleCount)
+                                ?.map((option) => (
+                                    <SelectControlOptionItemVoucher
+                                        key={option.id}
+                                        option={option}
+                                        selectOption={selectOption}
+                                    />
+                                ))}
                         </div>
                     </ClickOutside>
                 )}

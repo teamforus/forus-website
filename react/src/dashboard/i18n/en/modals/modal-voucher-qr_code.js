@@ -1,31 +1,31 @@
 export default {
-    title: 'Voucher QR-Code',
+    title: 'Tegoed QR-Code',
     title_assign: 'Assign to account',
     labels: {
         sent_to_email: 'Send to e-mail address:',
         assign_to_identity: 'Assign to account:',
     },
     placeholders: {
-        email: 'E-mailadres',
+        email: 'E-mail address',
     },
     info_assign:
-        'Wanneer toegekend heeft het tegoed een nieuwe eigenaar. De nieuwe eigenaar kan het tegoed beheren via de webshop. Hierdoor verliest u eigenaarschap en daarmee de functies: via e-mail versturen en QR-code printen.',
+        'When assigned, the credit will have a new owner. The new owner can manage the credit through the webshop. As a result, you will lose ownership and thus the functions: sending via e-mail and printing QR code.',
     success: {
-        sending_title: 'Succes',
+        sending_title: 'Success',
         sending_details: 'Voucher sent',
-        assigned_title: 'Succes',
+        assigned_title: 'Success',
         assigned_details: 'Voucher awarded',
-        activated_title: 'Succes',
+        activated_title: 'Success',
         activated_details: 'Voucher was activated',
-        activation_code_title: 'Succes',
+        activation_code_title: 'Success',
         activation_code_details: 'An activation code was generated',
     },
     buttons: {
-        close: 'Sluiten',
-        cancel: 'Annuleren',
-        submit: 'Bevestigen',
+        close: 'Close',
+        cancel: 'Cancel',
+        submit: 'Confirm',
         print: 'Print',
-        send: 'Verstuur',
-        assign: 'Toewijzen',
+        send: 'Send',
+        assign: 'Assign',
     },
 };
