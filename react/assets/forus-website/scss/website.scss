@@ -19,6 +19,8 @@
 @import 'components/modals';
 @import 'components/layout';
 
+@import "modals/modal-cookie-settings";
+
 @import "blocks/block-main-banner";
 @import "blocks/block-dashed-separator";
 @import "blocks/block-page-list";
@@ -60,3 +62,4 @@
 @import "blocks/block-contact-details";
 @import "blocks/block-support";
 @import "blocks/block-contact-form";
+@import "blocks/block-cookies-accept";

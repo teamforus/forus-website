@@ -11,6 +11,7 @@ import LayoutFooter from './elements/LayoutFooter';
 import LayoutHeader from './elements/LayoutHeader';
 import useActiveMenuDropdown from '../hooks/useActiveMenuDropdown';
 import UserDropdown from '../components/elements/UserDropdown';
+import CookiesPopup from '../components/elements/CookiesPopup';
 
 export const LayoutWebsite = ({ children }: { children: React.ReactElement }) => {
     const { route } = useStateRoutes();
@@ -68,6 +69,7 @@ export const LayoutWebsite = ({ children }: { children: React.ReactElement }) =>
             <Modals />
             <PushNotifications group={'default'} />
             <UserDropdown />
+            <CookiesPopup />
         </div>
     );
 };
