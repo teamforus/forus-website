@@ -65,7 +65,7 @@ export default function ImplementationsBlockEditorItem({
     return (
         <div className="block-item" ref={setNodeRef} style={style}>
             <div className="block-header">
-                <em className="mdi mdi-dots-vertical block-drag" {...attributes} {...listeners}></em>
+                <em className="mdi mdi-dots-vertical block-drag" {...attributes} {...listeners} />
 
                 <div className="block-title">{block.title || (!block.id ? 'Nieuwe blok' : 'Blok aanpassen')}</div>
 
