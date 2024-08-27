@@ -122,13 +122,20 @@ export default function TransactionSettings() {
                                                 checked={!!form.values?.bank_branch_number}
                                                 onChange={(e) => form.update({ bank_branch_number: e.target.checked })}
                                             />
-                                            <Tooltip
-                                                text={
-                                                    'Vestigingsnummer wordt alleen weergegeven wanneer:<br>' +
-                                                    '<ul><li>Het is geconfigureerd in de instellingen van de vestiging (op de <strong>Vestigingen</strong> pagina).</li>' +
-                                                    '<li>Een vestiging is geselecteerd voor elke medewerker (op de <strong>Medewerkers</strong> pagina).</li></ul>'
-                                                }
-                                            />
+                                            <Tooltip>
+                                                Vestigingsnummer wordt alleen weergegeven wanneer:
+                                                <br />
+                                                <ul>
+                                                    <li>
+                                                        Het is geconfigureerd in de instellingen van de vestiging (op de{' '}
+                                                        <strong>Vestigingen</strong> pagina).
+                                                    </li>
+                                                    <li>
+                                                        Een vestiging is geselecteerd voor elke medewerker (op de{' '}
+                                                        <strong>Medewerkers</strong> pagina).
+                                                    </li>
+                                                </ul>
+                                            </Tooltip>
                                         </div>
                                         <div className="form-group form-group-last tooltipped">
                                             <CheckboxControl
@@ -137,13 +144,20 @@ export default function TransactionSettings() {
                                                 checked={!!form.values?.bank_branch_id}
                                                 onChange={(e) => form.update({ bank_branch_id: e.target.checked })}
                                             />
-                                            <Tooltip
-                                                text={
-                                                    'Vestiging ID wordt alleen weergegeven wanneer:<br>' +
-                                                    '<ul><li>Het is geconfigureerd in de instellingen van de vestiging (op de <strong>Vestigingen</strong> pagina).</li>' +
-                                                    '<li>Een vestiging is geselecteerd voor elke medewerker (op de <strong>Medewerkers</strong> pagina).</li></ul>'
-                                                }
-                                            />
+                                            <Tooltip>
+                                                Vestiging ID wordt alleen weergegeven wanneer:
+                                                <br />
+                                                <ul>
+                                                    <li>
+                                                        Het is geconfigureerd in de instellingen van de vestiging (op de{' '}
+                                                        <strong>Vestigingen</strong> pagina).
+                                                    </li>
+                                                    <li>
+                                                        Een vestiging is geselecteerd voor elke medewerker (op de{' '}
+                                                        <strong>Medewerkers</strong> pagina).
+                                                    </li>
+                                                </ul>
+                                            </Tooltip>
                                         </div>
                                         <div className="form-group form-group-last tooltipped">
                                             <CheckboxControl
@@ -152,13 +166,20 @@ export default function TransactionSettings() {
                                                 checked={!!form.values?.bank_branch_name}
                                                 onChange={(e) => form.update({ bank_branch_name: e.target.checked })}
                                             />
-                                            <Tooltip
-                                                text={
-                                                    'Vestigingsnaam wordt alleen weergegeven wanneer:<br>' +
-                                                    '<ul><li>Het is geconfigureerd in de instellingen van de vestiging (op de <strong>Vestigingen</strong> pagina).</li>' +
-                                                    '<li>Een vestiging is geselecteerd voor elke medewerker (op de <strong>Medewerkers</strong> pagina).</li></ul>'
-                                                }
-                                            />
+                                            <Tooltip>
+                                                Vestigingsnaam wordt alleen weergegeven wanneer:
+                                                <br />
+                                                <ul>
+                                                    <li>
+                                                        Het is geconfigureerd in de instellingen van de vestiging (op de{' '}
+                                                        <strong>Vestigingen</strong> pagina).
+                                                    </li>
+                                                    <li>
+                                                        Een vestiging is geselecteerd voor elke medewerker (op de{' '}
+                                                        <strong>Medewerkers</strong> pagina).
+                                                    </li>
+                                                </ul>
+                                            </Tooltip>
                                         </div>
                                         <CheckboxControl
                                             id="bank_fund_name"
