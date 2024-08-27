@@ -18,6 +18,7 @@
 @import 'components/label';
 @import 'components/modals';
 @import 'components/layout';
+@import 'components/breadcrumbs';
 
 @import "modals/modal-cookie-settings";
 
@@ -63,3 +64,6 @@
 @import "blocks/block-support";
 @import "blocks/block-contact-form";
 @import "blocks/block-cookies-accept";
+@import "blocks/block-login-type-select";
+@import "blocks/block-sign-in";
+@import "blocks/block-sign-in-email-sent";

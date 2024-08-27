@@ -21,6 +21,10 @@
         &.block-text-title-sm {
             font: 700 46px/68px var(--base-font);
         }
+
+        &.block-text-no-margin {
+            margin: 0;
+        }
     }
 
     .block-text-label {
@@ -67,6 +71,10 @@
             font: 400 18px/28px var(--base-font);
             width: 50%;
         }
+    }
+
+    .block-text-actions {
+        width: fit-content;
     }
 
     .block-text-banner {
@@ -120,6 +128,10 @@
             &.block-text-title-sm {
                 font: 700 20px/30px var(--base-font);
             }
+
+            &.block-text-title {
+                font: 700 30px/40px var(--base-font);
+            }
         }
 
         .block-text-subtitle {
@@ -152,6 +164,10 @@
                 font: 400 14px/21px var(--base-font);
                 color: #333;
             }
+        }
+
+        .block-text-actions {
+            width: 100%;
         }
 
         .block-text-banner {

@@ -24,10 +24,13 @@ export default function PreviewPageFooter() {
             </div>
 
             <div className="block-page-list-footer-auth">
-                <div className="block-page-list-footer-auth-option">
+                <StateNavLink
+                    name={'sign-in'}
+                    className="block-page-list-footer-auth-option"
+                    onClick={() => setActiveMenuDropdown(null)}>
                     <img src={assetUrl(`/assets/img/login-icon.svg`)} alt="" />
                     Inloggen
-                </div>
+                </StateNavLink>
 
                 <StateNavLink
                     name={'book-demo'}

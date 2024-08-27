@@ -3,7 +3,6 @@ import RouterBuilder from '../modules/state_router/RouterBuilder';
 import NotFound from '../components/pages_system/NotFound';
 import Home from '../components/pages/home/Home';
 import SignOut from '../components/pages/auth/SignOut';
-import WIP from '../components/pages_system/WIP';
 import AboutUs from '../components/pages/about-us/AboutUs';
 import AboutUsInnovation from '../components/pages/about-us/AboutUsInnovation';
 import RolesMain from '../components/pages/roles/RolesMain';
@@ -20,6 +19,10 @@ import Information from '../components/pages/basic-functions/Information';
 import Privacy from '../components/pages/privacy/Privacy';
 import Contacts from '../components/pages/contacts/Contacts';
 import BookDemo from '../components/pages/book-demo/BookDemo';
+import SignInGeneral from '../components/pages/sign-in/SignInGeneral';
+import SignUp from '../components/pages/sign-up/SignUp';
+import SignInAsRole from '../components/pages/sign-in/SignInAsRole';
+import IdentityRestore from '../components/pages/auth/IdentityRestore';
 
 const router = new RouterBuilder();
 
@@ -28,8 +31,23 @@ router.state('home', <Home />, {
     protected: false,
 });
 
-router.state('sign-in', <WIP />, {
+router.state('identity-restore', <IdentityRestore confirmation={false} />, {
+    path: `/identity-restore`,
+    protected: false,
+});
+
+router.state('sign-in', <SignInGeneral />, {
     path: `/login`,
+    protected: false,
+});
+
+router.state('sign-in-as-role', <SignInAsRole />, {
+    path: `/login/:role`,
+    protected: false,
+});
+
+router.state('sign-up', <SignUp />, {
+    path: `/sign-up`,
     protected: false,
 });
 

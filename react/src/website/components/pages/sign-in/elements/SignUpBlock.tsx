@@ -1,0 +1,19 @@
+import React from 'react';
+import StateNavLink from '../../../../modules/state_router/StateNavLink';
+
+export default function SignUpBlock() {
+    return (
+        <div className="block block-text text-left">
+            <div className="hide-sm block-text-title block-text-title-sm block-text-no-margin">Nog geen account?</div>
+            <div className="show-sm block-text-title">Nog geen account?</div>
+
+            <StateNavLink name={'sign-up'} className="hide-sm button button-primary block-text-actions">
+                Aanmelden
+            </StateNavLink>
+
+            <StateNavLink name={'sign-up'} className="show-sm button button-fill button-primary block-text-actions">
+                Aanmelden
+            </StateNavLink>
+        </div>
+    );
+}
