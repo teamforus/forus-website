@@ -49,9 +49,15 @@ export default function VouchersTableHeader({
     );
 
     const uploadVouchers = useCallback(
-        (funds: Array<Partial<Fund>>, onCreate?: () => void) => {
+        (funds: Array<Partial<Fund>>, fundId?: number, onCreate?: () => void) => {
             openModal((modal) => (
-                <ModalVouchersUpload modal={modal} funds={funds} organization={organization} onCompleted={onCreate} />
+                <ModalVouchersUpload
+                    modal={modal}
+                    fundId={fundId || funds[0].id}
+                    funds={funds}
+                    organization={organization}
+                    onCompleted={onCreate}
+                />
             ));
         },
         [openModal, organization],
@@ -83,7 +89,7 @@ export default function VouchersTableHeader({
                                     id="voucher_upload_csv"
                                     className="button button-primary"
                                     disabled={funds?.filter((fund) => fund.id)?.length < 1}
-                                    onClick={() => uploadVouchers(funds, fetchVouchers)}
+                                    onClick={() => uploadVouchers(funds, filter.activeValues?.fund_id, fetchVouchers)}
                                     data-dusk="uploadVouchersBatchButton">
                                     <em className="mdi mdi-upload icon-start" />
                                     {translate('vouchers.buttons.upload_csv')}

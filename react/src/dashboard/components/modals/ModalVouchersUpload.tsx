@@ -60,12 +60,14 @@ type RowDataProp = {
 export default function ModalVouchersUpload({
     funds,
     modal,
+    fundId,
     className,
     onCompleted,
     organization,
 }: {
     funds: Array<Partial<Fund>>;
     modal: ModalState;
+    fundId?: number;
     className?: string;
     onCompleted: () => void;
     organization: Organization;
@@ -102,7 +104,7 @@ export default function ModalVouchersUpload({
     const [availableFundsIds] = useState(funds.map((fund) => fund.id));
     const [availableFundsById] = useState(keyBy(funds, 'id'));
 
-    const [fund, setFund] = useState(funds[0]);
+    const [fund, setFund] = useState<Partial<Fund>>(funds?.find((fund) => fund.id == fundId) || funds[0]);
     const [step, setStep] = useState(STEP_SET_UP);
     const [progressBar, setProgressBar] = useState<number>(0);
     const [progressStatus, setProgressStatus] = useState<string>('');
@@ -1140,7 +1142,7 @@ export default function ModalVouchersUpload({
                                         type={'button'}
                                         className="button button-primary"
                                         disabled={loading}
-                                        onClick={modal.close}
+                                        onClick={closeModal}
                                         data-dusk="closeModalButton">
                                         Sluiten
                                     </button>
