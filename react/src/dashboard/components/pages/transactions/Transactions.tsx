@@ -34,11 +34,11 @@ import useTransactionBulkExportService from '../../../services/exports/useTransa
 import { dateFormat, dateParse } from '../../../helpers/dates';
 import ModalVoucherTransactionsUpload from '../../modals/ModalVoucherTransactionsUpload';
 import usePaginatorService from '../../../modules/paginator/services/usePaginatorService';
-import ClickOutside from '../../elements/click-outside/ClickOutside';
 import useTranslate from '../../../hooks/useTranslate';
 import classNames from 'classnames';
 import TableEmptyValue from '../../elements/table-empty-value/TableEmptyValue';
 import TableTopScroller from '../../elements/tables/TableTopScroller';
+import TableRowActions from '../../elements/tables/TableRowActions';
 
 export default function Transactions() {
     const envData = useEnvData();
@@ -323,12 +323,6 @@ export default function Transactions() {
         updateHasPendingBulking,
         viewTypes,
     ]);
-
-    const hideActionMenu = useCallback((e: React.MouseEvent) => {
-        e.stopPropagation();
-        e.preventDefault();
-        setShowActionMenu(null);
-    }, []);
 
     useEffect(() => {
         if (viewType.key === 'bulks') {
@@ -1042,39 +1036,24 @@ export default function Transactions() {
                                                 className={'table-td-actions'}
                                                 style={{ zIndex: showActionMenu === transaction.id ? 1 : 0 }}>
                                                 <div
-                                                    className={classNames(
-                                                        `actions`,
-                                                        showActionMenu === transaction.id && 'active',
-                                                    )}>
-                                                    <button
-                                                        className="button button-text button-menu"
-                                                        type="button"
-                                                        onClick={(e) => {
-                                                            e.stopPropagation();
-                                                            setShowActionMenu(transaction.id);
-                                                        }}>
-                                                        <em className="mdi mdi-dots-horizontal" />
-
-                                                        {showActionMenu === transaction.id && (
-                                                            <ClickOutside onClickOutside={hideActionMenu}>
-                                                                <div className="menu-dropdown">
-                                                                    <div className="menu-dropdown-arrow" />
-                                                                    <div className="dropdown dropdown-actions">
-                                                                        <StateNavLink
-                                                                            name={'transaction'}
-                                                                            params={{
-                                                                                organizationId: activeOrganization.id,
-                                                                                address: transaction.address,
-                                                                            }}
-                                                                            className="dropdown-item">
-                                                                            <em className="mdi mdi-eye icon-start" />{' '}
-                                                                            Bekijken
-                                                                        </StateNavLink>
-                                                                    </div>
-                                                                </div>
-                                                            </ClickOutside>
-                                                        )}
-                                                    </button>
+                                                    className={`actions ${showActionMenu == transaction.id ? 'active' : ''}`}>
+                                                    <TableRowActions
+                                                        id={transaction.id}
+                                                        activeId={showActionMenu}
+                                                        setActiveId={setShowActionMenu}>
+                                                        <div className="dropdown dropdown-actions">
+                                                            <StateNavLink
+                                                                className="dropdown-item"
+                                                                name={'transaction'}
+                                                                params={{
+                                                                    organizationId: activeOrganization.id,
+                                                                    address: transaction.address,
+                                                                }}>
+                                                                <em className={'mdi mdi-eye icon-start'} />
+                                                                Bekijken
+                                                            </StateNavLink>
+                                                        </div>
+                                                    </TableRowActions>
                                                 </div>
                                             </td>
                                         </StateNavLink>
@@ -1214,38 +1193,24 @@ export default function Transactions() {
                                                 className={'table-td-actions text-right'}
                                                 style={{ zIndex: showActionMenu === transactionBulk.id ? 1 : 0 }}>
                                                 <div
-                                                    className={`actions ${
-                                                        showActionMenu === transactionBulk.id ? 'active' : ''
-                                                    }`}>
-                                                    <button
-                                                        className="button button-text button-menu"
-                                                        type="button"
-                                                        onClick={(e) => {
-                                                            e.stopPropagation();
-                                                            setShowActionMenu(transactionBulk.id);
-                                                        }}>
-                                                        <em className="mdi mdi-dots-horizontal" />
-
-                                                        {showActionMenu === transactionBulk.id && (
-                                                            <ClickOutside onClickOutside={hideActionMenu}>
-                                                                <div className="menu-dropdown">
-                                                                    <div className="menu-dropdown-arrow" />
-                                                                    <div className="dropdown dropdown-actions">
-                                                                        <StateNavLink
-                                                                            name={'transaction-bulk'}
-                                                                            className="dropdown-item"
-                                                                            params={{
-                                                                                organizationId: activeOrganization.id,
-                                                                                id: transactionBulk.id,
-                                                                            }}>
-                                                                            <em className="mdi mdi-eye icon-start" />{' '}
-                                                                            Bekijken
-                                                                        </StateNavLink>
-                                                                    </div>
-                                                                </div>
-                                                            </ClickOutside>
-                                                        )}
-                                                    </button>
+                                                    className={`actions ${showActionMenu == transactionBulk.id ? 'active' : ''}`}>
+                                                    <TableRowActions
+                                                        id={transactionBulk.id}
+                                                        activeId={showActionMenu}
+                                                        setActiveId={setShowActionMenu}>
+                                                        <div className="dropdown dropdown-actions">
+                                                            <StateNavLink
+                                                                className="dropdown-item"
+                                                                name={'transaction-bulk'}
+                                                                params={{
+                                                                    organizationId: activeOrganization.id,
+                                                                    id: transactionBulk.id,
+                                                                }}>
+                                                                <em className={'mdi mdi-eye icon-start'} />
+                                                                Bekijken
+                                                            </StateNavLink>
+                                                        </div>
+                                                    </TableRowActions>
                                                 </div>
                                             </td>
                                         </tr>
