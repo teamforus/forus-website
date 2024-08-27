@@ -130,11 +130,16 @@ export default function ModalVouchersUpload({
     }, [products]);
 
     const closeModal = useCallback(() => {
+        if (loading) {
+            return;
+        }
+
         if (changed) {
             onCompleted();
         }
+
         modal.close();
-    }, [changed, modal, onCompleted]);
+    }, [changed, loading, modal, onCompleted]);
 
     const downloadExampleCsv = useCallback(() => {
         if (type == 'fund_voucher') {
@@ -1113,7 +1118,7 @@ export default function ModalVouchersUpload({
                     <div className="button-group">
                         <button
                             className={`button button-default`}
-                            disabled={step == STEP_SET_UP}
+                            disabled={step == STEP_SET_UP || loading}
                             onClick={() => setStep(STEP_SET_UP)}>
                             Terug
                         </button>

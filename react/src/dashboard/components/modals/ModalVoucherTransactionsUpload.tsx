@@ -57,12 +57,16 @@ export default function ModalVoucherTransactionsUpload({
     const pushSuccess = usePushSuccess();
 
     const closeModal = useCallback(() => {
+        if (loading) {
+            return;
+        }
+
         if (changed) {
             onCreated();
         }
 
         modal.close();
-    }, [changed, modal, onCreated]);
+    }, [changed, modal, onCreated, loading]);
 
     const makeDefaultNote = useCallback(
         (row: object): string => {
