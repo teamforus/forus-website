@@ -30,34 +30,38 @@ module.exports = (env, argv) => {
         return { ...entry, [item.out]: ['@babel/polyfill', `./index-${item.type}.js`] };
     }, {});
 
-    const outPlugins = configs.map((item) => {
-        const webRoot = item?.webRoot ? `/${item?.webRoot.replace(/^\/+/, '')}` : '';
-        const webPath = (path) => {
-            return isDevServer ? `/${item.out}${path}` : `${webRoot}${path}`;
-        };
+    const outPlugins = configs
+        .map((item) => {
+            const webRoot = item?.webRoot ? `/${item?.webRoot.replace(/^\/+/, '')}` : '';
+            const webPath = (path) => {
+                return isDevServer ? `/${item.out}${path}` : `${webRoot}${path}`;
+            };
 
-        return item.withoutHtml ? null : new HtmlWebpackPlugin({
-            template: `../../react/public/index.ejs`,
-            templateParameters: {
-                title: item.default_title || 'Forus',
-                type: item.client_type,
-                timestamp: timestamp,
-                script: webPath(`/${scriptPath}`),
-                base: webPath(`/`),
-                webPath: webPath,
-                favicon: webPath(`/assets/img/favicon.ico`),
-                disable_indexing: item.config?.disable_indexing,
-                env_data: {
-                    ...item,
-                    client_key: item.client_key_api || item.client_key,
-                    client_skin: item.client_key,
-                    webRoot: (isDevServer ? item.out : webRoot).replace(/^\/+/, ''),
-                },
-            },
-            filename: item.out + '/index.html',
-            inject: false,
-        });
-    }).filter((i) => i !== null);
+            return item.withoutHtml
+                ? null
+                : new HtmlWebpackPlugin({
+                      template: `../../react/public/index.ejs`,
+                      templateParameters: {
+                          title: item.default_title || 'Forus',
+                          type: item.client_type,
+                          timestamp: timestamp,
+                          script: webPath(`/${scriptPath}`),
+                          base: webPath(`/`),
+                          webPath: webPath,
+                          favicon: webPath(`/assets/img/favicon.ico`),
+                          disable_indexing: item.config?.disable_indexing,
+                          env_data: {
+                              ...item,
+                              client_key: item.client_key_api || item.client_key,
+                              client_skin: item.client_key,
+                              webRoot: (isDevServer ? item.out : webRoot).replace(/^\/+/, ''),
+                          },
+                      },
+                      filename: item.out + '/index.html',
+                      inject: false,
+                  });
+        })
+        .filter((i) => i !== null);
 
     const resolvePath = (path) => {
         return _path.resolve(__dirname, path);
@@ -65,7 +69,13 @@ module.exports = (env, argv) => {
 
     const copyPlugins = configs.map((item) => {
         const isDashboard = ['sponsor', 'provider', 'validator'].includes(item.client_type);
-        const platform = isDashboard ? 'platform' : item.client_type === 'website' ? 'website' : (item.type === 'backend' ? 'backend' : 'webshop');
+        const platform = isDashboard
+            ? 'platform'
+            : item.client_type === 'website'
+              ? 'website'
+              : item.type === 'backend'
+                ? 'backend'
+                : 'webshop';
         const assetPath = item.assetsPath || `${distPath}/${item.out}/assets`;
 
         return new CopyPlugin({
@@ -121,6 +131,9 @@ module.exports = (env, argv) => {
             historyApiFallback: true,
             compress: true,
             allowedHosts: 'all',
+            client: {
+                overlay: false,
+            },
             server:
                 httpsKey && httpsCert
                     ? {
