@@ -76,7 +76,7 @@ export default function Privacy() {
                                 betrokken te zijn bij de online activiteiten van hun kinderen, om zo te voorkomen dat er
                                 gegevens over kinderen verzameld worden zonder ouderlijke toestemming. Als u er van
                                 overtuigd bent dat wij zonder die toestemming persoonlijke gegevens hebben verzameld
-                                over een minderjarige, neem dan contact met ons op via
+                                over een minderjarige, neem dan contact met ons op via&nbsp;
                                 <span className="link">info@forus.io</span>, dan verwijderen wij deze informatie.
                             </div>
 
@@ -228,7 +228,8 @@ export default function Privacy() {
                                 Forus neemt de bescherming van uw gegevens serieus en neemt passende maatregelen om
                                 misbruik, verlies, onbevoegde toegang, ongewenste openbaarmaking en ongeoorloofde
                                 wijziging tegen te gaan. Als u de indruk heeft dat uw gegevens niet goed beveiligd zijn
-                                of er aanwijzingen zijn van misbruik, neem dan contact op met onze klantenservice of via
+                                of er aanwijzingen zijn van misbruik, neem dan contact op met onze klantenservice of
+                                via&nbsp;
                                 <span className="link">info@forus.io</span>
                             </div>
 
@@ -238,7 +239,8 @@ export default function Privacy() {
                                 Forus neemt de bescherming van uw gegevens serieus en neemt passende maatregelen om
                                 misbruik, verlies, onbevoegde toegang, ongewenste openbaarmaking en ongeoorloofde
                                 wijziging tegen te gaan. Als u de indruk heeft dat uw gegevens niet goed beveiligd zijn
-                                of er zijn aanwijzingen van misbruik, neem dan contact op met onze klantenservice of via
+                                of er zijn aanwijzingen van misbruik, neem dan contact op met onze klantenservice of
+                                via&nbsp;
                                 <span className="link">info@forus.io</span>
                             </div>
                         </div>

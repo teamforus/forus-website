@@ -63,6 +63,7 @@
     .block-contact-form-success, .block-contact-form-error {
         display: flex;
         flex-direction: column;
+        flex: 0 0 640px;
         background: #fff;
         padding: 40px;
         border-radius: 20px;

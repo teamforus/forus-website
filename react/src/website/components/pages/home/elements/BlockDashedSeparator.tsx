@@ -1,6 +1,7 @@
 import React from 'react';
 import useAssetUrl from '../../../../hooks/useAssetUrl';
 import classNames from 'classnames';
+import StateNavLink from '../../../../modules/state_router/StateNavLink';
 
 export default function BlockDashedSeparator({
     image = true,
@@ -20,7 +21,11 @@ export default function BlockDashedSeparator({
                 demoButton && 'block-dashed-separator-button',
             )}>
             {image && <img src={assetUrl(`/assets/img/icon-forus.svg`)} alt="" />}
-            {demoButton && <div className="button button-primary">Gratis demo aanvragen</div>}
+            {demoButton && (
+                <StateNavLink name="book-demo" className="button button-primary">
+                    Gratis demo aanvragen
+                </StateNavLink>
+            )}
         </div>
     );
 }

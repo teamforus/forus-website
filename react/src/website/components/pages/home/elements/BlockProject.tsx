@@ -1,5 +1,6 @@
 import React from 'react';
 import useAssetUrl from '../../../../hooks/useAssetUrl';
+import StateNavLink from '../../../../modules/state_router/StateNavLink';
 
 export default function BlockProject() {
     const assetUrl = useAssetUrl();
@@ -16,7 +17,9 @@ export default function BlockProject() {
                     </div>
                 </div>
                 <div className="block-project-actions">
-                    <div className="button button-light-outline">Lees meer</div>
+                    <StateNavLink name={'about-us-innovation'} className="button button-light-outline">
+                        Lees meer
+                    </StateNavLink>
                 </div>
             </div>
 

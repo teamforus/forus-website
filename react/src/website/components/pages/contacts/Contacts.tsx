@@ -11,6 +11,20 @@ import { useContactService } from '../../../services/ContactService';
 import { ResponseError } from '../../../../dashboard/props/ApiResponses';
 import StateNavLink from '../../../modules/state_router/StateNavLink';
 import FormError from '../../../../dashboard/components/elements/forms/errors/FormError';
+import SelectControl from '../../../../dashboard/components/elements/select-control/SelectControl';
+import SelectControlOptions from '../../../../dashboard/components/elements/select-control/templates/SelectControlOptions';
+import { CountryCallingCode, getCountries, getPhoneCode } from 'libphonenumber-js';
+import countries from 'i18n-iso-countries';
+import countriesEn from 'i18n-iso-countries/langs/en.json';
+
+countries.registerLocale(countriesEn);
+
+const getCountryOptions = () => {
+    return getCountries()
+        .map((code) => ({ code: code, name: countries.getName(code, 'en'), dialCode: getPhoneCode(code) }))
+        .map((option) => (option.name ? { ...option, name: `+${option.dialCode}` } : null))
+        .filter((option) => option);
+};
 
 export default function Contacts() {
     const assetUrl = useAssetUrl();
@@ -22,6 +36,11 @@ export default function Contacts() {
 
     const [formSubmitted, setFormSubmitted] = useState(false);
     const [formSubmitFailed, setFormSubmitFailed] = useState(false);
+
+    const [countryOptions] = useState(getCountryOptions);
+    const [dialCode, setDialCode] = useState<CountryCallingCode>(
+        countryOptions.find((country) => country.code == 'NL').dialCode,
+    );
 
     const form = useFormBuilder(
         {
@@ -123,9 +142,24 @@ export default function Contacts() {
                                     Social
                                 </div>
                                 <div className="block-contact-details-main-info-social">
-                                    <div className="icon-social icon-linkedin" />
-                                    <div className="icon-social icon-discord" />
-                                    <div className="icon-social icon-github" />
+                                    <a
+                                        href="https://nl.linkedin.com/company/stichtingforus"
+                                        className="icon-social icon-linkedin"
+                                        target="_blank"
+                                        rel="noreferrer"
+                                    />
+                                    <a
+                                        href="https://discord.forus.io"
+                                        className="icon-social icon-discord"
+                                        target="_blank"
+                                        rel="noreferrer"
+                                    />
+                                    <a
+                                        href="https://github.com/teamforus"
+                                        className="icon-social icon-github"
+                                        target="_blank"
+                                        rel="noreferrer"
+                                    />
                                 </div>
                             </div>
                         </div>
@@ -203,7 +237,7 @@ export default function Contacts() {
                         <div className="block-contact-form-main">
                             <form className="form" onSubmit={form.submit}>
                                 <div className="form-group">
-                                    <label className="form-label">Naam</label>
+                                    <label className="form-label form-label-required">Naam</label>
                                     <input
                                         className="form-control"
                                         type="text"
@@ -214,7 +248,7 @@ export default function Contacts() {
                                     <FormError error={form.errors.name} />
                                 </div>
                                 <div className="form-group">
-                                    <label className="form-label">E-mail</label>
+                                    <label className="form-label form-label-required">E-mail</label>
                                     <input
                                         className="form-control"
                                         type="text"
@@ -237,16 +271,28 @@ export default function Contacts() {
                                 </div>
                                 <div className="form-group">
                                     <label className="form-label">Telefoon</label>
-                                    <textarea
-                                        className="form-control"
-                                        value={form.values.phone || ''}
-                                        onChange={(e) => form.update({ phone: e.target.value })}
-                                        placeholder="Telefoonnummer"
-                                    />
+                                    <div className="flex">
+                                        <SelectControl
+                                            className="select-control-country-codes"
+                                            value={dialCode}
+                                            propKey={'dialCode'}
+                                            options={countryOptions}
+                                            allowSearch={true}
+                                            onChange={(dialCode: CountryCallingCode) => setDialCode(dialCode)}
+                                            optionsComponent={SelectControlOptions}
+                                        />
+                                        <input
+                                            className="form-control"
+                                            type="text"
+                                            value={form.values.phone || ''}
+                                            onChange={(e) => form.update({ phone: e.target.value })}
+                                            placeholder="Telefoonnummer"
+                                        />
+                                    </div>
                                     <FormError error={form.errors.phone} />
                                 </div>
                                 <div className="form-group">
-                                    <label className="form-label">Bericht</label>
+                                    <label className="form-label form-label-required">Bericht</label>
                                     <textarea
                                         className="form-control"
                                         value={form.values.message || ''}
@@ -272,13 +318,17 @@ export default function Contacts() {
                                     <CheckboxControl
                                         className={'checkbox-narrow'}
                                         checked={form.values.accept_privacy_terms}
-                                        title={`Ik geef toestemming aan Forus om mijn persoonsgegevens op te slaan en te verwerken. *Privacyverklaring`}
                                         onChange={(e) => {
                                             form.update({
                                                 accept_privacy_terms: e.target.checked,
                                             });
-                                        }}
-                                    />
+                                        }}>
+                                        Ik geef toestemming aan Forus om mijn persoonsgegevens op te slaan en te
+                                        verwerken.
+                                        <StateNavLink name="privacy" className="checkbox-label">
+                                            *Privacyverklaring
+                                        </StateNavLink>
+                                    </CheckboxControl>
                                     <FormError error={form.errors.accept_privacy_terms} />
                                 </div>
                                 <button type={'submit'} className="button button-primary">

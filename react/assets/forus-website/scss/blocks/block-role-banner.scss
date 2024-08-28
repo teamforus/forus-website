@@ -88,7 +88,7 @@
     &.block-role-banner-main {
         .banner-media {
             .banner-media-overlay {
-                background: linear-gradient(21deg, #009ef4 7%, rgba(0, 0, 0, 0) 60%);
+                background: none;
             }
 
             .banner-media-image {
@@ -159,7 +159,7 @@
                 order: 2;
                 max-width: 100%;
                 background: #fff;
-                padding: 0 25px 25px;
+                padding: 0 24px 24px;
                 border-top-left-radius: 30px;
                 border-top-right-radius: 30px;
                 gap: 30px;
@@ -195,6 +195,14 @@
             mask: none;
             order: 1;
             left: 0;
+        }
+
+        &.block-role-banner-main {
+            .banner-content {
+                .banner-info {
+                    padding-top: 50px;
+                }
+            }
         }
     }
 }

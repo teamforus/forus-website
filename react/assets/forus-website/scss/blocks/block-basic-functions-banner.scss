@@ -34,12 +34,12 @@
             .banner-label {
                 color: #315EFD;
                 font: 300 28px/46px var(--base-font);
-                margin-bottom: 30px;
+                margin-bottom: 10px;
             }
 
             .banner-title {
                 font: 700 86px/96px var(--base-font);
-                margin: 0 0 30px 0;
+                margin: 0 0 10px 0;
 
                 &.section-title-sm {
                     font: 800 50px/68px var(--base-font);
@@ -142,8 +142,6 @@
     }
 
     &.block-basic-functions-banner-website {
-        margin-bottom: -80px;
-
         .banner-media {
             .banner-media-image {
                 background: url('./assets/img/basic-functions-website-banner.jpg') no-repeat center 35%;
@@ -166,7 +164,7 @@
                 order: 2;
                 max-width: 100%;
                 background: #fff;
-                padding: 0 25px 25px;
+                padding: 0 24px 24px;
                 border-top-left-radius: 30px;
                 border-top-right-radius: 30px;
                 gap: 30px;

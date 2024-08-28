@@ -36,6 +36,7 @@ export default function RolesBanner({
             className={classNames(
                 'block',
                 'block-role-banner',
+                type === 'main' && 'block-role-banner-main',
                 type === 'requester' && 'block-role-banner-requester',
                 type === 'sponsor' && 'block-role-banner-sponsor',
                 type === 'provider' && 'block-role-banner-provider',
@@ -62,7 +63,9 @@ export default function RolesBanner({
                             <StateNavLink name={'book-demo'} className="button button-primary">
                                 Gratis demo
                             </StateNavLink>
-                            <div className="button button-dark">Lees ons verhaal</div>
+                            <StateNavLink name={'about-us'} className="button button-dark">
+                                Lees ons verhaal
+                            </StateNavLink>
                         </div>
                     )}
                 </div>

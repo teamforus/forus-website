@@ -24,6 +24,7 @@ export default function PageSelector({ activeType }: { activeType: string }) {
         {
             key: 'information',
             name: 'Managementinformatie',
+            mobileName: 'Reports',
             stateName: 'information',
         },
         {
@@ -45,7 +46,11 @@ export default function PageSelector({ activeType }: { activeType: string }) {
                         )}
                         alt=""
                     />
-                    {pageType.name}
+                    {!pageType.mobileName ? (
+                        <span>{pageType.name}</span>
+                    ) : (
+                        <span className="show-sm">{pageType.mobileName}</span>
+                    )}
 
                     {pageType.key === activeType && <div className="separator-bottom" />}
                 </StateNavLink>

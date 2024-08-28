@@ -2,9 +2,11 @@ import React from 'react';
 import useAssetUrl from '../../hooks/useAssetUrl';
 import StateNavLink from '../../modules/state_router/StateNavLink';
 import useSetActiveMenuDropdown from '../../hooks/useSetActiveMenuDropdown';
+import useAuthIdentity from '../../hooks/useAuthIdentity';
 
 export default function PreviewPageFooter() {
     const assetUrl = useAssetUrl();
+    const authIdentity = useAuthIdentity();
     const setActiveMenuDropdown = useSetActiveMenuDropdown();
 
     return (
@@ -24,13 +26,15 @@ export default function PreviewPageFooter() {
             </div>
 
             <div className="block-page-list-footer-auth">
-                <StateNavLink
-                    name={'sign-in'}
-                    className="block-page-list-footer-auth-option"
-                    onClick={() => setActiveMenuDropdown(null)}>
-                    <img src={assetUrl(`/assets/img/login-icon.svg`)} alt="" />
-                    Inloggen
-                </StateNavLink>
+                {!authIdentity && (
+                    <StateNavLink
+                        name={'sign-in'}
+                        className="block-page-list-footer-auth-option"
+                        onClick={() => setActiveMenuDropdown(null)}>
+                        <img src={assetUrl(`/assets/img/login-icon.svg`)} alt="" />
+                        Inloggen
+                    </StateNavLink>
+                )}
 
                 <StateNavLink
                     name={'book-demo'}

@@ -82,7 +82,7 @@ export default function BookDemoForm() {
 
                     <form className="form" onSubmit={form.submit}>
                         <div className="form-group">
-                            <label className="form-label">Naam</label>
+                            <label className="form-label form-label-required">Naam</label>
                             <input
                                 className="form-control"
                                 type="text"
@@ -93,7 +93,7 @@ export default function BookDemoForm() {
                             <FormError error={form.errors.name} />
                         </div>
                         <div className="form-group">
-                            <label className="form-label">E-mail</label>
+                            <label className="form-label form-label-required">E-mail</label>
                             <input
                                 className="form-control"
                                 type="text"
@@ -137,7 +137,7 @@ export default function BookDemoForm() {
                             <FormError error={form.errors.organization_name} />
                         </div>
                         <div className="form-group">
-                            <label className="form-label">
+                            <label className="form-label form-label-required">
                                 Heeft u specifieke vragen die we mee kunnen nemen tijdens de demonstratie?
                             </label>
                             <textarea

@@ -19,10 +19,14 @@ export default function HelpCenter() {
                 </div>
 
                 <div>
-                    <div className="button button-text button-text-padless button-read-more">
+                    <a
+                        target={'_blank'}
+                        href="https://helpcentrum.forus.io/kb/nl "
+                        className="button button-text button-text-padless button-read-more"
+                        rel="noreferrer">
                         Lees meer
                         <em className="mdi mdi-arrow-right icon-end" />
-                    </div>
+                    </a>
                 </div>
             </div>
         </div>
