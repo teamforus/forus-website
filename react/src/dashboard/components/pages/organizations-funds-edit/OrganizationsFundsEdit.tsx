@@ -1047,7 +1047,7 @@ export default function OrganizationsFundsEdit() {
                     <div className="card-section card-section-primary">
                         <div className="row">
                             <div className="form-group form-group-inline col col-lg-9 col-md-12">
-                                <label className="form-label">Standaard validator</label>
+                                <label className="form-label">Satandaard beoordelaar</label>
                                 <div className="form-offset">
                                     <SelectControl
                                         propKey={'id'}
