@@ -1,4 +1,3 @@
-import remove_external_validators from './modals/danger-zone/remove-external-validator';
 import remove_provider_application from './modals/danger-zone/remove-provider-application';
 import remove_organization_employees from './modals/danger-zone/remove-organization-employee';
 import remove_note from './modals/danger-zone/remove-note';
@@ -19,7 +18,6 @@ import remove_mollie_connection from './modals/danger-zone/remove-mollie-connect
 import confirm_extra_payment_refund from './modals/danger-zone/confirm-extra-payment-refund';
 
 export default {
-    remove_external_validators,
     remove_provider_application,
     remove_organization_employees,
     remove_note,
