@@ -1,7 +1,7 @@
 export default {
     header: {
         title: 'Individuele betaalopdrachten',
-        titleBulks: 'Bulktransacties',
+        titleBulks: 'Bulk betaalopdrachten',
     },
     labels: {
         id: 'ID',

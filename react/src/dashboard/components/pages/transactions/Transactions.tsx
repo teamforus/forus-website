@@ -265,10 +265,10 @@ export default function Transactions() {
         const totalAmount = pendingBulkingMeta.total_amount_locale;
 
         return confirmDangerAction(
-            'Nu een bulktransactie maken',
+            'Nu een bulk betaalopdrachten maken',
             [
-                'U staat op het punt om een bulktransactie aan te maken. De nog niet uitbetaalde transacties worden gebundeld tot één bulktransactie.',
-                `De ${total} individuele transacties hebben een totaal waarde van ${totalAmount}.`,
+                'U staat op het punt om een bulk betaalopdrachten aan te maken. De nog niet uitbetaalde transacties worden gebundeld tot één bulktransactie.',
+                `De ${total} individuele betaalopdrachten hebben een totaal waarde van ${totalAmount}.`,
                 'Weet u zeker dat u wilt verdergaan?',
             ].join('\n'),
         );
@@ -293,7 +293,7 @@ export default function Transactions() {
 
                         pushSuccess(
                             'Succes!',
-                            `${bulks.length} bulktransactie(s) aangemaakt. Accepteer de transactie in uw mobiele app van bunq.`,
+                            `${bulks.length} bulk betaalopdrachten aangemaakt. Accepteer de transactie in uw mobiele app van bunq.`,
                         );
                     } else if (bulks.length == 1) {
                         navigateState('transaction-bulk', {
@@ -304,7 +304,7 @@ export default function Transactions() {
                         pushSuccess(`Succes!`, `Accepteer de transactie in uw mobiele app van bunq.`);
                     }
                 })
-                .catch((res) => pushDanger('Bulktransactie mislukt', res.data.message || 'Er ging iets mis!'))
+                .catch((res) => pushDanger('Bulk betaalopdrachten mislukt', res.data.message || 'Er ging iets mis!'))
                 .finally(() => {
                     setBuildingBulks(false);
                     updateHasPendingBulking();
@@ -1103,14 +1103,14 @@ export default function Transactions() {
                                 ) : (
                                     <em className="mdi mdi-cube-send icon-start" />
                                 )}
-                                Maak nu een bulktransactie
+                                Maak nu een bulk betaalopdrachten
                             </button>
                         </div>
                     </div>
                 )}
 
             {viewType.key == 'transactions' && transactions.meta.total == 0 && (
-                <EmptyCard type={'card-section'} title="Geen transacties gevonden" />
+                <EmptyCard type={'card-section'} title="Geen betaalopdrachten gevonden" />
             )}
 
             {viewType.key == 'transactions' && transactions?.meta && (
@@ -1227,7 +1227,7 @@ export default function Transactions() {
                     type={'card-section'}
                     title={'Geen bulktransacties gevonden'}
                     description={[
-                        'Bulktransacties worden dagelijks om 09:00 gegereneerd en bevatten alle nog niet uitbetaalde transacties uit de wachtrij.',
+                        'Bulk betaalopdrachten worden dagelijks om 09:00 gegereneerd en bevatten alle nog niet uitbetaalde transacties uit de wachtrij.',
                         'Momenteel zijn er geen bulk transacties beschikbaar.',
                     ].join('\n')}
                 />

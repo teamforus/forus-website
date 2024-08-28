@@ -132,7 +132,7 @@ export default function LayoutAsideSponsor({ organization }: { organization: Org
                                 id={'financial_dashboard'}
                             />
                             <LayoutAsideNavItem
-                                name={'Transacties'}
+                                name={'Betaalopdrachten'}
                                 icon={'transactions'}
                                 route={'transactions'}
                                 routeParams={{ organizationId: organization?.id }}
