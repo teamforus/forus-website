@@ -70,22 +70,24 @@ export default function useStorageService() {
     }, []);
 
     const getCollectionWithExpiry = useCallback((key: string) => {
-        const itemStr = localStorage.getItem(key);
+        try {
+            const itemStr = localStorage.getItem(key);
 
-        if (!itemStr) {
+            if (!itemStr) {
+                return null;
+            }
+
+            const item = JSON.parse(itemStr);
+            const itemExpired = item?.expiry && new Date().getTime() > item.expiry;
+
+            if (itemExpired) {
+                localStorage.removeItem(key);
+            }
+
+            return itemExpired ? null : item?.value;
+        } catch (e) {
             return null;
         }
-
-        const item = JSON.parse(itemStr);
-        const now = new Date();
-
-        if (item?.expiry && now.getTime() > item.expiry) {
-            localStorage.removeItem(key);
-
-            return null;
-        }
-
-        return item?.value;
     }, []);
 
     return {

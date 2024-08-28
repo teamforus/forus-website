@@ -82,7 +82,7 @@ export default function Dashboard({ envData }: { envData: EnvDataProp }): React.
                             <PrintableProvider>
                                 <ModalsProvider>
                                     <MainProvider>
-                                        <QueryParamProvider adapter={ReactRouter6Adapter}>
+                                        <QueryParamProvider adapter={ReactRouter6Adapter} options={{}}>
                                             <StateHashPrefixRedirect />
                                             <RouterLayout envData={envData} />
                                             {envData.client_type === 'provider' && (

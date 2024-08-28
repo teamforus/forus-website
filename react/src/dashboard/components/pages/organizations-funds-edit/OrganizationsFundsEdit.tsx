@@ -47,6 +47,8 @@ import FaqEditor from '../../elements/faq-editor-funds/FaqEditor';
 
 export default function OrganizationsFundsEdit() {
     const { fundId } = useParams();
+
+    const appConfigs = useAppConfigs();
     const activeOrganization = useActiveOrganization();
 
     const assetUrl = useAssetUrl();
@@ -55,7 +57,6 @@ export default function OrganizationsFundsEdit() {
     const setProgress = useSetProgress();
     const pushSuccess = usePushSuccess();
     const navigateState = useNavigateState();
-    const appConfigs = useAppConfigs();
 
     const tagService = useTagService();
     const fundService = useFundService();

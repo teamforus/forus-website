@@ -1213,7 +1213,7 @@ body {
         }
 
         &.card-section-sm {
-            padding: 8px;
+            padding: 10px;
         }
 
         &.card-section-padless,
@@ -1326,25 +1326,11 @@ body {
     }
 
     &.card-bordered {
-        border: 1px solid #D4D9DD;
+        border: 1px solid var(--border-color);
+    }
 
-        .card-block-table-without-footer {
-            tbody {
-                tr {
-                    &:last-child {
-                        td {
-                            &:first-child {
-                                border-bottom-left-radius: var(--border-radius);
-                            }
-
-                            &:last-child {
-                                border-bottom-right-radius: var(--border-radius);
-                            }
-                        }
-                    }
-                }
-            }
-        }
+    &.card-overflow-hidden {
+        overflow: hidden;
     }
 
     &.card-no-shadow {

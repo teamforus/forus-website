@@ -16,7 +16,7 @@ export default function FundsProviderProductsRequiredTable({
     const [showFunds, setShowFunds] = useState(!collapsed);
 
     return (
-        <div className="card card-no-shadow card-bordered">
+        <div className="card card-no-shadow card-bordered card-overflow-hidden">
             <div className="card-header card-header-md clickable" onClick={() => setShowFunds(!showFunds)}>
                 <div className="flex-row">
                     <div className="flex-col flex-grow">
@@ -30,7 +30,7 @@ export default function FundsProviderProductsRequiredTable({
 
             {showFunds && (
                 <div className="card-section">
-                    <div className="card-block card-block-table card-block-table-without-footer">
+                    <div className="card-block card-block-table">
                         <div className="table-wrapper">
                             <table className="table">
                                 <thead>

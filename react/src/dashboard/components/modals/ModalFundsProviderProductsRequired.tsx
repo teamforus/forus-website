@@ -6,6 +6,7 @@ import IconWarning from '../../../../assets/forus-platform/resources/_platform-c
 import { useNavigateState } from '../../modules/state_router/Router';
 import useActiveOrganization from '../../hooks/useActiveOrganization';
 import Fund from '../../props/models/Fund';
+import classNames from 'classnames';
 
 export default function ModalFundsProviderProductsRequired({ modal, funds }: { modal: ModalState; funds: Fund[] }) {
     const storage = useStorageService();
@@ -25,27 +26,28 @@ export default function ModalFundsProviderProductsRequired({ modal, funds }: { m
 
     return (
         <div
-            className={`modal modal-md modal-animated modal-provider-products-required ${modal.loading ? 'modal-loading' : ''}`}>
+            className={classNames(
+                `modal`,
+                'modal-md',
+                'modal-animated',
+                'modal-provider-products-required',
+                modal.loading && 'modal-loading',
+            )}>
             <div className="modal-backdrop" />
             <div className="modal-window form">
                 <div className="modal-body">
                     <div className="modal-section modal-section-sm">
-                        <div className="block block-provider-products-required form">
-                            <div className="content">
-                                <div className="content-icon">
-                                    <IconWarning />
-                                </div>
+                        <div className="block block-provider-products-required">
+                            <div className="products-required-icon">
+                                <IconWarning />
+                            </div>
 
-                                <div className="content-details">
-                                    <div className="content-title">U heeft nog geen aanbod toegevoegd!</div>
-                                    <div className="content-description">
-                                        Uw organisatie is aangemeld voor een fonds waarvoor aanbod moet worden
-                                        toegevoegd.
-                                        <br />
-                                        Na goedkeuring wordt uw aanbod zichtbaar op de website. Deze melding verdwijnt
-                                        zodra u minimaal één aanbod hebt toegevoegd.
-                                    </div>
-                                </div>
+                            <div className="products-required-title">U heeft nog geen aanbod toegevoegd!</div>
+                            <div className="products-required-description">
+                                Uw organisatie is aangemeld voor een fonds waarvoor aanbod moet worden toegevoegd.
+                                <br />
+                                Na goedkeuring wordt uw aanbod zichtbaar op de website. Deze melding verdwijnt zodra u
+                                minimaal één aanbod hebt toegevoegd.
                             </div>
                         </div>
                     </div>
