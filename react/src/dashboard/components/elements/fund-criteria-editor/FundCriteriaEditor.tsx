@@ -8,13 +8,6 @@ import FundCriterion from '../../../props/models/FundCriterion';
 import useTranslate from '../../../hooks/useTranslate';
 import { uniqueId } from 'lodash';
 
-export type FundCriterionOrganization = Organization & {
-    name: string;
-    accepted?: boolean;
-    validator_organization?: FundCriterionOrganization;
-    validator_organization_id?: number;
-};
-
 export type CriteriaEditorItem = {
     uid?: string;
     isNew?: boolean;
@@ -32,7 +25,6 @@ export default function FundCriteriaEditor({
     recordTypes,
     saveButton,
     onSaveCriteria,
-    validatorOrganizations,
     saveCriteriaRef,
 }: {
     fund: Fund;
@@ -43,7 +35,6 @@ export default function FundCriteriaEditor({
     recordTypes: Array<RecordType>;
     saveButton?: boolean;
     onSaveCriteria?: (criteria: Array<FundCriterion>) => void;
-    validatorOrganizations: Array<Organization>;
     saveCriteriaRef?: MutableRefObject<() => Promise<Array<FundCriterion>> | null>;
 }) {
     const translate = useTranslate();
@@ -70,7 +61,6 @@ export default function FundCriteriaEditor({
                 saveRef: createRef<() => Promise<boolean>>(),
                 item: {
                     show_attachment: false,
-                    external_validators: [],
                     record_type_key: null,
                     operator: null,
                     value: null,
@@ -187,7 +177,6 @@ export default function FundCriteriaEditor({
                         });
                     }}
                     onDeleteCriteria={() => onDelete(index)}
-                    validatorOrganizations={validatorOrganizations}
                     saveCriterionRef={item.saveRef}
                 />
             ))}
