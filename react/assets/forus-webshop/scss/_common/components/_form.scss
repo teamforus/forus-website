@@ -50,11 +50,13 @@
         padding: var(--form-padding);
         color: var(--form-control-color);
         background-color: var(--form-control-background);
-        font: var(--form-font);
-        line-height: 20px;
-        transition: background-color 0.4s ease, border 0.4s ease;
         border-radius: calc(var(--border-radius) / 2);
         border: 1px solid var(--form-control-border-color);
+        font: var(--form-font);
+        line-height: 20px;
+        transition:
+            background-color 0.4s ease,
+            border 0.4s ease;
         appearance: none;
 
         &[disabled] {
@@ -66,10 +68,10 @@
         }
 
         &:focus {
-            outline: 5px auto -webkit-focus-ring-color !important;
-            outline-offset: -2px;
+            outline: 4px auto -webkit-focus-ring-color !important;
+            outline-offset: 3px;
             background-color: #ffffff;
-            border: 1px solid var(--border-color);
+            border: 1px solid var(--form-control-border-color-focus);
         }
 
         &.form-control-fancy {
@@ -97,11 +99,6 @@
                 top: 50%;
                 transform: translate(0, -50%);
             }
-        }
-
-        &.select-control {
-            padding: 0 !important;
-            border: none;
         }
     }
 
@@ -167,6 +164,27 @@
 
         &::-ms-expand {
             display: none;
+        }
+    }
+
+    .select-control {
+        padding: 0 0 !important;
+        border-radius: calc(var(--border-radius) / 2);
+        border: 1px solid var(--form-control-border-color);
+
+        .form-control:not([type='radio']):not([type='checkbox']) {
+            border: none !important;
+
+            &:focus {
+                outline: none;
+            }
+        }
+
+        &:focus {
+            outline: 4px auto -webkit-focus-ring-color !important;
+            outline-offset: 3px;
+            background-color: #ffffff;
+            border: 1px solid var(--form-control-border-color-focus);
         }
     }
 
@@ -246,8 +264,8 @@
             z-index: 100;
             position: absolute;
             top: 100%;
-            left: 0;
-            width: 100%;
+            left: -1px;
+            right: -1px;
             background: #fff;
             border: 1px solid #d4d9dd;
             border-top: none;
@@ -269,6 +287,7 @@
                 line-height: 20px;
                 color: var(--dropdown-item-color);
                 background: var(--dropdown-item-background);
+                outline-offset: -1px;
                 @include ellipsis();
 
                 strong,
@@ -478,7 +497,7 @@
 
         .checkbox-label {
             display: inline-block;
-            font: 400 13px/13px 'Open Sans', arial, sans-serif;
+            font: 400 13px/13px var(--base-font);
             margin-left: 10px;
             margin-bottom: 3px;
         }
@@ -1151,12 +1170,6 @@
         :-ms-input-placeholder {
             font: var(--form-control-placeholder-font);
             color: var(--form-control-placeholder-color);
-        }
-
-        &.form-compact-flat {
-            .form-control {
-                border-color: var(--border-color);
-            }
         }
     }
 }
