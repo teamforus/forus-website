@@ -21,6 +21,8 @@ export default interface FundRequest {
     records: Array<FundRequestRecord>;
     replaced: boolean;
     state: 'pending' | 'approved' | 'declined' | 'disregarded' | 'approved_partly';
+    employee: Employee;
+    employee_id: number;
     state_locale: string;
     updated_at?: string | null;
     updated_at_locale?: string | null;

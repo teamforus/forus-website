@@ -11,7 +11,7 @@ export default function usePushApiError(redirectStateName?: string) {
 
     return useCallback(
         (err: ResponseError) => {
-            pushDanger('Mislukt!', err.data.message);
+            pushDanger('Mislukt!', err?.data?.message);
 
             if (redirectStateName) {
                 return navigateSate(redirectStateName, { organizationId: activeOrganization?.id });
