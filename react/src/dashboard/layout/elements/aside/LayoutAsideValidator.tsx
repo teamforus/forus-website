@@ -23,14 +23,6 @@ export default function LayoutAsideValidator({ organization }: { organization: O
                 id={'fund_requests'}
             />
             <LayoutAsideNavItem
-                name={'Fondsen'}
-                icon={'fund_validations'}
-                route={'external-funds'}
-                routeParams={{ organizationId: organization?.id }}
-                show={hasPermission(organization, 'manage_organization')}
-                id={'external_funds'}
-            />
-            <LayoutAsideNavItem
                 name={'Medewerkers'}
                 icon={'list'}
                 route={'employees'}
