@@ -123,6 +123,14 @@
                         margin: 0 0 36px;
                         width: 100%;
 
+                        .block-slider-arrow {
+                            display: flex;
+                            align-items: center;
+                            cursor: pointer;
+                            padding: 8px;
+                            border-radius: 20px;
+                        }
+
                         .separator {
                             margin: 0;
                             flex-grow: 1;

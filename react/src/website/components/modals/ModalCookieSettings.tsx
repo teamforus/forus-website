@@ -4,6 +4,7 @@ import { ModalState } from '../../../dashboard/modules/modals/context/ModalConte
 import useAssetUrl from '../../hooks/useAssetUrl';
 import useFormBuilder from '../../../dashboard/hooks/useFormBuilder';
 import usePushSuccess from '../../../dashboard/hooks/usePushSuccess';
+import StateNavLink from '../../modules/state_router/StateNavLink';
 
 export default function ModalCookieSettings({
     modal,
@@ -23,7 +24,7 @@ export default function ModalCookieSettings({
     const [showGeneralCookiesDescription, setShowGeneralCookiesDescription] = useState(false);
     const [showAnalyticsCookiesDescription, setShowAnalyticsCookiesDescription] = useState(false);
 
-    const form = useFormBuilder({ generalCookiesAccepted: false, analyticsCookiesAccepted: false }, () => {
+    const form = useFormBuilder({ generalCookiesAccepted: true, analyticsCookiesAccepted: true }, () => {
         const formValues = form.values;
 
         localStorage.setItem(generalCookiesStorageKey, formValues.generalCookiesAccepted ? 'true' : 'false');
@@ -89,6 +90,7 @@ export default function ModalCookieSettings({
                                                     form.update({ generalCookiesAccepted: e.target.checked });
                                                 }}
                                                 checked={form.values.generalCookiesAccepted}
+                                                disabled={true}
                                                 aria-hidden="true"
                                             />
                                             <div className="form-toggle-inner flex-end">
@@ -191,7 +193,14 @@ export default function ModalCookieSettings({
                             functionaliteit van de website kan beïnvloeden.
                             <br />
                             <br />
-                            Voor meer informatie over ons cookiebeleid leest u in ons Privacyverklaring.
+                            Voor meer informatie over ons cookiebeleid leest u in ons{' '}
+                            <StateNavLink
+                                target={'_blank'}
+                                name={'privacy'}
+                                className="modal-cookie-settings-block-description-link"
+                                rel="noreferrer">
+                                Privacyverklaring.
+                            </StateNavLink>
                         </div>
                     </div>
                 </div>

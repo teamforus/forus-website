@@ -86,7 +86,7 @@ export default function CMS() {
 
                     <BlockDashedSeparator image={true} />
 
-                    <div className="block block-text">
+                    <div className="block block-text text-left">
                         <div className="block-text-title block-text-title-sm">Content aanpassen</div>
                         <div className="block-text-description block-text-description-sm">
                             Met ons CMS pas u eenvoudig de content van uw website pagina&apos;s aan. U kunt tekst,
@@ -115,9 +115,9 @@ export default function CMS() {
                         <div className="block-with-image-wrapper">
                             <div className="block-with-image-info">
                                 <div className="block-with-image-description">
-                                    Informatieblokken vormen handige elementen waarmee u de inhoud van uw webpage`s kunt
-                                    organiseren en structureren. U heeft de mogelijkheid om blokken toe te voegen, te
-                                    verwijderen of aan te passen, en deze te gebruiken voor diverse doeleinden, zoals
+                                    Informatieblokken vormen handige elementen waarmee u de inhoud van uw webpage&apos;s
+                                    kunt organiseren en structureren. U heeft de mogelijkheid om blokken toe te voegen,
+                                    te verwijderen of aan te passen, en deze te gebruiken voor diverse doeleinden, zoals
                                     het verstrekken van informatie over een fonds. U kunt zelfs een knop toevoegen die
                                     leidt naar de aanvraagpagina of naar een externe URL. Elk informatieblok bestaat uit
                                     de volgende elementen die u kunt gebruiken:

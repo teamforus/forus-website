@@ -46,7 +46,7 @@ export default function Funds() {
                 <div className="wrapper">
                     <PageSelector activeType={'funds'} />
 
-                    <div className="block block-text">
+                    <div className="block block-text text-left">
                         <div className="block-text-title block-text-title-sm">Wat zijn Fondsen?</div>
                         <div className="block-text-description block-text-description-sm">
                             Om sociale regelingen uit te geven via het Forus-platform zet u een fonds op. Fondsen
@@ -110,7 +110,7 @@ export default function Funds() {
                         </div>
                     </div>
 
-                    <div className="block block-text">
+                    <div className="block block-text text-left">
                         <div className="block-text-title block-text-title-sm">Soorten fondsen en hun toepassingen</div>
                         <div className="block-separator">
                             <div className="line" />

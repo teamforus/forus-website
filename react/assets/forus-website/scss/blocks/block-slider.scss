@@ -238,6 +238,19 @@
 
                 .block-slider-list-item-main {
                     order: 2;
+
+                    .block-slider-list-item-info-wrapper {
+                        flex-direction: column;
+                        gap: 20px;
+
+                        .block-slider-list-item-info {
+                            order: 2;
+                        }
+
+                        .block-slider-list-item-image {
+                            order: 1;
+                        }
+                    }
                 }
 
                 .block-slider-list-item-image {

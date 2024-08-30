@@ -50,6 +50,11 @@
 
             .block-with-image-description {
                 font: 400 18px/27px var(--base-font);
+
+                a {
+                    font: 400 18px/27px var(--base-font);
+                    text-decoration: underline;
+                }
             }
 
             .block-with-image-actions {

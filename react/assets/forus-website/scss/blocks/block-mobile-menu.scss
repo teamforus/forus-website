@@ -26,6 +26,14 @@
                 align-items: center;
                 color: #55575E;
                 gap: 10px;
+
+                .state-nav-link {
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                    font: 700 14px/20px var(--base-font);
+                    color: #2A2B2D;
+                }
             }
 
             .mobile-submenu-image {

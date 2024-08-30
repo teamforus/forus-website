@@ -50,6 +50,11 @@
 
             .modal-cookie-settings-block-description {
                 font: 300 14px/21px var(--base-font);
+
+                a {
+                    font: 600 14px/21px var(--base-font);
+                    text-decoration-line: underline;
+                }
             }
 
             .modal-cookie-settings-block-settings-list {

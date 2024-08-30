@@ -81,14 +81,25 @@
 
         .block-slider-list {
             flex-direction: column;
+            gap: 20px;
 
             .block-slider-list-item {
                 flex-direction: column;
-                margin-bottom: 50px;
+                margin-bottom: 20px;
                 border: none;
 
                 .block-slider-list-item-info {
                     flex: auto;
+
+                    .block-slider-list-item-info-arrow {
+                        content: " ";
+                        position: absolute;
+                        width: 20px;
+                        height: 20px;
+                        top: -10px;
+                        left: 50%;
+                        transform: translateX(-50%) rotate(45deg);
+                    }
                 }
             }
         }
@@ -98,9 +109,13 @@
         }
 
         .block-slider-list-item-image {
-            width: 100%;
+            width: 150px;
             height: auto;
-            margin-bottom: 30px;
+            margin: 0 auto 30px;
+            border-radius: 16px;
+            border: 6px solid #F4F4F4;
+            background: #FFF;
+            box-shadow: 0 20px 55px  rgba(115, 120, 145, 0.06);
 
             img {
                 display: block;

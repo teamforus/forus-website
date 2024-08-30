@@ -150,9 +150,12 @@ export default function LayoutHeader() {
                                     src={assetUrl('/assets/img/icon-login.svg')}
                                     alt=""
                                 />
-                                <div className="button button-text button-login" role="button">
+                                <StateNavLink
+                                    name={'sign-in'}
+                                    className="button button-text button-login"
+                                    role="button">
                                     Inloggen
-                                </div>
+                                </StateNavLink>
                             </Fragment>
                         )}
                         {showMobileMenu ? (
@@ -198,29 +201,30 @@ export default function LayoutHeader() {
                                     className={`mobile-submenu-group ${
                                         shownSubMenuGroup == 'basic-functions' ? 'active' : ''
                                     }`}>
-                                    <div
-                                        className="mobile-menu-group-header"
-                                        onClick={(e) => {
-                                            setShownSubMenuGroup(
-                                                shownSubMenuGroup != 'basic-functions' ? 'basic-functions' : '',
-                                            );
-                                            e.preventDefault();
-                                            e.stopPropagation();
-                                        }}>
-                                        <img
-                                            className="mobile-submenu-image"
-                                            src={assetUrl(
-                                                `/assets/img/icon-basic-functions${
-                                                    shownSubMenuGroup == 'basic-functions' ? '-active' : ''
-                                                }.svg`,
-                                            )}
-                                            alt=""
-                                        />
-                                        Basisfuncties
+                                    <div className="mobile-menu-group-header">
+                                        <StateNavLink name={'basic-functions'} onClick={() => setShowMobileMenu(false)}>
+                                            <img
+                                                className="mobile-submenu-image"
+                                                src={assetUrl(
+                                                    `/assets/img/icon-basic-functions${
+                                                        shownSubMenuGroup == 'basic-functions' ? '-active' : ''
+                                                    }.svg`,
+                                                )}
+                                                alt=""
+                                            />
+                                            Basisfuncties
+                                        </StateNavLink>
                                         <em
                                             className={`mdi mdi-menu-${
                                                 shownSubMenuGroup.includes('basic-functions') ? 'up' : 'down'
                                             } pull-right`}
+                                            onClick={(e) => {
+                                                setShownSubMenuGroup(
+                                                    shownSubMenuGroup != 'basic-functions' ? 'basic-functions' : '',
+                                                );
+                                                e.preventDefault();
+                                                e.stopPropagation();
+                                            }}
                                         />
                                     </div>
 
@@ -305,27 +309,28 @@ export default function LayoutHeader() {
                                 </div>
 
                                 <div className={`mobile-submenu-group ${shownSubMenuGroup == 'roles' ? 'active' : ''}`}>
-                                    <div
-                                        className="mobile-menu-group-header"
-                                        onClick={(e) => {
-                                            setShownSubMenuGroup(shownSubMenuGroup != 'roles' ? 'roles' : '');
-                                            e.preventDefault();
-                                            e.stopPropagation();
-                                        }}>
-                                        <img
-                                            className="mobile-submenu-image"
-                                            src={assetUrl(
-                                                `/assets/img/icon-roles${
-                                                    shownSubMenuGroup == 'roles' ? '-active' : ''
-                                                }.svg`,
-                                            )}
-                                            alt=""
-                                        />
-                                        Rollen
+                                    <div className="mobile-menu-group-header">
+                                        <StateNavLink name={'roles-main'} onClick={() => setShowMobileMenu(false)}>
+                                            <img
+                                                className="mobile-submenu-image"
+                                                src={assetUrl(
+                                                    `/assets/img/icon-roles${
+                                                        shownSubMenuGroup == 'roles' ? '-active' : ''
+                                                    }.svg`,
+                                                )}
+                                                alt=""
+                                            />
+                                            Rollen
+                                        </StateNavLink>
                                         <em
                                             className={`mdi mdi-menu-${
                                                 shownSubMenuGroup.includes('roles') ? 'up' : 'down'
                                             } pull-right`}
+                                            onClick={(e) => {
+                                                setShownSubMenuGroup(shownSubMenuGroup != 'roles' ? 'roles' : '');
+                                                e.preventDefault();
+                                                e.stopPropagation();
+                                            }}
                                         />
                                     </div>
 

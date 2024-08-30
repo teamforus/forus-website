@@ -38,6 +38,18 @@ export default function SignInAsRole() {
     const [emailSent, setEmailSent] = useState(false);
 
     const signedIn = useMemo(() => !!token, [token]);
+    const roleName = useMemo(() => {
+        switch (role) {
+            case 'requester':
+                return 'Aanvrager';
+            case 'provider':
+                return 'Aanbieder';
+            case 'sponsor':
+                return 'Sponsor';
+            case 'validator':
+                return 'Beoordelaar';
+        }
+    }, [role]);
 
     const authForm = useFormBuilder(
         {
@@ -125,7 +137,7 @@ export default function SignInAsRole() {
                 <Fragment>
                     <div className="block block-sign-in">
                         <div className="block-sign-in-title">
-                            Inloggen als <span className="block-sign-in-role-name">{role}</span>
+                            Inloggen als <span className="block-sign-in-role-name">{roleName}</span>
                         </div>
                         <div className="block-sign-in-main">
                             <div className="block-sign-in-main-option block-sign-in-main-email">

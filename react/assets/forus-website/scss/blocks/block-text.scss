@@ -37,8 +37,17 @@
         font: 300 22px/36px var(--base-font);
         margin: 0 0 30px;
 
+        a {
+            font: 300 22px/36px var(--base-font);
+            text-decoration: underline;
+        }
+
         &.block-text-description-sm {
             font: 300 18px/28px var(--base-font);
+
+            a {
+                font: 300 18px/28px var(--base-font);
+            }
         }
     }
 

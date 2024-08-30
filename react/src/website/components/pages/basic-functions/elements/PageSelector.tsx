@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { Fragment, useState } from 'react';
 import useAssetUrl from '../../../../hooks/useAssetUrl';
 import StateNavLink from '../../../../modules/state_router/StateNavLink';
 
@@ -24,7 +24,7 @@ export default function PageSelector({ activeType }: { activeType: string }) {
         {
             key: 'information',
             name: 'Managementinformatie',
-            mobileName: 'Reports',
+            mobileName: 'Statistieken',
             stateName: 'information',
         },
         {
@@ -49,7 +49,10 @@ export default function PageSelector({ activeType }: { activeType: string }) {
                     {!pageType.mobileName ? (
                         <span>{pageType.name}</span>
                     ) : (
-                        <span className="show-sm">{pageType.mobileName}</span>
+                        <Fragment>
+                            <span className="hide-sm">{pageType.name}</span>
+                            <span className="show-sm">{pageType.mobileName}</span>
+                        </Fragment>
                     )}
 
                     {pageType.key === activeType && <div className="separator-bottom" />}

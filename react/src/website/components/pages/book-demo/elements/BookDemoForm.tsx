@@ -90,7 +90,7 @@ export default function BookDemoForm() {
                                 onChange={(e) => form.update({ name: e.target.value })}
                                 placeholder="Voor- en achternaam"
                             />
-                            <FormError error={form.errors.name} />
+                            <FormError error={form.errors?.name} />
                         </div>
                         <div className="form-group">
                             <label className="form-label form-label-required">E-mail</label>
@@ -101,7 +101,7 @@ export default function BookDemoForm() {
                                 onChange={(e) => form.update({ email: e.target.value })}
                                 placeholder="E-mailadres"
                             />
-                            <FormError error={form.errors.email} />
+                            <FormError error={form.errors?.email} />
                         </div>
                         <div className="form-group">
                             <label className="form-label">Telefoon</label>
@@ -123,7 +123,7 @@ export default function BookDemoForm() {
                                     placeholder="Telefoonnummer"
                                 />
                             </div>
-                            <FormError error={form.errors.phone} />
+                            <FormError error={form.errors?.phone} />
                         </div>
                         <div className="form-group">
                             <label className="form-label">Organisatie</label>
@@ -134,10 +134,10 @@ export default function BookDemoForm() {
                                 onChange={(e) => form.update({ organization_name: e.target.value })}
                                 placeholder="Naam van organisatie"
                             />
-                            <FormError error={form.errors.organization_name} />
+                            <FormError error={form.errors?.organization_name} />
                         </div>
                         <div className="form-group">
-                            <label className="form-label form-label-required">
+                            <label className="form-label">
                                 Heeft u specifieke vragen die we mee kunnen nemen tijdens de demonstratie?
                             </label>
                             <textarea
@@ -146,7 +146,7 @@ export default function BookDemoForm() {
                                 onChange={(e) => form.update({ message: e.target.value })}
                                 placeholder="Bericht"
                             />
-                            <FormError error={form.errors.message} />
+                            <FormError error={form.errors?.message} />
                         </div>
                         <div className="form-group">
                             <CheckboxControl
@@ -159,7 +159,7 @@ export default function BookDemoForm() {
                                     });
                                 }}
                             />
-                            <FormError error={form.errors.accept_product_update_terms} />
+                            <FormError error={form.errors?.accept_product_update_terms} />
                         </div>
                         <div className="form-group last-child">
                             <CheckboxControl
@@ -172,7 +172,7 @@ export default function BookDemoForm() {
                                     });
                                 }}
                             />
-                            <FormError error={form.errors.accept_privacy_terms} />
+                            <FormError error={form.errors?.accept_privacy_terms} />
                         </div>
                         <button
                             type={'submit'}
@@ -209,7 +209,7 @@ export default function BookDemoForm() {
                             <div className="block-contact-form-error-title">Er is iets misgegaan</div>
                             <div className="block-contact-form-error-description">Probeer het alstublieft opnieuw.</div>
                             <div className="button-group">
-                                <button className="button button-primary" onClick={() => setFormSubmitted(false)}>
+                                <button className="button button-dark" onClick={() => setFormSubmitted(false)}>
                                     Opnieuw proberen
                                 </button>
                                 <StateNavLink name={'home'} className="button button-primary">

@@ -27,7 +27,7 @@ export default function Website() {
         [
             'Elke doelgroep is uniek. Er is geen one-size-fits-all oplossing. Daarom is het belangrijk ',
             'dat uw website goed aansluit bij uw doelgroep en hen de mogelijkheid biedt zich ermee te ',
-            'identificeren. Ons systeem is daarom ontwikkeld als een &quot;white-label platform&quot;, ',
+            'identificeren. Ons systeem is daarom ontwikkeld als een "white-label platform", ',
             'waarmee gemakkelijk nieuwe oplossingen kunnen worden gecreëerd door de vormgeving ',
             '(look-and-feel) aan te passen aan verschillende doelgroepen. Dit betekent dat een website ',
             'kan worden afgestemd op een specifieke regeling, meerdere regelingen of een samenwerking ',
@@ -42,6 +42,8 @@ export default function Website() {
                 'De website is ontworpen voor één specifieke regeling en toont deelnemers alle benodigde informatie, evenals een inlogmogelijkheid voor hun persoonlijke account.',
             background: '#FDEFD3',
             imgSrc: assetUrl('/assets/img/website-slider-1.jpg'),
+            imgMobileSrc: assetUrl('/assets/img/website-slider-1-mobile.svg'),
+            imgAlt: 'Kindpakket webshop van Goeree-Overflakee',
         },
         {
             title: 'Meerdere regelingen',
@@ -49,6 +51,8 @@ export default function Website() {
                 'De website fungeert als centraal punt voor meerdere regelingen, zodat deelnemers eenvoudig kunnen navigeren tussen verschillende regelingen en toegang kunnen krijgen tot relevante informatie.',
             background: '#F4ECFC',
             imgSrc: assetUrl('/assets/img/website-slider-2.jpg'),
+            imgMobileSrc: assetUrl('/assets/img/website-slider-2-mobile.svg'),
+            imgAlt: 'Voorbeeld van een website met meerdere regelingen zoals een Keuzepakket voor volwassenen en Meedoenregeling',
         },
         {
             title: 'Samenwerking tussen sponsoren',
@@ -56,6 +60,8 @@ export default function Website() {
                 'De website dient als een centraal platform voor diverse regelingen van verschillende organisaties, waardoor deelnemers eenvoudig alle informatie over diverse regelingen kunnen vinden en beheren.',
             background: '#EDF7ED',
             imgSrc: assetUrl('/assets/img/website-slider-3.jpg'),
+            imgMobileSrc: assetUrl('/assets/img/website-slider-3-mobile.svg'),
+            imgAlt: 'De website van de Gemeente Nijmegen dient als centraal platform voor diverse regelingen van verschillende organisaties, zoals de Gemeente Nijmegen en Stichting Leergeld.',
         },
     ]);
 
@@ -99,18 +105,19 @@ export default function Website() {
                         <div className="block-with-image-wrapper">
                             <div className="block-with-image-info">
                                 <div className="block-with-image-description block-with-image-description-sm">
-                                    De sponsor heeft zelf de mogelijkheid om de gewenste huisstijl toe te passen via het
-                                    CMS (Content Management Systeem) in de beheeromgeving. Hierdoor kan het systeem
-                                    gemakkelijk zelfstandig door de sponsor worden onderhouden en blijft het herkenbaar
-                                    en vertrouwd voor de deelnemers. Daarnaast kunt u de taal van de teksten aanpassen
-                                    naar B1-niveau, zodat uw boodschap voor iedereen begrijpelijk is.
+                                    De sponsor heeft zelf de mogelijkheid om de gewenste huisstijl toe te passen via{' '}
+                                    <StateNavLink name={'cms'}>het CMS</StateNavLink> (Content Management Systeem) in de
+                                    beheeromgeving. Hierdoor kan het systeem gemakkelijk zelfstandig door de sponsor
+                                    worden onderhouden en blijft het herkenbaar en vertrouwd voor de deelnemers.
+                                    Daarnaast kunt u de taal van de teksten aanpassen naar B1-niveau, zodat uw boodschap
+                                    voor iedereen begrijpelijk is.
                                 </div>
                             </div>
 
                             <div className="block-with-image-image">
                                 <img
                                     src={assetUrl('/assets/img/website-1.png')}
-                                    alt="Voorbeeld van een generieke website gemaakt in het Forus-platform"
+                                    alt="Organisatiehuisstijl zelf aanpassen met behulp van het Content Management Systeem"
                                 />
                             </div>
                         </div>
@@ -121,7 +128,7 @@ export default function Website() {
                             <div className="block-with-image-image">
                                 <img
                                     src={assetUrl('/assets/img/website-2.png')}
-                                    alt="Voorbeeld van een generieke website gemaakt in het Forus-platform"
+                                    alt="Bewerken van content met behulp van het CMS"
                                 />
                             </div>
                             <div className="block-with-image-info">

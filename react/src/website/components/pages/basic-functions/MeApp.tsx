@@ -6,9 +6,11 @@ import Banner from './elements/Banner';
 import useSetMetaDescription from '../../../hooks/useSetMetaDescription';
 import BlockDashedSeparator from '../home/elements/BlockDashedSeparator';
 import StateNavLink from '../../../modules/state_router/StateNavLink';
+import useEnvData from '../../../hooks/useEnvData';
 
 export default function MeApp() {
     const setTitle = useSetTitle();
+    const envData = useEnvData();
     const setMetaDescription = useSetMetaDescription();
 
     const assetUrl = useAssetUrl();
@@ -71,20 +73,40 @@ export default function MeApp() {
                                     {activeTab == 'attendees' ? 'Tegoeden beheer' : 'Betalingen accepteren'}
                                 </div>
                                 {activeTab == 'attendees' ? (
-                                    <div className="block-with-image-description">
-                                        Wanneer een deelnemer een tegoed ontvangt via Forus, kunnen zij inloggen op het
-                                        Me-app om hun tegoeden veilig te beheren. Het geeft hen de mogelijkheid om hun
-                                        real-time saldo te zien, transactiegeschiedenis te controleren en hun tegoed
-                                        moeiteloos te gebruiken bij aangesloten aanbieders.
-                                    </div>
+                                    <Fragment>
+                                        <div className="block-with-image-description">
+                                            Wanneer een deelnemer een tegoed ontvangt via Forus, kunnen zij inloggen op
+                                            het Me-app om hun tegoeden veilig te beheren. Het geeft hen de mogelijkheid
+                                            hun real-time saldo te zien, transactiegeschiedenis te controleren en hun
+                                            tegoed moeiteloos te gebruiken bij aangesloten aanbieders.
+                                        </div>
+                                        <div className="block-with-image-actions">
+                                            <StateNavLink
+                                                name={'book-demo'}
+                                                className="button button-light button-fill flex">
+                                                Gratis demo
+                                                <em className="mdi mdi-arrow-right icon-right" />
+                                            </StateNavLink>
+                                        </div>
+                                    </Fragment>
                                 ) : (
-                                    <div className="block-with-image-description">
-                                        Wanneer aanbieders hun producten of diensten aanbieden via het Forus-platform,
-                                        is de Me-app een essentieel hulpmiddel om QR-codes van deelnemers te scannen en
-                                        betalingen veilig te ontvangen. Aanbieders kunnen met gemak meerdere
-                                        (kassa)medewerkers aan hun organisatie koppelen om zo het betalingsproces te
-                                        optimaliseren.
-                                    </div>
+                                    <Fragment>
+                                        <div className="block-with-image-description">
+                                            Wanneer aanbieders hun producten of diensten aanbieden via het
+                                            Forus-platform, is de Me-app een essentieel hulpmiddel om QR-codes van en
+                                            betalingen veilig te ontvangen. Aanbieders kunnen met gemak meerdere
+                                            (kassa)medewerkers aan hun organisatie koppelen om zo het betalingsproces te
+                                            optimaliseren.
+                                        </div>
+                                        <div className="block-with-image-actions">
+                                            <StateNavLink
+                                                name={'book-demo'}
+                                                className="button button-light button-fill flex">
+                                                Gratis demo
+                                                <em className="mdi mdi-arrow-right icon-right" />
+                                            </StateNavLink>
+                                        </div>
+                                    </Fragment>
                                 )}
                             </div>
                             <div className="block-with-image-image">
@@ -209,12 +231,23 @@ export default function MeApp() {
                                 voor aanbieders.
                             </div>
                             <div className="block-me-app-download-actions">
-                                <div className="block-me-app-download-action">
-                                    <img src={assetUrl(`/assets/img/icons-me-app/app-store-android-dark.svg`)} alt="" />
-                                </div>
-                                <div className="block-me-app-download-action">
-                                    <img src={assetUrl(`/assets/img/icons-me-app/app-store-ios-dark.svg`)} alt="" />
-                                </div>
+                                <a
+                                    className="block-me-app-download-action"
+                                    href={envData?.config?.android_link}
+                                    target={'_blank'}
+                                    rel="noreferrer">
+                                    <img
+                                        src={assetUrl('/assets/img/icons-me-app/app-store-android-dark.svg')}
+                                        alt={''}
+                                    />
+                                </a>
+                                <a
+                                    className="block-me-app-download-action"
+                                    href={envData?.config?.ios_iphone_link}
+                                    target={'_blank'}
+                                    rel="noreferrer">
+                                    <img src={assetUrl('/assets/img/icons-me-app/app-store-ios-dark.svg')} alt={''} />
+                                </a>
                             </div>
                         </div>
                         <div className="block-me-app-download-image">

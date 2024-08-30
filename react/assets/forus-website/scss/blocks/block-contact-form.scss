@@ -40,6 +40,10 @@
             .form-label {
                 font: 400 13px/18px var(--base-font);
                 color: #273266;
+
+                .checkbox-label {
+                    margin-left: 5px;
+                }
             }
 
             .form-control:not([type=radio]):not([type=checkbox]) {
@@ -75,12 +79,12 @@
             margin-bottom: 50px;
         }
 
-        .block-contact-form-success-title {
+        .block-contact-form-success-title, .block-contact-form-error-title {
             font: 600 40px/48px var(--base-font);
             margin-bottom: 25px;
         }
 
-        .block-contact-form-success-description {
+        .block-contact-form-success-description, .block-contact-form-error-description {
             font: 300 17px/27px var(--base-font);
             margin-bottom: 45px;
         }

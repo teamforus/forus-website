@@ -1,4 +1,5 @@
 import React, { Fragment, useState } from 'react';
+import StateNavLink from '../../../../modules/state_router/StateNavLink';
 
 export default function SocialDomain() {
     const [showMore, setShowMore] = useState(false);
@@ -13,7 +14,9 @@ export default function SocialDomain() {
                     </div>
 
                     <div className="block-social-domain-banner-actions">
-                        <div className="button button-light">Laten we kennismaken</div>
+                        <StateNavLink name={'book-demo'} className="button button-light">
+                            Laten we kennismaken
+                        </StateNavLink>
                     </div>
                 </div>
             </div>
@@ -69,7 +72,7 @@ export default function SocialDomain() {
                         <br />
                         Het huidige ondersteuningssysteem schiet tekort: ondanks dat er al veel armoedebestrijding is
                         ervaren veel mensen met financiële problemen stress en stigmatisering wanneer het overzicht
-                        ontbreekt en gefragmenteerd wordt aangeboden. ...
+                        ontbreekt en gefragmenteerd wordt aangeboden.
                     </Fragment>
                 )}
                 <div className="block-social-domain-info-actions">

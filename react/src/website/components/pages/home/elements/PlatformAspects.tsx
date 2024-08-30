@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 
 import useAssetUrl from '../../../../hooks/useAssetUrl';
+import StateNavLink from '../../../../modules/state_router/StateNavLink';
 
 export default function PlatformAspects() {
     const assetUrl = useAssetUrl();
@@ -124,7 +125,7 @@ export default function PlatformAspects() {
                                     }`}
                                 />
                                 <div className="show-sm block-platform-aspects-list-item-details">
-                                    {items[activeItem]?.description || items[0]?.description}
+                                    {item.description}
                                 </div>
                             </div>
 
@@ -144,10 +145,10 @@ export default function PlatformAspects() {
             </div>
 
             <div className="block-platform-aspects-actions">
-                <div className="button button-primary">
+                <StateNavLink name={'basic-functions'} className="button button-primary">
                     Bekijk basisfuncties van ons systeem
                     <em className={'mdi mdi-arrow-right icon-end'} />
-                </div>
+                </StateNavLink>
             </div>
         </div>
     );

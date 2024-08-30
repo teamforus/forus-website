@@ -44,11 +44,11 @@ export default function Information() {
 
                     <div className="block block-text">
                         <div className="block-text-description block-text-description-sm">
-                            Als sponsor hebt u de mogelijkheid om de impact van de fondsen te monitoren en te evalueren
-                            via de statistiekenpagina in de beheeromgeving. Hier vindt u verschillende gegevens over de
-                            uitgifte van de regelingen. Door periodieke rapportages op te stellen en diverse filters te
-                            gebruiken, kunt u een nauwkeurige analyse uitvoeren en uw beleid hierop afstemmen voor
-                            optimale resultaten.
+                            Als <StateNavLink name="roles-sponsor">sponsor</StateNavLink> hebt u de mogelijkheid om de
+                            impact van de fondsen te monitoren en te evalueren via de statistiekenpagina in de
+                            beheeromgeving. Hier vindt u verschillende gegevens over de uitgifte van de regelingen. Door
+                            periodieke rapportages op te stellen en diverse filters te gebruiken, kunt u een nauwkeurige
+                            analyse uitvoeren en uw beleid hierop afstemmen voor optimale resultaten.
                             <br />
                             <br />
                             Zo kunt u zien hoe de fondsen worden gebruikt, bij welke aanbieders deelnemers hun budgetten
@@ -67,7 +67,7 @@ export default function Information() {
                                 alt="Inzichten in de effectiviteit van regelingen"
                             />
                         </div>
-                        <div className="block-text-title block-text-title-sm">
+                        <div className="block-text-title block-text-title-sm text-left">
                             Het financiële statistiekenoverzicht omvat gegevens over:
                         </div>
                         <BlockLabelsInformationGeneral />

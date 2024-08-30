@@ -3,6 +3,7 @@ import useSetTitle from '../../../hooks/useSetTitle';
 import useSetMetaDescription from '../../../hooks/useSetMetaDescription';
 import useAssetUrl from '../../../hooks/useAssetUrl';
 import StateNavLink from '../../../modules/state_router/StateNavLink';
+import LearnMore from '../../elements/LearnMore';
 
 export default function Privacy() {
     const setTitle = useSetTitle();
@@ -271,6 +272,15 @@ export default function Privacy() {
                             </div>
                         </div>
                     </div>
+                </div>
+
+                <div className="show-sm">
+                    <LearnMore
+                        title={'Klaar om uw impact te vergroten?'}
+                        description={
+                            'Laten we eens kijken naar de mogelijkheden en de optimale manier om uw regelingen uit te geven.'
+                        }
+                    />
                 </div>
             </div>
         </Fragment>

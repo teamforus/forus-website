@@ -7,10 +7,11 @@ export default function SliderDetailed({
     description?: string;
     elements: {
         title: string;
-        description?: string;
         imgSrc?: string;
         imgAlt?: string;
         background: string;
+        description?: string;
+        imgMobileSrc?: string;
     }[];
 }) {
     const $element = useRef<HTMLDivElement>(null);
@@ -44,7 +45,8 @@ export default function SliderDetailed({
                                         <em className="mdi mdi-chevron-left" />
                                     </div>
                                     <div className="block-slider-image">
-                                        <img src={element.imgSrc} alt={element.imgAlt} />
+                                        <img className="hide-sm" src={element.imgSrc} alt={element.imgAlt} />
+                                        <img className="show-sm" src={element.imgMobileSrc} alt={element.imgAlt} />
                                     </div>
                                     <div
                                         className={`block-slider-arrow`}
@@ -69,15 +71,28 @@ export default function SliderDetailed({
                     {elements.map((element, index) => (
                         <div className={`block-slider-list-item ${index == activeItem ? 'active' : ''}`} key={index}>
                             <div className="block-slider-list-item-image show-sm">
-                                <img src={element.imgSrc} alt={element.imgAlt} />
+                                <img className="hide-sm" src={element.imgSrc} alt={element.imgAlt} />
+                                <img className="show-sm" src={element.imgMobileSrc} alt={element.imgAlt} />
                             </div>
 
                             <div
-                                className="block-slider-list-item-info"
+                                className="block-slider-list-item-info hide-sm"
                                 style={{
-                                    background:
-                                        index == activeItem || window.innerWidth < 1000 ? element.background : 'none',
+                                    background: index == activeItem ? element.background : 'none',
                                 }}>
+                                <div className="block-slider-list-item-title">{element.title}</div>
+                                <div className="block-slider-list-item-description">{element.description}</div>
+                            </div>
+
+                            <div
+                                className="block-slider-list-item-info show-sm"
+                                style={{
+                                    background: element.background,
+                                }}>
+                                <div
+                                    className="block-slider-list-item-info-arrow"
+                                    style={{ background: element.background }}
+                                />
                                 <div className="block-slider-list-item-title">{element.title}</div>
                                 <div className="block-slider-list-item-description">{element.description}</div>
                             </div>

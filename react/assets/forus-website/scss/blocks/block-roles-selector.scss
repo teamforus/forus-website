@@ -44,20 +44,15 @@
     }
 
     @media screen and (max-width: 1000px) {
-        margin: 0 0 30px;
+        overflow: scroll;
+        margin: 0 0 60px;
+        align-items: flex-start;
 
         .block-roles-selector-item {
             font: 700 12px/16px var(--base-font);
-        }
-    }
-
-    @media screen and (max-width: 1000px) {
-        overflow: scroll;
-        margin-bottom: 60px;
-
-        .block-roles-selector-item {
             min-width: 90px;
             overflow: hidden;
+            text-align: center;
         }
     }
 }

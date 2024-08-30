@@ -1,5 +1,6 @@
 import React, { useRef, useState } from 'react';
 import useAssetUrl from '../../hooks/useAssetUrl';
+import StateNavLink from '../../modules/state_router/StateNavLink';
 
 export default function SliderCompact({
     description,
@@ -60,7 +61,9 @@ export default function SliderCompact({
                                 <div className="block-slider-list-item-title">{element.title}</div>
                                 <div className="block-slider-list-item-description">{element.description}</div>
                                 <div className="block-slider-list-item-actions">
-                                    <button className="button button-light">Lees meer</button>
+                                    <StateNavLink name="website" className="button button-light">
+                                        Lees meer
+                                    </StateNavLink>
                                 </div>
                             </div>
                             {element.imgSrc && (
