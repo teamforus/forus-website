@@ -188,7 +188,7 @@ export default function FundRequestStepCriteria({
                                 onChange={(input_value?: string) => {
                                     setCriterion(criterion.id, { input_value: input_value });
                                 }}
-                                placeholder={`Uw ${criterion?.record_type?.name}`}
+                                placeholder={`Maak een keuze`}
                             />
                         )}
 
