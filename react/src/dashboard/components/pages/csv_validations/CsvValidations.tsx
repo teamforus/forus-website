@@ -66,16 +66,22 @@ export default function CsvValidations() {
                 <div className="card-header flex">
                     <div className="card-title flex-grow">{translate('csv_validation.header.title')}</div>
 
-                    <div className="form-group">
-                        <SelectControl
-                            className="form-control inline-filter-control"
-                            options={funds}
-                            value={fund}
-                            placeholder={translate('vouchers.labels.fund')}
-                            allowSearch={false}
-                            onChange={(fund: Fund) => setFund(fund)}
-                            optionsComponent={SelectControlOptionsFund}
-                        />
+                    <div className="flex">
+                        <div className="block block-inline-filters">
+                            <div className="form">
+                                <div className="form-group">
+                                    <SelectControl
+                                        className="form-control inline-filter-control"
+                                        options={funds}
+                                        value={fund}
+                                        placeholder={translate('vouchers.labels.fund')}
+                                        allowSearch={false}
+                                        onChange={(fund: Fund) => setFund(fund)}
+                                        optionsComponent={SelectControlOptionsFund}
+                                    />
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
