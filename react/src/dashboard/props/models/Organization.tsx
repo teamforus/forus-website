@@ -20,12 +20,6 @@ export interface SponsorProviderOrganization extends Organization {
     employees: Array<Employee>;
 }
 
-export interface OrganizationValidator extends Organization {
-    id: number;
-    organization_id: number;
-    validator_organization_id: number;
-}
-
 export default interface Organization {
     id: number;
     identity_address: string;
@@ -105,5 +99,6 @@ export default interface Organization {
         bank_branch_name?: boolean;
         bank_fund_name?: boolean;
         bank_note?: boolean;
+        bank_separator?: string;
     };
 }

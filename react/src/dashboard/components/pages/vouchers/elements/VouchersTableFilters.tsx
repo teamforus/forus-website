@@ -46,13 +46,11 @@ export default function VouchersTableFilters({
     vouchers,
     filter,
     funds,
-    type = 'vouchers',
 }: {
     organization: Organization;
     vouchers: PaginationData<Voucher>;
     filter: FilterScope<VouchersTableFiltersProps>;
     funds: Array<Partial<Fund>>;
-    type?: 'vouchers' | 'product_vouchers';
 }) {
     const translate = useTranslate();
 
@@ -73,7 +71,13 @@ export default function VouchersTableFilters({
         voucherExportService.exportData(
             organization.id,
             keyBy(funds, 'id')[filter.activeValues.fund_id]?.allow_voucher_records,
-            { ...filter.activeValues, per_page: null },
+            {
+                ...filter.activeValues,
+                in_use: filter.activeValues.in_use == null ? null : filter.activeValues.in_use ? 1 : 0,
+                granted: filter.activeValues.granted == null ? null : filter.activeValues.granted ? 1 : 0,
+                has_payouts: filter.activeValues.has_payouts == null ? null : filter.activeValues.has_payouts ? 1 : 0,
+                per_page: null,
+            },
         );
     }, [organization.id, filter, funds, voucherExportService]);
 
@@ -226,35 +230,33 @@ export default function VouchersTableFilters({
                                     </div>
                                 </FilterItemToggle>
 
-                                {type === 'vouchers' && (
-                                    <FilterItemToggle label={translate('vouchers.labels.amount_available')}>
-                                        <div className="row">
-                                            <div className="col col-sm-6">
-                                                <input
-                                                    className="form-control"
-                                                    type="number"
-                                                    value={filter.values.amount_available_min || ''}
-                                                    placeholder={translate('vouchers.labels.amount_available_min')}
-                                                    onChange={(e) => {
-                                                        filter.update({ amount_available_min: e.target.value || null });
-                                                    }}
-                                                />
-                                            </div>
-
-                                            <div className="col col-sm-6">
-                                                <input
-                                                    className="form-control"
-                                                    type="number"
-                                                    value={filter.values.amount_available_max || ''}
-                                                    placeholder={translate('vouchers.labels.amount_available_min')}
-                                                    onChange={(e) => {
-                                                        filter.update({ amount_available_max: e.target.value || null });
-                                                    }}
-                                                />
-                                            </div>
+                                <FilterItemToggle label={translate('vouchers.labels.amount_available')}>
+                                    <div className="row">
+                                        <div className="col col-sm-6">
+                                            <input
+                                                className="form-control"
+                                                type="number"
+                                                value={filter.values.amount_available_min || ''}
+                                                placeholder={translate('vouchers.labels.amount_available_min')}
+                                                onChange={(e) => {
+                                                    filter.update({ amount_available_min: e.target.value || null });
+                                                }}
+                                            />
                                         </div>
-                                    </FilterItemToggle>
-                                )}
+
+                                        <div className="col col-sm-6">
+                                            <input
+                                                className="form-control"
+                                                type="number"
+                                                value={filter.values.amount_available_max || ''}
+                                                placeholder={translate('vouchers.labels.amount_available_min')}
+                                                onChange={(e) => {
+                                                    filter.update({ amount_available_max: e.target.value || null });
+                                                }}
+                                            />
+                                        </div>
+                                    </div>
+                                </FilterItemToggle>
 
                                 <FilterItemToggle label={translate('vouchers.labels.date_type')}>
                                     <SelectControl

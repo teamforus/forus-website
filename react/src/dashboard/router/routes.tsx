@@ -6,7 +6,6 @@ import SignOut from '../components/pages/auth/SignOut';
 import FundRequests from '../components/pages/fund-requests/FundRequests';
 import FundRequestsView from '../components/pages/fund-requests-view/FundRequestsView';
 import Home from '../components/pages/home/Home';
-import ExternalFunds from '../components/pages/external_funds/ExternalFunds';
 import Employees from '../components/pages/employees/Employees';
 import CsvValidations from '../components/pages/csv_validations/CsvValidations';
 import Organizations from '../components/pages/organizations/Organizations';
@@ -66,7 +65,6 @@ import TransactionBulksView from '../components/pages/transaction-bulks-view/Tra
 import ReimbursementCategories from '../components/pages/reimbursement-categories/ReimbursementCategories';
 import Vouchers from '../components/pages/vouchers/Vouchers';
 import VouchersViewComponent from '../components/pages/vouchers-view/VouchersViewComponent';
-import ProductVouchers from '../components/pages/vouchers/ProductVouchers';
 import SponsorProviderOrganizations from '../components/pages/sponsor-provider-organizations/SponsorProviderOrganizations';
 import SponsorProviderOrganization from '../components/pages/sponsor-provider-organization/SponsorProviderOrganization';
 import FundProvider from '../components/pages/fund-provider/FundProvider';
@@ -87,7 +85,6 @@ import PreCheck from '../components/pages/pre-check/PreCheck';
 import BiConnection from '../components/pages/bi-connection/BiConnection';
 import ThrowError from '../components/pages_system/ThrowError';
 import Implementations from '../components/pages/implementations/Implementations';
-import ExternalValidators from '../components/pages/external-validators/ExternalValidators';
 import SponsorFundUnsubscriptions from '../components/pages/sponsor-fund-unsubscriptions/SponsorFundUnsubscriptions';
 import OrganizationsContacts from '../components/pages/organizations-contacts/OrganizationsContacts';
 
@@ -185,10 +182,6 @@ router.state('pre-check', <PreCheck />, {
     path: `/organizations/:organizationId/pre-check`,
 });
 
-router.state('external-validators', <ExternalValidators />, {
-    path: `/organizations/:organizationId/external-validators`,
-});
-
 router.state('sponsor-provider-organizations', <SponsorProviderOrganizations />, {
     path: `/organizations/:organizationId/providers`,
     fallbackState: 'organizations',
@@ -248,10 +241,6 @@ router.state('vouchers', <Vouchers />, {
 router.state('vouchers-show', <VouchersViewComponent />, {
     path: `/organizations/:organizationId/vouchers/:id`,
     fallbackState: 'organizations',
-});
-
-router.state('product-vouchers', <ProductVouchers />, {
-    path: `/organizations/:organizationId/product-vouchers`,
 });
 
 router.state('reimbursements', <Reimbursements />, {
@@ -450,10 +439,6 @@ router.state('fund-requests', <FundRequests />, {
 router.state('fund-request', <FundRequestsView />, {
     path: `/organizations/:organizationId/requests/:id`,
     fallbackState: 'fund-requests',
-});
-
-router.state('external-funds', <ExternalFunds />, {
-    path: `/organizations/:organizationId/external-funds`,
 });
 
 router.state('employees', <Employees />, {
