@@ -66,13 +66,6 @@ export default function LayoutAsideSponsor({ organization }: { organization: Org
                 id={'requesters'}
             />
             <LayoutAsideNavItem
-                name={'Beoordelaars'}
-                icon={'validators_shortlist'}
-                route={'external-validators'}
-                routeParams={{ organizationId: organization?.id }}
-                show={hasPermission(organization, 'manage_organization')}
-            />
-            <LayoutAsideNavItem
                 name={'Bank integraties'}
                 icon={'bank-connections'}
                 route={'bank-connections'}
@@ -132,7 +125,7 @@ export default function LayoutAsideSponsor({ organization }: { organization: Org
                                 id={'financial_dashboard'}
                             />
                             <LayoutAsideNavItem
-                                name={'Transacties'}
+                                name={'Betaalopdrachten'}
                                 icon={'transactions'}
                                 route={'transactions'}
                                 routeParams={{ organizationId: organization?.id }}

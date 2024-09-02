@@ -35,7 +35,6 @@ export default {
             apply: 'Apply',
             cancel: 'Cancel',
             allow_attachments: 'Allow attachments',
-            add_external_validator: 'Add external validator',
         },
     },
     feedback: {
