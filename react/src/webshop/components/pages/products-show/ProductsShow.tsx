@@ -241,7 +241,11 @@ export default function ProductsShow() {
                                     tabIndex={0}
                                     aria-label="Toevoegen aan verlanglijstje"
                                     aria-pressed={product.bookmarked}>
-                                    <em className="mdi mdi-cards-heart" />
+                                    {product.bookmarked ? (
+                                        <em className="mdi mdi-cards-heart" />
+                                    ) : (
+                                        <em className="mdi mdi-cards-heart-outline" />
+                                    )}
                                 </div>
                             )}
                         </div>
