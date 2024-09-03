@@ -44,8 +44,8 @@ export default {
         'funds-create': 'Fonds aanmaken',
         'funds-show': 'Beschikbare fondsen',
         'funds-edit': 'Fonds bewerken',
-        transactions: 'Transacties',
-        transaction: 'Transactie details',
+        transactions: 'Betaalopdrachten',
+        transaction: 'Betaalopdrachten details',
         products: 'Aanbod',
         'products-create': 'Aanbod toevoegen',
         'products-edit': 'Aanbod bewerken',
@@ -73,9 +73,7 @@ export default {
     // MODALS
     modals: {
         ...modals,
-        danger_zone: {
-            ...modals_danger_zone,
-        },
+        danger_zone: { ...modals_danger_zone },
     },
 
     // PAGES
@@ -690,32 +688,6 @@ export default {
         },
         buttons: {
             view: 'Bekijken',
-        },
-    },
-
-    // EXTERNAL VALIDATORS = external-validators.pug
-    external_validators: {
-        header: {
-            title: 'Beoordelaars',
-        },
-        labels: {
-            organization_name: 'Organisatie naam',
-            email: 'E-mailadres',
-            phone: 'Telefoonnummer',
-            website: 'Website',
-            actions: 'Acties',
-        },
-        filters: {
-            labels: {
-                search: 'Zoeken',
-                email: 'E-mailadres',
-                phone: 'Telefoonnummer',
-                website: 'Website',
-            },
-        },
-        buttons: {
-            add: 'Toevoegen',
-            delete: 'Verwijderen',
         },
     },
 
