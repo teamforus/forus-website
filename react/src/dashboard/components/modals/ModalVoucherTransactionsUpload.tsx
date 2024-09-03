@@ -16,6 +16,7 @@ import useTransactionService from '../../services/TransactionService';
 import CSVProgressBar from '../elements/csv-progress-bar/CSVProgressBar';
 import useTranslate from '../../hooks/useTranslate';
 import classNames from 'classnames';
+import usePushInfo from '../../hooks/usePushInfo';
 
 export default function ModalVoucherTransactionsUpload({
     modal,
@@ -46,6 +47,7 @@ export default function ModalVoucherTransactionsUpload({
     const [dataChunkSize] = useState(100);
     const [maxLinesPerFile] = useState(2500);
 
+    const pushInfo = usePushInfo();
     const openModal = useOpenModal();
     const fileInput = useRef(null);
     const dropBlock = useRef(null);
@@ -58,7 +60,7 @@ export default function ModalVoucherTransactionsUpload({
 
     const closeModal = useCallback(() => {
         if (loading) {
-            return;
+            return pushInfo('Bezig met uploaden.');
         }
 
         if (changed) {
@@ -66,7 +68,7 @@ export default function ModalVoucherTransactionsUpload({
         }
 
         modal.close();
-    }, [changed, modal, onCreated, loading]);
+    }, [changed, modal, onCreated, loading, pushInfo]);
 
     const makeDefaultNote = useCallback(
         (row: object): string => {

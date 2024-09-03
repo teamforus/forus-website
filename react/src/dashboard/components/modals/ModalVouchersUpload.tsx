@@ -26,6 +26,7 @@ import SelectControlOptionsFund from '../elements/select-control/templates/Selec
 import SelectControlOptions from '../elements/select-control/templates/SelectControlOptions';
 import classNames from 'classnames';
 import FormGroupInfo from '../elements/forms/elements/FormGroupInfo';
+import usePushInfo from '../../hooks/usePushInfo';
 
 type CSVErrorProp = {
     csvHasBsnWhileNotAllowed?: boolean;
@@ -72,6 +73,7 @@ export default function ModalVouchersUpload({
     onCompleted: () => void;
     organization: Organization;
 }) {
+    const pushInfo = usePushInfo();
     const translate = useTranslate();
     const openModal = useOpenModal();
     const pushDanger = usePushDanger();
@@ -131,7 +133,7 @@ export default function ModalVouchersUpload({
 
     const closeModal = useCallback(() => {
         if (loading) {
-            return;
+            return pushInfo('Bezig met uploaden.');
         }
 
         if (changed) {
@@ -139,7 +141,7 @@ export default function ModalVouchersUpload({
         }
 
         modal.close();
-    }, [changed, loading, modal, onCompleted]);
+    }, [changed, loading, modal, onCompleted, pushInfo]);
 
     const downloadExampleCsv = useCallback(() => {
         if (type == 'fund_voucher') {
@@ -645,7 +647,13 @@ export default function ModalVouchersUpload({
                                 );
                             }
 
-                            alert('Onbekende error.');
+                            setLoading(false);
+                            setCsvProgress(1);
+                            pushDanger(
+                                'Er is een onbekende fout opgetreden tijdens het uploaden van CSV.',
+                                'Controleer de CSV op problemen, vernieuw de pagina en probeer het opnieuw.',
+                                { timeout: 30000 },
+                            );
                         });
                 };
 

@@ -16,6 +16,7 @@ import ModalDuplicatesPicker from './ModalDuplicatesPicker';
 import CSVProgressBar from '../elements/csv-progress-bar/CSVProgressBar';
 import classNames from 'classnames';
 import useTranslate from '../../hooks/useTranslate';
+import usePushInfo from '../../hooks/usePushInfo';
 
 export default function ModalReservationUpload({
     modal,
@@ -30,6 +31,7 @@ export default function ModalReservationUpload({
 }) {
     const authIdentity = useAuthIdentity();
 
+    const pushInfo = usePushInfo();
     const openModal = useOpenModal();
     const translate = useTranslate();
 
@@ -61,7 +63,7 @@ export default function ModalReservationUpload({
 
     const closeModal = useCallback(() => {
         if (loading) {
-            return;
+            return pushInfo('Bezig met uploaden.');
         }
 
         if (changed) {
@@ -69,7 +71,7 @@ export default function ModalReservationUpload({
         }
 
         modal.close();
-    }, [changed, modal, onCreated, loading]);
+    }, [changed, modal, onCreated, loading, pushInfo]);
 
     const makeDefaultNote = useCallback(
         function (row: object): string {
