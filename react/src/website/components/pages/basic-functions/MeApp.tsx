@@ -24,6 +24,7 @@ export default function MeApp() {
     );
     const [labelText] = useState('Een digitale portemonnee en kassa in één');
     const [activeTab, setActiveTab] = useState('attendees');
+    const [backgroundImgAltText] = useState('Tegoeden zichtbaar in de Me-app');
 
     useEffect(() => {
         setTitle('Me-app | Digitale portemonnee en kassa in één\n');
@@ -37,7 +38,13 @@ export default function MeApp() {
 
     return (
         <Fragment>
-            <Banner type={'me-app'} title={bannerTitle} description={bannerDescription} labelText={labelText} />
+            <Banner
+                type={'me-app'}
+                title={bannerTitle}
+                description={bannerDescription}
+                labelText={labelText}
+                backgroundImgAltText={backgroundImgAltText}
+            />
 
             <div className="main-content">
                 <div className="wrapper">
@@ -111,9 +118,15 @@ export default function MeApp() {
                             </div>
                             <div className="block-with-image-image">
                                 {activeTab == 'attendees' ? (
-                                    <img src={assetUrl(`/assets/img/me-app-1.png`)} alt="" />
+                                    <img
+                                        src={assetUrl(`/assets/img/me-app-1.png`)}
+                                        alt="Deelnemer die tegoeden beheert in de Me-app"
+                                    />
                                 ) : (
-                                    <img src={assetUrl(`/assets/img/me-app-2.png`)} alt="" />
+                                    <img
+                                        src={assetUrl(`/assets/img/me-app-2.png`)}
+                                        alt="QR-codes scannen in de Me-app en betalingen ontvangen"
+                                    />
                                 )}
                             </div>
                         </div>

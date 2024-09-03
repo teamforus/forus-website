@@ -23,6 +23,7 @@ export default function Information() {
             'daarop afstemmen voor betere resultaten. U krijgt inzicht in het gebruik van sociale regelingen en de impact die ze hebben op de lokale economie.',
         ].join(''),
     );
+    const [backgroundImgAltText] = useState("Statistieken pagina's in het Forus-platform");
 
     useEffect(() => {
         setTitle('Real-time managementinformatie: Impact monitoren en evalueren');
@@ -36,7 +37,13 @@ export default function Information() {
 
     return (
         <Fragment>
-            <Banner type={'information'} title={bannerTitle} description={bannerDescription} labelText={bannerLabel} />
+            <Banner
+                type={'information'}
+                title={bannerTitle}
+                description={bannerDescription}
+                labelText={bannerLabel}
+                backgroundImgAltText={backgroundImgAltText}
+            />
 
             <div className="main-content">
                 <div className="wrapper">

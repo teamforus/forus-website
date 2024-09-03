@@ -61,15 +61,23 @@ export default function SignInAsRole() {
                 authForm.setErrors(res.data.errors ? res.data.errors : { email: [res.data.message] });
             };
 
-            const used = await new Promise((resolve) => {
-                identityService.validateEmail(values).then((res) => {
-                    resolve(res.data.email.used);
-                }, handleErrors);
-            });
+            const emailValidateRes = await new Promise<{ used: boolean; unique: boolean; valid: boolean }>(
+                (resolve) => {
+                    identityService.validateEmail(values).then((res) => {
+                        resolve(res.data.email);
+                    }, handleErrors);
+                },
+            );
 
             setProgress(0);
 
-            if (used) {
+            if (!emailValidateRes.valid) {
+                authForm.setErrors({ email: 'Het e-mailadres dat u hebt opgegeven, is ongeldig.' });
+                authForm.setIsLocked(false);
+                return;
+            }
+
+            if (emailValidateRes.used) {
                 return identityService
                     .makeAuthEmailToken(values.email, `${envData.client_key}_website`)
                     .then(() => {
@@ -77,6 +85,11 @@ export default function SignInAsRole() {
                         authForm.reset();
                     }, handleErrors)
                     .finally(() => setProgress(100));
+            } else {
+                authForm.setErrors({
+                    email: 'Het door u opgegeven e-mailadres komt niet in ons systeem voor. Meld u alstublieft eerst aan.',
+                });
+                authForm.setIsLocked(false);
             }
         },
     );
@@ -123,9 +136,15 @@ export default function SignInAsRole() {
                 <StateNavLink name={'sign-in'} className="breadcrumb-item" activeExact={true}>
                     Inloggen
                 </StateNavLink>
-                <a className={`breadcrumb-item ${!emailSent ? 'active' : ''}`} aria-current="location">
-                    Inloggen als {role}
-                </a>
+                {emailSent ? (
+                    <a className="state-nav-link breadcrumb-item" onClick={() => setEmailSent(false)}>
+                        Inloggen als {role}
+                    </a>
+                ) : (
+                    <a className="breadcrumb-item active" aria-current="location">
+                        Inloggen als {role}
+                    </a>
+                )}
                 {emailSent && (
                     <a className="breadcrumb-item active" aria-current="location">
                         Confirmation
@@ -145,7 +164,7 @@ export default function SignInAsRole() {
                                 <div className="block-sign-in-main-option-description">
                                     Vul uw e-mailadres in om een link te ontvangen waarmee u kunt inloggen
                                 </div>
-                                <form className="form" onSubmit={() => authForm.submit()}>
+                                <form className="form">
                                     <div className="form-group">
                                         <label className="form-label">E-mail</label>
                                         <input
@@ -159,7 +178,10 @@ export default function SignInAsRole() {
                                         <FormError error={authForm.errors?.email} />
                                     </div>
                                     <div className="form-group">
-                                        <button type="submit" className="button button-primary button-send-email">
+                                        <button
+                                            type="button"
+                                            className="button button-primary button-send-email"
+                                            onClick={() => authForm.submit()}>
                                             Login
                                         </button>
                                     </div>
@@ -208,6 +230,7 @@ export default function SignInAsRole() {
                                     ) : (
                                         <div className="block-sign-in-main-me-app-qr-hidden">
                                             <button
+                                                type={'button'}
                                                 className="button button-light"
                                                 onClick={() => {
                                                     loadQrCode();

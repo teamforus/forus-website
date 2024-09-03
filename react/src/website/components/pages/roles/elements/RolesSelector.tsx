@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import useAssetUrl from '../../../../hooks/useAssetUrl';
 import StateNavLink from '../../../../modules/state_router/StateNavLink';
 
 export default function RolesSelector({ activeType }: { activeType: string }) {
     const assetUrl = useAssetUrl();
+
+    const selectorRef = useRef<HTMLDivElement>(null);
 
     const [roleTypes] = useState([
         {
@@ -24,10 +26,18 @@ export default function RolesSelector({ activeType }: { activeType: string }) {
         },
     ]);
 
+    useEffect(() => {
+        selectorRef?.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, []);
+
     return (
-        <div className="block block-roles-selector">
+        <div className="block block-roles-selector" id="block-selector" ref={selectorRef}>
             {roleTypes.map((roleType, index) => (
-                <StateNavLink name={`roles-${roleType.key}`} className={'block-roles-selector-item'} key={index}>
+                <StateNavLink
+                    name={`roles-${roleType.key}`}
+                    query={{ scroll_to: 'block-selector' }}
+                    className={'block-roles-selector-item'}
+                    key={index}>
                     <img
                         src={assetUrl(
                             `/assets/img/icons-roles/selector/${roleType.key}-${

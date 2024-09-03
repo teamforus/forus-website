@@ -8,12 +8,14 @@ export default function Banner({
     description,
     labelText,
     showIcon = true,
+    backgroundImgAltText = null,
 }: {
     type: string;
     title: string;
     description: string;
     labelText?: string;
     showIcon?: boolean;
+    backgroundImgAltText?: string;
 }) {
     const assetUrl = useAssetUrl();
 
@@ -46,7 +48,7 @@ export default function Banner({
             </div>
 
             <div className="banner-media">
-                <div className="banner-media-image" />
+                <div className="banner-media-image" role="img" aria-label={backgroundImgAltText} />
             </div>
         </div>
     );

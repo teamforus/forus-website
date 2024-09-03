@@ -8,6 +8,7 @@ import StateNavLink from '../../../modules/state_router/StateNavLink';
 import BlockLabelsFAQ from './elements/funds/BlockLabelsFaq';
 import useSetMetaDescription from '../../../hooks/useSetMetaDescription';
 import BlockDashedSeparator from '../home/elements/BlockDashedSeparator';
+import ProgressLine from './elements/ProgressLine';
 
 export default function Funds() {
     const setTitle = useSetTitle();
@@ -27,6 +28,7 @@ export default function Funds() {
             'waardoor er meer tijd overblijft voor uw organisatie om persoonlijke ondersteuning te bieden aan degenen die het nodig hebben.',
         ].join(''),
     );
+    const [backgroundImgAltText] = useState('Regelingen opzetten en beheren via het Forus-platform');
 
     useEffect(() => {
         setTitle('Fondsen opzetten en beheren: eenvoudig en effectief | Forus');
@@ -40,7 +42,13 @@ export default function Funds() {
 
     return (
         <Fragment>
-            <Banner type={'funds'} title={bannerTitle} description={bannerDescription} labelText={bannerLabel} />
+            <Banner
+                type={'funds'}
+                title={bannerTitle}
+                description={bannerDescription}
+                labelText={bannerLabel}
+                backgroundImgAltText={backgroundImgAltText}
+            />
 
             <div className="main-content">
                 <div className="wrapper">
@@ -60,9 +68,7 @@ export default function Funds() {
                             alvast klaar te zetten. Zo maakt u het proces eenvoudig en helder voor de deelnemer,
                             waardoor ze minder stress ervaren en meer vertrouwen in uw organisatie hebben.
                         </div>
-                        <div className="block-separator">
-                            <div className="line" />
-                        </div>
+                        <ProgressLine currentStep={1} totalSteps={7} />
                         <div className="block-text-banner">
                             <img
                                 src={assetUrl(`/assets/img/funds-general-banner.jpg`)}
@@ -78,9 +84,7 @@ export default function Funds() {
                 <div className="wrapper">
                     <div className="block block-with-image">
                         <div className="block-with-image-title">Uw rol als Sponsor</div>
-                        <div className="block-separator">
-                            <div className="line" />
-                        </div>
+                        <ProgressLine currentStep={2} totalSteps={7} />
 
                         <div className="block-with-image-wrapper">
                             <div className="block-with-image-info">
@@ -112,9 +116,7 @@ export default function Funds() {
 
                     <div className="block block-text text-left">
                         <div className="block-text-title block-text-title-sm">Soorten fondsen en hun toepassingen</div>
-                        <div className="block-separator">
-                            <div className="line" />
-                        </div>
+                        <ProgressLine currentStep={3} totalSteps={7} />
                         <div className="block-text-banner">
                             <img
                                 src={assetUrl(`/assets/img/fund-types-banner.jpg`)}
@@ -184,9 +186,7 @@ export default function Funds() {
 
                     <div className="block block-with-image">
                         <div className="block-with-image-title">De aanvraagmethode</div>
-                        <div className="block-separator">
-                            <div className="line" />
-                        </div>
+                        <ProgressLine currentStep={4} totalSteps={7} />
 
                         <div className="block-with-image-wrapper">
                             <div className="block-with-image-info">
@@ -197,52 +197,52 @@ export default function Funds() {
                                     van uw organisatie (bijv. met of zonder DigiD) kunt u de meest geschikte optie voor
                                     uw doelgroep kiezen.
                                 </div>
-                                <div className="block-with-image-list">
-                                    <div className="block-with-image-list-item">
-                                        <img
-                                            className={'item-icon'}
-                                            src={assetUrl('/assets/img/icons-basic-functions/funds/form.svg')}
-                                            alt=""
-                                        />
-                                        <div className="block-with-image-list-item-name">Via een formulier</div>
-                                        <em className="mdi mdi-arrow-right" />
-                                    </div>
-                                    <div className="block-with-image-list-item">
-                                        <img
-                                            className={'item-icon'}
-                                            src={assetUrl(
-                                                '/assets/img/icons-basic-functions/funds/activation_codes.svg',
-                                            )}
-                                            alt=""
-                                        />
-                                        <div className="block-with-image-list-item-name">Activatiecodes</div>
-                                        <em className="mdi mdi-arrow-right" />
-                                    </div>
-                                    <div className="block-with-image-list-item">
-                                        <img
-                                            className={'item-icon'}
-                                            src={assetUrl(
-                                                '/assets/img/icons-basic-functions/funds/form_and_activation_codes.svg',
-                                            )}
-                                            alt=""
-                                        />
-                                        <div className="block-with-image-list-item-name">
-                                            Een combinatie van formulier en activatiecodes
+                                <div className="block-with-image-list block-with-image-list-compact">
+                                    <div className="block-with-image-list-compact-row">
+                                        <div className="block-with-image-list-item">
+                                            <img
+                                                className={'item-icon'}
+                                                src={assetUrl('/assets/img/icons-basic-functions/funds/form.svg')}
+                                                alt=""
+                                            />
+                                            <div className="block-with-image-list-item-name">Via een formulier</div>
                                         </div>
-                                        <em className="mdi mdi-arrow-right" />
-                                    </div>
-                                    <div className="block-with-image-list-item">
-                                        <img
-                                            className={'item-icon'}
-                                            src={assetUrl(
-                                                '/assets/img/icons-basic-functions/funds/without_form_codes.svg',
-                                            )}
-                                            alt=""
-                                        />
-                                        <div className="block-with-image-list-item-name">
-                                            Activeren zonder formulier of activatiecodes
+                                        <div className="block-with-image-list-item">
+                                            <img
+                                                className={'item-icon'}
+                                                src={assetUrl(
+                                                    '/assets/img/icons-basic-functions/funds/activation_codes.svg',
+                                                )}
+                                                alt=""
+                                            />
+                                            <div className="block-with-image-list-item-name">Activatiecodes</div>
                                         </div>
-                                        <em className="mdi mdi-arrow-right" />
+                                    </div>
+                                    <div className="block-with-image-list-compact-row">
+                                        <div className="block-with-image-list-item">
+                                            <img
+                                                className={'item-icon'}
+                                                src={assetUrl(
+                                                    '/assets/img/icons-basic-functions/funds/form_and_activation_codes.svg',
+                                                )}
+                                                alt=""
+                                            />
+                                            <div className="block-with-image-list-item-name">
+                                                Een combinatie van formulier en activatiecodes
+                                            </div>
+                                        </div>
+                                        <div className="block-with-image-list-item">
+                                            <img
+                                                className={'item-icon'}
+                                                src={assetUrl(
+                                                    '/assets/img/icons-basic-functions/funds/without_form_codes.svg',
+                                                )}
+                                                alt=""
+                                            />
+                                            <div className="block-with-image-list-item-name">
+                                                Activeren zonder formulier of activatiecodes
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -258,9 +258,7 @@ export default function Funds() {
 
                     <div className="block block-with-image">
                         <div className="block-with-image-title">Voorwaarden voor deelname vaststellen</div>
-                        <div className="block-separator">
-                            <div className="line" />
-                        </div>
+                        <ProgressLine currentStep={5} totalSteps={7} />
 
                         <div className="block-with-image-wrapper">
                             <div className="block-with-image-image">
@@ -291,9 +289,7 @@ export default function Funds() {
 
                     <div className="block block-with-image">
                         <div className="block-with-image-title">Beoordelen van aanvragen</div>
-                        <div className="block-separator">
-                            <div className="line" />
-                        </div>
+                        <ProgressLine currentStep={6} totalSteps={7} />
 
                         <div className="block-with-image-wrapper">
                             <div className="block-with-image-info">
@@ -325,9 +321,7 @@ export default function Funds() {
 
                     <div className="block block-with-image">
                         <div className="block-with-image-title">FAQ voor duidelijke aanvragen en uitgifte</div>
-                        <div className="block-separator">
-                            <div className="line" />
-                        </div>
+                        <ProgressLine currentStep={7} totalSteps={7} />
 
                         <div className="block-with-image-wrapper">
                             <div className="block-with-image-image">

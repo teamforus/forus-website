@@ -51,6 +51,21 @@
                 .mdi {
                     margin-left: 5px;
                 }
+
+                .button {
+                    &:hover {
+                        color: #fff;
+                        background-color: #315EFD;
+
+                        a {
+                            color: #fff;
+                        }
+
+                        &.button-hover-gray {
+                            background-color: #7780A0;
+                        }
+                    }
+                }
             }
         }
 

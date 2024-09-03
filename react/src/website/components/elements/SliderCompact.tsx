@@ -43,7 +43,12 @@ export default function SliderCompact({
                                             <em className="mdi mdi-arrow-left" />
                                         </div>
                                         <div className="separator">
-                                            <img src={assetUrl(`/assets/img/slider-compact-separator.svg`)} alt={``} />
+                                            <img
+                                                src={assetUrl(
+                                                    `/assets/img/slider-compact-separator${index > 0 ? '-sm' : ''}.svg`,
+                                                )}
+                                                alt={``}
+                                            />
                                         </div>
                                         <div
                                             className={`block-slider-arrow`}

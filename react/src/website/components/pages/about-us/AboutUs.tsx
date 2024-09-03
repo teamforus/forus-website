@@ -389,7 +389,7 @@ export default function AboutUs() {
                 </div>
 
                 <div className="block block-map">
-                    <img src={assetUrl('/assets/img/map.png')} alt="Map" />
+                    <img src={assetUrl('/assets/img/map.svg')} alt="" />
                     <div className="block-map-info">
                         <div className="block-map-info-title">Het Forus-systeem in actie</div>
                         <div className="block-map-info-subtitle">Bekijk live toepassingen van het Forus platform</div>

@@ -64,6 +64,7 @@ export default function Website() {
             imgAlt: 'De website van de Gemeente Nijmegen dient als centraal platform voor diverse regelingen van verschillende organisaties, zoals de Gemeente Nijmegen en Stichting Leergeld.',
         },
     ]);
+    const [backgroundImgAltText] = useState('Voorbeeld van een generieke website met alle benodigde informatie');
 
     useEffect(() => {
         setTitle('Een website in huisstijl van uw organisatie | Forus');
@@ -77,7 +78,13 @@ export default function Website() {
 
     return (
         <Fragment>
-            <Banner type={'website'} title={bannerTitle} description={bannerDescription} labelText={bannerLabel} />
+            <Banner
+                type={'website'}
+                title={bannerTitle}
+                description={bannerDescription}
+                labelText={bannerLabel}
+                backgroundImgAltText={backgroundImgAltText}
+            />
 
             <div className="main-content">
                 <div className="wrapper">

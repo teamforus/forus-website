@@ -42,68 +42,80 @@
         }
     }
 
-    &:before,
-    &:after {
-        content: '';
+    .banner-media {
+        mask: url('./assets/img/main-banner-mask.svg') no-repeat;
+        flex-grow: 1;
+        height: 740px;
+        mask-size: auto 100%;
         position: absolute;
-        display: block;
-        left: 50%;
-        top: 25px;
-        bottom: 100px;
         right: 0;
-        pointer-events: none;
-        z-index: -1;
-        background-repeat: no-repeat no-repeat;
-    }
+        left: calc(50vw + 50px);
+        top: 0;
 
-    &:before {
-        background-size: cover;
-        background-position: top right;
-        background-image: url('./assets/img/main-banner.jpg');
-    }
-
-    &:after {
-        background-position: top left;
-        background-size: auto 100%;
-        background-image: url('./assets/img/main-banner-mask.svg');
+        .banner-media-image {
+            height: 100%;
+            width: 100%;
+            background-image: url('./assets/img/main-banner.jpg');
+            background-size: cover;
+            background-position: top right;
+        }
     }
 
     @media screen and (max-width: 992px) {
-        padding: 300px 0 0;
+        display: flex;
+        width: 100%;
+        flex-direction: column-reverse;
+        padding: 0;
+        margin-bottom: 100px;
 
         .banner-content {
-            background: #fff;
-            padding: 40px 25px;
-            border-top-left-radius: 30px;
-            border-top-right-radius: 30px;
-            gap: 40px;
+            padding: 0 0;
 
             .banner-info {
+                width: 100%;
+                margin-top: -100px;
+                z-index: 2;
+                order: 2;
                 max-width: 100%;
+                background: #fff;
+                padding: 40px 24px 24px;
+                border-top-left-radius: 30px;
+                border-top-right-radius: 30px;
+                gap: 30px;
+                text-align: center;
+                min-height: auto;
+
+                .banner-icon {
+                    margin: -35px auto 0;
+                }
 
                 .banner-title {
                     font: 900 36px/44px var(--base-font);
+                    margin: 0;
                 }
 
                 .banner-description {
                     font: 400 16px/27px var(--base-font);
+                    margin-bottom: 0;
                 }
             }
 
             .banner-actions {
+                width: 100%;
+                margin: 0 auto;
                 flex-direction: column;
+                padding: 0 24px 24px;
+                order: 2;
             }
         }
 
-        &:before {
-            top: 0;
+        .banner-media {
+            position: relative;
+            height: 400px;
+            width: 100%;
+            mask: none;
+            order: 1;
             left: 0;
-            bottom: auto;
-            height: 340px;
-        }
-
-        &:after {
-            display: none;
         }
     }
 }

@@ -10,6 +10,7 @@ import BlockLabelsFAQ from './elements/cms/BlockLabelsFAQ';
 import useSetMetaDescription from '../../../hooks/useSetMetaDescription';
 import StateNavLink from '../../../modules/state_router/StateNavLink';
 import BlockDashedSeparator from '../home/elements/BlockDashedSeparator';
+import ProgressLine from './elements/ProgressLine';
 
 export default function CMS() {
     const setTitle = useSetTitle();
@@ -36,6 +37,7 @@ export default function CMS() {
             buttonText: 'Lees meer',
             background: '#0A33C1',
             imgSrc: assetUrl('/assets/img/cms-slider-1.jpg'),
+            imgAlt: 'Voorbeeld van een standaard website',
         },
         {
             label: 'Kansshop',
@@ -44,6 +46,7 @@ export default function CMS() {
             buttonText: 'Lees meer',
             background: '#004680',
             imgSrc: assetUrl('/assets/img/cms-slider-2.jpg'),
+            imgAlt: 'Kansshop webshop van Gemeente Eemsdelta',
         },
         {
             label: 'Potjeswijzer',
@@ -52,6 +55,7 @@ export default function CMS() {
             buttonText: 'Lees meer',
             background: '#26318B',
             imgSrc: assetUrl('/assets/img/cms-slider-3.jpg'),
+            imgAlt: 'Potjeswijzer website van Gemeente Westerkwartier',
         },
         {
             label: 'Goeree-Overflakkee',
@@ -61,8 +65,10 @@ export default function CMS() {
             background:
                 'linear-gradient(0deg, #00A3D1 0%, #00A3D1 100%), linear-gradient(225deg, #A6CE39 0%, #A6CE39 5%, #95CC4B 17%, #6AC77B 40%, #25C0C8 73%, #00BDF2 90%, #00BDF2 100%)',
             imgSrc: assetUrl('/assets/img/cms-slider-4.jpg'),
+            imgAlt: 'Webshop van Gemeente Goeree-Overflakkee',
         },
     ]);
+    const [backgroundImgAltText] = useState('Websites in real-time bewerken met Content Management Systeem');
 
     useEffect(() => {
         setTitle('Krachtig CMS: Personaliseer uw website | het Forus-platform');
@@ -76,7 +82,13 @@ export default function CMS() {
 
     return (
         <Fragment>
-            <Banner type={'cms'} title={bannerTitle} description={bannerDescription} labelText={labelText} />
+            <Banner
+                type={'cms'}
+                title={bannerTitle}
+                description={bannerDescription}
+                labelText={labelText}
+                backgroundImgAltText={backgroundImgAltText}
+            />
 
             <div className="main-content">
                 <div className="wrapper">
@@ -108,9 +120,7 @@ export default function CMS() {
 
                     <div className="block block-with-image">
                         <div className="block-with-image-title">Informatieblokken beheren</div>
-                        <div className="block-separator">
-                            <div className="line" />
-                        </div>
+                        <ProgressLine currentStep={1} totalSteps={3} />
 
                         <div className="block-with-image-wrapper">
                             <div className="block-with-image-info">
@@ -137,9 +147,7 @@ export default function CMS() {
 
                     <div className="block block-with-image">
                         <div className="block-with-image-title">Veelgestelde vragen toevoegen</div>
-                        <div className="block-separator">
-                            <div className="line" />
-                        </div>
+                        <ProgressLine currentStep={2} totalSteps={3} />
 
                         <div className="block-with-image-wrapper">
                             <div className="block-with-image-image">
@@ -165,9 +173,7 @@ export default function CMS() {
 
                     <div className="block block-with-image">
                         <div className="block-with-image-title">Externe websites linken</div>
-                        <div className="block-separator">
-                            <div className="line" />
-                        </div>
+                        <ProgressLine currentStep={3} totalSteps={3} />
 
                         <div className="block-with-image-wrapper">
                             <div className="block-with-image-info">

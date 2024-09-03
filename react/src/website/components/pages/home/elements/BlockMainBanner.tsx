@@ -22,6 +22,10 @@ export default function BlockMainBanner() {
                     </StateNavLink>
                 </div>
             </div>
+
+            <div className="banner-media">
+                <div className="banner-media-image" />
+            </div>
         </div>
     );
 }

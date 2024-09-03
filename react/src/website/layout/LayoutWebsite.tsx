@@ -13,6 +13,7 @@ import useActiveMenuDropdown from '../hooks/useActiveMenuDropdown';
 import UserDropdown from '../components/elements/UserDropdown';
 import CookiesPopup from '../components/elements/CookiesPopup';
 import useUserAuthDropdown from '../hooks/useUserAuthDropdown';
+import { StringParam, useQueryParam } from 'use-query-params';
 
 export const LayoutWebsite = ({ children }: { children: React.ReactElement }) => {
     const { route } = useStateRoutes();
@@ -28,13 +29,19 @@ export const LayoutWebsite = ({ children }: { children: React.ReactElement }) =>
     const bodyRef = useRef<HTMLDivElement>(null);
     const footerRef = useRef<HTMLDivElement>(null);
 
+    const [scrollTo] = useQueryParam('scroll_to', StringParam, {
+        removeDefaultsFromUrl: true,
+    });
+
     const isReady = useMemo(() => {
         return !!envData && !!appConfigs && (!route.state?.protected || authIdentity);
     }, [authIdentity, route.state, envData, appConfigs]);
 
     useEffect(() => {
-        pageScrollRef?.current?.scrollTo({ top: 0 });
-    }, [route, route.pathname]);
+        if (!scrollTo) {
+            pageScrollRef?.current?.scrollTo({ top: 0 });
+        }
+    }, [scrollTo, route, route.pathname]);
 
     useEffect(() => {
         footerRef?.current?.style.setProperty('visibility', activeMenuDropdown ? 'hidden' : 'visible');
