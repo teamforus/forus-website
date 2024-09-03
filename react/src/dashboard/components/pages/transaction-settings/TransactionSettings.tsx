@@ -78,7 +78,7 @@ export default function TransactionSettings() {
 
                     <div className="card-section card-section-primary">
                         <div className="row">
-                            <div className="col col-xs-5 col-md-5">
+                            <div className="col col-xs-10 col-md-8 col-lg-6">
                                 <div className="form-group form-group-inline form-group-inline-xl tooltipped">
                                     <label className="form-label">Select data</label>
                                     <div className="form-offset flex flex-vertical">
