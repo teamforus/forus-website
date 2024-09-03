@@ -16,6 +16,7 @@ import ModalDuplicatesPicker from './ModalDuplicatesPicker';
 import CSVProgressBar from '../elements/csv-progress-bar/CSVProgressBar';
 import classNames from 'classnames';
 import useTranslate from '../../hooks/useTranslate';
+import usePushInfo from '../../hooks/usePushInfo';
 
 export default function ModalReservationUpload({
     modal,
@@ -30,6 +31,7 @@ export default function ModalReservationUpload({
 }) {
     const authIdentity = useAuthIdentity();
 
+    const pushInfo = usePushInfo();
     const openModal = useOpenModal();
     const translate = useTranslate();
 
@@ -60,12 +62,16 @@ export default function ModalReservationUpload({
     const pushSuccess = usePushSuccess();
 
     const closeModal = useCallback(() => {
+        if (loading) {
+            return pushInfo('Bezig met uploaden.');
+        }
+
         if (changed) {
             onCreated();
         }
 
         modal.close();
-    }, [changed, modal, onCreated]);
+    }, [changed, modal, onCreated, loading, pushInfo]);
 
     const makeDefaultNote = useCallback(
         function (row: object): string {
@@ -308,6 +314,7 @@ export default function ModalReservationUpload({
             className={classNames(
                 'modal',
                 'modal-animated',
+                'modal-bulk-upload',
                 (modal.loading || hideModal) && 'modal-loading',
                 className,
             )}>
@@ -375,10 +382,10 @@ export default function ModalReservationUpload({
                                         <CSVProgressBar status={progressStatus} progressBar={progressBar} />
                                     </div>
                                 )}
-                                <div className="csv-upload-actions">
-                                    {csvFile && progress < 2 && (
-                                        <Fragment>
-                                            <div className={classNames(`block block-file`, !isValid && 'has-error')}>
+                                {csvFile && progress < 2 && (
+                                    <div className="csv-upload-actions">
+                                        <div className={classNames(`block block-file`, !isValid && 'has-error')}>
+                                            <div className="block-file-details">
                                                 <div className="file-icon">
                                                     {isValid ? (
                                                         <div className="mdi mdi-file-outline" />
@@ -392,48 +399,55 @@ export default function ModalReservationUpload({
                                                 </div>
                                                 <div className="file-remove mdi mdi-close" onClick={reset} />
                                             </div>
-                                            {!isValid && (
-                                                <div className="text-left">
-                                                    {errors?.csvMissingProductIdFields && (
-                                                        <div className="form-error">
-                                                            De kolom `product_id` mist waardes op de volgende rijen:
-                                                            {` "${errors.csvMissingProductIdFields}".`}
-                                                        </div>
-                                                    )}
-                                                    {errors?.csvMissingNumberFields && (
-                                                        <div className="form-error">
-                                                            De kolom `number` mist waardes op de volgende rijen:
-                                                            {` "${errors.csvMissingNumberFields}".`}
-                                                        </div>
-                                                    )}
-                                                    {errors?.csvSampleNumberFields && (
-                                                        <div className="form-error">
-                                                            De kolom `product_id` heeft de voorbeeld waarde
-                                                            {` "000000000000"`} op de volgende rijen:
-                                                            {` "${errors.csvSampleNumberFields}".`}
-                                                        </div>
-                                                    )}
-                                                </div>
-                                            )}
-                                        </Fragment>
-                                    )}
-                                    {progress == 1 && isValid && (
-                                        <div className="text-center">
-                                            {!loading && (
-                                                <button className="button button-primary" onClick={uploadToServer}>
-                                                    {translate('csv_upload.buttons.upload')}
-                                                </button>
-                                            )}
                                         </div>
-                                    )}
-                                </div>
+                                        {!isValid && (
+                                            <div className="text-left">
+                                                {errors?.csvMissingProductIdFields && (
+                                                    <div className="form-error">
+                                                        De kolom `product_id` mist waardes op de volgende rijen:
+                                                        {` "${errors.csvMissingProductIdFields}".`}
+                                                    </div>
+                                                )}
+                                                {errors?.csvMissingNumberFields && (
+                                                    <div className="form-error">
+                                                        De kolom `number` mist waardes op de volgende rijen:
+                                                        {` "${errors.csvMissingNumberFields}".`}
+                                                    </div>
+                                                )}
+                                                {errors?.csvSampleNumberFields && (
+                                                    <div className="form-error">
+                                                        De kolom `product_id` heeft de voorbeeld waarde
+                                                        {` "000000000000"`} op de volgende rijen:
+                                                        {` "${errors.csvSampleNumberFields}".`}
+                                                    </div>
+                                                )}
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </Fragment>
                 </div>
-                <div className="modal-footer text-center">
-                    <button className="button button-primary" onClick={closeModal} id="close">
-                        {translate('modal_funds_add.buttons.close')}
+
+                <div className="modal-footer">
+                    <button
+                        className="button button-default"
+                        onClick={closeModal}
+                        disabled={loading}
+                        id="close"
+                        data-dusk="closeModalButton">
+                        Annuleren
+                    </button>
+
+                    <div className="flex-grow" />
+
+                    <button
+                        className="button button-primary"
+                        disabled={loading || !(progress == 1 && isValid)}
+                        onClick={uploadToServer}
+                        data-dusk="uploadFileButton">
+                        {translate('csv_upload.buttons.upload')}
                     </button>
                 </div>
             </div>

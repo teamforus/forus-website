@@ -152,6 +152,8 @@ export default function CSVUpload({
 
     const uploadFile = useCallback(
         async (file: File) => {
+            reset();
+
             if (!file) {
                 return setCsvErrors('Kies eerst een .csv bestand.');
             }
@@ -159,7 +161,7 @@ export default function CSVUpload({
             const results = await parseCsvFile(file);
 
             if (!results) {
-                return reset();
+                return;
             }
 
             const data = (results.data = results.data.filter((item) => !!item));
@@ -470,7 +472,7 @@ export default function CSVUpload({
                     </div>
                 )}
 
-                <div className="flex flex-vertical">
+                <div className="csv-upload-btn-groups">
                     <div className="button-group flex-center">
                         {csvProgress <= 1 && (
                             <button
@@ -492,7 +494,9 @@ export default function CSVUpload({
 
                     <div className="button-group flex-center">
                         {csvProgress <= 1 && (
-                            <button className="button button-text button-text-muted" onClick={downloadSample}>
+                            <button
+                                className="button button-text button-text-muted button-slim"
+                                onClick={downloadSample}>
                                 <em className="mdi mdi-file-table-outline icon-start" />
                                 Download voorbeeld bestand
                             </button>
@@ -511,11 +515,11 @@ export default function CSVUpload({
                     </div>
                 )}
 
-                <div className="csv-upload-actions" hidden={!csvProgress && !csvFile && !csvWarnings && !csvErrors}>
-                    {csvProgress <= 1 && (
-                        <Fragment>
-                            {csvFile && (
-                                <div className={classNames(`block block-file`, !csvIsValid && 'has-error')}>
+                {csvProgress <= 1 && csvFile && (
+                    <div className="csv-upload-actions">
+                        {csvFile && (
+                            <div className={classNames(`block block-file`, !csvIsValid && 'has-error')}>
+                                <div className="block-file-details">
                                     <div className="file-icon">
                                         {csvIsValid ? (
                                             <div className="mdi mdi-file-outline" />
@@ -529,48 +533,54 @@ export default function CSVUpload({
                                     </div>
                                     <div className="file-remove mdi mdi-close" onClick={reset} />
                                 </div>
-                            )}
 
-                            {csvWarnings && !csvErrors && (
-                                <Fragment>
-                                    {[].concat(csvWarnings).map((warning) => (
-                                        <div key={warning} className="csv-file-warning">
-                                            {warning}
+                                {csvProgress == 1 && csvIsValid && !csvComparing && (
+                                    <div className="block-file-buttons">
+                                        <div className="button-group flex-center">
+                                            <button className="button button-default button-sm" onClick={reset}>
+                                                Cancel
+                                            </button>
+
+                                            <button
+                                                className="button button-primary button-sm"
+                                                onClick={onConfirmUpload}>
+                                                Upload
+                                            </button>
                                         </div>
-                                    ))}
-                                </Fragment>
-                            )}
+                                    </div>
+                                )}
+                            </div>
+                        )}
 
-                            {csvErrors && (
-                                <Fragment>
-                                    {[].concat(csvErrors).map((error, index) => (
-                                        <div key={index} className="csv-file-error">
-                                            {error}
-                                        </div>
-                                    ))}
-                                </Fragment>
-                            )}
-                        </Fragment>
-                    )}
+                        {csvWarnings && !csvErrors && (
+                            <Fragment>
+                                {[].concat(csvWarnings).map((warning) => (
+                                    <div key={warning} className="csv-file-warning">
+                                        {warning}
+                                    </div>
+                                ))}
+                            </Fragment>
+                        )}
 
-                    {csvProgress == 1 && csvIsValid && (
-                        <div className="text-center">
-                            {!csvComparing && (
-                                <button type={'button'} className="button button-primary" onClick={onConfirmUpload}>
-                                    {translate('csv_upload.buttons.upload')}
-                                </button>
-                            )}
-                        </div>
-                    )}
+                        {csvErrors && (
+                            <Fragment>
+                                {[].concat(csvErrors).map((error, index) => (
+                                    <div key={index} className="csv-file-error">
+                                        {error}
+                                    </div>
+                                ))}
+                            </Fragment>
+                        )}
+                    </div>
+                )}
 
-                    {csvProgress == 3 && (
-                        <div className="text-center">
-                            <button type={'button'} className="button button-primary" onClick={reset}>
-                                {translate('csv_upload.labels.done')}
-                            </button>
-                        </div>
-                    )}
-                </div>
+                {csvProgress == 3 && (
+                    <div className="text-center">
+                        <button type={'button'} className="button button-primary" onClick={reset}>
+                            {translate('csv_upload.labels.done')}
+                        </button>
+                    </div>
+                )}
             </div>
         </div>
     );
