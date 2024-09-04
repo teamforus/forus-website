@@ -190,11 +190,16 @@ export default function Privacy() {
                                 voor cookies door uw internetbrowser zo in te stellen dat deze geen cookies meer
                                 opslaat. Daarnaast kunt u ook alle informatie die eerder is opgeslagen via de
                                 instellingen van uw browser verwijderen. Zie voor een toelichting:
+                                <br />
+                                <br />
                                 <a
+                                    target={'_blank'}
                                     href={
                                         'https://veiliginternetten.nl/themes/situatie/cookies-wat-zijn-het-en-wat-doe-ik-ermee'
                                     }
-                                />
+                                    rel="noreferrer">
+                                    https://veiliginternetten.nl/themes/situatie/cookies-wat-zijn-het-en-wat-doe-ik-ermee
+                                </a>
                             </div>
 
                             <div className="block-privacy-info-title">Gegevens inzien, aanpassen of verwijderen</div>
@@ -216,12 +221,17 @@ export default function Privacy() {
                                 snel mogelijk, maar in ieder geval binnen vier weken, op uw verzoek reageren. Forus wil
                                 u er tevens op wijzen dat u de mogelijkheid hebt om een klacht in te dienen bij de
                                 nationale toezichthouder, de Autoriteit Persoonsgegevens. Dat kan via de volgende link:
+                                <br />
+                                <br />
+                                <a
+                                    target={'_blank'}
+                                    href={
+                                        'https://autoriteitpersoonsgegevens.nl/nl/contact-met-de-autoriteit-persoonsgegevens/tip-ons'
+                                    }
+                                    rel="noreferrer">
+                                    https://autoriteitpersoonsgegevens.nl/nl/contact-met-de-autoriteit-persoonsgegevens/tip-ons
+                                </a>
                             </div>
-                            <a
-                                href={
-                                    'https://autoriteitpersoonsgegevens.nl/nl/contact-met-de-autoriteit-persoonsgegevens/tip-ons'
-                                }
-                            />
 
                             <div className="block-privacy-info-title">Hoe wij persoonsgegevens beveiligen</div>
 

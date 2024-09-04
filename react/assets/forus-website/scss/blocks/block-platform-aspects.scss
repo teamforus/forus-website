@@ -109,11 +109,12 @@
             .block-platform-aspects-feedback {
                 position: absolute;
                 top: 320px;
-                right: -20px;
+                right: -30px;
                 padding: 20px;
 
                 img {
                     display: block;
+                    border-radius: 8px;
                 }
             }
         }
@@ -178,11 +179,12 @@
                 margin-bottom: 45px;
                 width: 100%;
                 flex: auto;
+                padding: 0;
 
                 img {
                     width: 100%;
-                    margin-top: 40px;
-                    margin-bottom: -40px;
+                    max-width: 100%;
+                    margin: 20px 0;
                 }
             }
         }

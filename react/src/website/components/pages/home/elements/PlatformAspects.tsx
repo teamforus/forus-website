@@ -6,7 +6,9 @@ import StateNavLink from '../../../../modules/state_router/StateNavLink';
 type ImageDataProps = {
     src: string;
     alt?: string;
-    styles?: object;
+    imgStyles?: object;
+    mainStyles?: object;
+    mobileStyles?: { mainStyles?: object; imgStyles?: object };
 };
 
 export default function PlatformAspects() {
@@ -25,13 +27,39 @@ export default function PlatformAspects() {
                 'Financiële transacties voor regelingen worden snel en efficiënt verwerkt door onze bankintegratie. ',
                 'Dit bespaart tijd en het verkleint het risico op fouten doordat handmatige handelingen worden geautomatiseerd.',
             ].join(''),
+            otherImages: [
+                {
+                    src: assetUrl('/assets/img/unique-aspects/aspects-1-1.svg'),
+                    alt: '',
+                    mainStyles: {
+                        top: '550px',
+                        right: '10px',
+                    },
+                    imgStyles: {
+                        background: 'rgba(255, 255, 255, 0.75)',
+                        boxShadow: '0px 25.348px 58.496px 1.181px rgba(80, 86, 106, 0.10)',
+                        backdropFilter: 'blur(7.837835311889648px)',
+                    },
+                    mobileStyles: {
+                        mainStyles: {
+                            top: '70%',
+                            right: '0',
+                            maxWidth: '210px',
+                        },
+                        imgStyles: {
+                            background: 'rgba(255, 255, 255, 0.75)',
+                            boxShadow: '0px 25.348px 58.496px 1.181px rgba(80, 86, 106, 0.10)',
+                        },
+                    },
+                },
+            ],
             styles: {
                 imgWrapperStyles: {
                     padding: '0',
                 },
                 imgStyles: {
-                    marginBottom: '-140px',
-                    marginRight: '-80px',
+                    marginTop: '40px',
+                    marginBottom: '40px',
                     maxWidth: '100%',
                 },
             },
@@ -49,26 +77,73 @@ export default function PlatformAspects() {
                 {
                     src: assetUrl('/assets/img/unique-aspects/aspects-2-1.svg'),
                     alt: '',
-                    styles: {
-                        top: '180px',
-                        right: '-100px',
+                    mainStyles: {
+                        top: '170px',
+                        right: '-30px',
+                    },
+                    mobileStyles: {
+                        mainStyles: {
+                            top: '20%',
+                            right: '0',
+                            maxWidth: '210px',
+                        },
+                        imgStyles: {
+                            background: 'rgba(255, 255, 255, 0.75)',
+                            boxShadow: '0px 25.348px 58.496px 1.181px rgba(80, 86, 106, 0.10)',
+                        },
                     },
                 },
                 {
                     src: assetUrl('/assets/img/unique-aspects/aspects-2-2.svg'),
                     alt: '',
-                    styles: {
-                        top: '320px',
-                        right: '-100px',
+                    mainStyles: {
+                        top: '405px',
+                        right: '-40px',
+                        zIndex: 100,
+                    },
+                    imgStyles: {
+                        background: 'rgba(255, 255, 255, 0.75)',
+                        boxShadow: '0px 25.348px 58.496px 1.181px rgba(80, 86, 106, 0.10)',
+                        backdropFilter: 'blur(7.837835311889648px)',
+                    },
+                    mobileStyles: {
+                        mainStyles: {
+                            top: '55%',
+                            right: '-20px',
+                            maxWidth: '210px',
+                            zIndex: 100,
+                        },
+                        imgStyles: {
+                            background: 'rgba(255, 255, 255, 0.75)',
+                            boxShadow: '0px 25.348px 58.496px 1.181px rgba(80, 86, 106, 0.10)',
+                        },
                     },
                 },
                 {
                     src: assetUrl('/assets/img/unique-aspects/aspects-2-3.svg'),
                     alt: '',
-                    styles: {
-                        top: '400px',
-                        right: '-70px',
+                    mainStyles: {
+                        top: '430px',
+                        right: '-10px',
                         zIndex: 99,
+                    },
+                    imgStyles: {
+                        border: '0.566px solid #E5E5E5',
+                        background: 'rgba(246, 247, 248, 0.65',
+                        boxShadow:
+                            '0px 13.829px 38.03px 0px rgba(115, 120, 145, 0.18), 0px 20.744px 55.317px 0px rgba(167, 174, 201, 0.10)',
+                        backdropFilter: 'blur(8.090664863586426px)',
+                    },
+                    mobileStyles: {
+                        mainStyles: {
+                            top: '60%',
+                            right: '0',
+                            maxWidth: '210px',
+                        },
+                        imgStyles: {
+                            background: 'rgba(255, 255, 255, 0.75)',
+                            boxShadow: '0px 25.348px 58.496px 1.181px rgba(80, 86, 106, 0.10)',
+                        },
                     },
                 },
             ],
@@ -78,6 +153,12 @@ export default function PlatformAspects() {
                 },
                 imgStyles: {
                     marginBottom: '-140px',
+                },
+                mobile: {
+                    imgWrapperStyles: {},
+                    imgStyles: {
+                        marginBottom: '-20px',
+                    },
                 },
             },
         },
@@ -94,17 +175,43 @@ export default function PlatformAspects() {
                 {
                     src: assetUrl('/assets/img/unique-aspects/aspects-3-1.svg'),
                     alt: '',
-                    styles: {
+                    mainStyles: {
                         top: '520px',
                         right: '-100px',
+                    },
+                    mobileStyles: {
+                        mainStyles: {
+                            top: '70%',
+                            right: '-20px',
+                            width: '80%',
+                        },
+                        imgStyles: {},
                     },
                 },
                 {
                     src: assetUrl('/assets/img/unique-aspects/aspects-3-2.svg'),
                     alt: '',
-                    styles: {
-                        top: '-20px',
-                        right: '-60px',
+                    mainStyles: {
+                        top: '20px',
+                        right: '0',
+                    },
+                    imgStyles: {
+                        borderRadius: '15.467px',
+                        border: '0.644px solid #E5E5E5',
+                        background: 'rgba(255, 255, 255, 0.75)',
+                        boxShadow: '0px 25.348px 58.496px 1.181px rgba(80, 86, 106, 0.10)',
+                        backdropFilter: 'blur(7.837835311889648px)',
+                    },
+                    mobileStyles: {
+                        mainStyles: {
+                            top: '-30px',
+                            right: '0',
+                            width: '100%',
+                        },
+                        imgStyles: {
+                            background: 'rgba(255, 255, 255, 0.75)',
+                            boxShadow: '0px 25.348px 58.496px 1.181px rgba(80, 86, 106, 0.10)',
+                        },
                     },
                 },
             ],
@@ -112,6 +219,12 @@ export default function PlatformAspects() {
                 imgStyles: {
                     marginTop: '70px',
                     marginBottom: '-100px',
+                },
+                mobile: {
+                    imgWrapperStyles: {},
+                    imgStyles: {
+                        marginBottom: '-60px',
+                    },
                 },
             },
         },
@@ -128,25 +241,49 @@ export default function PlatformAspects() {
                 {
                     src: assetUrl('/assets/img/unique-aspects/aspects-4-1.svg'),
                     alt: '',
-                    styles: {
+                    mainStyles: {
                         top: '470px',
                         left: '-20px',
+                    },
+                    mobileStyles: {
+                        mainStyles: {
+                            top: '70%',
+                            left: '-20px',
+                            maxWidth: '60%',
+                        },
+                        imgStyles: {},
                     },
                 },
                 {
                     src: assetUrl('/assets/img/unique-aspects/aspects-4-2.svg'),
                     alt: '',
-                    styles: {
+                    mainStyles: {
                         top: '720px',
                         right: '-20px',
+                    },
+                    mobileStyles: {
+                        mainStyles: {
+                            top: '85%',
+                            right: '-30px',
+                            maxWidth: '60%',
+                        },
+                        imgStyles: {},
                     },
                 },
                 {
                     src: assetUrl('/assets/img/unique-aspects/aspects-4-3.svg'),
                     alt: '',
-                    styles: {
+                    mainStyles: {
                         top: '360px',
                         right: '-20px',
+                    },
+                    mobileStyles: {
+                        mainStyles: {
+                            top: '20%',
+                            right: '-30px',
+                            maxWidth: '60%',
+                        },
+                        imgStyles: {},
                     },
                 },
             ],
@@ -169,9 +306,30 @@ export default function PlatformAspects() {
                 {
                     src: assetUrl('/assets/img/unique-aspects/aspects-5-1.svg'),
                     alt: '',
-                    styles: {
+                    mainStyles: {
                         top: '320px',
                         right: '-50px',
+                    },
+                    imgStyles: {
+                        borderRadius: '11.399px',
+                        background: 'rgba(255, 255, 255, 0.65)',
+                        boxShadow:
+                            '0px 12.473px 40.939px 0px rgba(115, 120, 145, 0.18), 0px 18.709px 52.698px 0px rgba(167, 174, 201, 0.10)',
+                        backdropFilter: 'blur(7.297201633453369px)',
+                    },
+                    mobileStyles: {
+                        mainStyles: {
+                            top: '50%',
+                            right: '-20px',
+                            maxWidth: '50%',
+                        },
+                        imgStyles: {
+                            borderRadius: '11.399px',
+                            background: 'rgba(255, 255, 255, 0.65)',
+                            boxShadow:
+                                '0px 12.473px 40.939px 0px rgba(115, 120, 145, 0.18), 0px 18.709px 52.698px 0px rgba(167, 174, 201, 0.10)',
+                            backdropFilter: 'blur(7.297201633453369px)',
+                        },
                     },
                 },
             ],
@@ -181,6 +339,13 @@ export default function PlatformAspects() {
                 },
                 imgStyles: {
                     marginBottom: '-140px',
+                },
+                mobile: {
+                    imgWrapperStyles: {},
+                    imgStyles: {
+                        marginBottom: '-30px',
+                        marginTop: '-5px',
+                    },
                 },
             },
         },
@@ -197,34 +362,74 @@ export default function PlatformAspects() {
                 {
                     src: assetUrl('/assets/img/unique-aspects/aspects-6-1.svg'),
                     alt: '',
-                    styles: {
+                    mainStyles: {
                         top: '550px',
                         left: '140px',
+                    },
+                    mobileStyles: {
+                        mainStyles: {
+                            top: '65%',
+                            left: '20px',
+                            maxWidth: '100px',
+                        },
+                        imgStyles: {
+                            boxShadow: '0px 31.197px 51.994px 0px #E1E2E8',
+                        },
                     },
                 },
                 {
                     src: assetUrl('/assets/img/unique-aspects/aspects-6-2.svg'),
                     alt: '',
-                    styles: {
+                    mainStyles: {
                         top: '520px',
                         left: '250px',
+                    },
+                    mobileStyles: {
+                        mainStyles: {
+                            top: '60%',
+                            left: '100px',
+                            maxWidth: '100px',
+                        },
+                        imgStyles: {
+                            boxShadow: '0px 31.197px 51.994px 0px #E1E2E8',
+                        },
                     },
                 },
                 {
                     src: assetUrl('/assets/img/unique-aspects/aspects-6-3.svg'),
                     alt: '',
-                    styles: {
+                    mainStyles: {
                         top: '575px',
                         left: '360px',
+                    },
+                    mobileStyles: {
+                        mainStyles: {
+                            top: '68%',
+                            left: '180px',
+                            maxWidth: '100px',
+                        },
+                        imgStyles: {
+                            boxShadow: '0px 31.197px 51.994px 0px #E1E2E8',
+                        },
                     },
                 },
                 {
                     src: assetUrl('/assets/img/unique-aspects/aspects-6-4.svg'),
                     alt: '',
-                    styles: {
+                    mainStyles: {
                         top: '255px',
                         left: '345px',
                         width: '350px',
+                    },
+                    mobileStyles: {
+                        mainStyles: {
+                            top: '25%',
+                            right: '-30px',
+                            maxWidth: '150px',
+                        },
+                        imgStyles: {
+                            boxShadow: '0px 31.197px 51.994px 0px #E1E2E8',
+                        },
                     },
                 },
             ],
@@ -234,6 +439,12 @@ export default function PlatformAspects() {
                 },
                 imgStyles: {
                     marginBottom: '-60px',
+                },
+                mobile: {
+                    imgWrapperStyles: {},
+                    imgStyles: {
+                        marginBottom: '-30px',
+                    },
                 },
             },
         },
@@ -250,7 +461,7 @@ export default function PlatformAspects() {
                 {
                     src: assetUrl('/assets/img/unique-aspects/aspects-7-1.svg'),
                     alt: '',
-                    styles: {
+                    mainStyles: {
                         top: '500px',
                         right: '-105px',
                     },
@@ -258,9 +469,19 @@ export default function PlatformAspects() {
                 {
                     src: assetUrl('/assets/img/unique-aspects/aspects-7-2.svg'),
                     alt: '',
-                    styles: {
-                        top: '250px',
-                        right: '-65px',
+                    mainStyles: {
+                        top: '300px',
+                        right: '25px',
+                    },
+                    mobileStyles: {
+                        mainStyles: {
+                            top: '25%',
+                            right: '-20px',
+                            maxWidth: '100px',
+                        },
+                        imgStyles: {
+                            boxShadow: '0px 31.197px 51.994px 0px #E1E2E8',
+                        },
                     },
                 },
             ],
@@ -270,6 +491,12 @@ export default function PlatformAspects() {
                 },
                 imgStyles: {
                     marginBottom: '-60px',
+                },
+                mobile: {
+                    imgWrapperStyles: {},
+                    imgStyles: {
+                        marginBottom: '-10px',
+                    },
                 },
             },
         },
@@ -286,11 +513,28 @@ export default function PlatformAspects() {
                 {
                     src: assetUrl('/assets/img/unique-aspects/aspects-8-1.svg'),
                     alt: '',
+                    imgStyles: {
+                        boxShadow: '0px 31.197px 51.994px 0px #E1E2E8',
+                    },
+                    mobileStyles: {
+                        mainStyles: {
+                            top: '40%',
+                            right: '30px',
+                            maxWidth: '70%',
+                        },
+                        imgStyles: {
+                            boxShadow: '0px 31.197px 51.994px 0px #E1E2E8',
+                        },
+                    },
                 },
             ],
             styles: {
                 imgWrapperStyles: {
                     padding: '0',
+                },
+                mobile: {
+                    imgWrapperStyles: {},
+                    imgStyles: {},
                 },
             },
         },
@@ -333,8 +577,23 @@ export default function PlatformAspects() {
                                 </div>
                             </div>
 
-                            <div className="show-sm block-platform-aspects-image">
-                                <img src={assetUrl(`/assets/img/unique-aspects/aspects-${index + 1}.svg`)} alt="" />
+                            <div
+                                className="show-sm block-platform-aspects-image"
+                                style={item.styles.mobile?.imgWrapperStyles}>
+                                <img
+                                    src={assetUrl(`/assets/img/unique-aspects/aspects-${index + 1}.svg`)}
+                                    alt=""
+                                    style={item.styles.mobile?.imgStyles}
+                                />
+
+                                {item?.otherImages?.map((img: ImageDataProps, index: number) => (
+                                    <div
+                                        className="block-platform-aspects-feedback"
+                                        key={index}
+                                        style={img.mobileStyles?.mainStyles}>
+                                        <img src={img.src} alt={img.alt} style={img.mobileStyles?.imgStyles} />
+                                    </div>
+                                ))}
                             </div>
                         </div>
                     ))}
@@ -353,8 +612,8 @@ export default function PlatformAspects() {
                     </div>
 
                     {items[activeItem]?.otherImages?.map((img: ImageDataProps, index: number) => (
-                        <div className="hide-sm block-platform-aspects-feedback" key={index} style={img.styles}>
-                            <img src={img.src} alt={img.alt} />
+                        <div className="hide-sm block-platform-aspects-feedback" key={index} style={img.mainStyles}>
+                            <img src={img.src} alt={img.alt} style={img.imgStyles} />
                         </div>
                     ))}
                 </div>
