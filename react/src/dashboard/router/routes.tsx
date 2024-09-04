@@ -202,7 +202,7 @@ router.state('pre-check', <PreCheck />, {
 
 router.state('sponsor-provider-organizations', <SponsorProviderOrganizations />, {
     path: `/organisaties/:organizationId/aanbieders`,
-    path: `/organizations/:organizationId/providers`,
+    altPath: `/organizations/:organizationId/providers`,
     fallbackState: 'organizations',
 });
 
