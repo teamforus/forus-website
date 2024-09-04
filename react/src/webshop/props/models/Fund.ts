@@ -3,6 +3,7 @@ import Voucher from '../../../dashboard/props/models/Voucher';
 import FundCriteriaStep from '../../../dashboard/props/models/FundCriteriaStep';
 
 export default interface Fund extends FundBase {
+    received?: boolean;
     is_external: boolean;
     vouchers: Array<Voucher>;
     allow_direct_requests?: boolean;

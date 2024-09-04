@@ -5,6 +5,7 @@ import { SelectControlOptionsProp } from '../SelectControl';
 import Fund from '../../../../props/models/Fund';
 import useAssetUrl from '../../../../hooks/useAssetUrl';
 import classNames from 'classnames';
+import useSelectControlKeyEventHandlers from '../hooks/useSelectControlKeyEventHandlers';
 
 export default function SelectControlOptionsFund<T>({
     id,
@@ -33,12 +34,17 @@ export default function SelectControlOptionsFund<T>({
     const placeholderRef = useRef<HTMLLabelElement>(null);
     const assetUrl = useAssetUrl();
 
+    const { onKeyDown, onBlur } = useSelectControlKeyEventHandlers(
+        selectorRef,
+        placeholderRef,
+        showOptions,
+        setShowOptions,
+    );
+
     return (
         <div
             id={id}
-            className={`select-control select-control-funds ${disabled ? 'disabled' : ''} ${
-                className ? className : ''
-            }`}
+            className={classNames('select-control', 'select-control-funds', disabled && 'disabled', className)}
             tabIndex={0}
             role="button"
             data-dusk={dusk}
@@ -47,20 +53,8 @@ export default function SelectControlOptionsFund<T>({
             aria-labelledby={controlId}
             aria-controls={`${controlId}_options`}
             ref={selectorRef}
-            onKeyDown={(e) => {
-                if (e.key == 'Enter') {
-                    placeholderRef?.current?.click();
-                }
-
-                if (e.key == 'Escape') {
-                    setShowOptions(false);
-                }
-            }}
-            onBlur={(e) => {
-                if (showOptions && !e.currentTarget.contains(e.relatedTarget)) {
-                    selectorRef?.current?.focus();
-                }
-            }}>
+            onKeyDown={onKeyDown}
+            onBlur={onBlur}>
             <div
                 className={classNames('select-control-input', showOptions && 'options')}
                 data-dusk="selectControlFunds">

@@ -42,7 +42,7 @@ export class FundService<T = Fund> {
         return this.apiRequest.get(`${this.prefix}/${company_id}/funds/${fund_id}`, data);
     }
 
-    public update(company_id: number, fund_id: number, data: object = {}): Promise<null> {
+    public update(company_id: number, fund_id: number, data: object = {}): Promise<ApiResponseSingle<T>> {
         return this.apiRequest.patch(`${this.prefix}/${company_id}/funds/${fund_id}`, data);
     }
 
@@ -65,10 +65,6 @@ export class FundService<T = Fund> {
         id: number,
     ): Promise<ResponseSimple<{ state: string; response_code: number }>> {
         return this.apiRequest.post(`${this.prefix}/${company_id}/funds/${id}/backoffice-test`);
-    }
-
-    public delete(company_id: number, data: object = {}): Promise<null> {
-        return this.apiRequest.get<null>(`${this.prefix}/${company_id}/funds`, data);
     }
 
     public readFinances(company_id: number, data: object = {}): Promise<ResponseSimple<ProviderFinancialStatistics>> {
