@@ -53,6 +53,8 @@
             color: var(--label-set-focus-color);
             border-color: var(--label-set-focus-background);
             background-color: var(--label-set-focus-background);
+            outline: 2px auto -webkit-focus-ring-color !important;
+            outline-offset: 2px;
 
             .mdi {
                 color: var(--label-set-focus-color);
