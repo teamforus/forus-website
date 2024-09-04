@@ -2306,6 +2306,19 @@ body {
             color: #45535e;
             display: none;
 
+            ul {
+                list-style-type: disc;
+                list-style-position: inside;
+
+                li {
+                    font: 400 13px/20px var(--base-font);
+                }
+
+                strong {
+                    font-weight: 500;
+                }
+            }
+
             &:not(.tooltip-bottom) {
                 left: 100%;
                 top: 12px;
