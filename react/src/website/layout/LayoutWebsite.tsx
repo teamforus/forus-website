@@ -59,7 +59,7 @@ export const LayoutWebsite = ({ children }: { children: React.ReactElement }) =>
                 width: '100%',
                 height: '100%',
                 position: 'fixed',
-                overflow: modals.length > 0 || showUserAuthDropdown ? 'hidden' : 'auto',
+                overflow: modals.length > 0 || showUserAuthDropdown || activeMenuDropdown ? 'hidden' : 'auto',
             }}>
             <LoadingBar />
 

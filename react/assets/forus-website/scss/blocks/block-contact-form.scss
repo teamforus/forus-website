@@ -31,6 +31,10 @@
         background: #FFF;
         box-shadow: 0 20px 55px 0 rgba(115, 120, 145, 0.06);
 
+        a {
+            text-decoration: underline;
+        }
+
         .block-contact-form-title {
             font: 600 25px/36px var(--base-font);
             margin-bottom: 35px;
