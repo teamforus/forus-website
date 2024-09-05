@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import StateNavLink from '../../../modules/state_router/StateNavLink';
 import useTranslate from '../../../../dashboard/hooks/useTranslate';
 import FundRequest from '../../../../dashboard/props/models/FundRequest';
@@ -8,6 +8,9 @@ import FundRequestRecordCard from './elements/FundRequestRecordCard';
 import BlockShowcaseProfile from '../../elements/block-showcase/BlockShowcaseProfile';
 import useSetProgress from '../../../../dashboard/hooks/useSetProgress';
 import useSetTitle from '../../../hooks/useSetTitle';
+import { StringParam, useQueryParams } from 'use-query-params';
+import { useNavigateState } from '../../../modules/state_router/Router';
+import { authContext } from '../../../contexts/AuthContext';
 
 export default function FundRequestsShow() {
     const { id } = useParams();
@@ -15,7 +18,10 @@ export default function FundRequestsShow() {
     const setTitle = useSetTitle();
     const translate = useTranslate();
     const setProgress = useSetProgress();
+    const navigateState = useNavigateState();
+    const { identity, token } = useContext(authContext);
 
+    const [{ target }] = useQueryParams({ target: StringParam });
     const [fundRequest, setFundRequest] = useState<FundRequest>(null);
     const [showDeclinedNote, setShowDeclinedNote] = useState(true);
 
@@ -31,14 +37,26 @@ export default function FundRequestsShow() {
     }, [fundRequestService, setProgress, id]);
 
     useEffect(() => {
-        fetchFundRequest();
-    }, [fetchFundRequest]);
+        if (identity) {
+            fetchFundRequest();
+        }
+    }, [identity, fetchFundRequest]);
 
     useEffect(() => {
         if (fundRequest) {
             setTitle(translate('page_state_titles.fund-request-show', { fund_name: fundRequest.fund.name }));
         }
     }, [fundRequest, setTitle, translate]);
+
+    useEffect(() => {
+        if (!identity && !token) {
+            navigateState('start', null, null, { state: { target } });
+        }
+    }, [identity, navigateState, target, token]);
+
+    if (!identity || !fundRequest) {
+        return null;
+    }
 
     return (
         <BlockShowcaseProfile

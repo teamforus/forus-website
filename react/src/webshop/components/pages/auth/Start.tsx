@@ -1,6 +1,6 @@
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { authContext } from '../../../contexts/AuthContext';
-import { useNavigateState } from '../../../modules/state_router/Router';
+import { useNavigateState, useStateParams } from '../../../modules/state_router/Router';
 import { useAuthService } from '../../../services/AuthService';
 import useFormBuilder from '../../../../dashboard/hooks/useFormBuilder';
 import { ResponseError } from '../../../../dashboard/props/ApiResponses';
@@ -36,6 +36,7 @@ export default function Start() {
     const setProgress = useSetProgress();
     const navigateState = useNavigateState();
 
+    const { target } = useStateParams<{ target?: string }>();
     const [state, setState] = useState<string>('start');
     const [timer, setTimer] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -68,7 +69,7 @@ export default function Start() {
     const authForm = useFormBuilder(
         {
             email: '',
-            target: 'fundRequest',
+            target: target || 'fundRequest',
             privacy: false,
         },
         async (values) => {
