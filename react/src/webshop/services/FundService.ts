@@ -98,7 +98,6 @@ export class FundService<T = Fund> {
             'children_nth',
             'waa_kind_0_tm_4_2021_eligible_nth',
             'waa_kind_4_tm_18_2021_eligible_nth',
-            'adults_nth',
             'eem_kind_0_tm_4_eligible_nth',
             'eem_kind_4_tm_12_eligible_nth',
             'eem_kind_12_tm_14_eligible_nth',

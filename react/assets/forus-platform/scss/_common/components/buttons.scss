@@ -271,11 +271,6 @@
         }
     }
 
-    &.button-slim {
-        padding-top: 0;
-        padding-bottom: 0;
-    }
-
     &.button-flat {
         box-shadow: none;
     }
@@ -298,6 +293,11 @@
     &.button-xs {
         font: 500 12px/16px var(--base-font);
         padding: 2px 7px;
+    }
+
+    &.button-slim {
+        padding-top: 0;
+        padding-bottom: 0;
     }
 
     &[disabled],
