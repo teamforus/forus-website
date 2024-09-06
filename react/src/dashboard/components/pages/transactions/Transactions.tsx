@@ -806,7 +806,11 @@ export default function Transactions() {
                                             />
                                         )}
                                         {isSponsor && (
-                                            <ThSortable label={translate('transactions.labels.payment_type')} />
+                                            <ThSortable
+                                                label={translate('transactions.labels.payment_type')}
+                                                value={'payment_type'}
+                                                filter={filter}
+                                            />
                                         )}
                                         {isSponsor && (
                                             <ThSortable
