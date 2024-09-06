@@ -8,9 +8,10 @@ export default function BlockMainBanner() {
                 <div className="banner-info">
                     <div className="banner-title">Het platform voor sociale regelingen</div>
                     <div className="banner-description">
-                        Forus biedt een flexibel, modulair platform dat het gehele uitgifteproces van sociale regelingen
-                        faciliteert. Ons doel is om de toegang tot hulp laagdrempeliger te maken en zelfredzaamheid te
-                        bevorderen.
+                        Forus biedt een modulair platform dat het gehele uitgifteproces van sociale regelingen
+                        faciliteert voor inwoners, gemeenten, goede doelen, ondernemers en andere partijen. Ons
+                        gezamenlijke doel: mensen helpen door processen te versimpelen, zelfredzaamheid te bevorderen en
+                        een laagdrempelige toegang tot sociale initiatieven te bieden.
                     </div>
                 </div>
                 <div className="banner-actions">
