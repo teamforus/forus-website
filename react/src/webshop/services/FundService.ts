@@ -4,8 +4,6 @@ import ApiRequestService from '../../dashboard/services/ApiRequestService';
 import { format } from 'date-fns';
 import Fund from '../props/models/Fund';
 import Voucher from '../../dashboard/props/models/Voucher';
-import { AppConfigProp } from '../../dashboard/services/ConfigService';
-import FundsListItemModel from './types/FundsListItemModel';
 import RecordType from '../../dashboard/props/models/RecordType';
 
 export class FundService<T = Fund> {
@@ -58,34 +56,6 @@ export class FundService<T = Fund> {
 
     public redeem(code: string): Promise<ResponseSimple<{ prevalidation: Array<T>; vouchers: Array<T> }>> {
         return this.apiRequest.post(`${this.prefix}/redeem`, { code });
-    }
-
-    public mapFund(fund: FundsListItemModel, vouchers: Array<Voucher>, configs: AppConfigProp): FundsListItemModel {
-        fund.vouchers = vouchers.filter((voucher) => voucher.fund_id == fund.id && !voucher.expired);
-        fund.isApplicable =
-            fund.criteria.length > 0 && fund.criteria.filter((criterion) => !criterion.is_valid).length == 0;
-
-        fund.alreadyReceived = fund.vouchers.length !== 0;
-
-        fund.canApply =
-            !fund.is_external && !fund.alreadyReceived && fund.isApplicable && !fund.has_pending_fund_requests;
-
-        fund.showRequestButton =
-            !fund.alreadyReceived &&
-            !fund.has_pending_fund_requests &&
-            !fund.isApplicable &&
-            fund.allow_direct_requests &&
-            configs.funds.fund_requests;
-
-        fund.showPendingButton = !fund.alreadyReceived && fund.has_pending_fund_requests;
-        fund.showActivateButton = !fund.alreadyReceived && fund.isApplicable;
-
-        fund.linkPrimaryButton =
-            [fund.showRequestButton, fund.showPendingButton, fund.showActivateButton, fund.alreadyReceived].filter(
-                (flag) => flag,
-            ).length === 0;
-
-        return fund;
     }
 
     public getCurrencyKeys() {
