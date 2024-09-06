@@ -917,7 +917,6 @@ body {
                     .form-control:not(.select-control) {
                         &:not([type='radio']):not([type='checkbox']) {
                             height: 30px;
-                            margin: 0;
                             padding: 0 10px;
                             line-height: 28px;
                         }

@@ -10,8 +10,9 @@ import useSetProgress from '../../hooks/useSetProgress';
 import SelectControlOptionsFund from '../elements/select-control/templates/SelectControlOptionsFund';
 import FormGroup from '../elements/forms/controls/FormGroup';
 import usePushApiError from '../../hooks/usePushApiError';
-import useTransactionService from '../../services/TransactionService';
-import Transaction from '../../props/models/Transaction';
+import SelectControlOptions from '../elements/select-control/templates/SelectControlOptions';
+import usePayoutTransactionService from '../../services/PayoutTransactionService';
+import PayoutTransaction from '../../props/models/PayoutTransaction';
 
 type AmountType = 'custom' | 'predefined';
 
@@ -29,16 +30,30 @@ export default function ModalPayoutEdit({
     className?: string;
     onCreated?: () => void;
     onUpdated?: () => void;
-    transaction?: Transaction;
+    transaction?: PayoutTransaction;
     organization: Organization;
 }) {
     const translate = useTranslate();
     const setProgress = useSetProgress();
     const pushApiError = usePushApiError();
 
-    const transactionService = useTransactionService();
+    const payoutTransactionService = usePayoutTransactionService();
 
     const [fund, setFund] = useState(funds?.[0]);
+
+    const assignTypes = useMemo(() => {
+        if (transaction) {
+            return [];
+        }
+
+        return [
+            { key: null, label: 'Geen', inputLabel: 'E-mailadres', hasInput: false },
+            { key: 'email', label: 'E-mailadres', inputLabel: 'E-mailadres', hasInput: true },
+            ...(organization?.bsn_enabled ? [{ key: 'bsn', label: 'BSN', inputLabel: 'BSN', hasInput: true }] : []),
+        ];
+    }, [transaction, organization?.bsn_enabled]);
+
+    const [assignType, setAssignType] = useState(assignTypes?.[0]);
 
     const amountOptions = useMemo(() => {
         return [
@@ -64,34 +79,43 @@ export default function ModalPayoutEdit({
         amount?: string;
         amount_preset_id?: number;
         allocate_by: AmountType;
-        note: string;
+        description: string;
+        email: string;
+        bsn: string;
     }>(
         {
-            target_iban: transaction?.iban_to,
-            target_name: transaction?.iban_to_name,
-            amount: transaction?.amount,
+            amount: transaction?.amount || '',
+            target_iban: transaction?.iban_to || '',
+            target_name: transaction?.iban_to_name || '',
             allocate_by: transaction
                 ? transaction?.amount_preset_id
                     ? 'predefined'
                     : 'custom'
                 : amountOptions?.[0]?.key,
             amount_preset_id: transaction ? transaction?.amount_preset_id : amountValueOptions?.[0]?.id,
-            note: '',
+            description: transaction?.description || '',
+            email: '',
+            bsn: '',
         },
         (values) => {
             setProgress(0);
 
             const data = {
-                note: values.note,
+                description: values.description,
                 target_iban: values.target_iban,
                 target_name: values.target_name,
                 amount: values.allocate_by === 'custom' ? values.amount : undefined,
                 amount_preset_id: values.allocate_by === 'predefined' ? values.amount_preset_id : undefined,
+                ...{
+                    email: { email: values.email || '-' },
+                    bsn: { bsn: values.bsn || '-' },
+                    null: {},
+                }[assignType?.key],
             };
 
             const promise = transaction
-                ? transactionService.updatePayout(organization.id, transaction.address, data)
-                : transactionService.makePayout(organization.id, { fund_id: fund.id, ...data });
+                ? payoutTransactionService.update(organization.id, transaction.address, data)
+                : payoutTransactionService.store(organization.id, { fund_id: fund.id, ...data });
 
             promise
                 .then(() => {
@@ -203,6 +227,43 @@ export default function ModalPayoutEdit({
                             }
                         />
 
+                        {assignTypes.length > 0 && (
+                            <FormGroup
+                                inline={true}
+                                className={'form-group-inline-lg'}
+                                required={true}
+                                label={translate('modals.modal_payout_create.labels.assign_by_type')}
+                                input={() => (
+                                    <SelectControl
+                                        value={assignType}
+                                        propValue={'label'}
+                                        onChange={setAssignType}
+                                        options={assignTypes}
+                                        allowSearch={false}
+                                        optionsComponent={SelectControlOptions}
+                                    />
+                                )}
+                            />
+                        )}
+
+                        {assignType?.hasInput && (
+                            <FormGroup
+                                inline={true}
+                                className={'form-group-inline-lg'}
+                                required={true}
+                                label={assignType.inputLabel}
+                                input={() => (
+                                    <input
+                                        className="form-control"
+                                        placeholder={assignType.inputLabel}
+                                        value={form.values[assignType.key] || ''}
+                                        onChange={(e) => form.update({ [assignType.key]: e.target.value })}
+                                    />
+                                )}
+                                error={form.errors?.[assignType?.key]}
+                            />
+                        )}
+
                         <FormGroup
                             inline={true}
                             className={'form-group-inline-lg'}
@@ -246,11 +307,11 @@ export default function ModalPayoutEdit({
                                     id={id}
                                     className="form-control r-n"
                                     placeholder={translate('modals.modal_payout_create.labels.description')}
-                                    value={form.values.note || ''}
-                                    onChange={(e) => form.update({ note: e.target.value })}
+                                    value={form.values.description || ''}
+                                    onChange={(e) => form.update({ description: e.target.value })}
                                 />
                             )}
-                            error={form.errors?.note}
+                            error={form.errors?.description}
                         />
                     </div>
                 </div>

@@ -1,13 +1,9 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import useActiveOrganization from '../../../hooks/useActiveOrganization';
-import Transaction from '../../../props/models/Transaction';
 import useOpenModal from '../../../hooks/useOpenModal';
-import useTransactionService from '../../../services/TransactionService';
 import useSetProgress from '../../../hooks/useSetProgress';
-import useEnvData from '../../../hooks/useEnvData';
 import { PaginationData } from '../../../props/ApiResponses';
 import { strLimit } from '../../../helpers/string';
-import useTransactionExportService from '../../../services/exports/useTransactionExportService';
 import Paginator from '../../../modules/paginator/components/Paginator';
 import ThSortable from '../../elements/tables/ThSortable';
 import LoadingCard from '../../elements/loading-card/LoadingCard';
@@ -22,36 +18,39 @@ import StateNavLink from '../../../modules/state_router/StateNavLink';
 import { dateFormat, dateParse } from '../../../helpers/dates';
 import usePaginatorService from '../../../modules/paginator/services/usePaginatorService';
 import useTranslate from '../../../hooks/useTranslate';
-import classNames from 'classnames';
 import LoaderTableCard from '../../elements/loader-table-card/LoaderTableCard';
 import ModalPayoutsEdit from '../../modals/ModalPayoutEdit';
 import TableDateTime from '../../elements/tables/elements/TableDateTime';
-import TableEmptyValue from '../../elements/table-empty-value/TableEmptyValue';
 import TableTopScroller from '../../elements/tables/TableTopScroller';
 import useConfigurableTable from '../vouchers/hooks/useConfigurableTable';
 import useFilterNext from '../../../modules/filter_next/useFilterNext';
 import TableRowActions from '../../elements/tables/TableRowActions';
 import ModalPayoutsUpload from '../../modals/ModalPayoutsUpload';
 import SelectControlOptionsFund from '../../elements/select-control/templates/SelectControlOptionsFund';
+import usePayoutTransactionService from '../../../services/PayoutTransactionService';
+import TransactionLabel from '../transactions/elements/TransactionLabel';
+import TableEmptyValue from '../../elements/table-empty-value/TableEmptyValue';
+import TableDescription from '../../elements/table-empty-value/TableDescription';
+import PayoutTransaction from '../../../props/models/PayoutTransaction';
+import usePushSuccess from '../../../hooks/usePushSuccess';
+import usePushApiError from '../../../hooks/usePushApiError';
 
 export default function Payouts() {
-    const envData = useEnvData();
-
     const openModal = useOpenModal();
     const translate = useTranslate();
+    const pushSuccess = usePushSuccess();
     const setProgress = useSetProgress();
+    const pushApiError = usePushApiError();
     const paginatorService = usePaginatorService();
     const activeOrganization = useActiveOrganization();
 
-    const transactionService = useTransactionService();
-
     const fundService = useFundService();
-    const transactionsExportService = useTransactionExportService();
+    const payoutTransactionService = usePayoutTransactionService();
 
     const [loading, setLoading] = useState(false);
 
     const [funds, setFunds] = useState<Array<Partial<Fund>>>(null);
-    const [transactions, setTransactions] = useState<PaginationData<Transaction>>(null);
+    const [transactions, setTransactions] = useState<PaginationData<PayoutTransaction>>(null);
     const [shownVoucherMenuId, setShownVoucherMenuId] = useState<number>(null);
 
     const fundsWithPayouts = useMemo(() => {
@@ -70,7 +69,7 @@ export default function Payouts() {
         { key: 'active', name: 'Actief' },
     ]);
 
-    const [paginatorTransactionsKey] = useState('transactions');
+    const [paginatorTransactionsKey] = useState('payouts');
 
     const [filterValues, filterValuesActive, filterUpdate, filter] = useFilterNext<{
         q: string;
@@ -81,8 +80,6 @@ export default function Payouts() {
         to?: string;
         amount_min?: string;
         amount_max?: string;
-        transfer_in_min?: string;
-        transfer_in_max?: string;
         non_cancelable_from?: string;
         non_cancelable_to?: string;
         per_page?: number;
@@ -91,15 +88,13 @@ export default function Payouts() {
     }>(
         {
             q: '',
+            to: null,
+            from: null,
             state: states[0].key,
             fund_id: null,
             fund_state: fundStates[0].key,
-            from: null,
-            to: null,
             amount_min: null,
             amount_max: null,
-            transfer_in_min: null,
-            transfer_in_max: null,
             non_cancelable_from: null,
             non_cancelable_to: null,
             per_page: paginatorService.getPerPage(paginatorTransactionsKey),
@@ -107,13 +102,13 @@ export default function Payouts() {
             order_dir: 'desc',
         },
         {
-            throttledValues: ['q', 'amount_min', 'amount_max', 'transfer_in_min', 'transfer_in_max'],
+            throttledValues: ['q', 'amount_min', 'amount_max'],
         },
     );
 
     const columns = useMemo(() => {
-        return transactionService.getPayoutColumns();
-    }, [transactionService]);
+        return payoutTransactionService.getColumns();
+    }, [payoutTransactionService]);
 
     const {
         configsElement,
@@ -124,55 +119,58 @@ export default function Payouts() {
         displayTableConfig,
     } = useConfigurableTable(columns);
 
-    const fetchFunds = useCallback(
-        async (query: object): Promise<Array<Fund>> => {
-            setProgress(0);
+    const fetchFunds = useCallback(() => {
+        setProgress(0);
 
-            return fundService
-                .list(activeOrganization.id, query)
-                .then((res) => res.data.data)
-                .finally(() => setProgress(100));
-        },
-        [activeOrganization.id, fundService, setProgress],
-    );
+        fundService
+            .list(activeOrganization.id)
+            .then((res) => setFunds([{ id: null, name: 'Selecteer fond' }, ...res.data.data]))
+            .catch(pushApiError)
+            .finally(() => setProgress(100));
+    }, [activeOrganization.id, fundService, setProgress, pushApiError]);
 
     const fetchTransactions = useCallback(
-        async (query: object) => {
+        (query = {}) => {
             setLoading(true);
             setProgress(0);
 
-            return transactionService
-                .list(envData.client_type, activeOrganization.id, { ...query, targets: ['payout'] })
+            payoutTransactionService
+                .list(activeOrganization.id, { ...query })
+                .then((res) => setTransactions(res.data))
+                .catch(pushApiError)
                 .finally(() => {
                     setLoading(false);
                     setProgress(100);
                 });
         },
-        [activeOrganization.id, envData.client_type, setProgress, transactionService],
+        [activeOrganization.id, setProgress, payoutTransactionService, pushApiError],
     );
 
     const updatePayment = useCallback(
-        (transaction: Transaction, data: { skip_transfer_delay?: boolean; cancel?: boolean }) => {
+        (transaction: PayoutTransaction, data: { skip_transfer_delay?: boolean; cancel?: boolean }) => {
             setProgress(0);
 
-            transactionService
-                .updatePayout(activeOrganization.id, transaction.address, data)
-                .then(() => fetchTransactions(filter.activeValues).then((res) => setTransactions(res.data)))
+            payoutTransactionService
+                .update(activeOrganization.id, transaction.address, data)
+                .then(() => {
+                    fetchTransactions(filter.activeValues);
+                    pushSuccess('Opgeslagen!');
+                })
+                .catch(pushApiError)
                 .finally(() => setProgress(100));
         },
-        [setProgress, transactionService, activeOrganization.id, fetchTransactions, filter.activeValues],
+        [
+            setProgress,
+            pushApiError,
+            payoutTransactionService,
+            activeOrganization.id,
+            fetchTransactions,
+            filter.activeValues,
+            pushSuccess,
+        ],
     );
 
-    const { resetFilters: resetFilters, setShow } = filter;
-
-    const exportTransactions = useCallback(() => {
-        setShow(false);
-
-        transactionsExportService.exportData(activeOrganization.id, {
-            ...filter.activeValues,
-            per_page: null,
-        });
-    }, [activeOrganization.id, filter.activeValues, setShow, transactionsExportService]);
+    const { resetFilters: resetFilters } = filter;
 
     const createPayout = useCallback(() => {
         openModal((modal) => (
@@ -180,24 +178,20 @@ export default function Payouts() {
                 modal={modal}
                 funds={fundsWithPayouts}
                 organization={activeOrganization}
-                onCreated={() => {
-                    fetchTransactions(filter.activeValues).then((res) => setTransactions(res.data));
-                }}
+                onCreated={() => fetchTransactions(filter.activeValues)}
             />
         ));
     }, [activeOrganization, fetchTransactions, fundsWithPayouts, filter.activeValues, openModal]);
 
     const editPayout = useCallback(
-        (transaction: Transaction) => {
+        (transaction: PayoutTransaction) => {
             openModal((modal) => (
                 <ModalPayoutsEdit
                     modal={modal}
                     funds={fundsWithPayouts?.filter((item) => item.id === transaction.fund.id)}
                     transaction={transaction}
                     organization={activeOrganization}
-                    onUpdated={() => {
-                        fetchTransactions(filter.activeValues).then((res) => setTransactions(res.data));
-                    }}
+                    onUpdated={() => fetchTransactions(filter.activeValues)}
                 />
             ));
         },
@@ -211,19 +205,17 @@ export default function Payouts() {
                 fundId={filter.activeValues.fund_id}
                 funds={fundsWithPayouts}
                 organization={activeOrganization}
-                onCompleted={() => {
-                    fetchTransactions(filter.activeValues).then((res) => setTransactions(res.data));
-                }}
+                onCompleted={() => fetchTransactions(filter.activeValues)}
             />
         ));
     }, [openModal, filter.activeValues, fundsWithPayouts, activeOrganization, fetchTransactions]);
 
     useEffect(() => {
-        fetchTransactions(filterValuesActive).then((res) => setTransactions(res.data));
-    }, [fetchTransactions, filterValuesActive, activeOrganization?.has_bank_connection]);
+        fetchTransactions(filterValuesActive);
+    }, [fetchTransactions, filterValuesActive]);
 
     useEffect(() => {
-        fetchFunds({}).then((funds) => setFunds([{ id: null, name: 'Selecteer fond' }, ...funds]));
+        fetchFunds();
     }, [fetchFunds]);
 
     if (!transactions || !funds) {
@@ -234,7 +226,9 @@ export default function Payouts() {
         <div className="card">
             <div className="card-header card-header-next">
                 <div className="flex flex-grow">
-                    <div className="card-title">Uitbetalingen ({transactions.meta.total})</div>
+                    <div className="card-title">
+                        {translate('payouts.header.title')} ({transactions.meta.total})
+                    </div>
                 </div>
                 <div className={'card-header-filters'}>
                     <div className="block block-inline-filters">
@@ -367,39 +361,6 @@ export default function Payouts() {
                                 />
                             </FilterItemToggle>
 
-                            <FilterItemToggle label={translate('payouts.labels.transfer_in')}>
-                                <div className="row">
-                                    <div className="col col-lg-6">
-                                        <input
-                                            className="form-control"
-                                            min={0}
-                                            type="number"
-                                            value={filterValues.transfer_in_min || ''}
-                                            onChange={(e) => {
-                                                if (!e.target.value || parseInt(e.target.value) >= 0) {
-                                                    filterUpdate({ transfer_in_min: e.target.value });
-                                                }
-                                            }}
-                                            placeholder={translate('payouts.labels.transfer_in_min')}
-                                        />
-                                    </div>
-                                    <div className="col col-lg-6">
-                                        <input
-                                            className="form-control"
-                                            min={0}
-                                            type="number"
-                                            value={filterValues.transfer_in_max || ''}
-                                            onChange={(e) => {
-                                                if (!e.target.value || parseInt(e.target.value) <= 14) {
-                                                    filterUpdate({ transfer_in_max: e.target.value });
-                                                }
-                                            }}
-                                            placeholder={translate('payouts.labels.transfer_in_max')}
-                                        />
-                                    </div>
-                                </div>
-                            </FilterItemToggle>
-
                             <FilterItemToggle label={translate('payouts.labels.non_cancelable_from')}>
                                 <DatePickerControl
                                     value={dateParse(filterValues.non_cancelable_from)}
@@ -419,30 +380,6 @@ export default function Payouts() {
                                     }}
                                 />
                             </FilterItemToggle>
-
-                            <FilterItemToggle label={translate('payouts.labels.fund_state')}>
-                                <SelectControl
-                                    className="form-control"
-                                    propKey={'key'}
-                                    allowSearch={false}
-                                    value={filterValues.fund_state}
-                                    options={fundStates}
-                                    optionsComponent={SelectControlOptions}
-                                    onChange={(fund_state: string) => filterUpdate({ fund_state })}
-                                />
-                            </FilterItemToggle>
-
-                            <div className="form-actions">
-                                <button
-                                    className="button button-primary button-wide"
-                                    onClick={() => exportTransactions()}
-                                    disabled={transactions.meta.total == 0}>
-                                    <em className="mdi mdi-download icon-start" />
-                                    {translate('components.dropdown.export', {
-                                        total: transactions.meta.total,
-                                    })}
-                                </button>
-                            </div>
                         </CardHeaderFilter>
                     </div>
                 </div>
@@ -489,7 +426,7 @@ export default function Payouts() {
                                     {transactions.data.map((transaction) => (
                                         <StateNavLink
                                             key={transaction.id}
-                                            name={'transaction'}
+                                            name={'payout'}
                                             params={{
                                                 address: transaction.address,
                                                 organizationId: activeOrganization.id,
@@ -515,33 +452,50 @@ export default function Payouts() {
                                             <td>
                                                 <TableDateTime value={transaction.transfer_at_locale} />
                                             </td>
-                                            {transaction.employee ? (
-                                                <td>
-                                                    {transaction.upload_batch_id
-                                                        ? 'Handmatig Bulk'
-                                                        : 'Handmatig Individueel'}
-                                                </td>
-                                            ) : (
-                                                <td>Beoordelaar</td>
-                                            )}
                                             <td>
+                                                <div className="text-medium text-primary">
+                                                    {transaction.payment_type_locale.title}
+                                                </div>
                                                 <div
-                                                    className={classNames(
-                                                        'label',
-                                                        transaction.state == 'success'
-                                                            ? 'label-success'
-                                                            : 'label-default',
-                                                    )}>
-                                                    {transaction.state_locale}
+                                                    className="text-strong text-md text-muted-dark"
+                                                    title={transaction.payment_type_locale.subtitle || ''}>
+                                                    {strLimit(transaction.payment_type_locale.subtitle)}
                                                 </div>
                                             </td>
-                                            <td>{transaction.bulk_status_locale || <TableEmptyValue />}</td>
+                                            <td>
+                                                {transaction.payout_relations?.length > 0 ? (
+                                                    transaction.payout_relations.map((relation) => (
+                                                        <div
+                                                            title={relation.value}
+                                                            className={
+                                                                relation.type === 'bsn'
+                                                                    ? 'text-primary text-medium'
+                                                                    : ''
+                                                            }
+                                                            key={relation.id}>
+                                                            {strLimit(relation.value)}
+                                                        </div>
+                                                    ))
+                                                ) : (
+                                                    <TableEmptyValue />
+                                                )}
+                                            </td>
+                                            <td>
+                                                <TransactionLabel transaction={transaction} />
+                                            </td>
                                             <td>{transaction.employee.email}</td>
                                             <td>
                                                 {transaction.iban_to}
                                                 <div className={'text-small text-muted-dark'}>
                                                     {transaction.iban_to_name}
                                                 </div>
+                                            </td>
+                                            <td>
+                                                {transaction.description ? (
+                                                    <TableDescription description={transaction.description} />
+                                                ) : (
+                                                    <TableEmptyValue />
+                                                )}
                                             </td>
 
                                             <td
@@ -555,7 +509,7 @@ export default function Payouts() {
                                                         setActiveId={setShownVoucherMenuId}>
                                                         <div className="dropdown dropdown-actions">
                                                             <StateNavLink
-                                                                name={'transaction'}
+                                                                name={'payout'}
                                                                 className="dropdown-item"
                                                                 params={{
                                                                     organizationId: activeOrganization.id,
@@ -597,8 +551,10 @@ export default function Payouts() {
                                                                         setShownVoucherMenuId(null);
                                                                     }}>
                                                                     <em className="mdi mdi-clock-fast icon-start" />{' '}
-                                                                    {/*Direct doorzetten naar betaalopdracht*/}
-                                                                    Direct doorzetten naar betaa...
+                                                                    {strLimit(
+                                                                        'Direct doorzetten naar betaalopdracht',
+                                                                        32,
+                                                                    )}
                                                                 </div>
                                                             )}
                                                         </div>

@@ -1,7 +1,7 @@
 export default {
     header: {
         title: 'Individuele transacties',
-        titleBulks: 'Bulktransacties',
+        // Uitbetalingen
     },
     labels: {
         id: 'ID',
@@ -23,15 +23,16 @@ export default {
         provider: 'Aanbieder',
         product_id: 'Aanbod ID',
         employee: 'Aangemaakt door',
-        methode: 'Methode',
+        creation_method: 'Toewijzingsmethode',
+        relation: 'Methode',
         product_name: 'Aanbod naam',
         date_non_cancelable: 'Definitieve transactie',
         search: 'Zoeken',
         from: 'Vanaf',
-        non_cancelable_from: 'Vanaf definitieve datum',
+        non_cancelable_from: 'Vanaf uitbetaald datum',
+        non_cancelable_to: 'Tot en met uitbetaald datum',
         bulk: 'Bulk',
         to: 'Tot en met',
-        non_cancelable_to: 'Tot en met definitieve datum',
         state: 'Status',
         fund_state: 'Status fonds',
         amount: 'Bedrag',
@@ -53,7 +54,6 @@ export default {
         amount_extra: 'Extra betaling',
         branch_name: 'Vestigingsnaam',
         branch_number: 'Vestigingsnummer',
-        bulk_state: 'Bulk status',
         target_iban: 'Naar IBAN',
         description: 'Omschrijving',
     },
@@ -63,10 +63,11 @@ export default {
         amount: 'Geeft het bedrag van de uitbetaling aan.',
         created_at: 'De tijd en datum waarop de uitbetaling is aangemaakt.',
         transfer_at: 'De datum waarop de uitbetaling is uitgevoerd.',
-        methode:
+        creation_method:
             'Geeft aan hoe de transactie is aangemaakt: Handmatig (individueel) betekent dat de betaling handmatig is gedaan op de uitbetalingenpagina; Handmatig (Bulk) betekent dat de betaling is gedaan via de bulkoptie op de uitbetalingenpagina; Beoordelaar betekent dat de uitbetaling is aangevraagd door een beoordelaar op basis van een goedgekeurde aanvraag.',
+        relation:
+            'Deze informatie wordt gebruikt om de uitbetaling te associëren met een specifieke deelnemer. Mogelijkheden: BSN (alleen geautoriseerde organisaties), E-mailadres of Geen.',
         status: 'Geeft de huidige status van de uitbetaling aan.',
-        bulk_state: 'Geeft de verwerkingsstatus van het bulk uitbetalingsverzoek aan.',
         employee: 'Geeft aan welke gebruiker de uitbetaling heeft aangemaakt.',
         target_iban: 'Het doel IBAN-nummer waarnaar de uitbetaling wordt overgemaakt.',
         rekenregel_id: 'Het ID van de rekenregel die is gekoppeld aan de uitbetaling.',

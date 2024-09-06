@@ -8,6 +8,7 @@ export default interface Transaction {
     id: number;
     uid: string;
     organization_id: number;
+    employee_id?: number;
     product_id?: number;
     address: string;
     state: 'success' | 'pending' | 'canceled';
@@ -38,6 +39,7 @@ export default interface Transaction {
         logo?: Media;
         organization_name: string;
     };
+    description?: string;
     notes?: Array<Note>;
     product?: Product;
     reservation?: Reservation;
@@ -69,6 +71,7 @@ export default interface Transaction {
     branch_id?: string;
     target_locale?: string;
     non_cancelable_at_locale?: string;
+    payout_relations?: Array<{ id: number; type: 'email' | 'bsn'; value: string }>;
     payment_type_locale?: {
         title: string;
         subtitle: string;

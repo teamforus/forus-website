@@ -88,6 +88,7 @@ import Implementations from '../components/pages/implementations/Implementations
 import SponsorFundUnsubscriptions from '../components/pages/sponsor-fund-unsubscriptions/SponsorFundUnsubscriptions';
 import OrganizationsContacts from '../components/pages/organizations-contacts/OrganizationsContacts';
 import Payouts from '../components/pages/payouts/Payouts';
+import PayoutsView from '../components/pages/payouts-view/PayoutsView';
 
 const router = new RouterBuilder();
 
@@ -195,6 +196,10 @@ router.state('sponsor-provider-organization', <SponsorProviderOrganization />, {
 
 router.state('payouts', <Payouts />, {
     path: `/organizations/:organizationId/payouts`,
+});
+
+router.state('payout', <PayoutsView />, {
+    path: `/organizations/:organizationId/payouts/:address`,
 });
 
 router.state('fund-provider', <FundProvider />, {

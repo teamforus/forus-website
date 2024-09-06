@@ -16,6 +16,7 @@ import useShowRejectInfoExtraPaid from '../../../../services/helpers/reservation
 import LoadingCard from '../../../elements/loading-card/LoadingCard';
 import useTranslate from '../../../../hooks/useTranslate';
 import TableEmptyValue from '../../../elements/table-empty-value/TableEmptyValue';
+import TransactionLabel from '../../transactions/elements/TransactionLabel';
 
 export default function TransactionDetails({
     transaction,
@@ -44,6 +45,7 @@ export default function TransactionDetails({
 
     const isSponsor = useMemo(() => envData.client_type == 'sponsor', [envData.client_type]);
     const isProvider = useMemo(() => envData.client_type == 'provider', [envData.client_type]);
+
     const transactionService = useTransactionService();
     const productReservationService = useProductReservationService();
 
@@ -117,9 +119,7 @@ export default function TransactionDetails({
                         <div className="card-title">
                             <strong>{transaction.amount_locale}</strong>
                             &nbsp;&nbsp;
-                            <strong className="text-primary pull-right">
-                                {translate('financial_dashboard_transaction.labels.payment')}
-                            </strong>
+                            <strong className="text-primary">Bedrag</strong>
                             <div className="flex flex-grow" />
                         </div>
                     </div>
@@ -277,7 +277,7 @@ export default function TransactionDetails({
                                 <div className="keyvalue-item">
                                     <div className="keyvalue-key">Status</div>
                                     <div className="keyvalue-value">
-                                        {transaction.state_locale}
+                                        <TransactionLabel transaction={transaction} />
                                         {transaction.transfer_in > 0 && transaction.state == 'pending' && (
                                             <div className="text-sm text-muted-dark">
                                                 <em className="mdi mdi-clock-outline"> </em>

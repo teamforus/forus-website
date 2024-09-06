@@ -35,10 +35,10 @@ import { dateFormat, dateParse } from '../../../helpers/dates';
 import ModalVoucherTransactionsUpload from '../../modals/ModalVoucherTransactionsUpload';
 import usePaginatorService from '../../../modules/paginator/services/usePaginatorService';
 import useTranslate from '../../../hooks/useTranslate';
-import classNames from 'classnames';
 import TableEmptyValue from '../../elements/table-empty-value/TableEmptyValue';
 import TableTopScroller from '../../elements/tables/TableTopScroller';
 import TableRowActions from '../../elements/tables/TableRowActions';
+import TransactionLabel from './elements/TransactionLabel';
 
 export default function Transactions() {
     const envData = useEnvData();
@@ -364,7 +364,10 @@ export default function Transactions() {
                     <div className="flex-col flex-grow">
                         {viewType.key == 'transactions' ? (
                             <div className="card-title">
-                                {translate('transactions.header.title')} ({transactions.meta.total})
+                                {isSponsor
+                                    ? translate('transactions.header.title')
+                                    : translate('transactions.header.title_provider')}{' '}
+                                ({transactions.meta.total})
                             </div>
                         ) : (
                             <div className="card-title">
@@ -1022,15 +1025,7 @@ export default function Transactions() {
                                                 </td>
                                             )}
                                             <td data-dusk="transactionState">
-                                                <div
-                                                    className={classNames(
-                                                        'label',
-                                                        transaction.state == 'success'
-                                                            ? 'label-success'
-                                                            : 'label-default',
-                                                    )}>
-                                                    {transaction.state_locale}
-                                                </div>
+                                                <TransactionLabel transaction={transaction} />
                                             </td>
                                             <td
                                                 className={'table-td-actions'}
@@ -1110,7 +1105,10 @@ export default function Transactions() {
                 )}
 
             {viewType.key == 'transactions' && transactions.meta.total == 0 && (
-                <EmptyCard type={'card-section'} title="Geen betaalopdrachten gevonden" />
+                <EmptyCard
+                    type={'card-section'}
+                    title={isSponsor ? 'Geen betaalopdrachten gevonden' : 'Geen transacties gevonden'}
+                />
             )}
 
             {viewType.key == 'transactions' && transactions?.meta && (

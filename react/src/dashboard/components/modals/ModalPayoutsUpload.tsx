@@ -8,8 +8,6 @@ import { chunk, isEmpty } from 'lodash';
 import Organization from '../../props/models/Organization';
 import usePushDanger from '../../hooks/usePushDanger';
 import { ResponseError } from '../../props/ApiResponses';
-import { dateFormat } from '../../helpers/dates';
-import useAuthIdentity from '../../hooks/useAuthIdentity';
 import ModalDuplicatesPicker from './ModalDuplicatesPicker';
 import useOpenModal from '../../hooks/useOpenModal';
 import CSVProgressBar from '../elements/csv-progress-bar/CSVProgressBar';
@@ -18,8 +16,8 @@ import SelectControl from '../elements/select-control/SelectControl';
 import SelectControlOptionsFund from '../elements/select-control/templates/SelectControlOptionsFund';
 import classNames from 'classnames';
 import FormGroupInfo from '../elements/forms/elements/FormGroupInfo';
-import useTransactionService from '../../services/TransactionService';
 import usePushInfo from '../../hooks/usePushInfo';
+import usePayoutTransactionService from '../../services/PayoutTransactionService';
 
 type CSVErrorProp = {
     csvHasBsnWhileNotAllowed?: boolean;
@@ -34,7 +32,7 @@ type CSVErrorProp = {
 type RowDataProp = {
     amount?: number;
     amount_preset?: number;
-    note?: string;
+    description?: string;
     target_name?: string;
     target_iban?: string;
 };
@@ -58,10 +56,9 @@ export default function ModalPayoutsUpload({
     const translate = useTranslate();
     const openModal = useOpenModal();
     const pushDanger = usePushDanger();
-    const authIdentity = useAuthIdentity();
 
     const fileService = useFileService();
-    const transactionService = useTransactionService();
+    const payoutTransactionService = usePayoutTransactionService();
 
     const [STEP_SET_UP] = useState(1);
     const [STEP_UPLOAD] = useState(2);
@@ -100,8 +97,8 @@ export default function ModalPayoutsUpload({
     }, [changed, loading, modal, onCompleted, pushInfo]);
 
     const downloadExampleCsv = useCallback(() => {
-        fileService.downloadFile('payout_upload_sample.csv', transactionService.sampleCsvPayouts());
-    }, [fileService, transactionService]);
+        fileService.downloadFile('payout_upload_sample.csv', payoutTransactionService.sampleCsv());
+    }, [fileService, payoutTransactionService]);
 
     const setLoadingBarProgress = useCallback((progress, status = null) => {
         setProgressBar(progress);
@@ -160,17 +157,6 @@ export default function ModalPayoutsUpload({
 
         return [header, ...body];
     }, []);
-
-    const defaultNote = useCallback(
-        (row: RowDataProp) => {
-            return translate('payouts.csv.default_note', {
-                ...row,
-                upload_date: dateFormat(new Date()),
-                uploader_email: authIdentity?.email || authIdentity?.address,
-            });
-        },
-        [authIdentity?.address, authIdentity?.email, translate],
-    );
 
     const showInvalidRows = useCallback(
         (errors = {}, vouchers = []) => {
@@ -255,8 +241,6 @@ export default function ModalPayoutsUpload({
                         }
                     });
 
-                    row.note = row.note || defaultNote(row);
-
                     return isEmpty(row) ? null : row;
                 })
                 .filter((row) => !!row);
@@ -266,7 +250,7 @@ export default function ModalPayoutsUpload({
             setCsvFile(file);
             setCsvProgress(1);
         },
-        [defaultNote, parseCsvFile, reset, transformCsvData, validateCsvData],
+        [parseCsvFile, reset, transformCsvData, validateCsvData],
     );
 
     const startUploadingData = useCallback(
@@ -280,8 +264,8 @@ export default function ModalPayoutsUpload({
                 const uploadChunk = (data: Array<RowDataProp>) => {
                     setChanged(true);
 
-                    transactionService
-                        .makePayoutsBatch(organization.id, {
+                    payoutTransactionService
+                        .storeBatch(organization.id, {
                             payouts: data,
                             fund_id: fund.id,
                             upload_batch_id: uploadBatchId,
@@ -306,6 +290,7 @@ export default function ModalPayoutsUpload({
                             }
 
                             setLoading(false);
+                            setHideModal(false);
                             setCsvProgress(1);
                             pushDanger(
                                 'Er is een onbekende fout opgetreden tijdens het uploaden van CSV.',
@@ -322,7 +307,7 @@ export default function ModalPayoutsUpload({
                 uploadChunk(submitData[currentChunkNth]);
             });
         },
-        [abortRef, dataChunkSize, organization.id, pushDanger, transactionService],
+        [abortRef, dataChunkSize, organization.id, pushDanger, payoutTransactionService],
     );
 
     const startValidationUploadingData = useCallback(
@@ -347,8 +332,8 @@ export default function ModalPayoutsUpload({
                 };
 
                 const uploadChunk = (data: Array<RowDataProp>) => {
-                    transactionService
-                        .makePayoutsBatchValidate(organization.id, { fund_id: fund.id, payouts: data })
+                    payoutTransactionService
+                        .storeBatchValidate(organization.id, { fund_id: fund.id, payouts: data })
                         .then(() => {
                             currentChunkNth++;
                             onChunk(data);
@@ -378,7 +363,7 @@ export default function ModalPayoutsUpload({
                 uploadChunk(submitData[currentChunkNth]);
             });
         },
-        [dataChunkSize, organization.id, transactionService],
+        [dataChunkSize, organization.id, payoutTransactionService],
     );
 
     const startUploading = useCallback(

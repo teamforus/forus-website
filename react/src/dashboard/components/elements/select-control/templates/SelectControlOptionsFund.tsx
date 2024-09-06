@@ -124,8 +124,6 @@ export default function SelectControlOptionsFund<T>({
                             setShowOptions(false);
                         }}>
                         {optionsFiltered.slice(0, visibleCount)?.map((option) => (
-                            /*<SelectControlOptionItem key={option.id} option={option}
-                                                     selectOption={selectOption}/>*/
                             <div
                                 key={option.id}
                                 className={'select-control-option'}
