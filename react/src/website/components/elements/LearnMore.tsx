@@ -28,7 +28,7 @@ export default function LearnMore({
                             Gratis demo aanvragen
                         </StateNavLink>
                         {!hideAboutUsButton && (
-                            <StateNavLink name={'book-demo'} className="button button-gray text-center hide-sm">
+                            <StateNavLink name={'basic-functions'} className="button button-gray text-center hide-sm">
                                 Leer meer over ons platform
                                 <em className="mdi mdi-arrow-right icon-right" />
                             </StateNavLink>

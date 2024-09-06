@@ -11,24 +11,19 @@ export default function SocialImpact() {
             <div className="block-social-impact-main-info">
                 <div className="block-social-impact-label">Wat we doen</div>
                 <div className="block-social-impact-details">
-                    <div className="block-social-impact-title">
-                        Samenwerken aan het maximaliseren van sociale impact
-                    </div>
+                    <div className="block-social-impact-title">Een schaalbare manier om te verbinden</div>
                     <div className="block-social-impact-description">
-                        Forus biedt een gebruiksvriendelijk online platform waarmee mensen en organisaties kunnen
-                        samenwerken en bijdragen aan sociale initiatieven. Ons platform vergemakkelijkt de samenwerking
-                        tussen overheidsorganisaties, goede doelen organisaties, bedrijven en individuen, zodat ze een
-                        positieve en meetbare impact kunnen hebben.
-                        <br />
-                        Het platform is gebaseerd op een vier-rollen model waarbij sponsors middelen kunnen doneren,
-                        aanvragers aanvragen kunnen indienen, beoordelaars gegevens kunnen verifiëren, en aanbieders
-                        producten of diensten kunnen leveren.
+                        Ons platform werkt met een vier-rollenmodel: gemeenten en goede doelen organisaties treden op
+                        als sponsoren die middelen verstrekken, aanvragers vragen middelen aan, beoordelaars controleren
+                        gegevens, en aanbieders leveren producten en diensten. Door alle partijen samen te brengen op
+                        één platform kunnen samenwerkingsafspraken eenvoudig worden vastgelegd en processen optimaal
+                        verlopen. Zo profiteren alle betrokkenen van een effectief en efficiënt sociaal beleid.
                     </div>
                 </div>
 
                 <div className="block-social-impact-actions">
                     <StateNavLink name={'roles-main'} className="button button-primary">
-                        Meer informatie over de vier rollen
+                        Lees meer over de werking per rol
                     </StateNavLink>
                 </div>
             </div>

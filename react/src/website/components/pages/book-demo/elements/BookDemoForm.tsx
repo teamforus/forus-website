@@ -78,7 +78,7 @@ export default function BookDemoForm() {
 
             {(!formSubmitted || form.errors) && (
                 <div className="block-contact-form-main">
-                    <div className="block-contact-form-title">Wij maken graag een afspraak om kennis te maken.</div>
+                    <div className="block-contact-form-title">Wij plannen graag een afspraak om kennis te maken</div>
 
                     <form className="form" onSubmit={form.submit}>
                         <div className="form-group">
