@@ -24,55 +24,55 @@ export default function SocialDomain() {
             <div className="block-social-domain-info">
                 {showMore ? (
                     <Fragment>
-                        Forus richt zich op het ondersteunen van organisaties die zich inzetten binnen het sociaal
-                        domein. Ons streven is om organisaties effectiever en efficiënter te laten werken. Dit vergt een
-                        samenspel van beleid, organisatie en techniek. Forus ondersteunt en faciliteert.
+                        In onze ideale wereld krijgen mensen direct de hulp waar ze recht op hebben. Deze ondersteuning
+                        is laagdrempelig, dichtbij, op maat en te vinden op één centrale plek.
                         <br />
                         <br />
-                        Het huidige ondersteuningssysteem schiet tekort: ondanks dat er al veel armoedebestrijding is
-                        ervaren veel mensen met financiële problemen stress en stigmatisering wanneer het overzicht
-                        ontbreekt en gefragmenteerd wordt aangeboden.
+                        Ons doel is om sociale initiatieven effectiever en toegankelijker te maken. Forus ondersteunt,
+                        verbindt en faciliteert organisaties binnen het sociaal domein om dit te realiseren.
                         <br />
                         <br />
-                        Bij Forus begrijpen we de complexe uitdagingen die organisaties binnen het sociaal domein
-                        dagelijks ervaren. Ons SaaS-platform is ontworpen om gemeenten en andere maatschappelijke
-                        organisaties te helpen hun taken effectiever en efficiënter uit te voeren. Dit doen we door
-                        beleid, organisaties, en technologie op elkaar aan te sluiten, zodat alle betrokken partijen
-                        beter kunnen samenwerken en meer impact kunnen maken.
+                        In Nederland zijn tal van nationale en lokale regelingen en voorzieningen beschikbaar,
+                        aangeboden door verschillende organisaties. Elke organisatie zet zich in om mensen te helpen
+                        door gebruik te maken van haar eigen kracht en unieke expertise. Op zichzelf staande
+                        initiatieven, zonder samenhangende aanpak, zorgen in de praktijk voor een toename van
+                        fragmentatie en verkokering. Door de overvloed aan regelingen, loketten en hulppunten verliezen
+                        veel mensen het overzicht, wat leidt tot stress en onnodig niet-gebruik van deze voorzieningen.
+                        Dit moet en kan anders.
                         <br />
                         <br />
-                        We blijven voortdurend op de hoogte van de nieuwste ontwikkelingen om onze dienstverlening
-                        optimaal af te stemmen op de behoeften van gemeenten. Toenemende ongelijkheid en samenhangende
-                        problemen zoals schulden, werkloosheid en psychische gezondheidskwesties, onderstrepen de
-                        noodzaak van een geïntegreerde en effectieve benadering. Het huidige ondersteuningssysteem
-                        schiet vaak tekort, wat leidt tot fragmentatie en een gebrek aan overzicht. Mensen die te maken
-                        hebben met financiële problemen ervaren vaak niet alleen stress, maar ook een gevoel van
-                        stigmatisering en uitsluiting. Bij Forus zetten we ons in om deze problemen aan te pakken door
-                        de bestaande barrières te doorbreken en een holistische aanpak mogelijk te maken.
+                        Hierbij is er meer nodig dan alleen een overzicht van regelingen. Regelingen zijn namelijk
+                        complex en het proces van vinden tot afhandeling kent veel stappen. Forus bekijkt het proces in
+                        zijn geheel en verbindt en faciliteert alle onderdelen: van het vinden van de regelingen tot tot
+                        financiële afhandeling. Want als iemand vastloopt wil je precies weten waar en waarom dit
+                        gebeurt, zodat je niemand kwijt raakt.
                         <br />
                         <br />
-                        Onze oplossing voorziet gemeenten van de benodigde tools om deze complexe uitdagingen aan te
-                        pakken. We bieden maatwerkoplossingen die specifiek zijn afgestemd op de behoeften van kwetsbare
-                        groepen, met als doel een positieve impact te creëren in de samenleving.
+                        De overheid heeft een leidende rol in het verbinden alle onderdelen, wat vraagt om een samenspel
+                        tussen beleid, organisaties en techniek. De basis wordt gevormd door een integrale aanpak,
+                        waarbij samenhang en samenwerking centraal staan.
                         <br />
                         <br />
-                        Bij Forus werken we samen met gemeenten, goede doelen, stichtingen en lokale initiatieven, om
-                        een geïntegreerd systeem te ontwikkelen dat inwoners een duidelijk overzicht biedt van
-                        beschikbare ondersteuning. Door ketenpartners te verbinden, zorgen we voor efficiëntere
-                        hulpverlening, snellere toegang tot voorzieningen, en maatwerk dat aansluit bij de specifieke
-                        behoeften van elke inwoner. Ons platform helpt barrières te doorbreken en maakt effectieve
-                        samenwerking mogelijk, zodat niemand buiten de boot valt.
+                        Onze oplossing biedt gemeenten en andere organisaties de tools die nodig zijn om deze
+                        verandering in gang te zetten. We werken toe naar een werkwijze die alle onderdelen van het
+                        uitgifteproces van sociale regelingen faciliteert. Gebaseerd op bewezen methoden, biedt het
+                        platform slimme flexibiliteit en ruimte voor maatwerk. Dankzij de verscheidenheid aan opties
+                        sluit het aan op de behoeften van diverse gebruikers.
+                        <br />
+                        <br />
+                        Door voorbij de eigen organisatiegrenzen te kijken en de mens centraal te stellen, creëren we
+                        samen een systeem waarin hulp sneller, eenvoudiger en toegankelijker is voor iedereen. Zo dragen
+                        we bij aan een samenleving waarin elk persoon, snel en zonder belemmeringen, de ondersteuning
+                        krijgt waar diegene recht op heeft.
                     </Fragment>
                 ) : (
                     <Fragment>
-                        Forus richt zich op het ondersteunen van organisaties die zich inzetten binnen het sociaal
-                        domein. Ons streven is om organisaties effectiever en efficiënter te laten werken. Dit vergt een
-                        samenspel van beleid, organisatie en techniek. Forus ondersteunt en faciliteert.
+                        In onze ideale wereld krijgen mensen direct de hulp waar ze recht op hebben. Deze ondersteuning
+                        is laagdrempelig, dichtbij, op maat en te vinden op één centrale plek.
                         <br />
                         <br />
-                        Het huidige ondersteuningssysteem schiet tekort: ondanks dat er al veel armoedebestrijding is
-                        ervaren veel mensen met financiële problemen stress en stigmatisering wanneer het overzicht
-                        ontbreekt en gefragmenteerd wordt aangeboden.
+                        Ons doel is om sociale initiatieven effectiever en toegankelijker te maken. Forus ondersteunt,
+                        verbindt en faciliteert organisaties binnen het sociaal domein om dit te realiseren.
                     </Fragment>
                 )}
                 <div className="block-social-domain-info-actions">

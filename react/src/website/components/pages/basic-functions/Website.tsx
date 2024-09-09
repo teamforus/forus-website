@@ -14,13 +14,13 @@ export default function Website() {
     const assetUrl = useAssetUrl();
 
     const [bannerTitle] = useState('Website');
-    const [bannerLabel] = useState('Een overzicht van alle benodigde informatie ');
+    const [bannerLabel] = useState('Alle benodigde informatie op één plek');
     const [bannerDescription] = useState(
         [
-            'Een website dient als een toegankelijke bron die een duidelijk overzicht biedt van de benodigde ',
-            'informatie voor mensen die ondersteuning zoeken. Daarnaast kunnen deelnemers hier inloggen op hun persoonlijke account. ',
-            'Om aan te sluiten bij uw doelgroep en ervoor te zorgen dat zij zich kunnen identificeren met de website en deze als herkenbaar ervaren, ',
-            'kunt u zelf de huisstijl en teksten van uw website aanpassen.',
+            'De website biedt een helder overzicht voor mensen die ondersteuning of specifieke regelingen zoeken. ',
+            'Daarnaast kunnen deelnemers hier inloggen op hun persoonlijke account. ',
+            'De huisstijl en teksten van de website kunnen worden aangepast aan de branding van de organisatie, ',
+            'waardoor de website herkenbaar is voor alle gebruikers.',
         ].join(''),
     );
     const [sliderDescription] = useState(

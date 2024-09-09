@@ -156,20 +156,20 @@ export default function AboutUs() {
             <div className="wrapper">
                 <div className="block block-social-initiatives">
                     <div className="block-social-initiatives-main">
-                        <div className="label label-gray">Vier-rol model</div>
+                        <div className="label label-gray">Vier-rollenmodel</div>
 
                         <h3 className="block-social-initiatives-title">
                             Verbinden en bijdragen aan sociale initiatieven
                         </h3>
 
                         <div className="block-social-initiatives-description">
-                            Forus biedt een transparant en gebruiksvriendelijk digitaal platform, waardoor individuen en
-                            organisaties kunnen verbinden en bijdragen aan sociale initiatieven. Ons platform
-                            vergemakkelijkt samenwerking tussen overheidsorganisaties, goede doelen organisaties,
-                            bedrijven en individuen, waardoor ze samen een positieve en meetbare impact kunnen creëren.
-                            Door te werken met een vier-rollen model, stelt het platform sponsors in staat om middelen
-                            bij te dragen, aanvragers om aanvragen in te dienen, beoordelaars om voorwaarden te
-                            verifiëren, en aanbieders om producten of diensten te leveren.
+                            Forus biedt een transparant en gebruiksvriendelijk digitaal platform en vergemakkelijkt
+                            samenwerking tussen inwoners, gemeenten, goede doelen, ondernemers en andere partijen. Door
+                            alle partijen samen te brengen op één platform kunnen samenwerkingsafspraken eenvoudig
+                            worden vastgelegd en processen optimaal verlopen. Dit werkt volgens een vier-rollenmodel:
+                            gemeenten en goede doelen verstrekken middelen en vervullen de rol van sponsor, aanvragers
+                            vragen middelen aan, beoordelaars controleren gegevens, en aanbieders leveren producten en
+                            diensten.
                         </div>
 
                         <div className="block-social-initiatives-actions">
@@ -360,8 +360,8 @@ export default function AboutUs() {
                         <div className="block-statistics-figures-list-item block-statistics-figures-list-item-purple">
                             <div className="block-statistics-figures-list-item-details">
                                 Via het Forus-platform kunnen lokale ondernemingen en landelijke winkelketens hun
-                                producten of diensten aanbieden, wat onze deelnemers een breed scala aan mogelijkheden
-                                biedt met een gevarieerd aanbod.
+                                producten of diensten aanbieden, wat deelnemers een veelzijdig en gevarieerd aanbod
+                                biedt.
                             </div>
                             <div className="block-statistics-figures-list-item-main">
                                 <div className="block-statistics-figures-list-item-title">1892</div>

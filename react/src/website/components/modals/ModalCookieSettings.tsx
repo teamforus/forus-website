@@ -59,7 +59,7 @@ export default function ModalCookieSettings({
                     </div>
                     <div className="modal-heading">Cookie-instellingen</div>
                     <div className="modal-heading-description">
-                        Forus gebruikt cookies om de website optimaal te laten functioneren, om uw gebruikservaring te
+                        Forus gebruikt cookies om de website optimaal te laten functioneren, uw gebruikservaring te
                         verbeteren en om geanonimiseerde statistieken te verzamelen.
                     </div>
                 </div>
@@ -110,7 +110,7 @@ export default function ModalCookieSettings({
                                 {showGeneralCookiesDescription && (
                                     <div className="modal-cookie-settings-block-setting-description">
                                         Deze cookies zorgen ervoor dat de website basisfunctionaliteiten kan uitvoeren,
-                                        zoals navigeren tussen pagina&apos;s, het laden van content en het correct
+                                        zoals het navigeren tussen pagina&apos;s, het laden van content en het correct
                                         functioneren van formulieren.
                                     </div>
                                 )}
