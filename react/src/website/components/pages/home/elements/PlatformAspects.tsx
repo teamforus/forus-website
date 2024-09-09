@@ -405,7 +405,7 @@ export default function PlatformAspects() {
             description: [
                 'Onze klantenservice staat open voor alle gebruikersvragen. ',
                 'Ons team van experts is beschikbaar om assistentie te verlenen waar nodig. ',
-                'U kunt hulp aanvragen via chat, telefoon of e-mail. Als we een oproep missen, dan bellen altijd terug.',
+                'U kunt hulp aanvragen via chat, telefoon of e-mail. Als we een oproep missen, dan bellen we altijd terug.',
             ].join(''),
             otherImages: [
                 {

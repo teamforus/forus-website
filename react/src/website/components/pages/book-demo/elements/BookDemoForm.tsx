@@ -165,13 +165,18 @@ export default function BookDemoForm() {
                             <CheckboxControl
                                 className={'checkbox-narrow'}
                                 checked={form.values.accept_privacy_terms}
-                                title={`Ik geef toestemming aan Forus om mijn persoonsgegevens op te slaan en te verwerken. *Privacyverklaring`}
                                 onChange={(e) => {
                                     form.update({
                                         accept_privacy_terms: e.target.checked,
                                     });
-                                }}
-                            />
+                                }}>
+                                <div className="form-label form-label-required">
+                                    Ik geef toestemming aan Forus om mijn persoonsgegevens op te slaan en te verwerken.
+                                    <StateNavLink name="privacy" className="checkbox-label">
+                                        *Privacyverklaring
+                                    </StateNavLink>
+                                </div>
+                            </CheckboxControl>
                             <FormError error={form.errors?.accept_privacy_terms} />
                         </div>
                         <button
