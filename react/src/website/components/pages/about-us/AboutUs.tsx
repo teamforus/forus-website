@@ -187,15 +187,15 @@ export default function AboutUs() {
                                 Verbinden en bijdragen aan sociale initiatieven
                             </h3>
 
-                        <div className="block-social-initiatives-description">
-                            Forus biedt een transparant en gebruiksvriendelijk digitaal platform en vergemakkelijkt
-                            samenwerking tussen inwoners, gemeenten, goede doelen, ondernemers en andere partijen. Door
-                            alle partijen samen te brengen op één platform kunnen samenwerkingsafspraken eenvoudig
-                            worden vastgelegd en processen optimaal verlopen. Dit werkt volgens een vier-rollenmodel:
-                            gemeenten en goede doelen verstrekken middelen en vervullen de rol van sponsor, aanvragers
-                            vragen middelen aan, beoordelaars controleren gegevens, en aanbieders leveren producten en
-                            diensten.
-                        </div>
+                            <div className="block-social-initiatives-description">
+                                Forus biedt een transparant en gebruiksvriendelijk digitaal platform en vergemakkelijkt
+                                samenwerking tussen inwoners, gemeenten, goede doelen, ondernemers en andere partijen.
+                                Door alle partijen samen te brengen op één platform kunnen samenwerkingsafspraken
+                                eenvoudig worden vastgelegd en processen optimaal verlopen. Dit werkt volgens een
+                                vier-rollenmodel: gemeenten en goede doelen verstrekken middelen en vervullen de rol van
+                                sponsor, aanvragers vragen middelen aan, beoordelaars controleren gegevens, en
+                                aanbieders leveren producten en diensten.
+                            </div>
 
                             <div className="block-social-initiatives-actions">
                                 <StateNavLink name={'roles-main'} className="button button-light">
