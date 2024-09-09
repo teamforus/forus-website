@@ -17,11 +17,11 @@
 
         .block-project-label {
             width: fit-content;
-            font: 700 14px/21px var(--base-font);
+            font: 600 14px/21px var(--base-font);
             color: #fff;
             border-radius: 5px;
             background: linear-gradient(90deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.07) 100%);
-            padding: 10px;
+            padding: 6px 12px;
         }
 
         .block-project-details {
@@ -42,6 +42,12 @@
 
         .block-project-actions {
             padding-top: 10px;
+
+            .button {
+                width: 200px;
+                padding: 10px 24px;
+                font: 600 16px/24px var(--base-font);
+            }
         }
     }
 

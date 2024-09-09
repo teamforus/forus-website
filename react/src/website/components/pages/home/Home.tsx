@@ -11,6 +11,7 @@ import BlockMainBanner from './elements/BlockMainBanner';
 import BlockProject from './elements/BlockProject';
 import BlockDashedSeparator from './elements/BlockDashedSeparator';
 import useSetMetaDescription from '../../../hooks/useSetMetaDescription';
+import BackgroundCircles from '../../elements/BackgroundCircles';
 
 export default function Home() {
     const setTitle = useSetTitle();
@@ -28,6 +29,7 @@ export default function Home() {
 
     return (
         <Fragment>
+            <BackgroundCircles />
             <BlockMainBanner />
 
             <div className="wrapper">

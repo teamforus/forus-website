@@ -13,6 +13,7 @@ import Step5 from './elements/validator-steps/Step5';
 import Step6 from './elements/validator-steps/Step6';
 import Step7 from './elements/validator-steps/Step7';
 import Step8 from './elements/validator-steps/Step8';
+import BackgroundCircles from '../../elements/BackgroundCircles';
 
 export default function RolesValidator() {
     const setTitle = useSetTitle();
@@ -40,6 +41,7 @@ export default function RolesValidator() {
 
     return (
         <Fragment>
+            <BackgroundCircles />
             <RolesBanner type={'validator'} title={bannerTitle} description={bannerDescription} />
 
             <div className="main-content">
@@ -51,9 +53,9 @@ export default function RolesValidator() {
                 <div className="wrapper">
                     <RolesSelector activeType={'validator'} />
 
-                    <div className="block block-text block-text-overview">
-                        <div className="block-text-title block-text-title-sm">Functionaliteiten en overzicht</div>
-                        <div className="block-text-separator">
+                    <div className="block block-info block-info-overview">
+                        <div className="block-info-title block-info-title-sm">Functionaliteiten en overzicht</div>
+                        <div className="block-info-separator">
                             <div className="line" />
                         </div>
                     </div>

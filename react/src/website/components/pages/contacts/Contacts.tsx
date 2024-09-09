@@ -92,14 +92,14 @@ export default function Contacts() {
     return (
         <Fragment>
             <div className="wrapper">
-                <div className="block block-text">
-                    <div className="block-text-banner">
+                <div className="block block-info">
+                    <div className="block-info-banner">
                         <img src={assetUrl('/assets/img/contact-banner.jpg')} alt="Locatie van Forus in Groningen" />
                     </div>
 
-                    <h2 className="block-text-title">Contact</h2>
+                    <h2 className="block-info-title">Contact</h2>
 
-                    <div className="block-text-description">
+                    <div className="block-info-description">
                         Heeft u vragen of opmerkingen? Neem gerust contact met ons op. We zijn hier om te helpen en
                         staan klaar om uw vragen te beantwoorden.
                     </div>

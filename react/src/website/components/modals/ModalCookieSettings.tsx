@@ -208,7 +208,7 @@ export default function ModalCookieSettings({
                     <div className="button-group">
                         <button
                             type="submit"
-                            className="button button-primary"
+                            className="button button-sm button-primary"
                             onClick={() => {
                                 form.submit();
                                 modal.close();
@@ -216,7 +216,7 @@ export default function ModalCookieSettings({
                             Accepteren en doorgaan
                         </button>
                         <button
-                            className="button button-light"
+                            className="button button-sm button-light"
                             type="button"
                             onClick={() => {
                                 form.update({ generalCookiesAccepted: true, analyticsCookiesAccepted: false });

@@ -5,6 +5,7 @@ import Slider from '../../elements/Slider';
 import BlockDashedSeparator from '../home/elements/BlockDashedSeparator';
 import useSetMetaDescription from '../../../hooks/useSetMetaDescription';
 import StateNavLink from '../../../modules/state_router/StateNavLink';
+import BackgroundCircles from '../../elements/BackgroundCircles';
 
 export default function AboutUs() {
     const setTitle = useSetTitle();
@@ -21,6 +22,8 @@ export default function AboutUs() {
             ].join('\n'),
             imgSrc: assetUrl('/assets/img/slider-logos/zuidhorn.png'),
             imgAlt: 'Logo van Gemeente Zuidhorn',
+            timeInterval: '2017',
+            timeIntervalLabel: 'Eerste regeling',
         },
         {
             title: 'Meedoenregeling',
@@ -30,6 +33,8 @@ export default function AboutUs() {
             ].join('\n'),
             imgSrc: assetUrl('/assets/img/slider-logos/nijmegen.png'),
             imgAlt: 'Logo van Gemeente Nijmegen',
+            timeInterval: '2018',
+            timeIntervalLabel: 'Tweede regeling',
         },
         {
             title: 'Innovatie stimuleren',
@@ -40,6 +45,8 @@ export default function AboutUs() {
             ].join('\n'),
             imgSrc: assetUrl('/assets/img/slider-logos/groningen.png'),
             imgAlt: 'Logo van Provincie Groningen',
+            timeInterval: '2018/2019',
+            timeIntervalLabel: 'Ontwikkeling platform',
         },
         {
             title: 'Sociale Dienst Oost Achterhoek',
@@ -50,6 +57,8 @@ export default function AboutUs() {
             ].join('\n'),
             imgSrc: assetUrl('/assets/img/slider-logos/fijnder.png'),
             imgAlt: 'Logo van Fijnder',
+            timeInterval: '2019',
+            timeIntervalLabel: 'Meerdere regelingen',
         },
         {
             title: 'Heumenstegoed',
@@ -60,6 +69,8 @@ export default function AboutUs() {
             ].join('\n'),
             imgSrc: assetUrl('/assets/img/slider-logos/heumen.png'),
             imgAlt: 'Logo van Gemeente Heumen',
+            timeInterval: '2021',
+            timeIntervalLabel: 'Gedeelde aanbieders',
         },
         {
             title: 'PasWijzer',
@@ -71,6 +82,8 @@ export default function AboutUs() {
             ].join('\n'),
             imgSrc: assetUrl('/assets/img/slider-logos/waalwijk.png'),
             imgAlt: 'Logo van Gemeente Waalwijk',
+            timeInterval: '2021',
+            timeIntervalLabel: 'Aanvragen en Haal Centraal',
         },
         {
             title: 'Werkplein Hart van West-Brabant',
@@ -80,6 +93,8 @@ export default function AboutUs() {
             ].join('\n'),
             imgSrc: assetUrl('/assets/img/slider-logos/werkplein.png'),
             imgAlt: 'Logo van Werkplein',
+            timeInterval: '2022',
+            timeIntervalLabel: 'Declaratie functionaliteit',
         },
         {
             title: 'Individuele Inkomenstoeslag',
@@ -90,6 +105,8 @@ export default function AboutUs() {
             ].join('\n'),
             imgSrc: assetUrl('/assets/img/slider-logos/nijmegen2.png'),
             imgAlt: 'Logo van Gemeente Nijmegen',
+            timeInterval: '2023',
+            timeIntervalLabel: 'IIT',
         },
         {
             title: 'Project Innovatiebudget 2023',
@@ -103,6 +120,8 @@ export default function AboutUs() {
             hasLink: true,
             linkState: 'about-us-innovation',
             linkText: 'Lees meer over ons project',
+            timeInterval: '2023',
+            timeIntervalLabel: 'Regelingen check & Smart Payout',
         },
     ];
 
@@ -119,20 +138,21 @@ export default function AboutUs() {
     return (
         <Fragment>
             <div className="wrapper">
-                <div className="block block-text">
-                    <h2 className="block-text-title">Ons verhaal</h2>
+                <BackgroundCircles />
+                <div className="block block-info">
+                    <h2 className="block-info-title">Ons verhaal</h2>
 
-                    <div className="block-text-description">
+                    <div className="block-info-description">
                         De reis naar het vinden van best-practices om te verbinden en sociale impact te vergroten
                     </div>
 
-                    <div className="block-text-banner">
+                    <div className="block-info-banner">
                         <img src={assetUrl('/assets/img/about-us-banner.jpg')} alt="About us banner" />
                     </div>
 
-                    <div className="block-text-subtitle">Do Good Better</div>
+                    <div className="block-info-subtitle">Do Good Better</div>
 
-                    <div className="block-text-description-sm">
+                    <div className="block-info-description-sm">
                         Forus ziet dat er tal van initiatieven zijn waarbij men zich inzet om goed te doen. Er is veel
                         maatschappelijke bereidheid om sociale problemen aan te pakken. In de loop van de tijd is een
                         landschap van ondersteuning ontstaan dat nog ver van ideaal is. Er is sprake van fragmentatie in
@@ -147,6 +167,8 @@ export default function AboutUs() {
                         Forus brengt initiatieven samen middels haar digitale platform voor waarde-uitwisseling. De
                         focus ligt hierbij op schaalbaarheid en efficiëntie. Het platform faciliteert samenwerking
                         tussen organisaties en eindgebruikers waardoor de sociale impact wordt vergroot.
+                        <br />
+                        <br />
                     </div>
                 </div>
             </div>
@@ -155,12 +177,15 @@ export default function AboutUs() {
 
             <div className="wrapper">
                 <div className="block block-social-initiatives">
-                    <div className="block-social-initiatives-main">
-                        <div className="label label-gray">Vier-rollenmodel</div>
+                    <div className="hide-sm label label-gray">Vier-rollenmodel</div>
 
-                        <h3 className="block-social-initiatives-title">
-                            Verbinden en bijdragen aan sociale initiatieven
-                        </h3>
+                    <div className="block-social-initiatives-wrapper">
+                        <div className="block-social-initiatives-main">
+                            <div className="show-sm label label-gray">Vier-rollenmodel</div>
+
+                            <h3 className="block-social-initiatives-title">
+                                Verbinden en bijdragen aan sociale initiatieven
+                            </h3>
 
                         <div className="block-social-initiatives-description">
                             Forus biedt een transparant en gebruiksvriendelijk digitaal platform en vergemakkelijkt
@@ -172,34 +197,35 @@ export default function AboutUs() {
                             diensten.
                         </div>
 
-                        <div className="block-social-initiatives-actions">
-                            <StateNavLink name={'roles-main'} className="button button-light">
-                                Lees meer over de vier rollen
-                                <em className="mdi mdi-arrow-right icon-end" />
-                            </StateNavLink>
+                            <div className="block-social-initiatives-actions">
+                                <StateNavLink name={'roles-main'} className="button button-light">
+                                    Lees meer over de vier rollen
+                                    <em className="mdi mdi-arrow-right icon-end" />
+                                </StateNavLink>
+                            </div>
+
+                            <div className="block-social-initiatives-extra">
+                                Forus werkt samen vanuit het gedachtegoed van “One Solution, Two Entities”, waar Forus
+                                Operations B.V. als ‘werkmaatschappij’ functioneert en Stichting Forus zich richt op het
+                                waarborgen van de publiek inzichtelijke code.
+                                <a
+                                    href={'https://github.com/teamforus'}
+                                    className={'button'}
+                                    target={'_blank'}
+                                    rel="noreferrer">
+                                    <em className={'mdi mdi-github'} />
+                                    Bekijk onze GitHub pagina
+                                    <em className="mdi mdi-arrow-right icon-end" />
+                                </a>
+                            </div>
                         </div>
 
-                        <div className="block-social-initiatives-extra">
-                            Forus werkt samen vanuit het gedachtegoed van “One Solution, Two Entities”, waar Forus
-                            Operations B.V. als ‘werkmaatschappij’ functioneert en Stichting Forus zich richt op het
-                            waarborgen van de publiek inzichtelijke code.
-                            <a
-                                href={'https://github.com/teamforus'}
-                                className={'button'}
-                                target={'_blank'}
-                                rel="noreferrer">
-                                <em className={'mdi mdi-github'} />
-                                Bekijk onze GitHub pagina
-                                <em className="mdi mdi-arrow-right icon-end" />
-                            </a>
+                        <div className="block-social-initiatives-img">
+                            <img
+                                src={assetUrl('/assets/img/social-initiatives.svg')}
+                                alt="De verbindingen van sociale initiatieven via het Forus-platform"
+                            />
                         </div>
-                    </div>
-
-                    <div className="block-social-initiatives-img">
-                        <img
-                            src={assetUrl('/assets/img/social-initiatives.svg')}
-                            alt="De verbindingen van sociale initiatieven via het Forus-platform"
-                        />
                     </div>
                 </div>
 
@@ -208,14 +234,13 @@ export default function AboutUs() {
                     title={'Hoe het platform op basis van samenwerking tot stand is gekomen'}
                     showActionButton={false}
                     elements={elements}
+                    hasSquareArrows={true}
                 />
 
                 <div className="block block-our-values">
                     <div className="block-our-values-header">
                         Onze waarden
-                        <StateNavLink
-                            name={'book-demo'}
-                            className="button button-light button-sm block-our-values-header-button">
+                        <StateNavLink name={'book-demo'} className="button button-light block-our-values-header-button">
                             Gratis demo
                         </StateNavLink>
                     </div>

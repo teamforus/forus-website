@@ -71,6 +71,14 @@
         left: calc(50vw + 50px);
         top: 0;
 
+        .banner-media-overlay {
+            position: absolute;
+            background: linear-gradient(21deg, #315EFD 7%, rgba(0, 0, 0, 0) 49.58%);
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
         .banner-media-image {
             background-size: cover;
             background: url('./assets/img/basic-functions-main-banner.jpg') no-repeat center left;

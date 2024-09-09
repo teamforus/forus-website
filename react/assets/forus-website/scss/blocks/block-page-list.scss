@@ -42,7 +42,8 @@
 
                 .block-page-list-main-description-subtitle {
                     font: 400 18px/27px var(--base-font);
-                    margin: 0 0;
+                    color: #55575E;
+                    margin: 0 0 25px;
                 }
 
                 .block-page-list-main-description-details {
@@ -61,6 +62,21 @@
                     .subtitle {
                         font: 400 16px/24px var(--base-font);
                         margin-bottom: 30px;
+
+                        a {
+                            color: #fff;
+                            font: 400 16px/24px var(--base-font);
+
+                            &:hover {
+                                .mdi {
+                                    margin-left: 10px;
+                                }
+                            }
+                        }
+
+                        .mdi {
+                            margin-left: 5px;
+                        }
                     }
 
                     .image-block {
@@ -160,6 +176,10 @@
                         color: #273266;
                         position: relative;
 
+                        .block-page-list-main-details-list-item-wrapper {
+                            flex-grow: 1;
+                        }
+
                         .block-page-list-main-details-list-item-title {
                             font: 500 15px/23px var(--base-font);
                         }
@@ -173,19 +193,18 @@
                             margin-right: 10px;
                         }
 
+                        .mdi {
+                            color: #d6d7db;
+                        }
+
                         &:hover {
                             background-color: #f2f6fa;
+                            border-radius: var(--border-radius);
                             color: #315efd;
 
                             .mdi {
                                 color: #4c74ff;
                             }
-                        }
-
-                        .mdi {
-                            color: #d6d7db;
-                            position: absolute;
-                            right: 10px;
                         }
                     }
                 }
@@ -226,7 +245,7 @@
                     display: flex;
                     font: 500 15px/23px var(--base-font);
                     color: #2a2b2d;
-                    padding: 0 10px;
+                    padding: 0 25px;
                     border-right: 1px solid var(--border-color);
                     cursor: pointer;
 
@@ -235,6 +254,7 @@
                     }
 
                     &:last-child {
+                        padding-right: 0;
                         margin-right: 0;
                         border-right: none;
                     }

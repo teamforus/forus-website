@@ -50,9 +50,9 @@ export default function MeApp() {
                 <div className="wrapper">
                     <PageSelector activeType={'me-app'} />
 
-                    <div className="block block-text block-text-overview">
-                        <div className="block-text-title block-text-title-sm text-left">Feature overzicht</div>
-                        <div className="block-text-separator">
+                    <div className="block block-info block-info-overview">
+                        <div className="block-info-title block-info-title-sm text-left">Feature overzicht</div>
+                        <div className="block-info-separator">
                             <div className="line" />
                         </div>
                     </div>

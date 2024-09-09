@@ -22,9 +22,11 @@ export default function BlockDashedSeparator({
             )}>
             {image && <img src={assetUrl(`/assets/img/icon-forus.svg`)} alt="" />}
             {demoButton && (
-                <StateNavLink name="book-demo" className="button button-primary">
-                    Gratis demo aanvragen
-                </StateNavLink>
+                <div className="block-dashed-separator-button-wrapper">
+                    <StateNavLink name="book-demo" className="button button-primary">
+                        Gratis demo aanvragen
+                    </StateNavLink>
+                </div>
             )}
         </div>
     );

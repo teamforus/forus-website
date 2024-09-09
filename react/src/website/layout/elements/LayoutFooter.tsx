@@ -31,19 +31,17 @@ export default function LayoutFooter() {
                         <div className="footer-apps-details-label">Download de Me-app</div>
                         <div className="footer-apps-detail-links">
                             <a
-                                className="footer-apps-details-link"
+                                className="footer-apps-details-link footer-apps-details-link-android"
                                 href={envData?.config?.android_link}
                                 target={'_blank'}
-                                rel="noreferrer">
-                                <img src={assetUrl('/assets/img/icon-app-android.svg')} alt={''} />
-                            </a>
+                                rel="noreferrer"
+                            />
                             <a
-                                className="footer-apps-details-link"
+                                className="footer-apps-details-link footer-apps-details-link-ios"
                                 href={envData?.config?.ios_iphone_link}
                                 target={'_blank'}
-                                rel="noreferrer">
-                                <img src={assetUrl('/assets/img/icon-app-ios.svg')} alt={''} />
-                            </a>
+                                rel="noreferrer"
+                            />
                         </div>
                     </div>
                 </div>

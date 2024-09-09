@@ -48,6 +48,7 @@ export default function Banner({
             </div>
 
             <div className="banner-media">
+                {type === 'main' && <div className="banner-media-overlay" />}
                 <div className="banner-media-image" role="img" aria-label={backgroundImgAltText} />
             </div>
         </div>

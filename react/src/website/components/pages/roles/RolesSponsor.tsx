@@ -14,6 +14,7 @@ import Step7 from './elements/sponsor-steps/Step7';
 import Step8 from './elements/sponsor-steps/Step8';
 import Step9 from './elements/sponsor-steps/Step9';
 import Step10 from './elements/sponsor-steps/Step10';
+import BackgroundCircles from '../../elements/BackgroundCircles';
 
 export default function RolesSponsor() {
     const setTitle = useSetTitle();
@@ -39,6 +40,7 @@ export default function RolesSponsor() {
 
     return (
         <Fragment>
+            <BackgroundCircles />
             <RolesBanner type={'sponsor'} title={bannerTitle} description={bannerDescription} />
 
             <div className="main-content">
@@ -50,11 +52,11 @@ export default function RolesSponsor() {
                 <div className="wrapper">
                     <RolesSelector activeType={'sponsor'} />
 
-                    <div className="block block-text block-text-overview">
-                        <div className="block-text-title block-text-title-sm text-left">
+                    <div className="block block-info block-info-overview">
+                        <div className="block-info-title block-info-title-sm text-left">
                             Functionaliteiten en overzicht
                         </div>
-                        <div className="block-text-separator">
+                        <div className="block-info-separator">
                             <div className="line" />
                         </div>
                     </div>

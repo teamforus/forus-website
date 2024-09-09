@@ -23,7 +23,11 @@ export default function DropdownAbout() {
                             <div className="title">Nog meer vragen?</div>
                             <div className="subtitle">
                                 Voor uitgebreide inzichten en antwoorden op technische vragen over ons platform, bezoek
-                                ons Helpcentrum.
+                                ons
+                                <a href="https://helpcentrum.forus.io/kb/nl/" target="_blank" rel="noreferrer">
+                                    &nbsp;Helpcentrum.
+                                    <em className="mdi mdi-arrow-right" />
+                                </a>
                             </div>
                             <div className="image-block">
                                 <img src={assetUrl(`/assets/img/about-us/help-center.png`)} alt="" />
@@ -44,7 +48,7 @@ export default function DropdownAbout() {
                                     src={assetUrl(`/assets/img/about-us/our-story.png`)}
                                     alt=""
                                 />
-                                <div>
+                                <div className="block-page-list-main-details-list-item-wrapper">
                                     <div className="block-page-list-main-details-list-item-title">Ons verhaal</div>
                                     <div className="block-page-list-main-details-list-item-description">
                                         Ontdek meer over onze organisatie.
@@ -64,7 +68,7 @@ export default function DropdownAbout() {
                                     src={assetUrl(`/assets/img/about-us/project.png`)}
                                     alt=""
                                 />
-                                <div>
+                                <div className="block-page-list-main-details-list-item-wrapper">
                                     <div className="block-page-list-main-details-list-item-title">
                                         Project Innovatiebudget 2023
                                     </div>
@@ -82,7 +86,7 @@ export default function DropdownAbout() {
                 <PreviewPageFooter />
             </div>
 
-            <div className="block-page-list-backdrop" />
+            <div className="block-page-list-backdrop" onClick={() => setActiveMenuDropdown(null)} />
             <div className="dropdown-close" onClick={() => setActiveMenuDropdown(null)}>
                 <em className="mdi mdi-close" />
             </div>

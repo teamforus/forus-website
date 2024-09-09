@@ -75,7 +75,7 @@
         background: rgba(0, 0, 0, 0.04);
 
         &:hover {
-            background: lighten($color: rgba(0, 0, 0, 0.04), $amount: 2.5);
+            background: #fff;
         }
     }
 
@@ -87,7 +87,7 @@
 
         &:hover {
             color: #fff;
-            background: #626161;
+            background: #939393;
             border-color: #D6D7DB;
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
 

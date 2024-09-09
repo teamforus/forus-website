@@ -7,6 +7,7 @@ export default function Slider({
     description,
     showActionButton,
     showBackgroundImage,
+    hasSquareArrows,
     elements,
 }: {
     label?: string;
@@ -14,6 +15,7 @@ export default function Slider({
     description?: string;
     showActionButton?: boolean;
     showBackgroundImage?: boolean;
+    hasSquareArrows?: boolean;
     elements: {
         title: string;
         description: string;
@@ -22,39 +24,42 @@ export default function Slider({
         hasLink?: boolean;
         linkState?: string;
         linkText?: string;
+        timeInterval?: string;
+        timeIntervalLabel?: string;
     }[];
 }) {
     const $element = useRef<HTMLDivElement>(null);
     const [activeItem, setActiveItem] = useState(0);
 
     return (
-        <div className="block block-slider" ref={$element}>
+        <div className={`block block-slider ${hasSquareArrows ? 'block-slider-square' : ''}`} ref={$element}>
             <div className={`block-slider-main ${!showBackgroundImage ? 'hide-background' : ''}`}>
-                <div className="label label-gray">{label}</div>
+                {label && <div className="label label-gray">{label}</div>}
                 <div className="block-slider-title">{title}</div>
-                <div className="block-slider-separator" />
                 {description && <div className="block-slider-description">{description}</div>}
                 <div className="block-slider-arrows">
                     <div
-                        className="block-slider-arrow block-slider-arrow-left"
+                        className={`block-slider-arrow`}
                         onClick={() => {
                             if (activeItem === 0) {
                                 setActiveItem(elements.length - 1);
                             } else {
                                 setActiveItem(activeItem - 1);
                             }
-                        }}
-                    />
+                        }}>
+                        <em className="mdi mdi-arrow-left" />
+                    </div>
                     <div
-                        className="block-slider-arrow block-slider-arrow-right"
+                        className={`block-slider-arrow`}
                         onClick={() => {
                             if (activeItem === elements.length - 1) {
                                 setActiveItem(0);
                             } else {
                                 setActiveItem(activeItem + 1);
                             }
-                        }}
-                    />
+                        }}>
+                        <em className="mdi mdi-arrow-right" />
+                    </div>
                 </div>
                 {showActionButton && (
                     <div className="block-slider-actions">
@@ -72,8 +77,19 @@ export default function Slider({
                             <div
                                 className={`block-slider-list-item ${index == activeItem ? 'active' : ''}`}
                                 key={index}>
-                                <div className="block-slider-numeration">{index + 1}</div>
+                                <div className="block-slider-numeration-wrapper">
+                                    <div className="block-slider-numeration">{index + 1}</div>
+                                    {hasSquareArrows && <div className="block-slider-numeration-roadmap" />}
+                                </div>
                                 <div className="block-slider-list-item-main">
+                                    {element?.timeInterval && element?.timeIntervalLabel && (
+                                        <div className="block-slider-timeline">
+                                            <div className="block-slider-timeline-time">{element.timeInterval}</div>
+                                            <div className="block-slider-timeline-label">
+                                                {element.timeIntervalLabel}
+                                            </div>
+                                        </div>
+                                    )}
                                     <div className="block-slider-list-item-info-wrapper">
                                         <div className="block-slider-list-item-info">
                                             <div className="block-slider-list-item-title">{element.title}</div>

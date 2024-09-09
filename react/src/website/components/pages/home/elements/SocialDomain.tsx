@@ -7,6 +7,7 @@ export default function SocialDomain() {
     return (
         <div className="block block-social-domain">
             <div className="block-social-domain-banner">
+                <div className="block-social-domain-banner-overlay" />
                 <div className="block-social-domain-banner-main">
                     <div className="block-social-domain-banner-info">
                         <div className="block-social-domain-banner-subtitle">Samenwerken binnen het</div>

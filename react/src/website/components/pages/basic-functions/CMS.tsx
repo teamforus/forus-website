@@ -98,15 +98,15 @@ export default function CMS() {
 
                     <BlockDashedSeparator image={true} />
 
-                    <div className="block block-text text-left">
-                        <div className="block-text-title block-text-title-sm">Content aanpassen</div>
-                        <div className="block-text-description block-text-description-sm">
+                    <div className="block block-info text-left">
+                        <div className="block-info-title block-info-title-sm">Content aanpassen</div>
+                        <div className="block-info-description block-info-description-sm">
                             Met ons CMS pas u eenvoudig de content van uw website pagina&apos;s aan. U kunt tekst,
                             hyperlinks, afbeeldingen en YouTube video&apos;s toevoegen, verwijderen of wijzigen om uw
                             website te personaliseren. Bovendien kunt u eenvoudig informatieblokken verplaatsen of de
                             opmaak van uw pagina wijzigen om de perfecte lay-out voor uw behoeften te creëren.
                         </div>
-                        <div className="block-text-banner">
+                        <div className="block-info-banner">
                             <img
                                 src={assetUrl(`/assets/img/cms-content-banner.jpg`)}
                                 alt="Content aanpassen met behulp van een CMS"

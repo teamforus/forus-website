@@ -3,15 +3,15 @@ import StateNavLink from '../../../../modules/state_router/StateNavLink';
 
 export default function SignUpBlock() {
     return (
-        <div className="block block-text text-left">
-            <div className="hide-sm block-text-title block-text-title-sm block-text-no-margin">Nog geen account?</div>
-            <div className="show-sm block-text-title">Nog geen account?</div>
+        <div className="block block-info text-left">
+            <div className="hide-sm block-info-title block-info-title-sm">Nog geen account?</div>
+            <div className="show-sm block-info-title">Nog geen account?</div>
 
-            <StateNavLink name={'sign-up'} className="hide-sm button button-primary block-text-actions">
+            <StateNavLink name={'sign-up'} className="hide-sm button button-primary block-info-actions">
                 Aanmelden
             </StateNavLink>
 
-            <StateNavLink name={'sign-up'} className="show-sm button button-fill button-primary block-text-actions">
+            <StateNavLink name={'sign-up'} className="show-sm button button-fill button-primary block-info-actions">
                 Aanmelden
             </StateNavLink>
         </div>

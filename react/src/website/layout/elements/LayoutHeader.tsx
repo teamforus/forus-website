@@ -119,10 +119,10 @@ export default function LayoutHeader() {
                     ) : (
                         <div className="layout-header-auth">
                             <div className="button-group">
-                                <StateNavLink name={'sign-in'} className="button button-light">
+                                <StateNavLink name={'sign-in'} className="button button-sm button-light">
                                     Inloggen
                                 </StateNavLink>
-                                <StateNavLink name={'book-demo'} className="button button-primary">
+                                <StateNavLink name={'book-demo'} className="button button-sm button-primary">
                                     Gratis demo
                                 </StateNavLink>
                             </div>

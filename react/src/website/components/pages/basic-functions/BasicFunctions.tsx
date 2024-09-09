@@ -4,6 +4,7 @@ import useAssetUrl from '../../../hooks/useAssetUrl';
 import StateNavLink from '../../../modules/state_router/StateNavLink';
 import Banner from './elements/Banner';
 import useSetMetaDescription from '../../../hooks/useSetMetaDescription';
+import BackgroundCircles from '../../elements/BackgroundCircles';
 
 export default function BasicFunctions() {
     const setTitle = useSetTitle();
@@ -27,6 +28,12 @@ export default function BasicFunctions() {
 
     return (
         <Fragment>
+            <BackgroundCircles
+                mainStyles={{ height: '800px' }}
+                overlayStyles={{
+                    background: 'linear-gradient(0deg, #FFF 0%, #FFF 32.5%, rgba(255, 255, 255, 0.00) 100%)',
+                }}
+            />
             <Banner type={'main'} title={bannerTitle} description={bannerDescription} showIcon={false} />
 
             <div className="main-content">

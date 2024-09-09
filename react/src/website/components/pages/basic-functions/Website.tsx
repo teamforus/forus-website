@@ -6,6 +6,7 @@ import Banner from './elements/Banner';
 import SliderDetailed from '../../elements/SliderDetailed';
 import useSetMetaDescription from '../../../hooks/useSetMetaDescription';
 import StateNavLink from '../../../modules/state_router/StateNavLink';
+import BackgroundCircles from '../../elements/BackgroundCircles';
 
 export default function Website() {
     const setTitle = useSetTitle();
@@ -78,6 +79,7 @@ export default function Website() {
 
     return (
         <Fragment>
+            <BackgroundCircles />
             <Banner
                 type={'website'}
                 title={bannerTitle}
@@ -90,8 +92,8 @@ export default function Website() {
                 <div className="wrapper">
                     <PageSelector activeType={'website'} />
 
-                    <div className="block block-text">
-                        <div className="block-text-title block-text-title-sm text-center">
+                    <div className="block block-info">
+                        <div className="block-info-title block-info-title-sm text-center">
                             Flexibele huisstijl en zelfstandig beheer
                         </div>
                     </div>

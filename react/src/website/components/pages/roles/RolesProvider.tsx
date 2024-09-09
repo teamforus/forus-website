@@ -11,6 +11,7 @@ import Step4 from './elements/provider-steps/Step4';
 import Step5 from './elements/provider-steps/Step5';
 import Step6 from './elements/provider-steps/Step6';
 import Step7 from './elements/provider-steps/Step7';
+import BackgroundCircles from '../../elements/BackgroundCircles';
 
 export default function RolesProvider() {
     const setTitle = useSetTitle();
@@ -36,6 +37,7 @@ export default function RolesProvider() {
 
     return (
         <Fragment>
+            <BackgroundCircles />
             <RolesBanner type={'provider'} title={bannerTitle} description={bannerDescription} />
 
             <div className="main-content">
@@ -47,11 +49,11 @@ export default function RolesProvider() {
                 <div className="wrapper">
                     <RolesSelector activeType={'provider'} />
 
-                    <div className="block block-text block-text-overview">
-                        <div className="block-text-title block-text-title-sm text-left">
+                    <div className="block block-info block-info-overview">
+                        <div className="block-info-title block-info-title-sm text-left">
                             Functionaliteiten en overzicht
                         </div>
-                        <div className="block-text-separator">
+                        <div className="block-info-separator">
                             <div className="line" />
                         </div>
                     </div>

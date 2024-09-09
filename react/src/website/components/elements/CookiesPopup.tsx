@@ -40,7 +40,7 @@ export default function CookiesPopup() {
                     </div>
                     <div className="block-cookies-accept-buttons">
                         <div
-                            className="button button-primary"
+                            className="button button-sm button-primary"
                             onClick={() => {
                                 setAnalyticsCookiesAccepted('true');
                                 setGeneralCookiesAccepted('true');
@@ -50,7 +50,7 @@ export default function CookiesPopup() {
                             Accepteren en doorgaan
                         </div>
                         <div
-                            className="button button-light"
+                            className="button button-sm button-light"
                             onClick={() => {
                                 setAnalyticsCookiesAccepted('false');
                                 setGeneralCookiesAccepted('false');

@@ -5,6 +5,7 @@ import LearnMore from '../../elements/LearnMore';
 import StateNavLink from '../../../modules/state_router/StateNavLink';
 import RolesBanner from './elements/RolesBanner';
 import useSetMetaDescription from '../../../hooks/useSetMetaDescription';
+import BackgroundCircles from '../../elements/BackgroundCircles';
 
 export default function RolesMain() {
     const setTitle = useSetTitle();
@@ -37,6 +38,7 @@ export default function RolesMain() {
 
     return (
         <Fragment>
+            <BackgroundCircles />
             <RolesBanner
                 type={'main'}
                 title={bannerTitle}

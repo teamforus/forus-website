@@ -24,27 +24,27 @@ export default function AboutUsInnovation() {
     return (
         <Fragment>
             <div className="wrapper">
-                <div className="block block-text">
-                    <h2 className="block-text-title block-text-title-sm">Naar een merkbaar en meetbaar verschil!</h2>
+                <div className="block block-info">
+                    <h2 className="block-info-title block-info-title-sm">Naar een merkbaar en meetbaar verschil!</h2>
 
-                    <div className="block-text-description">
+                    <div className="block-info-description">
                         Project gefinancierd door het Innovatiebudget 2023 in samenwerking met Gemeente Eemsdelta en
                         Gemeente Westerkwartier.
                     </div>
 
-                    <div className="block-text-banner">
+                    <div className="block-info-banner">
                         <img
                             src={assetUrl('/assets/img/about-us-innovations-banner.jpg')}
                             alt="About us innovations banner"
                         />
                     </div>
 
-                    <div className="block-text-details-block">
-                        <div className="block-text-details-block-main">
+                    <div className="block-info-details-block">
+                        <div className="block-info-details-block-main">
                             Project gefinancierd door het Innovatiebudget 2023 in samenwerking met Gemeente Eemsdelta en
                             Gemeente Westerkwartier.
                         </div>
-                        <div className="block-text-details-block-description">
+                        <div className="block-info-details-block-description">
                             Het bestrijden van armoede is een complexe uitdaging. In Nederland zijn er diverse nationale
                             en lokale regelingen en voorzieningen die worden aangeboden door fondsen en stichtingen.
                             Door de vele regelingen raken veel mensen het overzicht kwijt, wat leidt tot stress en

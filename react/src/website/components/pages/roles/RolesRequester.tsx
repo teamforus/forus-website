@@ -10,6 +10,7 @@ import Step3 from './elements/requester-steps/Step3';
 import Step4 from './elements/requester-steps/Step4';
 import Step5 from './elements/requester-steps/Step5';
 import Step6 from './elements/requester-steps/Step6';
+import BackgroundCircles from '../../elements/BackgroundCircles';
 
 export default function RolesRequester() {
     const setTitle = useSetTitle();
@@ -32,6 +33,7 @@ export default function RolesRequester() {
 
     return (
         <Fragment>
+            <BackgroundCircles />
             <RolesBanner type={'requester'} title={bannerTitle} description={bannerDescription} />
 
             <div className="main-content">
@@ -43,14 +45,14 @@ export default function RolesRequester() {
                 <div className="wrapper">
                     <RolesSelector activeType={'requester'} />
 
-                    <div className="block block-text block-text-overview">
-                        <div className="block-text-title block-text-title-sm text-left">
+                    <div className="block block-info block-info-overview">
+                        <div className="block-info-title block-info-title-sm text-left">
                             Functionaliteiten en overzicht
                         </div>
-                        <div className="block-text-separator">
+                        <div className="block-info-separator">
                             <div className="line" />
                         </div>
-                        <div className="block-text-description text-left">
+                        <div className="block-info-description text-left">
                             Mensen raken door de vele initiatieven, zoals tegemoetkomingen en regelingen, het overzicht
                             kwijt. Ingewikkelde aanvraagprocedures leiden vaak tot stress en onnodig niet-gebruik van
                             deze voorzieningen.

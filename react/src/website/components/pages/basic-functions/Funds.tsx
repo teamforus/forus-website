@@ -54,9 +54,9 @@ export default function Funds() {
                 <div className="wrapper">
                     <PageSelector activeType={'funds'} />
 
-                    <div className="block block-text text-left">
-                        <div className="block-text-title block-text-title-sm">Wat zijn Fondsen?</div>
-                        <div className="block-text-description block-text-description-sm">
+                    <div className="block block-info text-left">
+                        <div className="block-info-title block-info-title-sm">Wat zijn Fondsen?</div>
+                        <div className="block-info-description block-info-description-sm">
                             Om sociale regelingen uit te geven via het Forus-platform zet u een fonds op. Fondsen
                             bestaan uit tegoeden die specifiek beschikbaar worden gesteld aan geselecteerde doelgroepen.
                             We streven ernaar om het proces zo gebruiksvriendelijk mogelijk te maken, zodat zowel
@@ -69,7 +69,7 @@ export default function Funds() {
                             waardoor ze minder stress ervaren en meer vertrouwen in uw organisatie hebben.
                         </div>
                         <ProgressLine currentStep={1} totalSteps={7} />
-                        <div className="block-text-banner">
+                        <div className="block-info-banner">
                             <img
                                 src={assetUrl(`/assets/img/funds-general-banner.jpg`)}
                                 alt="Voorbeelden van regelingen die via het Forus-platform kunnen worden opgesteld"
@@ -114,16 +114,16 @@ export default function Funds() {
                         </div>
                     </div>
 
-                    <div className="block block-text text-left">
-                        <div className="block-text-title block-text-title-sm">Soorten fondsen en hun toepassingen</div>
+                    <div className="block block-info text-left">
+                        <div className="block-info-title block-info-title-sm">Soorten fondsen en hun toepassingen</div>
                         <ProgressLine currentStep={3} totalSteps={7} />
-                        <div className="block-text-banner">
+                        <div className="block-info-banner">
                             <img
                                 src={assetUrl(`/assets/img/fund-types-banner.jpg`)}
                                 alt="Content aanpassen met behulp van een CMS"
                             />
                         </div>
-                        <div className="block-text-description block-text-description-sm">
+                        <div className="block-info-description block-info-description-sm">
                             Er zijn veel sociale regelingen en manieren waarop ze worden verstrekt. Het selecteren van
                             het juiste fondstype opent diverse mogelijkheden in onze systeemconfiguratie waardoor u
                             toegang krijgt tot een reeks functies die zijn afgestemd op uw behoeften. Wij helpen u graag

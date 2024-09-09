@@ -1,13 +1,12 @@
 import React, { Fragment, useEffect } from 'react';
 import useSetTitle from '../../../hooks/useSetTitle';
 import useSetMetaDescription from '../../../hooks/useSetMetaDescription';
-import useAssetUrl from '../../../hooks/useAssetUrl';
 import StateNavLink from '../../../modules/state_router/StateNavLink';
 import LearnMore from '../../elements/LearnMore';
+import BackgroundCircles from '../../elements/BackgroundCircles';
 
 export default function Privacy() {
     const setTitle = useSetTitle();
-    const assetUrl = useAssetUrl();
     const setMetaDescription = useSetMetaDescription();
 
     useEffect(() => {
@@ -22,6 +21,10 @@ export default function Privacy() {
 
     return (
         <Fragment>
+            <BackgroundCircles
+                mainStyles={{ height: '850px' }}
+                overlayStyles={{ background: 'linear-gradient(180deg, #F9F9F9 0%, rgba(249, 249, 249, 0.00) 100%)' }}
+            />
             <div className="wrapper">
                 <div className="block block-privacy">
                     <div className="block-privacy-title">Privacyverklaring Forus</div>
@@ -267,8 +270,8 @@ export default function Privacy() {
                             </div>
 
                             <div className="block-privacy-image">
+                                <div className="block-privacy-image-media" />
                                 <div className="block-privacy-image-overlay" />
-                                <img src={assetUrl(`/assets/img/privacy.jpg`)} alt="" />
                                 <div className="block-privacy-image-info">
                                     <div className="block-privacy-image-info-title">
                                         Laten we eens kijken naar het optimale gebruik van ons platform voor uw

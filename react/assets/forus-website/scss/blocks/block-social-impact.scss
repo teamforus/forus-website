@@ -9,7 +9,7 @@
         display: flex;
         flex-direction: column;
         flex: 0 0 560px;
-        gap: 40px;
+        gap: 30px;
 
         .block-social-impact-label {
             width: fit-content;
@@ -27,7 +27,7 @@
         }
 
         .block-social-impact-title {
-            font: 700 56px/68px var(--base-font);
+            font: 900 56px/68px var(--base-font);
             margin: 0 0;
         }
 
@@ -38,6 +38,31 @@
 
         .block-social-impact-actions {
             display: flex;
+        }
+    }
+
+    .block-social-impact-details {
+        .block-overview-list {
+            .block-overview-list-item {
+                gap: 20px;
+                height: fit-content;
+
+                .block-overview-list-item-info {
+                    .block-overview-list-item-read-more {
+                        .mdi {
+                            font-size: 16px;
+                        }
+
+                        &:hover {
+                            transition: all 0.35s ease;
+
+                            .mdi {
+                                margin-left: 10px;
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 

@@ -49,8 +49,8 @@ export default function Information() {
                 <div className="wrapper">
                     <PageSelector activeType={'information'} />
 
-                    <div className="block block-text">
-                        <div className="block-text-description block-text-description-sm">
+                    <div className="block block-info">
+                        <div className="block-info-description block-info-description-sm">
                             Als <StateNavLink name="roles-sponsor">sponsor</StateNavLink> hebt u de mogelijkheid om de
                             impact van de fondsen te monitoren en te evalueren via de statistiekenpagina in de
                             beheeromgeving. Hier vindt u verschillende gegevens over de uitgifte van de regelingen. Door
@@ -62,7 +62,7 @@ export default function Information() {
                             besteden, in welke wijk van de gemeente dit gebeurt, en welke soorten producten of diensten
                             het meest populair zijn onder de deelnemers.
                         </div>
-                        <div className="block-text-banner">
+                        <div className="block-info-banner">
                             <img
                                 className={'hide-sm'}
                                 src={assetUrl(`/assets/img/funds-information-management-banner.jpg`)}
@@ -74,7 +74,7 @@ export default function Information() {
                                 alt="Inzichten in de effectiviteit van regelingen"
                             />
                         </div>
-                        <div className="block-text-title block-text-title-sm text-left">
+                        <div className="block-info-title block-info-title-sm text-left">
                             Het financiële statistiekenoverzicht omvat gegevens over:
                         </div>
                         <BlockLabelsInformationGeneral />

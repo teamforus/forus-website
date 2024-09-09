@@ -1,11 +1,11 @@
-.block.block-text {
+.block.block-info {
     text-align: center;
-    margin: 40px 0 60px;
+    margin: 40px 0;
     display: flex;
     flex-direction: column;
     gap: 20px;
 
-    .block-text-icon {
+    .block-info-icon {
         margin-bottom: 50px;
         width: 72px;
 
@@ -14,26 +14,22 @@
         }
     }
 
-    .block-text-title {
+    .block-info-title {
         font: 700 82px/96px var(--base-font);
-        margin: 0 0 30px 0;
+        margin: 0 0 5px 0;
 
-        &.block-text-title-sm {
+        &.block-info-title-sm {
             font: 700 46px/68px var(--base-font);
-        }
-
-        &.block-text-no-margin {
-            margin: 0;
         }
     }
 
-    .block-text-label {
+    .block-info-label {
         color: #315EFD;
         font: 300 28px/46px var(--base-font);
         margin-bottom: 30px;
     }
 
-    .block-text-description {
+    .block-info-description {
         font: 300 22px/36px var(--base-font);
         margin: 0 0 30px;
 
@@ -42,7 +38,7 @@
             text-decoration: underline;
         }
 
-        &.block-text-description-sm {
+        &.block-info-description-sm {
             font: 300 18px/28px var(--base-font);
 
             a {
@@ -51,7 +47,7 @@
         }
     }
 
-    .block-text-description-sm {
+    .block-info-description-sm {
         font: 300 16px/28px var(--base-font);
         margin: 0 0 30px;
 
@@ -60,33 +56,33 @@
         }
     }
 
-    .block-text-subtitle {
+    .block-info-subtitle {
         font: 800 48px/64px var(--base-font);
         margin: 0 0;
     }
 
-    .block-text-details-block {
+    .block-info-details-block {
         width: 100%;
         display: flex;
         gap: 100px;
         text-align: left;
 
-        .block-text-details-block-main {
+        .block-info-details-block-main {
             font: 600 40px/52px var(--base-font);
             width: 50%;
         }
 
-        .block-text-details-block-description {
+        .block-info-details-block-description {
             font: 400 18px/28px var(--base-font);
             width: 50%;
         }
     }
 
-    .block-text-actions {
+    .block-info-actions {
         width: fit-content;
     }
 
-    .block-text-banner {
+    .block-info-banner {
         width: 100%;
         margin-bottom: 60px;
         border-radius: 32px;
@@ -98,19 +94,19 @@
         }
     }
 
-    &.block-text-overview {
+    &.block-info-overview {
         margin-bottom: 60px;
 
-        .block-text-title {
+        .block-info-title {
             text-align: left;
         }
 
-        .block-text-description {
+        .block-info-description {
             font: 400 18px/28px var(--base-font);
             margin: 40px 0 45px;
         }
 
-        .block-text-separator {
+        .block-info-separator {
             border: 2px dashed var(--border-color);
             position: relative;
 
@@ -130,56 +126,56 @@
         margin: 0 0 30px;
         gap: 10px;
 
-        .block-text-title {
+        .block-info-title {
             font: 700 20px/30px var(--base-font);
             margin: 0 0 20px 0;
 
-            &.block-text-title-sm {
+            &.block-info-title-sm {
                 font: 700 20px/30px var(--base-font);
             }
 
-            &.block-text-title {
+            &.block-info-title {
                 font: 700 30px/40px var(--base-font);
             }
         }
 
-        .block-text-subtitle {
+        .block-info-subtitle {
             font: 800 30px/40px var(--base-font);
         }
 
-        .block-text-description {
+        .block-info-description {
             font: 300 16px/24px var(--base-font);
             margin-bottom: 30px;
 
-            &.block-text-description-sm {
+            &.block-info-description-sm {
                 font: 300 15px/24px var(--base-font);
             }
         }
 
-        .block-text-details-block {
+        .block-info-details-block {
             flex-direction: column;
             gap: 20px;
 
-            .block-text-details-block-main,
-            .block-text-details-block-description {
+            .block-info-details-block-main,
+            .block-info-details-block-description {
                 width: 100%;
             }
 
-            .block-text-details-block-main {
+            .block-info-details-block-main {
                 font: 700 20px/30px var(--base-font);
             }
 
-            .block-text-details-block-description {
+            .block-info-details-block-description {
                 font: 400 14px/21px var(--base-font);
                 color: #333;
             }
         }
 
-        .block-text-actions {
+        .block-info-actions {
             width: 100%;
         }
 
-        .block-text-banner {
+        .block-info-banner {
             margin-bottom: 30px;
         }
     }

@@ -92,8 +92,8 @@ export default function DropdownPlatform() {
                                             alt=""
                                         />
                                         Fondsen
-                                        <em className={'mdi mdi-arrow-right'} />
                                     </div>
+                                    <em className={'mdi mdi-arrow-right'} />
                                 </StateNavLink>
 
                                 <StateNavLink
@@ -114,8 +114,8 @@ export default function DropdownPlatform() {
                                             alt=""
                                         />
                                         Websites
-                                        <em className={'mdi mdi-arrow-right'} />
                                     </div>
+                                    <em className={'mdi mdi-arrow-right'} />
                                 </StateNavLink>
 
                                 <StateNavLink
@@ -136,8 +136,8 @@ export default function DropdownPlatform() {
                                             alt=""
                                         />
                                         CMS
-                                        <em className={'mdi mdi-arrow-right'} />
                                     </div>
+                                    <em className={'mdi mdi-arrow-right'} />
                                 </StateNavLink>
 
                                 <StateNavLink
@@ -158,8 +158,8 @@ export default function DropdownPlatform() {
                                             alt=""
                                         />
                                         Me-app
-                                        <em className={'mdi mdi-arrow-right'} />
                                     </div>
+                                    <em className={'mdi mdi-arrow-right'} />
                                 </StateNavLink>
 
                                 <StateNavLink
@@ -180,8 +180,8 @@ export default function DropdownPlatform() {
                                             alt=""
                                         />
                                         Managementinformatie
-                                        <em className={'mdi mdi-arrow-right'} />
                                     </div>
+                                    <em className={'mdi mdi-arrow-right'} />
                                 </StateNavLink>
                             </div>
                         ) : (
@@ -204,8 +204,8 @@ export default function DropdownPlatform() {
                                             alt=""
                                         />
                                         Deelnemer / Aanvrager
-                                        <em className={'mdi mdi-arrow-right'} />
                                     </div>
+                                    <em className={'mdi mdi-arrow-right'} />
                                 </StateNavLink>
 
                                 <StateNavLink
@@ -226,8 +226,8 @@ export default function DropdownPlatform() {
                                             alt=""
                                         />
                                         Aanbieder
-                                        <em className={'mdi mdi-arrow-right'} />
                                     </div>
+                                    <em className={'mdi mdi-arrow-right'} />
                                 </StateNavLink>
 
                                 <StateNavLink
@@ -248,8 +248,8 @@ export default function DropdownPlatform() {
                                             alt=""
                                         />
                                         Sponsor
-                                        <em className={'mdi mdi-arrow-right'} />
                                     </div>
+                                    <em className={'mdi mdi-arrow-right'} />
                                 </StateNavLink>
 
                                 <StateNavLink
@@ -270,8 +270,8 @@ export default function DropdownPlatform() {
                                             alt=""
                                         />
                                         Beoordelaar
-                                        <em className={'mdi mdi-arrow-right'} />
                                     </div>
+                                    <em className={'mdi mdi-arrow-right'} />
                                 </StateNavLink>
                             </div>
                         )}
@@ -283,7 +283,7 @@ export default function DropdownPlatform() {
                 <PreviewPageFooter />
             </div>
 
-            <div className="block-page-list-backdrop" />
+            <div className="block-page-list-backdrop" onClick={() => setActiveMenuDropdown(null)} />
             <div className="dropdown-close" onClick={() => setActiveMenuDropdown(null)}>
                 <em className="mdi mdi-close" />
             </div>
