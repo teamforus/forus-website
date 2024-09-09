@@ -23,7 +23,7 @@ export default {
         provider: 'Aanbieder',
         product_id: 'Aanbod ID',
         employee: 'Aangemaakt door',
-        creation_method: 'Toewijzingsmethode',
+        payment_type: 'Toewijzingsmethode',
         relation: 'Methode',
         product_name: 'Aanbod naam',
         date_non_cancelable: 'Definitieve transactie',
@@ -63,7 +63,7 @@ export default {
         amount: 'Geeft het bedrag van de uitbetaling aan.',
         created_at: 'De tijd en datum waarop de uitbetaling is aangemaakt.',
         transfer_at: 'De datum waarop de uitbetaling is uitgevoerd.',
-        creation_method:
+        payment_type:
             'Geeft aan hoe de transactie is aangemaakt: Handmatig (individueel) betekent dat de betaling handmatig is gedaan op de uitbetalingenpagina; Handmatig (Bulk) betekent dat de betaling is gedaan via de bulkoptie op de uitbetalingenpagina; Beoordelaar betekent dat de uitbetaling is aangevraagd door een beoordelaar op basis van een goedgekeurde aanvraag.',
         relation:
             'Deze informatie wordt gebruikt om de uitbetaling te associëren met een specifieke deelnemer. Mogelijkheden: BSN (alleen geautoriseerde organisaties), E-mailadres of Geen.',

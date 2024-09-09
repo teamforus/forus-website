@@ -100,13 +100,13 @@ export class PayoutTransactionService<T = PayoutTransaction> {
                 },
             },
             {
-                key: 'creation_method',
-                value: 'creation_method',
-                label: 'payouts.labels.creation_method',
+                key: 'payment_type',
+                value: 'payment_type',
+                label: 'payouts.labels.payment_type',
                 tooltip: {
-                    key: 'creation_method',
-                    title: 'payouts.labels.creation_method',
-                    description: 'payouts.tooltips.creation_method',
+                    key: 'payment_type',
+                    title: 'payouts.labels.payment_type',
+                    description: 'payouts.tooltips.payment_type',
                 },
             },
             {
