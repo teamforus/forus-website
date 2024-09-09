@@ -1,7 +1,6 @@
 export default {
     header: {
-        title: 'Individuele transacties',
-        // Uitbetalingen
+        title: 'Uitbetalingen',
     },
     labels: {
         id: 'ID',
