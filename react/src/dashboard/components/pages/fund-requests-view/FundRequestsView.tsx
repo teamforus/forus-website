@@ -274,18 +274,8 @@ export default function FundRequestsView() {
     );
 
     const requestApprove = useCallback(() => {
-        openModal((modal) =>
-            enableCustomConfirmationModal ? (
-                <ModalApproveFundRequest
-                    modal={modal}
-                    fundRequest={fundRequest}
-                    onError={(err: ResponseError) => {
-                        showInfoModal('Validatie van persoonsgegeven mislukt.', `Reden: ${err.data.message}`);
-                    }}
-                    onDone={reloadRequest}
-                    activeOrganization={activeOrganization}
-                />
-            ) : (
+        if (!enableCustomConfirmationModal) {
+            return openModal((modal) => (
                 <ModalNotification
                     modal={modal}
                     className={'modal-md'}
@@ -309,16 +299,35 @@ export default function FundRequestsView() {
                         },
                     }}
                 />
-            ),
-        );
+            ));
+        }
+
+        fundRequestService
+            .formula(activeOrganization.id, fundRequest?.id)
+            .then((res) => {
+                openModal((modal) => (
+                    <ModalApproveFundRequest
+                        modal={modal}
+                        formula={res.data}
+                        fundRequest={fundRequest}
+                        onError={(err: ResponseError) => {
+                            showInfoModal('Validatie van persoonsgegeven mislukt.', `Reden: ${err.data.message}`);
+                        }}
+                        onDone={reloadRequest}
+                        activeOrganization={activeOrganization}
+                    />
+                ));
+            })
+            .catch(pushApiError);
     }, [
-        openModal,
         enableCustomConfirmationModal,
-        fundRequest,
-        reloadRequest,
-        activeOrganization,
         fundRequestService,
-        fundRequestMeta?.id,
+        activeOrganization,
+        fundRequest,
+        pushApiError,
+        openModal,
+        fundRequestMeta,
+        reloadRequest,
         showInfoModal,
     ]);
 

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import { ModalState } from '../../modules/modals/context/ModalContext';
 import classNames from 'classnames';
 import FormGroup from '../elements/forms/controls/FormGroup';
@@ -11,7 +11,6 @@ import { strLimit } from '../../helpers/string';
 import Organization from '../../props/models/Organization';
 import { useFundRequestValidatorService } from '../../services/FundRequestValidatorService';
 import { ResponseError } from '../../props/ApiResponses';
-import usePushApiError from '../../hooks/usePushApiError';
 
 type AmountType = 'formula' | 'custom' | 'predefined';
 
@@ -19,17 +18,17 @@ export default function ModalApproveFundRequest({
     modal,
     onDone,
     onError,
+    formula,
     fundRequest,
     activeOrganization,
 }: {
     modal: ModalState;
     onDone?: () => void;
     onError?: (err: ResponseError) => void;
+    formula: FundRequestFormula;
     fundRequest: FundRequest;
     activeOrganization: Organization;
 }) {
-    const pushApiError = usePushApiError();
-
     const fundRequestService = useFundRequestValidatorService();
 
     const amountOptions = useMemo(() => {
@@ -49,8 +48,6 @@ export default function ModalApproveFundRequest({
             label: `${item.name} ${item.amount_locale}`,
         }));
     }, [fundRequest]);
-
-    const [formula, setFormula] = useState<FundRequestFormula>(null);
 
     const form = useFormBuilder<{
         type: AmountType;
@@ -92,25 +89,8 @@ export default function ModalApproveFundRequest({
         },
     );
 
-    const { update: formUpdate } = form;
-
-    const fetchFormula = useCallback(() => {
-        fundRequestService
-            .formula(activeOrganization.id, fundRequest?.id)
-            .then((res) => {
-                setFormula(res.data);
-                formUpdate({ type: res.data?.items?.length > 0 ? 'formula' : amountOptions[0]?.key });
-            })
-            .catch(pushApiError);
-    }, [activeOrganization?.id, amountOptions, formUpdate, fundRequest?.id, fundRequestService, pushApiError]);
-
-    useEffect(() => {
-        fetchFormula();
-    }, [fetchFormula]);
-
     return (
-        <div
-            className={classNames('modal', 'modal-lg', 'modal-animated', !formula && modal.loading && 'modal-loading')}>
+        <div className={classNames('modal', 'modal-lg', 'modal-animated', modal.loading && 'modal-loading')}>
             <div className="modal-backdrop" onClick={modal.close} />
             <form className="modal-window" onSubmit={form.submit}>
                 <div className="modal-close mdi mdi-close" onClick={modal.close} />
@@ -241,7 +221,7 @@ export default function ModalApproveFundRequest({
                                                         ? 'Categorie en bedrag'
                                                         : 'Vrij bedrag'
                                                 }
-                                                error={form.errors.amount}
+                                                error={form.errors.fund_amount_preset_id || form.errors.amount}
                                                 input={(id) =>
                                                     form.values.type === 'predefined' ? (
                                                         <SelectControl

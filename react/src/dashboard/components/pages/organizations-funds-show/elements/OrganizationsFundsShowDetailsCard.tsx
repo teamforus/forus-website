@@ -37,11 +37,11 @@ export default function OrganizationsFundsShowDetailsCard({
     const tabs = useMemo(() => {
         return [
             'description',
-            canViewFinances && 'statistics',
-            canManageFunds && 'formulas',
-            canManageFunds && 'criteria',
-            canManagePayouts && 'configs',
-        ];
+            canViewFinances ? 'statistics' : null,
+            canManageFunds ? 'formulas' : null,
+            canManageFunds ? 'criteria' : null,
+            canManagePayouts ? 'configs' : null,
+        ].filter((tab) => tab);
     }, [canManageFunds, canManagePayouts, canViewFinances]);
 
     const [viewType, setViewType] = useQueryParam(
