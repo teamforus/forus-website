@@ -143,7 +143,9 @@ export default function BasicFunctions() {
                     <div className="block block-with-image block-with-image-image-sm">
                         <div className="block-with-image-wrapper">
                             <div className="block-with-image-info">
-                                <div className="block-with-image-title">Het Forus-systeem in actie</div>
+                                <div className="block-with-image-title block-with-image-title-lg">
+                                    Het Forus-systeem in actie
+                                </div>
                                 <div className="block-with-image-description">
                                     Bekijk live toepassingen van het Forus platform. We laten u graag zien hoe het
                                     systeem werkt. Heeft u een mogelijke use case in gedachte? Neem contact met ons op
@@ -156,7 +158,7 @@ export default function BasicFunctions() {
                                 </div>
                             </div>
                             <div className="block-with-image-image">
-                                <img src={assetUrl('/assets/img/action.png')} alt="" />
+                                <img src={assetUrl('/assets/img/action.svg')} alt="" />
                             </div>
                         </div>
                     </div>

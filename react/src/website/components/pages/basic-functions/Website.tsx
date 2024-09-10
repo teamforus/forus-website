@@ -160,7 +160,7 @@ export default function Website() {
                     <div className="block block-with-image">
                         <div className="block-with-image-wrapper">
                             <div className="block-with-image-info">
-                                <div className="block-with-image-title block-with-image-title-md">
+                                <div className="block-with-image-title block-with-image-title-lg">
                                     Het Forus-systeem in actie
                                 </div>
                                 <div className="block-with-image-description block-with-image-description-sm">

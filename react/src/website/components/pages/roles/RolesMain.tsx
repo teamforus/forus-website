@@ -66,9 +66,7 @@ export default function RolesMain() {
                                     aanvraag indienen en budgetten uitgeven.
                                 </div>
                                 <div className="block block-overview-list-item-read-more">
-                                    <StateNavLink
-                                        className="button button-light button-sm block-overview-list-item-read-more-button"
-                                        name={'roles-requester'}>
+                                    <StateNavLink className="button button-light button-sm" name={'roles-requester'}>
                                         Lees meer
                                     </StateNavLink>
                                 </div>
@@ -88,9 +86,7 @@ export default function RolesMain() {
                                     Een organisatie die producten en/of diensten aanbiedt in het Forus-systeem.
                                 </div>
                                 <div className="block block-overview-list-item-read-more">
-                                    <StateNavLink
-                                        className="button button-light button-sm block-overview-list-item-read-more-button"
-                                        name={'roles-provider'}>
+                                    <StateNavLink className="button button-light button-sm" name={'roles-provider'}>
                                         Lees meer
                                     </StateNavLink>
                                 </div>
@@ -113,9 +109,7 @@ export default function RolesMain() {
                                     doel).
                                 </div>
                                 <div className="block block-overview-list-item-read-more">
-                                    <StateNavLink
-                                        className="button button-light button-sm block-overview-list-item-read-more-button"
-                                        name={'roles-sponsor'}>
+                                    <StateNavLink className="button button-light button-sm" name={'roles-sponsor'}>
                                         Lees meer
                                     </StateNavLink>
                                 </div>
@@ -137,9 +131,7 @@ export default function RolesMain() {
                                     organisaties zoals sociale ketenpartners of andere overheidsorganisaties.
                                 </div>
                                 <div className="block block-overview-list-item-read-more">
-                                    <StateNavLink
-                                        className="button button-light button-sm block-overview-list-item-read-more-button"
-                                        name={'roles-sponsor'}>
+                                    <StateNavLink className="button button-light button-sm" name={'roles-sponsor'}>
                                         Lees meer
                                     </StateNavLink>
                                 </div>

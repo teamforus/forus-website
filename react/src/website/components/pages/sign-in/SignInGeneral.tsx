@@ -4,6 +4,7 @@ import useSetMetaDescription from '../../../hooks/useSetMetaDescription';
 import StateNavLink from '../../../modules/state_router/StateNavLink';
 import SignUpBlock from './elements/SignUpBlock';
 import LearnMore from '../../elements/LearnMore';
+import BackgroundCircles from '../../elements/BackgroundCircles';
 
 export default function SignInGeneral() {
     const setTitle = useSetTitle();
@@ -16,6 +17,7 @@ export default function SignInGeneral() {
 
     return (
         <Fragment>
+            <BackgroundCircles mainStyles={{ height: '650px' }} />
             <div className="wrapper">
                 <div className="block block-breadcrumbs hide-sm">
                     <StateNavLink name={'home'} className="breadcrumb-item">

@@ -49,7 +49,7 @@
 
                 .block-about-us-image-title {
                     font: 600 22px/32px var(--base-font);
-                    margin-bottom: 20px;
+                    margin-bottom: 15px;
                 }
 
                 .block-about-us-image-subtitle {
@@ -68,12 +68,22 @@
             }
 
             &:hover {
+                box-shadow: 0 12px 30px 0 #E1E2E8;
+
                 .block-about-us-image-overlay {
                     display: none;
                 }
 
                 .block-about-us-image-overlay-hover {
                     display: block;
+                }
+
+                .block-about-us-image-info {
+                    .block-about-us-link {
+                        .mdi {
+                            margin-left: 10px;
+                        }
+                    }
                 }
             }
         }

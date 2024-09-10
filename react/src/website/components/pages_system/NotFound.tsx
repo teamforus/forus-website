@@ -6,6 +6,7 @@ import LearnMore from '../elements/LearnMore';
 import { useNavigateState } from '../../modules/state_router/Router';
 import { useLocation, useNavigate } from 'react-router-dom';
 import AboutUsBlock from '../elements/AboutUsBlock';
+import BackgroundCircles from '../elements/BackgroundCircles';
 
 export default function NotFound({ error = '404' }: { error?: string }) {
     const assetUrl = useAssetUrl();
@@ -35,6 +36,7 @@ export default function NotFound({ error = '404' }: { error?: string }) {
 
     return (
         <Fragment>
+            <BackgroundCircles />
             <div className="wrapper">
                 <div className="block block-error-page">
                     <div className="page-not-found-title">{error}</div>

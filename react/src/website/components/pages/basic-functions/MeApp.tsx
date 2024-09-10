@@ -7,6 +7,7 @@ import useSetMetaDescription from '../../../hooks/useSetMetaDescription';
 import BlockDashedSeparator from '../home/elements/BlockDashedSeparator';
 import StateNavLink from '../../../modules/state_router/StateNavLink';
 import useEnvData from '../../../hooks/useEnvData';
+import BackgroundCircles from '../../elements/BackgroundCircles';
 
 export default function MeApp() {
     const setTitle = useSetTitle();
@@ -38,6 +39,12 @@ export default function MeApp() {
 
     return (
         <Fragment>
+            <BackgroundCircles
+                mainStyles={{ height: '800px' }}
+                overlayStyles={{
+                    background: 'linear-gradient(0deg, #FFF 0%, #FFF 32.5%, rgba(255, 255, 255, 0.00) 100%)',
+                }}
+            />
             <Banner
                 type={'me-app'}
                 title={bannerTitle}

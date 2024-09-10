@@ -2,17 +2,16 @@
     display: flex;
     position: relative;
     height: 440px;
-    gap: 80px;
-    margin: 60px 0;
+    margin: 0 0 60px;
 
     .block-contact-details-main-info {
-        width: 50%;
+        width: calc(50% - 80px);
         display: flex;
         flex-direction: column;
         gap: 20px;
+        margin: 0 80px 0 0;
 
         .block-contact-details-main-title {
-            overflow: hidden;
             text-overflow: ellipsis;
             font: 700 56px/68px var(--base-font);
             margin-bottom: 60px;
@@ -30,6 +29,7 @@
 
                 .block-contact-details-main-list-item-label {
                     font: 600 20px/24px var(--base-font);
+                    margin: 0 0 5px 0;
 
                     .mdi {
                         font-size: 22px;
@@ -45,6 +45,7 @@
                 .block-contact-details-main-list-item-value {
                     font: 300 20px/24px var(--base-font);
                     color: #333;
+                    margin-left: 37px;
                 }
             }
         }
@@ -54,8 +55,8 @@
             gap: 10px;
 
             .icon-social {
-                width: 40px;
-                height: 40px;
+                width: 50px;
+                height: 50px;
                 background-size: contain;
                 background-repeat: no-repeat;
                 background-position: center;
@@ -116,6 +117,37 @@
             background: rgba($color: #000000, $alpha: .1);
             z-index: 1;
         }
+
+        .block-contact-map-circles {
+            position: absolute;
+            background-size: cover;
+            background-repeat: no-repeat;
+            z-index: -1;
+
+            &.block-contact-map-circles-top-right {
+                top: -110px;
+                right: -80px;
+                width: 200px;
+                height: 200px;
+                background-image: url(./assets/img/circle1.svg);
+            }
+
+            &.block-contact-map-circles-bottom-right {
+                bottom: -70px;
+                right: -70px;
+                width: 140px;
+                height: 140px;
+                background-image: url(./assets/img/circle5.svg);
+            }
+
+            &.block-contact-map-circles-bottom-left {
+                bottom: -100px;
+                left: -120px;
+                width: 200px;
+                height: 200px;
+                background-image: url(./assets/img/circle2.svg);
+            }
+        }
     }
 
     @media screen and (max-width: 1000px) {
@@ -147,6 +179,7 @@
 
                     .block-contact-details-main-list-item-value {
                         font: 300 15px/24px var(--base-font);
+                        margin-left: 0;
                     }
 
                     .block-contact-details-main-list-item-value, .block-contact-details-main-info-social {
@@ -161,6 +194,10 @@
             position: relative;
             width: 100%;
             height: 440px;
+
+            .block-contact-map-circles {
+                display: none;
+            }
         }
     }
 }

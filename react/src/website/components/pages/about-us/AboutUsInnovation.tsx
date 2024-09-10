@@ -4,6 +4,7 @@ import useAssetUrl from '../../../hooks/useAssetUrl';
 import LearnMore from '../../elements/LearnMore';
 import BlockDashedSeparator from '../home/elements/BlockDashedSeparator';
 import useSetMetaDescription from '../../../hooks/useSetMetaDescription';
+import BackgroundCircles from '../../elements/BackgroundCircles';
 
 export default function AboutUsInnovation() {
     const setTitle = useSetTitle();
@@ -23,11 +24,13 @@ export default function AboutUsInnovation() {
 
     return (
         <Fragment>
+            <BackgroundCircles />
             <div className="wrapper">
                 <div className="block block-info">
-                    <h2 className="block-info-title block-info-title-sm">Naar een merkbaar en meetbaar verschil!</h2>
+                    <div className="label label-gray label-center">Nieuws</div>
+                    <h2 className="block-info-title block-info-title-md">Naar een merkbaar en meetbaar verschil!</h2>
 
-                    <div className="block-info-description">
+                    <div className="block-info-description block-info-description-md">
                         Project gefinancierd door het Innovatiebudget 2023 in samenwerking met Gemeente Eemsdelta en
                         Gemeente Westerkwartier.
                     </div>
@@ -164,6 +167,10 @@ export default function AboutUsInnovation() {
 
             <div className="wrapper">
                 <div className="block block-with-image block-with-image-background">
+                    <div className="block-with-image-circles block-with-image-circles-top-right" />
+                    <div className="block-with-image-circles block-with-image-circles-top-left" />
+                    <div className="block-with-image-circles block-with-image-circles-bottom-center" />
+
                     <div className="block-with-image-wrapper">
                         <div className="block-with-image-image">
                             <img src={assetUrl('/assets/img/phases.jpg')} alt="Gebruiksvriendelijk platform" />
@@ -178,6 +185,8 @@ export default function AboutUsInnovation() {
                         </div>
                     </div>
                 </div>
+                <br />
+                <br />
 
                 <LearnMore
                     title={'Heeft u vragen of wilt u aanvullende informatie over het Innovatiebudget project?'}

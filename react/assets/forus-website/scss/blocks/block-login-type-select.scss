@@ -1,7 +1,7 @@
 .block.block-login-type-select {
     display: flex;
     flex-direction: column;
-    margin: 50px 0 70px 0;
+    margin: 20px 0 70px 0;
 
     .block-login-type-select-title {
         font: 700 56px/68px var(--base-font);
@@ -36,7 +36,7 @@
 
             .block-login-type-select-option-subtitle {
                 font: 300 16px/24px var(--base-font);
-                margin-bottom: 15px;
+                margin-bottom: 10px;
                 color: #55575E;
             }
 

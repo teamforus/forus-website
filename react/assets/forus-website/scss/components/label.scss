@@ -58,6 +58,10 @@
         cursor: pointer;
     }
 
+    &.label-center {
+        margin: 0 auto !important;
+    }
+
     &.label-success {
         background: #9bbfa1;
         color: #030304;

@@ -16,6 +16,7 @@ import SelectControlOptions from '../../../../dashboard/components/elements/sele
 import { CountryCallingCode, getCountries, getPhoneCode } from 'libphonenumber-js';
 import countries from 'i18n-iso-countries';
 import countriesEn from 'i18n-iso-countries/langs/en.json';
+import BackgroundCircles from '../../elements/BackgroundCircles';
 
 countries.registerLocale(countriesEn);
 
@@ -91,8 +92,9 @@ export default function Contacts() {
 
     return (
         <Fragment>
+            <BackgroundCircles mainStyles={{ height: '700px' }} />
             <div className="wrapper">
-                <div className="block block-info">
+                <div className="block block-info block-info-contact">
                     <div className="block-info-banner">
                         <img src={assetUrl('/assets/img/contact-banner.jpg')} alt="Locatie van Forus in Groningen" />
                     </div>
@@ -172,6 +174,9 @@ export default function Contacts() {
                             mapGestureHandlingMobile={'none'}
                             fullscreenPosition={window.google.maps.ControlPosition.TOP_RIGHT}
                         />
+                        <div className="block-contact-map-circles block-contact-map-circles-top-right" />
+                        <div className="block-contact-map-circles block-contact-map-circles-bottom-right" />
+                        <div className="block-contact-map-circles block-contact-map-circles-bottom-left" />
                     </div>
                 </div>
 
@@ -235,6 +240,10 @@ export default function Contacts() {
 
                     {(!formSubmitted || form.errors) && (
                         <div className="block-contact-form-main">
+                            <div className="block-contact-form-circles block-contact-form-circles-top-right" />
+                            <div className="block-contact-form-circles block-contact-form-circles-top-left" />
+                            <div className="block-contact-form-circles block-contact-form-circles-bottom-left" />
+
                             <form className="form" onSubmit={form.submit}>
                                 <div className="form-group">
                                     <label className="form-label form-label-required">Naam</label>
@@ -344,6 +353,10 @@ export default function Contacts() {
                         <Fragment>
                             {!formSubmitFailed ? (
                                 <div className="block-contact-form-success">
+                                    <div className="block-contact-form-circles block-contact-form-circles-top-right" />
+                                    <div className="block-contact-form-circles block-contact-form-circles-top-left" />
+                                    <div className="block-contact-form-circles block-contact-form-circles-bottom-left" />
+
                                     <div className="block-contact-form-success-icon">
                                         <img src={assetUrl('/assets/img/form-submit-succes.svg')} alt="" />
                                     </div>
@@ -359,6 +372,10 @@ export default function Contacts() {
                                 </div>
                             ) : (
                                 <div className="block-contact-form-error">
+                                    <div className="block-contact-form-circles block-contact-form-circles-top-right" />
+                                    <div className="block-contact-form-circles block-contact-form-circles-top-left" />
+                                    <div className="block-contact-form-circles block-contact-form-circles-bottom-left" />
+
                                     <div className="block-contact-form-success-icon">
                                         <img src={assetUrl('/assets/img/form-submit-fail.svg')} alt="" />
                                     </div>

@@ -2,12 +2,12 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    gap: 20px;
-    margin: 50px 0 70px 0;
+    gap: 45px;
+    margin: 20px 0 70px 0;
 
     .block-sign-in-title {
         font: 700 56px/68px var(--base-font);
-        margin: 0 0 35px 0;
+        margin: 0;
     }
 
     .block-sign-in-role-name {
@@ -58,6 +58,7 @@
 
                 .button-send-email {
                     margin-top: 25px;
+                    width: 200px;
                 }
 
                 &:after {
@@ -99,11 +100,17 @@
                     }
 
                     .block-sign-in-main-me-app-qr-image {
+                        padding: 10px;
+                        border-radius: 5px;
+                        border: 1px solid #F4F4F4;
+                        background: var(--Basic-White, #FFF);
+                        box-shadow: 0 2px 5px 0 #E1E2E8;
+
                         .block-qr-code {
                             .qr_code {
                                 canvas {
-                                    width: 180px;
-                                    height: 180px;
+                                    width: 160px;
+                                    height: 160px;
                                 }
                             }
                         }

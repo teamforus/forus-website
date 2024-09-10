@@ -8,6 +8,7 @@ import BlockLabelsFinancialDashboard from './elements/information/BlockLabelsFin
 import useSetMetaDescription from '../../../hooks/useSetMetaDescription';
 import StateNavLink from '../../../modules/state_router/StateNavLink';
 import BlockDashedSeparator from '../home/elements/BlockDashedSeparator';
+import BackgroundCircles from '../../elements/BackgroundCircles';
 
 export default function Information() {
     const setTitle = useSetTitle();
@@ -37,6 +38,12 @@ export default function Information() {
 
     return (
         <Fragment>
+            <BackgroundCircles
+                mainStyles={{ height: '700px' }}
+                overlayStyles={{
+                    background: 'linear-gradient(0deg, #FFF 0%, #FFF 32.5%, rgba(255, 255, 255, 0.00) 100%)',
+                }}
+            />
             <Banner
                 type={'information'}
                 title={bannerTitle}
@@ -111,7 +118,7 @@ export default function Information() {
                     <div className="block block-with-image">
                         <div className="block-with-image-wrapper">
                             <div className="block-with-image-info">
-                                <div className="block-with-image-title block-with-image-title-md">
+                                <div className="block-with-image-title block-with-image-title-lg">
                                     Ervaar de Forus-oplossing in actie
                                 </div>
                                 <div className="block-with-image-description block-with-image-description-sm">

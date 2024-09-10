@@ -67,7 +67,7 @@ export default function BookDemoForm() {
 
     return (
         <Fragment>
-            <div className="block-contact-form-info">
+            <div className="block-contact-form-info block-contact-form-book-demo">
                 <div className="block-contact-form-label">Bekijk ons platform in actie</div>
                 <div className="block-contact-form-title">Klaar om uw impact te vergroten?</div>
                 <div className="block-contact-form-description">

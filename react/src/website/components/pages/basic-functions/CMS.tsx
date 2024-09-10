@@ -11,6 +11,7 @@ import useSetMetaDescription from '../../../hooks/useSetMetaDescription';
 import StateNavLink from '../../../modules/state_router/StateNavLink';
 import BlockDashedSeparator from '../home/elements/BlockDashedSeparator';
 import ProgressLine from './elements/ProgressLine';
+import BackgroundCircles from '../../elements/BackgroundCircles';
 
 export default function CMS() {
     const setTitle = useSetTitle();
@@ -82,6 +83,12 @@ export default function CMS() {
 
     return (
         <Fragment>
+            <BackgroundCircles
+                mainStyles={{ height: '700px' }}
+                overlayStyles={{
+                    background: 'linear-gradient(0deg, #FFF 0%, #FFF 32.5%, rgba(255, 255, 255, 0.00) 100%)',
+                }}
+            />
             <Banner
                 type={'cms'}
                 title={bannerTitle}
@@ -208,7 +215,7 @@ export default function CMS() {
                     <div className="block block-with-image">
                         <div className="block-with-image-wrapper">
                             <div className="block-with-image-info">
-                                <div className="block-with-image-title block-with-image-title-md">
+                                <div className="block-with-image-title block-with-image-title-lg">
                                     Ervaar de Forus-oplossing in actie
                                 </div>
                                 <div className="block-with-image-description block-with-image-description-sm">

@@ -2,7 +2,7 @@
     display: flex;
     position: relative;
     gap: 80px;
-    margin: 80px 0 100px 0;
+    margin: 50px 0 100px 0;
 
     .block-contact-form-info {
         .block-contact-form-label {
@@ -13,26 +13,31 @@
 
         .block-contact-form-title {
             font: 700 56px/68px var(--base-font);
-            margin-bottom: 60px;
+            margin-bottom: 35px;
         }
 
         .block-contact-form-description {
-            font: 300 20px/30px var(--base-font);
+            font: 400 20px/30px var(--base-font);
             color: #333;
             margin-bottom: 60px;
         }
     }
 
     .block-contact-form-main {
+        position: relative;
         padding: 40px;
-        flex: 0 0 560px;
+        flex: 0 0 640px;
         border-radius: 20px;
         border: 1px solid #F4F4F4;
         background: #FFF;
-        box-shadow: 0 20px 55px 0 rgba(115, 120, 145, 0.06);
+        box-shadow: 0 2px 5px 0 #E1E2E8;
 
         a {
             text-decoration: underline;
+        }
+
+        .button {
+            padding: 13px 40px;
         }
 
         .block-contact-form-title {
@@ -55,6 +60,13 @@
                 border: 1px solid #D6D7DB;
             }
 
+            .form-control {
+                &::placeholder {
+                    color: #55575E;
+                    font: 400 15px/22px var(--base-font);
+                }
+            }
+
             .select-control-country-codes {
                 width: 100px;
                 margin-right: 5px;
@@ -69,6 +81,7 @@
     }
 
     .block-contact-form-success, .block-contact-form-error {
+        position: relative;
         display: flex;
         flex-direction: column;
         flex: 0 0 640px;
@@ -91,6 +104,59 @@
         .block-contact-form-success-description, .block-contact-form-error-description {
             font: 300 17px/27px var(--base-font);
             margin-bottom: 45px;
+        }
+
+        .button {
+            width: fit-content;
+            padding: 12px 25px;
+        }
+    }
+
+    .block-contact-form-circles {
+        position: absolute;
+        background-size: cover;
+        background-repeat: no-repeat;
+        z-index: -1;
+
+        &.block-contact-form-circles-top-right {
+            top: -60px;
+            right: -110px;
+            width: 200px;
+            height: 200px;
+            background-image: url(./assets/img/circle3.svg);
+        }
+
+        &.block-contact-form-circles-top-left {
+            top: -40px;
+            left: -40px;
+            width: 140px;
+            height: 140px;
+            background-image: url(./assets/img/circle5.svg);
+        }
+
+        &.block-contact-form-circles-bottom-left {
+            bottom: -70px;
+            left: -80px;
+            width: 200px;
+            height: 200px;
+            background-image: url(./assets/img/circle4.svg);
+        }
+    }
+
+    &.block-contact-form-book-demo {
+        .block-contact-form-info {
+            .block-contact-form-title {
+                font: 700 56px/68px var(--base-font);
+                margin-bottom: 35px;
+            }
+
+            .block-contact-form-description {
+                font: 400 22px/36px var(--base-font);
+            }
+        }
+
+        .block-contact-form-main, .block-contact-form-success, .block-contact-form-error {
+            flex: 0 0 540px;
         }
     }
 

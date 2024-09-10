@@ -1,7 +1,6 @@
 .block.block-overview-list {
     display: flex;
     flex-wrap: wrap;
-    background-image: url('./assets/img/background-roles.png');
     background-repeat: no-repeat, repeat;
     background-size: contain;
     background-position: top right;
@@ -33,14 +32,15 @@
             gap: 15px;
 
             .block-overview-list-item-title {
-                font: 700 20px/30px var(--base-font);
-                margin: 0 0;
+                font: 700 26px/36px var(--base-font);
+                margin: 0;
             }
 
             .block-overview-list-item-description {
-                font: 400 14px/21px var(--base-font);
-                margin: 0 0;
+                font: 400 16px/24px var(--base-font);
+                margin: 0 0 30px;
                 flex-grow: 1;
+                color: #333;
             }
 
             .block-overview-list-item-read-more {
@@ -72,13 +72,23 @@
         &:hover {
             box-shadow: 0 12px 30px 0 #e1e2e8;
 
-            .block-overview-list-item-read-more {
-                .block-overview-list-item-read-more-button {
-                    background: var(--color-primary);
-                    color: #fff;
+            .block-overview-list-item-info {
+                .block-overview-list-item-title {
+                    color: #444852;
+                }
 
-                    a {
+                .block-overview-list-item-read-more {
+                    .button {
                         color: #fff;
+                        background-color: var(--color-primary);
+
+                        a {
+                            color: #fff;
+                        }
+
+                        &.button-hover-gray {
+                            background-color: #7780A0;
+                        }
                     }
                 }
             }

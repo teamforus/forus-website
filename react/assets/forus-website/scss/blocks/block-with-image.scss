@@ -39,17 +39,13 @@
                 font: 700 40px/52px var(--base-font);
                 margin-bottom: 30px;
 
-                &.block-with-image-title-md {
-                    font: 700 52px/60px var(--base-font);
-                }
-
                 &.block-with-image-title-lg {
-                    font: 700 65px/80px var(--base-font);
+                    font: 700 56px/68px var(--base-font);
                 }
             }
 
             .block-with-image-description {
-                font: 400 18px/27px var(--base-font);
+                font: 300 20px/30px var(--base-font);
 
                 a {
                     font: 400 18px/27px var(--base-font);
@@ -122,12 +118,12 @@
             align-items: center;
 
             .block-with-image-info {
-                width: 65%;
+                width: 68%;
                 margin-bottom: 0;
             }
 
             .block-with-image-image {
-                width: 35%;
+                width: 32%;
             }
         }
     }
@@ -137,6 +133,7 @@
         border: 1px solid var(--border-color);
         background: #fff;
         box-shadow: 0 20px 55px 0 rgba(115, 120, 145, 0.06);
+        position: relative;
 
         .block-with-image-wrapper {
             gap: 0;
@@ -157,6 +154,37 @@
                 background: #fff;
                 padding: 50px;
                 border-radius: 10px;
+            }
+        }
+
+        .block-with-image-circles {
+            position: absolute;
+            background-size: cover;
+            background-repeat: no-repeat;
+            z-index: -1;
+
+            &.block-with-image-circles-top-right {
+                top: -130px;
+                right: -110px;
+                width: 200px;
+                height: 200px;
+                background-image: url(./assets/img/circle3.svg);
+            }
+
+            &.block-with-image-circles-top-left {
+                top: -65px;
+                left: -65px;
+                width: 140px;
+                height: 140px;
+                background-image: url(./assets/img/circle5.svg);
+            }
+
+            &.block-with-image-circles-bottom-center {
+                bottom: -90px;
+                left: 45%;
+                width: 200px;
+                height: 200px;
+                background-image: url(./assets/img/circle4.svg);
             }
         }
     }
@@ -250,6 +278,10 @@
                     border-radius: 0 0 20px 20px;
                     margin-bottom: 0;
                 }
+            }
+
+            .block-with-image-circles {
+                display: none;
             }
         }
 

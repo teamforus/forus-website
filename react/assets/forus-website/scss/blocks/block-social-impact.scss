@@ -43,9 +43,20 @@
 
     .block-social-impact-details {
         .block-overview-list {
+            background-image: url('./assets/img/background-roles.png');
+
             .block-overview-list-item {
                 gap: 20px;
                 height: fit-content;
+
+                .block-overview-list-item-title {
+                    font: 700 20px/30px var(--base-font);
+                }
+
+                .block-overview-list-item-description {
+                    font: 400 14px/21px var(--base-font);
+                    margin: 0;
+                }
 
                 .block-overview-list-item-info {
                     .block-overview-list-item-read-more {

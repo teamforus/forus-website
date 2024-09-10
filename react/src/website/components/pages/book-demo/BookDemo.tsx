@@ -3,6 +3,7 @@ import useSetTitle from '../../../hooks/useSetTitle';
 import useSetMetaDescription from '../../../hooks/useSetMetaDescription';
 import useAppConfigs from '../../../hooks/useAppConfigs';
 import BookDemoForm from './elements/BookDemoForm';
+import BackgroundCircles from '../../elements/BackgroundCircles';
 
 export default function BookDemo() {
     const setTitle = useSetTitle();
@@ -27,6 +28,7 @@ export default function BookDemo() {
 
     return (
         <Fragment>
+            <BackgroundCircles mainStyles={{ height: '750px' }} />
             <div className="wrapper hide-sm">
                 <div className="block block-contact-form block-contact-form-book-demo">
                     <BookDemoForm />

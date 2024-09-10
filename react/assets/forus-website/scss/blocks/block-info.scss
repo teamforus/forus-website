@@ -21,6 +21,10 @@
         &.block-info-title-sm {
             font: 700 46px/68px var(--base-font);
         }
+
+        &.block-info-title-md {
+            font: 700 56px/68px var(--base-font);
+        }
     }
 
     .block-info-label {
@@ -43,6 +47,14 @@
 
             a {
                 font: 300 18px/28px var(--base-font);
+            }
+        }
+
+        &.block-info-description-md {
+            font: 400 26px/30px var(--base-font);
+
+            a {
+                font: 400 26px/30px var(--base-font);
             }
         }
     }
@@ -80,6 +92,10 @@
 
     .block-info-actions {
         width: fit-content;
+
+        &.block-info-actions-lg {
+            min-width: 200px;
+        }
     }
 
     .block-info-banner {
@@ -119,6 +135,18 @@
                 top: -2px;
                 border-radius: var(--border-radius);
             }
+        }
+    }
+
+    &.block-info-contact {
+        gap: 40px;
+
+        .block-info-title {
+            margin: 0;
+        }
+
+        .block-info-description {
+            margin-bottom: 5px;
         }
     }
 
