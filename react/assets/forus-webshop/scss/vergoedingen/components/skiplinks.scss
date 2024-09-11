@@ -1,0 +1,9 @@
+.skiplinks {
+    a {
+        &.sr-only-focusable {
+            span {
+                text-decoration: none;
+            }
+        }
+    }
+}
