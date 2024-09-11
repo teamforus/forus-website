@@ -92,7 +92,7 @@ export default function ModalPayoutEdit({
                     ? 'predefined'
                     : 'custom'
                 : amountOptions?.[0]?.key,
-            amount_preset_id: transaction ? transaction?.amount_preset_id : amountValueOptions?.[0]?.id,
+            amount_preset_id: transaction?.amount_preset_id || amountValueOptions?.[0]?.id,
             description: transaction?.description || '',
             email: '',
             bsn: '',
@@ -203,7 +203,7 @@ export default function ModalPayoutEdit({
                                         value={form.values.amount || ''}
                                         step=".01"
                                         min="0.01"
-                                        max={fund?.limit_per_voucher}
+                                        max={fund?.custom_amount_max}
                                         onChange={(e) => form.update({ amount: e.target.value })}
                                     />
                                 ) : (
