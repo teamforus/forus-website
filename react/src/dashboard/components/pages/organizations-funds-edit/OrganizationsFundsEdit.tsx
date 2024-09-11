@@ -75,6 +75,7 @@ export default function OrganizationsFundsEdit() {
     const [fundStates] = useState(fundService.getStates());
     const faqEditorBlock = useRef<() => Promise<boolean>>();
     const criteriaBlockRef = useRef<() => Promise<Array<FundCriterion> | null>>();
+    const [showInfoNotificationAmountBlock, setShowInfoNotificationAmountBlock] = useState<boolean>(false);
 
     const [fundTypes] = useState([
         { value: 'budget', name: 'Waardebon' },
@@ -1135,16 +1136,51 @@ export default function OrganizationsFundsEdit() {
                                     <div className="form-label">
                                         {translate('funds_edit.labels.notification_amount')}
                                     </div>
-                                    <input
-                                        className="form-control"
-                                        type="number"
-                                        value={form.values.notification_amount || ''}
-                                        onChange={(e) => {
-                                            form.update({ notification_amount: e.target.value });
-                                        }}
-                                        disabled={!hasPermission(activeOrganization, 'manage_funds')}
-                                        placeholder={translate('funds_edit.labels.notification_amount')}
-                                    />
+
+                                    <div className="form-offset">
+                                        <div className="form-group-info">
+                                            <div className="form-group-info-control">
+                                                <input
+                                                    className="form-control"
+                                                    type="number"
+                                                    value={form.values.notification_amount || ''}
+                                                    onChange={(e) => {
+                                                        form.update({ notification_amount: e.target.value });
+                                                    }}
+                                                    disabled={!hasPermission(activeOrganization, 'manage_funds')}
+                                                    placeholder={translate('funds_edit.labels.notification_amount')}
+                                                />
+                                            </div>
+
+                                            <div className="form-group-info-button">
+                                                <div
+                                                    className={`button button-default button-icon pull-left ${
+                                                        showInfoBlock ? 'active' : ''
+                                                    }`}
+                                                    onClick={() =>
+                                                        setShowInfoNotificationAmountBlock(
+                                                            !showInfoNotificationAmountBlock,
+                                                        )
+                                                    }>
+                                                    <em className="mdi mdi-information" />
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {showInfoNotificationAmountBlock && (
+                                            <div className="block block-info-box block-info-box-primary">
+                                                <div className="info-box-icon mdi mdi-information" />
+
+                                                <div className="info-box-content">
+                                                    Handig! Stel een minimum bedrag in voor het saldo van de regeling.
+                                                    Er wordt automatisch een e-mail verstuurd als het saldo voor de
+                                                    regeling lager is dan deze grens. De e-mail wordt verstuurd naar
+                                                    gebruikers met de rollen beheerder en financiën.
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+
                                     <FormError error={form.errors?.notification_amount} />
                                 </div>
                             </div>
