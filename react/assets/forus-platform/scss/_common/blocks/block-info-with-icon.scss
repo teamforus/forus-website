@@ -1,0 +1,35 @@
+.block.block-info-with-icon {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+
+    .info-icon {
+        flex: 0 0 52px;
+
+        svg {
+            display: block;
+            width: 100%;
+        }
+    }
+
+    .info-content {
+        display: flex;
+        flex-direction: column;
+        flex: 1 1 auto;
+        gap: 5px;
+
+        .info-content-title {
+            font: 600 16px/20px var(--base-font);
+            margin: 0 0;
+        }
+
+        .info-content-description {
+            font: 400 13px/18px var(--base-font);
+            margin: 0 0;
+        }
+
+        .info-content-actions {
+            padding-top: 10px;
+        }
+    }
+}
