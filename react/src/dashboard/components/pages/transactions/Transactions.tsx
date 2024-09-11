@@ -73,7 +73,6 @@ export default function Transactions() {
     const [funds, setFunds] = useState(null);
     const [transactions, setTransactions] = useState<PaginationData<Transaction>>(null);
     const [transactionBulks, setTransactionBulks] = useState<PaginationData<TransactionBulk>>(null);
-    const [showActionMenu, setShowActionMenu] = useState(null);
 
     const hasDirectPayments = useMemo(() => {
         return funds?.filter((fund: Fund) => fund.allow_direct_payments).length > 0;
@@ -1031,15 +1030,9 @@ export default function Transactions() {
                                             <td data-dusk="transactionState">
                                                 <TransactionLabel transaction={transaction} />
                                             </td>
-                                            <td
-                                                className={'table-td-actions'}
-                                                style={{ zIndex: showActionMenu === transaction.id ? 1 : 0 }}>
-                                                <div
-                                                    className={`actions ${showActionMenu == transaction.id ? 'active' : ''}`}>
-                                                    <TableRowActions
-                                                        id={transaction.id}
-                                                        activeId={showActionMenu}
-                                                        setActiveId={setShowActionMenu}>
+                                            <td className={'table-td-actions'}>
+                                                <TableRowActions
+                                                    content={() => (
                                                         <div className="dropdown dropdown-actions">
                                                             <StateNavLink
                                                                 className="dropdown-item"
@@ -1052,8 +1045,8 @@ export default function Transactions() {
                                                                 Bekijken
                                                             </StateNavLink>
                                                         </div>
-                                                    </TableRowActions>
-                                                </div>
+                                                    )}
+                                                />
                                             </td>
                                         </StateNavLink>
                                     ))}
@@ -1191,15 +1184,9 @@ export default function Transactions() {
                                                 )}
                                             </td>
 
-                                            <td
-                                                className={'table-td-actions text-right'}
-                                                style={{ zIndex: showActionMenu === transactionBulk.id ? 1 : 0 }}>
-                                                <div
-                                                    className={`actions ${showActionMenu == transactionBulk.id ? 'active' : ''}`}>
-                                                    <TableRowActions
-                                                        id={transactionBulk.id}
-                                                        activeId={showActionMenu}
-                                                        setActiveId={setShowActionMenu}>
+                                            <td className={'table-td-actions text-right'}>
+                                                <TableRowActions
+                                                    content={() => (
                                                         <div className="dropdown dropdown-actions">
                                                             <StateNavLink
                                                                 className="dropdown-item"
@@ -1212,8 +1199,8 @@ export default function Transactions() {
                                                                 Bekijken
                                                             </StateNavLink>
                                                         </div>
-                                                    </TableRowActions>
-                                                </div>
+                                                    )}
+                                                />
                                             </td>
                                         </tr>
                                     ))}

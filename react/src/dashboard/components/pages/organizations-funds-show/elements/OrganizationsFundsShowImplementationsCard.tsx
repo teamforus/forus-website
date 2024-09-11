@@ -35,7 +35,6 @@ export default function OrganizationsFundsShowImplementationsCard({
 
     const [paginationPerPageKey] = useState('fund_implementation_per_page');
     const [lastQueryImplementations, setLastQueryImplementations] = useState<string>('');
-    const [shownImplementationMenuId, setShownImplementationMenuId] = useState<number>(null);
     const [implementations, setImplementations] = useState<PaginationData<Implementation>>(null);
 
     const filter = useFilter({
@@ -202,36 +201,37 @@ export default function OrganizationsFundsShowImplementationsCard({
 
                                                 <td className="td-narrow text-right">
                                                     <TableRowActions
-                                                        activeId={shownImplementationMenuId}
-                                                        setActiveId={setShownImplementationMenuId}
-                                                        id={implementation.id}>
-                                                        <div className="dropdown dropdown-actions">
-                                                            <a
-                                                                className="dropdown-item"
-                                                                target="_blank"
-                                                                href={implementation?.url_webshop + 'funds/' + fund.id}
-                                                                rel="noreferrer">
-                                                                <em className="mdi mdi-open-in-new icon-start" /> Bekijk
-                                                                op webshop
-                                                            </a>
+                                                        content={() => (
+                                                            <div className="dropdown dropdown-actions">
+                                                                <a
+                                                                    className="dropdown-item"
+                                                                    target="_blank"
+                                                                    href={
+                                                                        implementation?.url_webshop + 'funds/' + fund.id
+                                                                    }
+                                                                    rel="noreferrer">
+                                                                    <em className="mdi mdi-open-in-new icon-start" />{' '}
+                                                                    Bekijk op webshop
+                                                                </a>
 
-                                                            {hasPermission(
-                                                                activeOrganization,
-                                                                'manage_implementation_cms',
-                                                            ) && (
-                                                                <StateNavLink
-                                                                    name={'implementations-view'}
-                                                                    params={{
-                                                                        id: implementation?.id,
-                                                                        organizationId: fund.organization_id,
-                                                                    }}
-                                                                    className="dropdown-item">
-                                                                    <em className="mdi mdi-store-outline icon-start" />
-                                                                    Ga naar CMS
-                                                                </StateNavLink>
-                                                            )}
-                                                        </div>
-                                                    </TableRowActions>
+                                                                {hasPermission(
+                                                                    activeOrganization,
+                                                                    'manage_implementation_cms',
+                                                                ) && (
+                                                                    <StateNavLink
+                                                                        name={'implementations-view'}
+                                                                        params={{
+                                                                            id: implementation?.id,
+                                                                            organizationId: fund.organization_id,
+                                                                        }}
+                                                                        className="dropdown-item">
+                                                                        <em className="mdi mdi-store-outline icon-start" />
+                                                                        Ga naar CMS
+                                                                    </StateNavLink>
+                                                                )}
+                                                            </div>
+                                                        )}
+                                                    />
                                                 </td>
                                             </tr>
                                         ))}

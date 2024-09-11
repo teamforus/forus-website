@@ -23,6 +23,7 @@
 @import 'components/labels';
 @import 'components/flex-grid';
 @import 'components/modals.scss';
+@import 'components/frame-director.scss';
 
 // blocks
 .block {
@@ -4803,7 +4804,7 @@ body {
                 height: 40px;
                 font-size: 22px;
                 line-height: 40px;
-                color: #CFD8DC;
+                color: #cfd8dc;
             }
         }
 
@@ -4820,7 +4821,7 @@ body {
 
             .file-size {
                 font: 500 11px/14px var(--base-font);
-                color: #646F79;
+                color: #646f79;
             }
         }
 

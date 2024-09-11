@@ -118,14 +118,16 @@ export default function SelectControlOptionsOrganization<T>({
 
                 {showOptions && (
                     <ClickOutside
-                        onClick={null}
+                        className="select-control-options-group"
+                        attr={{
+                            role: 'listbox',
+                            onClick: null,
+                            id: `${controlId}_options`,
+                        }}
                         onClickOutside={(e) => {
                             e.stopPropagation();
                             setShowOptions(false);
-                        }}
-                        className="select-control-options-group"
-                        id={`${controlId}_options`}
-                        role="listbox">
+                        }}>
                         <div className="select-control-options" onScroll={onOptionsScroll}>
                             {optionsFiltered.slice(0, visibleCount)?.map((option) => (
                                 <div

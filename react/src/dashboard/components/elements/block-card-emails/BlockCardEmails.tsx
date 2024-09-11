@@ -36,7 +36,6 @@ export default function BlockCardEmails({
 
     const [emailLogs, setEmailLogs] = useState<PaginationData<EmailLog>>(null);
     const [paginatorKey] = useState('fund_request_email_logs');
-    const [shownMenuId, setShownMenuId] = useState<number>(null);
 
     const [filterValues, filterValuesActive, filterUpdate] = useFilterNext<{
         q: string;
@@ -155,32 +154,31 @@ export default function BlockCardEmails({
                                             </td>
                                             <td className={'text-right'}>
                                                 <TableRowActions
-                                                    activeId={shownMenuId}
-                                                    setActiveId={setShownMenuId}
-                                                    id={emailLog.id}>
-                                                    <div className="dropdown dropdown-actions">
-                                                        <a
-                                                            className={'dropdown-item'}
-                                                            onClick={() => {
-                                                                openEmail(emailLog);
-                                                                setShownMenuId(null);
-                                                            }}>
-                                                            <em className="mdi mdi-eye icon-start" />
-                                                            Bekijken
-                                                        </a>
-                                                        {onExportEmail && (
+                                                    content={({ close }) => (
+                                                        <div className="dropdown dropdown-actions">
                                                             <a
                                                                 className={'dropdown-item'}
                                                                 onClick={() => {
-                                                                    onExportEmail?.(emailLog);
-                                                                    setShownMenuId(null);
+                                                                    openEmail(emailLog);
+                                                                    close();
                                                                 }}>
-                                                                <em className="mdi mdi-content-save-outline icon-start" />
-                                                                Download
+                                                                <em className="mdi mdi-eye icon-start" />
+                                                                Bekijken
                                                             </a>
-                                                        )}
-                                                    </div>
-                                                </TableRowActions>
+                                                            {onExportEmail && (
+                                                                <a
+                                                                    className={'dropdown-item'}
+                                                                    onClick={() => {
+                                                                        onExportEmail?.(emailLog);
+                                                                        close();
+                                                                    }}>
+                                                                    <em className="mdi mdi-content-save-outline icon-start" />
+                                                                    Download
+                                                                </a>
+                                                            )}
+                                                        </div>
+                                                    )}
+                                                />
                                             </td>
                                         </tr>
                                     ))}

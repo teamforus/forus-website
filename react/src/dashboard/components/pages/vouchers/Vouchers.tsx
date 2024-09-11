@@ -31,7 +31,6 @@ export default function Vouchers() {
     const [loading, setLoading] = useState<boolean>(true);
     const [vouchers, setVouchers] = useState<PaginationData<Voucher>>(null);
     const [paginatorKey] = useState<string>('vouchers');
-    const [shownVoucherMenuId, setShownVoucherMenuId] = useState<number>(null);
 
     const { funds } = useVoucherTableOptions(activeOrganization);
 
@@ -201,8 +200,6 @@ export default function Vouchers() {
                                             voucher={voucher}
                                             fetchVouchers={fetchVouchers}
                                             organization={activeOrganization}
-                                            shownVoucherMenuId={shownVoucherMenuId}
-                                            setShownVoucherMenuId={setShownVoucherMenuId}
                                         />
                                     ))}
                                 </tbody>

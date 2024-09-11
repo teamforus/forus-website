@@ -16,15 +16,11 @@ export default function VouchersTableRow({
     voucher,
     organization,
     fetchVouchers,
-    shownVoucherMenuId,
-    setShownVoucherMenuId,
 }: {
     funds: Array<Partial<Fund>>;
     voucher: Voucher;
     organization: Organization;
     fetchVouchers: () => void;
-    shownVoucherMenuId?: number;
-    setShownVoucherMenuId?: React.Dispatch<React.SetStateAction<number>>;
 }) {
     const translate = useTranslate();
     const showQrCode = useShowVoucherQrCode();
@@ -33,10 +29,9 @@ export default function VouchersTableRow({
         (e: React.MouseEvent) => {
             e.preventDefault();
             const fund = funds?.find((fund) => fund.id === voucher.fund_id);
-            setShownVoucherMenuId(null);
             showQrCode(organization, voucher, fund, fetchVouchers);
         },
-        [fetchVouchers, funds, organization, setShownVoucherMenuId, showQrCode, voucher],
+        [fetchVouchers, funds, organization, showQrCode, voucher],
     );
 
     return (
@@ -170,9 +165,9 @@ export default function VouchersTableRow({
                 <VouchersTableRowStatus voucher={voucher} />
             </td>
 
-            <td className={'table-td-actions'} style={{ zIndex: shownVoucherMenuId === voucher.id ? 1 : 0 }}>
-                <div className={`actions ${shownVoucherMenuId == voucher.id ? 'active' : ''}`}>
-                    <TableRowActions id={voucher.id} activeId={shownVoucherMenuId} setActiveId={setShownVoucherMenuId}>
+            <td className={'table-td-actions'}>
+                <TableRowActions
+                    content={() => (
                         <div className="dropdown dropdown-actions">
                             <StateNavLink
                                 className="dropdown-item"
@@ -203,8 +198,8 @@ export default function VouchersTableRow({
                                     </Fragment>
                                 )}
                         </div>
-                    </TableRowActions>
-                </div>
+                    )}
+                />
             </td>
         </StateNavLink>
     );
