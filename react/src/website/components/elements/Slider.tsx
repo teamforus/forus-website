@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import StateNavLink from '../../modules/state_router/StateNavLink';
 
 export default function Slider({
@@ -30,44 +30,85 @@ export default function Slider({
 }) {
     const $element = useRef<HTMLDivElement>(null);
     const [activeItem, setActiveItem] = useState(0);
+    const [interval, setInterval] = useState(0);
+    const [wasOnceScrolledIntoView, setWasOnceScrolledIntoView] = useState(false);
+
+    const prev = useCallback(() => {
+        if (activeItem === 0) {
+            setActiveItem(elements.length - 1);
+        } else {
+            setActiveItem(activeItem - 1);
+        }
+    }, [activeItem, elements.length]);
+
+    const next = useCallback(() => {
+        if (activeItem === elements.length - 1) {
+            setActiveItem(0);
+        } else {
+            setActiveItem(activeItem + 1);
+        }
+    }, [activeItem, elements.length]);
+
+    const isScrolledIntoView = useCallback(() => {
+        const rect = $element.current.getBoundingClientRect();
+        const elemTop = rect.top;
+        const elemBottom = rect.bottom;
+
+        // Only completely visible elements return true:
+        // Partially visible elements return true:
+        //isVisible = elemTop < window.innerHeight && elemBottom >= 0;
+        return elemTop >= 0 && elemBottom <= window.innerHeight;
+    }, []);
+
+    const onWindowScroll = useCallback(() => {
+        setInterval(
+            window.setTimeout(
+                () => {
+                    if (isScrolledIntoView()) {
+                        setWasOnceScrolledIntoView(true);
+                        next();
+                    }
+                },
+                wasOnceScrolledIntoView ? 5000 : 500,
+            ),
+        );
+    }, [isScrolledIntoView, next, wasOnceScrolledIntoView]);
+
+    useEffect(() => {
+        window.addEventListener('scroll', onWindowScroll, true);
+
+        return () => {
+            window.removeEventListener('scroll', onWindowScroll, true);
+        };
+    }, [interval, onWindowScroll]);
 
     return (
         <div className={`block block-slider ${hasSquareArrows ? 'block-slider-square' : ''}`} ref={$element}>
             <div className={`block-slider-main ${!showBackgroundImage ? 'hide-background' : ''}`}>
-                {label && <div className="label label-gray">{label}</div>}
-                <div className="block-slider-title">{title}</div>
-                {description && <div className="block-slider-description">{description}</div>}
-                <div className="block-slider-arrows">
-                    <div
-                        className={`block-slider-arrow`}
-                        onClick={() => {
-                            if (activeItem === 0) {
-                                setActiveItem(elements.length - 1);
-                            } else {
-                                setActiveItem(activeItem - 1);
-                            }
-                        }}>
-                        <em className="mdi mdi-arrow-left" />
+                <div className="block-slider-main-wrapper">
+                    {label && <div className="label label-gray">{label}</div>}
+                    <div className="block-slider-title">{title}</div>
+                    {description && <div className="block-slider-description">{description}</div>}
+                    <div className="block-slider-arrows">
+                        <div className={`block-slider-arrow`} onClick={() => prev()}>
+                            <em className="mdi mdi-arrow-left" />
+                        </div>
+                        <div className={`block-slider-arrow`} onClick={() => next()}>
+                            <em className="mdi mdi-arrow-right" />
+                        </div>
                     </div>
-                    <div
-                        className={`block-slider-arrow`}
-                        onClick={() => {
-                            if (activeItem === elements.length - 1) {
-                                setActiveItem(0);
-                            } else {
-                                setActiveItem(activeItem + 1);
-                            }
-                        }}>
-                        <em className="mdi mdi-arrow-right" />
-                    </div>
+                    {showActionButton && (
+                        <div className="block-slider-actions">
+                            <StateNavLink name={'book-demo'} className="button button-primary">
+                                Gratis demo aanvragen
+                            </StateNavLink>
+                        </div>
+                    )}
                 </div>
-                {showActionButton && (
-                    <div className="block-slider-actions">
-                        <StateNavLink name={'book-demo'} className="button button-primary">
-                            Gratis demo aanvragen
-                        </StateNavLink>
-                    </div>
-                )}
+                <div className="block-slider-numeration-wrapper">
+                    <div className="block-slider-numeration">{activeItem + 1}</div>
+                    {hasSquareArrows && <div className="block-slider-numeration-roadmap" />}
+                </div>
             </div>
 
             <div className="block-slider-list">
@@ -77,10 +118,6 @@ export default function Slider({
                             <div
                                 className={`block-slider-list-item ${index == activeItem ? 'active' : ''}`}
                                 key={index}>
-                                <div className="block-slider-numeration-wrapper">
-                                    <div className="block-slider-numeration">{index + 1}</div>
-                                    {hasSquareArrows && <div className="block-slider-numeration-roadmap" />}
-                                </div>
                                 <div className="block-slider-list-item-main">
                                     {element?.timeInterval && element?.timeIntervalLabel && (
                                         <div className="block-slider-timeline">
