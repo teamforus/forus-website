@@ -1,6 +1,7 @@
 export default {
     header: {
         title: 'Individuele betaalopdrachten',
+        title_provider: 'Individuele transacties',
         titleBulks: 'Bulk betaalopdrachten',
     },
     labels: {

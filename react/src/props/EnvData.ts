@@ -24,6 +24,7 @@ export default interface EnvDataProp {
         features_contact_phone?: string;
         support_contact_email?: string;
         support_contact_phone?: string;
+        fund_requests_use_custom_modal?: boolean;
 
         aws_rum?: AwsRumProps;
         allow_test_errors?: boolean;

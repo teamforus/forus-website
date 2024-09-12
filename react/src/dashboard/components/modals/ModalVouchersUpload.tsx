@@ -869,7 +869,7 @@ export default function ModalVouchersUpload({
         <div
             className={classNames(
                 'modal',
-                step == STEP_SET_UP ? 'modal-md' : 'modal-lg modal-bulk-upload',
+                step == STEP_SET_UP ? 'modal-md' : 'modal-bulk-upload',
                 'modal-animated',
                 (modal.loading || hideModal) && 'modal-loading',
                 isDragOver && 'is-dragover',
