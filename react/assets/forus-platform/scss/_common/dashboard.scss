@@ -89,9 +89,11 @@
     @import 'blocks/block-toast.scss';
 }
 
-@import 'blocks/block-email-log-preview.scss';
 @import 'blocks/block-fund-amounts.scss';
+@import 'blocks/block-info-with-icon.scss';
+@import 'blocks/block-email-log-preview.scss';
 @import 'blocks/block-approve-fund-request.scss';
+@import 'blocks/block-provider-products-required.scss';
 
 // Select controls
 .select-control {
@@ -110,6 +112,7 @@
     @import 'modals/modal-physical-cards.scss';
     @import 'modals/modal-voucher-transaction.scss';
     @import 'modals/modal-pin-code.scss';
+    @import 'modals/modal-provider-products-required.scss';
     @import 'modals/modal-bulk-upload.scss';
 }
 
@@ -985,6 +988,19 @@ body {
             }
         }
 
+        &.card-header-md {
+            padding: 15px 20px;
+
+            .card-title {
+                font: 600 14px / 21px var(--base-font);
+
+                .mdi {
+                    margin-right: 0;
+                    color: #646F79;
+                }
+            }
+        }
+
         &.card-header-cursor-default {
             cursor: default;
         }
@@ -1200,6 +1216,10 @@ body {
             padding: 15px 25px 15px;
         }
 
+        &.card-section-sm {
+            padding: 10px;
+        }
+
         &.card-section-padless,
         &.card-section-no-padding {
             padding: 0;
@@ -1309,6 +1329,18 @@ body {
 
     &.card-padded {
         margin-bottom: 0;
+    }
+
+    &.card-bordered {
+        border: 1px solid var(--border-color);
+    }
+
+    &.card-overflow-hidden {
+        overflow: hidden;
+    }
+
+    &.card-no-shadow {
+        box-shadow: none;
     }
 }
 

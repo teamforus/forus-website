@@ -45,6 +45,8 @@ import FaqEditor from '../../elements/faq-editor-funds/FaqEditor';
 
 export default function OrganizationsFundsEdit() {
     const { fundId } = useParams();
+
+    const appConfigs = useAppConfigs();
     const activeOrganization = useActiveOrganization();
 
     const assetUrl = useAssetUrl();
@@ -53,7 +55,6 @@ export default function OrganizationsFundsEdit() {
     const setProgress = useSetProgress();
     const pushSuccess = usePushSuccess();
     const navigateState = useNavigateState();
-    const appConfigs = useAppConfigs();
 
     const tagService = useTagService();
     const fundService = useFundService();
@@ -189,6 +190,7 @@ export default function OrganizationsFundsEdit() {
         contact_info_message_text?: string;
         outcome_type?: 'voucher' | 'payout';
         voucher_amount_visible?: boolean;
+        provider_products_required?: boolean;
     }>(
         {
             description_position: descriptionPositions[0]?.value,
@@ -210,6 +212,7 @@ export default function OrganizationsFundsEdit() {
             contact_info_message_text: '',
             outcome_type: 'voucher',
             voucher_amount_visible: false,
+            provider_products_required: false,
         },
         async (values) => {
             const data = JSON.parse(JSON.stringify(values));
@@ -859,6 +862,30 @@ export default function OrganizationsFundsEdit() {
                         </div>
                     </div>
                 )}
+
+                <div className="card-section card-section-primary">
+                    <div className="row">
+                        <div className="col col-lg-9 col-xs-12">
+                            <div className="form-group form-group-inline tooltipped">
+                                <label className="form-label">Aanbod plaatsen verzoek</label>
+                                <CheckboxControl
+                                    id={'provider_products_required'}
+                                    checked={!!form.values.provider_products_required}
+                                    onChange={(e) => form.update({ provider_products_required: e.target.checked })}
+                                    title={
+                                        'Vraag aanbieders om ten minste één aanbod toe te voegen om deel te nemen aan dit fonds.'
+                                    }
+                                />
+                                <Tooltip
+                                    text={
+                                        'Wanneer u het vakje aanvinkt, ontvangen aanbieders die zich proberen in te schrijven voor dit fonds een melding om hun aanbod toe te voegen.'
+                                    }
+                                />
+                                <FormError error={form.errors?.provider_products_required} />
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
                 {!form.values.external_page && (
                     <div className="card-section card-section-primary">
