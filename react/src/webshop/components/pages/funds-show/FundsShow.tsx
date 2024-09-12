@@ -260,7 +260,7 @@ export default function FundsShow() {
                                         {fundMeta && fundMeta.hasVouchers && (
                                             <StateNavLink
                                                 name={'voucher'}
-                                                params={{ address: fund.vouchers[0]?.address }}
+                                                params={{ address: fundMeta.vouchers[0]?.address }}
                                                 className="button button-primary">
                                                 {translate(
                                                     `funds.buttons.${fund.key}.already_received`,

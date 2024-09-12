@@ -20,6 +20,7 @@ import { PrintableProvider } from './modules/printable/context/PrintableContext'
 import i18nEN from './i18n/i18n-en';
 import i18nNL from './i18n/i18n-nl';
 import { FrameDirectorProvider } from './modules/frame_director/context/FrameDirectorContext';
+import ProviderNotificationProductRequired from './modules/provider_notification_product_required/ProviderNotificationProductRequired';
 
 i18n.use(initReactI18next)
     .init({
@@ -86,6 +87,9 @@ export default function Dashboard({ envData }: { envData: EnvDataProp }): React.
                                             <QueryParamProvider adapter={ReactRouter6Adapter} options={{}}>
                                                 <StateHashPrefixRedirect />
                                                 <RouterLayout envData={envData} />
+                                                {envData.client_type === 'provider' && (
+                                                    <ProviderNotificationProductRequired />
+                                                )}
                                             </QueryParamProvider>
                                         </MainProvider>
                                     </ModalsProvider>

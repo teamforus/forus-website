@@ -482,7 +482,7 @@ export default function Payouts() {
                                             <td>
                                                 <TransactionLabel transaction={transaction} />
                                             </td>
-                                            <td>{transaction.employee.email}</td>
+                                            <td>{transaction?.employee?.email || <TableEmptyValue />}</td>
                                             <td>
                                                 {transaction.iban_to}
                                                 <div className={'text-small text-muted-dark'}>
