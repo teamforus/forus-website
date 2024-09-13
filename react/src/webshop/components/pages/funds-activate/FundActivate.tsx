@@ -39,6 +39,7 @@ import BlockLoader from '../../elements/block-loader/BlockLoader';
 import { clickOnKeyEnter } from '../../../../dashboard/helpers/wcag';
 import FundCriterion from '../../../../dashboard/props/models/FundCriterion';
 import useSetTitle from '../../../hooks/useSetTitle';
+import SignUpFooter from '../../elements/sign-up/SignUpFooter';
 
 export default function FundActivate() {
     const { id } = useParams();
@@ -638,7 +639,7 @@ export default function FundActivate() {
                                 <div className="sign_up-pane-header">
                                     <h2 className="sign_up-pane-header-title">Vul uw activatiecode in</h2>
                                 </div>
-                                <div className="sign_up-pane-body sign_up-pane-body-padless-bottom">
+                                <div className="sign_up-pane-body">
                                     <form className="form" onSubmit={codeForm.submit}>
                                         <div className="form-group text-center">
                                             <div className="form-label">{translate('popup_auth.input.code')}</div>
@@ -663,16 +664,18 @@ export default function FundActivate() {
                                         </div>
                                     </form>
                                 </div>
-                                <div className="sign_up-pane-footer">
-                                    {options?.length > 1 && (
-                                        <div
-                                            className="button button-text button-text-padless"
-                                            onClick={() => setState('select')}>
-                                            <em className="mdi mdi-chevron-left icon-lefts" />
-                                            Terug
-                                        </div>
-                                    )}
-                                </div>
+                                <SignUpFooter
+                                    startActions={
+                                        options?.length > 1 && (
+                                            <div
+                                                className="button button-text button-text-padless"
+                                                onClick={() => setState('select')}>
+                                                <em className="mdi mdi-chevron-left icon-lefts" />
+                                                Terug
+                                            </div>
+                                        )
+                                    }
+                                />
                             </div>
                         )}
 
@@ -714,22 +717,20 @@ export default function FundActivate() {
                                         )}
                                     </div>
                                 </div>
-                                <div className="sign_up-pane-footer">
-                                    <div className="row">
-                                        <div className="col col-lg-6 text-left">&nbsp;</div>
-                                        <div className="col col-lg-6 text-right">
-                                            {criteriaChecked && (fund.key != 'IIT' || criteriaCheckedWarning) && (
-                                                <div
-                                                    className="button button-text button-text-padless"
-                                                    onClick={() => confirmCriteria()}
-                                                    role="button">
-                                                    {translate('fund_request.sign_up.pane.footer.next')}
-                                                    <em className="mdi mdi-chevron-right icon-right" />
-                                                </div>
-                                            )}
-                                        </div>
-                                    </div>
-                                </div>
+                                <SignUpFooter
+                                    endActions={
+                                        criteriaChecked &&
+                                        (fund.key != 'IIT' || criteriaCheckedWarning) && (
+                                            <div
+                                                className="button button-text button-text-padless"
+                                                onClick={() => confirmCriteria()}
+                                                role="button">
+                                                {translate('fund_request.sign_up.pane.footer.next')}
+                                                <em className="mdi mdi-chevron-right icon-right" />
+                                            </div>
+                                        )
+                                    }
+                                />
                             </div>
                         )}
 
