@@ -146,10 +146,6 @@ export default function AboutUs() {
                         De reis naar het vinden van best-practices om te verbinden en sociale impact te vergroten
                     </div>
 
-                    <div className="block-info-banner">
-                        <img src={assetUrl('/assets/img/about-us-banner.jpg')} alt="About us banner" />
-                    </div>
-
                     <div className="block-info-subtitle">Do Good Better</div>
 
                     <div className="block-info-description-sm">
