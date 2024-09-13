@@ -100,10 +100,12 @@ export default function SelectControlOptions<T>({
                 {showOptions && (
                     <ClickOutside
                         className="select-control-options"
-                        id={`${controlId}_options`}
-                        role="listbox"
-                        onScroll={onOptionsScroll}
-                        onClick={null}
+                        attr={{
+                            id: `${controlId}_options`,
+                            role: 'listbox',
+                            onClick: null,
+                            onScroll: onOptionsScroll,
+                        }}
                         onClickOutside={(e) => {
                             e.stopPropagation();
                             setShowOptions(false);

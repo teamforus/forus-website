@@ -115,10 +115,12 @@ export default function SelectControlOptionsFund<T>({
                 {showOptions && (
                     <ClickOutside
                         className="select-control-options"
-                        id={`${controlId}_options`}
-                        role="listbox"
-                        onScroll={onOptionsScroll}
-                        onClick={null}
+                        attr={{
+                            id: `${controlId}_options`,
+                            role: 'listbox',
+                            onScroll: onOptionsScroll,
+                            onClick: null,
+                        }}
                         onClickOutside={(e) => {
                             e.stopPropagation();
                             setShowOptions(false);
