@@ -405,7 +405,13 @@ export default function ModalVoucherTransactionsUpload({
 
     return (
         <div
-            className={`modal modal-animated modal-bulk-upload ${modal.loading || hideModal ? 'modal-loading' : ''} ${className}`}
+            className={classNames(
+                'modal',
+                'modal-animated',
+                'modal-bulk-upload',
+                (modal.loading || hideModal) && 'modal-loading',
+                className,
+            )}
             data-dusk="modalTransactionUpload">
             <div className="modal-backdrop" onClick={closeModal} />
             <div className="modal-window">

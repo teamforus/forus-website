@@ -14,7 +14,9 @@
             margin-bottom: 15px;
             box-shadow: var(--box-shadow);
             position: relative;
-            transition: background-color 0.4s, border 0.4s;
+            transition:
+                background-color 0.4s,
+                border 0.4s;
             min-height: 120px;
             overflow: hidden;
             cursor: default;
@@ -252,7 +254,7 @@
                     flex-direction: column;
                     justify-content: center;
 
-                    &>.button {
+                    & > .button {
                         position: relative;
                         top: auto;
                         left: auto;
@@ -313,7 +315,7 @@
                     flex-direction: column;
                     justify-content: center;
 
-                    &>.button {
+                    & > .button {
                         position: relative;
                         top: auto;
                         left: auto;
@@ -334,13 +336,18 @@
                     @include fill_parent();
                     background-color: #000;
                     opacity: 0;
-                    transition: opacity .3s;
+                    transition: opacity 0.3s;
                 }
 
                 &:hover {
                     &:after {
-                        opacity: .035;
+                        opacity: 0.035;
                     }
+                }
+
+                &:focus {
+                    outline-offset: -2px;
+                    border-radius: 7px;
                 }
 
                 &.voucher-item-select-placeholder {
@@ -438,7 +445,7 @@
                     }
 
                     .voucher-status-label {
-                        position: initial;;
+                        position: initial;
                         order: 1;
 
                         .label {

@@ -44,7 +44,9 @@ export default {
         'funds-create': 'Fonds aanmaken',
         'funds-show': 'Beschikbare fondsen',
         'funds-edit': 'Fonds bewerken',
+        payouts: 'Uitbetalingen',
         transactions: 'Betaalopdrachten',
+        transactions_provider: 'Transacties',
         transaction: 'Betaalopdrachten details',
         products: 'Aanbod',
         'products-create': 'Aanbod toevoegen',
@@ -554,6 +556,7 @@ export default {
                     formulas: 'Rekenregels',
                     statistics: 'Statistieken',
                     criteria: 'Voorwaarden',
+                    configs: 'Uitbetalingsinstellingen',
                 },
             },
             details_card: {

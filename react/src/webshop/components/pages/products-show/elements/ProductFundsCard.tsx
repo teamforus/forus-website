@@ -16,6 +16,7 @@ import useOpenModal from '../../../../../dashboard/hooks/useOpenModal';
 import ModalProductReserve from '../../../modals/modal-product-reserve/ModalProductReserve';
 import Tooltip from '../../../elements/tooltip/Tooltip';
 import useFetchAuthIdentity from '../../../../hooks/useFetchAuthIdentity';
+import useFundMetaBuilder from '../../../../hooks/meta/useFundMetaBuilder';
 
 export default function ProductFundsCard({
     product,
@@ -42,6 +43,7 @@ export default function ProductFundsCard({
     const productService = useProductService();
 
     const onlyAvailableFunds = useMemo(() => envData?.config?.flags?.productDetailsOnlyAvailableFunds, [envData]);
+    const fundMetaBuilder = useFundMetaBuilder();
 
     const productMeta = useMemo(() => {
         if (!product || !funds || !vouchers) {
@@ -54,14 +56,14 @@ export default function ProductFundsCard({
             ...meta,
             funds: meta.funds.map((productFund) => ({
                 ...productFund,
-                ...fundService.mapFund(
+                ...fundMetaBuilder(
                     { ...funds.find((fund) => fund.id == productFund.id), ...productFund },
                     vouchers,
                     appConfigs,
                 ),
             })),
         };
-    }, [product, funds, productService, vouchers, fundService, appConfigs]);
+    }, [product, funds, productService, vouchers, fundMetaBuilder, appConfigs]);
 
     const listFunds = useMemo(() => {
         return productMeta?.funds.filter((fund) => !onlyAvailableFunds || fund.meta.isReservationAvailable);
@@ -279,20 +281,27 @@ export default function ProductFundsCard({
                                     )}
                                     {fund.alreadyReceived && !fund.meta.isReservationAvailable && (
                                         <div className="fund-item-section">
-                                            <StateNavLink
-                                                name="voucher"
-                                                params={{
-                                                    address: fund.vouchers[0].address,
-                                                }}
-                                                className="button button-primary">
-                                                {translate(
-                                                    `funds.buttons.${fund.key}.already_received`,
-                                                    {},
-                                                    'funds.buttons.already_received',
-                                                )}
+                                            {fund.hasVouchers ? (
+                                                <StateNavLink
+                                                    name="voucher"
+                                                    params={{
+                                                        address: fund.vouchers[0].address,
+                                                    }}
+                                                    className="button button-primary">
+                                                    {translate(
+                                                        `funds.buttons.${fund.key}.already_received`,
+                                                        {},
+                                                        'funds.buttons.already_received',
+                                                    )}
 
-                                                <em className="mdi mdi-arrow-right icon-right" aria-hidden="true" />
-                                            </StateNavLink>
+                                                    <em className="mdi mdi-arrow-right icon-right" aria-hidden="true" />
+                                                </StateNavLink>
+                                            ) : (
+                                                <Fragment>
+                                                    <div className="fund-item-section-label">Reservering</div>
+                                                    <div className="fund-item-section-value">Niet beschikbaar</div>
+                                                </Fragment>
+                                            )}
                                         </div>
                                     )}
                                 </div>

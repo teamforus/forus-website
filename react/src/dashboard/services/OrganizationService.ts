@@ -180,6 +180,7 @@ export class OrganizationService<T = Organization> {
                 { permissions: ['manage_funds', 'view_finances', 'view_funds'], name: 'organization-funds' },
                 { permissions: ['manage_vouchers', 'view_vouchers'], name: 'vouchers' },
                 { permissions: ['view_finances'], name: 'transactions' },
+                { permissions: ['manage_payouts'], name: 'payouts' },
                 { permissions: ['validate_records'], name: 'csv-validation' },
             ],
             provider: [

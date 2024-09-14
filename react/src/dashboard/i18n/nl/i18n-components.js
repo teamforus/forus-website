@@ -27,6 +27,7 @@ export default {
             implementation: 'Implementatie',
             status: 'Status',
             actions: 'Actie',
+            type: 'Soort',
         },
         filters: {
             search: 'Zoeken',

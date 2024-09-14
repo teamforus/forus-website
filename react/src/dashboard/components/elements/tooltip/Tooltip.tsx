@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { ReactNode, useState } from 'react';
 import { strLimit } from '../../../helpers/string';
 import ClickOutside from '../click-outside/ClickOutside';
 
@@ -7,11 +7,13 @@ export default function Tooltip({
     type = 'default',
     position = 'right',
     maxLength = 128,
+    children,
 }: {
-    text: Array<string> | string;
+    text?: Array<string> | string;
     type?: 'default' | 'primary';
     position?: 'right' | 'bottom';
     maxLength?: number;
+    children?: ReactNode | Array<ReactNode>;
 }) {
     const [showTooltip, setShowTooltip] = useState(false);
 
@@ -28,10 +30,11 @@ export default function Tooltip({
                 {showTooltip && (
                     <ClickOutside
                         className={`tooltip-content ${position === 'bottom' ? 'tooltip-content-bottom' : ''}`}
-                        onClick={(e) => e.stopPropagation()}
+                        attr={{ onClick: (e) => e.stopPropagation() }}
                         onClickOutside={() => setShowTooltip(false)}>
                         <div className="tooltip-text" title={[].concat(text)?.join(' ')}>
                             {strLimit([].concat(text)?.join(' ') || '-', maxLength)}
+                            {children}
                         </div>
                     </ClickOutside>
                 )}
@@ -48,6 +51,7 @@ export default function Tooltip({
                 {[].concat(text).map((line, index) => (
                     <div key={index}>{line}</div>
                 ))}
+                {children}
             </div>
         </div>
     );
