@@ -583,8 +583,8 @@ export default function FundRequest() {
         }
     }, [autoSubmit, autoSubmitted, step, steps, submitConfirmCriteria]);
 
-    if (!fund || !vouchers || !fundRequests) {
-        return null;
+    if (!fund || !vouchers || !fundRequests || (steps[step] == 'confirm_criteria' && autoSubmit)) {
+        return <BlockShowcase wrapper={true} />;
     }
 
     return (
