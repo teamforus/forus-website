@@ -215,11 +215,13 @@ router.state('sponsor-provider-organization', <SponsorProviderOrganization />, {
 });
 
 router.state('payouts', <Payouts />, {
-    path: `/organizations/:organizationId/payouts`,
+    path: `/organisaties/:organizationId/uitbetalingen`,
+    altPath: `/organizations/:organizationId/payouts`,
 });
 
 router.state('payout', <PayoutsView />, {
-    path: `/organizations/:organizationId/payouts/:address`,
+    path: `/organisaties/:organizationId/uitbetalingen/:address`,
+    altPath: `/organizations/:organizationId/payouts/:address`,
 });
 
 router.state('fund-provider', <FundProvider />, {
