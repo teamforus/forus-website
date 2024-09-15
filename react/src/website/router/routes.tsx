@@ -23,6 +23,7 @@ import SignInGeneral from '../components/pages/sign-in/SignInGeneral';
 import SignUp from '../components/pages/sign-up/SignUp';
 import SignInAsRole from '../components/pages/sign-in/SignInAsRole';
 import IdentityRestore from '../components/pages/auth/IdentityRestore';
+import MeAppDownload from '../components/pages/dl/MeAppDownload';
 
 const router = new RouterBuilder();
 
@@ -133,6 +134,11 @@ router.state('privacy', <Privacy />, {
 
 router.state('book-demo', <BookDemo />, {
     path: `/demo-aanvragen`,
+    protected: false,
+});
+
+router.state('me-app-dl', <MeAppDownload />, {
+    path: `/DL`,
     protected: false,
 });
 
