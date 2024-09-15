@@ -28,9 +28,21 @@
 
     .button-read-more {
         color: #273266;
+        transition: color 0.4s;
 
         .mdi {
             font-size: 15px;
+            height: auto;
+            transition: 0.4s;
+        }
+
+        &:hover {
+            color: #4c74ff;
+
+            .mdi {
+                transform: translate(+5px);
+                color: #4c74ff;
+            }
         }
     }
 
