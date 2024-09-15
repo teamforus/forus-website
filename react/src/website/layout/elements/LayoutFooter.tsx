@@ -5,6 +5,7 @@ import StateNavLink from '../../modules/state_router/StateNavLink';
 import useEnvData from '../../hooks/useEnvData';
 import useSetActiveMenuDropdown from '../../hooks/useSetActiveMenuDropdown';
 import { useLocation } from 'react-router-dom';
+import { lowerCase } from 'lodash';
 
 export default function LayoutFooter() {
     const envData = useEnvData();
@@ -19,7 +20,7 @@ export default function LayoutFooter() {
     }
 
     return (
-        <div className={`layout-footer ${location.pathname === '/dl' ? 'layout-footer-no-apps' : ''}`}>
+        <div className={`layout-footer ${lowerCase(location.pathname) === 'dl' ? 'layout-footer-no-apps' : ''}`}>
             <div className="wrapper">
                 <div className="block block-footer-apps">
                     <StateNavLink
