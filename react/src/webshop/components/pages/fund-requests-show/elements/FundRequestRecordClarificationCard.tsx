@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { Fragment, useCallback, useState } from 'react';
 import FundRequestRecord from '../../../../../dashboard/props/models/FundRequestRecord';
 import FormError from '../../../../../dashboard/components/elements/forms/errors/FormError';
 import useFormBuilder from '../../../../../dashboard/hooks/useFormBuilder';
@@ -89,7 +89,13 @@ export default function FundRequestRecordClarificationCard({
                     <div className="fund-request-chat-message fund-request-chat-message-in">
                         <div className="fund-request-chat-message-time">{clarification.created_at_locale}</div>
                         <div className="fund-request-chat-message-content">
-                            <div className="fund-request-chat-message-text">{clarification.question}</div>
+                            <div className="fund-request-chat-message-text">
+                                {clarification.question.split(/(\n)/g).map((line, index) => (
+                                    <Fragment key={index}>
+                                        {line && (line != '\n' ? <div>{line}</div> : <br />)}
+                                    </Fragment>
+                                ))}
+                            </div>
                         </div>
                     </div>
                     {clarification.state === 'answered' && (
