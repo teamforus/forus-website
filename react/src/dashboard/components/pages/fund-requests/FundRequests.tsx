@@ -6,7 +6,6 @@ import { getStateRouteUrl } from '../../../modules/state_router/Router';
 import Paginator from '../../../modules/paginator/components/Paginator';
 import { strLimit } from '../../../helpers/string';
 import FundRequest from '../../../props/models/FundRequest';
-import Organization from '../../../props/models/Organization';
 import ThSortable from '../../elements/tables/ThSortable';
 import FilterItemToggle from '../../elements/tables/elements/FilterItemToggle';
 import SelectControl from '../../elements/select-control/SelectControl';
@@ -20,7 +19,6 @@ import DatePickerControl from '../../elements/forms/controls/DatePickerControl';
 import { PaginationData, ResponseError } from '../../../props/ApiResponses';
 import ModalExportTypeLegacy from '../../modals/ModalExportTypeLegacy';
 import { useFileService } from '../../../services/FileService';
-import Employee from '../../../props/models/Employee';
 import useEnvData from '../../../hooks/useEnvData';
 import useAppConfigs from '../../../hooks/useAppConfigs';
 import useOpenModal from '../../../hooks/useOpenModal';
@@ -31,6 +29,8 @@ import { dateFormat, dateParse } from '../../../helpers/dates';
 import usePaginatorService from '../../../modules/paginator/services/usePaginatorService';
 import EmptyCard from '../../elements/empty-card/EmptyCard';
 import useTranslate from '../../../hooks/useTranslate';
+import classNames from 'classnames';
+import usePushApiError from '../../../hooks/usePushApiError';
 
 export default function FundRequests() {
     const envData = useEnvData();
@@ -42,11 +42,11 @@ export default function FundRequests() {
 
     const pushDanger = usePushDanger();
     const setProgress = useSetProgress();
+    const pushApiError = usePushApiError();
     const navigate = useNavigate();
 
     const [employees, setEmployees] = useState(null);
-    const [fundRequests, setFundRequests] =
-        useState<PaginationData<FundRequest & { assigned_employees?: Array<Employee> }>>(null);
+    const [fundRequests, setFundRequests] = useState<PaginationData<FundRequest>>(null);
 
     const fileService = useFileService();
     const employeeService = useEmployeeService();
@@ -100,43 +100,20 @@ export default function FundRequests() {
 
         fundRequestService
             .index(activeOrganization.id, filter.activeValues)
-            .then((res) => {
-                res.data.data = res.data.data.map((request) => {
-                    const assigned_employees = request.records
-                        .filter((record) => record.employee?.organization_id == activeOrganization.id)
-                        .map((record) => record.employee?.email)
-                        .reduce((list, email) => (list.includes(email) ? list : [...list, email]), []);
-
-                    return {
-                        ...request,
-                        assigned_employees: assigned_employees,
-                    };
-                });
-
-                setFundRequests(res.data);
-            })
-            .catch((res) => pushDanger('Mislukt!', res.data.message))
+            .then((res) => setFundRequests(res.data))
+            .catch(pushApiError)
             .finally(() => setProgress(100));
-    }, [setProgress, pushDanger, activeOrganization.id, filter.activeValues, fundRequestService]);
+    }, [setProgress, activeOrganization.id, filter.activeValues, fundRequestService, pushApiError]);
 
     const fetchEmployees = useCallback(() => {
         setProgress(0);
 
         employeeService
             .list(activeOrganization.id, { per_page: 100, permission: 'validate_records' })
-            .then(
-                (res) => setEmployees({ data: [allEmployeesOption, ...res.data.data], meta: res.data.meta }),
-                (res) => pushDanger('Mislukt!', res.data.message),
-            )
+            .then((res) => setEmployees({ data: [allEmployeesOption, ...res.data.data], meta: res.data.meta }))
+            .catch(pushApiError)
             .finally(() => setProgress(100));
-    }, [setProgress, pushDanger, activeOrganization.id, employeeService, allEmployeesOption]);
-
-    const getAssignedEmployees = useCallback((request: FundRequest, organization: Organization) => {
-        return request.records
-            .filter((record) => record.employee?.organization_id == organization.id)
-            .map((record) => record.employee?.email)
-            .reduce((list, email) => (list.includes(email) ? list : [...list, email]), []);
-    }, []);
+    }, [setProgress, activeOrganization.id, employeeService, allEmployeesOption, pushApiError]);
 
     const doExport = useCallback(
         (exportType: string) => {
@@ -157,22 +134,12 @@ export default function FundRequests() {
     );
 
     const exportRequests = useCallback(() => {
-        openModal((modal) => (
-            <ModalExportTypeLegacy
-                modal={modal}
-                onSubmit={(exportType) => {
-                    doExport(exportType);
-                }}
-            />
-        ));
+        openModal((modal) => <ModalExportTypeLegacy modal={modal} onSubmit={(exportType) => doExport(exportType)} />);
     }, [doExport, openModal]);
 
     const getShowUrl = useCallback(
         (fundRequest: FundRequest) => {
-            return getStateRouteUrl('fund-request', {
-                organizationId: activeOrganization.id,
-                id: fundRequest.id,
-            });
+            return getStateRouteUrl('fund-request', { organizationId: activeOrganization.id, id: fundRequest.id });
         },
         [activeOrganization],
     );
@@ -192,115 +159,115 @@ export default function FundRequests() {
 
     return (
         <div className="card" data-dusk="fundRequestsPageContent">
-            <div className="card-header">
-                <div className="flex-row">
-                    <div className="flex flex-grow">
-                        <div className="card-title">
-                            {translate('validation_requests.header.title')} ({fundRequests?.meta.total})
-                        </div>
+            <div className="card-header card-header-next">
+                <div className="flex flex-grow">
+                    <div className="card-title">
+                        {translate('validation_requests.header.title')}
+                        &nbsp;
+                        <span className="span-count">{fundRequests.meta.total}</span>
                     </div>
+                </div>
 
-                    <div className="flex">
-                        <div className="block block-inline-filters">
-                            {filter.show && (
-                                <button
-                                    className="button button-text"
-                                    onClick={() => {
-                                        filter.resetFilters();
-                                        filter.setShow(false);
-                                    }}>
-                                    <em className="mdi mdi-close icon-start" />
-                                    {translate('validation_requests.buttons.clear_filter')}
-                                </button>
-                            )}
+                <div className="card-header-filters form">
+                    <div className="block block-inline-filters">
+                        {filter.show && (
+                            <button
+                                className="button button-text"
+                                onClick={() => {
+                                    filter.resetFilters();
+                                    filter.setShow(false);
+                                }}>
+                                <em className="mdi mdi-close icon-start" />
+                                {translate('validation_requests.buttons.clear_filter')}
+                            </button>
+                        )}
 
-                            {!filter.show && (
-                                <div className="form">
-                                    <div className="form-group">
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            value={filter.values.q}
-                                            onChange={(e) => filter.update({ q: e.target.value })}
-                                            placeholder={translate('validation_requests.labels.search')}
-                                        />
-                                    </div>
-                                </div>
-                            )}
-
-                            <CardHeaderFilter filter={filter}>
-                                <FilterItemToggle show={true} label={translate('validation_requests.labels.search')}>
+                        {!filter.show && (
+                            <div className="form">
+                                <div className="form-group">
                                     <input
                                         type="text"
-                                        value={filter.values?.q}
+                                        className="form-control"
+                                        value={filter.values.q}
                                         onChange={(e) => filter.update({ q: e.target.value })}
                                         placeholder={translate('validation_requests.labels.search')}
-                                        className="form-control"
                                     />
-                                </FilterItemToggle>
-                                <FilterItemToggle label={translate('validation_requests.labels.status')}>
-                                    <SelectControl
-                                        className={'form-control'}
-                                        options={states}
-                                        propKey={'key'}
-                                        allowSearch={false}
-                                        optionsComponent={SelectControlOptions}
-                                        onChange={(state: string) => filter.update({ state })}
-                                    />
-                                </FilterItemToggle>
-                                <FilterItemToggle label={translate('validation_requests.labels.assignee_state')}>
-                                    <SelectControl
-                                        className={'form-control'}
-                                        options={assignedOptions}
-                                        propKey={'key'}
-                                        allowSearch={false}
-                                        optionsComponent={SelectControlOptions}
-                                        onChange={(assigned: number | null) => filter.update({ assigned })}
-                                    />
-                                </FilterItemToggle>
-                                <FilterItemToggle label={translate('validation_requests.labels.assigned_to')}>
-                                    {employees && (
-                                        <SelectControl
-                                            className={'form-control'}
-                                            options={employees.data}
-                                            propKey={'id'}
-                                            propValue={'email'}
-                                            allowSearch={false}
-                                            optionsComponent={SelectControlOptions}
-                                            onChange={(employee_id: number | null) => filter.update({ employee_id })}
-                                        />
-                                    )}
-                                </FilterItemToggle>
-                                <FilterItemToggle label={translate('validation_requests.labels.from')}>
-                                    <DatePickerControl
-                                        placeholder={'yyyy-MM-dd'}
-                                        value={dateParse(filter.values.from?.toString())}
-                                        onChange={(date) => filter.update({ from: dateFormat(date) })}
-                                    />
-                                </FilterItemToggle>
-
-                                <FilterItemToggle label={translate('validation_requests.labels.to')}>
-                                    <DatePickerControl
-                                        placeholder={'yyyy-MM-dd'}
-                                        value={dateParse(filter.values.to)}
-                                        onChange={(date: Date) => filter.update({ to: dateFormat(date) })}
-                                    />
-                                </FilterItemToggle>
-                                <div className="form-actions">
-                                    {fundRequests && (
-                                        <button
-                                            className="button button-primary button-wide"
-                                            disabled={fundRequests.meta.total == 0}
-                                            onClick={() => exportRequests()}>
-                                            <em className="mdi mdi-download icon-start" />
-                                            {translate('components.dropdown.export', {
-                                                total: fundRequests.meta.total,
-                                            })}
-                                        </button>
-                                    )}
                                 </div>
-                            </CardHeaderFilter>
-                        </div>
+                            </div>
+                        )}
+
+                        <CardHeaderFilter filter={filter}>
+                            <FilterItemToggle show={true} label={translate('validation_requests.labels.search')}>
+                                <input
+                                    type="text"
+                                    value={filter.values?.q}
+                                    onChange={(e) => filter.update({ q: e.target.value })}
+                                    placeholder={translate('validation_requests.labels.search')}
+                                    className="form-control"
+                                />
+                            </FilterItemToggle>
+                            <FilterItemToggle label={translate('validation_requests.labels.status')}>
+                                <SelectControl
+                                    className={'form-control'}
+                                    options={states}
+                                    propKey={'key'}
+                                    allowSearch={false}
+                                    optionsComponent={SelectControlOptions}
+                                    onChange={(state: string) => filter.update({ state })}
+                                />
+                            </FilterItemToggle>
+                            <FilterItemToggle label={translate('validation_requests.labels.assignee_state')}>
+                                <SelectControl
+                                    className={'form-control'}
+                                    options={assignedOptions}
+                                    propKey={'key'}
+                                    allowSearch={false}
+                                    optionsComponent={SelectControlOptions}
+                                    onChange={(assigned: number | null) => filter.update({ assigned })}
+                                />
+                            </FilterItemToggle>
+                            <FilterItemToggle label={translate('validation_requests.labels.assigned_to')}>
+                                {employees && (
+                                    <SelectControl
+                                        className={'form-control'}
+                                        options={employees.data}
+                                        propKey={'id'}
+                                        propValue={'email'}
+                                        allowSearch={false}
+                                        optionsComponent={SelectControlOptions}
+                                        onChange={(employee_id: number | null) => filter.update({ employee_id })}
+                                    />
+                                )}
+                            </FilterItemToggle>
+                            <FilterItemToggle label={translate('validation_requests.labels.from')}>
+                                <DatePickerControl
+                                    placeholder={'yyyy-MM-dd'}
+                                    value={dateParse(filter.values.from?.toString())}
+                                    onChange={(date) => filter.update({ from: dateFormat(date) })}
+                                />
+                            </FilterItemToggle>
+
+                            <FilterItemToggle label={translate('validation_requests.labels.to')}>
+                                <DatePickerControl
+                                    placeholder={'yyyy-MM-dd'}
+                                    value={dateParse(filter.values.to)}
+                                    onChange={(date: Date) => filter.update({ to: dateFormat(date) })}
+                                />
+                            </FilterItemToggle>
+                            <div className="form-actions">
+                                {fundRequests && (
+                                    <button
+                                        className="button button-primary button-wide"
+                                        disabled={fundRequests.meta.total == 0}
+                                        onClick={() => exportRequests()}>
+                                        <em className="mdi mdi-download icon-start" />
+                                        {translate('components.dropdown.export', {
+                                            total: fundRequests.meta.total,
+                                        })}
+                                    </button>
+                                )}
+                            </div>
+                        </CardHeaderFilter>
                     </div>
                 </div>
             </div>
@@ -386,34 +353,34 @@ export default function FundRequests() {
                                                 </strong>
                                             </td>
                                             <td>
-                                                {((assignedEmployees) => {
-                                                    if (assignedEmployees.length == 0) {
-                                                        return <span className="text-muted">Niet toegewezen</span>;
-                                                    }
-
-                                                    return assignedEmployees.map((email) => (
-                                                        <div key={email} className="text-primary">
-                                                            <strong>{email}</strong>
-                                                        </div>
-                                                    ));
-                                                })(getAssignedEmployees(fundRequest, activeOrganization))}
+                                                {fundRequest.employee ? (
+                                                    <div className="text-primary">
+                                                        <strong>{fundRequest.employee.email}</strong>
+                                                    </div>
+                                                ) : (
+                                                    <span className="text-muted">Niet toegewezen</span>
+                                                )}
                                             </td>
                                             <td>
-                                                {fundRequest.state == 'pending' &&
-                                                fundRequest.assigned_employees?.length > 0 ? (
+                                                {fundRequest.state == 'pending' && fundRequest.employee ? (
                                                     <div className="label label-tag label-round label-warning">
                                                         <span className="mdi mdi-circle-outline icon-start" />
                                                         <span>In behandeling</span>
                                                     </div>
                                                 ) : (
                                                     <div
-                                                        className={`label label-tag label-round label-${
-                                                            stateLabels[fundRequest.state]?.label
-                                                        }`}>
+                                                        className={classNames(
+                                                            'label',
+                                                            'label-tag',
+                                                            'label-round',
+                                                            `label-${stateLabels[fundRequest.state]?.label}`,
+                                                        )}>
                                                         <em
-                                                            className={`mdi mdi-${
-                                                                stateLabels[fundRequest.state]?.icon
-                                                            } icon-start`}
+                                                            className={classNames(
+                                                                'mdi',
+                                                                `mdi-${stateLabels[fundRequest.state]?.icon}`,
+                                                                `icon-start`,
+                                                            )}
                                                         />
                                                         {fundRequest.state_locale}
                                                     </div>

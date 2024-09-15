@@ -13,7 +13,6 @@ import Voucher from '../../../../dashboard/props/models/Voucher';
 import IconFundRequest from '../../../../../assets/forus-webshop/resources/_webshop-common/assets/img/icon-fund-request.svg';
 import { useNavigateState, useStateParams } from '../../../modules/state_router/Router';
 import useShowTakenByPartnerModal from '../../../services/helpers/useShowTakenByPartnerModal';
-import FundsListItemModel from '../../../services/types/FundsListItemModel';
 import Markdown from '../../elements/markdown/Markdown';
 import BlockCard2FAWarning from '../../elements/block-card-2fa-warning/BlockCard2FAWarning';
 import useSetTitle from '../../../hooks/useSetTitle';
@@ -23,6 +22,7 @@ import BlockLoaderBreadcrumbs from '../../elements/block-loader/BlockLoaderBread
 import useSetProgress from '../../../../dashboard/hooks/useSetProgress';
 import FundFaq from './elements/FundFaq';
 import FundProductsBlock from './elements/FundProductsBlock';
+import useFundMeta from '../../../hooks/meta/useFundMeta';
 
 export default function FundsShow() {
     const { id } = useParams();
@@ -42,8 +42,10 @@ export default function FundsShow() {
     const voucherService = useVoucherService();
     const recordTypesService = useRecordTypeService();
 
-    const [fund, setFund] = useState<FundsListItemModel>(null);
+    const [fund, setFund] = useState<Fund>(null);
     const [vouchers, setVouchers] = useState<Array<Voucher>>(null);
+
+    const fundMeta = useFundMeta(fund, vouchers || [], appConfigs);
 
     const { searchParams } = useStateParams();
 
@@ -78,9 +80,9 @@ export default function FundsShow() {
 
         fundService
             .read(parseInt(id), { check_criteria: 1 })
-            .then((res) => setFund(fundService.mapFund(res.data.data, vouchers || [], appConfigs)))
+            .then((res) => setFund(res.data.data))
             .finally(() => setProgress(100));
-    }, [appConfigs, fundService, id, vouchers, setProgress]);
+    }, [fundService, id, vouchers, setProgress]);
 
     const fetchVouchers = useCallback(() => {
         setProgress(0);
@@ -145,7 +147,7 @@ export default function FundsShow() {
                     </div>
                 </section>
             }>
-            {fund && (
+            {fund && fundMeta && (
                 <section className="section section-fund">
                     <div className="wrapper">
                         <div className="block block-breadcrumbs">
@@ -223,7 +225,9 @@ export default function FundsShow() {
                                         {fund.external_link_text && fund.external_link_url && (
                                             <a
                                                 className={`button button ${
-                                                    fund.linkPrimaryButton ? 'button-primary' : 'button-primary-outline'
+                                                    fundMeta.linkPrimaryButton
+                                                        ? 'button-primary'
+                                                        : 'button-primary-outline'
                                                 }`}
                                                 target="_blank"
                                                 href={fund.external_link_url}
@@ -233,7 +237,7 @@ export default function FundsShow() {
                                             </a>
                                         )}
 
-                                        {fund.showRequestButton && (
+                                        {fundMeta.showRequestButton && (
                                             <StateNavLink
                                                 name={'fund-activate'}
                                                 params={{ id: fund.id }}
@@ -243,7 +247,7 @@ export default function FundsShow() {
                                             </StateNavLink>
                                         )}
 
-                                        {fund.showActivateButton && (
+                                        {fundMeta.showActivateButton && (
                                             <a
                                                 className="button button-primary"
                                                 type="button"
@@ -253,10 +257,10 @@ export default function FundsShow() {
                                             </a>
                                         )}
 
-                                        {fund.alreadyReceived && (
+                                        {fundMeta && fundMeta.hasVouchers && (
                                             <StateNavLink
                                                 name={'voucher'}
-                                                params={{ address: fund.vouchers[0]?.address }}
+                                                params={{ address: fundMeta.vouchers[0]?.address }}
                                                 className="button button-primary">
                                                 {translate(
                                                     `funds.buttons.${fund.key}.already_received`,
@@ -269,7 +273,7 @@ export default function FundsShow() {
                                     </div>
                                 </div>
 
-                                {fund.showPendingButton && (
+                                {fundMeta.showPendingButton && (
                                     <div className="block block-action-card block-action-card-compact">
                                         <div className="block-card-logo">
                                             <IconFundRequest />

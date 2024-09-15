@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import ApiRequestService from './ApiRequestService';
-import FundRequest from '../props/models/FundRequest';
+import FundRequest, { FundRequestFormula } from '../props/models/FundRequest';
 import ApiResponse, { ApiResponseSingle, ResponseSimple } from '../props/ApiResponses';
 import Note from '../props/models/Note';
 import File from '../props/models/File';
@@ -53,6 +53,10 @@ export class FundRequestValidatorService<T = FundRequest> {
 
     public approve(organizationId: number, id: number, data: object = {}) {
         return this.apiRequest.patch(`${this.prefix}/${organizationId}/fund-requests/${id}/approve`, data);
+    }
+
+    public formula(organizationId: number, id: number, data: object = {}): Promise<ResponseSimple<FundRequestFormula>> {
+        return this.apiRequest.get(`${this.prefix}/${organizationId}/fund-requests/${id}/formula`, data);
     }
 
     public decline(organizationId: number, id: number, data: object = {}) {

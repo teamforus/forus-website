@@ -8,7 +8,7 @@ import useTranslate from '../../../hooks/useTranslate';
 export default function LayoutAsideSponsor({ organization }: { organization: Organization }) {
     const envData = useEnvData();
     const translate = useTranslate();
-    const { allow_bi_connection, allow_2fa_restrictions, allow_pre_checks } = organization;
+    const { allow_bi_connection, allow_2fa_restrictions, allow_pre_checks, allow_payouts } = organization;
 
     return (
         <div className="sidebar-nav">
@@ -30,14 +30,6 @@ export default function LayoutAsideSponsor({ organization }: { organization: Org
                 show={hasPermission(organization, ['manage_vouchers', 'view_vouchers'])}
                 id={'vouchers'}
                 dusk={'vouchersPage'}
-            />
-            <LayoutAsideNavItem
-                name={'Aanbiedingsvouchers'}
-                icon={'product_voucher'}
-                route={'product-vouchers'}
-                routeParams={{ organizationId: organization?.id }}
-                show={hasPermission(organization, ['manage_vouchers', 'view_vouchers'])}
-                id={'product_vouchers'}
             />
             <LayoutAsideNavItem
                 name={'Declaraties'}
@@ -74,11 +66,12 @@ export default function LayoutAsideSponsor({ organization }: { organization: Org
                 id={'requesters'}
             />
             <LayoutAsideNavItem
-                name={'Beoordelaars'}
-                icon={'validators_shortlist'}
-                route={'external-validators'}
+                name={'Uitbetalingen'}
+                icon={'payouts'}
+                route={'payouts'}
                 routeParams={{ organizationId: organization?.id }}
-                show={hasPermission(organization, 'manage_organization')}
+                show={allow_payouts && hasPermission(organization, 'manage_payouts')}
+                id={'payouts'}
             />
             <LayoutAsideNavItem
                 name={'Bank integraties'}
@@ -140,7 +133,7 @@ export default function LayoutAsideSponsor({ organization }: { organization: Org
                                 id={'financial_dashboard'}
                             />
                             <LayoutAsideNavItem
-                                name={'Transacties'}
+                                name={'Betaalopdrachten'}
                                 icon={'transactions'}
                                 route={'transactions'}
                                 routeParams={{ organizationId: organization?.id }}

@@ -1,11 +1,11 @@
 import vouchers from './pages/vouchers';
-import product_vouchers from './pages/product-vouchers';
 import voucher_printable from './pages/voucher-printable';
 import system_notifications from './pages/system-notifications';
 import event_logs from './pages/event-logs';
 import reimbursements from './pages/reimbursements';
 import identities from './pages/identities';
 import transactions from './pages/transactions';
+import payouts from './pages/payouts';
 import voucher_records from './pages/voucher-records';
 import financial_dashboard_transaction from './pages/transaction';
 import provider_funds from './pages/provider-funds';
@@ -21,13 +21,13 @@ import extra_payments from './pages/extra-payments';
 
 export default {
     vouchers,
-    product_vouchers,
     voucher_printable,
     system_notifications,
     event_logs,
     reimbursements,
     identities,
     transactions,
+    payouts,
     voucher_records,
     financial_dashboard_transaction,
     provider_funds,

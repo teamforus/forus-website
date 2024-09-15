@@ -20,9 +20,13 @@ export const currencyFormat = (value: number, currency = '€ ') => {
 
 export const fileSize = (size: number): string => {
     const i = Math.floor(Math.log(size) / Math.log(1024));
-    const val = (size / Math.pow(1024, i)).toFixed(2);
+    const val = size / Math.pow(1024, i);
 
-    return parseFloat(val) + ' ' + ['B', 'kB', 'MB', 'GB', 'TB'][i];
+    if (isNaN(val)) {
+        return '0 kb';
+    }
+
+    return parseFloat(val.toFixed(2)) + ' ' + ['B', 'kB', 'MB', 'GB', 'TB'][i];
 };
 
 export const phoneNumberFormat = (phoneNumber = '') => {

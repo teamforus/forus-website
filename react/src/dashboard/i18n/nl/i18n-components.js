@@ -27,6 +27,7 @@ export default {
             implementation: 'Implementatie',
             status: 'Status',
             actions: 'Actie',
+            type: 'Soort',
         },
         filters: {
             search: 'Zoeken',
@@ -62,7 +63,6 @@ export default {
             edit: 'Aanpassen',
             apply: 'Bevestigen',
             cancel: 'Annuleren',
-            add_external_validator: 'Voeg beoordelaar toe',
         },
 
         allow_attachments: 'Bijlage uploaden',

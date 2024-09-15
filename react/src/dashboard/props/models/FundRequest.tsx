@@ -4,6 +4,25 @@ import Employee from './Employee';
 import FundRequestApiPerson from './FundRequestApiPerson';
 import FundCriterion from './FundCriterion';
 
+export interface FundRequestFormula {
+    total_amount: string;
+    total_products: string;
+    items: Array<{
+        record: string;
+        type: string;
+        value: string;
+        count: string;
+        total: string;
+    }>;
+    products: Array<{
+        record: string;
+        type: string;
+        value: string;
+        count: string;
+        total: string;
+    }>;
+}
+
 export default interface FundRequest {
     id: number;
     bsn?: string | null;
@@ -21,6 +40,8 @@ export default interface FundRequest {
     records: Array<FundRequestRecord>;
     replaced: boolean;
     state: 'pending' | 'approved' | 'declined' | 'disregarded' | 'approved_partly';
+    employee: Employee;
+    employee_id: number;
     state_locale: string;
     updated_at?: string | null;
     updated_at_locale?: string | null;

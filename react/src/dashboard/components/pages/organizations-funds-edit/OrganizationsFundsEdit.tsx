@@ -6,7 +6,7 @@ import useActiveOrganization from '../../../hooks/useActiveOrganization';
 import { useParams } from 'react-router-dom';
 import StateNavLink from '../../../modules/state_router/StateNavLink';
 import useFormBuilder from '../../../hooks/useFormBuilder';
-import { PaginationData, ResponseError, ResponseErrorData } from '../../../props/ApiResponses';
+import { ResponseError, ResponseErrorData } from '../../../props/ApiResponses';
 import usePushSuccess from '../../../hooks/usePushSuccess';
 import PhotoSelector from '../../elements/photo-selector/PhotoSelector';
 import { useMediaService } from '../../../services/MediaService';
@@ -32,8 +32,6 @@ import { useRecordTypeService } from '../../../services/RecordTypeService';
 import { useEmployeeService } from '../../../services/EmployeeService';
 import FundCriterion from '../../../props/models/FundCriterion';
 import FundCriteriaEditor from '../../elements/fund-criteria-editor/FundCriteriaEditor';
-import Organization from '../../../props/models/Organization';
-import { useOrganizationService } from '../../../services/OrganizationService';
 import FundConfigContactInfoEditor from './elements/FundConfigContactInfoEditor';
 import { useNavigateState } from '../../../modules/state_router/Router';
 import MultiSelectControl from '../../elements/forms/controls/MultiSelectControl';
@@ -47,6 +45,8 @@ import FaqEditor from '../../elements/faq-editor-funds/FaqEditor';
 
 export default function OrganizationsFundsEdit() {
     const { fundId } = useParams();
+
+    const appConfigs = useAppConfigs();
     const activeOrganization = useActiveOrganization();
 
     const assetUrl = useAssetUrl();
@@ -55,7 +55,6 @@ export default function OrganizationsFundsEdit() {
     const setProgress = useSetProgress();
     const pushSuccess = usePushSuccess();
     const navigateState = useNavigateState();
-    const appConfigs = useAppConfigs();
 
     const tagService = useTagService();
     const fundService = useFundService();
@@ -63,7 +62,6 @@ export default function OrganizationsFundsEdit() {
     const productService = useProductService();
     const employeeService = useEmployeeService();
     const recordTypeService = useRecordTypeService();
-    const organizationService = useOrganizationService();
 
     const [faq, setFaq] = useState<Array<Faq & { uid: string }>>([]);
     const [fund, setFund] = useState<Fund>(null);
@@ -74,7 +72,6 @@ export default function OrganizationsFundsEdit() {
     const [showInfoBlock, setShowInfoBlock] = useState<boolean>(false);
     const [recordTypes, setRecordTypes] = useState<Array<RecordType>>(null);
     const [products, setProducts] = useState<Array<Partial<Product>>>(null);
-    const [validatorOrganizations, setValidatorOrganizations] = useState<PaginationData<Organization>>(null);
     const [fundStates] = useState(fundService.getStates());
     const faqEditorBlock = useRef<() => Promise<boolean>>();
     const criteriaBlockRef = useRef<() => Promise<Array<FundCriterion> | null>>();
@@ -83,6 +80,11 @@ export default function OrganizationsFundsEdit() {
         { value: 'budget', name: 'Waardebon' },
         { value: 'subsidies', name: 'Kortingspas' },
         { value: 'external', name: 'Informatief (met doorlink)' },
+    ]);
+
+    const [outcomeTypes] = useState([
+        { value: 'voucher', name: 'Tegoed' },
+        { value: 'payout', name: 'Uitbetaling' },
     ]);
 
     const [externalFundPageTypes] = useState([
@@ -186,6 +188,9 @@ export default function OrganizationsFundsEdit() {
         contact_info_required?: boolean;
         contact_info_message_custom?: boolean;
         contact_info_message_text?: string;
+        outcome_type?: 'voucher' | 'payout';
+        voucher_amount_visible?: boolean;
+        provider_products_required?: boolean;
     }>(
         {
             description_position: descriptionPositions[0]?.value,
@@ -205,6 +210,9 @@ export default function OrganizationsFundsEdit() {
             contact_info_required: true,
             contact_info_message_custom: false,
             contact_info_message_text: '',
+            outcome_type: 'voucher',
+            voucher_amount_visible: false,
+            provider_products_required: false,
         },
         async (values) => {
             const data = JSON.parse(JSON.stringify(values));
@@ -222,11 +230,7 @@ export default function OrganizationsFundsEdit() {
                     const criteria = await criteriaBlockRef.current();
 
                     if (criteria != null) {
-                        data.criteria = criteria.map((item: FundCriterion) => ({
-                            ...item,
-                            validators:
-                                item.external_validators?.map((validator) => validator.organization_validator_id) || [],
-                        }));
+                        data.criteria = criteria;
                     } else {
                         return form.setIsLocked(false);
                     }
@@ -332,15 +336,6 @@ export default function OrganizationsFundsEdit() {
             .finally(() => setProgress(100));
     }, [activeOrganization.id, employeeService, setProgress]);
 
-    const fetchValidatorOrganizations = useCallback(() => {
-        setProgress(0);
-
-        organizationService
-            .readListValidators(activeOrganization.id, { per_page: 100 })
-            .then((res) => setValidatorOrganizations(res.data))
-            .finally(() => setProgress(100));
-    }, [activeOrganization.id, organizationService, setProgress]);
-
     const fetchProducts = useCallback(() => {
         setProgress(0);
 
@@ -419,10 +414,6 @@ export default function OrganizationsFundsEdit() {
     useEffect(() => {
         fetchValidatorEmployees();
     }, [fetchValidatorEmployees]);
-
-    useEffect(() => {
-        fetchValidatorOrganizations();
-    }, [fetchValidatorOrganizations]);
 
     useEffect(() => {
         if (fundId) {
@@ -518,6 +509,28 @@ export default function OrganizationsFundsEdit() {
                                     <div className="form-hint">Max. 500 tekens</div>
                                     <FormError error={form.errors?.description_short}></FormError>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="card-section card-section-primary">
+                    <div className="row">
+                        <div className="col col-lg-9 col-xs-12">
+                            <div className="form-group form-group-inline tooltipped">
+                                <label className="form-label">Totaalbedrag tonen (Me-app)</label>
+                                <CheckboxControl
+                                    id={'voucher_amount_visible'}
+                                    checked={!!form.values.voucher_amount_visible}
+                                    onChange={(e) => form.update({ voucher_amount_visible: e.target.checked })}
+                                    title={'Inzicht in het totale bedrag gekoppeld aan de QR-code van de deelnemer.'}
+                                />
+                                <Tooltip
+                                    text={
+                                        'Door dit vakje aan te vinken, geeft u de aanbieder toestemming om het totale bedrag dat aan de QR-code van de deelnemer is gekoppeld, te bekijken in de Me-app.'
+                                    }
+                                />
+                                <FormError error={form.errors?.voucher_amount_visible} />
                             </div>
                         </div>
                     </div>
@@ -634,6 +647,22 @@ export default function OrganizationsFundsEdit() {
                                     </div>
                                 )}
                             </div>
+                            {activeOrganization.allow_payouts && (
+                                <div className="form-group form-group-inline">
+                                    <label className="form-label form-label-required">Uitkomst van een aanvraag</label>
+                                    <div className="form-offset">
+                                        <SelectControl
+                                            propKey={'value'}
+                                            allowSearch={false}
+                                            value={form.values.outcome_type}
+                                            options={outcomeTypes}
+                                            disabled={!!fund}
+                                            onChange={(outcome_type: string) => form.update({ outcome_type })}
+                                        />
+                                        <FormError error={form.errors?.type} />
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
@@ -834,6 +863,30 @@ export default function OrganizationsFundsEdit() {
                     </div>
                 )}
 
+                <div className="card-section card-section-primary">
+                    <div className="row">
+                        <div className="col col-lg-9 col-xs-12">
+                            <div className="form-group form-group-inline tooltipped">
+                                <label className="form-label">Aanbod plaatsen verzoek</label>
+                                <CheckboxControl
+                                    id={'provider_products_required'}
+                                    checked={!!form.values.provider_products_required}
+                                    onChange={(e) => form.update({ provider_products_required: e.target.checked })}
+                                    title={
+                                        'Vraag aanbieders om ten minste één aanbod toe te voegen om deel te nemen aan dit fonds.'
+                                    }
+                                />
+                                <Tooltip
+                                    text={
+                                        'Wanneer u het vakje aanvinkt, ontvangen aanbieders die zich proberen in te schrijven voor dit fonds een melding om hun aanbod toe te voegen.'
+                                    }
+                                />
+                                <FormError error={form.errors?.provider_products_required} />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 {!form.values.external_page && (
                     <div className="card-section card-section-primary">
                         <div className="form-group form-group-inline">
@@ -1020,7 +1073,7 @@ export default function OrganizationsFundsEdit() {
                     <div className="card-section card-section-primary">
                         <div className="row">
                             <div className="form-group form-group-inline col col-lg-9 col-md-12">
-                                <label className="form-label">Standaard validator</label>
+                                <label className="form-label">Standaard beoordelaar</label>
                                 <div className="form-offset">
                                     <SelectControl
                                         propKey={'id'}
@@ -1069,7 +1122,6 @@ export default function OrganizationsFundsEdit() {
                                             isEditable={!fundId || fund.criteria_editable}
                                             setCriteria={(criteria) => form.update({ criteria })}
                                             recordTypes={recordTypes}
-                                            validatorOrganizations={validatorOrganizations?.data}
                                             saveCriteriaRef={criteriaBlockRef}
                                         />
                                     </div>

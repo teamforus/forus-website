@@ -15,6 +15,8 @@ import ModalDuplicatesPicker from './ModalDuplicatesPicker';
 import useTransactionService from '../../services/TransactionService';
 import CSVProgressBar from '../elements/csv-progress-bar/CSVProgressBar';
 import useTranslate from '../../hooks/useTranslate';
+import classNames from 'classnames';
+import usePushInfo from '../../hooks/usePushInfo';
 
 export default function ModalVoucherTransactionsUpload({
     modal,
@@ -45,6 +47,7 @@ export default function ModalVoucherTransactionsUpload({
     const [dataChunkSize] = useState(100);
     const [maxLinesPerFile] = useState(2500);
 
+    const pushInfo = usePushInfo();
     const openModal = useOpenModal();
     const fileInput = useRef(null);
     const dropBlock = useRef(null);
@@ -56,12 +59,16 @@ export default function ModalVoucherTransactionsUpload({
     const pushSuccess = usePushSuccess();
 
     const closeModal = useCallback(() => {
+        if (loading) {
+            return pushInfo('Bezig met uploaden.');
+        }
+
         if (changed) {
             onCreated();
         }
 
         modal.close();
-    }, [changed, modal, onCreated]);
+    }, [changed, modal, onCreated, loading, pushInfo]);
 
     const makeDefaultNote = useCallback(
         (row: object): string => {
@@ -398,7 +405,13 @@ export default function ModalVoucherTransactionsUpload({
 
     return (
         <div
-            className={`modal modal-animated ${modal.loading || hideModal ? 'modal-loading' : ''} ${className}`}
+            className={classNames(
+                'modal',
+                'modal-animated',
+                'modal-bulk-upload',
+                (modal.loading || hideModal) && 'modal-loading',
+                className,
+            )}
             data-dusk="modalTransactionUpload">
             <div className="modal-backdrop" onClick={closeModal} />
             <div className="modal-window">
@@ -413,10 +426,10 @@ export default function ModalVoucherTransactionsUpload({
                         ref={fileInput}
                         data-dusk="inputUpload"
                     />
-                    <div className="modal-section form">
+                    <Fragment>
                         <div
                             ref={dropBlock}
-                            className="block block-csv condensed"
+                            className="block block-csv"
                             onDragLeave={(e) => {
                                 e?.preventDefault();
                                 dropBlock?.current?.classList.remove('on-dragover');
@@ -476,47 +489,52 @@ export default function ModalVoucherTransactionsUpload({
                                         <CSVProgressBar status={progressStatus} progressBar={progressBar} />
                                     </div>
                                 )}
-                                <div className="csv-upload-actions">
-                                    {csvFile && progress < 2 && (
-                                        <div className="csv-file">
-                                            <div className={`block block-file ${isValid ? '' : 'has-error'}`}>
-                                                <div className="file-error mdi mdi-close-circle" />
-                                                <div className="file-name">{csvFile.name}</div>
-                                                <div className="file-size">{fileSize(csvFile.size)}</div>
+
+                                {csvFile && progress < 2 && (
+                                    <div className="csv-upload-actions">
+                                        <div className={classNames(`block block-file`, !isValid && 'has-error')}>
+                                            <div className="block-file-details">
+                                                <div className="file-icon">
+                                                    {isValid ? (
+                                                        <div className="mdi mdi-file-outline" />
+                                                    ) : (
+                                                        <div className="mdi mdi-close-circle" />
+                                                    )}
+                                                </div>
+                                                <div className="file-details">
+                                                    <div className="file-name">{csvFile.name}</div>
+                                                    <div className="file-size">{fileSize(csvFile.size)}</div>
+                                                </div>
                                                 <div className="file-remove mdi mdi-close" onClick={reset} />
                                             </div>
-                                            {!isValid && error && (
-                                                <div className="text-center">
-                                                    <div className="form-error">{error}</div>
-                                                </div>
-                                            )}
                                         </div>
-                                    )}
-                                    {progress == 1 && isValid && (
-                                        <div className="text-center">
-                                            {!loading && (
-                                                <button
-                                                    className="button button-primary"
-                                                    onClick={uploadToServer}
-                                                    data-dusk="uploadFileButton">
-                                                    {translate('csv_upload.buttons.upload')}
-                                                </button>
-                                            )}
-                                        </div>
-                                    )}
-                                </div>
+
+                                        {!isValid && error && <div className="form-error">{error}</div>}
+                                    </div>
+                                )}
                             </div>
                         </div>
-                    </div>
+                    </Fragment>
                 </div>
-                <div className="modal-footer text-center">
+
+                <div className="modal-footer">
                     <button
-                        className="button button-primary"
+                        className="button button-default"
                         onClick={closeModal}
                         disabled={loading}
                         id="close"
                         data-dusk="closeModalButton">
-                        {translate('modal_funds_add.buttons.close')}
+                        Annuleren
+                    </button>
+
+                    <div className="flex-grow" />
+
+                    <button
+                        className="button button-primary"
+                        disabled={loading || !(progress == 1 && isValid)}
+                        onClick={uploadToServer}
+                        data-dusk="uploadFileButton">
+                        {translate('csv_upload.buttons.upload')}
                     </button>
                 </div>
             </div>

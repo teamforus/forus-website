@@ -44,8 +44,10 @@ export default {
         'funds-create': 'Fonds aanmaken',
         'funds-show': 'Beschikbare fondsen',
         'funds-edit': 'Fonds bewerken',
-        transactions: 'Transacties',
-        transaction: 'Transactie details',
+        payouts: 'Uitbetalingen',
+        transactions: 'Betaalopdrachten',
+        transactions_provider: 'Transacties',
+        transaction: 'Betaalopdrachten details',
         products: 'Aanbod',
         'products-create': 'Aanbod toevoegen',
         'products-edit': 'Aanbod bewerken',
@@ -73,9 +75,7 @@ export default {
     // MODALS
     modals: {
         ...modals,
-        danger_zone: {
-            ...modals_danger_zone,
-        },
+        danger_zone: { ...modals_danger_zone },
     },
 
     // PAGES
@@ -556,6 +556,7 @@ export default {
                     formulas: 'Rekenregels',
                     statistics: 'Statistieken',
                     criteria: 'Voorwaarden',
+                    configs: 'Uitbetalingsinstellingen',
                 },
             },
             details_card: {
@@ -690,32 +691,6 @@ export default {
         },
         buttons: {
             view: 'Bekijken',
-        },
-    },
-
-    // EXTERNAL VALIDATORS = external-validators.pug
-    external_validators: {
-        header: {
-            title: 'Beoordelaars',
-        },
-        labels: {
-            organization_name: 'Organisatie naam',
-            email: 'E-mailadres',
-            phone: 'Telefoonnummer',
-            website: 'Website',
-            actions: 'Acties',
-        },
-        filters: {
-            labels: {
-                search: 'Zoeken',
-                email: 'E-mailadres',
-                phone: 'Telefoonnummer',
-                website: 'Website',
-            },
-        },
-        buttons: {
-            add: 'Toevoegen',
-            delete: 'Verwijderen',
         },
     },
 
@@ -1608,6 +1583,20 @@ export default {
             swipe: 'Sleep hier het *.CSV of *.TXT bestand',
             upload: 'Upload .csv bestand',
             done: 'Klaar',
+        },
+        tooltips: {
+            funds: [
+                'Selecteer het fonds waarvoor het tegoed wordt aangemaakt. ',
+                'De regels die op dit fonds van toepassing zijn, worden automatisch overgenomen voor de tegoeden. ',
+                'Hierdoor kan bijvoorbeeld worden bepaald bij welke aanbieders een tegoed kan worden besteed.',
+            ].join(''),
+            type: [
+                'Selecteer het type tegoeden. Er zijn twee opties:',
+                '<br/><br/><ul>',
+                '<li><strong>Budget</strong>: Een bedrag dat onder specifieke voorwaarden kan worden besteed.</li>',
+                '<li><strong>Product</strong>: Een tegoed voor een specifiek product of dienst.</li>',
+                '</ul>',
+            ].join(''),
         },
     },
 
