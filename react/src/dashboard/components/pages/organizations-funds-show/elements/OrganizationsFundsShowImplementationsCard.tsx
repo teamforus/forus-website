@@ -35,7 +35,6 @@ export default function OrganizationsFundsShowImplementationsCard({
 
     const [paginationPerPageKey] = useState('fund_implementation_per_page');
     const [lastQueryImplementations, setLastQueryImplementations] = useState<string>('');
-    const [shownImplementationMenuId, setShownImplementationMenuId] = useState<number>(null);
     const [implementations, setImplementations] = useState<PaginationData<Implementation>>(null);
 
     const filter = useFilter({
@@ -71,107 +70,92 @@ export default function OrganizationsFundsShowImplementationsCard({
 
     return (
         <div className="card">
-            <div className="card-header">
-                <div className="flex-row">
-                    <div className="flex-grow">
-                        <div className="flex-col">
-                            <div className="card-title">
-                                {translate(`funds_show.titles.${viewType}`)}
-                                {implementations?.meta && <span>&nbsp;({implementations?.meta?.total || 0})</span>}
+            <div className="card-header card-header-next">
+                <div className="flex flex-grow">
+                    <div className="card-title">
+                        {translate(`funds_show.titles.${viewType}`)}
+                        {implementations?.meta && <span>&nbsp;({implementations?.meta?.total || 0})</span>}
+                    </div>
+                </div>
+                <div className="card-header-filters">
+                    <div className="block block-inline-filters">
+                        <div className="block block-label-tabs">
+                            <div className="label-tab-set">
+                                {viewTypes?.map((type) => (
+                                    <div
+                                        key={type.key}
+                                        className={`label-tab label-tab-sm ${viewType == type.key ? 'active' : ''}`}
+                                        onClick={() => setViewType(type.key)}>
+                                        {type.name}
+                                    </div>
+                                ))}
                             </div>
                         </div>
-                    </div>
 
-                    <div className="flex-row">
-                        <div className="flex">
-                            <div className="block block-inline-filters">
-                                <div className="flex">
-                                    <div>
-                                        <div className="block block-label-tabs pull-right">
-                                            <div className="label-tab-set">
-                                                {viewTypes?.map((type) => (
-                                                    <div
-                                                        key={type.key}
-                                                        className={`label-tab label-tab-sm ${
-                                                            viewType == type.key ? 'active' : ''
-                                                        }`}
-                                                        onClick={() => setViewType(type.key)}>
-                                                        {type.name}
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        </div>
+                        <div className="block block-inline-filters">
+                            {filter.show && (
+                                <div className="button button-text" onClick={() => filter.resetFilters()}>
+                                    <em className="mdi mdi-close icon-start" />
+                                    Wis filters
+                                </div>
+                            )}
+
+                            {!filter.show && (
+                                <div className="form">
+                                    <div className="form-group">
+                                        <input
+                                            type="text"
+                                            className="form-control"
+                                            defaultValue={filter.values.q}
+                                            placeholder="Zoeken"
+                                            onChange={(e) =>
+                                                filter.update({
+                                                    q: e.target.value,
+                                                })
+                                            }
+                                        />
                                     </div>
                                 </div>
+                            )}
 
-                                <div className="flex-col">
-                                    <div className="block block-inline-filters">
-                                        {filter.show && (
-                                            <div className="button button-text" onClick={() => filter.resetFilters()}>
-                                                <em className="mdi mdi-close icon-start" />
-                                                Wis filters
+                            <ClickOutside className="form" onClickOutside={() => filter.setShow(false)}>
+                                <div className="inline-filters-dropdown pull-right">
+                                    {filter.show && (
+                                        <div className="inline-filters-dropdown-content">
+                                            <div className="arrow-box bg-dim">
+                                                <div className="arrow" />
                                             </div>
-                                        )}
 
-                                        {!filter.show && (
                                             <div className="form">
-                                                <div className="form-group">
+                                                <FilterItemToggle
+                                                    show={true}
+                                                    label={translate(
+                                                        'funds_show.implementations_table.filters.search',
+                                                    )}>
                                                     <input
-                                                        type="text"
                                                         className="form-control"
-                                                        defaultValue={filter.values.q}
-                                                        placeholder="Zoeken"
+                                                        value={filter.values.q}
                                                         onChange={(e) =>
                                                             filter.update({
                                                                 q: e.target.value,
                                                             })
                                                         }
+                                                        placeholder={translate(
+                                                            'funds_show.implementations_table.filters.search',
+                                                        )}
                                                     />
-                                                </div>
+                                                </FilterItemToggle>
                                             </div>
-                                        )}
+                                        </div>
+                                    )}
 
-                                        <ClickOutside className="form" onClickOutside={() => filter.setShow(false)}>
-                                            <div className="inline-filters-dropdown pull-right">
-                                                {filter.show && (
-                                                    <div className="inline-filters-dropdown-content">
-                                                        <div className="arrow-box bg-dim">
-                                                            <div className="arrow" />
-                                                        </div>
-
-                                                        <div className="form">
-                                                            <FilterItemToggle
-                                                                show={true}
-                                                                label={translate(
-                                                                    'funds_show.implementations_table.filters.search',
-                                                                )}>
-                                                                <input
-                                                                    className="form-control"
-                                                                    value={filter.values.q}
-                                                                    onChange={(e) =>
-                                                                        filter.update({
-                                                                            q: e.target.value,
-                                                                        })
-                                                                    }
-                                                                    placeholder={translate(
-                                                                        'funds_show.implementations_table.filters.search',
-                                                                    )}
-                                                                />
-                                                            </FilterItemToggle>
-                                                        </div>
-                                                    </div>
-                                                )}
-
-                                                <div
-                                                    className="button button-default button-icon"
-                                                    onClick={() => filter.setShow(!filter.show)}>
-                                                    <em className="mdi mdi-filter-outline" />
-                                                </div>
-                                            </div>
-                                        </ClickOutside>
+                                    <div
+                                        className="button button-default button-icon"
+                                        onClick={() => filter.setShow(!filter.show)}>
+                                        <em className="mdi mdi-filter-outline" />
                                     </div>
                                 </div>
-                            </div>
+                            </ClickOutside>
                         </div>
                     </div>
                 </div>
@@ -217,36 +201,37 @@ export default function OrganizationsFundsShowImplementationsCard({
 
                                                 <td className="td-narrow text-right">
                                                     <TableRowActions
-                                                        activeId={shownImplementationMenuId}
-                                                        setActiveId={setShownImplementationMenuId}
-                                                        id={implementation.id}>
-                                                        <div className="dropdown dropdown-actions">
-                                                            <a
-                                                                className="dropdown-item"
-                                                                target="_blank"
-                                                                href={implementation?.url_webshop + 'funds/' + fund.id}
-                                                                rel="noreferrer">
-                                                                <em className="mdi mdi-open-in-new icon-start" /> Bekijk
-                                                                op webshop
-                                                            </a>
+                                                        content={() => (
+                                                            <div className="dropdown dropdown-actions">
+                                                                <a
+                                                                    className="dropdown-item"
+                                                                    target="_blank"
+                                                                    href={
+                                                                        implementation?.url_webshop + 'funds/' + fund.id
+                                                                    }
+                                                                    rel="noreferrer">
+                                                                    <em className="mdi mdi-open-in-new icon-start" />{' '}
+                                                                    Bekijk op webshop
+                                                                </a>
 
-                                                            {hasPermission(
-                                                                activeOrganization,
-                                                                'manage_implementation_cms',
-                                                            ) && (
-                                                                <StateNavLink
-                                                                    name={'implementations-view'}
-                                                                    params={{
-                                                                        id: implementation?.id,
-                                                                        organizationId: fund.organization_id,
-                                                                    }}
-                                                                    className="dropdown-item">
-                                                                    <em className="mdi mdi-store-outline icon-start" />
-                                                                    Ga naar CMS
-                                                                </StateNavLink>
-                                                            )}
-                                                        </div>
-                                                    </TableRowActions>
+                                                                {hasPermission(
+                                                                    activeOrganization,
+                                                                    'manage_implementation_cms',
+                                                                ) && (
+                                                                    <StateNavLink
+                                                                        name={'implementations-view'}
+                                                                        params={{
+                                                                            id: implementation?.id,
+                                                                            organizationId: fund.organization_id,
+                                                                        }}
+                                                                        className="dropdown-item">
+                                                                        <em className="mdi mdi-store-outline icon-start" />
+                                                                        Ga naar CMS
+                                                                    </StateNavLink>
+                                                                )}
+                                                            </div>
+                                                        )}
+                                                    />
                                                 </td>
                                             </tr>
                                         ))}

@@ -20,12 +20,6 @@ export interface SponsorProviderOrganization extends Organization {
     employees: Array<Employee>;
 }
 
-export interface OrganizationValidator extends Organization {
-    id: number;
-    organization_id: number;
-    validator_organization_id: number;
-}
-
 export default interface Organization {
     id: number;
     identity_address: string;
@@ -70,6 +64,7 @@ export default interface Organization {
     auth_2fa_policy: 'optional' | 'required' | 'restrict_features';
     auth_2fa_remember_ip?: boolean;
     allow_pre_checks?: boolean;
+    allow_payouts?: boolean;
     allow_2fa_restrictions?: boolean;
     allow_reservation_custom_fields: boolean;
     auth_2fa_funds_policy: 'optional' | 'required' | 'restrict_features';

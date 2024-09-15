@@ -15,10 +15,9 @@ import DatePickerControl from '../forms/controls/DatePickerControl';
 import CheckboxControl from '../forms/controls/CheckboxControl';
 import { uniqueId } from 'lodash';
 import useTranslate from '../../../hooks/useTranslate';
-import { FundCriterionOrganization } from './FundCriteriaEditor';
-import FundCriteriaEditorItemExternalValidators from './FundCriteriaEditorItemExternalValidators';
 import { currencyFormat } from '../../../helpers/string';
 import { dateFormat, dateParse } from '../../../helpers/dates';
+import classNames from 'classnames';
 
 type Operators = '<' | '<=' | '>' | '>=' | '!=' | '=' | '*';
 
@@ -30,7 +29,6 @@ export default function FundCriteriaEditorItem({
     recordTypes,
     setCriterion,
     onDeleteCriteria,
-    validatorOrganizations,
     saveCriterionRef = null,
     isNew = false,
     isEditing = false,
@@ -43,7 +41,6 @@ export default function FundCriteriaEditorItem({
     recordTypes: Array<Partial<RecordType>>;
     setCriterion: (criteria: Partial<FundCriterion>) => void;
     onDeleteCriteria: (criterion: Partial<FundCriterion>) => void;
-    validatorOrganizations: Array<FundCriterionOrganization>;
     saveCriterionRef?: React.MutableRefObject<() => Promise<boolean>>;
     isNew: boolean;
     isEditing: boolean;
@@ -68,7 +65,6 @@ export default function FundCriteriaEditorItem({
     const [description, setDescription] = useState(criterion.title);
     const [showAttachments, setShowAttachments] = useState(criterion.show_attachment);
     const [optional, setOptional] = useState(criterion.optional);
-    const [externalValidators, setExternalValidators] = useState(criterion?.external_validators || []);
 
     const disabled = useMemo<boolean>(() => {
         return !isEditable || !hasPermission(organization, 'manage_funds');
@@ -83,8 +79,6 @@ export default function FundCriteriaEditorItem({
 
     const saveCriterion = useCallback((): Promise<boolean> => {
         return new Promise((resolve) => {
-            const validators = externalValidators.map((validator) => validator.organization_validator_id);
-
             const _criterion: Partial<FundCriterion> = {
                 id: criterion?.id,
                 operator: operators?.[recordType.key],
@@ -98,13 +92,9 @@ export default function FundCriteriaEditorItem({
                 record_type_key: recordType?.key,
             };
 
-            validateCriteria({ ..._criterion, validators })
+            validateCriteria({ ..._criterion })
                 .then(() => {
-                    setCriterion({
-                        ..._criterion,
-                        external_validators: externalValidators,
-                        record_type: { ...recordType } as RecordType,
-                    });
+                    setCriterion({ ..._criterion, record_type: { ...recordType } as RecordType });
                     resolve(true);
                     setErrors(null);
                 })
@@ -118,7 +108,6 @@ export default function FundCriteriaEditorItem({
         recordType,
         operators,
         validations,
-        externalValidators,
         criterion?.id,
         optional,
         title,
@@ -221,10 +210,6 @@ export default function FundCriteriaEditorItem({
     }, [criterion, preparedData]);
 
     useEffect(() => {
-        setExternalValidators(criterion?.external_validators);
-    }, [criterion?.external_validators]);
-
-    useEffect(() => {
         setTitle(criterion?.title);
         setOptional(criterion?.optional);
         setDescription(criterion?.description);
@@ -240,10 +225,7 @@ export default function FundCriteriaEditorItem({
     return (
         <div className="criterion-item">
             <div className="criterion-head">
-                <div
-                    className={`criterion-title ${
-                        !isEditing && criterion?.external_validators.length == 0 ? 'criterion-title-large' : ''
-                    }`}>
+                <div className={classNames(`criterion-title`, !isEditing && 'criterion-title-large')}>
                     {title || defaultTitle}
                 </div>
 
@@ -536,12 +518,6 @@ export default function FundCriteriaEditorItem({
                             </div>
                         </div>
                     )}
-
-                    <FundCriteriaEditorItemExternalValidators
-                        externalValidators={externalValidators}
-                        setExternalValidators={setExternalValidators}
-                        validatorOrganizations={validatorOrganizations}
-                    />
                 </div>
             )}
         </div>

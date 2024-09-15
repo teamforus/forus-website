@@ -1,6 +1,5 @@
 import React, { useState, useCallback, useEffect, Fragment } from 'react';
 import { useFundService } from '../../../services/FundService';
-import FundSelector from '../../elements/fund-selector/FundSelector';
 import Fund from '../../../props/models/Fund';
 import CSVUpload from './elements/CSVUpload';
 import { useRecordTypeService } from '../../../services/RecordTypeService';
@@ -11,6 +10,8 @@ import useTranslate from '../../../hooks/useTranslate';
 import LoadingCard from '../../elements/loading-card/LoadingCard';
 import { hasPermission } from '../../../helpers/utils';
 import useSetProgress from '../../../hooks/useSetProgress';
+import SelectControl from '../../elements/select-control/SelectControl';
+import SelectControlOptionsFund from '../../elements/select-control/templates/SelectControlOptionsFund';
 
 export default function CsvValidations() {
     const translate = useTranslate();
@@ -31,7 +32,9 @@ export default function CsvValidations() {
         fundService
             .listPublic({ state: 'active_paused_and_closed' })
             .then((res) => {
-                setFunds(res.data.data.filter((fund) => hasPermission(fund.organization, 'validate_records')));
+                const list = res.data.data.filter((fund) => hasPermission(fund.organization, 'validate_records'));
+                setFund(list[0] || null);
+                setFunds(list);
             })
             .finally(() => setProgress(100));
     }, [fundService, setProgress]);
@@ -59,16 +62,37 @@ export default function CsvValidations() {
 
     return (
         <Fragment>
-            <div className="card-heading">{translate('csv_validation.header.title')}</div>
-            <FundSelector fund={fund} funds={funds} onSelectFund={setFund} />
+            <div className="card form">
+                <div className="card-header flex">
+                    <div className="card-title flex-grow">{translate('csv_validation.header.title')}</div>
 
-            {fund && fund?.state != 'closed' && (
-                <CSVUpload
-                    fund={fund}
-                    recordTypes={recordTypes}
-                    onUpdated={() => setFilters((filters) => ({ ...filters }))}
-                />
-            )}
+                    <div className="flex">
+                        <div className="block block-inline-filters">
+                            <div className="form">
+                                <div className="form-group">
+                                    <SelectControl
+                                        className="form-control inline-filter-control"
+                                        options={funds}
+                                        value={fund}
+                                        placeholder={translate('vouchers.labels.fund')}
+                                        allowSearch={false}
+                                        onChange={(fund: Fund) => setFund(fund)}
+                                        optionsComponent={SelectControlOptionsFund}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {fund && fund?.state != 'closed' && (
+                    <CSVUpload
+                        fund={fund}
+                        recordTypes={recordTypes}
+                        onUpdated={() => setFilters((filters) => ({ ...filters }))}
+                    />
+                )}
+            </div>
 
             {fund && <PrevalidatedTable fund={fund} recordTypes={recordTypes} externalFilters={filters} />}
 
