@@ -44,9 +44,7 @@ export default function SelectControlOptionsFund<T>({
     return (
         <div
             id={id}
-            className={`select-control select-control-funds ${disabled ? 'disabled' : ''} ${
-                className ? className : ''
-            }`}
+            className={classNames('select-control', 'select-control-funds', disabled && 'disabled', className)}
             tabIndex={0}
             role="button"
             data-dusk={dusk}
@@ -117,17 +115,17 @@ export default function SelectControlOptionsFund<T>({
                 {showOptions && (
                     <ClickOutside
                         className="select-control-options"
-                        id={`${controlId}_options`}
-                        role="listbox"
-                        onScroll={onOptionsScroll}
-                        onClick={null}
+                        attr={{
+                            id: `${controlId}_options`,
+                            role: 'listbox',
+                            onScroll: onOptionsScroll,
+                            onClick: null,
+                        }}
                         onClickOutside={(e) => {
                             e.stopPropagation();
                             setShowOptions(false);
                         }}>
                         {optionsFiltered.slice(0, visibleCount)?.map((option) => (
-                            /*<SelectControlOptionItem key={option.id} option={option}
-                                                     selectOption={selectOption}/>*/
                             <div
                                 key={option.id}
                                 className={'select-control-option'}

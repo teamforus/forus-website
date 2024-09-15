@@ -82,6 +82,11 @@ export default function OrganizationsFundsEdit() {
         { value: 'external', name: 'Informatief (met doorlink)' },
     ]);
 
+    const [outcomeTypes] = useState([
+        { value: 'voucher', name: 'Tegoed' },
+        { value: 'payout', name: 'Uitbetaling' },
+    ]);
+
     const [externalFundPageTypes] = useState([
         { value: false, name: 'Interne pagina' },
         { value: true, name: 'Externe pagina' },
@@ -183,6 +188,7 @@ export default function OrganizationsFundsEdit() {
         contact_info_required?: boolean;
         contact_info_message_custom?: boolean;
         contact_info_message_text?: string;
+        outcome_type?: 'voucher' | 'payout';
         voucher_amount_visible?: boolean;
         provider_products_required?: boolean;
     }>(
@@ -204,6 +210,7 @@ export default function OrganizationsFundsEdit() {
             contact_info_required: true,
             contact_info_message_custom: false,
             contact_info_message_text: '',
+            outcome_type: 'voucher',
             voucher_amount_visible: false,
             provider_products_required: false,
         },
@@ -640,6 +647,22 @@ export default function OrganizationsFundsEdit() {
                                     </div>
                                 )}
                             </div>
+                            {activeOrganization.allow_payouts && (
+                                <div className="form-group form-group-inline">
+                                    <label className="form-label form-label-required">Uitkomst van een aanvraag</label>
+                                    <div className="form-offset">
+                                        <SelectControl
+                                            propKey={'value'}
+                                            allowSearch={false}
+                                            value={form.values.outcome_type}
+                                            options={outcomeTypes}
+                                            disabled={!!fund}
+                                            onChange={(outcome_type: string) => form.update({ outcome_type })}
+                                        />
+                                        <FormError error={form.errors?.type} />
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>

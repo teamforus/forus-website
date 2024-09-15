@@ -1,37 +1,26 @@
-import React, { useCallback } from 'react';
-import ClickOutside from '../click-outside/ClickOutside';
+import React, { ReactNode } from 'react';
+import FDTargetClick, {
+    FDTargetContainerProps,
+} from '../../../modules/frame_director/components/targets/FDTargetClick';
+import FDTargetContainerTableMenu from '../../../modules/frame_director/components/target-containers/FDTargetContainerTableMenu';
 
-export default function TableRowActions<T = number>({
-    activeId,
-    setActiveId,
-    id,
-    children,
-}: {
-    activeId: T;
-    setActiveId: React.Dispatch<React.SetStateAction<T>>;
-    id: T;
-    children: React.ReactElement;
-}) {
-    const toggleActions = useCallback(
-        (e, id: T) => {
-            e.stopPropagation();
-            setActiveId((activeId) => (activeId === id ? null : id));
-        },
-        [setActiveId],
-    );
-
+export default function TableRowActions({ content }: { content: (e: FDTargetContainerProps) => ReactNode }) {
     return (
-        <div className="button button-text button-menu" onClick={(e) => toggleActions(e, id)}>
-            <em className="mdi mdi-dots-horizontal" />
-            {id === activeId && (
-                <ClickOutside
-                    onClick={(e) => e.stopPropagation()}
-                    onClickOutside={(e) => toggleActions(e, id)}
-                    className="menu-dropdown">
-                    <div className="menu-dropdown-arrow" />
-                    {children}
-                </ClickOutside>
-            )}
+        <div className={`actions`}>
+            <FDTargetClick
+                position={'bottom'}
+                align={'end'}
+                contentContainer={FDTargetContainerTableMenu}
+                content={(e) => (
+                    <div className="menu-dropdown">
+                        <div className="menu-dropdown-arrow" />
+                        {content(e)}
+                    </div>
+                )}>
+                <div className="button button-text button-menu">
+                    <em className="mdi mdi-dots-horizontal" />
+                </div>
+            </FDTargetClick>
         </div>
     );
 }

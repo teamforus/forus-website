@@ -135,10 +135,12 @@ export default function SelectControlOptionsVouchers<T>({
                     <ClickOutside
                         className="select-control-options"
                         dataDusk={'voucherSelectorOptions'}
-                        id={`${controlId}_options`}
-                        role="listbox"
-                        onScroll={onOptionsScroll}
-                        onClick={null}
+                        attr={{
+                            id: `${controlId}_options`,
+                            role: 'listbox',
+                            onScroll: onOptionsScroll,
+                            onClick: null,
+                        }}
                         onClickOutside={(e) => {
                             e.stopPropagation();
                             setShowOptions(false);
