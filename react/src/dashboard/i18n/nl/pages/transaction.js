@@ -1,9 +1,10 @@
 export default {
     labels: {
-        amount: 'Amount',
+        amount: 'Bedrag',
         payment: 'Transactie',
-        details: 'Transactie details',
+        details: 'Details',
         id: 'ID',
+        fund: 'Fonds',
         bunq_id: 'ID bunq',
         bng_id: 'ID BNG',
         statement: 'Overgemaakt naar',
@@ -12,11 +13,16 @@ export default {
         bunq: 'Transactiekosten',
         fee: '€ 0.10',
         date: 'Datum',
+        created_at: 'Datum aangemaakt',
         target: 'Target',
         execution_date: 'Datum van uitbetaling',
         status: 'Status',
         accepted: 'Accepted',
+        created_by: 'Aangemaakt door',
+        transfer_at: 'Datum uitbetaald',
         date_non_cancelable: 'Definitieve transactie',
+        note: 'Omschrijving',
+        description: 'Omschrijving',
     },
     tooltips: {
         pending_iban_from:
