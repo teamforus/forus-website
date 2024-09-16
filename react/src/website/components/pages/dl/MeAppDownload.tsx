@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useEffect, useMemo } from 'react';
+import React, { Fragment, useState, useEffect } from 'react';
 import useEnvData from '../../../hooks/useEnvData';
 import BackgroundCircles from '../../elements/BackgroundCircles';
 import useAssetUrl from '../../../hooks/useAssetUrl';
@@ -11,12 +11,8 @@ export default function MeAppDownload() {
     const [isiOS, setIsiOS] = useState(false);
     const [isAndroid, setIsAndroid] = useState(false);
 
-    const iosPlatforms = useMemo(() => {
-        return ['iPad Simulator', 'iPhone Simulator', 'iPod Simulator', 'iPad', 'iPhone', 'iPod'];
-    }, []);
-
     useEffect(() => {
-        setIsiOS(navigator.userAgent && iosPlatforms.indexOf(navigator.userAgent) !== -1);
+        setIsiOS(/iPad|iPhone|iPod/.test(navigator.userAgent));
         setIsAndroid(navigator.userAgent.toLowerCase().indexOf('android') > -1);
 
         if (isiOS) {
@@ -24,7 +20,7 @@ export default function MeAppDownload() {
         } else if (isAndroid) {
             document.location.href = envData?.config?.android_link;
         }
-    }, [envData?.config?.android_link, envData?.config?.ios_iphone_link, iosPlatforms, isAndroid, isiOS]);
+    }, [envData?.config?.android_link, envData?.config?.ios_iphone_link, isAndroid, isiOS]);
 
     return (
         <Fragment>
