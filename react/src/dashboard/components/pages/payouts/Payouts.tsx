@@ -51,7 +51,6 @@ export default function Payouts() {
 
     const [funds, setFunds] = useState<Array<Partial<Fund>>>(null);
     const [transactions, setTransactions] = useState<PaginationData<PayoutTransaction>>(null);
-    const [shownVoucherMenuId, setShownVoucherMenuId] = useState<number>(null);
 
     const fundsWithPayouts = useMemo(() => {
         return funds?.filter((fund: Fund) => fund.allow_custom_amounts || fund.allow_preset_amounts);
@@ -124,7 +123,7 @@ export default function Payouts() {
 
         fundService
             .list(activeOrganization.id)
-            .then((res) => setFunds([{ id: null, name: 'Selecteer fond' }, ...res.data.data]))
+            .then((res) => setFunds([{ id: null, name: 'Selecteer fonds' }, ...res.data.data]))
             .catch(pushApiError)
             .finally(() => setProgress(100));
     }, [activeOrganization.id, fundService, setProgress, pushApiError]);
@@ -498,15 +497,9 @@ export default function Payouts() {
                                                 )}
                                             </td>
 
-                                            <td
-                                                className={'table-td-actions'}
-                                                style={{ zIndex: shownVoucherMenuId === transaction.id ? 1 : 0 }}>
-                                                <div
-                                                    className={`actions ${shownVoucherMenuId == transaction.id ? 'active' : ''}`}>
-                                                    <TableRowActions
-                                                        id={transaction.id}
-                                                        activeId={shownVoucherMenuId}
-                                                        setActiveId={setShownVoucherMenuId}>
+                                            <td className={'table-td-actions'}>
+                                                <TableRowActions
+                                                    content={({ close }) => (
                                                         <div className="dropdown dropdown-actions">
                                                             <StateNavLink
                                                                 name={'payout'}
@@ -522,7 +515,7 @@ export default function Payouts() {
                                                                     className="dropdown-item"
                                                                     onClick={() => {
                                                                         editPayout(transaction);
-                                                                        setShownVoucherMenuId(null);
+                                                                        close();
                                                                     }}>
                                                                     <em className="mdi mdi-pencil-outline icon-start" />{' '}
                                                                     Bewerken
@@ -535,7 +528,7 @@ export default function Payouts() {
                                                                         updatePayment(transaction, {
                                                                             cancel: true,
                                                                         });
-                                                                        setShownVoucherMenuId(null);
+                                                                        close();
                                                                     }}>
                                                                     <em className="mdi mdi-close-circle icon-start" />{' '}
                                                                     Annuleren
@@ -548,7 +541,6 @@ export default function Payouts() {
                                                                         updatePayment(transaction, {
                                                                             skip_transfer_delay: true,
                                                                         });
-                                                                        setShownVoucherMenuId(null);
                                                                     }}>
                                                                     <em className="mdi mdi-clock-fast icon-start" />{' '}
                                                                     {strLimit(
@@ -558,8 +550,8 @@ export default function Payouts() {
                                                                 </div>
                                                             )}
                                                         </div>
-                                                    </TableRowActions>
-                                                </div>
+                                                    )}
+                                                />
                                             </td>
                                         </StateNavLink>
                                     ))}
