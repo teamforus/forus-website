@@ -724,8 +724,10 @@
 
                     .mdi {
                         color: var(--sign_up_step_btns_color);
-                        width: 36px;
-                        font-size: 34px;
+                        width: 32px;
+                        font-size: 32px;
+                        line-height: 32px;
+                        height: 32px;
                     }
 
                     &[disabled],
@@ -780,7 +782,7 @@
             .form-control:not([type='radio']):not([type='checkbox']) {
                 height: auto;
 
-                &:not(textarea):not(.phone-control-input) {
+                &:not(textarea):not(.phone-control-input):not(.select-control) {
                     padding: 14px 15px;
 
                     &.form-control-sm {
