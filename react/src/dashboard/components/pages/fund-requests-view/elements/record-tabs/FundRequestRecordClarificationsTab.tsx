@@ -1,6 +1,7 @@
 import FundRequestRecord from '../../../../../props/models/FundRequestRecord';
 import FundRequestRecordAttachmentsTab from './FundRequestRecordAttachmentsTab';
-import React, { Fragment } from 'react';
+import React from 'react';
+import MultilineText from '../../../../elements/multiline-text/MultilineText';
 
 export default function FundRequestRecordClarificationsTab({
     fundRequestRecord,
@@ -16,9 +17,7 @@ export default function FundRequestRecordClarificationsTab({
                     <div className="clarification-item-details">
                         <div className="clarification-item-question">
                             <div className="clarification-item-icon mdi mdi-message-text text-primary" />
-                            {clarification.question.split(/(\n)/g).map((line, index) => (
-                                <Fragment key={index}>{line && (line != '\n' ? <div>{line}</div> : <br />)}</Fragment>
-                            ))}
+                            <MultilineText text={clarification.question} />
                         </div>
                         <div className="clarification-item-answer">
                             <div className="clarification-item-icon mdi mdi-message-text text-primary-light" />

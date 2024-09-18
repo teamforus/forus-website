@@ -1,4 +1,4 @@
-import React, { Fragment, useCallback, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import FundRequestRecord from '../../../../../dashboard/props/models/FundRequestRecord';
 import FormError from '../../../../../dashboard/components/elements/forms/errors/FormError';
 import useFormBuilder from '../../../../../dashboard/hooks/useFormBuilder';
@@ -9,6 +9,7 @@ import FundRequestClarification from '../../../../../dashboard/props/models/Fund
 import usePushSuccess from '../../../../../dashboard/hooks/usePushSuccess';
 import { ResponseError } from '../../../../../dashboard/props/ApiResponses';
 import { useFundRequestClarificationService } from '../../../../services/FundRequestClarificationService';
+import MultilineText from '../../../../../dashboard/components/elements/multiline-text/MultilineText';
 
 export default function FundRequestRecordClarificationCard({
     record,
@@ -90,11 +91,7 @@ export default function FundRequestRecordClarificationCard({
                         <div className="fund-request-chat-message-time">{clarification.created_at_locale}</div>
                         <div className="fund-request-chat-message-content">
                             <div className="fund-request-chat-message-text">
-                                {clarification.question.split(/(\n)/g).map((line, index) => (
-                                    <Fragment key={index}>
-                                        {line && (line != '\n' ? <div>{line}</div> : <br />)}
-                                    </Fragment>
-                                ))}
+                                <MultilineText text={clarification.question} />
                             </div>
                         </div>
                     </div>
