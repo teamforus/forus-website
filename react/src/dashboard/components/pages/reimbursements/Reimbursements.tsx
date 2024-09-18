@@ -5,7 +5,6 @@ import { PaginationData } from '../../../props/ApiResponses';
 import Fund from '../../../props/models/Fund';
 import Reimbursement from '../../../props/models/Reimbursement';
 import { useReimbursementsService } from '../../../services/ReimbursementService';
-import useFilter from '../../../hooks/useFilter';
 import usePaginatorService from '../../../modules/paginator/services/usePaginatorService';
 import { useFundService } from '../../../services/FundService';
 import FilterItemToggle from '../../elements/tables/elements/FilterItemToggle';
@@ -31,6 +30,8 @@ import LoaderTableCard from '../../elements/loader-table-card/LoaderTableCard';
 import SelectControlOptionsFund from '../../elements/select-control/templates/SelectControlOptionsFund';
 import TableRowActions from '../../elements/tables/TableRowActions';
 import CardHeaderFilter from '../../elements/tables/elements/CardHeaderFilter';
+import useFilterNext from '../../../modules/filter_next/useFilterNext';
+import { createEnumParam, NumberParam, StringParam } from 'use-query-params';
 
 export default function Reimbursements() {
     const activeOrganization = useActiveOrganization();
@@ -60,31 +61,66 @@ export default function Reimbursements() {
     const [archivedOptions] = useState(reimbursementService.getArchivedOptions());
     const [deactivatedOptions] = useState(reimbursementService.getDeactivatedOptions());
 
-    const filter = useFilter({
-        q: '',
-        implementation_id: null,
-        state: null,
-        amount_min: null,
-        amount_max: null,
-        expired: null,
-        archived: 0,
-        deactivated: null,
-        from: null,
-        to: null,
-        fund_id: null,
-        page: 1,
-        per_page: paginatorService.getPerPage(paginatorKey, 10),
-    });
+    const [filterValues, filterValuesActive, filterUpdate, filter] = useFilterNext<{
+        q: string;
+        state: string;
+        implementation_id?: string;
+        amount_min?: string;
+        amount_max?: string;
+        expired?: number;
+        archived?: number;
+        deactivated?: number;
+        from?: string;
+        to?: string;
+        fund_id?: number;
+        page?: number;
+        per_page?: number;
+    }>(
+        {
+            q: '',
+            state: null,
+            implementation_id: null,
+            amount_min: null,
+            amount_max: null,
+            expired: null,
+            archived: 0,
+            deactivated: null,
+            from: null,
+            to: null,
+            fund_id: null,
+            page: 1,
+            per_page: paginatorService.getPerPage(paginatorKey, 10),
+        },
+        {
+            queryParams: {
+                q: StringParam,
+                state: createEnumParam(['pending', 'approved', 'declined']),
+                implementation_id: NumberParam,
+                amount_min: NumberParam,
+                amount_max: NumberParam,
+                expired: NumberParam,
+                archived: NumberParam,
+                deactivated: NumberParam,
+                from: StringParam,
+                to: StringParam,
+                fund_id: NumberParam,
+                page: NumberParam,
+                per_page: NumberParam,
+            },
+            queryParamsRemoveDefault: true,
+            throttledValues: ['q', 'amount_min', 'amount_max'],
+        },
+    );
 
     const setArchivedOption = useCallback(
         (archived: number) => {
-            filter.update({
+            filterUpdate({
                 expired: null,
                 archived: archived,
                 deactivated: null,
             });
         },
-        [filter],
+        [filterUpdate],
     );
 
     const fetchFunds = useCallback(() => {
@@ -97,10 +133,10 @@ export default function Reimbursements() {
         setProgress(0);
 
         reimbursementService
-            .list(activeOrganization.id, filter.activeValues)
+            .list(activeOrganization.id, filterValuesActive)
             .then((res) => setReimbursements(res.data))
             .finally(() => setProgress(100));
-    }, [setProgress, activeOrganization.id, filter.activeValues, reimbursementService]);
+    }, [setProgress, activeOrganization.id, filterValuesActive, reimbursementService]);
 
     const fetchImplementations = useCallback(() => {
         implementationService
@@ -110,10 +146,10 @@ export default function Reimbursements() {
 
     const exportReimbursements = useCallback(() => {
         reimbursementExportService.exportData(activeOrganization.id, {
-            ...filter.activeValues,
+            ...filterValuesActive,
             per_page: null,
         });
-    }, [activeOrganization.id, filter.activeValues, reimbursementExportService]);
+    }, [activeOrganization.id, filterValuesActive, reimbursementExportService]);
 
     useEffect(() => {
         fetchFunds();
@@ -157,7 +193,7 @@ export default function Reimbursements() {
                                             key={viewType.value}
                                             onClick={() => setArchivedOption(viewType.value)}
                                             className={`label-tab label-tab-sm ${
-                                                filter.values.archived == viewType.value ? 'active' : ''
+                                                filterValues.archived == viewType.value ? 'active' : ''
                                             }`}
                                             data-dusk={`${
                                                 viewType.value
@@ -176,10 +212,10 @@ export default function Reimbursements() {
                                         className="form-control inline-filter-control"
                                         propKey={'id'}
                                         options={funds?.data}
-                                        value={filter.activeValues.fund_id}
+                                        value={filterValuesActive.fund_id}
                                         placeholder={translate('vouchers.labels.fund')}
                                         allowSearch={false}
-                                        onChange={(fund_id: number) => filter.update({ fund_id })}
+                                        onChange={(fund_id: number) => filterUpdate({ fund_id })}
                                         optionsComponent={SelectControlOptionsFund}
                                     />
                                 </div>
@@ -198,10 +234,10 @@ export default function Reimbursements() {
                                         <input
                                             type="text"
                                             className="form-control"
-                                            value={filter.values.q}
+                                            value={filterValues.q}
                                             data-dusk="searchReimbursement"
                                             placeholder={translate('reimbursements.labels.search')}
-                                            onChange={(e) => filter.update({ q: e.target.value })}
+                                            onChange={(e) => filterUpdate({ q: e.target.value })}
                                         />
                                     </div>
                                 </div>
@@ -212,8 +248,8 @@ export default function Reimbursements() {
                                     <input
                                         className="form-control"
                                         data-dusk="searchReimbursement"
-                                        value={filter.values.q}
-                                        onChange={(e) => filter.update({ q: e.target.value })}
+                                        value={filterValues.q}
+                                        onChange={(e) => filterUpdate({ q: e.target.value })}
                                         placeholder={translate('reimbursements.labels.search')}
                                     />
                                 </FilterItemToggle>
@@ -223,24 +259,24 @@ export default function Reimbursements() {
                                         className="form-control"
                                         propKey={'value'}
                                         allowSearch={false}
-                                        value={filter.values.state}
+                                        value={filterValues.state}
                                         options={statesOptions}
                                         optionsComponent={SelectControlOptions}
-                                        onChange={(state: string) => filter.update({ state })}
+                                        onChange={(state: string) => filterUpdate({ state })}
                                     />
                                 </FilterItemToggle>
 
-                                {filter.values.archived == 1 && (
+                                {filterValues.archived == 1 && (
                                     <Fragment>
                                         <FilterItemToggle label={translate('reimbursements.labels.expired')}>
                                             <SelectControl
                                                 className="form-control"
                                                 propKey={'value'}
                                                 allowSearch={false}
-                                                value={filter.values.expired}
+                                                value={filterValues.expired}
                                                 options={expiredOptions}
                                                 optionsComponent={SelectControlOptions}
-                                                onChange={(expired: string) => filter.update({ expired })}
+                                                onChange={(expired: number) => filterUpdate({ expired })}
                                             />
                                         </FilterItemToggle>
 
@@ -249,10 +285,10 @@ export default function Reimbursements() {
                                                 className="form-control"
                                                 propKey={'value'}
                                                 allowSearch={false}
-                                                value={filter.values.deactivated}
+                                                value={filterValues.deactivated}
                                                 options={deactivatedOptions}
                                                 optionsComponent={SelectControlOptions}
-                                                onChange={(deactivated: string) => filter.update({ deactivated })}
+                                                onChange={(deactivated: number) => filterUpdate({ deactivated })}
                                             />
                                         </FilterItemToggle>
                                     </Fragment>
@@ -265,9 +301,9 @@ export default function Reimbursements() {
                                                 className="form-control"
                                                 min={0}
                                                 type="number"
-                                                value={filter.values.amount_min || ''}
+                                                value={filterValues.amount_min || ''}
                                                 onChange={(e) =>
-                                                    filter.update({
+                                                    filterUpdate({
                                                         amount_min: e.target.value,
                                                     })
                                                 }
@@ -280,9 +316,9 @@ export default function Reimbursements() {
                                                 className="form-control"
                                                 min={0}
                                                 type="number"
-                                                value={filter.values.amount_max || ''}
+                                                value={filterValues.amount_max || ''}
                                                 onChange={(e) =>
-                                                    filter.update({
+                                                    filterUpdate({
                                                         amount_max: e.target.value,
                                                     })
                                                 }
@@ -294,20 +330,20 @@ export default function Reimbursements() {
 
                                 <FilterItemToggle label={translate('reimbursements.labels.from')}>
                                     <DatePickerControl
-                                        value={dateParse(filter.values.from)}
+                                        value={dateParse(filterValues.from)}
                                         placeholder={translate('yyyy-MM-dd')}
                                         onChange={(from: Date) => {
-                                            filter.update({ from: dateFormat(from) });
+                                            filterUpdate({ from: dateFormat(from) });
                                         }}
                                     />
                                 </FilterItemToggle>
 
                                 <FilterItemToggle label={translate('reimbursements.labels.to')}>
                                     <DatePickerControl
-                                        value={dateParse(filter.values.to)}
+                                        value={dateParse(filterValues.to)}
                                         placeholder={translate('yyyy-MM-dd')}
                                         onChange={(to: Date) => {
-                                            filter.update({ to: dateFormat(to) });
+                                            filterUpdate({ to: dateFormat(to) });
                                         }}
                                     />
                                 </FilterItemToggle>
@@ -317,10 +353,10 @@ export default function Reimbursements() {
                                         className="form-control"
                                         propKey={'id'}
                                         allowSearch={false}
-                                        value={filter.values.implementation_id}
+                                        value={filterValues.implementation_id}
                                         options={implementations}
                                         optionsComponent={SelectControlOptions}
-                                        onChange={(implementation_id: string) => filter.update({ implementation_id })}
+                                        onChange={(implementation_id: string) => filterUpdate({ implementation_id })}
                                     />
                                 </FilterItemToggle>
 
@@ -491,8 +527,8 @@ export default function Reimbursements() {
                         <div className="card-section">
                             <Paginator
                                 meta={reimbursements.meta}
-                                filters={filter.values}
-                                updateFilters={filter.update}
+                                filters={filterValues}
+                                updateFilters={filterUpdate}
                                 perPageKey={paginatorKey}
                             />
                         </div>
