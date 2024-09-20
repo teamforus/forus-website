@@ -516,6 +516,7 @@ export default {
             request_btn_text: 'Knoptekst aanvragen',
             external_link_text: 'Externe linktekst',
             external_link_url: 'Externe link-url',
+            shown_criteria_label_details: 'Verplichte of optionele vragen',
         },
         buttons: {
             cancel: 'Annuleren',

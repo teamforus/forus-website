@@ -38,6 +38,7 @@ export default function UIControlCheckbox({
             className={`ui-control ui-control-checkbox ${className} ${
                 slim ? 'ui-control-checkbox-slim' : ''
             } ${className} ${disabled ? 'disabled' : ''}`}>
+            <div className="ui-control-label-wrapper" />
             <input
                 className="form-control"
                 hidden={true}

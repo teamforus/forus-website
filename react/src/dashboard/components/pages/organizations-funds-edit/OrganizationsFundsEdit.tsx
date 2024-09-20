@@ -99,6 +99,12 @@ export default function OrganizationsFundsEdit() {
         { value: 'after', name: 'Na de standaard content tonen' },
     ]);
 
+    const [shownCriteriaLabelDetails] = useState([
+        { value: 'optional', name: 'Optioneel' },
+        { value: 'required', name: 'Verplicht' },
+        { value: 'both', name: 'Optioneel en verplicht' },
+    ]);
+
     const [applicationMethods] = useState([
         {
             key: 'application_form',
@@ -192,6 +198,7 @@ export default function OrganizationsFundsEdit() {
         outcome_type?: 'voucher' | 'payout';
         voucher_amount_visible?: boolean;
         provider_products_required?: boolean;
+        shown_criteria_label_details?: string;
     }>(
         {
             description_position: descriptionPositions[0]?.value,
@@ -204,6 +211,7 @@ export default function OrganizationsFundsEdit() {
             application_method: 'application_form',
             request_btn_text: applicationMethodsByKey['application_form']?.default_button_text,
             state: fundStates[0].value,
+            shown_criteria_label_details: 'both',
 
             // contact information
             email_required: true,
@@ -798,6 +806,24 @@ export default function OrganizationsFundsEdit() {
                                         <FormError error={form.errors?.request_btn_text} />
                                     </div>
                                 )}
+
+                                <div className="form-group form-group-inline">
+                                    <div className="form-label form-label-required">
+                                        {translate('funds_edit.labels.shown_criteria_label_details')}
+                                    </div>
+                                    <div className="form-offset">
+                                        <SelectControl
+                                            propKey={'value'}
+                                            allowSearch={false}
+                                            value={form.values.shown_criteria_label_details}
+                                            options={shownCriteriaLabelDetails}
+                                            disabled={!hasPermission(activeOrganization, 'manage_funds')}
+                                            onChange={(shown_criteria_label_details: string) => {
+                                                form.update({ shown_criteria_label_details });
+                                            }}
+                                        />
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

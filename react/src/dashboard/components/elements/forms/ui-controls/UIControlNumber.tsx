@@ -68,6 +68,7 @@ export default function UIControlNumber({
             aria-label={ariaLabel}>
             {type === 'currency' && <div className="ui-control-currency-icon">€</div>}
 
+            <div className="ui-control-label-wrapper" />
             <input
                 ref={inputRef || innerInputRef}
                 className={'form-control'}

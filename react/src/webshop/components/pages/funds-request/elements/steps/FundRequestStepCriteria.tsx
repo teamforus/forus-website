@@ -18,6 +18,7 @@ import { useFundRequestService } from '../../../../../services/FundRequestServic
 import { uniq } from 'lodash';
 import useSetProgress from '../../../../../../dashboard/hooks/useSetProgress';
 import SignUpFooter from '../../../../elements/sign-up/SignUpFooter';
+import classNames from 'classnames';
 
 export default function FundRequestStepCriteria({
     fund,
@@ -125,6 +126,20 @@ export default function FundRequestStepCriteria({
         [onNextStep, setProgress, setCriterion, validateCriteria],
     );
 
+    const isLabelRequired = useCallback(
+        (criteria: LocalCriterion) => {
+            return !criteria.optional && fund.shown_criteria_label_details !== 'optional';
+        },
+        [fund.shown_criteria_label_details],
+    );
+
+    const isLabelOptional = useCallback(
+        (criteria: LocalCriterion) => {
+            return criteria.optional && fund.shown_criteria_label_details !== 'required';
+        },
+        [fund.shown_criteria_label_details],
+    );
+
     return (
         <Fragment>
             {progress}
@@ -183,6 +198,11 @@ export default function FundRequestStepCriteria({
                         {criterion.control_type == 'select_control' && (
                             <SelectControl
                                 id={`criterion_${criterion.id}`}
+                                className={classNames(
+                                    'select-control-label',
+                                    isLabelOptional(criterion) && 'select-control-label-optional',
+                                    isLabelRequired(criterion) && 'select-control-label-required',
+                                )}
                                 propKey="value"
                                 value={criterion.input_value}
                                 options={recordTypesByKey?.[criterion?.record_type?.key]?.options}
@@ -195,6 +215,11 @@ export default function FundRequestStepCriteria({
 
                         {criterion.control_type == 'ui_control_checkbox' && (
                             <UIControlCheckbox
+                                className={classNames(
+                                    'ui-control-label',
+                                    isLabelOptional(criterion) && 'ui-control-label-optional',
+                                    isLabelRequired(criterion) && 'ui-control-label-required',
+                                )}
                                 checked={!!criterion.is_checked}
                                 name={criterion.record_type.key}
                                 id={`criterion_${criterion.id}`}
@@ -212,6 +237,11 @@ export default function FundRequestStepCriteria({
                         {criterion.control_type == 'ui_control_step' && (
                             <UIControlStep
                                 id={`criterion_${criterion.id}`}
+                                className={classNames(
+                                    'ui-control-label',
+                                    isLabelOptional(criterion) && 'ui-control-label-optional',
+                                    isLabelRequired(criterion) && 'ui-control-label-required',
+                                )}
                                 value={parseInt(criterion.input_value)}
                                 onChange={(value) => {
                                     setCriterion(criterion.id, { input_value: value.toFixed() });
@@ -224,6 +254,11 @@ export default function FundRequestStepCriteria({
 
                         {criterion.control_type == 'ui_control_date' && (
                             <UIControlDate
+                                className={classNames(
+                                    'ui-control-label',
+                                    isLabelOptional(criterion) && 'ui-control-label-optional',
+                                    isLabelRequired(criterion) && 'ui-control-label-required',
+                                )}
                                 value={
                                     criterion?.input_value
                                         ? dateParse(criterion?.input_value, 'dd-MM-yyyy')
@@ -242,6 +277,11 @@ export default function FundRequestStepCriteria({
                         {criterion.control_type == 'ui_control_number' && (
                             <UIControlNumber
                                 type={'number'}
+                                className={classNames(
+                                    'ui-control-label',
+                                    isLabelOptional(criterion) && 'ui-control-label-optional',
+                                    isLabelRequired(criterion) && 'ui-control-label-required',
+                                )}
                                 value={criterion.input_value ? parseFloat(criterion.input_value) : null}
                                 name={criterion.record_type.key}
                                 id={`criterion_${criterion.id}`}
@@ -254,6 +294,11 @@ export default function FundRequestStepCriteria({
                         {criterion.control_type == 'ui_control_text' && (
                             <UIControlText
                                 type={'text'}
+                                className={classNames(
+                                    'ui-control-label',
+                                    isLabelOptional(criterion) && 'ui-control-label-optional',
+                                    isLabelRequired(criterion) && 'ui-control-label-required',
+                                )}
                                 value={criterion.input_value}
                                 name={criterion.record_type.key}
                                 id={`criterion_${criterion.id}`}
@@ -266,6 +311,11 @@ export default function FundRequestStepCriteria({
                         {criterion.control_type == 'ui_control_currency' && (
                             <UIControlNumber
                                 type={'currency'}
+                                className={classNames(
+                                    'ui-control-label',
+                                    isLabelOptional(criterion) && 'ui-control-label-optional',
+                                    isLabelRequired(criterion) && 'ui-control-label-required',
+                                )}
                                 value={criterion.input_value ? parseFloat(criterion.input_value) : null}
                                 min={0}
                                 name={criterion.record_type.key}

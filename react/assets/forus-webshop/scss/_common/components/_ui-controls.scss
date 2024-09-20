@@ -7,6 +7,10 @@
     display: flex;
     position: relative;
 
+    .ui-control-label-wrapper {
+        display: none;
+    }
+
     .ui-control-clear {
         position: absolute;
         top: 50%;
@@ -280,6 +284,47 @@
                 background: #fafafa;
                 border-color: #e5e6ec;
             }
+        }
+    }
+
+    &.ui-control-label {
+        position: relative;
+
+        .ui-control-label-wrapper {
+            display: flex;
+            position: absolute;
+            right: 0;
+            top: -25px;
+            color: #353535;
+            font: 400 12px/16px var(--base-font);
+        }
+
+        &.ui-control-label-required {
+            .ui-control-label-wrapper {
+                &:before {
+                    content: '*';
+                    color: #ED133C;
+                    font: 400 20px/22px var(--base-font);
+                    margin-right: 5px;
+                }
+
+                &:after {
+                    content: 'Mandatory';
+                }
+            }
+        }
+
+        &.ui-control-label-optional {
+            .ui-control-label-wrapper {
+                &:after {
+                    content: 'Optioneel';
+                    font-style: italic;
+                }
+            }
+        }
+
+        &.ui-control-step {
+            margin-top: 20px;
         }
     }
 }

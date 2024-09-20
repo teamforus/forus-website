@@ -171,6 +171,7 @@
         padding: 0 0 !important;
         border-radius: calc(var(--border-radius) / 2);
         border: 1px solid var(--form-control-border-color);
+        position: relative;
 
         .form-control:not([type='radio']):not([type='checkbox']) {
             border: none !important;
@@ -185,6 +186,41 @@
             outline-offset: 3px;
             background-color: #ffffff;
             border: 1px solid var(--form-control-border-color-focus);
+        }
+
+        &.select-control-label {
+            .select-control-label-wrapper {
+                display: flex;
+                position: absolute;
+                right: 0;
+                top: -25px;
+                color: #353535;
+                font: 400 12px/16px var(--base-font);
+            }
+
+            &.select-control-label-required {
+                .select-control-label-wrapper {
+                    &:before {
+                        content: '*';
+                        color: #ED133C;
+                        font: 400 20px/22px var(--base-font);
+                        margin-right: 5px;
+                    }
+
+                    &:after {
+                        content: 'Mandatory';
+                    }
+                }
+            }
+
+            &.select-control-label-optional {
+                .select-control-label-wrapper {
+                    &:after {
+                        content: 'Optioneel';
+                        font-style: italic;
+                    }
+                }
+            }
         }
     }
 

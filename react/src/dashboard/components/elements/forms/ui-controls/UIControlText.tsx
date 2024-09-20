@@ -62,6 +62,7 @@ export default function UIControlText({
             }}
             className={`ui-control ui-control-text  ${className}`}
             aria-label={ariaLabel}>
+            <div className="ui-control-label-wrapper" />
             {React.createElement(type === 'textarea' ? 'textarea' : 'input', {
                 ref: inputRef || innerInputRef,
                 className: 'form-control',
