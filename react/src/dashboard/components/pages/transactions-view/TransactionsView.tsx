@@ -48,7 +48,9 @@ export default function TransactionsView() {
                     params={{ organizationId: activeOrganization.id }}
                     activeExact={true}
                     className="breadcrumb-item">
-                    {translate('page_state_titles.transactions')}
+                    {isSponsor
+                        ? translate('page_state_titles.transactions')
+                        : translate('page_state_titles.transactions_provider')}
                 </StateNavLink>
 
                 {isSponsor && (

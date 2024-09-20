@@ -49,6 +49,13 @@ export class ProviderFundService<T = FundProvider> {
         return this.apiRequest.get(`${this.prefix}/${organizationId}/provider/funds-available`, data);
     }
 
+    public listFundsProviderProductsRequired(organizationId: number, query: object = {}): Promise<ApiResponse<Fund>> {
+        return this.apiRequest.get(`${this.prefix}/${organizationId}/provider/funds-product-required`, {
+            per_page: 100,
+            ...query,
+        });
+    }
+
     /**
      * Fetch list
      */

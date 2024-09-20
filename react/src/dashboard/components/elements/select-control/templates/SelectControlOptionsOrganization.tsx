@@ -9,6 +9,8 @@ import useTranslate from '../../../../hooks/useTranslate';
 import useActiveOrganization from '../../../../hooks/useActiveOrganization';
 import { hasPermission } from '../../../../helpers/utils';
 import useIsSponsorPanel from '../../../../hooks/useIsSponsorPanel';
+import useSelectControlKeyEventHandlers from '../hooks/useSelectControlKeyEventHandlers';
+import { clickOnKeyEnter } from '../../../../helpers/wcag';
 
 export default function SelectControlOptionsOrganization<T>({
     query,
@@ -37,29 +39,26 @@ export default function SelectControlOptionsOrganization<T>({
     const selectorRef = useRef<HTMLDivElement>(null);
     const placeholderRef = useRef<HTMLLabelElement>(null);
 
+    const { onKeyDown, onBlur } = useSelectControlKeyEventHandlers(
+        selectorRef,
+        placeholderRef,
+        showOptions,
+        setShowOptions,
+    );
+
     return (
         <div
             className={'select-control select-control-organizations ' + (className ? className : '')}
             data-dusk="headerOrganizationSwitcher"
+            tabIndex={0}
+            ref={selectorRef}
             role="button"
             aria-haspopup="listbox"
             aria-expanded={showOptions}
             aria-labelledby={controlId}
             aria-controls={`${controlId}_options`}
-            onKeyDown={(e) => {
-                if (e.key == 'Enter') {
-                    placeholderRef?.current?.click();
-                }
-
-                if (e.key == 'Escape') {
-                    setShowOptions(false);
-                }
-            }}
-            onBlur={(e) => {
-                if (showOptions && !e.currentTarget.contains(e.relatedTarget)) {
-                    selectorRef?.current?.focus();
-                }
-            }}>
+            onKeyDown={onKeyDown}
+            onBlur={onBlur}>
             <div className={['select-control-input', showOptions ? 'options' : ''].filter((item) => item).join(' ')}>
                 {/* Placeholder */}
                 <label
@@ -119,14 +118,16 @@ export default function SelectControlOptionsOrganization<T>({
 
                 {showOptions && (
                     <ClickOutside
-                        onClick={null}
+                        className="select-control-options-group"
+                        attr={{
+                            role: 'listbox',
+                            onClick: null,
+                            id: `${controlId}_options`,
+                        }}
                         onClickOutside={(e) => {
                             e.stopPropagation();
                             setShowOptions(false);
-                        }}
-                        className="select-control-options-group"
-                        id={`${controlId}_options`}
-                        role="listbox">
+                        }}>
                         <div className="select-control-options" onScroll={onOptionsScroll}>
                             {optionsFiltered.slice(0, visibleCount)?.map((option) => (
                                 <div
@@ -134,6 +135,7 @@ export default function SelectControlOptionsOrganization<T>({
                                     className={`select-control-option ${option.id == modelValue.id ? 'selected' : ''}`}
                                     tabIndex={0}
                                     key={option.id}
+                                    onKeyDown={clickOnKeyEnter}
                                     onClick={(e) => {
                                         e.stopPropagation();
                                         selectOption(option);

@@ -23,11 +23,13 @@ export default function BlockCardNotes({
     fetchNotes,
     deleteNote,
     storeNote,
+    fetchNotesRef,
 }: {
     isAssigned: boolean;
     fetchNotes: (value: FilterModel) => Promise<ApiResponse<Note>>;
     deleteNote: (note: Note) => Promise<ApiResponseSingle<null>>;
     storeNote: (values: FormValuesModel) => Promise<ApiResponseSingle<Note>>;
+    fetchNotesRef?: React.MutableRefObject<() => void>;
 }) {
     const identity = useAuthIdentity();
 
@@ -47,7 +49,7 @@ export default function BlockCardNotes({
         per_page: paginatorService.getPerPage(paginatorKey),
     });
 
-    useEffect(() => {
+    const updateNotes = useCallback(() => {
         setProgress(0);
 
         fetchNotes(filter.activeValues)
@@ -56,7 +58,7 @@ export default function BlockCardNotes({
     }, [fetchNotes, filter.activeValues, setProgress]);
 
     const onDeleteNote = useCallback(
-        (note) => {
+        (note: Note) => {
             openModal((modal) => (
                 <ModalDangerZone
                     modal={modal}
@@ -100,6 +102,16 @@ export default function BlockCardNotes({
             />
         ));
     }, [filter, openModal, pushSuccess, storeNote]);
+
+    useEffect(() => {
+        updateNotes();
+    }, [updateNotes]);
+
+    useEffect(() => {
+        if (fetchNotesRef) {
+            fetchNotesRef.current = updateNotes;
+        }
+    }, [fetchNotesRef, updateNotes]);
 
     if (!notes) {
         return <LoadingCard />;

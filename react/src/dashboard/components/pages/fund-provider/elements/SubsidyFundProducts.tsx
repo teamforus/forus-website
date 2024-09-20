@@ -35,7 +35,6 @@ export default function SubsidyFundProducts({
     const fundService = useFundService();
 
     const [products, setProducts] = useState<PaginationData<ProductLocal>>(null);
-    const [shownProductMenuId, setShownProductMenuId] = useState<number>(null);
 
     const filter = useFilter({ q: '', per_page: 15 });
 
@@ -188,38 +187,37 @@ export default function SubsidyFundProducts({
                                                 )}
 
                                                 <TableRowActions
-                                                    activeId={shownProductMenuId}
-                                                    setActiveId={setShownProductMenuId}
-                                                    id={product.id}>
-                                                    <div className="dropdown dropdown-actions">
-                                                        <StateNavLink
-                                                            name={'fund-provider-product'}
-                                                            params={{
-                                                                id: product.id,
-                                                                fundId: fundProvider.fund_id,
-                                                                fundProviderId: fundProvider.id,
-                                                                organizationId: organization.id,
-                                                            }}
-                                                            className="dropdown-item">
-                                                            Bekijken
-                                                        </StateNavLink>
-
-                                                        {organization.manage_provider_products && (
+                                                    content={() => (
+                                                        <div className="dropdown dropdown-actions">
                                                             <StateNavLink
-                                                                name={'fund-provider-product-create'}
+                                                                name={'fund-provider-product'}
                                                                 params={{
+                                                                    id: product.id,
                                                                     fundId: fundProvider.fund_id,
-                                                                    source: product.id,
                                                                     fundProviderId: fundProvider.id,
                                                                     organizationId: organization.id,
                                                                 }}
-                                                                query={{ source_id: product.id }}
                                                                 className="dropdown-item">
-                                                                Kopieren
+                                                                Bekijken
                                                             </StateNavLink>
-                                                        )}
-                                                    </div>
-                                                </TableRowActions>
+
+                                                            {organization.manage_provider_products && (
+                                                                <StateNavLink
+                                                                    name={'fund-provider-product-create'}
+                                                                    params={{
+                                                                        fundId: fundProvider.fund_id,
+                                                                        source: product.id,
+                                                                        fundProviderId: fundProvider.id,
+                                                                        organizationId: organization.id,
+                                                                    }}
+                                                                    query={{ source_id: product.id }}
+                                                                    className="dropdown-item">
+                                                                    Kopieren
+                                                                </StateNavLink>
+                                                            )}
+                                                        </div>
+                                                    )}
+                                                />
                                             </div>
                                         </td>
                                     </tr>
