@@ -99,7 +99,9 @@ export default function FundRequestRecordClarificationCard({
                         <div className="fund-request-chat-message fund-request-chat-message-out">
                             <div className="fund-request-chat-message-time">{clarification.answered_at_locale}</div>
                             <div className="fund-request-chat-message-content">
-                                <div className="fund-request-chat-message-text">{clarification.answer}</div>
+                                <div className="fund-request-chat-message-text">
+                                    <MultilineText text={clarification.answer} />
+                                </div>
                                 {clarification.files.length > 0 && (
                                     <div className="fund-request-chat-message-file-uploader">
                                         <FileUploader
