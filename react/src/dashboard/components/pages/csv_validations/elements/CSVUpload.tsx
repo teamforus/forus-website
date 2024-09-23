@@ -672,13 +672,11 @@ export default function CSVUpload({
                         )}
 
                         {csvWarnings && !csvErrors && (
-                            <Fragment>
+                            <div className="csv-file-warning">
                                 {[].concat(csvWarnings).map((warning) => (
-                                    <div key={warning} className="csv-file-warning">
-                                        {warning}
-                                    </div>
+                                    <div key={warning}>{warning}</div>
                                 ))}
-                            </Fragment>
+                            </div>
                         )}
 
                         {csvErrors && (
