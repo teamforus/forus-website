@@ -57,13 +57,16 @@ export default function FundRequestStepCriteriaOverview({
                 </div>
 
                 <SignUpFooter
-                    startActions={<FundRequestGoBackButton prevStep={onPrevStep} fund={fund} step={step} />}
+                    startActions={
+                        <FundRequestGoBackButton prevStep={onPrevStep} fund={fund} step={step} tabIndex={0} />
+                    }
                     endActions={
                         <button
                             className="button button-text button-text-padless"
                             onClick={onNextStep}
                             role="button"
-                            type="button">
+                            type="button"
+                            tabIndex={0}>
                             {translate('fund_request.sign_up.pane.footer.next')}
                             <em className="mdi mdi-chevron-right icon-right" />
                         </button>
