@@ -31,6 +31,7 @@ import EmptyCard from '../../elements/empty-card/EmptyCard';
 import useTranslate from '../../../hooks/useTranslate';
 import classNames from 'classnames';
 import usePushApiError from '../../../hooks/usePushApiError';
+import { StringParam, useQueryParams } from 'use-query-params';
 
 export default function FundRequests() {
     const envData = useEnvData();
@@ -46,12 +47,29 @@ export default function FundRequests() {
     const navigate = useNavigate();
 
     const [employees, setEmployees] = useState(null);
-    const [fundRequests, setFundRequests] = useState<PaginationData<FundRequest>>(null);
+    const [fundRequests, setFundRequests] = useState<
+        PaginationData<FundRequest> & {
+            meta: {
+                totals: {
+                    hold: number;
+                    total: number;
+                    pending: number;
+                    resolved: number;
+                };
+            };
+        }
+    >(null);
 
     const fileService = useFileService();
     const employeeService = useEmployeeService();
     const paginatorService = usePaginatorService();
     const fundRequestService = useFundRequestValidatorService();
+
+    const [query, setQueryParams] = useQueryParams({
+        tab: StringParam,
+    });
+
+    const [tab, setTab] = useState(query.tab || null);
 
     const [paginatorKey] = useState('fund_requests');
 
@@ -95,15 +113,18 @@ export default function FundRequests() {
         order_dir: 'asc',
     });
 
-    const fetchFundRequests = useCallback(() => {
-        setProgress(0);
+    const fetchFundRequests = useCallback(
+        (filterValues: object = {}) => {
+            setProgress(0);
 
-        fundRequestService
-            .index(activeOrganization.id, filter.activeValues)
-            .then((res) => setFundRequests(res.data))
-            .catch(pushApiError)
-            .finally(() => setProgress(100));
-    }, [setProgress, activeOrganization.id, filter.activeValues, fundRequestService, pushApiError]);
+            fundRequestService
+                .index(activeOrganization.id, { ...filter.activeValues, ...filterValues })
+                .then((res) => setFundRequests(res.data))
+                .catch(pushApiError)
+                .finally(() => setProgress(100));
+        },
+        [setProgress, activeOrganization.id, filter.activeValues, fundRequestService, pushApiError],
+    );
 
     const fetchEmployees = useCallback(() => {
         setProgress(0);
@@ -151,7 +172,20 @@ export default function FundRequests() {
     }, [appConfigs.organizations?.funds?.fund_requests, navigate]);
 
     useEffect(() => fetchEmployees(), [fetchEmployees]);
-    useEffect(() => fetchFundRequests(), [fetchFundRequests]);
+
+    useEffect(() => {
+        setQueryParams({ tab });
+
+        if (tab == 'hold') {
+            fetchFundRequests({ assigned: 0 });
+        } else if (tab == 'pending') {
+            fetchFundRequests({ state: 'pending', assigned: 1 });
+        } else if (tab == 'resolved') {
+            fetchFundRequests({ assigned: 1, is_resolved: 1 });
+        } else {
+            fetchFundRequests();
+        }
+    }, [fetchFundRequests, setQueryParams, tab]);
 
     if (!fundRequests) {
         return <LoadingCard />;
@@ -160,11 +194,38 @@ export default function FundRequests() {
     return (
         <div className="card" data-dusk="fundRequestsPageContent">
             <div className="card-header card-header-next">
-                <div className="flex flex-grow">
+                <div className="flex flex-col flex-grow">
                     <div className="card-title">
                         {translate('validation_requests.header.title')}
                         &nbsp;
                         <span className="span-count">{fundRequests.meta.total}</span>
+                    </div>
+                </div>
+
+                <div className="flex-col">
+                    <div className="block block-label-tabs nowrap">
+                        <div className="label-tab-set">
+                            <div
+                                className={`label-tab label-tab-sm ${tab == null ? 'active' : ''}`}
+                                onClick={() => setTab(null)}>
+                                {translate('validation_requests.tabs.all')} ({fundRequests.meta.totals.total})
+                            </div>
+                            <div
+                                className={`label-tab label-tab-sm ${tab == 'hold' ? 'active' : ''}`}
+                                onClick={() => setTab('hold')}>
+                                {translate('validation_requests.tabs.hold')} ({fundRequests.meta.totals.hold})
+                            </div>
+                            <div
+                                className={`label-tab label-tab-sm ${tab == 'pending' ? 'active' : ''}`}
+                                onClick={() => setTab('pending')}>
+                                {translate('validation_requests.tabs.pending')} ({fundRequests.meta.totals.pending})
+                            </div>
+                            <div
+                                className={`label-tab label-tab-sm ${tab == 'resolved' ? 'active' : ''}`}
+                                onClick={() => setTab('resolved')}>
+                                {translate('validation_requests.tabs.resolved')} ({fundRequests.meta.totals.resolved})
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -382,7 +443,9 @@ export default function FundRequests() {
                                                                 `icon-start`,
                                                             )}
                                                         />
-                                                        {fundRequest.state_locale}
+                                                        {!fundRequest.employee
+                                                            ? 'Beoordelaar nodig'
+                                                            : fundRequest.state_locale}
                                                     </div>
                                                 )}
                                             </td>

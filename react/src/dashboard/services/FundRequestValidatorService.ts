@@ -21,7 +21,23 @@ export class FundRequestValidatorService<T = FundRequest> {
      */
     public prefix = '/platform/organizations';
 
-    public index(organizationId: number, data: object = {}): Promise<ApiResponse<T>> {
+    public index(
+        organizationId: number,
+        data: object = {},
+    ): Promise<
+        ApiResponse<FundRequest> & {
+            data: {
+                meta: {
+                    totals: {
+                        hold: number;
+                        total: number;
+                        pending: number;
+                        resolved: number;
+                    };
+                };
+            };
+        }
+    > {
         return this.apiRequest.get(`${this.prefix}/${organizationId}/fund-requests`, data);
     }
 
