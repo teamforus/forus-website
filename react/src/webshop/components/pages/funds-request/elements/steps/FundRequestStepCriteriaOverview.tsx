@@ -3,6 +3,7 @@ import Fund from '../../../../../props/models/Fund';
 import useTranslate from '../../../../../../dashboard/hooks/useTranslate';
 import FundRequestGoBackButton from '../FundRequestGoBackButton';
 import SignUpFooter from '../../../../elements/sign-up/SignUpFooter';
+import Markdown from '../../../../elements/markdown/Markdown';
 
 export default function FundRequestStepCriteriaOverview({
     fund,
@@ -17,7 +18,7 @@ export default function FundRequestStepCriteriaOverview({
     step: number;
     onPrevStep: () => void;
     onNextStep: () => void;
-    criteriaSteps: Array<{ title: string }>;
+    criteriaSteps: Array<{ title: string; description_html?: string }>;
     progress: React.ReactElement;
     bsnWarning: React.ReactElement;
 }) {
@@ -41,7 +42,15 @@ export default function FundRequestStepCriteriaOverview({
                         {criteriaSteps.map((step, index) => (
                             <div className="list-steps-item" key={index}>
                                 <div className="list-steps-item-icon">{index + 1}</div>
-                                <div className="list-steps-item-title">{step.title}</div>
+                                <div className="list-steps-item-content">
+                                    <div className="list-steps-item-title">{step.title}</div>
+                                    {step.description_html && (
+                                        <Markdown
+                                            className={'list-steps-item-description'}
+                                            content={step.description_html}
+                                        />
+                                    )}
+                                </div>
                             </div>
                         ))}
                     </div>
