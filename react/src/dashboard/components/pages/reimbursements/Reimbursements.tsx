@@ -45,7 +45,7 @@ export default function Reimbursements() {
     const implementationService = useImplementationService();
     const reimbursementExportService = useReimbursementExportService();
 
-    const [funds, setFunds] = useState<PaginationData<Fund>>(null);
+    const [funds, setFunds] = useState<Array<Partial<Fund>>>(null);
     const [paginatorKey] = useState('reimbursements');
     const [implementations, setImplementations] = useState<Array<Partial<Implementation>>>(null);
     const [reimbursements, setReimbursements] = useState<PaginationData<Reimbursement>>(null);
@@ -123,10 +123,8 @@ export default function Reimbursements() {
         [filterUpdate],
     );
 
-    const fetchFunds = useCallback(() => {
-        fundService.list(activeOrganization.id, { per_page: 100, configured: 1 }).then((res) => {
-            setFunds(res.data);
-        });
+    const fetchFunds = useCallback(async (): Promise<Array<Fund>> => {
+        return fundService.list(activeOrganization.id, { per_page: 100, configured: 1 }).then((res) => res.data.data);
     }, [activeOrganization.id, fundService]);
 
     const fetchReimbursements = useCallback(() => {
@@ -152,7 +150,7 @@ export default function Reimbursements() {
     }, [activeOrganization.id, filterValuesActive, reimbursementExportService]);
 
     useEffect(() => {
-        fetchFunds();
+        fetchFunds().then((funds) => setFunds([{ id: null, name: 'Selecteer fonds' }, ...funds]));
     }, [fetchFunds]);
 
     useEffect(() => {
@@ -211,7 +209,7 @@ export default function Reimbursements() {
                                     <SelectControl
                                         className="form-control inline-filter-control"
                                         propKey={'id'}
-                                        options={funds?.data}
+                                        options={funds}
                                         value={filterValuesActive.fund_id}
                                         placeholder={translate('vouchers.labels.fund')}
                                         allowSearch={false}
@@ -536,7 +534,7 @@ export default function Reimbursements() {
                 </LoaderTableCard>
             </div>
 
-            {funds?.data.length == 0 && (
+            {funds?.length == 0 && (
                 <Fragment>
                     {hasPermission(activeOrganization, 'manage_funds') ? (
                         <EmptyCard
