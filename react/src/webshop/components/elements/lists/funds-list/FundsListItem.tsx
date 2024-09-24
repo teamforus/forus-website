@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback } from 'react';
 import FundsListItemList from './templates/FundsListItemList';
 import FundsListItemSearch from './templates/FundsListItemSearch';
 import Fund from '../../../../props/models/Fund';
@@ -11,6 +11,7 @@ import useAppConfigs from '../../../../hooks/useAppConfigs';
 import useShowTakenByPartnerModal from '../../../../services/helpers/useShowTakenByPartnerModal';
 import FundsListItemModel from '../../../../services/types/FundsListItemModel';
 import StateNavLink from '../../../../modules/state_router/StateNavLink';
+import useFundMeta from '../../../../hooks/meta/useFundMeta';
 
 export default function FundsListItem({
     fund,
@@ -35,13 +36,7 @@ export default function FundsListItem({
     const pushSuccess = usePushSuccess();
     const showTakenByPartnerModal = useShowTakenByPartnerModal();
 
-    const fundModel = useMemo(() => {
-        if (fund && vouchers && appConfigs) {
-            return fundService.mapFund(fund, vouchers, appConfigs);
-        }
-
-        return null;
-    }, [appConfigs, fund, fundService, vouchers]);
+    const fundMeta = useFundMeta(fund, vouchers, appConfigs);
 
     const onApplySuccess = useCallback(
         (vouchers: Voucher) => {
@@ -82,7 +77,7 @@ export default function FundsListItem({
         [applyingFund, fundService, onApplySuccess, pushDanger, showTakenByPartnerModal],
     );
 
-    if (!fundModel) {
+    if (!fundMeta) {
         return null;
     }
 
@@ -94,7 +89,7 @@ export default function FundsListItem({
                 state={{ searchParams: searchParams || null }}
                 className={'search-item search-item-fund'}
                 dataDusk="productItem">
-                <FundsListItemSearch fund={fundModel} applyFund={applyFund} />
+                <FundsListItemSearch fund={fundMeta} applyFund={applyFund} />
             </StateNavLink>
         );
     }
@@ -102,7 +97,7 @@ export default function FundsListItem({
     return (
         <StateNavLink name={'fund'} params={{ id: fund.id }} state={{ searchParams: searchParams || null }}>
             <div className={'fund-item'}>
-                <FundsListItemList fund={fundModel} applyFund={applyFund} />
+                <FundsListItemList fund={fundMeta} applyFund={applyFund} />
             </div>
         </StateNavLink>
     );

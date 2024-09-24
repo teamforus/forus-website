@@ -285,7 +285,7 @@ export default function ModalVouchersUpload({
                 openModal((modal) => (
                     <ModalDuplicatesPicker
                         modal={modal}
-                        hero_title={`Dubbele e-mailadressen gedetecteerd voor fond "${fund.name}".`}
+                        hero_title={`Dubbele e-mailadressen gedetecteerd voor "${fund.name}".`}
                         hero_subtitle={[
                             `Weet u zeker dat u voor ${items.length} e-mailadres(sen) een extra tegoed wilt aanmaken?`,
                             'Deze e-mailadressen bezitten al een tegoed van dit fonds.',
@@ -331,7 +331,7 @@ export default function ModalVouchersUpload({
                 openModal((modal) => (
                     <ModalDuplicatesPicker
                         modal={modal}
-                        hero_title={`Dubbele bsn(s) gedetecteerd voor fond "${fund.name}".`}
+                        hero_title={`Dubbele bsn(s) gedetecteerd voor "${fund.name}".`}
                         hero_subtitle={[
                             `Weet u zeker dat u voor ${items.length} bsn(s) een extra tegoed wilt aanmaken?`,
                             'Deze bsn(s) bezitten al een tegoed van dit fonds.',
@@ -869,7 +869,7 @@ export default function ModalVouchersUpload({
         <div
             className={classNames(
                 'modal',
-                step == STEP_SET_UP ? 'modal-md' : 'modal-lg modal-bulk-upload',
+                step == STEP_SET_UP ? 'modal-md' : 'modal-bulk-upload',
                 'modal-animated',
                 (modal.loading || hideModal) && 'modal-loading',
                 isDragOver && 'is-dragover',

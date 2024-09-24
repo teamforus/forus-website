@@ -42,9 +42,12 @@ import Employee from '../../../props/models/Employee';
 import Media from '../../../props/models/Media';
 import RecordType from '../../../props/models/RecordType';
 import FaqEditor from '../../elements/faq-editor-funds/FaqEditor';
+import FormGroupInfo from '../../elements/forms/elements/FormGroupInfo';
 
 export default function OrganizationsFundsEdit() {
     const { fundId } = useParams();
+
+    const appConfigs = useAppConfigs();
     const activeOrganization = useActiveOrganization();
 
     const assetUrl = useAssetUrl();
@@ -53,7 +56,6 @@ export default function OrganizationsFundsEdit() {
     const setProgress = useSetProgress();
     const pushSuccess = usePushSuccess();
     const navigateState = useNavigateState();
-    const appConfigs = useAppConfigs();
 
     const tagService = useTagService();
     const fundService = useFundService();
@@ -79,6 +81,11 @@ export default function OrganizationsFundsEdit() {
         { value: 'budget', name: 'Waardebon' },
         { value: 'subsidies', name: 'Kortingspas' },
         { value: 'external', name: 'Informatief (met doorlink)' },
+    ]);
+
+    const [outcomeTypes] = useState([
+        { value: 'voucher', name: 'Tegoed' },
+        { value: 'payout', name: 'Uitbetaling' },
     ]);
 
     const [externalFundPageTypes] = useState([
@@ -182,7 +189,9 @@ export default function OrganizationsFundsEdit() {
         contact_info_required?: boolean;
         contact_info_message_custom?: boolean;
         contact_info_message_text?: string;
+        outcome_type?: 'voucher' | 'payout';
         voucher_amount_visible?: boolean;
+        provider_products_required?: boolean;
     }>(
         {
             description_position: descriptionPositions[0]?.value,
@@ -202,7 +211,9 @@ export default function OrganizationsFundsEdit() {
             contact_info_required: true,
             contact_info_message_custom: false,
             contact_info_message_text: '',
+            outcome_type: 'voucher',
             voucher_amount_visible: false,
+            provider_products_required: false,
         },
         async (values) => {
             const data = JSON.parse(JSON.stringify(values));
@@ -637,6 +648,22 @@ export default function OrganizationsFundsEdit() {
                                     </div>
                                 )}
                             </div>
+                            {activeOrganization.allow_payouts && (
+                                <div className="form-group form-group-inline">
+                                    <label className="form-label form-label-required">Uitkomst van een aanvraag</label>
+                                    <div className="form-offset">
+                                        <SelectControl
+                                            propKey={'value'}
+                                            allowSearch={false}
+                                            value={form.values.outcome_type}
+                                            options={outcomeTypes}
+                                            disabled={!!fund}
+                                            onChange={(outcome_type: string) => form.update({ outcome_type })}
+                                        />
+                                        <FormError error={form.errors?.type} />
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
@@ -836,6 +863,30 @@ export default function OrganizationsFundsEdit() {
                         </div>
                     </div>
                 )}
+
+                <div className="card-section card-section-primary">
+                    <div className="row">
+                        <div className="col col-lg-9 col-xs-12">
+                            <div className="form-group form-group-inline tooltipped">
+                                <label className="form-label">Aanbod plaatsen verzoek</label>
+                                <CheckboxControl
+                                    id={'provider_products_required'}
+                                    checked={!!form.values.provider_products_required}
+                                    onChange={(e) => form.update({ provider_products_required: e.target.checked })}
+                                    title={
+                                        'Vraag aanbieders om ten minste één aanbod toe te voegen om deel te nemen aan dit fonds.'
+                                    }
+                                />
+                                <Tooltip
+                                    text={
+                                        'Wanneer u het vakje aanvinkt, ontvangen aanbieders die zich proberen in te schrijven voor dit fonds een melding om hun aanbod toe te voegen.'
+                                    }
+                                />
+                                <FormError error={form.errors?.provider_products_required} />
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
                 {!form.values.external_page && (
                     <div className="card-section card-section-primary">
@@ -1108,17 +1159,27 @@ export default function OrganizationsFundsEdit() {
                                     <div className="form-label">
                                         {translate('funds_edit.labels.notification_amount')}
                                     </div>
-                                    <input
-                                        className="form-control"
-                                        type="number"
-                                        value={form.values.notification_amount || ''}
-                                        onChange={(e) => {
-                                            form.update({ notification_amount: e.target.value });
-                                        }}
-                                        disabled={!hasPermission(activeOrganization, 'manage_funds')}
-                                        placeholder={translate('funds_edit.labels.notification_amount')}
-                                    />
-                                    <FormError error={form.errors?.notification_amount} />
+                                    <div className="form-offset">
+                                        <FormGroupInfo
+                                            info={`
+                                            Handig! Stel een minimum bedrag in voor het saldo van de regeling. Er
+                                            wordt automatisch een e-mail verstuurd als het saldo voor de regeling
+                                            lager is dan deze grens. De e-mail wordt verstuurd naar gebruikers met
+                                            de rollen beheerder en financiën.`}>
+                                            <input
+                                                className="form-control"
+                                                type="number"
+                                                value={form.values.notification_amount || ''}
+                                                onChange={(e) => {
+                                                    form.update({ notification_amount: e.target.value });
+                                                }}
+                                                disabled={!hasPermission(activeOrganization, 'manage_funds')}
+                                                placeholder={translate('funds_edit.labels.notification_amount')}
+                                            />
+                                        </FormGroupInfo>
+
+                                        <FormError error={form.errors?.notification_amount} />
+                                    </div>
                                 </div>
                             </div>
                         </div>

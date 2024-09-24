@@ -34,6 +34,7 @@ import EmailLog from '../../../props/models/EmailLog';
 import { useFileService } from '../../../services/FileService';
 import usePushApiError from '../../../hooks/usePushApiError';
 import classNames from 'classnames';
+import ModalApproveFundRequest from '../../modals/ModalApproveFundRequest';
 
 export default function FundRequestsView() {
     const authIdentity = useAuthIdentity();
@@ -56,6 +57,19 @@ export default function FundRequestsView() {
     const [showCriteria, setShowCriteria] = useState(null);
     const [collapsedRecords, setCollapsedRecords] = useState<Array<number>>([]);
 
+    const fund = useMemo(() => {
+        return fundRequest?.fund;
+    }, [fundRequest]);
+
+    const enableCustomConfirmationModal = useMemo(() => {
+        return (
+            envData?.config?.fund_requests_use_custom_modal ||
+            (activeOrganization?.allow_payouts &&
+                ((fund?.allow_preset_amounts_validator && fund?.amount_presets?.length > 0) ||
+                    fund?.allow_custom_amounts_validator))
+        );
+    }, [envData, activeOrganization, fund]);
+
     const isValidatorsSupervisor = useMemo(
         () => activeOrganization?.permissions.includes('manage_validators'),
         [activeOrganization],
@@ -63,7 +77,7 @@ export default function FundRequestsView() {
 
     const fundRequestMeta = useMemo(() => {
         if (!fundRequest) {
-            return;
+            return null;
         }
 
         const { state, records, allowed_employees, employee } = fundRequest;
@@ -137,6 +151,7 @@ export default function FundRequestsView() {
         disregarded: 'circle-outline',
     });
 
+    const updateNotesRef = useRef<() => void>(null);
     const fetchEmailsRef = useRef<() => void>(null);
 
     const showFundCriteria = useCallback((e) => {
@@ -173,8 +188,9 @@ export default function FundRequestsView() {
         fundRequestService.read(activeOrganization.id, fundRequestMeta.id).then((res) => {
             setFundRequest(res.data.data);
             fetchEmailsRef?.current?.();
-        }, console.error);
-    }, [activeOrganization.id, fundRequestMeta, fundRequestService]);
+            updateNotesRef?.current?.();
+        }, pushApiError);
+    }, [activeOrganization.id, fundRequestMeta?.id, fundRequestService, pushApiError]);
 
     const approveRecord = useCallback(
         (requestRecord: FundRequestRecord) => {
@@ -182,16 +198,15 @@ export default function FundRequestsView() {
                 modal.close();
                 fundRequestService
                     .approveRecord(activeOrganization.id, requestRecord.fund_request_id, requestRecord.id)
-                    .then(
-                        () => {
-                            reloadRequest();
-                            pushSuccess('Gelukt!', 'Persoonsgegeven gevalideert.');
-                        },
-                        (res) =>
-                            showInfoModal(
-                                'Fout: U kunt deze persoonsgegeven op dit moment niet beoordelen.',
-                                res.data.message,
-                            ),
+                    .then(() => {
+                        reloadRequest();
+                        pushSuccess('Gelukt!', 'Persoonsgegeven gevalideert.');
+                    })
+                    .catch((err: ResponseError) =>
+                        showInfoModal(
+                            'Fout: U kunt deze persoonsgegeven op dit moment niet beoordelen.',
+                            err.data.message,
+                        ),
                     );
             };
 
@@ -259,29 +274,62 @@ export default function FundRequestsView() {
     );
 
     const requestApprove = useCallback(() => {
-        openModal((modal) => (
-            <ModalNotification
-                modal={modal}
-                className={'modal-md'}
-                title={'Weet u zeker dat u deze persoonsgegeven wil goedkeuren?'}
-                description={
-                    'Een beoordeling kan niet ongedaan gemaakt worden. Kijk goed of u deze actie wilt verrichten.'
-                }
-                buttonCancel={{ onClick: modal.close }}
-                buttonSubmit={{
-                    onClick: () => {
-                        modal.close();
-                        fundRequestService
-                            .approve(activeOrganization.id, fundRequestMeta.id)
-                            .then(() => reloadRequest())
-                            .catch((err: ResponseError) => {
-                                showInfoModal('Validatie van persoonsgegeven mislukt.', `Reden: ${err.data.message}`);
-                            });
-                    },
-                }}
-            />
-        ));
-    }, [activeOrganization?.id, fundRequestMeta?.id, fundRequestService, openModal, reloadRequest, showInfoModal]);
+        if (!enableCustomConfirmationModal) {
+            return openModal((modal) => (
+                <ModalNotification
+                    modal={modal}
+                    className={'modal-md'}
+                    title={'Weet u zeker dat u deze persoonsgegeven wil goedkeuren?'}
+                    description={
+                        'Een beoordeling kan niet ongedaan gemaakt worden. Kijk goed of u deze actie wilt verrichten.'
+                    }
+                    buttonCancel={{ onClick: modal.close }}
+                    buttonSubmit={{
+                        onClick: () => {
+                            modal.close();
+                            fundRequestService
+                                .approve(activeOrganization.id, fundRequestMeta.id)
+                                .then(() => reloadRequest())
+                                .catch((err: ResponseError) => {
+                                    showInfoModal(
+                                        'Validatie van persoonsgegeven mislukt.',
+                                        `Reden: ${err.data.message}`,
+                                    );
+                                });
+                        },
+                    }}
+                />
+            ));
+        }
+
+        fundRequestService
+            .formula(activeOrganization.id, fundRequest?.id)
+            .then((res) => {
+                openModal((modal) => (
+                    <ModalApproveFundRequest
+                        modal={modal}
+                        formula={res.data}
+                        fundRequest={fundRequest}
+                        onError={(err: ResponseError) => {
+                            showInfoModal('Validatie van persoonsgegeven mislukt.', `Reden: ${err.data.message}`);
+                        }}
+                        onDone={reloadRequest}
+                        activeOrganization={activeOrganization}
+                    />
+                ));
+            })
+            .catch(pushApiError);
+    }, [
+        enableCustomConfirmationModal,
+        fundRequestService,
+        activeOrganization,
+        fundRequest,
+        pushApiError,
+        openModal,
+        fundRequestMeta,
+        reloadRequest,
+        showInfoModal,
+    ]);
 
     const requestDecline = useCallback(() => {
         openModal((modal) => (
@@ -293,7 +341,7 @@ export default function FundRequestsView() {
                     if (err) {
                         return showInfoModal(
                             'U kunt op dit moment deze aanvragen niet weigeren.',
-                            'Reden: ' + err.data.message,
+                            `Reden: ${err.data.message}`,
                         );
                     }
 
@@ -935,6 +983,7 @@ export default function FundRequestsView() {
                 fetchNotes={fetchNotes}
                 deleteNote={deleteNote}
                 storeNote={storeNote}
+                fetchNotesRef={updateNotesRef}
             />
 
             <BlockCardEmails
