@@ -2,11 +2,11 @@ import React, { useState, useCallback } from 'react';
 import { createContext } from 'react';
 import { uniqueId } from 'lodash';
 import ButtonType from '../../../../props/elements/ButtonType';
+import useStorageService from '../../storage/useStrorrageService';
 
 interface NotificationConfig {
     type?: 'success' | 'danger' | 'info';
     icon?: string;
-    timeout?: number;
 }
 
 interface Notification extends NotificationConfig {
@@ -33,14 +33,21 @@ interface PushNotificationMemo {
     setNotifications: React.Dispatch<React.SetStateAction<PushNotification[]>>;
     popNotification: (id: string) => void;
     pushNotification: (notification: PushNotification) => void;
+    setDismissTimeValue: (type: string, time: number) => void;
+    getSystemDismissTime: () => number | undefined;
+    getBookmarksDismissTime: () => number | undefined;
+    pushNotificationStorageKey: string;
 }
 
 const pushNotificationContext = createContext<PushNotificationMemo>(null);
 const { Provider } = pushNotificationContext;
 
 const PushNotificationsProvider = ({ children }: { children: React.ReactElement | React.ReactElement[] }) => {
+    const storage = useStorageService();
+
     const [total] = useState(4);
     const [notifications, setNotifications] = useState<Array<PushNotification>>([]);
+    const [pushNotificationStorageKey] = useState('identity_push_notification_preferences');
 
     const popNotification = useCallback((id: string) => {
         setNotifications((notifications) => {
@@ -51,7 +58,6 @@ const PushNotificationsProvider = ({ children }: { children: React.ReactElement 
     const pushNotification = useCallback(
         (notification: PushNotification) => {
             notification.id = uniqueId();
-            notification.timeout = notification.timeout ? notification.timeout : 5000;
             notification.group = notification.group ? notification.group : 'default';
 
             setNotifications((notifications) => {
@@ -97,6 +103,30 @@ const PushNotificationsProvider = ({ children }: { children: React.ReactElement 
         [pushNotification],
     );
 
+    const setDismissTimeValue = useCallback(
+        (storageKey: string, time: number) => {
+            storage.setCollectionItem(pushNotificationStorageKey, storageKey, time);
+        },
+        [pushNotificationStorageKey, storage],
+    );
+
+    const getDismissTimeValue = useCallback(
+        (storageKey): number | undefined => {
+            const value = storage.getCollectionItem(pushNotificationStorageKey, storageKey);
+
+            return (value == 0 || value) && !isNaN(parseInt(value)) ? parseInt(value) : undefined;
+        },
+        [pushNotificationStorageKey, storage],
+    );
+
+    const getSystemDismissTime = useCallback(() => {
+        return getDismissTimeValue('system');
+    }, [getDismissTimeValue]);
+
+    const getBookmarksDismissTime = useCallback(() => {
+        return getDismissTimeValue('bookmarks');
+    }, [getDismissTimeValue]);
+
     return (
         <Provider
             value={{
@@ -108,6 +138,10 @@ const PushNotificationsProvider = ({ children }: { children: React.ReactElement 
                 setNotifications,
                 popNotification,
                 pushNotification,
+                setDismissTimeValue,
+                getSystemDismissTime,
+                getBookmarksDismissTime,
+                pushNotificationStorageKey,
             }}>
             {children}
         </Provider>

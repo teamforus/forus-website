@@ -240,9 +240,7 @@ export default function ImplementationsNotificationsSend() {
                         implementationId: implementation.id,
                     });
 
-                    pushSuccess('Gelukt!', 'De e-mail zal zo spoedig mogelijk verstuurd worden naar alle gebruikers.', {
-                        timeout: 8000,
-                    });
+                    pushSuccess('Gelukt!', 'De e-mail zal zo spoedig mogelijk verstuurd worden naar alle gebruikers.');
                 })
                 .catch((res: ResponseError) => {
                     setSubmitting(false);

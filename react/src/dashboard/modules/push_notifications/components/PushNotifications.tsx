@@ -1,17 +1,40 @@
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { pushNotificationContext } from '../context/PushNotificationsContext';
+import StateNavLink from '../../../../webshop/modules/state_router/StateNavLink';
 
 export default function PushNotifications({
     group = 'default',
-    maxCount = 4,
+    maxCount = 0,
     className = '',
+    showConfig = true,
+    maxVisibleCount = 3,
+    defaultDismissTimeout = 5,
 }: {
     group?: string;
     maxCount?: number;
     className?: string;
+    showConfig?: boolean;
+    maxVisibleCount?: number;
+    defaultDismissTimeout?: number;
 }) {
-    const { notifications, popNotification } = useContext(pushNotificationContext);
+    const { notifications, popNotification, getSystemDismissTime, getBookmarksDismissTime } =
+        useContext(pushNotificationContext);
+
     const [visible, setVisible] = useState({});
+    const [notificationsListVisible, setNotificationsListVisible] = useState([]);
+    const [showAll, setShowAll] = useState(false);
+
+    const dismissTime = useMemo<number>(() => {
+        if (group === 'default') {
+            return getSystemDismissTime() === undefined ? defaultDismissTimeout : getSystemDismissTime();
+        }
+
+        if (group === 'bookmarks') {
+            return getBookmarksDismissTime() === undefined ? defaultDismissTimeout : getBookmarksDismissTime();
+        }
+
+        return defaultDismissTimeout;
+    }, [defaultDismissTimeout, getBookmarksDismissTime, getSystemDismissTime, group]);
 
     const notificationsList = useMemo(() => {
         return notifications.filter((notification) => notification.group === group);
@@ -49,28 +72,68 @@ export default function PushNotifications({
     );
 
     useEffect(() => {
-        const listNew = notificationsList.filter((item) => !Object.keys(visible).includes(item.id));
-        const listOld = notificationsList.filter((item) => Object.keys(visible).includes(item.id));
-
-        const total = listOld.length + listNew.length;
-
-        if (total > maxCount) {
-            listOld.slice(maxCount - listNew.length).forEach((item) => {
+        if (maxCount > 0 && notificationsList.length > maxCount) {
+            notificationsList.slice(maxCount).forEach((item) => {
                 setTimeout(() => setVisibility(item.id, false), 0);
                 setTimeout(() => removeNotificationElement(item.id), 300);
             });
         }
 
-        listNew.forEach((item) => {
-            setTimeout(() => setVisibility(item.id, true), 300);
-            setTimeout(() => removeNotification(item.id), item.timeout);
-        });
-    }, [notificationsList, removeNotificationElement, removeNotification, setVisibility, visible, maxCount]);
+        if (showAll) {
+            notificationsList.forEach((item) => {
+                setTimeout(() => setVisibility(item.id, true), 300);
+                dismissTime && setTimeout(() => removeNotification(item.id), dismissTime * 1000);
+            });
+
+            setNotificationsListVisible(notificationsList);
+        } else {
+            notificationsList.slice(0, maxVisibleCount).forEach((item) => {
+                setTimeout(() => setVisibility(item.id, true), 300);
+                dismissTime && setTimeout(() => removeNotification(item.id), dismissTime * 1000);
+            });
+
+            notificationsList.slice(maxVisibleCount).forEach((item) => {
+                setTimeout(() => setVisibility(item.id, false), 0);
+            });
+
+            setNotificationsListVisible(notificationsList.slice(0, maxVisibleCount));
+        }
+    }, [
+        showAll,
+        maxCount,
+        dismissTime,
+        setVisibility,
+        maxVisibleCount,
+        notificationsList,
+        removeNotification,
+        removeNotificationElement,
+    ]);
+
+    useEffect(() => {
+        if (notificationsList?.length <= maxVisibleCount) {
+            setShowAll(false);
+        }
+    }, [maxVisibleCount, notificationsList]);
 
     return (
         <div className={`block block-push-notifications ${className}`}>
-            <div className="inner" role="alert">
-                {notificationsList?.map((notification) => (
+            {showConfig && notificationsListVisible.length > 0 && (
+                <div className="notification-setting">
+                    <span>
+                        {dismissTime
+                            ? `Automatisch sluiten na ${dismissTime} seconden`
+                            : 'Automatisch sluiten is uitgeschakeld'}
+                    </span>
+                    <span className="dot"></span>
+                    <StateNavLink
+                        name={'preferences-notifications'}
+                        state={{ scrollTo: 'push_notification_preferences' }}>
+                        Aanpassen
+                    </StateNavLink>
+                </div>
+            )}
+            <div className={`inner ${showAll ? 'show-all' : ''}`} role="alert">
+                {notificationsListVisible?.map((notification) => (
                     <div
                         key={notification.id}
                         className={`notification notification-${notification.type} ${
@@ -78,11 +141,6 @@ export default function PushNotifications({
                         }`}
                         role="status"
                         data-dusk={`${notification.type}Notification`}>
-                        <div
-                            className="notification-close mdi mdi-close"
-                            onClick={() => removeNotification(notification.id)}
-                        />
-
                         {notification.icon && <div className={`notification-icon mdi mdi-${notification.icon}`} />}
 
                         {notification.imageSrc && (
@@ -100,6 +158,22 @@ export default function PushNotifications({
                             )}
                         </div>
 
+                        {showConfig && (
+                            <div className="notification-setting-inline">
+                                <span>
+                                    {dismissTime
+                                        ? `Automatisch sluiten na ${dismissTime} seconden`
+                                        : 'Automatisch sluiten is uitgeschakeld'}
+                                </span>
+                                <span className="dot"></span>
+                                <StateNavLink
+                                    name={'preferences-notifications'}
+                                    state={{ scrollTo: 'push_notification_preferences' }}>
+                                    Aanpassen
+                                </StateNavLink>
+                            </div>
+                        )}
+
                         {notification.button && (
                             <div className="notification-button">
                                 <div className="button button-primary" onClick={notification.button.onClick}>
@@ -108,9 +182,30 @@ export default function PushNotifications({
                                 </div>
                             </div>
                         )}
+
+                        <div
+                            className="notification-close mdi mdi-close"
+                            onClick={() => removeNotification(notification.id)}
+                        />
                     </div>
                 ))}
             </div>
+
+            {notificationsList?.length > maxVisibleCount && (
+                <button className="button button-show-all" onClick={() => setShowAll(!showAll)}>
+                    <span>
+                        {showAll
+                            ? `Hide +${notificationsList.length - maxVisibleCount} notifications`
+                            : `Show +${notificationsList.length - maxVisibleCount} notifications`}
+                    </span>
+
+                    {showAll ? (
+                        <em className={`mdi mdi-chevron-up`}></em>
+                    ) : (
+                        <em className={`mdi mdi-chevron-down`}></em>
+                    )}
+                </button>
+            )}
         </div>
     );
 }

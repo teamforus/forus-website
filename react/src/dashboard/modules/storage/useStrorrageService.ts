@@ -35,7 +35,9 @@ export default function useStorageService() {
             try {
                 const collection = JSON.parse(localStorage.getItem(collection_name));
 
-                return isPlainObject(collection) ? collection[key] || _default : _default;
+                return isPlainObject(collection) && Object.prototype.hasOwnProperty.call(collection, key)
+                    ? collection[key]
+                    : _default;
             } catch (e) {
                 return _default;
             }

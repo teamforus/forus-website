@@ -76,7 +76,7 @@ export const Layout = ({ children }: { children: React.ReactElement }) => {
                     </div>
 
                     <Modals />
-                    <PushNotifications />
+                    <PushNotifications defaultDismissTimeout={5} showConfig={false} />
                     <Toasts />
                 </div>
 
