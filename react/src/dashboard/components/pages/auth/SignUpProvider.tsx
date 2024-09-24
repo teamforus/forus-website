@@ -48,6 +48,7 @@ import { uniq } from 'lodash';
 import useAppConfigs from '../../../hooks/useAppConfigs';
 import usePushDanger from '../../../hooks/usePushDanger';
 import useTranslate from '../../../hooks/useTranslate';
+import SignUpFooter from '../../../../webshop/components/elements/sign-up/SignUpFooter';
 
 type OfficeLocal = Office & { edit?: boolean };
 
@@ -777,7 +778,7 @@ export default function SignUpProvider() {
                             <div className="sign_up-pane-header">
                                 {translate('sign_up_provider.header.title_step_1')}
                             </div>
-                            <div className="sign_up-pane-body sign_up-pane-body-padless-bottom">
+                            <div className="sign_up-pane-body">
                                 <div className="sign_up-pane-text">
                                     {translate('sign_up_provider.header.subtitle_step_1')}
                                 </div>
@@ -819,19 +820,18 @@ export default function SignUpProvider() {
                                 </div>
                             </div>
 
-                            <div className="sign_up-pane-footer">
-                                <div className="row">
-                                    <div className="col col-lg-6 text-left">
-                                        <div className="button button-text button-text-padless" />
-                                    </div>
-                                    <div className="col col-lg-6 text-right">
-                                        <div className="button button-text button-text-padless" onClick={next}>
-                                            {translate('sign_up_provider.buttons.next')}
-                                            <em className="mdi mdi-chevron-right icon-right" />
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            <SignUpFooter
+                                endActions={
+                                    <button
+                                        className="button button-text button-text-padless"
+                                        type={'button'}
+                                        onClick={next}
+                                        tabIndex={0}>
+                                        {translate('sign_up_provider.buttons.next')}
+                                        <em className="mdi mdi-chevron-right icon-right" />
+                                    </button>
+                                }
+                            />
                         </div>
                     </Fragment>
                 )}
@@ -861,22 +861,20 @@ export default function SignUpProvider() {
                                     i18n={'sign_up_provider.header.subtitle_step_2'}
                                 />
                             </div>
-                            <div className="sign_up-pane-footer">
-                                <div className="row">
-                                    <div className="col col-lg-6 text-left">
-                                        <div className="button button-text button-text-padless" onClick={back}>
-                                            <em className="mdi mdi-chevron-left icon-left" />
-                                            {translate('sign_up_provider.buttons.back')}
-                                        </div>
+                            <SignUpFooter
+                                startActions={
+                                    <div className="button button-text button-text-padless" onClick={back} tabIndex={0}>
+                                        <em className="mdi mdi-chevron-left icon-left" />
+                                        {translate('sign_up_provider.buttons.back')}
                                     </div>
-                                    <div className="col col-lg-6 text-right">
-                                        <div className="button button-text button-text-padless" onClick={next}>
-                                            {translate('sign_up_provider.buttons.next')}
-                                            <em className="mdi mdi-chevron-right icon-right"> </em>
-                                        </div>
+                                }
+                                endActions={
+                                    <div className="button button-text button-text-padless" onClick={next} tabIndex={0}>
+                                        {translate('sign_up_provider.buttons.next')}
+                                        <em className="mdi mdi-chevron-right icon-right" />
                                     </div>
-                                </div>
-                            </div>
+                                }
+                            />
                         </div>
                     </Fragment>
                 )}
@@ -1352,37 +1350,31 @@ export default function SignUpProvider() {
                             )}
 
                             {(shareSmsSent || shareEmailSent || appDownloadSkip) && (
-                                <div className="sign_up-pane-footer">
-                                    <div className="row">
-                                        <div className="col col-lg-6 text-left">
-                                            <div
-                                                className="button button-text button-text-padless"
-                                                onClick={() => {
-                                                    resetShareForms();
-                                                }}>
-                                                <em className="mdi mdi-chevron-left icon-lefts" />
-                                                {translate('sign_up_provider.buttons.back')}
-                                            </div>
+                                <SignUpFooter
+                                    startActions={
+                                        <div
+                                            className="button button-text button-text-padless"
+                                            onClick={resetShareForms}
+                                            tabIndex={0}>
+                                            <em className="mdi mdi-chevron-left icon-lefts" />
+                                            {translate('sign_up_provider.buttons.back')}
                                         </div>
-                                        <div className="col col-lg-6 text-right" />
-                                    </div>
-                                </div>
+                                    }
+                                />
                             )}
 
                             {!shareSmsSent && !shareEmailSent && !appDownloadSkip && (
-                                <div className="sign_up-pane-footer">
-                                    <div className="row">
-                                        <div className="col col-lg-6 text-left">
-                                            <div
-                                                className="button button-text button-text-padless"
-                                                onClick={() => back()}>
-                                                <em className="mdi mdi-chevron-left icon-lefts" />
-                                                {translate('sign_up_provider.buttons.back')}
-                                            </div>
+                                <SignUpFooter
+                                    startActions={
+                                        <div
+                                            className="button button-text button-text-padless"
+                                            onClick={back}
+                                            tabIndex={0}>
+                                            <em className="mdi mdi-chevron-left icon-lefts" />
+                                            {translate('sign_up_provider.buttons.back')}
                                         </div>
-                                        <div className="col col-lg-6 text-right" />
-                                    </div>
-                                </div>
+                                    }
+                                />
                             )}
                         </div>
                     </Fragment>
@@ -1442,17 +1434,14 @@ export default function SignUpProvider() {
                                     {translate('sign_up_sponsor.buttons.organization_add')}
                                 </div>
                             </div>
-                            <div className="sign_up-pane-footer">
-                                <div className="row">
-                                    <div className="col col-lg-6 text-left">
-                                        <div className="button button-text button-text-padless" onClick={back}>
-                                            <em className="mdi mdi-chevron-left icon-lefts" />
-                                            {translate('sign_up_provider.buttons.back')}
-                                        </div>
+                            <SignUpFooter
+                                startActions={
+                                    <div className="button button-text button-text-padless" onClick={back} tabIndex={0}>
+                                        <em className="mdi mdi-chevron-left icon-lefts" />
+                                        {translate('sign_up_provider.buttons.back')}
                                     </div>
-                                    <div className="col col-lg-6 text-right" />
-                                </div>
-                            </div>
+                                }
+                            />
                         </div>
                     </Fragment>
                 )}
@@ -1700,25 +1689,27 @@ export default function SignUpProvider() {
                                         </div>
                                     </div>
                                 </div>
-                                <div className="sign_up-pane-footer">
-                                    <div className="row">
-                                        <div className="col col-lg-6 text-left">
-                                            <button
-                                                type={'button'}
-                                                className="button button-text button-text-padless"
-                                                onClick={cancelAddOrganization}>
-                                                <em className="mdi mdi-chevron-left icon-left" />
-                                                {translate('sign_up_provider.buttons.back')}
-                                            </button>
-                                        </div>
-                                        <div className="col col-lg-6 text-right">
-                                            <button type={'submit'} className="button button-text button-text-padless">
-                                                {translate('sign_up_provider.buttons.next')}
-                                                <em className="mdi mdi-chevron-right icon-right" />
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
+                                <SignUpFooter
+                                    startActions={
+                                        <button
+                                            type={'button'}
+                                            className="button button-text button-text-padless"
+                                            onClick={cancelAddOrganization}
+                                            tabIndex={0}>
+                                            <em className="mdi mdi-chevron-left icon-left" />
+                                            {translate('sign_up_provider.buttons.back')}
+                                        </button>
+                                    }
+                                    endActions={
+                                        <button
+                                            type={'submit'}
+                                            className="button button-text button-text-padless"
+                                            tabIndex={0}>
+                                            {translate('sign_up_provider.buttons.next')}
+                                            <em className="mdi mdi-chevron-right icon-right" />
+                                        </button>
+                                    }
+                                />
                             </form>
                         </div>
                     </Fragment>
@@ -1825,7 +1816,7 @@ export default function SignUpProvider() {
                                 </div>
                             )}
 
-                            <div className="sign_up-pane-body sign_up-pane-body-padless-bottom">
+                            <div className="sign_up-pane-body">
                                 <div className="flex-row">
                                     {showAddOfficeBtn && (
                                         <div className="flex-col">
@@ -1840,26 +1831,28 @@ export default function SignUpProvider() {
                                 </div>
                             </div>
 
-                            <div className="sign_up-pane-footer">
-                                <div className="row">
-                                    <div className="col col-lg-6 text-left">
-                                        <div className="button button-text button-text-padless" onClick={() => back()}>
-                                            <em className="mdi mdi-chevron-left icon-lefts" />
-                                            {translate('sign_up_provider.buttons.back')}
-                                        </div>
+                            <SignUpFooter
+                                startActions={
+                                    <div
+                                        className="button button-text button-text-padless"
+                                        onClick={() => back()}
+                                        tabIndex={0}>
+                                        <em className="mdi mdi-chevron-left icon-lefts" />
+                                        {translate('sign_up_provider.buttons.back')}
                                     </div>
-                                    <div className="col col-lg-6 text-right">
-                                        <button
-                                            type={'button'}
-                                            className="button button-text button-text-padless"
-                                            disabled={!offices || offices?.length == 0}
-                                            onClick={() => next()}>
-                                            {translate('sign_up_provider.buttons.next')}
-                                            <em className="mdi mdi-chevron-right icon-right" />
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
+                                }
+                                endActions={
+                                    <button
+                                        type={'button'}
+                                        className="button button-text button-text-padless"
+                                        disabled={!offices || offices?.length == 0}
+                                        onClick={() => next()}
+                                        tabIndex={0}>
+                                        {translate('sign_up_provider.buttons.next')}
+                                        <em className="mdi mdi-chevron-right icon-right" />
+                                    </button>
+                                }
+                            />
                         </div>
                     </Fragment>
                 )}
@@ -1929,22 +1922,20 @@ export default function SignUpProvider() {
                                     </div>
                                 </form>
                             </div>
-                            <div className="sign_up-pane-footer">
-                                <div className="row">
-                                    <div className="col col-lg-6 text-left">
-                                        <div className="button button-text button-text-padless" onClick={() => back()}>
-                                            <em className="mdi mdi-chevron-left icon-lefts" />
-                                            {translate('sign_up_provider.buttons.back')}
-                                        </div>
+                            <SignUpFooter
+                                startActions={
+                                    <div className="button button-text button-text-padless" onClick={back} tabIndex={0}>
+                                        <em className="mdi mdi-chevron-left icon-lefts" />
+                                        {translate('sign_up_provider.buttons.back')}
                                     </div>
-                                    <div className="col col-lg-6 text-right">
-                                        <div className="button button-text button-text-padless" onClick={() => next()}>
-                                            {translate('sign_up_provider.buttons.next')}
-                                            <em className="mdi mdi-chevron-right icon-right" />
-                                        </div>
+                                }
+                                endActions={
+                                    <div className="button button-text button-text-padless" onClick={next} tabIndex={0}>
+                                        {translate('sign_up_provider.buttons.next')}
+                                        <em className="mdi mdi-chevron-right icon-right" />
                                     </div>
-                                </div>
-                            </div>
+                                }
+                            />
                         </div>
                     </Fragment>
                 )}
@@ -1982,26 +1973,25 @@ export default function SignUpProvider() {
                                     />
                                 )}
                             </div>
-                            <div className="sign_up-pane-footer">
-                                <div className="row">
-                                    <div className="col col-lg-6 text-left">
-                                        <div className="button button-text button-text-padless" onClick={() => back()}>
-                                            <em className="mdi mdi-chevron-left icon-lefts"></em>
-                                            {translate('sign_up_provider.buttons.back')}
-                                        </div>
+                            <SignUpFooter
+                                startActions={
+                                    <div className="button button-text button-text-padless" onClick={back} tabIndex={0}>
+                                        <em className="mdi mdi-chevron-left icon-lefts" />
+                                        {translate('sign_up_provider.buttons.back')}
                                     </div>
-                                    {(skipFundApplications || hasFundApplications) && (
-                                        <div className="col col-lg-6 text-right">
-                                            <div
-                                                className="button button-text button-text-padless"
-                                                onClick={() => next()}>
-                                                {translate('sign_up_provider.buttons.next')}
-                                                <em className="mdi mdi-chevron-right icon-right"></em>
-                                            </div>
+                                }
+                                endActions={
+                                    (skipFundApplications || hasFundApplications) && (
+                                        <div
+                                            className="button button-text button-text-padless"
+                                            onClick={next}
+                                            tabIndex={0}>
+                                            {translate('sign_up_provider.buttons.next')}
+                                            <em className="mdi mdi-chevron-right icon-right" />
                                         </div>
-                                    )}
-                                </div>
-                            </div>
+                                    )
+                                }
+                            />
                         </div>
                     </div>
                 )}
@@ -2041,26 +2031,25 @@ export default function SignUpProvider() {
                                 </div>
                             </div>
 
-                            <div className="sign_up-pane-footer">
-                                <div className="row">
-                                    <div className="col col-lg-6 text-left">
-                                        <div className="button button-text button-text-padless" onClick={() => back()}>
-                                            <em className="mdi mdi-chevron-left icon-lefts"></em>
-                                            {translate('sign_up_provider.buttons.back')}
+                            <SignUpFooter
+                                startActions={
+                                    <div className="button button-text button-text-padless" onClick={back} tabIndex={0}>
+                                        <em className="mdi mdi-chevron-left icon-lefts" />
+                                        {translate('sign_up_provider.buttons.back')}
+                                    </div>
+                                }
+                                endActions={
+                                    !loggedWithApp && (
+                                        <div
+                                            className="button button-text button-text-padless"
+                                            onClick={finish}
+                                            tabIndex={0}>
+                                            {translate('sign_up_provider.buttons.go_to_dashboard')}
+                                            <em className="mdi mdi-chevron-right icon-right" />
                                         </div>
-                                    </div>
-                                    <div className="col col-lg-6 text-right">
-                                        {!loggedWithApp && (
-                                            <div
-                                                className="button button-text button-text-padless"
-                                                onClick={() => finish()}>
-                                                {translate('sign_up_provider.buttons.go_to_dashboard')}
-                                                <em className="mdi mdi-chevron-right icon-right" />
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
-                            </div>
+                                    )
+                                }
+                            />
                         </div>
                     </div>
                 )}
@@ -2142,45 +2131,43 @@ export default function SignUpProvider() {
                             </div>
 
                             {demoToken && (
-                                <div className="sign_up-pane-footer">
-                                    <div className="row">
-                                        <div className="col col-lg-6 text-left">
-                                            <div
-                                                className="button button-text button-text-padless"
-                                                onClick={() => {
-                                                    setDemoToken(null);
-                                                    back();
-                                                }}>
-                                                <em className="mdi mdi-chevron-left icon-lefts"></em>
-                                                {translate('sign_up_provider.buttons.back')}
-                                            </div>
+                                <SignUpFooter
+                                    startActions={
+                                        <div
+                                            className="button button-text button-text-padless"
+                                            onClick={() => {
+                                                setDemoToken(null);
+                                                back();
+                                            }}
+                                            tabIndex={0}>
+                                            <em className="mdi mdi-chevron-left icon-lefts" />
+                                            {translate('sign_up_provider.buttons.back')}
                                         </div>
-                                        <div className="col col-lg-6 text-right">
-                                            <div
-                                                className="button button-text button-text-padless"
-                                                onClick={() => finish()}>
-                                                Skip and finish
-                                                <em className="mdi mdi-chevron-right icon-right" />
-                                            </div>
+                                    }
+                                    endActions={
+                                        <div
+                                            className="button button-text button-text-padless"
+                                            onClick={finish}
+                                            tabIndex={0}>
+                                            Skip and finish
+                                            <em className="mdi mdi-chevron-right icon-right" />
                                         </div>
-                                    </div>
-                                </div>
+                                    }
+                                />
                             )}
 
                             {!loggedWithApp && (
-                                <div className="sign_up-pane-footer">
-                                    <div className="row">
-                                        <div className="col col-lg-6 text-left"></div>
-                                        <div className="col col-lg-6 text-right">
-                                            <div
-                                                className="button button-text button-text-padless"
-                                                onClick={() => next()}>
-                                                {translate('sign_up_provider.buttons.go_to_dashboard')}
-                                                <em className="mdi mdi-chevron-right icon-right" />
-                                            </div>
+                                <SignUpFooter
+                                    endActions={
+                                        <div
+                                            className="button button-text button-text-padless"
+                                            onClick={next}
+                                            tabIndex={0}>
+                                            {translate('sign_up_provider.buttons.go_to_dashboard')}
+                                            <em className="mdi mdi-chevron-right icon-right" />
                                         </div>
-                                    </div>
-                                </div>
+                                    }
+                                />
                             )}
                         </div>
                     </Fragment>

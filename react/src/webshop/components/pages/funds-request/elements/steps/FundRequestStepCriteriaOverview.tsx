@@ -1,32 +1,28 @@
-import React, { Fragment, useMemo } from 'react';
+import React, { Fragment } from 'react';
 import Fund from '../../../../../props/models/Fund';
 import useTranslate from '../../../../../../dashboard/hooks/useTranslate';
 import FundRequestGoBackButton from '../FundRequestGoBackButton';
-import { LocalCriterion } from '../../FundRequest';
-import { groupBy, uniqBy } from 'lodash';
+import SignUpFooter from '../../../../elements/sign-up/SignUpFooter';
+import Markdown from '../../../../elements/markdown/Markdown';
 
 export default function FundRequestStepCriteriaOverview({
     fund,
     step,
+    criteriaSteps,
     onPrevStep,
     onNextStep,
     progress,
     bsnWarning,
-    pendingCriteria,
 }: {
     fund: Fund;
     step: number;
     onPrevStep: () => void;
     onNextStep: () => void;
+    criteriaSteps: Array<{ title: string; description_html?: string }>;
     progress: React.ReactElement;
     bsnWarning: React.ReactElement;
-    pendingCriteria: Array<LocalCriterion>;
 }) {
     const translate = useTranslate();
-
-    const criteriaPerType = useMemo(() => {
-        return groupBy(pendingCriteria, 'record_type_key');
-    }, [pendingCriteria]);
 
     return (
         <Fragment>
@@ -42,35 +38,40 @@ export default function FundRequestStepCriteriaOverview({
                             fund_name: fund.name,
                         })}
                     </p>
-                    <ul className="sign_up-pane-list sign_up-pane-list-criteria">
-                        {uniqBy(pendingCriteria, 'record_type_key').map((criterion) => (
-                            <li key={criterion.id}>
-                                <div className="item-icon item-icon-default" />
-                                {criteriaPerType?.[criterion?.record_type_key].length > 1 ? (
-                                    <span>{criterion?.record_type?.name}</span>
-                                ) : (
-                                    <span>{criterion.title || criterion.title_default}</span>
-                                )}
-                            </li>
+                    <div className="sign_up-pane-list sign_up-pane-list-steps">
+                        {criteriaSteps.map((step, index) => (
+                            <div className="list-steps-item" key={index}>
+                                <div className="list-steps-item-icon">{index + 1}</div>
+                                <div className="list-steps-item-content">
+                                    <div className="list-steps-item-title">{step.title}</div>
+                                    {step.description_html && (
+                                        <Markdown
+                                            className={'list-steps-item-description'}
+                                            content={step.description_html}
+                                        />
+                                    )}
+                                </div>
+                            </div>
                         ))}
-                    </ul>
-                </div>
-                <div className="sign_up-pane-footer">
-                    <div className="flex-row">
-                        <FundRequestGoBackButton prevStep={onPrevStep} fund={fund} step={step} />
-
-                        <div className="flex-col text-right">
-                            <button
-                                className="button button-text button-text-padless"
-                                onClick={onNextStep}
-                                role="button"
-                                type="button">
-                                {translate('fund_request.sign_up.pane.footer.next')}
-                                <div className="mdi mdi-chevron-right icon-right" />
-                            </button>
-                        </div>
                     </div>
                 </div>
+
+                <SignUpFooter
+                    startActions={
+                        <FundRequestGoBackButton prevStep={onPrevStep} fund={fund} step={step} tabIndex={0} />
+                    }
+                    endActions={
+                        <button
+                            className="button button-text button-text-padless"
+                            onClick={onNextStep}
+                            role="button"
+                            type="button"
+                            tabIndex={0}>
+                            {translate('fund_request.sign_up.pane.footer.next')}
+                            <em className="mdi mdi-chevron-right icon-right" />
+                        </button>
+                    }
+                />
 
                 {bsnWarning}
             </div>
