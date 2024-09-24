@@ -8,7 +8,6 @@ import FundRequestRecordCard from './elements/FundRequestRecordCard';
 import BlockShowcaseProfile from '../../elements/block-showcase/BlockShowcaseProfile';
 import useSetProgress from '../../../../dashboard/hooks/useSetProgress';
 import useSetTitle from '../../../hooks/useSetTitle';
-import { StringParam, useQueryParams } from 'use-query-params';
 import { useNavigateState } from '../../../modules/state_router/Router';
 import { authContext } from '../../../contexts/AuthContext';
 
@@ -21,7 +20,6 @@ export default function FundRequestsShow() {
     const navigateState = useNavigateState();
     const { identity, token } = useContext(authContext);
 
-    const [{ target }] = useQueryParams({ target: StringParam });
     const [fundRequest, setFundRequest] = useState<FundRequest>(null);
     const [showDeclinedNote, setShowDeclinedNote] = useState(true);
 
@@ -50,9 +48,9 @@ export default function FundRequestsShow() {
 
     useEffect(() => {
         if (!identity && !token) {
-            navigateState('start', null, null, { state: { target } });
+            navigateState('start', null, null, { state: { target: `fundRequest-${id}` } });
         }
-    }, [identity, navigateState, target, token]);
+    }, [id, identity, navigateState, token]);
 
     if (!identity || !fundRequest) {
         return null;

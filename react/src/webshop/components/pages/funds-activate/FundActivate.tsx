@@ -979,7 +979,7 @@ export default function FundActivate() {
                         )}
 
                         {state == 'fund_already_applied' && fundRequest && (
-                            <div className="sign_up-pane fund-request-details-pane">
+                            <div className="sign_up-pane">
                                 <div className="sign_up-pane-header">
                                     <h2 className="sign_up-pane-header-title">
                                         {translate(
@@ -1001,7 +1001,7 @@ export default function FundActivate() {
                                             />
                                         )}
                                     </div>
-                                    <div className="sign_up-pane-heading">
+                                    <div className="sign_up-pane-heading sign_up-pane-heading-md text-center">
                                         {translate(
                                             `fund_request.sign_up.fund_already_applied.subtitle.${fundRequest.state}`,
                                             { date: fundRequest.created_at_locale },
@@ -1063,7 +1063,7 @@ export default function FundActivate() {
                                     </div>
                                 </div>
 
-                                <div className="sign_up-pane-footer">
+                                <div className="sign_up-pane-footer text-center">
                                     <StateNavLink
                                         name={'fund-request-show'}
                                         params={{ id: fundRequest.id }}

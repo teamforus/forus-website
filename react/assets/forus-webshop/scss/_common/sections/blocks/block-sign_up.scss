@@ -224,6 +224,11 @@
                 font: 700 16px/24px var(--base-font);
                 margin: 0 0 15px;
 
+                &.sign_up-pane-heading-md {
+                    font: 700 20px/30px var(--base-font);
+                    margin-bottom: 30px;
+                }
+
                 &.sign_up-pane-heading-lg {
                     font: 700 22px/32px var(--base-font);
                     margin: 0;
@@ -808,36 +813,6 @@
                         padding-left: 40px;
                     }
                 }
-            }
-        }
-
-        &.fund-request-details-pane {
-            .sign_up-pane-header {
-                padding: 17px 20px;
-
-                .sign_up-pane-header-title {
-                    font: 700 22px/32px var(--base-font);
-                }
-            }
-
-            .sign_up-pane-body {
-                padding: 30px;
-
-                .sign_up-pane-heading {
-                    font: 700 20px/30px var(--base-font);
-                    text-align: center;
-                    margin-bottom: 30px;
-                }
-
-                .sign_up-pane-list-criteria {
-                    margin-bottom: 30px;
-                }
-            }
-
-            .sign_up-pane-footer {
-                border-top: 1px solid #ebedf0;
-                text-align: center;
-                padding: 25px 20px;
             }
         }
     }
