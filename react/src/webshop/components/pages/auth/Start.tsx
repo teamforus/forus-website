@@ -24,6 +24,7 @@ import { clickOnKeyEnter } from '../../../../dashboard/helpers/wcag';
 import BlockShowcase from '../../elements/block-showcase/BlockShowcase';
 import BlockLoader from '../../elements/block-loader/BlockLoader';
 import SignUpFooter from '../../elements/sign-up/SignUpFooter';
+import FormHint from '../../../../dashboard/components/elements/forms/errors/FormHint';
 
 export default function Start() {
     const { token, signOut, setToken } = useContext(authContext);
@@ -213,7 +214,6 @@ export default function Start() {
                             <strong>{translate('popup_auth.input.mail')}</strong>
                         </label>
                         <UIControlText
-                            type={'email'}
                             value={authForm.values.email}
                             onChange={(e) => authForm.update({ email: e.target.value })}
                             validationMessages={{
@@ -228,6 +228,7 @@ export default function Start() {
                             dataDusk={'authEmailFormEmail'}
                         />
                         <FormError error={authForm.errors.email} />
+                        <FormHint text={'Vul een geldig e-mailadres in, bijvoorbeeld naam@voorbeeld.com'} />
                     </div>
                     <div className="form-group col col-lg-3">
                         <label className="form-label hide-sm" htmlFor="submit">
