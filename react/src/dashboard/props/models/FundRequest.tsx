@@ -3,6 +3,7 @@ import FundRequestRecord from './FundRequestRecord';
 import Employee from './Employee';
 import FundRequestApiPerson from './FundRequestApiPerson';
 import FundCriterion from './FundCriterion';
+import Voucher from './Voucher';
 
 export interface FundRequestFormula {
     total_amount: string;
@@ -52,4 +53,6 @@ export default interface FundRequest {
     person?: FundRequestApiPerson;
     person_relative?: FundRequestApiPerson;
     person_breadcrumbs?: Array<FundRequestApiPerson>;
+    payoutVoucher?: Voucher;
+    vouchers?: Array<Voucher>;
 }
