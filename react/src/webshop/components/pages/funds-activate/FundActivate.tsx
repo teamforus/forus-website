@@ -37,7 +37,6 @@ import useSetProgress from '../../../../dashboard/hooks/useSetProgress';
 import BlockShowcase from '../../elements/block-showcase/BlockShowcase';
 import BlockLoader from '../../elements/block-loader/BlockLoader';
 import { clickOnKeyEnter } from '../../../../dashboard/helpers/wcag';
-import FundCriterion from '../../../../dashboard/props/models/FundCriterion';
 import useSetTitle from '../../../hooks/useSetTitle';
 import SignUpFooter from '../../elements/sign-up/SignUpFooter';
 
@@ -80,7 +79,6 @@ export default function FundActivate() {
     const [criteriaCheckedWarning, setCriteriaCheckedWarning] = useState(false);
 
     const [fundRequests, setFundRequests] = useState<Array<FundRequest>>(null);
-    const [pendingRequest, setPendingRequest] = useState<FundRequest>(null);
     const [options, setOptions] = useState(null);
 
     const [fetchingData, setFetchingData] = useState(false);
@@ -355,13 +353,6 @@ export default function FundActivate() {
         }
     }, [digidResponse, fund, navigateState, pushSuccess, selectDigiDOption, setDigidResponse]);
 
-    const findCriterionState = useCallback(
-        (criterion: FundCriterion) => {
-            return pendingRequest?.records?.find((record) => record?.fund_criterion_id == criterion?.id)?.state;
-        },
-        [pendingRequest],
-    );
-
     const fetchFund = useCallback(() => {
         setProgress(0);
 
@@ -491,7 +482,6 @@ export default function FundActivate() {
 
         // Fund request already in progress
         if (pendingRequest) {
-            setPendingRequest(pendingRequest);
             setState('fund_already_applied');
             return;
         }
@@ -1000,25 +990,9 @@ export default function FundActivate() {
                                     </p>
                                     <ul className="sign_up-pane-list sign_up-pane-list-criteria">
                                         {fund.criteria?.map((criterion) => (
-                                            <li
-                                                key={criterion.id}
-                                                className={
-                                                    {
-                                                        pending: 'item-progress',
-                                                        approved: 'item-valid',
-                                                        declined: 'item-declined',
-                                                    }[findCriterionState(criterion)]
-                                                }>
+                                            <li key={criterion.id}>
                                                 <div className="item-icon">
-                                                    <em
-                                                        className={`mdi ${
-                                                            {
-                                                                pending: 'mdi-help',
-                                                                approved: 'mdi-check-bold',
-                                                                declined: 'mdi-close-thick',
-                                                            }[findCriterionState(criterion)]
-                                                        }`}
-                                                    />
+                                                    <em className="mdi mdi-information-outline" />
                                                 </div>
 
                                                 {criterion.title && criterion.title}
