@@ -186,4 +186,5 @@ module.exports = {
     httpsKey: null,
     httpsCert: null,
     buildGzipFiles: false,
+    nonce: null,
 };
