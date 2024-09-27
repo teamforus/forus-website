@@ -26,7 +26,6 @@ export default function UIControlDate({
 
     return (
         <div id={id} className={`ui-control ui-control-date ${className}`}>
-            <div className="ui-control-label-wrapper" />
             <DatePickerControl
                 dateFormat={format || null}
                 value={value}

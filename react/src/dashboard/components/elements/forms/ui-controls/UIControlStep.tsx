@@ -37,7 +37,6 @@ export default function UIControlStep({
             aria-valuenow={value}
             aria-valuemin={min}
             aria-valuemax={max}>
-            <div className="ui-control-label-wrapper" />
             <input type="number" name={name} id={id} value={value} hidden={true} readOnly={true} />
             <div
                 className="ui-control-step-icon"

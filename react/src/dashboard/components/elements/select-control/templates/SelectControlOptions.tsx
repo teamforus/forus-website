@@ -52,7 +52,6 @@ export default function SelectControlOptions<T>({
             ref={selectorRef}
             onKeyDown={onKeyDown}
             onBlur={onBlur}>
-            <div className="select-control-label-wrapper" />
             <div className={['select-control-input', showOptions ? 'options' : ''].filter((item) => item).join(' ')}>
                 {/* Placeholder */}
                 <label

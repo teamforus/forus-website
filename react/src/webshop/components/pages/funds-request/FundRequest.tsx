@@ -52,8 +52,6 @@ export type LocalCriterion = FundCriterion & {
     control_type?: string;
     record_type_options?: { [key: string]: RecordTypeOption };
     requested?: boolean;
-    has_required_label?: boolean;
-    has_optional_label?: boolean;
 };
 
 type FundCriteriaStepLocal = FundCriteriaStep & {

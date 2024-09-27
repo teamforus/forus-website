@@ -16,5 +16,5 @@ export default interface Fund extends FundBase {
     contact_info_required?: boolean;
     contact_info_message_text?: string;
     contact_info_message_default?: string;
-    shown_criteria_label_details?: 'both' | 'required' | 'optional';
+    criteria_label_requirement_show?: 'both' | 'required' | 'optional';
 }

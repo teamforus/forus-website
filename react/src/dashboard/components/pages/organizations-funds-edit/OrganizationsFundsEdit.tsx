@@ -198,7 +198,7 @@ export default function OrganizationsFundsEdit() {
         outcome_type?: 'voucher' | 'payout';
         voucher_amount_visible?: boolean;
         provider_products_required?: boolean;
-        shown_criteria_label_details?: string;
+        criteria_label_requirement_show?: string;
     }>(
         {
             description_position: descriptionPositions[0]?.value,
@@ -211,7 +211,7 @@ export default function OrganizationsFundsEdit() {
             application_method: 'application_form',
             request_btn_text: applicationMethodsByKey['application_form']?.default_button_text,
             state: fundStates[0].value,
-            shown_criteria_label_details: 'both',
+            criteria_label_requirement_show: 'both',
 
             // contact information
             email_required: true,
@@ -809,19 +809,28 @@ export default function OrganizationsFundsEdit() {
 
                                 <div className="form-group form-group-inline">
                                     <div className="form-label form-label-required">
-                                        {translate('funds_edit.labels.shown_criteria_label_details')}
+                                        {translate('funds_edit.labels.criteria_label_requirement_show')}
                                     </div>
                                     <div className="form-offset">
-                                        <SelectControl
-                                            propKey={'value'}
-                                            allowSearch={false}
-                                            value={form.values.shown_criteria_label_details}
-                                            options={shownCriteriaLabelDetails}
-                                            disabled={!hasPermission(activeOrganization, 'manage_funds')}
-                                            onChange={(shown_criteria_label_details: string) => {
-                                                form.update({ shown_criteria_label_details });
-                                            }}
-                                        />
+                                        <FormGroupInfo
+                                            info={
+                                                <Fragment>
+                                                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsa
+                                                    deleniti incidunt reiciendis perferendis minima, nisi deserunt
+                                                    magnam maxime voluptatibus!
+                                                </Fragment>
+                                            }>
+                                            <SelectControl
+                                                propKey={'value'}
+                                                allowSearch={false}
+                                                value={form.values.criteria_label_requirement_show}
+                                                options={shownCriteriaLabelDetails}
+                                                disabled={!hasPermission(activeOrganization, 'manage_funds')}
+                                                onChange={(criteria_label_requirement_show: string) => {
+                                                    form.update({ criteria_label_requirement_show });
+                                                }}
+                                            />
+                                        </FormGroupInfo>
                                     </div>
                                 </div>
                             </div>
@@ -1187,11 +1196,14 @@ export default function OrganizationsFundsEdit() {
                                     </div>
                                     <div className="form-offset">
                                         <FormGroupInfo
-                                            info={`
-                                            Handig! Stel een minimum bedrag in voor het saldo van de regeling. Er
-                                            wordt automatisch een e-mail verstuurd als het saldo voor de regeling
-                                            lager is dan deze grens. De e-mail wordt verstuurd naar gebruikers met
-                                            de rollen beheerder en financiën.`}>
+                                            info={
+                                                <Fragment>
+                                                    Handig! Stel een minimum bedrag in voor het saldo van de regeling.
+                                                    Er wordt automatisch een e-mail verstuurd als het saldo voor de
+                                                    regeling lager is dan deze grens. De e-mail wordt verstuurd naar
+                                                    gebruikers met de rollen beheerder en financiën.
+                                                </Fragment>
+                                            }>
                                             <input
                                                 className="form-control"
                                                 type="number"
