@@ -7,8 +7,15 @@ import usePushDanger from '../../../../../dashboard/hooks/usePushDanger';
 import usePushSuccess from '../../../../../dashboard/hooks/usePushSuccess';
 import useSetProgress from '../../../../../dashboard/hooks/useSetProgress';
 import useAppConfigs from '../../../../hooks/useAppConfigs';
+import { clickOnKeyEnter } from '../../../../../dashboard/helpers/wcag';
 
-export default function NotificationPreferencesCards({ setLoaded }: { setLoaded: Dispatch<SetStateAction<boolean>> }) {
+export default function NotificationPreferencesCards({
+    cardRef,
+    setLoaded,
+}: {
+    cardRef: React.MutableRefObject<HTMLDivElement>;
+    setLoaded: Dispatch<SetStateAction<boolean>>;
+}) {
     const translate = useTranslate();
     const appConfigs = useAppConfigs();
 
@@ -191,13 +198,7 @@ export default function NotificationPreferencesCards({ setLoaded }: { setLoaded:
                                         />
                                         <div className="form-toggle-inner flex-end">
                                             <div className="toggle-input">
-                                                <div className="toggle-input-dot">
-                                                    {type.subscribed ? (
-                                                        <em className="mdi mdi-check-bold" />
-                                                    ) : (
-                                                        <div className="icon-disabled" />
-                                                    )}
-                                                </div>
+                                                <div className="toggle-input-dot" />
                                             </div>
                                         </div>
                                     </div>
@@ -208,7 +209,7 @@ export default function NotificationPreferencesCards({ setLoaded }: { setLoaded:
                 </div>
             )}
 
-            <div className="card">
+            <div className="card" ref={cardRef}>
                 <div className="card-header">
                     <h2 className="card-title">{translate('notification_preferences.title_push_preferences')}</h2>
                 </div>
@@ -221,6 +222,7 @@ export default function NotificationPreferencesCards({ setLoaded }: { setLoaded:
                             htmlFor={`option_${type.key}`}
                             role="checkbox"
                             tabIndex={0}
+                            onKeyDown={clickOnKeyEnter}
                             aria-checked={type.subscribed}>
                             <div className="preference-option-details">
                                 <div className="card-heading card-heading-padless">
@@ -244,13 +246,7 @@ export default function NotificationPreferencesCards({ setLoaded }: { setLoaded:
                                     />
                                     <div className="form-toggle-inner flex-end">
                                         <div className="toggle-input">
-                                            <div className="toggle-input-dot">
-                                                {type.subscribed ? (
-                                                    <em className="mdi mdi-check-bold" />
-                                                ) : (
-                                                    <em className="icon-disabled" />
-                                                )}
-                                            </div>
+                                            <div className="toggle-input-dot" />
                                         </div>
                                     </div>
                                 </div>

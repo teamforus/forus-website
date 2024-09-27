@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import { createContext } from 'react';
 import { uniqueId } from 'lodash';
 import ButtonType from '../../../../props/elements/ButtonType';
@@ -7,6 +7,7 @@ import useStorageService from '../../storage/useStrorrageService';
 interface NotificationConfig {
     type?: 'success' | 'danger' | 'info';
     icon?: string;
+    timeout?: number;
 }
 
 interface Notification extends NotificationConfig {
@@ -25,6 +26,7 @@ export interface PushNotification extends Notification {
 }
 
 interface PushNotificationMemo {
+    groups: PushNotificationGroups;
     pushRaw: (notification: PushNotification) => string;
     pushInfo: (title: string, message?: string, notification?: NotificationConfig) => string;
     pushDanger: (title: string, message?: string, notification?: NotificationConfig) => string;
@@ -34,20 +36,52 @@ interface PushNotificationMemo {
     popNotification: (id: string) => void;
     pushNotification: (notification: PushNotification) => void;
     setDismissTimeValue: (type: string, time: number) => void;
-    getSystemDismissTime: () => number | undefined;
-    getBookmarksDismissTime: () => number | undefined;
+    getDismissTimeValue: (type: string) => number | undefined;
     pushNotificationStorageKey: string;
 }
+
+interface PushNotificationGroup {
+    maxCount?: number;
+    className?: string;
+    showConfig?: boolean;
+    maxVisibleCount?: number;
+    defaultDismissTimeout?: number;
+}
+
+type PushNotificationGroups = {
+    [key: string]: PushNotificationGroup;
+};
 
 const pushNotificationContext = createContext<PushNotificationMemo>(null);
 const { Provider } = pushNotificationContext;
 
-const PushNotificationsProvider = ({ children }: { children: React.ReactElement | React.ReactElement[] }) => {
+const PushNotificationsProvider = (props: {
+    groups?: PushNotificationGroups;
+    children: React.ReactElement | React.ReactElement[];
+}) => {
     const storage = useStorageService();
 
-    const [total] = useState(4);
+    const defaultGroups = useMemo<PushNotificationGroups>(
+        () => ({
+            default: { maxCount: 0, className: '', showConfig: false, maxVisibleCount: 3, defaultDismissTimeout: 5 },
+        }),
+        [],
+    );
+
+    const groups = useMemo(() => {
+        if (props?.groups) {
+            Object.keys(props?.groups).forEach(
+                (key) => (props.groups[key] = { ...defaultGroups[0], ...props?.groups[key] }),
+            );
+
+            return props?.groups;
+        }
+
+        return defaultGroups;
+    }, [props?.groups, defaultGroups]);
+
     const [notifications, setNotifications] = useState<Array<PushNotification>>([]);
-    const [pushNotificationStorageKey] = useState('identity_push_notification_preferences');
+    const [pushNotificationStorageKey] = useState('push_notification_preferences');
 
     const popNotification = useCallback((id: string) => {
         setNotifications((notifications) => {
@@ -55,24 +89,51 @@ const PushNotificationsProvider = ({ children }: { children: React.ReactElement 
         });
     }, []);
 
+    const setDismissTimeValue = useCallback(
+        (storageKey: string, time: number) => {
+            storage.setCollectionItem(pushNotificationStorageKey, storageKey, time);
+        },
+        [pushNotificationStorageKey, storage],
+    );
+
+    const getDismissTimeValue = useCallback(
+        (storageKey: string): number | undefined => {
+            const value = storage.getCollectionItem(pushNotificationStorageKey, storageKey);
+
+            return (value == 0 || value) && !isNaN(parseInt(value))
+                ? parseInt(value)
+                : groups[storageKey]?.defaultDismissTimeout || undefined;
+        },
+        [pushNotificationStorageKey, storage, groups],
+    );
+
     const pushNotification = useCallback(
         (notification: PushNotification) => {
+            const groupKey = notification.group ? notification.group : Object.keys(groups)?.[0];
+            const group = groups[groupKey];
+            const timeout = getDismissTimeValue(groupKey);
+
             notification.id = uniqueId();
-            notification.group = notification.group ? notification.group : 'default';
+            notification.group = groupKey;
+            notification.timeout = notification.timeout || (timeout ? timeout * 1000 : null);
 
-            setNotifications((notifications) => {
-                notifications.slice(total).forEach((notification) => {
-                    window.clearTimeout(notification.timerPop);
-                    window.clearTimeout(notification.timerShow);
-                    popNotification(notification.id);
-                });
+            if (notification.timeout) {
+                window.setTimeout(() => popNotification(notification.id), notification.timeout);
+            }
 
-                return [notification, ...notifications];
-            });
+            const list = [notification, ...notifications];
+
+            setNotifications([...list]);
+
+            const listGroup = list.filter((item) => item.group === groupKey);
+
+            listGroup
+                .slice(group.maxCount > 0 ? group.maxCount : listGroup.length)
+                .forEach((item) => popNotification(item.id));
 
             return notification.id;
         },
-        [total, popNotification],
+        [getDismissTimeValue, groups, notifications, popNotification],
     );
 
     const pushSuccess = useCallback(
@@ -103,33 +164,10 @@ const PushNotificationsProvider = ({ children }: { children: React.ReactElement 
         [pushNotification],
     );
 
-    const setDismissTimeValue = useCallback(
-        (storageKey: string, time: number) => {
-            storage.setCollectionItem(pushNotificationStorageKey, storageKey, time);
-        },
-        [pushNotificationStorageKey, storage],
-    );
-
-    const getDismissTimeValue = useCallback(
-        (storageKey): number | undefined => {
-            const value = storage.getCollectionItem(pushNotificationStorageKey, storageKey);
-
-            return (value == 0 || value) && !isNaN(parseInt(value)) ? parseInt(value) : undefined;
-        },
-        [pushNotificationStorageKey, storage],
-    );
-
-    const getSystemDismissTime = useCallback(() => {
-        return getDismissTimeValue('system');
-    }, [getDismissTimeValue]);
-
-    const getBookmarksDismissTime = useCallback(() => {
-        return getDismissTimeValue('bookmarks');
-    }, [getDismissTimeValue]);
-
     return (
         <Provider
             value={{
+                groups,
                 pushRaw,
                 pushInfo,
                 pushDanger,
@@ -139,11 +177,10 @@ const PushNotificationsProvider = ({ children }: { children: React.ReactElement 
                 popNotification,
                 pushNotification,
                 setDismissTimeValue,
-                getSystemDismissTime,
-                getBookmarksDismissTime,
+                getDismissTimeValue,
                 pushNotificationStorageKey,
             }}>
-            {children}
+            {props.children}
         </Provider>
     );
 };

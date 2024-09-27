@@ -139,7 +139,7 @@ export default function ImplementationsNotificationsSend() {
     );
 
     const askConfirmation = useCallback(
-        (target, onConfirm) => {
+        (target: string, onConfirm: () => void) => {
             const descriptionKey =
                 {
                     all: 'description_identities_all',
@@ -177,7 +177,7 @@ export default function ImplementationsNotificationsSend() {
     );
 
     const askConfirmationToMyself = useCallback(
-        (onConfirm) => {
+        (onConfirm: () => void) => {
             openModal((modal) => (
                 <ModalDangerZone
                     modal={modal}
@@ -240,7 +240,9 @@ export default function ImplementationsNotificationsSend() {
                         implementationId: implementation.id,
                     });
 
-                    pushSuccess('Gelukt!', 'De e-mail zal zo spoedig mogelijk verstuurd worden naar alle gebruikers.');
+                    pushSuccess('Gelukt!', 'De e-mail zal zo spoedig mogelijk verstuurd worden naar alle gebruikers.', {
+                        timeout: 8000,
+                    });
                 })
                 .catch((res: ResponseError) => {
                     setSubmitting(false);

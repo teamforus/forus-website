@@ -88,7 +88,7 @@ export default {
         title: 'Instellingen voor weergavetijd van meldingen',
     },
     push_notifications_dismiss_time: {
-        system: {
+        webshop: {
             title: 'Algemene meldingen automatisch sluiten',
             description: 'Verberg systeemmeldingen automatisch nadat een actie is uitgevoerd.',
         },

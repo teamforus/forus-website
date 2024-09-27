@@ -295,6 +295,7 @@ export default function ModalPayoutsUpload({
                             pushDanger(
                                 'Er is een onbekende fout opgetreden tijdens het uploaden van CSV.',
                                 'Controleer de CSV op problemen, vernieuw de pagina en probeer het opnieuw.',
+                                { timeout: 30000 },
                             );
                         });
                 };

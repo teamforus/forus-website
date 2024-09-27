@@ -1,15 +1,38 @@
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import StateNavLink from '../../../modules/state_router/StateNavLink';
 import useTranslate from '../../../../dashboard/hooks/useTranslate';
 import BlockShowcaseProfile from '../../elements/block-showcase/BlockShowcaseProfile';
 import NotificationPreferencesCards from './elements/NotificationPreferencesCards';
 import PushNotificationPreferencesCard from './elements/PushNotificationPreferencesCard';
+import { useParams } from 'react-router-dom';
 
 export default function PreferencesNotifications() {
+    const { card = null } = useParams();
     const translate = useTranslate();
+
+    const notificationsCardRef = useRef(null);
+    const pushNotificationsCardRef = useRef(null);
 
     const [loadedNotification, setLoadedNotification] = useState<boolean>(false);
     const [loadedPushNotification, setLoadedPushNotification] = useState<boolean>(false);
+
+    const componentsLoaded = useMemo(() => {
+        return loadedNotification && loadedPushNotification;
+    }, [loadedNotification, loadedPushNotification]);
+
+    useEffect(() => {
+        if (!componentsLoaded) {
+            return;
+        }
+
+        if (notificationsCardRef.current && card === 'notifications') {
+            notificationsCardRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        if (pushNotificationsCardRef.current && card === 'push') {
+            pushNotificationsCardRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    }, [componentsLoaded, card]);
 
     return (
         <BlockShowcaseProfile
@@ -32,12 +55,15 @@ export default function PreferencesNotifications() {
                     </div>
                 </div>
             }>
-            <NotificationPreferencesCards setLoaded={setLoadedNotification} />
+            <NotificationPreferencesCards cardRef={notificationsCardRef} setLoaded={setLoadedNotification} />
 
-            <PushNotificationPreferencesCard
-                componentsLoaded={loadedNotification && loadedPushNotification}
-                setLoaded={setLoadedPushNotification}
-            />
+            <div className="profile-content-header">
+                <div className="profile-content-title">
+                    <h1 className="profile-content-header">Pop-up meldingen</h1>
+                </div>
+            </div>
+
+            <PushNotificationPreferencesCard cardRef={pushNotificationsCardRef} setLoaded={setLoadedPushNotification} />
         </BlockShowcaseProfile>
     );
 }
