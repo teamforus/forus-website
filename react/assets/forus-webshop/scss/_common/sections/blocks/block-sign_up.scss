@@ -266,6 +266,16 @@
                 margin: 0 0 30px;
             }
 
+            .sign_up-privacy {
+                display: inline-flex;
+                gap: 5px;
+                align-items: center;
+
+                .sign_up-privacy-checkbox {
+                    margin: 0 0 ;
+                }
+            }
+
             .list-normal {
                 padding-left: 18px;
             }
@@ -802,12 +812,6 @@
         }
 
         .form {
-            label {
-                input[type='checkbox'] {
-                    margin: 0 5px 0 0;
-                }
-            }
-
             .form-control:not([type='radio']):not([type='checkbox']) {
                 height: auto;
 
@@ -829,13 +833,8 @@
                     color: #1a1919;
                 }
 
-                .form-hint {
-                    margin: 12px 0 0;
+                .form-value-hint {
                     font: 400 13px/18px var(--base-font);
-
-                    &:before {
-                        display: none;
-                    }
                 }
             }
 
