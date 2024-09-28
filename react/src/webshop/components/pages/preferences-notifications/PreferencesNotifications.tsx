@@ -8,6 +8,7 @@ import usePushSuccess from '../../../../dashboard/hooks/usePushSuccess';
 import useSetProgress from '../../../../dashboard/hooks/useSetProgress';
 import useAppConfigs from '../../../hooks/useAppConfigs';
 import BlockShowcaseProfile from '../../elements/block-showcase/BlockShowcaseProfile';
+import { clickOnKeyEnter } from '../../../../dashboard/helpers/wcag';
 
 export default function PreferencesNotifications() {
     const translate = useTranslate();
@@ -198,6 +199,7 @@ export default function PreferencesNotifications() {
                                         htmlFor={`option_${type.key}`}
                                         role="checkbox"
                                         tabIndex={0}
+                                        onKeyDown={clickOnKeyEnter}
                                         aria-checked={type.subscribed}>
                                         <div className="preference-option-details">
                                             <div className="card-heading card-heading-padless">
@@ -253,6 +255,7 @@ export default function PreferencesNotifications() {
                                     htmlFor={`option_${type.key}`}
                                     role="checkbox"
                                     tabIndex={0}
+                                    onKeyDown={clickOnKeyEnter}
                                     aria-checked={type.subscribed}>
                                     <div className="preference-option-details">
                                         <div className="card-heading card-heading-padless">
