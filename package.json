@@ -85,7 +85,7 @@
     "aws-rum-web": "^1.19.0",
     "chart.js": "^4.4.1",
     "clean-webpack-plugin": "^4.0.0",
-    "date-fns": "^2.29.3",
+    "date-fns": "^4.1.0",
     "easyqrcodejs": "^4.4.13",
     "file-saver": "^2.0.5",
     "i18n-iso-countries": "^7.6.0",
