@@ -7,7 +7,7 @@ import PushNotificationPreferencesCard from './elements/PushNotificationPreferen
 import { useParams } from 'react-router-dom';
 
 export default function PreferencesNotifications() {
-    const { card = null } = useParams();
+    const { section = null } = useParams();
     const translate = useTranslate();
 
     const notificationsCardRef = useRef(null);
@@ -25,14 +25,14 @@ export default function PreferencesNotifications() {
             return;
         }
 
-        if (notificationsCardRef.current && card === 'notifications') {
+        if (notificationsCardRef.current && section === 'notifications') {
             notificationsCardRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
 
-        if (pushNotificationsCardRef.current && card === 'push') {
+        if (pushNotificationsCardRef.current && section === 'push') {
             pushNotificationsCardRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
-    }, [componentsLoaded, card]);
+    }, [componentsLoaded, section]);
 
     return (
         <BlockShowcaseProfile
