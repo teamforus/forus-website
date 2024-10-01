@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { Fragment, useCallback, useEffect, useState } from 'react';
 import useFilter from '../../../hooks/useFilter';
 import { useFundRequestValidatorService } from '../../../services/FundRequestValidatorService';
 import { NavLink, useNavigate } from 'react-router-dom';
@@ -424,10 +424,22 @@ export default function FundRequests() {
                                             </td>
                                             <td>
                                                 {fundRequest.state == 'pending' && fundRequest.employee ? (
-                                                    <div className="label label-tag label-round label-warning">
-                                                        <span className="mdi mdi-circle-outline icon-start" />
-                                                        <span>In behandeling</span>
-                                                    </div>
+                                                    <Fragment>
+                                                        {!fundRequest.records
+                                                            .map((record) => record.clarifications)
+                                                            .filter((clarifications) => clarifications.length)
+                                                            .length ? (
+                                                            <div className="label label-tag label-round label-success-var">
+                                                                <span className="mdi mdi-circle-outline icon-start" />
+                                                                <span>In behandeling</span>
+                                                            </div>
+                                                        ) : (
+                                                            <div className="label label-tag label-round label-warning">
+                                                                <span className="mdi mdi-circle-outline icon-start" />
+                                                                <span>Aanvullende informatie benodigd</span>
+                                                            </div>
+                                                        )}
+                                                    </Fragment>
                                                 ) : (
                                                     <div
                                                         className={classNames(
