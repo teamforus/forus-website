@@ -215,18 +215,12 @@ export default function Start() {
                         <div className="flex flex-vertical flex-gap">
                             <div>
                                 <UIControlText
-                                    type={'email'}
                                     value={authForm.values.email}
                                     onChange={(e) => authForm.update({ email: e.target.value })}
-                                    validationMessages={{
-                                        typeMismatch: translate('signup.items.errors.email.type_mismatch'),
-                                        valueMissing: translate('signup.items.errors.email.value_missing'),
-                                    }}
                                     id={'email'}
                                     name={'email'}
                                     tabIndex={1}
                                     autoFocus={true}
-                                    required={true}
                                     dataDusk={'authEmailFormEmail'}
                                 />
                                 <FormError error={authForm.errors.email} />
