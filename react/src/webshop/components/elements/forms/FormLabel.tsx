@@ -20,7 +20,7 @@ export default function FormLabel({
                     info?.type === 'optional' && 'form-label-info-optional',
                     info?.type === 'required' && 'form-label-info-required',
                 )}>
-                {info?.type === 'required' ? 'Mandatory' : info?.type === 'optional' ? 'Optioneel' : ''}
+                {info?.type === 'required' ? 'Verplicht' : info?.type === 'optional' ? 'Optioneel' : ''}
             </div>
         </label>
     );
