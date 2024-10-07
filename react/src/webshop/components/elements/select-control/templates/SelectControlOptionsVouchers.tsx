@@ -5,6 +5,7 @@ import ClickOutside from '../../../../../dashboard/components/elements/click-out
 import useAssetUrl from '../../../../hooks/useAssetUrl';
 import Voucher from '../../../../../dashboard/props/models/Voucher';
 import SelectControlOptionItemVoucher from './elements/SelectControlOptionItemVoucher';
+import useSelectControlKeyEventHandlers from '../../../../../dashboard/components/elements/select-control/hooks/useSelectControlKeyEventHandlers';
 
 export default function SelectControlOptionsVouchers<T>({
     id,
@@ -32,8 +33,14 @@ export default function SelectControlOptionsVouchers<T>({
 
     const selectorRef = useRef<HTMLDivElement>(null);
     const placeholderRef = useRef<HTMLLabelElement>(null);
-
     const selectedVoucher = useMemo(() => modelValue?.raw as Voucher, [modelValue]);
+
+    const { onKeyDown, onBlur } = useSelectControlKeyEventHandlers(
+        selectorRef,
+        placeholderRef,
+        showOptions,
+        setShowOptions,
+    );
 
     return (
         <div
@@ -46,20 +53,8 @@ export default function SelectControlOptionsVouchers<T>({
             aria-controls={`${controlId}_options`}
             tabIndex={0}
             ref={selectorRef}
-            onKeyDown={(e) => {
-                if (e.key == 'Enter') {
-                    placeholderRef?.current?.click();
-                }
-
-                if (e.key == 'Escape') {
-                    setShowOptions(false);
-                }
-            }}
-            onBlur={(e) => {
-                if (showOptions && !e.currentTarget.contains(e.relatedTarget)) {
-                    selectorRef?.current?.focus();
-                }
-            }}>
+            onKeyDown={onKeyDown}
+            onBlur={onBlur}>
             <div className={['select-control-input', showOptions ? 'options' : ''].filter((item) => item).join(' ')}>
                 {/* Placeholder */}
                 <label
@@ -114,7 +109,6 @@ export default function SelectControlOptionsVouchers<T>({
                         {showOptions && (
                             <input
                                 id={controlId}
-                                placeholder={placeholderValue || placeholder}
                                 ref={input}
                                 value={query}
                                 onClick={onInputClick}
@@ -130,7 +124,7 @@ export default function SelectControlOptionsVouchers<T>({
                                     setQuery('');
                                     searchInputChanged();
                                 }}
-                                aria-label="cancel">
+                                aria-label="Annuleren">
                                 <em className="mdi mdi-close-circle" />
                             </div>
                         )}
@@ -141,22 +135,26 @@ export default function SelectControlOptionsVouchers<T>({
                     <ClickOutside
                         className="select-control-options"
                         dataDusk={'voucherSelectorOptions'}
-                        id={`${controlId}_options`}
-                        role="listbox"
-                        onScroll={onOptionsScroll}
-                        onClick={null}
+                        attr={{
+                            id: `${controlId}_options`,
+                            role: 'listbox',
+                            onScroll: onOptionsScroll,
+                            onClick: null,
+                        }}
                         onClickOutside={(e) => {
                             e.stopPropagation();
                             setShowOptions(false);
                         }}>
                         <div className="block block-vouchers block-vouchers-select">
-                            {optionsFiltered.slice(0, visibleCount)?.map((option) => (
-                                <SelectControlOptionItemVoucher
-                                    key={option.id}
-                                    option={option}
-                                    selectOption={selectOption}
-                                />
-                            ))}
+                            {optionsFiltered
+                                .slice(0, visibleCount)
+                                ?.map((option) => (
+                                    <SelectControlOptionItemVoucher
+                                        key={option.id}
+                                        option={option}
+                                        selectOption={selectOption}
+                                    />
+                                ))}
                         </div>
                     </ClickOutside>
                 )}

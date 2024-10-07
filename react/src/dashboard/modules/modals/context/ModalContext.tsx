@@ -53,7 +53,7 @@ const ModalsProvider = ({ children }: { children: React.ReactElement }) => {
 
             setTimeout(() => {
                 setModals((modals) => [...modals.filter((item) => item !== modal)]);
-                modal?.onClosed && modal?.onClosed(modal);
+                setTimeout(() => modal?.onClosed && modal?.onClosed(modal));
             }, 200);
         },
         [setLoading],

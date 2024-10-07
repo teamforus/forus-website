@@ -3,6 +3,7 @@ import ClickOutside from '../../click-outside/ClickOutside';
 import { uniqueId } from 'lodash';
 import { SelectControlOptionsProp } from '../SelectControl';
 import SelectControlOptionItem from './elements/SelectControlOptionItem';
+import useSelectControlKeyEventHandlers from '../hooks/useSelectControlKeyEventHandlers';
 
 export default function SelectControlOptionsCountryCodes<T>({
     query,
@@ -21,34 +22,30 @@ export default function SelectControlOptionsCountryCodes<T>({
     searchInputChanged,
     onOptionsScroll,
 }: SelectControlOptionsProp<T>) {
-    const [controlId] = useState('select_control_' + uniqueId());
+    const [controlId] = useState(uniqueId('select_control_'));
     const input = useRef(null);
     const selectorRef = useRef<HTMLDivElement>(null);
     const placeholderRef = useRef<HTMLLabelElement>(null);
 
+    const { onKeyDown, onBlur } = useSelectControlKeyEventHandlers(
+        selectorRef,
+        placeholderRef,
+        showOptions,
+        setShowOptions,
+    );
+
     return (
         <div
             className={'select-control select-control-country-codes ' + (className ? className : '')}
+            tabIndex={0}
             role="button"
             aria-haspopup="listbox"
             aria-expanded={showOptions}
             aria-labelledby={controlId}
             aria-controls={`${controlId}_options`}
             ref={selectorRef}
-            onKeyDown={(e) => {
-                if (e.key == 'Enter') {
-                    placeholderRef?.current?.click();
-                }
-
-                if (e.key == 'Escape') {
-                    setShowOptions(false);
-                }
-            }}
-            onBlur={(e) => {
-                if (showOptions && !e.currentTarget.contains(e.relatedTarget)) {
-                    selectorRef?.current?.focus();
-                }
-            }}>
+            onKeyDown={onKeyDown}
+            onBlur={onBlur}>
             <div className={['select-control-input', showOptions ? 'options' : ''].filter((item) => item).join(' ')}>
                 {/* Placeholder */}
                 <label
@@ -84,7 +81,7 @@ export default function SelectControlOptionsCountryCodes<T>({
                                         setQuery('');
                                         searchInputChanged();
                                     }}
-                                    aria-label="cancel">
+                                    aria-label="Annuleren">
                                     <em className="mdi mdi-close-circle" />
                                 </div>
                             ) : (
@@ -95,17 +92,25 @@ export default function SelectControlOptionsCountryCodes<T>({
                         </div>
                         <ClickOutside
                             className="select-control-options"
-                            id={`${controlId}_options`}
-                            role="listbox"
-                            onScroll={onOptionsScroll}
-                            onClick={null}
+                            attr={{
+                                id: `${controlId}_options`,
+                                role: 'listbox',
+                                onScroll: onOptionsScroll,
+                                onClick: null,
+                            }}
                             onClickOutside={(e) => {
                                 e.stopPropagation();
                                 setShowOptions(false);
                             }}>
-                            {optionsFiltered.slice(0, visibleCount)?.map((option) => (
-                                <SelectControlOptionItem key={option.id} option={option} selectOption={selectOption} />
-                            ))}
+                            {optionsFiltered
+                                .slice(0, visibleCount)
+                                ?.map((option) => (
+                                    <SelectControlOptionItem
+                                        key={option.id}
+                                        option={option}
+                                        selectOption={selectOption}
+                                    />
+                                ))}
                         </ClickOutside>
                     </div>
                 )}

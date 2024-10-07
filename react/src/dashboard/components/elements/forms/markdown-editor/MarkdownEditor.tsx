@@ -22,13 +22,14 @@ type SummernoteObject = {
 
 type Summernote = SummernoteConstructor & SummernoteObject;
 
-const $ = jQuery as JQueryStatic & { summernote: Summernote };
+const $ = typeof jQuery !== 'undefined' ? (jQuery as JQueryStatic & { summernote: Summernote }) : null;
 
 export default function MarkdownEditor({
     value = '',
     buttons,
     placeholder = null,
     alignment = null,
+    onChangeAlignment = null,
     onMediaUploaded = null,
     disabled = false,
     allowLists = true,
@@ -37,13 +38,16 @@ export default function MarkdownEditor({
     extendedOptions = false,
     bindEditor = null,
     onChange = null,
+    onUpdatedRaw,
+    insertTextRef,
 }: {
     value: string;
     bindEditor?: CallableFunction;
     modal?: string;
     buttons?: Array<{ key: string; handler: CallableFunction; iconKey: string; icon: string }>;
     alignment?: string;
-    onUpdatedRaw?: string;
+    onChangeAlignment?: (alignment: string) => void;
+    onUpdatedRaw?: (data: { data: { content?: string; content_html?: string } }) => void;
     disabled?: boolean;
     placeholder?: string;
     allowLists?: boolean;
@@ -52,6 +56,7 @@ export default function MarkdownEditor({
     extendedOptions?: boolean;
     onChange: (value: string) => void;
     onMediaUploaded?: (value: { media_uid: string }) => void;
+    insertTextRef?: React.MutableRefObject<(text: string) => void>;
 }) {
     const $element = useRef<HTMLDivElement>(null);
     const $theEditor = useRef<HTMLTextAreaElement>(null);
@@ -109,86 +114,99 @@ export default function MarkdownEditor({
             values: { text: string; url: string },
         ): Promise<object | null> => {
             return new Promise((resolve) => {
-                openModal((modal) => (
-                    <ModalMarkdownCustomLink
-                        modal={modal}
-                        type={type}
-                        values={values}
-                        success={(data) => {
-                            const { url, text, uid, alt } = data;
+                let response = null;
 
-                            if (uid && typeof mediaUploadedRef.current == 'function') {
-                                mediaUploadedRef.current({ media_uid: uid });
-                            }
+                openModal(
+                    (modal) => (
+                        <ModalMarkdownCustomLink
+                            modal={modal}
+                            type={type}
+                            values={values}
+                            success={(data) => {
+                                const { url, text, uid, alt } = data;
 
-                            resolve({ ...values, ...{ url, text, alt } });
-                        }}
-                    />
-                ));
+                                if (uid && typeof mediaUploadedRef.current == 'function') {
+                                    mediaUploadedRef.current({ media_uid: uid });
+                                }
+
+                                response = { ...values, ...{ url, text, alt } };
+                            }}
+                        />
+                    ),
+                    {
+                        onClosed: () => response && resolve(response),
+                    },
+                );
             });
         },
         [openModal],
     );
 
-    const AlignButton = useCallback((icon = 'left') => {
-        return function () {
-            const ui = $.summernote.ui;
-            const btnIcon = `mdi mdi-align-horizontal-${icon}`;
+    const AlignButton = useCallback(
+        (icon = 'left') => {
+            return function () {
+                const ui = $.summernote.ui;
+                const btnIcon = `mdi mdi-align-horizontal-${icon}`;
 
-            const makeLabelItem = (text: string, action: string, icon = null): string => {
-                const inner = [
-                    icon ? `<em class="mdi mdi-${icon}"></em>` : '',
-                    `<span class="note-dropdown-label">${text}</span>`,
-                ].join('');
+                const makeLabelItem = (text: string, action: string, icon = null): string => {
+                    const inner = [
+                        icon ? `<em class="mdi mdi-${icon}"></em>` : '',
+                        `<span class="note-dropdown-label">${text}</span>`,
+                    ].join('');
 
-                return `<div data-action="${action}">${inner}</div>`;
+                    return `<div data-action="${action}">${inner}</div>`;
+                };
+
+                const event = ui.buttonGroup([
+                    ui.button({
+                        contents: `<em class="${btnIcon}"/></em>`,
+                        data: { toggle: 'dropdown' },
+                    }),
+                    ui.dropdown({
+                        items: [
+                            makeLabelItem('Tekst links uitlijnen', 'left', 'align-horizontal-left'),
+                            makeLabelItem('Tekst in het midden uitlijnen', 'center', 'align-horizontal-center'),
+                            makeLabelItem('Tekst rechts uitlijnen', 'right', 'align-horizontal-right'),
+                        ],
+                        callback: function (items: Array<HTMLElement>) {
+                            $(items)
+                                .find('.note-dropdown-item [data-action]')
+                                .on('click', function (e) {
+                                    const option = $(this);
+                                    const parent = $(items[0]).parent();
+                                    const dropdownBtn = parent.find('.note-btn');
+                                    const dropdownBtnIcon = dropdownBtn.find('.mdi');
+                                    const direction = option.data('action');
+
+                                    dropdownBtnIcon.attr('class', option.find('.mdi').attr('class'));
+
+                                    window.setTimeout(() => {
+                                        setBlockAlignment(direction);
+                                        onChangeAlignment?.(direction);
+                                    }, 0);
+                                    e.preventDefault();
+                                });
+                        },
+                    }),
+                ]);
+
+                // return button as jquery object
+                return event.render();
             };
-
-            const event = ui.buttonGroup([
-                ui.button({
-                    contents: `<em class="${btnIcon}"/></em>`,
-                    data: { toggle: 'dropdown' },
-                }),
-                ui.dropdown({
-                    items: [
-                        makeLabelItem('Tekst links uitlijnen', 'left', 'align-horizontal-left'),
-                        makeLabelItem('Tekst in het midden uitlijnen', 'center', 'align-horizontal-center'),
-                        makeLabelItem('Tekst rechts uitlijnen', 'right', 'align-horizontal-right'),
-                    ],
-                    callback: function (items: Array<HTMLElement>) {
-                        $(items)
-                            .find('.note-dropdown-item [data-action]')
-                            .on('click', function (e) {
-                                const option = $(this);
-                                const parent = $(items[0]).parent();
-                                const dropdownBtn = parent.find('.note-btn');
-                                const dropdownBtnIcon = dropdownBtn.find('.mdi');
-                                const direction = option.data('action');
-
-                                dropdownBtnIcon.attr('class', option.find('.mdi').attr('class'));
-
-                                window.setTimeout(() => setBlockAlignment(direction), 0);
-                                e.preventDefault();
-                            });
-                    },
-                }),
-            ]);
-
-            // return button as jquery object
-            return event.render();
-        };
-    }, []);
+        },
+        [onChangeAlignment],
+    );
 
     const CmsButton = useCallback(
-        (type = 'customLink', icon = 'link') => {
+        (type: 'mailPreview' | 'imageLink' | 'customLink' | 'youtubeLink' = 'customLink', icon = 'link') => {
             return function (context: { options: { icons: { [key: string]: string } }; invoke: CallableFunction }) {
                 const ui = $.summernote.ui;
                 const btnIcon = context.options.icons[icon];
 
-                const showLinkDialog = function (linkInfo: {
-                    text?: string;
-                    url?: string;
-                }): Promise<{ alt?: string; url?: string }> {
+                const showLinkDialog = function (
+                    type: 'imageLink' | 'customLink' | 'youtubeLink',
+                    linkInfo: { text?: string; url?: string },
+                ): Promise<{ alt?: string; url?: string }> {
                     return new Promise((resolve) => {
                         const { text, url } = linkInfo;
 
@@ -206,13 +224,13 @@ export default function MarkdownEditor({
                         const _buttons = buttons || [];
 
                         context.invoke('editor.saveRange');
-                        _buttons.forEach((button) => (button.key == type ? button.handler($theEditor, button) : null));
+                        _buttons.forEach((button) => (button.key == type ? button.handler(getEditor(), button) : null));
 
                         if (type === 'customLink') {
                             const linkInfo = context.invoke('editor.getLinkInfo');
                             const { url, text } = linkInfo;
 
-                            showLinkDialog({ url, text }).then(
+                            showLinkDialog(type, { url, text }).then(
                                 (data) => {
                                     context.invoke('editor.restoreRange');
                                     context.invoke('editor.createLink', { ...linkInfo, ...data });
@@ -222,7 +240,7 @@ export default function MarkdownEditor({
                         }
 
                         if (type === 'imageLink' || type === 'youtubeLink') {
-                            showLinkDialog({}).then(
+                            showLinkDialog(type, {}).then(
                                 (data) => {
                                     const { alt, url } = data;
 
@@ -260,7 +278,7 @@ export default function MarkdownEditor({
                 return button.render(); // return button as jquery object
             };
         },
-        [buttons, getCustomLink],
+        [buttons, getCustomLink, getEditor],
     );
 
     const CmsCodeMarkdown = useCallback(() => {
@@ -400,6 +418,7 @@ export default function MarkdownEditor({
 
                     onChangeRef.current(value);
                     markdownValueRef.current = value;
+                    onUpdatedRaw && onUpdatedRaw({ data: { content: value, content_html } });
                 },
                 onPaste: (e: Event & { originalEvent: ClipboardEvent }) => {
                     e.preventDefault();
@@ -410,6 +429,7 @@ export default function MarkdownEditor({
 
         getEditor().summernote('removeModule', 'linkPopover');
         getEditor().summernote('removeModule', 'imagePopover');
+        getEditor().summernote('removeModule', 'autoLink');
         setInitialized(true);
     }, [
         AlignButton,
@@ -421,6 +441,7 @@ export default function MarkdownEditor({
         CmsCodeMarkdown,
         initialized,
         getEditor,
+        onUpdatedRaw,
     ]);
 
     useEffect(() => {
@@ -446,6 +467,12 @@ export default function MarkdownEditor({
     useEffect(() => {
         getEditor().summernote('code', value);
     }, [value, getEditor]);
+
+    useEffect(() => {
+        if (insertTextRef) {
+            insertTextRef.current = insertText;
+        }
+    }, [insertText, insertTextRef]);
 
     return (
         <div

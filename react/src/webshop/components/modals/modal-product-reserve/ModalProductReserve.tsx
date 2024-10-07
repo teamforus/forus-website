@@ -26,7 +26,22 @@ import { dateFormat, dateParse } from '../../../../dashboard/helpers/dates';
 import Tooltip from '../../elements/tooltip/Tooltip';
 import { clickOnKeyEnter } from '../../../../dashboard/helpers/wcag';
 
-type VoucherType = Voucher & { amount_extra: number };
+type VoucherType = Voucher & {
+    amount_extra: number;
+};
+
+type Field = {
+    fullWidth?: boolean;
+    description?: string;
+    showInfo?: boolean;
+    label?: string;
+    placeholder?: string;
+    required?: boolean;
+    key?: string;
+    dusk?: string;
+    type?: string;
+    custom?: boolean;
+};
 
 export default function ModalProductReserve({
     fund,
@@ -59,7 +74,9 @@ export default function ModalProductReserve({
     const [STEP_CONFIRM_DATA] = useState(5);
     const [STEP_EXTRA_PAYMENT] = useState(6);
     const [STEP_RESERVATION_FINISHED] = useState(7);
+    const [STEP_ERROR] = useState(8);
 
+    const [errorMessage, setErrorMessage] = useState<string>();
     const [dateMinLimit] = useState(new Date());
 
     const provider = useMemo(() => product.organization, [product?.organization]);
@@ -101,7 +118,7 @@ export default function ModalProductReserve({
 
     const [step, setStep] = useState(hasEmail ? STEP_SELECT_VOUCHER : STEP_EMAIL_SETUP);
     const [steps, setSteps] = useState([]);
-    const [fields, setFields] = useState([]);
+    const [fields, setFields] = useState<Array<Field>>([]);
     const [emptyText] = useState(translate('modal_product_reserve_notes.confirm_notes.labels.empty'));
     const [voucher, setVoucher] = useState<VoucherType>(null);
 
@@ -142,7 +159,15 @@ export default function ModalProductReserve({
 
                     setStep(STEP_RESERVATION_FINISHED);
                 })
-                .catch((err: ResponseError) => form.setErrors(err.data.errors));
+                .catch((err: ResponseError) => {
+                    pushDanger(err?.data?.message || err?.data?.errors?.product_id?.[0]);
+                    form.setErrors(err.data.errors);
+
+                    if (err.status >= 500 || err?.data?.errors?.product_id?.length > 0) {
+                        setStep(STEP_ERROR);
+                        setErrorMessage(err?.data?.message || err?.data?.errors?.product_id?.[0]);
+                    }
+                });
         },
     );
 
@@ -160,14 +185,17 @@ export default function ModalProductReserve({
     }, [modal, navigateState]);
 
     const onError = useCallback(
-        (res: ResponseError, address = false) => {
-            const { errors = {}, message } = res.data;
+        (err: ResponseError, address = false) => {
+            const { errors = {}, message } = err.data;
 
             form.setErrors(errors);
             form.setIsLocked(false);
 
             if (errors.product_id) {
                 errors.product_id?.forEach((error) => pushDanger(error));
+                setStep(STEP_ERROR);
+                setErrorMessage(err?.data?.errors?.product_id?.[0]);
+                return;
             }
 
             if (!errors.product_id && message) {
@@ -176,7 +204,7 @@ export default function ModalProductReserve({
 
             setStep(address ? STEP_FILL_ADDRESS : STEP_FILL_DATA);
         },
-        [STEP_FILL_ADDRESS, STEP_FILL_DATA, form, pushDanger],
+        [STEP_ERROR, STEP_FILL_ADDRESS, STEP_FILL_DATA, form, pushDanger],
     );
 
     const validateFields = useCallback(() => {
@@ -531,7 +559,7 @@ export default function ModalProductReserve({
 
                                     {vouchersNeedExtraPayment > 1 && (
                                         <div className="block-warning-content">
-                                            Sommige van uw vouchers hebben niet voldoende saldo. Door een van deze
+                                            Sommige van uw tegoeden hebben niet voldoende saldo. Door een van deze
                                             vouchers te gebruiken, moet u het ontbrekende bedrag aan het einde van de
                                             reservering bijbetalen.
                                         </div>
@@ -539,7 +567,7 @@ export default function ModalProductReserve({
 
                                     {vouchersNeedExtraPayment === 1 && (
                                         <div className="block-warning-content">
-                                            Er is onvoldoende saldo op uw voucher, u moet het ontbrekende bedrag aan het
+                                            Er is onvoldoende saldo op uw tegoed, u moet het ontbrekende bedrag aan het
                                             einde van de reservering bijbetalen via een van de beschikbare
                                             betaalmethoden.
                                         </div>
@@ -625,9 +653,6 @@ export default function ModalProductReserve({
                                         type="text"
                                         value={form.values.first_name ?? ''}
                                         onChange={(e) => form.update({ first_name: e.target.value })}
-                                        placeholder={translate(
-                                            'modal_product_reserve_notes.fill_notes.placeholders.first_name',
-                                        )}
                                         data-dusk="productReserveFormFirstName"
                                     />
                                     <FormError error={form.errors.first_name} />
@@ -642,9 +667,6 @@ export default function ModalProductReserve({
                                         type="text"
                                         value={form.values.last_name ?? ''}
                                         onChange={(e) => form.update({ last_name: e.target.value })}
-                                        placeholder={translate(
-                                            'modal_product_reserve_notes.fill_notes.placeholders.last_name',
-                                        )}
                                         data-dusk="productReserveFormLastName"
                                     />
                                     <FormError error={form.errors.last_name} />
@@ -680,7 +702,6 @@ export default function ModalProductReserve({
                                                                 form.values.custom_fields[field.key] = e.target.value;
                                                                 form.update({ ...form.values });
                                                             }}
-                                                            placeholder={field.placeholder}
                                                             data-dusk={field.dusk}
                                                         />
                                                     )}
@@ -697,7 +718,6 @@ export default function ModalProductReserve({
                                                                 form.values.custom_fields[field.key] = e.target.value;
                                                                 form.update({ ...form.values });
                                                             }}
-                                                            placeholder={field.placeholder}
                                                             data-dusk={field.dusk}
                                                         />
                                                     )}
@@ -749,7 +769,6 @@ export default function ModalProductReserve({
                                                 onChange={(e) => {
                                                     form.update({ [field.key]: e.target.value });
                                                 }}
-                                                placeholder={field.placeholder}
                                                 data-dusk={field.dusk}
                                             />
                                         )}
@@ -757,8 +776,8 @@ export default function ModalProductReserve({
                                         {!field.custom && field.type === 'date' && (
                                             <DatePickerControl
                                                 value={dateParse(form.values[field.key])}
-                                                placeholder={'jjjj-MM-dd'}
                                                 dateMax={dateMinLimit}
+                                                dateFormat={'dd-MM-yyyy'}
                                                 onChange={(date: Date) => {
                                                     form.update({ [field.key]: dateFormat(date) });
                                                 }}
@@ -842,9 +861,6 @@ export default function ModalProductReserve({
                                         type="text"
                                         value={form.values.street}
                                         onChange={(e) => form.update({ street: e.target.value })}
-                                        placeholder={translate(
-                                            'modal_product_reserve_notes.fill_notes.placeholders.street',
-                                        )}
                                         data-dusk="productReserveFormStreet"
                                     />
                                     <FormError error={form.errors.street} />
@@ -859,7 +875,6 @@ export default function ModalProductReserve({
                                         type="text"
                                         value={form.values.house_nr}
                                         onChange={(e) => form.update({ house_nr: e.target.value })}
-                                        placeholder="70, 1234, 2"
                                         data-dusk="productReserveFormHouseNumber"
                                     />
                                     <FormError error={form.errors.house_nr} />
@@ -874,7 +889,6 @@ export default function ModalProductReserve({
                                         type="text"
                                         value={form.values.house_nr_addition}
                                         onChange={(e) => form.update({ house_nr_addition: e.target.value })}
-                                        placeholder="C, -2, -12, AB"
                                         data-dusk="productReserveFormHouseNumberAddition"
                                     />
                                     <FormError error={form.errors.house_nr_addition} />
@@ -892,9 +906,6 @@ export default function ModalProductReserve({
                                         type="text"
                                         value={form.values.postal_code}
                                         onChange={(e) => form.update({ postal_code: e.target.value })}
-                                        placeholder={translate(
-                                            'modal_product_reserve_notes.fill_notes.placeholders.postal_code',
-                                        )}
                                         data-dusk="productReserveFormPostalCode"
                                     />
                                     <FormError error={form.errors.postal_code} />
@@ -909,9 +920,6 @@ export default function ModalProductReserve({
                                         type="text"
                                         value={form.values.city}
                                         onChange={(e) => form.update({ city: e.target.value })}
-                                        placeholder={translate(
-                                            'modal_product_reserve_notes.fill_notes.placeholders.city',
-                                        )}
                                         data-dusk="productReserveFormCity"
                                     />
                                     <FormError error={form.errors.city} />
@@ -982,7 +990,6 @@ export default function ModalProductReserve({
                                     className="form-control"
                                     id="reservation_modal_user_note"
                                     value={form.values.user_note ?? ''}
-                                    placeholder={translate('modal_product_reserve_notes.fill_notes.placeholders.notes')}
                                     onChange={(e) => form.update({ user_note: e.target.value })}
                                     data-dusk="productReserveFormNote"
                                 />
@@ -1065,7 +1072,9 @@ export default function ModalProductReserve({
                                                     className={`overview-item-value ${
                                                         !form.values[field.key] ? 'overview-item-value-empty' : ''
                                                     }`}>
-                                                    {form.values[field.key] || emptyText}
+                                                    {field.type === 'date'
+                                                        ? dateFormat(dateParse(form.values[field.key]), 'dd-MM-yyyy')
+                                                        : form.values[field.key] || emptyText}
                                                 </div>
                                             </Fragment>
                                         ) : (
@@ -1216,6 +1225,34 @@ export default function ModalProductReserve({
                         <button
                             className="button button-sm button-light"
                             onClick={finish}
+                            role="button"
+                            data-dusk="btnReservationFinish">
+                            Sluiten
+                        </button>
+                    </div>
+                </div>
+            )}
+
+            {step == STEP_ERROR && (
+                <div className="modal-window" data-dusk="productReserveDanger">
+                    <div className="modal-header">
+                        <h2 className="modal-header-title">{translate('modal_product_reserve.header.title')}</h2>
+                    </div>
+                    <div className="modal-body">
+                        <div className="modal-section text-center">
+                            <div className="modal-section-icon modal-section-icon-danger">
+                                <div className="mdi mdi-check-circle-outline" />
+                            </div>
+                            <h2 className="modal-section-title">Fout!</h2>
+                            <div className="modal-section-description">
+                                {errorMessage || 'Kon de reservering niet voltooien. Probeer het later opnieuw.'}
+                            </div>
+                        </div>
+                    </div>
+                    <div className="modal-footer">
+                        <button
+                            className="button button-sm button-light"
+                            onClick={modal.close}
                             role="button"
                             data-dusk="btnReservationFinish">
                             Sluiten

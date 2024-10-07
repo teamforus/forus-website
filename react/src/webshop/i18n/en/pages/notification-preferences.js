@@ -1,4 +1,4 @@
-module.exports = {
+export default {
     title_preferences: 'Email preferences',
     subscribe_desc:
         'You are currently unsubscribed from all notifications with this e-mail address "{{email}}". If you want to receive notifications, you can set this per notification below.',
@@ -82,6 +82,20 @@ module.exports = {
                 title: 'Offer reservation shared',
                 description: 'Receive a notification when a reservation has been shared.',
             },
+        },
+    },
+    push_notifications_preferences: {
+        title: 'Instellingen voor weergavetijd van meldingen',
+    },
+    push_notifications_dismiss_time: {
+        webshop: {
+            title: 'Algemene meldingen automatisch sluiten',
+            description: 'Verberg systeemmeldingen automatisch nadat een actie is uitgevoerd.',
+        },
+        bookmarks: {
+            title: 'Meldingen over favoriete producten automatisch sluiten',
+            description:
+                'Verberg de systeemmeldingen automatisch nadat favoriete producten worden toegevoegd of verwijderd.',
         },
     },
 };

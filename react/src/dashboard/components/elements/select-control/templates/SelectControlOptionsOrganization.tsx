@@ -3,9 +3,14 @@ import ClickOutside from '../../click-outside/ClickOutside';
 import { uniqueId } from 'lodash';
 import { SelectControlOptionsProp } from '../SelectControl';
 import Organization from '../../../../props/models/Organization';
-import { NavLink } from 'react-router-dom';
-import { getStateRouteUrl } from '../../../../modules/state_router/Router';
 import useThumbnailUrl from '../../../../hooks/useThumbnailUrl';
+import StateNavLink from '../../../../modules/state_router/StateNavLink';
+import useTranslate from '../../../../hooks/useTranslate';
+import useActiveOrganization from '../../../../hooks/useActiveOrganization';
+import { hasPermission } from '../../../../helpers/utils';
+import useIsSponsorPanel from '../../../../hooks/useIsSponsorPanel';
+import useSelectControlKeyEventHandlers from '../hooks/useSelectControlKeyEventHandlers';
+import { clickOnKeyEnter } from '../../../../helpers/wcag';
 
 export default function SelectControlOptionsOrganization<T>({
     query,
@@ -24,35 +29,36 @@ export default function SelectControlOptionsOrganization<T>({
     searchInputChanged,
     onOptionsScroll,
 }: SelectControlOptionsProp<T>) {
+    const translate = useTranslate();
+    const isSponsorPanel = useIsSponsorPanel();
+    const activeOrganization = useActiveOrganization();
+
     const [controlId] = useState('select_control_' + uniqueId());
     const thumbnailUrl = useThumbnailUrl();
     const input = useRef(null);
     const selectorRef = useRef<HTMLDivElement>(null);
     const placeholderRef = useRef<HTMLLabelElement>(null);
 
+    const { onKeyDown, onBlur } = useSelectControlKeyEventHandlers(
+        selectorRef,
+        placeholderRef,
+        showOptions,
+        setShowOptions,
+    );
+
     return (
         <div
             className={'select-control select-control-organizations ' + (className ? className : '')}
             data-dusk="headerOrganizationSwitcher"
+            tabIndex={0}
+            ref={selectorRef}
             role="button"
             aria-haspopup="listbox"
             aria-expanded={showOptions}
             aria-labelledby={controlId}
             aria-controls={`${controlId}_options`}
-            onKeyDown={(e) => {
-                if (e.key == 'Enter') {
-                    placeholderRef?.current?.click();
-                }
-
-                if (e.key == 'Escape') {
-                    setShowOptions(false);
-                }
-            }}
-            onBlur={(e) => {
-                if (showOptions && !e.currentTarget.contains(e.relatedTarget)) {
-                    selectorRef?.current?.focus();
-                }
-            }}>
+            onKeyDown={onKeyDown}
+            onBlur={onBlur}>
             <div className={['select-control-input', showOptions ? 'options' : ''].filter((item) => item).join(' ')}>
                 {/* Placeholder */}
                 <label
@@ -112,14 +118,16 @@ export default function SelectControlOptionsOrganization<T>({
 
                 {showOptions && (
                     <ClickOutside
-                        onClick={null}
+                        className="select-control-options-group"
+                        attr={{
+                            role: 'listbox',
+                            onClick: null,
+                            id: `${controlId}_options`,
+                        }}
                         onClickOutside={(e) => {
                             e.stopPropagation();
                             setShowOptions(false);
-                        }}
-                        className="select-control-options-group"
-                        id={`${controlId}_options`}
-                        role="listbox">
+                        }}>
                         <div className="select-control-options" onScroll={onOptionsScroll}>
                             {optionsFiltered.slice(0, visibleCount)?.map((option) => (
                                 <div
@@ -127,6 +135,7 @@ export default function SelectControlOptionsOrganization<T>({
                                     className={`select-control-option ${option.id == modelValue.id ? 'selected' : ''}`}
                                     tabIndex={0}
                                     key={option.id}
+                                    onKeyDown={clickOnKeyEnter}
                                     onClick={(e) => {
                                         e.stopPropagation();
                                         selectOption(option);
@@ -152,27 +161,47 @@ export default function SelectControlOptionsOrganization<T>({
                         </div>
 
                         <div className="select-control-options-actions">
-                            <NavLink
-                                to={getStateRouteUrl('organizations-edit', {
-                                    organizationId: (modelValue?.raw as Organization)?.id,
-                                })}
-                                onClick={() => setShowOptions(false)}
-                                className="select-control-switcher-setting">
-                                <div className="select-control-switcher-setting-icon">
-                                    <em className="mdi mdi-cog" />
-                                </div>
-                                <div className="select-control-switcher-setting-name">Organisatie instellingen</div>
-                            </NavLink>
+                            {isSponsorPanel && hasPermission(activeOrganization, 'manage_organization') && (
+                                <StateNavLink
+                                    name={'organizations-contacts'}
+                                    params={{ organizationId: (modelValue?.raw as Organization)?.id }}
+                                    onClick={() => setShowOptions(false)}
+                                    className="select-control-switcher-setting">
+                                    <div className="select-control-switcher-setting-icon">
+                                        <em className="mdi mdi-email-edit-outline" />
+                                    </div>
+                                    <div className="select-control-switcher-setting-name">
+                                        {translate('organizations.buttons.contacts')}
+                                    </div>
+                                </StateNavLink>
+                            )}
 
-                            <NavLink
-                                to={getStateRouteUrl('organizations-create')}
+                            {hasPermission(activeOrganization, 'manage_organization') && (
+                                <StateNavLink
+                                    name={'organizations-edit'}
+                                    params={{ organizationId: (modelValue?.raw as Organization)?.id }}
+                                    onClick={() => setShowOptions(false)}
+                                    className="select-control-switcher-setting">
+                                    <div className="select-control-switcher-setting-icon">
+                                        <em className="mdi mdi-cog" />
+                                    </div>
+                                    <div className="select-control-switcher-setting-name">
+                                        {translate('organizations.buttons.edit')}
+                                    </div>
+                                </StateNavLink>
+                            )}
+
+                            <StateNavLink
+                                name={'organizations-create'}
                                 onClick={() => setShowOptions(false)}
                                 className="select-control-switcher-setting">
                                 <div className="select-control-switcher-setting-icon">
                                     <em className="mdi mdi-plus-circle" />
                                 </div>
-                                <div className="select-control-switcher-setting-name">Organisatie toevoegen</div>
-                            </NavLink>
+                                <div className="select-control-switcher-setting-name">
+                                    {translate('organizations.buttons.add')}
+                                </div>
+                            </StateNavLink>
                         </div>
                     </ClickOutside>
                 )}

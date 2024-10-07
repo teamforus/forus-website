@@ -13,7 +13,6 @@ import usePushSuccess from '../../../../dashboard/hooks/usePushSuccess';
 import Fund from '../../../props/models/Fund';
 import Identity from '../../../../dashboard/props/models/Identity';
 import Voucher from '../../../../dashboard/props/models/Voucher';
-import FundCriterion from '../../../props/models/FundCriterion';
 import FundRequest from '../../../../dashboard/props/models/FundRequest';
 import { useFundService } from '../../../services/FundService';
 import { useVoucherService } from '../../../services/VoucherService';
@@ -38,6 +37,9 @@ import useSetProgress from '../../../../dashboard/hooks/useSetProgress';
 import BlockShowcase from '../../elements/block-showcase/BlockShowcase';
 import BlockLoader from '../../elements/block-loader/BlockLoader';
 import { clickOnKeyEnter } from '../../../../dashboard/helpers/wcag';
+import FundCriterion from '../../../../dashboard/props/models/FundCriterion';
+import useSetTitle from '../../../hooks/useSetTitle';
+import SignUpFooter from '../../elements/sign-up/SignUpFooter';
 
 export default function FundActivate() {
     const { id } = useParams();
@@ -57,6 +59,7 @@ export default function FundActivate() {
     const identityService = useIdentityService();
     const fundRequestService = useFundRequestService();
 
+    const setTitle = useSetTitle();
     const pushInfo = usePushInfo();
     const openModal = useOpenModal();
     const pushDanger = usePushDanger();
@@ -341,12 +344,14 @@ export default function FundActivate() {
         if (digid_success == 'signed_up' || digid_success == 'signed_in') {
             pushSuccess('Succes! Ingelogd met DigiD.');
 
-            setDigidResponse({
-                digid_error: null,
-                digid_success: null,
-            });
+            window.setTimeout(() => {
+                selectDigiDOption(fund);
 
-            window.setTimeout(() => selectDigiDOption(fund), 1000);
+                setDigidResponse({
+                    digid_error: null,
+                    digid_success: null,
+                });
+            }, 1000);
         }
     }, [digidResponse, fund, navigateState, pushSuccess, selectDigiDOption, setDigidResponse]);
 
@@ -470,6 +475,14 @@ export default function FundActivate() {
     }, [handleDigiDResponse]);
 
     useEffect(() => {
+        if (!fund || !vouchers || !fundRequests) {
+            return;
+        }
+
+        initState(fund);
+    }, [fund, initState, vouchers, fundRequests]);
+
+    useEffect(() => {
         if (!fund || !vouchersActive || !fundRequests) {
             return;
         }
@@ -501,14 +514,6 @@ export default function FundActivate() {
         }
     }, [applyFund, fund, navigateState, vouchersActive, fundRequests]);
 
-    useEffect(() => {
-        if (!fund || !vouchers) {
-            return;
-        }
-
-        initState(fund);
-    }, [fund, initState, vouchers]);
-
     useInterval(() => {
         const { timeToSkipBsn } = getTimeToSkip();
 
@@ -517,6 +522,16 @@ export default function FundActivate() {
             pushInfo('DigiD session expired.', 'You need to confirm your Identity by DigiD again.');
         }
     }, 1000);
+
+    useEffect(() => {
+        if (fund) {
+            setTitle(translate('page_state_titles.fund-activate', { fund_name: fund.name }));
+        }
+    }, [setTitle, translate, fund]);
+
+    if (digidResponse?.digid_success) {
+        return <BlockShowcase wrapper={true} />;
+    }
 
     return (
         <BlockShowcase wrapper={true} breadcrumbs={<></>} loaderElement={<BlockLoader type={'full'} />}>
@@ -584,7 +599,7 @@ export default function FundActivate() {
                                                     <img
                                                         className="sign_up-option-media-img"
                                                         src={assetUrl('/assets/img/icon-auth/icon-auth-digid.svg')}
-                                                        alt=""
+                                                        alt="logo DigiD"
                                                     />
                                                 </div>
                                                 <div className="sign_up-option-details">
@@ -630,7 +645,7 @@ export default function FundActivate() {
                                 <div className="sign_up-pane-header">
                                     <h2 className="sign_up-pane-header-title">Vul uw activatiecode in</h2>
                                 </div>
-                                <div className="sign_up-pane-body sign_up-pane-body-padless-bottom">
+                                <div className="sign_up-pane-body">
                                     <form className="form" onSubmit={codeForm.submit}>
                                         <div className="form-group text-center">
                                             <div className="form-label">{translate('popup_auth.input.code')}</div>
@@ -640,6 +655,7 @@ export default function FundActivate() {
                                                 blockCount={2}
                                                 blockSize={4}
                                                 valueType={'alphaNum'}
+                                                ariaLabel={'Voer de activatiecode van het fonds in'}
                                             />
                                             <FormError error={codeForm.errors.code} />
                                         </div>
@@ -654,29 +670,33 @@ export default function FundActivate() {
                                         </div>
                                     </form>
                                 </div>
-                                <div className="sign_up-pane-footer">
-                                    {options?.length > 1 && (
-                                        <div
-                                            className="button button-text button-text-padless"
-                                            onClick={() => setState('select')}>
-                                            <em className="mdi mdi-chevron-left icon-lefts" />
-                                            Terug
-                                        </div>
-                                    )}
-                                </div>
+                                <SignUpFooter
+                                    startActions={
+                                        options?.length > 1 && (
+                                            <button
+                                                className="button button-text button-text-padless"
+                                                type={'button'}
+                                                onClick={() => setState('select')}
+                                                tabIndex={0}>
+                                                <em className="mdi mdi-chevron-left icon-lefts" />
+                                                Terug
+                                            </button>
+                                        )
+                                    }
+                                />
                             </div>
                         )}
 
                         {state == 'digid' && !fetchingData && (
                             <div className="sign_up-pane">
                                 <div className="sign_up-pane-header">
-                                    <h2 className="sign_up-pane-header-title">
+                                    <h1 className="sign_up-pane-header-title">
                                         {translate(
                                             `fund_activate.header.${envData.client_key}.title`,
                                             null,
                                             `fund_activate.header.title`,
                                         )}
-                                    </h2>
+                                    </h1>
                                 </div>
                                 <div className="sign_up-pane-body">
                                     <div className="form">
@@ -705,22 +725,21 @@ export default function FundActivate() {
                                         )}
                                     </div>
                                 </div>
-                                <div className="sign_up-pane-footer">
-                                    <div className="row">
-                                        <div className="col col-lg-6 text-left">&nbsp;</div>
-                                        <div className="col col-lg-6 text-right">
-                                            {criteriaChecked && (fund.key != 'IIT' || criteriaCheckedWarning) && (
-                                                <div
-                                                    className="button button-text button-text-padless"
-                                                    onClick={() => confirmCriteria()}
-                                                    role="button">
-                                                    {translate('fund_request.sign_up.pane.footer.next')}
-                                                    <em className="mdi mdi-chevron-right icon-right" />
-                                                </div>
-                                            )}
-                                        </div>
-                                    </div>
-                                </div>
+
+                                {criteriaChecked && (fund.key != 'IIT' || criteriaCheckedWarning) && (
+                                    <SignUpFooter
+                                        endActions={
+                                            <div
+                                                className="button button-text button-text-padless"
+                                                onClick={confirmCriteria}
+                                                role="button"
+                                                tabIndex={0}>
+                                                {translate('fund_request.sign_up.pane.footer.next')}
+                                                <em className="mdi mdi-chevron-right icon-right" />
+                                            </div>
+                                        }
+                                    />
+                                )}
                             </div>
                         )}
 

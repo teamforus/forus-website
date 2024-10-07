@@ -1,4 +1,4 @@
-module.exports = {
+export default {
     header: {
         title: 'Informatie voor organisaties',
         subtitle:
@@ -10,9 +10,9 @@ module.exports = {
         title_provider: 'Aanmelden als Aanbieder',
         description_providers:
             'Als aanbieder biedt u producten of diensten die betaald kunnen worden uit de verschillende potjes.',
-        title_validator: 'Aanmelden als Validator',
+        title_validator: 'Aanmelden als Beoordelaar',
         description_validator:
-            'Als validator beoordeelt u informatie van de aavrangers, bijvoorbeeld inkomen, woonplaats en leeftijd.',
+            'Als beoordelaar beoordeelt u informatie van de aavrangers, bijvoorbeeld inkomen, woonplaats en leeftijd.',
         title_sponsor: 'Aanmelden als Sponsor',
         description_sponsor:
             'Als sponsor stelt u potjes beschikbaar en bepaalt u welke aanbieders en aanvragers an uw potje(s)' +

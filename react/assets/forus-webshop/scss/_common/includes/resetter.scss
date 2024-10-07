@@ -51,7 +51,7 @@ p {
 a {
     text-decoration: none;
     font: 400 16px/1.5em var(--base-font);
-    color: #222; 
+    color: var(--text-color);
 }
 
 b, strong {

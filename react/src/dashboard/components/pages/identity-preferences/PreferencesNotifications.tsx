@@ -1,26 +1,27 @@
 import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { NavLink } from 'react-router-dom';
 import { getStateRouteUrl } from '../../../modules/state_router/Router';
 import { useEmailPreferenceService } from '../../../services/EmailPreferenceService';
-import NotificationPreference from '../../../props/models/NotificationPreference';
+import NotificationPreference, { PreferenceOption } from '../../../props/models/NotificationPreference';
 import LoadingCard from '../../elements/loading-card/LoadingCard';
 import NotificationPreferenceCard from './elements/NotificationPreferenceCard';
 import useEnvData from '../../../hooks/useEnvData';
 import useSetProgress from '../../../hooks/useSetProgress';
 import usePushSuccess from '../../../hooks/usePushSuccess';
 import usePushDanger from '../../../hooks/usePushDanger';
+import useTranslate from '../../../hooks/useTranslate';
 
 export default function PreferencesNotifications() {
-    const [preferences, setPreferences] = useState<NotificationPreference>(null);
-    const emailPreferenceService = useEmailPreferenceService();
     const envData = useEnvData();
 
+    const translate = useTranslate();
     const pushDanger = usePushDanger();
     const pushSuccess = usePushSuccess();
     const setProgress = useSetProgress();
 
-    const { t } = useTranslation();
+    const emailPreferenceService = useEmailPreferenceService();
+
+    const [preferences, setPreferences] = useState<NotificationPreference>(null);
 
     const [sponsorKeys] = useState([
         'funds.provider_applied',
@@ -107,7 +108,7 @@ export default function PreferencesNotifications() {
     );
 
     const togglePreference = useCallback(
-        (option, subscribed) => {
+        (option: PreferenceOption, subscribed: boolean) => {
             preferences.preferences[preferences.preferences.indexOf(option)].subscribed = subscribed;
             updatePreferences({ ...preferences });
         },
@@ -129,19 +130,19 @@ export default function PreferencesNotifications() {
             {preferences.email_unsubscribed && (
                 <div className="card">
                     <div className="card-header">
-                        <div className="card-title">{t('notification_preferences.title_preferences')}</div>
+                        <div className="card-title">{translate('notification_preferences.title_preferences')}</div>
                     </div>
 
                     <div className="card-section">
                         <div className="card-heading">
-                            {t('notification_preferences.subscribe_desc', { email: preferences.email })}
+                            {translate('notification_preferences.subscribe_desc', { email: preferences.email })}
                         </div>
                         <div>
                             <button
                                 type="button"
                                 className="button button-primary"
                                 onClick={() => toggleSubscription(false)}>
-                                {t('notification_preferences.subscribe')}
+                                {translate('notification_preferences.subscribe')}
                             </button>
                         </div>
                     </div>
@@ -151,7 +152,7 @@ export default function PreferencesNotifications() {
             {!preferences.email && (
                 <div className="card">
                     <div className="card-header">
-                        <div className="card-title">{t('notification_preferences.title_preferences')}</div>
+                        <div className="card-title">{translate('notification_preferences.title_preferences')}</div>
                     </div>
 
                     <div className="card-section">
@@ -170,17 +171,17 @@ export default function PreferencesNotifications() {
             {preferences.email && !preferences.email_unsubscribed && (
                 <div className="card">
                     <div className="card-header">
-                        <div className="card-title">{t('notification_preferences.title_preferences')}</div>
+                        <div className="card-title">{translate('notification_preferences.title_preferences')}</div>
                     </div>
 
                     <div className="card-section">
-                        <div className="card-heading">{t('notification_preferences.unsubscribe_desc')}</div>
+                        <div className="card-heading">{translate('notification_preferences.unsubscribe_desc')}</div>
                         <div>
                             <button
                                 type="button"
                                 className="button button-primary"
                                 onClick={() => toggleSubscription(true)}>
-                                {t('notification_preferences.unsubscribe')}
+                                {translate('notification_preferences.unsubscribe')}
                             </button>
                         </div>
                     </div>
@@ -189,14 +190,14 @@ export default function PreferencesNotifications() {
 
             {preferences.email && !preferences.email_unsubscribed && (
                 <NotificationPreferenceCard
-                    title={t('notification_preferences.title_email_preferences')}
+                    title={translate('notification_preferences.title_email_preferences')}
                     preferences={emailPreferences}
                     togglePreference={togglePreference}
                 />
             )}
 
             <NotificationPreferenceCard
-                title={t('notification_preferences.title_push_preferences')}
+                title={translate('notification_preferences.title_push_preferences')}
                 preferences={pushPreferences}
                 togglePreference={togglePreference}
             />

@@ -1,4 +1,4 @@
-module.exports = {
+export default {
     title_preferences: 'Notificatievoorkeuren',
     title_emails_turned_on: 'Inschrijven voor alle e-mails',
     title_emails_turned_of: 'Uitschrijven voor alle e-mails',
@@ -86,8 +86,8 @@ module.exports = {
                 description: 'Ontvang een e-mail notificatie wanneer er een nieuw validatieverzoek is gedaan.',
             },
             you_added_as_validator: {
-                title: 'Toegevoegd als validator',
-                description: 'Ontvang een e-mail notificatie wanneer u als validator aan een fonds bent toegevoegd.',
+                title: 'Toegevoegd als beoordelaar',
+                description: 'Ontvang een e-mail notificatie wanneer u als beoordelaar aan een fonds bent toegevoegd.',
             },
         },
         vouchers: {
@@ -114,6 +114,20 @@ module.exports = {
                 title: 'Betaling gelukt',
                 description: 'Ontvang een push notificatie wanneer een betaling is gelukt.',
             },
+        },
+    },
+    push_notifications_preferences: {
+        title: 'Instellingen voor weergavetijd van meldingen',
+    },
+    push_notifications_dismiss_time: {
+        webshop: {
+            title: 'Algemene meldingen automatisch sluiten',
+            description: 'Verberg systeemmeldingen automatisch nadat een actie is uitgevoerd.',
+        },
+        bookmarks: {
+            title: 'Meldingen over favoriete producten automatisch sluiten',
+            description:
+                'Verberg de systeemmeldingen automatisch nadat favoriete producten worden toegevoegd of verwijderd.',
         },
     },
 };

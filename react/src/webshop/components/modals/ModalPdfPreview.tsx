@@ -1,8 +1,8 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
 import { ModalState } from '../../../dashboard/modules/modals/context/ModalContext';
 import PdfPreview from '../../../dashboard/components/elements/pdf-preview/PdfPreview';
 import { clickOnKeyEnter } from '../../../dashboard/helpers/wcag';
+import useTranslate from '../../../dashboard/hooks/useTranslate';
 
 export default function ModalPdfPreview({
     modal,
@@ -13,7 +13,7 @@ export default function ModalPdfPreview({
     className?: string;
     rawPdfFile?: Blob;
 }) {
-    const { t } = useTranslation();
+    const translate = useTranslate();
 
     return (
         <div className={`modal modal-animated modal-file-preview ${className} ${modal.loading ? '' : 'modal-loaded'}`}>
@@ -28,7 +28,7 @@ export default function ModalPdfPreview({
                     role="button"
                 />
                 <div className="modal-header">
-                    <h2 className="modal-header-title">{t('pdf_preview.header.title')}</h2>
+                    <h2 className="modal-header-title">{translate('pdf_preview.header.title')}</h2>
                 </div>
                 <div className="modal-body">
                     <PdfPreview className={'file-pdf'} rawPdfFile={rawPdfFile} />

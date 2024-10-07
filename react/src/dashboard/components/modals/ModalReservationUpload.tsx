@@ -1,6 +1,5 @@
 import React, { ChangeEvent, Fragment, useCallback, useEffect, useRef, useState } from 'react';
 import { ModalState } from '../../modules/modals/context/ModalContext';
-import { classList } from '../../helpers/utils';
 import Organization from '../../props/models/Organization';
 import useProductReservationService from '../../services/ProductReservationService';
 import { useFileService } from '../../services/FileService';
@@ -8,13 +7,16 @@ import Papa from 'papaparse';
 import { isEmpty } from 'lodash';
 import useAuthIdentity from '../../hooks/useAuthIdentity';
 import { dateFormat } from '../../helpers/dates';
-import { useTranslation } from 'react-i18next';
 import usePushSuccess from '../../hooks/usePushSuccess';
 import usePushDanger from '../../hooks/usePushDanger';
 import { ResponseError } from '../../props/ApiResponses';
 import { fileSize } from '../../helpers/string';
 import useOpenModal from '../../hooks/useOpenModal';
 import ModalDuplicatesPicker from './ModalDuplicatesPicker';
+import CSVProgressBar from '../elements/csv-progress-bar/CSVProgressBar';
+import classNames from 'classnames';
+import useTranslate from '../../hooks/useTranslate';
+import usePushInfo from '../../hooks/usePushInfo';
 
 export default function ModalReservationUpload({
     modal,
@@ -27,8 +29,12 @@ export default function ModalReservationUpload({
     onCreated: () => void;
     organization: Organization;
 }) {
-    const { t } = useTranslation();
     const authIdentity = useAuthIdentity();
+
+    const pushInfo = usePushInfo();
+    const openModal = useOpenModal();
+    const translate = useTranslate();
+
     const fileService = useFileService();
     const productReservationService = useProductReservationService();
 
@@ -42,7 +48,6 @@ export default function ModalReservationUpload({
     const [csvFile, setCsvFile] = useState(null);
     const [hideModal, setHideModal] = useState(false);
 
-    const openModal = useOpenModal();
     const fileInput = useRef(null);
     const dropBlock = useRef(null);
 
@@ -57,22 +62,26 @@ export default function ModalReservationUpload({
     const pushSuccess = usePushSuccess();
 
     const closeModal = useCallback(() => {
+        if (loading) {
+            return pushInfo('Bezig met uploaden.');
+        }
+
         if (changed) {
             onCreated();
         }
 
         modal.close();
-    }, [changed, modal, onCreated]);
+    }, [changed, modal, onCreated, loading, pushInfo]);
 
     const makeDefaultNote = useCallback(
         function (row: object): string {
-            return t('reservations.csv.default_note', {
+            return translate('reservations.csv.default_note', {
                 ...row,
                 upload_date: dateFormat(new Date()),
                 uploader_email: authIdentity?.email || authIdentity?.address,
             });
         },
-        [authIdentity?.address, authIdentity?.email, t],
+        [authIdentity?.address, authIdentity?.email, translate],
     );
 
     const validateCsvData = useCallback(function (data) {
@@ -302,19 +311,20 @@ export default function ModalReservationUpload({
 
     return (
         <div
-            className={classList([
+            className={classNames(
                 'modal',
                 'modal-animated',
-                modal.loading || hideModal ? 'modal-loading' : null,
+                'modal-bulk-upload',
+                (modal.loading || hideModal) && 'modal-loading',
                 className,
-            ])}>
+            )}>
             <div className="modal-backdrop" onClick={closeModal} />
             <div className="modal-window">
                 <a className="mdi mdi-close modal-close" onClick={closeModal} role="button" />
                 <div className="modal-header">Upload bulkbestand</div>
                 <div className="modal-body form">
                     <input type="file" accept={'.csv'} hidden={true} onChange={onFileChange} ref={fileInput} />
-                    <div className="modal-section form">
+                    <Fragment>
                         <div
                             ref={dropBlock}
                             className="block block-csv condensed"
@@ -369,69 +379,75 @@ export default function ModalReservationUpload({
                                             )}
                                         </div>
 
-                                        <div className="csv-progress">
-                                            <div className="csv-progress-state">{progressStatus}</div>
-                                            <div className="csv-progress-bar">
-                                                <div
-                                                    className="csv-progress-bar-stick"
-                                                    style={{ width: `${progressBar}%` }}
-                                                />
-                                            </div>
-                                            <div className="csv-progress-value">{progressBar.toFixed(2) + '%'}</div>
-                                        </div>
+                                        <CSVProgressBar status={progressStatus} progressBar={progressBar} />
                                     </div>
                                 )}
-                                <div className="csv-upload-actions">
-                                    {csvFile && progress < 2 && (
-                                        <div className="csv-file">
-                                            <div className={`block block-file ${isValid ? '' : 'has-error'}`}>
-                                                <div className="file-error mdi mdi-close-circle" />
-                                                <div className="file-name">{csvFile.name}</div>
-                                                <div className="file-size">{fileSize(csvFile.size)}</div>
-                                                <div className="file-remove mdi mdi-close" onClick={reset} />
-                                            </div>
-                                            {!isValid && (
-                                                <div className="text-left">
-                                                    {errors?.csvMissingProductIdFields && (
-                                                        <div className="form-error">
-                                                            De kolom `product_id` mist waardes op de volgende rijen:
-                                                            {` "${errors.csvMissingProductIdFields}".`}
-                                                        </div>
-                                                    )}
-                                                    {errors?.csvMissingNumberFields && (
-                                                        <div className="form-error">
-                                                            De kolom `number` mist waardes op de volgende rijen:
-                                                            {` "${errors.csvMissingNumberFields}".`}
-                                                        </div>
-                                                    )}
-                                                    {errors?.csvSampleNumberFields && (
-                                                        <div className="form-error">
-                                                            De kolom `product_id` heeft de voorbeeld waarde
-                                                            {` "000000000000"`} op de volgende rijen:
-                                                            {` "${errors.csvSampleNumberFields}".`}
-                                                        </div>
+                                {csvFile && progress < 2 && (
+                                    <div className="csv-upload-actions">
+                                        <div className={classNames(`block block-file`, !isValid && 'has-error')}>
+                                            <div className="block-file-details">
+                                                <div className="file-icon">
+                                                    {isValid ? (
+                                                        <div className="mdi mdi-file-outline" />
+                                                    ) : (
+                                                        <div className="mdi mdi-close-circle" />
                                                     )}
                                                 </div>
-                                            )}
+                                                <div className="file-details">
+                                                    <div className="file-name">{csvFile.name}</div>
+                                                    <div className="file-size">{fileSize(csvFile.size)}</div>
+                                                </div>
+                                                <div className="file-remove mdi mdi-close" onClick={reset} />
+                                            </div>
                                         </div>
-                                    )}
-                                    {progress == 1 && isValid && (
-                                        <div className="text-center">
-                                            {!loading && (
-                                                <button className="button button-primary" onClick={uploadToServer}>
-                                                    {t('csv_upload.buttons.upload')}
-                                                </button>
-                                            )}
-                                        </div>
-                                    )}
-                                </div>
+                                        {!isValid && (
+                                            <div className="text-left">
+                                                {errors?.csvMissingProductIdFields && (
+                                                    <div className="form-error">
+                                                        De kolom `product_id` mist waardes op de volgende rijen:
+                                                        {` "${errors.csvMissingProductIdFields}".`}
+                                                    </div>
+                                                )}
+                                                {errors?.csvMissingNumberFields && (
+                                                    <div className="form-error">
+                                                        De kolom `number` mist waardes op de volgende rijen:
+                                                        {` "${errors.csvMissingNumberFields}".`}
+                                                    </div>
+                                                )}
+                                                {errors?.csvSampleNumberFields && (
+                                                    <div className="form-error">
+                                                        De kolom `product_id` heeft de voorbeeld waarde
+                                                        {` "000000000000"`} op de volgende rijen:
+                                                        {` "${errors.csvSampleNumberFields}".`}
+                                                    </div>
+                                                )}
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
                             </div>
                         </div>
-                    </div>
+                    </Fragment>
                 </div>
-                <div className="modal-footer text-center">
-                    <button className="button button-primary" onClick={closeModal} id="close">
-                        {t('modal_funds_add.buttons.close')}
+
+                <div className="modal-footer">
+                    <button
+                        className="button button-default"
+                        onClick={closeModal}
+                        disabled={loading}
+                        id="close"
+                        data-dusk="closeModalButton">
+                        Annuleren
+                    </button>
+
+                    <div className="flex-grow" />
+
+                    <button
+                        className="button button-primary"
+                        disabled={loading || !(progress == 1 && isValid)}
+                        onClick={uploadToServer}
+                        data-dusk="uploadFileButton">
+                        {translate('csv_upload.buttons.upload')}
                     </button>
                 </div>
             </div>

@@ -1,5 +1,6 @@
-@import "eemsdelta/vars";
-@import "_common/webshop";
-
 // SHAME
 @import "eemsdelta/includes/shame";
+
+// BLOCKS
+@import 'groningen/sections/blocks/block-navbar';
+@import 'groningen/sections/blocks/block-navbar-search';

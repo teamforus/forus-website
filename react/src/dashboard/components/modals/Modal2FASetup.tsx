@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { ModalState } from '../../modules/modals/context/ModalContext';
-import { classList } from '../../helpers/utils';
 import { useIdentity2FAService } from '../../services/Identity2FAService';
 import Identity2FA from '../../props/models/Identity2FA';
 import usePushDanger from '../../hooks/usePushDanger';
@@ -13,10 +12,10 @@ import QrCode from '../elements/qr-code/QrCode';
 import FormError from '../elements/forms/errors/FormError';
 import PincodeControl from '../elements/forms/controls/PincodeControl';
 import PhoneControl from '../elements/forms/controls/PhoneControl';
-import useAssetUrl from '../../hooks/useAssetUrl';
 import useTimer from '../../hooks/useTimer';
 import { ResponseError } from '../../props/ApiResponses';
 import Auth2FAInfoBox from '../elements/auth2fa-info-box/Auth2FAInfoBox';
+import classNames from 'classnames';
 
 export default function Modal2FASetup({
     modal,
@@ -25,7 +24,9 @@ export default function Modal2FASetup({
     className,
     onReady,
     onCancel,
+    assetUrl,
     auth2FAState,
+    showInfoBox = true,
 }: {
     modal: ModalState;
     type: string;
@@ -33,9 +34,10 @@ export default function Modal2FASetup({
     className?: string;
     onReady: () => void;
     onCancel: () => void;
+    assetUrl: (uri?: string) => string;
+    showInfoBox?: boolean;
     auth2FAState: Identity2FAState;
 }) {
-    const assetUrl = useAssetUrl();
     const [isLocked, setIsLocked] = useState(false);
     const [unlockEvent, setUnlockEvent] = useState(null);
 
@@ -267,14 +269,14 @@ export default function Modal2FASetup({
 
     return (
         <div
-            className={classList([
+            className={classNames(
                 'modal',
                 'modal-lg',
                 'modal-animated',
                 'modal-2fa-setup',
-                modal.loading ? 'modal-loading' : null,
+                modal.loading && 'modal-loading',
                 className,
-            ])}>
+            )}>
             <div className="modal-backdrop" onClick={cancel} />
             <div className="modal-window">
                 {/*Select provider*/}
@@ -367,7 +369,7 @@ export default function Modal2FASetup({
                             </div>
                         </div>
                         <div className="modal-section modal-section-collapse">
-                            <Auth2FAInfoBox className="flex-center block-info-box-borderless" />
+                            {showInfoBox && <Auth2FAInfoBox className="flex-center block-info-box-borderless" />}
                         </div>
                         <div className="modal-footer">
                             <div className="button-group">
@@ -410,7 +412,7 @@ export default function Modal2FASetup({
                                             <FormError error={phoneNumberError} />
                                         </div>
                                     </div>
-                                    <Auth2FAInfoBox className="flex-center" />
+                                    {showInfoBox && <Auth2FAInfoBox className="flex-center" />}
                                 </div>
                             </div>
                         </div>
@@ -461,6 +463,7 @@ export default function Modal2FASetup({
                                         valueType={'num'}
                                         className={'block-pincode-compact'}
                                         onChange={(code) => setConfirmationCode(code)}
+                                        ariaLabel={'Voer de tweefactorauthenticatiecode in'}
                                     />
                                     <FormError error={activateAuthErrors} />
                                 </div>
@@ -470,7 +473,7 @@ export default function Modal2FASetup({
                                     <button
                                         className="button button-text button-text-primary button-sm"
                                         type="button"
-                                        onClick={resendCode}
+                                        onClick={() => resendCode()}
                                         disabled={timer?.time > 0}>
                                         <div
                                             className={`mdi mdi-refresh icon-start ${sendingCode ? 'mdi-spin' : ''}`}
@@ -480,7 +483,7 @@ export default function Modal2FASetup({
                                     </button>
                                 </div>
                             )}
-                            <Auth2FAInfoBox className="flex-center" />
+                            {showInfoBox && <Auth2FAInfoBox className="flex-center" />}
                         </div>
                         <div className="modal-footer">
                             <div className="button-group">
@@ -544,6 +547,7 @@ export default function Modal2FASetup({
                                             valueType={'num'}
                                             className={'block-pincode-compact'}
                                             onChange={(code) => setConfirmationCode(code)}
+                                            ariaLabel={'Voer de tweefactorauthenticatiecode in'}
                                         />
                                         <FormError error={verifyAuthErrors} />
                                     </div>
@@ -553,7 +557,7 @@ export default function Modal2FASetup({
                                         <button
                                             className="button button-text button-text-primary button-sm"
                                             type="button"
-                                            onClick={resendCode}
+                                            onClick={() => resendCode()}
                                             disabled={timer?.time > 0}>
                                             <div
                                                 className={`mdi mdi-refresh icon-start ${
@@ -565,7 +569,7 @@ export default function Modal2FASetup({
                                         </button>
                                     </div>
                                 )}
-                                <Auth2FAInfoBox className="flex-center" />
+                                {showInfoBox && <Auth2FAInfoBox className="flex-center" />}
                             </div>
                             <div className="modal-footer">
                                 <div className="button-group">

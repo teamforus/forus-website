@@ -1,10 +1,10 @@
-module.exports = {
+export default {
     // FUNDS = funds.pug
     header: {
         title: 'Funds',
     },
     labels: {
-        categorie: 'CATEGORIES',
+        categorie: 'Categories',
         criteria: 'Criteria ({{ nth }})',
         location: 'Location',
         office: 'Municipality of Zuidhorn',
@@ -17,7 +17,7 @@ module.exports = {
     },
     buttons: {
         join: 'Apply',
-        more: 'SHOW MORE',
+        more: 'Show more',
     },
     status: {
         active: 'Active',

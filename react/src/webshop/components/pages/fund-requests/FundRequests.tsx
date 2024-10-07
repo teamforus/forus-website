@@ -134,7 +134,6 @@ export default function FundRequests() {
                                     propKey={'id'}
                                     options={funds}
                                     onChange={(fund_id?: number) => filterUpdate({ fund_id })}
-                                    placeholder={funds?.[0]?.name}
                                 />
                             </div>
                         </div>
@@ -174,12 +173,7 @@ export default function FundRequests() {
 
                     <div className="card" hidden={fundRequests?.meta?.last_page < 2}>
                         <div className="card-section">
-                            <Paginator
-                                meta={fundRequests.meta}
-                                filters={filterValues}
-                                updateFilters={filterUpdate}
-                                buttonClass={'button-primary-outline'}
-                            />
+                            <Paginator meta={fundRequests.meta} filters={filterValues} updateFilters={filterUpdate} />
                         </div>
                     </div>
                 </Fragment>

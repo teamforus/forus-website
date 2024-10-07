@@ -2,17 +2,18 @@ import React, { Fragment } from 'react';
 import LayoutAsideNavItem from './LayoutAsideNavItem';
 import { hasPermission } from '../../../helpers/utils';
 import Organization from '../../../props/models/Organization';
-import { useTranslation } from 'react-i18next';
 import useEnvData from '../../../hooks/useEnvData';
+import useTranslate from '../../../hooks/useTranslate';
 
 export default function LayoutAsideSponsor({ organization }: { organization: Organization }) {
     const envData = useEnvData();
-    const { t } = useTranslation();
-    const { allow_bi_connection, allow_2fa_restrictions, allow_pre_checks } = organization;
+    const translate = useTranslate();
+    const { allow_bi_connection, allow_2fa_restrictions, allow_pre_checks, allow_payouts } = organization;
 
     return (
         <div className="sidebar-nav">
             <div className="sidebar-section-title">Organisatie</div>
+
             <LayoutAsideNavItem
                 name={'Fondsen'}
                 icon={'my_funds'}
@@ -22,21 +23,13 @@ export default function LayoutAsideSponsor({ organization }: { organization: Org
                 id={'funds'}
             />
             <LayoutAsideNavItem
-                name={'Vouchers'}
+                name={'Tegoeden'}
                 icon={'vouchers'}
                 route={'vouchers'}
                 routeParams={{ organizationId: organization?.id }}
-                show={hasPermission(organization, 'manage_vouchers')}
+                show={hasPermission(organization, ['manage_vouchers', 'view_vouchers'])}
                 id={'vouchers'}
                 dusk={'vouchersPage'}
-            />
-            <LayoutAsideNavItem
-                name={'Aanbiedingsvouchers'}
-                icon={'product_voucher'}
-                route={'product-vouchers'}
-                routeParams={{ organizationId: organization?.id }}
-                show={hasPermission(organization, 'manage_vouchers')}
-                id={'product_vouchers'}
             />
             <LayoutAsideNavItem
                 name={'Declaraties'}
@@ -73,11 +66,12 @@ export default function LayoutAsideSponsor({ organization }: { organization: Org
                 id={'requesters'}
             />
             <LayoutAsideNavItem
-                name={'Beoordelaars'}
-                icon={'validators_shortlist'}
-                route={'external-validators'}
+                name={'Uitbetalingen'}
+                icon={'payouts'}
+                route={'payouts'}
                 routeParams={{ organizationId: organization?.id }}
-                show={hasPermission(organization, 'manage_organization')}
+                show={allow_payouts && hasPermission(organization, 'manage_payouts')}
+                id={'payouts'}
             />
             <LayoutAsideNavItem
                 name={'Bank integraties'}
@@ -118,41 +112,49 @@ export default function LayoutAsideSponsor({ organization }: { organization: Org
 
             {hasPermission(organization, 'view_finances') && (
                 <Fragment>
-                    <div className="sidebar-section-title">{t('menu.financial')}</div>
-                    <LayoutAsideNavItem
-                        name={'Overzicht'}
-                        icon={'financial_dashboard_overview'}
-                        route={'financial-dashboard-overview'}
-                        routeParams={{ organizationId: organization?.id }}
-                        show={true}
-                        id={'financial_dashboard_overview'}
-                    />
-                    <LayoutAsideNavItem
-                        name={'Statistieken'}
-                        icon={'financial_dashboard'}
-                        route={'financial-dashboard'}
-                        routeParams={{ organizationId: organization?.id }}
-                        show={true}
-                        id={'financial_dashboard'}
-                    />
-                    <LayoutAsideNavItem
-                        name={'Transacties'}
-                        icon={'transactions'}
-                        route={'transactions'}
-                        routeParams={{ organizationId: organization?.id }}
-                        show={true}
-                        id={'transactions'}
-                        dusk={'transactionsPage'}
-                    />
-                    <LayoutAsideNavItem
-                        name={'Bijbetalingen'}
-                        icon={'extra-payments'}
-                        route={'extra-payments'}
-                        routeParams={{ organizationId: organization?.id }}
-                        show={true}
-                        id={'extra-payments'}
-                        dusk={'extraPaymentsPage'}
-                    />
+                    <div className="sidebar-section-title">{translate('menu.financial')}</div>
+
+                    {hasPermission(organization, 'view_finances') && (
+                        <Fragment>
+                            <LayoutAsideNavItem
+                                name={'Overzicht'}
+                                icon={'financial_dashboard_overview'}
+                                route={'financial-dashboard-overview'}
+                                routeParams={{ organizationId: organization?.id }}
+                                show={true}
+                                id={'financial_dashboard_overview'}
+                            />
+                            <LayoutAsideNavItem
+                                name={'Statistieken'}
+                                icon={'financial_dashboard'}
+                                route={'financial-dashboard'}
+                                routeParams={{ organizationId: organization?.id }}
+                                show={true}
+                                id={'financial_dashboard'}
+                            />
+                            <LayoutAsideNavItem
+                                name={'Betaalopdrachten'}
+                                icon={'transactions'}
+                                route={'transactions'}
+                                routeParams={{ organizationId: organization?.id }}
+                                show={true}
+                                id={'transactions'}
+                                dusk={'transactionsPage'}
+                            />
+                        </Fragment>
+                    )}
+
+                    {hasPermission(organization, 'view_funds_extra_payments') && (
+                        <LayoutAsideNavItem
+                            name={'Bijbetalingen'}
+                            icon={'extra-payments'}
+                            route={'extra-payments'}
+                            routeParams={{ organizationId: organization?.id }}
+                            show={true}
+                            id={'extra-payments'}
+                            dusk={'extraPaymentsPage'}
+                        />
+                    )}
                 </Fragment>
             )}
 
@@ -162,7 +164,7 @@ export default function LayoutAsideSponsor({ organization }: { organization: Org
                 false,
             ) && (
                 <Fragment>
-                    <div className="sidebar-section-title">{t('menu.implementation')}</div>
+                    <div className="sidebar-section-title">{translate('menu.implementation')}</div>
                     <LayoutAsideNavItem
                         name={'Webshops'}
                         icon={'implementation'}
@@ -183,6 +185,8 @@ export default function LayoutAsideSponsor({ organization }: { organization: Org
                     />
                 </Fragment>
             )}
+
+            <div className="sidebar-section-title">{translate('menu.personal')}</div>
 
             <LayoutAsideNavItem
                 name={'Feedback'}

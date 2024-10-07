@@ -14,13 +14,19 @@ import { PushNotificationsProvider } from './modules/push_notifications/context/
 import { LoadingBarProvider } from './modules/loading_bar/context/LoadingBarContext';
 import ApiRequestService from './services/ApiRequestService';
 import StateHashPrefixRedirect from './modules/state_router/StateHashPrefixRedirect';
+import { ToastsProvider } from './modules/toasts/context/ToastsContext';
 import AwsRumScript from './modules/aws_rum/AwsRumScript';
+import { PrintableProvider } from './modules/printable/context/PrintableContext';
+import i18nEN from './i18n/i18n-en';
+import i18nNL from './i18n/i18n-nl';
+import { FrameDirectorProvider } from './modules/frame_director/context/FrameDirectorContext';
+import ProviderNotificationProductRequired from './modules/provider_notification_product_required/ProviderNotificationProductRequired';
 
 i18n.use(initReactI18next)
     .init({
         resources: {
-            en: { translation: require('./i18n/i18n-en') },
-            nl: { translation: require('./i18n/i18n-nl') },
+            en: { translation: i18nEN },
+            nl: { translation: i18nNL },
         },
         lng: 'nl',
         fallbackLng: 'nl',
@@ -70,21 +76,29 @@ export default function Dashboard({ envData }: { envData: EnvDataProp }): React.
 
     return (
         <PushNotificationsProvider>
-            <RouterSelector envData={envData}>
-                <LoadingBarProvider>
-                    <AuthProvider>
-                        <MainProvider>
-                            <ModalsProvider>
-                                <QueryParamProvider adapter={ReactRouter6Adapter}>
-                                    <StateHashPrefixRedirect />
-                                    <RouterLayout envData={envData} />
-                                </QueryParamProvider>
-                            </ModalsProvider>
-                        </MainProvider>
-                    </AuthProvider>
-                </LoadingBarProvider>
-            </RouterSelector>
-
+            <ToastsProvider>
+                <RouterSelector envData={envData}>
+                    <FrameDirectorProvider>
+                        <LoadingBarProvider>
+                            <AuthProvider>
+                                <PrintableProvider>
+                                    <ModalsProvider>
+                                        <MainProvider>
+                                            <QueryParamProvider adapter={ReactRouter6Adapter} options={{}}>
+                                                <StateHashPrefixRedirect />
+                                                <RouterLayout envData={envData} />
+                                                {envData.client_type === 'provider' && (
+                                                    <ProviderNotificationProductRequired />
+                                                )}
+                                            </QueryParamProvider>
+                                        </MainProvider>
+                                    </ModalsProvider>
+                                </PrintableProvider>
+                            </AuthProvider>
+                        </LoadingBarProvider>
+                    </FrameDirectorProvider>
+                </RouterSelector>
+            </ToastsProvider>
             <AwsRumScript awsRum={envData.config?.aws_rum} />
         </PushNotificationsProvider>
     );

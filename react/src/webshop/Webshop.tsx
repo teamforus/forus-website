@@ -13,19 +13,22 @@ import { PushNotificationsProvider } from '../dashboard/modules/push_notificatio
 import { LoadingBarProvider } from '../dashboard/modules/loading_bar/context/LoadingBarContext';
 import ApiRequestService from '../dashboard/services/ApiRequestService';
 import { getRoutes } from './modules/state_router/Router';
-import StateHashPrefixRedirect from './modules/state_router/StateHashPrefixRedirect';
 import EnvDataWebshopProp from '../props/EnvDataWebshopProp';
 import { LoadScript } from '@react-google-maps/api';
 import { PrintableProvider } from '../dashboard/modules/printable/context/PrintableContext';
 import MatomoScript from './modules/matomo/MatomoScript';
 import SiteImproveAnalytics from './modules/site_improve_analytics/SiteImproveAnalytics';
 import AwsRumScript from '../dashboard/modules/aws_rum/AwsRumScript';
+import StateHashPrefixRedirect from '../dashboard/modules/state_router/StateHashPrefixRedirect';
+import { TitleProvider } from './contexts/TitleContext';
+import i18nEN from './i18n/i18n-en';
+import i18nNL from './i18n/i18n-nl';
 
 i18n.use(initReactI18next)
     .init({
         resources: {
-            en: { translation: require('./i18n/i18n-en') },
-            nl: { translation: require('./i18n/i18n-nl') },
+            en: { translation: i18nEN },
+            nl: { translation: i18nNL },
         },
         lng: 'nl',
         fallbackLng: 'nl',
@@ -95,18 +98,32 @@ export default function Webshop({ envData }: { envData: EnvDataWebshopProp }): R
     return (
         <Fragment>
             <LoadScript googleMapsApiKey={envData.config.google_maps_api_key} language={'nl'}>
-                <PushNotificationsProvider>
+                <PushNotificationsProvider
+                    groups={{
+                        webshop: {
+                            defaultDismissTimeout: 15,
+                            showConfig: true,
+                        },
+                        bookmarks: {
+                            maxCount: 1,
+                            className: 'block-push-notifications-bookmarks',
+                            showConfig: true,
+                            defaultDismissTimeout: null,
+                        },
+                    }}>
                     <RouterSelector envData={envData as unknown as EnvDataProp}>
                         <LoadingBarProvider>
                             <PrintableProvider>
                                 <ModalsProvider>
                                     <MainProvider>
-                                        <AuthProvider>
-                                            <QueryParamProvider adapter={ReactRouter6Adapter}>
-                                                <StateHashPrefixRedirect />
-                                                <RouterLayout envData={envData} />
-                                            </QueryParamProvider>
-                                        </AuthProvider>
+                                        <TitleProvider>
+                                            <AuthProvider>
+                                                <QueryParamProvider adapter={ReactRouter6Adapter}>
+                                                    <StateHashPrefixRedirect />
+                                                    <RouterLayout envData={envData} />
+                                                </QueryParamProvider>
+                                            </AuthProvider>
+                                        </TitleProvider>
                                     </MainProvider>
                                 </ModalsProvider>
                             </PrintableProvider>

@@ -3,7 +3,6 @@ import { ModalState } from '../../../../dashboard/modules/modals/context/ModalCo
 import usePushDanger from '../../../../dashboard/hooks/usePushDanger';
 import { cover } from '../../../../dashboard/components/elements/image_cropper/helpers/image';
 import PdfPreview from '../../../../dashboard/components/elements/pdf-preview/PdfPreview';
-import * as pdfJsLib from 'pdfjs-dist';
 import { uniqueId } from 'lodash';
 import ModalPhotoCropperControl from './elements/ModalPhotoCropperControl';
 import { clickOnKeyEnter } from '../../../../dashboard/helpers/wcag';
@@ -172,20 +171,29 @@ export default function ModalPhotoCropper({
         (rawPdfFile): Promise<Blob> => {
             return new Promise((resolve) => {
                 new Response(rawPdfFile).arrayBuffer().then((data) => {
-                    pdfJsLib.getDocument({ data }).promise.then((pdf) => {
-                        pdf.getPage(1).then((page) => {
-                            const viewport = page.getViewport({ scale: 1.5 });
-                            const canvas = document.createElement('canvas');
-                            const canvasContext = canvas.getContext('2d');
+                    window['pdfjsDist'].getDocument({ data }).promise.then(
+                        (pdf: {
+                            numPages: number;
+                            getPage: (arg0: number) => Promise<{
+                                getViewport: ({ scale }) => { height: number; width: number };
+                                render: ({ canvasContext, viewport }) => { promise: Promise<() => void> };
+                            }>;
+                        }) => {
+                            pdf.getPage(1).then((page) => {
+                                const viewport = page.getViewport({ scale: 1.5 });
+                                const canvas = document.createElement('canvas');
+                                const canvasContext = canvas.getContext('2d');
 
-                            canvas.height = viewport.height;
-                            canvas.width = viewport.width;
+                                canvas.height = viewport.height;
+                                canvas.width = viewport.width;
 
-                            page.render({ canvasContext, viewport }).promise.then(() => {
-                                convertPdfCanvasToPreview(canvas).toBlob((blob) => resolve(blob), 'image/jpeg');
+                                page.render({ canvasContext, viewport }).promise.then(() => {
+                                    convertPdfCanvasToPreview(canvas).toBlob((blob) => resolve(blob), 'image/jpeg');
+                                });
                             });
-                        });
-                    }, console.error);
+                        },
+                        console.error,
+                    );
                 });
             });
         },
@@ -336,19 +344,34 @@ export default function ModalPhotoCropper({
                             </div>
 
                             <div className="cropper-pagination">
-                                <div className="cropper-pagination-btn" onClick={prevMedia} title="Vorige">
+                                <div
+                                    className="cropper-pagination-btn"
+                                    role="button"
+                                    tabIndex={0}
+                                    onKeyDown={clickOnKeyEnter}
+                                    onClick={prevMedia}
+                                    title="Vorige">
                                     <em className="mdi mdi-chevron-left" />
                                 </div>
                                 <div className="cropper-pagination-nav">
                                     {files?.map((_, index) => (
                                         <div
                                             key={index}
+                                            role="button"
+                                            tabIndex={0}
+                                            onKeyDown={clickOnKeyEnter}
                                             className={`cropper-pagination-item ${index === fileIndex ? 'active' : ''}`}
                                             onClick={() => setFileIndex(index)}
                                         />
                                     ))}
                                 </div>
-                                <div className="cropper-pagination-btn" onClick={nextMedia} title="Volgende">
+                                <div
+                                    className="cropper-pagination-btn"
+                                    role="button"
+                                    tabIndex={0}
+                                    onKeyDown={clickOnKeyEnter}
+                                    onClick={nextMedia}
+                                    title="Volgende">
                                     <em className="mdi mdi-chevron-right" />
                                 </div>
                             </div>
@@ -358,6 +381,9 @@ export default function ModalPhotoCropper({
                                     {cropperFiles[fileIndex]?.is_image && (
                                         <div
                                             className="cropper-rotate-btn"
+                                            role="button"
+                                            tabIndex={0}
+                                            onKeyDown={clickOnKeyEnter}
                                             onClick={() => rotate(fileIndex, -90)}
                                             title="90 graden rechtsom draaien">
                                             <div className="mdi mdi-file-rotate-left-outline" />
@@ -367,6 +393,9 @@ export default function ModalPhotoCropper({
                                     {cropperFiles[fileIndex]?.is_image && (
                                         <div
                                             className="cropper-rotate-btn"
+                                            role="button"
+                                            tabIndex={0}
+                                            onKeyDown={clickOnKeyEnter}
                                             onClick={() => rotate(fileIndex, 90)}
                                             title="90 graden linkssom draaien">
                                             <div className="mdi mdi-file-rotate-right-outline" />
@@ -376,6 +405,9 @@ export default function ModalPhotoCropper({
 
                                 <div
                                     className="cropper-action-change"
+                                    role="button"
+                                    tabIndex={0}
+                                    onKeyDown={clickOnKeyEnter}
                                     onClick={() => replaceFileAtIndex(fileIndex)}
                                     title="Kies andere afbeelding">
                                     <input type="file" accept={accept.join(',')} hidden={true} ref={replaceInputRef} />

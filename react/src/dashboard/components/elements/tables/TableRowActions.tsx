@@ -1,41 +1,26 @@
-import React, { useCallback } from 'react';
-import ClickOutside from '../click-outside/ClickOutside';
+import React, { ReactNode } from 'react';
+import FDTargetClick, {
+    FDTargetContainerProps,
+} from '../../../modules/frame_director/components/targets/FDTargetClick';
+import FDTargetContainerTableMenu from '../../../modules/frame_director/components/target-containers/FDTargetContainerTableMenu';
 
-export default function TableRowActions(props: {
-    actions: Array<unknown>;
-    setActions: (actions: Array<unknown>) => void;
-    modelItem: { id: number };
-    children: React.ReactElement;
-}) {
-    const toggleActions = useCallback(
-        (e, item) => {
-            e.stopPropagation();
-
-            if (props.actions.indexOf(item.id) !== -1) {
-                props.actions.splice(props.actions.indexOf(item.id), 1);
-            } else {
-                props.actions.push(item.id);
-            }
-
-            props.setActions([...props.actions]);
-        },
-        [props],
-    );
-
+export default function TableRowActions({ content }: { content: (e: FDTargetContainerProps) => ReactNode }) {
     return (
-        <div
-            className="button button-text button-icon button-menu pull-right active"
-            onClick={(e) => toggleActions(e, props.modelItem)}>
-            <em className="mdi mdi-dots-horizontal" />
-            {props.actions.indexOf(props.modelItem.id) !== -1 && (
-                <ClickOutside
-                    onClick={null}
-                    onClickOutside={(e) => toggleActions(e, props.modelItem)}
-                    className="menu-dropdown">
-                    <div className="menu-dropdown-arrow"></div>
-                    {props.children}
-                </ClickOutside>
-            )}
+        <div className={`actions`}>
+            <FDTargetClick
+                position={'bottom'}
+                align={'end'}
+                contentContainer={FDTargetContainerTableMenu}
+                content={(e) => (
+                    <div className="menu-dropdown">
+                        <div className="menu-dropdown-arrow" />
+                        {content(e)}
+                    </div>
+                )}>
+                <div className="button button-text button-menu">
+                    <em className="mdi mdi-dots-horizontal" />
+                </div>
+            </FDTargetClick>
         </div>
     );
 }

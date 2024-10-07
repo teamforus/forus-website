@@ -5,7 +5,7 @@ import FundProvider from '../props/models/FundProvider';
 import Fund from '../props/models/Fund';
 import Organization from '../props/models/Organization';
 import Tag from '../props/models/Tag';
-import Implementation from "../props/models/Implementation";
+import Implementation from '../props/models/Implementation';
 
 export class ProviderFundService<T = FundProvider> {
     /**
@@ -47,6 +47,13 @@ export class ProviderFundService<T = FundProvider> {
         }
     > {
         return this.apiRequest.get(`${this.prefix}/${organizationId}/provider/funds-available`, data);
+    }
+
+    public listFundsProviderProductsRequired(organizationId: number, query: object = {}): Promise<ApiResponse<Fund>> {
+        return this.apiRequest.get(`${this.prefix}/${organizationId}/provider/funds-product-required`, {
+            per_page: 100,
+            ...query,
+        });
     }
 
     /**

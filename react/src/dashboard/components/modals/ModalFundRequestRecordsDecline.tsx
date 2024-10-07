@@ -1,6 +1,5 @@
 import React from 'react';
 import { ModalState } from '../../modules/modals/context/ModalContext';
-import { classList } from '../../helpers/utils';
 import useFormBuilder from '../../hooks/useFormBuilder';
 import FormError from '../elements/forms/errors/FormError';
 import { ResponseError } from '../../props/ApiResponses';
@@ -8,6 +7,7 @@ import useSetProgress from '../../hooks/useSetProgress';
 import FundRequest from '../../props/models/FundRequest';
 import { useFundRequestValidatorService } from '../../services/FundRequestValidatorService';
 import Organization from '../../props/models/Organization';
+import classNames from 'classnames';
 
 export default function ModalFundRequestRecordsDecline({
     modal,
@@ -29,7 +29,7 @@ export default function ModalFundRequestRecordsDecline({
         setProgress(0);
 
         return fundRequestService
-            .decline(organization.id, fundRequest.id, form.values.note)
+            .decline(organization.id, fundRequest.id, form.values)
             .then(() => {
                 modal.close();
                 onSubmitted();
@@ -48,14 +48,7 @@ export default function ModalFundRequestRecordsDecline({
     });
 
     return (
-        <div
-            className={classList([
-                'modal',
-                'modal-md',
-                'modal-animated',
-                modal.loading ? 'modal-loading' : null,
-                className,
-            ])}>
+        <div className={classNames('modal', 'modal-md', 'modal-animated', modal.loading && 'modal-loading', className)}>
             <div className="modal-backdrop" onClick={modal.close} />
 
             <form className="modal-window form" onSubmit={form.submit}>

@@ -1,7 +1,7 @@
 import ApiRequestService from './ApiRequestService';
 import Identity from '../props/models/Identity';
 import { useState } from 'react';
-import { ResponseSimple, ApiResponseSingle } from '../props/ApiResponses';
+import { ResponseSimple } from '../props/ApiResponses';
 
 export default class IdentityService<T = Identity> {
     /**
@@ -68,9 +68,10 @@ export default class IdentityService<T = Identity> {
         });
     }
 
-    public authorizeAuthCode(auth_code: string) {
+    public authorizeAuthCode(auth_code: string, share2FA = false) {
         return this.apiRequest.post<ResponseSimple<{ success: boolean }>>(`${this.prefix}/proxy/authorize/code`, {
             auth_code,
+            share_2fa: share2FA,
         });
     }
 
@@ -84,6 +85,10 @@ export default class IdentityService<T = Identity> {
         return this.apiRequest.get<ResponseSimple<{ access_token: string }>>(
             `${this.prefix}/proxy/confirmation/exchange/${exchange_token}`,
         );
+    }
+
+    public storeShared2FA() {
+        return this.apiRequest.post<ResponseSimple<{ redirect_url: string }>>(`${this.prefix}/proxy/shared-2fa`);
     }
 }
 

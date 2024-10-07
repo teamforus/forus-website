@@ -1,0 +1,9 @@
+.block.block-navbar {
+    @media screen and (max-width: 1000px) {
+        .block-subnav {
+            .subnav-inner {
+                margin-top: 15px;
+            }
+        }
+    }
+}

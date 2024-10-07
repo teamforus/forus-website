@@ -1,6 +1,6 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
 import { PreferenceOption } from '../../../../props/models/NotificationPreference';
+import useTranslate from '../../../../hooks/useTranslate';
 
 export default function NotificationPreferenceCard({
     title,
@@ -11,7 +11,7 @@ export default function NotificationPreferenceCard({
     preferences: Array<PreferenceOption>;
     togglePreference: (preference: PreferenceOption, subscribed: boolean) => void;
 }) {
-    const { t } = useTranslation();
+    const translate = useTranslate();
 
     return (
         <div className="card">
@@ -20,21 +20,24 @@ export default function NotificationPreferenceCard({
             </div>
             <div className="form block block-preferences">
                 {preferences.map((preference) => (
-                    <label key={preference.key} htmlFor={`option_${preference.key}`} className="preference-option">
+                    <label
+                        key={preference.key}
+                        htmlFor={`option_${preference.type}_${preference.key}`}
+                        className="preference-option">
                         <div className="preference-option-details">
                             <div className="card-heading card-heading-padless">
-                                {t(`notification_preferences.types.${preference.key}.title`)}
+                                {translate(`notification_preferences.types.${preference.key}.title`)}
                             </div>
 
                             <div className="card-text">
-                                {t(`notification_preferences.types.${preference.key}.description`)}
+                                {translate(`notification_preferences.types.${preference.key}.description`)}
                             </div>
                         </div>
                         <div className="preference-option-input">
                             <div className="form-toggle">
                                 <input
                                     type="checkbox"
-                                    id={`option_${preference.key}`}
+                                    id={`option_${preference.type}_${preference.key}`}
                                     checked={preference.subscribed}
                                     onChange={(e) => togglePreference(preference, e.target.checked)}
                                 />

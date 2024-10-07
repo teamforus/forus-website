@@ -1,4 +1,4 @@
-import React, { Fragment, useContext, useEffect, useMemo, useRef } from 'react';
+import React, { useContext, useEffect, useMemo, useRef } from 'react';
 import { useStateRoutes } from '../../dashboard/modules/state_router/Router';
 import Modals from '../../dashboard/modules/modals/components/Modals';
 import PushNotifications from '../../dashboard/modules/push_notifications/components/PushNotifications';
@@ -10,12 +10,11 @@ import SkipLinks from './elements/SkipLinks';
 import useEnvData from '../hooks/useEnvData';
 import useAppConfigs from '../hooks/useAppConfigs';
 import LayoutFooter from './elements/LayoutFooter';
-import LayoutMobileMenu from './elements/LayoutMobileMenu';
 import Printable from '../../dashboard/modules/printable/components/Printable';
+import ErrorBoundaryHandler from '../../dashboard/components/elements/error-boundary-handler/ErrorBoundaryHandler';
 
 export const Layout = ({ children }: { children: React.ReactElement }) => {
     const { route } = useStateRoutes();
-
     const { modals } = useContext(modalsContext);
 
     const envData = useEnvData();
@@ -33,8 +32,12 @@ export const Layout = ({ children }: { children: React.ReactElement }) => {
         pageScrollRef?.current?.scrollTo({ top: 0 });
     }, [route?.pathname]);
 
+    if (!envData?.config) {
+        return null;
+    }
+
     return (
-        <Fragment>
+        <ErrorBoundaryHandler type={'main'}>
             <div
                 className={`${route?.state?.name == 'fund-request' ? 'signup-layout' : ''}`}
                 ref={pageScrollRef}
@@ -59,16 +62,13 @@ export const Layout = ({ children }: { children: React.ReactElement }) => {
                     )}
                 </div>
 
-                <LayoutMobileMenu />
                 <LayoutFooter />
 
                 <Modals />
-
-                <PushNotifications group={'default'} />
-                <PushNotifications group={'bookmarks'} className={'block-push-notifications-bookmarks'} maxCount={1} />
+                <PushNotifications />
             </div>
 
             <Printable />
-        </Fragment>
+        </ErrorBoundaryHandler>
     );
 };

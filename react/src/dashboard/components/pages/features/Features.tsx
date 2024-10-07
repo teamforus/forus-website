@@ -1,5 +1,4 @@
 import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import useActiveOrganization from '../../../hooks/useActiveOrganization';
 import { useOrganizationService } from '../../../services/OrganizationService';
 import { useFeatureService } from '../../../services/FeaturesService';
@@ -10,9 +9,10 @@ import FeatureList from './elements/FeatureList';
 import useEnvData from '../../../hooks/useEnvData';
 import ModalFeatureContact from '../../modals/ModalFeatureContact';
 import useOpenModal from '../../../hooks/useOpenModal';
+import useTranslate from '../../../hooks/useTranslate';
 
 export default function Features() {
-    const { t } = useTranslation();
+    const translate = useTranslate();
 
     const assetUrl = useAssetUrl();
     const envData = useEnvData();
@@ -185,7 +185,7 @@ export default function Features() {
                                                 className="form-control"
                                                 type="text"
                                                 value={filter.values.q}
-                                                placeholder={t('features.labels.search')}
+                                                placeholder={translate('features.labels.search')}
                                                 onChange={(e) => filter.update({ q: e.target.value })}
                                             />
                                         </div>
@@ -236,8 +236,8 @@ export default function Features() {
                     <div className="card-info-icon mdi mdi-headset" />
                     <div className="card-info-details">
                         <span>
-                            Mocht u nog vragen hebben of wilt u aanvullende informatie dan kunt u ons bellen op:{' '}
-                            <strong>+31 (0) 85 004 33 87</strong> of contact opnemen via e-mail{' '}
+                            Mocht u vragen hebben of aanvullende informatie willen ontvangen, dan kunt u ons bellen op:{' '}
+                            <strong>+31 (0) 85 004 33 87</strong> of een e-mail sturen naar{' '}
                             <strong>info@forus.io</strong>
                         </span>
                     </div>

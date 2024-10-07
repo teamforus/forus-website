@@ -1,6 +1,5 @@
-module.exports = {
+export default {
     show_more: 'Bekijk meer',
-    send: 'Verzenden',
     validate: 'Goedkeuren',
     add: 'Toevoegen',
     cancel: 'Annuleren',
@@ -17,7 +16,7 @@ module.exports = {
     buy: 'Koop',
     next: 'Volgende',
     back: 'Terug',
-    create: 'Eigenschap aanmaken',
+    create: 'Persoonsgegeven aanmaken',
     send: 'E-Mail naar mij',
     details: 'Bekjk details',
     show_map: 'Bekijk de kaart',

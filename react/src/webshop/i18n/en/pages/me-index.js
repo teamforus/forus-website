@@ -1,4 +1,4 @@
-module.exports = {
+export default {
     navbar: {
         municipality: 'MUNICIPALITY',
         provider: 'PROVIDER',

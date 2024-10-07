@@ -1,4 +1,4 @@
-import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { Fragment, useCallback, useMemo } from 'react';
 import Fund from '../../../../props/models/Fund';
 import Voucher from '../../../../../dashboard/props/models/Voucher';
 import Product from '../../../../props/models/Product';
@@ -16,8 +16,17 @@ import useOpenModal from '../../../../../dashboard/hooks/useOpenModal';
 import ModalProductReserve from '../../../modals/modal-product-reserve/ModalProductReserve';
 import Tooltip from '../../../elements/tooltip/Tooltip';
 import useFetchAuthIdentity from '../../../../hooks/useFetchAuthIdentity';
+import useFundMetaBuilder from '../../../../hooks/meta/useFundMetaBuilder';
 
-export default function ProductFundsCard({ product, vouchers = [] }: { product: Product; vouchers: Array<Voucher> }) {
+export default function ProductFundsCard({
+    product,
+    funds,
+    vouchers = [],
+}: {
+    product: Product;
+    funds: Array<Fund>;
+    vouchers: Array<Voucher>;
+}) {
     const envData = useEnvData();
     const appConfigs = useAppConfigs();
 
@@ -30,12 +39,11 @@ export default function ProductFundsCard({ product, vouchers = [] }: { product: 
     const authIdentity = useAuthIdentity();
     const showTakenByPartnerModal = useShowTakenByPartnerModal();
 
-    const [funds, setFunds] = useState<Array<Fund>>(null);
-
     const fundService = useFundService();
     const productService = useProductService();
 
     const onlyAvailableFunds = useMemo(() => envData?.config?.flags?.productDetailsOnlyAvailableFunds, [envData]);
+    const fundMetaBuilder = useFundMetaBuilder();
 
     const productMeta = useMemo(() => {
         if (!product || !funds || !vouchers) {
@@ -48,14 +56,14 @@ export default function ProductFundsCard({ product, vouchers = [] }: { product: 
             ...meta,
             funds: meta.funds.map((productFund) => ({
                 ...productFund,
-                ...fundService.mapFund(
+                ...fundMetaBuilder(
                     { ...funds.find((fund) => fund.id == productFund.id), ...productFund },
                     vouchers,
                     appConfigs,
                 ),
             })),
         };
-    }, [product, funds, productService, vouchers, fundService, appConfigs]);
+    }, [product, funds, productService, vouchers, fundMetaBuilder, appConfigs]);
 
     const listFunds = useMemo(() => {
         return productMeta?.funds.filter((fund) => !onlyAvailableFunds || fund.meta.isReservationAvailable);
@@ -71,7 +79,7 @@ export default function ProductFundsCard({ product, vouchers = [] }: { product: 
                     return showTakenByPartnerModal();
                 }
 
-                navigateState('fund-activate', { fund_id });
+                navigateState('fund-activate', { id: fund_id });
             });
         },
         [fundService, navigateState, showTakenByPartnerModal],
@@ -92,20 +100,6 @@ export default function ProductFundsCard({ product, vouchers = [] }: { product: 
         },
         [fetchAuthIdentity, openModal, product],
     );
-
-    const fetchFunds = useCallback(() => {
-        if (!product?.funds.length) {
-            return;
-        }
-
-        fundService
-            .list({ per_page: 100, check_criteria: 1, fund_ids: product?.funds.map((fund) => fund.id) })
-            .then((res) => setFunds(res.data.data));
-    }, [fundService, product?.funds]);
-
-    useEffect(() => {
-        fetchFunds();
-    }, [fetchFunds]);
 
     return (
         <Fragment>
@@ -228,12 +222,15 @@ export default function ProductFundsCard({ product, vouchers = [] }: { product: 
 
                                     {fund.meta.isReservationAvailable && (
                                         <div className="fund-item-section">
-                                            <div
+                                            <button
+                                                type={'button'}
                                                 className="button button-dark button-flat"
                                                 onClick={() => reserveProduct(fund)}
+                                                aria-label={translate('product.buttons.buy_label')}
+                                                aria-haspopup="dialog"
                                                 data-dusk="reserveProduct">
                                                 {translate('product.buttons.buy')}
-                                            </div>
+                                            </button>
                                         </div>
                                     )}
                                     {fund.external_link_text && fund.external_link_url && (
@@ -284,20 +281,27 @@ export default function ProductFundsCard({ product, vouchers = [] }: { product: 
                                     )}
                                     {fund.alreadyReceived && !fund.meta.isReservationAvailable && (
                                         <div className="fund-item-section">
-                                            <StateNavLink
-                                                name="voucher"
-                                                params={{
-                                                    address: fund.vouchers[0].address,
-                                                }}
-                                                className="button button-primary">
-                                                {translate(
-                                                    `funds.buttons.${fund.key}.already_received`,
-                                                    {},
-                                                    'funds.buttons.already_received',
-                                                )}
+                                            {fund.hasVouchers ? (
+                                                <StateNavLink
+                                                    name="voucher"
+                                                    params={{
+                                                        address: fund.vouchers[0].address,
+                                                    }}
+                                                    className="button button-primary">
+                                                    {translate(
+                                                        `funds.buttons.${fund.key}.already_received`,
+                                                        {},
+                                                        'funds.buttons.already_received',
+                                                    )}
 
-                                                <em className="mdi mdi-arrow-right icon-right" aria-hidden="true" />
-                                            </StateNavLink>
+                                                    <em className="mdi mdi-arrow-right icon-right" aria-hidden="true" />
+                                                </StateNavLink>
+                                            ) : (
+                                                <Fragment>
+                                                    <div className="fund-item-section-label">Reservering</div>
+                                                    <div className="fund-item-section-value">Niet beschikbaar</div>
+                                                </Fragment>
+                                            )}
                                         </div>
                                     )}
                                 </div>

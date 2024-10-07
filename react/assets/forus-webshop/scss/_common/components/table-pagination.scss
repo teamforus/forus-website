@@ -1,27 +1,68 @@
 .table-pagination {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
     cursor: default;
-    @include cf();
 
     .table-pagination-counter {
-        float: left;
         color: #282b39;
         font: 600 13px/36px var(--base-font);
+        display: flex;
+        flex-direction: row;
+        gap: 10px;
+
+        .form-control.select-control {
+            width: 70px;
+        }
+
+        .table-pagination-counter-info {
+            display: flex;
+            flex-direction: row;
+            gap: 3px;
+            text-wrap: nowrap;
+        }
     }
 
     .table-pagination-navigation {
-        float: right;
+        display: flex;
+        flex-direction: row;
+        gap: 5px;
 
-        .button {
-            padding: 5px 10px;
+        .table-pagination-button {
             min-width: 40px;
             font: 600 13px/24px var(--base-font);
+            padding: 5px 10px;
+            color: var(--paginator-button-color);
+            background: var(--paginator-button-background);
+            cursor: pointer;
+            border: 1px solid var(--paginator-button-border);
+            transition: color 0.4s, background-color 0.4s, box-shadow 0.4s, border 0.4s;
+            border-radius: var(--paginator-border-radius);
+            display: inline-block;
+            text-align: center;
 
-            .mdi {
-                display: none;
+            &:focus {
+                z-index: 1;
             }
 
-            &:not(:last-of-type) {
-                margin-right: 5px;
+            &:hover {
+                color: var(--paginator-button-hover-color);
+                border-color: var(--paginator-button-hover-background);
+                background-color: var(--paginator-button-hover-background);
+            }
+
+            &.table-pagination-button-active {
+                color: var(--paginator-button-active-color);
+                border-color: var(--paginator-button-active-background);
+                background-color: var(--paginator-button-active-background);
+            }
+
+            &[disabled] {
+                cursor: default;
+                color: var(--paginator-button-disabled-color);
+                border-color: var(--paginator-button-disabled-border);
+                background-color: var(--paginator-button-disabled-background);
             }
         }
     }
@@ -29,6 +70,7 @@
     @media screen and (max-width: 1000px) {
         display: flex;
         flex-direction: column;
+        align-items: flex-start;
 
         .table-pagination-counter {
             font: 600 13px/26px var(--base-font);
@@ -36,57 +78,37 @@
         }
 
         .table-pagination-navigation {
+            gap: 0;
             width: 100%;
-            display: flex;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            border-radius: calc(var(--border-radius) / 2);
-    
-            .button {
+            border-radius: calc(var(--paginator-border-radius) / 2);
+
+            .table-pagination-button {
                 padding: 5px 5px;
                 min-width: 30px;
                 font: 700 13px/20px var(--base-font);
                 flex-grow: 1;
                 border-radius: 0;
-                box-shadow: none;
 
-                &:not([disabled]):not(.disabled) {
-                    box-shadow: none;
-                }
-
-                &:not(:last-of-type) {
-                    margin-right: 0;
+                &:not(:last-child) {
                     border-right: none;
                 }
 
                 &:last-child {
-                    border-radius: 0 calc(var(--border-radius) / 2) calc(var(--border-radius) / 2) 0;
+                    border-radius: 0 calc(var(--paginator-border-radius) / 2) calc(var(--paginator-border-radius) / 2) 0;
                 }
 
                 &:first-child {
-                    border-radius: calc(var(--border-radius) / 2) 0 0 calc(var(--border-radius) / 2);
+                    border-radius: calc(var(--paginator-border-radius) / 2) 0 0 calc(var(--paginator-border-radius) / 2);
                 }
             }
         }
     }
 
     @media screen and (max-width: 360px) {
-        display: flex;
-        flex-direction: column;
-
         .table-pagination-navigation {
-            .button {
+            .table-pagination-button {
                 font: 600 11px/16px var(--base-font);
                 min-width: 25px;
-
-                span {
-                    display: none;
-                }
-    
-                .mdi {
-                    display: block;
-                    margin: 0;
-                    float: none;
-                }
             }
         }
     }

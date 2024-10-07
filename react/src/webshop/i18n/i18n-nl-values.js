@@ -1,5 +1,5 @@
 // No nested objects allowed
-module.exports = {
+export default {
     general: {
         name: 'General',
         fund: 'het Forus-fonds',

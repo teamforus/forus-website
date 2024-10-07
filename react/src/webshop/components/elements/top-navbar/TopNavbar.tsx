@@ -12,11 +12,12 @@ import { strLimit } from '../../../../dashboard/helpers/string';
 import { authContext } from '../../../contexts/AuthContext';
 import ClickOutside from '../../../../dashboard/components/elements/click-outside/ClickOutside';
 import useAuthIdentity2FAState from '../../../hooks/useAuthIdentity2FAState';
-import { useNavigateState } from '../../../modules/state_router/Router';
+import { useNavigateState, useStateRoutes } from '../../../modules/state_router/Router';
 import TopNavbarSearch from './TopNavbarSearch';
 import Announcements from '../announcements/Announcements';
 import ModalAuthPincode from '../../modals/ModalAuthPincode';
 import { clickOnKeyEnter } from '../../../../dashboard/helpers/wcag';
+import LayoutMobileMenu from '../../../layout/elements/LayoutMobileMenu';
 
 export const TopNavbar = ({ hideOnScroll = false, className = '' }: { hideOnScroll?: boolean; className?: string }) => {
     const {
@@ -32,6 +33,7 @@ export const TopNavbar = ({ hideOnScroll = false, className = '' }: { hideOnScro
 
     const assetUrl = useAssetUrl();
     const openModal = useOpenModal();
+    const { route } = useStateRoutes();
     const navigateState = useNavigateState();
     const menuRef = useRef<HTMLDivElement>(null);
 
@@ -177,6 +179,8 @@ export const TopNavbar = ({ hideOnScroll = false, className = '' }: { hideOnScro
                                     className={`button subnav-search-button hide-sm ${showSearchBox ? 'active' : ''}`}
                                     onClick={(e) => toggleSearchBox(e)}
                                     role="button"
+                                    tabIndex={0}
+                                    onKeyDown={clickOnKeyEnter}
                                     aria-label="Zoeken">
                                     <em className="mdi mdi-magnify" />
                                 </div>
@@ -387,13 +391,13 @@ export const TopNavbar = ({ hideOnScroll = false, className = '' }: { hideOnScro
 
     const subNavSearchButton =
         envData.config.flags.genericSearchUseToggle && envData.config?.flags.genericSearch ? (
-            <div
+            <button
                 className={`button subnav-search-button hide-sm ${showSearchBox ? 'active' : ''}`}
                 onClick={(e) => toggleSearchBox(e)}
-                role="button"
-                aria-label="Zoeken">
+                aria-label="Zoekvak openen"
+                aria-controls="search-box">
                 <em className="mdi mdi-magnify" />
-            </div>
+            </button>
         ) : null;
 
     return (
@@ -403,44 +407,64 @@ export const TopNavbar = ({ hideOnScroll = false, className = '' }: { hideOnScro
             {appConfigs.announcements && <Announcements announcements={appConfigs.announcements} />}
 
             {!showSearchBox && (
-                <div className="navbar-inner wrapper">
-                    <div
-                        className={`button navbar-menu-button show-sm ${mobileMenuOpened ? 'active' : ''}`}
-                        onClick={openMobileMenu}>
-                        <em className={`mdi ${mobileMenuOpened ? 'mdi-close' : 'mdi-menu'}`} />
-                        {translate('topnavbar.items.menu')}
-                    </div>
-
-                    <StateNavLink name={'home'} className="navbar-logo show-sm">
-                        <img src={assetUrl(`/assets/img/logo-normal${logoExtension}`)} alt="Terug naar hoofdpagina" />
-                        <img
-                            className="hover"
-                            src={assetUrl(`/assets/img/logo-hover${logoExtension}`)}
-                            alt="Terug naar hoofdpagina"
-                        />
-                    </StateNavLink>
-
+                <div className="navbar-inner wrapper flex-horizontal-reverse">
                     {envData.config?.flags?.genericSearch ? (
                         <div
                             className="button navbar-search-button show-sm"
                             onClick={(e) => toggleSearchBox(e)}
-                            role="button">
+                            aria-expanded={showSearchBox}
+                            aria-controls={'navbar-search'}
+                            role="button"
+                            onKeyDown={clickOnKeyEnter}
+                            tabIndex={0}>
                             <em className="mdi mdi-magnify" />
                             {translate('topnavbar.items.search')}
                         </div>
                     ) : (
                         <div className="button navbar-search-button show-sm" aria-hidden="true" />
                     )}
+
+                    <StateNavLink
+                        name={'home'}
+                        className="navbar-logo show-sm"
+                        title={`Terug naar hoofdpagina`}
+                        disabled={route?.state?.name === 'home'}>
+                        <img
+                            src={assetUrl(`/assets/img/logo-normal${logoExtension}`)}
+                            alt={translate(`logo_alt_text.${envData.client_key}`, {}, envData.client_key)}
+                        />
+                        <img
+                            className="hover"
+                            src={assetUrl(`/assets/img/logo-hover${logoExtension}`)}
+                            alt={translate(`logo_alt_text.${envData.client_key}`, {}, envData.client_key)}
+                        />
+                    </StateNavLink>
+
+                    <div
+                        className={`button navbar-menu-button show-sm ${mobileMenuOpened ? 'active' : ''}`}
+                        aria-expanded={mobileMenuOpened}
+                        onClick={openMobileMenu}
+                        role={'button'}
+                        onKeyDown={clickOnKeyEnter}
+                        tabIndex={0}>
+                        <em className={`mdi ${mobileMenuOpened ? 'mdi-close' : 'mdi-menu'}`} />
+                        {mobileMenuOpened
+                            ? translate('topnavbar.items.menu.close')
+                            : translate('topnavbar.items.menu.show')}
+                    </div>
                 </div>
             )}
 
-            <div className={`navbar-inner wrapper ${showSearchBox ? 'search-shown' : ''}`}>
+            <div
+                className={`navbar-inner wrapper ${showSearchBox ? 'search-shown' : ''}`}
+                id={envData.config?.flags?.genericSearchUseToggle ? 'search-box' : null}>
                 {!authIdentity && !showSearchBox && !mobileMenuOpened && (
                     <div className="block block-auth show-sm">
                         {envData.config.flags.showStartButton && (
                             <button
                                 className="button button-primary-outline button-start button-xs show-sm"
                                 onClick={() => startFundRequest({ restore_with_email: 1 })}
+                                aria-label={envData.config.flags.showStartButtonText || 'Start'}
                                 role="button">
                                 <em className="mdi mdi-plus-circle icon-start" />
                                 {envData.config.flags.showStartButtonText || 'Start'}
@@ -448,12 +472,12 @@ export const TopNavbar = ({ hideOnScroll = false, className = '' }: { hideOnScro
                         )}
                         <button
                             className="button button-primary button-xs show-sm"
-                            onClick={() => startFundRequest()}
+                            onClick={() => startFundRequest({ reset: 1 })}
                             role="button"
-                            aria-label="login"
+                            aria-label={translate('topnavbar.buttons.login')}
                             id="login_mobile">
                             <em className="mdi mdi-account icon-start" />
-                            {translate('topnavbar.buttons.login')}
+                            {translate(`topnavbar.buttons.${envData.client_key}.login`, {}, 'topnavbar.buttons.login')}
                         </button>
                     </div>
                 )}
@@ -466,12 +490,16 @@ export const TopNavbar = ({ hideOnScroll = false, className = '' }: { hideOnScro
             </div>
 
             {(showSearchBox || envData.config.flags.genericSearchUseToggle) && (
-                <div className={`block block-subnav ${showSearchBox ? 'search-shown' : ''}`}>
+                <div id="navbar-search" className={`block block-subnav ${showSearchBox ? 'search-shown' : ''}`}>
                     <div className="subnav-inner wrapper">
-                        <StateNavLink name={'home'} className="navbar-logo hide-sm">
+                        <StateNavLink
+                            name={'home'}
+                            className="navbar-logo hide-sm"
+                            disabled={route?.state?.name === 'home'}>
                             <img
                                 src={assetUrl(`/assets/img/logo-normal${logoExtension}`)}
                                 alt={translate(`logo_alt_text.${envData.client_key}`, {}, envData.client_key)}
+                                title={`Naar de homepage van ${window.location.host}`}
                             />
                         </StateNavLink>
 
@@ -495,6 +523,7 @@ export const TopNavbar = ({ hideOnScroll = false, className = '' }: { hideOnScro
                                         <button
                                             className="button button-primary-outline"
                                             onClick={() => startFundRequest({ restore_with_email: 1 })}
+                                            aria-label={envData.config.flags.showStartButtonText || 'Start'}
                                             role="button">
                                             <svg
                                                 xmlns="http://www.w3.org/2000/svg"
@@ -531,6 +560,11 @@ export const TopNavbar = ({ hideOnScroll = false, className = '' }: { hideOnScro
                                             className="button button-primary"
                                             onClick={() => startFundRequest({ reset: 1 })}
                                             role="button"
+                                            aria-label={translate(
+                                                `home.header.${envData.client_key}.button`,
+                                                {},
+                                                'home.header.button',
+                                            )}
                                             id="start_modal"
                                             data-dusk="btnStart">
                                             <em className="mdi mdi-account icon-start" />
@@ -549,6 +583,8 @@ export const TopNavbar = ({ hideOnScroll = false, className = '' }: { hideOnScro
                     </div>
                 </div>
             )}
+
+            <LayoutMobileMenu />
         </nav>
     );
 };

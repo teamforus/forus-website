@@ -1,9 +1,8 @@
 import Transaction from '../../../../props/models/Transaction';
 import useTransactionService from '../../../../services/TransactionService';
-import { useTranslation } from 'react-i18next';
 import useProductReservationService from '../../../../services/ProductReservationService';
 import Reservation from '../../../../props/models/Reservation';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 import useEnvData from '../../../../hooks/useEnvData';
 import useActiveOrganization from '../../../../hooks/useActiveOrganization';
 import useAssetUrl from '../../../../hooks/useAssetUrl';
@@ -14,6 +13,10 @@ import ModalDangerZone from '../../../modals/ModalDangerZone';
 import usePushSuccess from '../../../../hooks/usePushSuccess';
 import usePushDanger from '../../../../hooks/usePushDanger';
 import useShowRejectInfoExtraPaid from '../../../../services/helpers/reservations/useShowRejectInfoExtraPaid';
+import LoadingCard from '../../../elements/loading-card/LoadingCard';
+import useTranslate from '../../../../hooks/useTranslate';
+import TableEmptyValue from '../../../elements/table-empty-value/TableEmptyValue';
+import TransactionStateLabel from '../../../elements/resource-states/TransactionStateLabel';
 
 export default function TransactionDetails({
     transaction,
@@ -30,20 +33,19 @@ export default function TransactionDetails({
     showAmount?: boolean;
     onUpdate?: () => void;
 }) {
-    const { t } = useTranslation();
     const envData = useEnvData();
     const activeOrganization = useActiveOrganization();
 
     const assetUrl = useAssetUrl();
     const openModal = useOpenModal();
+    const translate = useTranslate();
     const pushDanger = usePushDanger();
     const pushSuccess = usePushSuccess();
     const showRejectInfoExtraPaid = useShowRejectInfoExtraPaid();
 
-    const [voucherDetailsId, setVoucherDetailsId] = useState<number>(null);
-
     const isSponsor = useMemo(() => envData.client_type == 'sponsor', [envData.client_type]);
     const isProvider = useMemo(() => envData.client_type == 'provider', [envData.client_type]);
+
     const transactionService = useTransactionService();
     const productReservationService = useProductReservationService();
 
@@ -105,11 +107,9 @@ export default function TransactionDetails({
         fetchTransaction().then((res) => setTransaction(res.data.data));
     }, [fetchTransaction, setTransaction]);
 
-    useEffect(() => {
-        const { product_reservation, voucher_id } = transaction;
-
-        setVoucherDetailsId(product_reservation?.voucher_id || voucher_id);
-    }, [isSponsor, transaction]);
+    if (!transaction) {
+        return <LoadingCard />;
+    }
 
     return (
         <div className="block block-transaction-details">
@@ -119,9 +119,7 @@ export default function TransactionDetails({
                         <div className="card-title">
                             <strong>{transaction.amount_locale}</strong>
                             &nbsp;&nbsp;
-                            <strong className="text-primary pull-right">
-                                {t('financial_dashboard_transaction.labels.payment')}
-                            </strong>
+                            <strong className="text-primary">Bedrag</strong>
                             <div className="flex flex-grow" />
                         </div>
                     </div>
@@ -157,7 +155,9 @@ export default function TransactionDetails({
                 <div className="card-header">
                     <div className="flex">
                         <div className="flex flex-grow">
-                            <div className="card-title">{t('financial_dashboard_transaction.labels.details')}</div>
+                            <div className="card-title">
+                                {translate('financial_dashboard_transaction.labels.details')}
+                            </div>
                         </div>
                         <div className="flex">
                             <div className="block block-inline-filters">
@@ -165,6 +165,7 @@ export default function TransactionDetails({
                                     <StateNavLink
                                         name={'transaction'}
                                         className="button button-primary"
+                                        activeExact={true}
                                         params={{
                                             organizationId: activeOrganization.id,
                                             address: transaction.address,
@@ -173,16 +174,16 @@ export default function TransactionDetails({
                                         Transactie details
                                     </StateNavLink>
                                 )}
-                                {transaction.voucher_id && isSponsor && (
+                                {transaction.voucher_id && transaction.target !== 'payout' && isSponsor && (
                                     <StateNavLink
                                         name={'vouchers-show'}
                                         params={{
                                             organizationId: activeOrganization.id,
-                                            voucher_id: voucherDetailsId,
+                                            id: transaction.product_reservation?.voucher_id || transaction.voucher_id,
                                         }}
                                         className="button button-primary">
                                         <em className="mdi mdi-eye-outline icon-start" />
-                                        Voucher details
+                                        Tegoed details
                                     </StateNavLink>
                                 )}
                             </div>
@@ -194,13 +195,15 @@ export default function TransactionDetails({
                         <div className="flex">
                             <div className="card-block card-block-keyvalue">
                                 <div className="keyvalue-item">
-                                    <div className="keyvalue-key">{t('financial_dashboard_transaction.labels.id')}</div>
+                                    <div className="keyvalue-key">
+                                        {translate('financial_dashboard_transaction.labels.id')}
+                                    </div>
                                     <div className="keyvalue-value">{transaction.id}</div>
                                 </div>
                                 {!showAmount && (
                                     <div className="keyvalue-item">
                                         <div className="keyvalue-key">
-                                            {t('financial_dashboard_transaction.labels.amount')}
+                                            {translate('financial_dashboard_transaction.labels.amount')}
                                         </div>
                                         <div className="keyvalue-value">{transaction.amount_locale}</div>
                                     </div>
@@ -208,7 +211,7 @@ export default function TransactionDetails({
                                 {isSponsor && transaction.payment_id && (
                                     <div className="keyvalue-item">
                                         <div className="keyvalue-key">
-                                            {t('financial_dashboard_transaction.labels.bunq_id')}
+                                            {translate('financial_dashboard_transaction.labels.bunq_id')}
                                         </div>
                                         <div className="keyvalue-value">{transaction.payment_id}</div>
                                     </div>
@@ -216,7 +219,7 @@ export default function TransactionDetails({
                                 {isSponsor && (
                                     <div className="keyvalue-item">
                                         <div className="keyvalue-key">
-                                            {t('financial_dashboard_transaction.labels.statement')}
+                                            {translate('financial_dashboard_transaction.labels.statement')}
                                         </div>
                                         {['provider', 'iban'].includes(transaction.target) && (
                                             <div className="keyvalue-value">
@@ -226,12 +229,15 @@ export default function TransactionDetails({
                                         {['top_up'].includes(transaction.target) && (
                                             <div className="keyvalue-value">Top up</div>
                                         )}
+                                        {['payout'].includes(transaction.target) && (
+                                            <div className="keyvalue-value">Payout</div>
+                                        )}
                                     </div>
                                 )}
                                 {transaction.product && (
                                     <div className="keyvalue-item">
                                         <div className="keyvalue-key">
-                                            {t('financial_dashboard_transaction.labels.product_id')}
+                                            {translate('financial_dashboard_transaction.labels.product_id')}
                                         </div>
                                         <div className="keyvalue-value">{transaction.product.id}</div>
                                     </div>
@@ -239,7 +245,7 @@ export default function TransactionDetails({
                                 {transaction.product && (
                                     <div className="keyvalue-item">
                                         <div className="keyvalue-key">
-                                            {t('financial_dashboard_transaction.labels.product_name')}
+                                            {translate('financial_dashboard_transaction.labels.product_name')}
                                         </div>
                                         <div className="keyvalue-value">{transaction.product.name}</div>
                                     </div>
@@ -247,33 +253,35 @@ export default function TransactionDetails({
                                 {isSponsor && transaction.target !== 'top_up' && transaction.state == 'success' && (
                                     <div className="keyvalue-item">
                                         <div className="keyvalue-key">
-                                            {t('financial_dashboard_transaction.labels.bunq')}
+                                            {translate('financial_dashboard_transaction.labels.bunq')}
                                         </div>
                                         <div className="keyvalue-value">{transaction.transaction_cost_locale}</div>
                                     </div>
                                 )}
                                 <div className="keyvalue-item">
                                     <div className="keyvalue-key">
-                                        {t('financial_dashboard_transaction.labels.date')}
+                                        {translate('financial_dashboard_transaction.labels.date')}
                                     </div>
                                     <div className="keyvalue-value">{transaction.created_at_locale}</div>
                                 </div>
                                 {isSponsor && (
                                     <div className="keyvalue-item">
                                         <div className="keyvalue-key">
-                                            {t('financial_dashboard_transaction.labels.date_non_cancelable')}
+                                            {translate('financial_dashboard_transaction.labels.date_non_cancelable')}
                                         </div>
-                                        <div className="keyvalue-value">{transaction.non_cancelable_at_locale}</div>
+                                        <div className="keyvalue-value">
+                                            {transaction.non_cancelable_at_locale || <TableEmptyValue />}
+                                        </div>
                                     </div>
                                 )}
                                 <div className="keyvalue-item">
                                     <div className="keyvalue-key">Status</div>
                                     <div className="keyvalue-value">
-                                        {transaction.state_locale}
-                                        {transaction.transaction_in > 0 && transaction.state == 'pending' && (
+                                        <TransactionStateLabel transaction={transaction} />
+                                        {transaction.transfer_in > 0 && transaction.state == 'pending' && (
                                             <div className="text-sm text-muted-dark">
                                                 <em className="mdi mdi-clock-outline"> </em>
-                                                {transaction.transaction_in} dagen resterend
+                                                {transaction.transfer_in} dagen resterend
                                             </div>
                                         )}
                                     </div>
@@ -287,7 +295,7 @@ export default function TransactionDetails({
                                             </span>
                                             {!transaction.iban_final && (
                                                 <Tooltip
-                                                    text={t(
+                                                    text={translate(
                                                         'financial_dashboard_transaction.tooltips.pending_iban_from',
                                                     )}
                                                 />
@@ -311,7 +319,9 @@ export default function TransactionDetails({
 
                                             {!transaction.iban_final && transaction.target != 'iban' && (
                                                 <Tooltip
-                                                    text={t('financial_dashboard_transaction.tooltips.pending_iban_to')}
+                                                    text={translate(
+                                                        'financial_dashboard_transaction.tooltips.pending_iban_to',
+                                                    )}
                                                 />
                                             )}
                                         </div>
@@ -332,7 +342,9 @@ export default function TransactionDetails({
                                             </span>
                                             {!transaction.iban_final && transaction.target != 'iban' && (
                                                 <Tooltip
-                                                    text={t('financial_dashboard_transaction.tooltips.pending_iban_to')}
+                                                    text={translate(
+                                                        'financial_dashboard_transaction.tooltips.pending_iban_to',
+                                                    )}
                                                 />
                                             )}
                                         </div>

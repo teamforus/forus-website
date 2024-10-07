@@ -163,6 +163,7 @@ export type AppConfigProp = {
         provider: ImplementationPage;
         providers: ImplementationPage;
         explanation: ImplementationPage;
+        block_home_products: ImplementationPage;
         footer_app_info: ImplementationPage;
         footer_opening_times: ImplementationPage;
         footer_contact_details: ImplementationPage;
@@ -188,6 +189,7 @@ export type AppConfigProp = {
     show_office_map: boolean;
     show_voucher_map: boolean;
     show_product_map: boolean;
+    page_title_suffix?: string;
 };
 
 export class ConfigService<T = AppConfigProp> {

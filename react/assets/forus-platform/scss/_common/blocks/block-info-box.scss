@@ -1,5 +1,5 @@
 &.block-info-box {
-    background-color: #FFFDEB;
+    background-color: #fffdeb;
     border: 1px solid var(--border-color);
     padding: 15px;
     font: 400 13px/20px var(--base-font);
@@ -14,9 +14,18 @@
 
         .block.block-markdown {
             font: 400 13px/22px var(--base-font) !important;
+            text-align: left;
 
-            h1, h2, h3, h4, h5, h6, ul, p {
+            h1,
+            h2,
+            h3,
+            h4,
+            h5,
+            h6,
+            ul,
+            p {
                 margin-bottom: 5px;
+                text-align: left;
 
                 &:last-child {
                     margin-bottom: 0;
@@ -38,20 +47,29 @@
     }
 
     &.block-info-box-primary {
-        background-color: #F3F8FE;
+        background-color: #f3f8fe;
         border-style: solid;
 
         .info-box-icon {
-            color: #009EF4;
+            color: #009ef4;
         }
     }
 
     &.block-info-box-default {
-        background-color: #F7F9FC;
+        background-color: #f7f9fc;
         border-style: solid;
 
         .info-box-icon {
             color: var(--color-primary);
+        }
+    }
+
+    &.block-warning-box {
+        background-color: #f3f8fe;
+        border-style: solid;
+
+        .info-box-icon {
+            color: #fc9c28;
         }
     }
 
@@ -62,5 +80,17 @@
     &.block-info-box-borderless {
         border: none;
         border-radius: 0;
+    }
+
+    @media screen and (max-width: 1000px) {
+        .info-box-content {
+            .block.block-markdown {
+                font: 400 12px/18px var(--base-font) !important;
+
+                h4 {
+                    font: 500 14px/20px var(--base-font);
+                }
+            }
+        }
     }
 }

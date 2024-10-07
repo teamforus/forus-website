@@ -2,6 +2,26 @@ import Fund from './Fund';
 import FundRequestRecord from './FundRequestRecord';
 import Employee from './Employee';
 import FundRequestApiPerson from './FundRequestApiPerson';
+import FundCriterion from './FundCriterion';
+
+export interface FundRequestFormula {
+    total_amount: string;
+    total_products: string;
+    items: Array<{
+        record: string;
+        type: string;
+        value: string;
+        count: string;
+        total: string;
+    }>;
+    products: Array<{
+        record: string;
+        type: string;
+        value: string;
+        count: string;
+        total: string;
+    }>;
+}
 
 export default interface FundRequest {
     id: number;
@@ -9,26 +29,7 @@ export default interface FundRequest {
     email?: string | null;
     fund: Fund & {
         has_person_bsn_api?: boolean;
-        criteria: Array<{
-            id: number;
-            operator: '>' | '>=' | '<' | '<=' | '=';
-            value?: string;
-            show_attachment: boolean;
-            title?: string;
-            description?: string;
-            description_html?: string;
-            external_validators: Array<{
-                accepted: boolean;
-                organization_id: number;
-                organization_validator_id: number;
-            }>;
-            record_type?: {
-                key: string;
-                name: string;
-                options: Array<{ value: string; name: string }>;
-            };
-            is_valid?: boolean;
-        }>;
+        criteria: Array<FundCriterion>;
     };
     fund_id: number;
     lead_time_days: number;
@@ -39,6 +40,8 @@ export default interface FundRequest {
     records: Array<FundRequestRecord>;
     replaced: boolean;
     state: 'pending' | 'approved' | 'declined' | 'disregarded' | 'approved_partly';
+    employee: Employee;
+    employee_id: number;
     state_locale: string;
     updated_at?: string | null;
     updated_at_locale?: string | null;

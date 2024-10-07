@@ -8,7 +8,6 @@ import { useFundService } from '../../../services/FundService';
 import Fund from '../../../props/models/Fund';
 import { PaginationData } from '../../../../dashboard/props/ApiResponses';
 import useFilter from '../../../../dashboard/hooks/useFilter';
-import UIControlSearch from '../../../../dashboard/components/elements/forms/ui-controls/UIControlSearch';
 import Organization from '../../../../dashboard/props/models/Organization';
 import { useOrganizationService } from '../../../../dashboard/services/OrganizationService';
 import Reservation from '../../../../dashboard/props/models/Reservation';
@@ -16,6 +15,7 @@ import EmptyBlock from '../../elements/empty-block/EmptyBlock';
 import Paginator from '../../../../dashboard/modules/paginator/components/Paginator';
 import ReservationCard from './elements/ReservationCard';
 import { useProductReservationService } from '../../../services/ProductReservationService';
+import UIControlText from '../../../../dashboard/components/elements/forms/ui-controls/UIControlText';
 
 export default function Reservations() {
     const translate = useTranslate();
@@ -99,12 +99,14 @@ export default function Reservations() {
                 <div className="form form-compact">
                     <div className="profile-aside-block">
                         <div className="form-group">
-                            <UIControlSearch
+                            <label className="form-label" htmlFor="products_search">
+                                {translate('reservations.labels.search')}
+                            </label>
+                            <UIControlText
                                 id="products_search"
                                 value={filters.values.q}
                                 onChangeValue={(q) => filters.update({ q })}
-                                placeholder="Zoek reservering"
-                                ariaLabel="search"
+                                ariaLabel={translate('reservations.labels.search_aria_label')}
                             />
                         </div>
                         <div className="form-group">
@@ -117,7 +119,6 @@ export default function Reservations() {
                                 value={filters.values.fund_id}
                                 options={funds}
                                 onChange={(fund_id?: number) => filters.update({ fund_id })}
-                                placeholder={funds?.[0]?.name}
                             />
                         </div>
                         <div className="form-group">
@@ -131,7 +132,6 @@ export default function Reservations() {
                                 propKey={'id'}
                                 options={organizations}
                                 onChange={(organization_id?: number) => filters.update({ organization_id })}
-                                placeholder={organizations?.[0]?.name}
                             />
                         </div>
                         <div className="form-group">
@@ -145,7 +145,6 @@ export default function Reservations() {
                                 propKey={'value'}
                                 options={states}
                                 onChange={(state?: string) => filters.update({ state })}
-                                placeholder={states?.[0]?.name}
                             />
                         </div>
                     </div>
@@ -220,7 +219,6 @@ export default function Reservations() {
                                 meta={reservations.meta}
                                 filters={filters.values}
                                 updateFilters={filters.update}
-                                buttonClass={'button-primary-outline'}
                             />
                         </div>
                     </div>

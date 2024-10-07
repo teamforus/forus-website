@@ -1,4 +1,4 @@
-module.exports = {
+export default {
     title_preferences: 'E-mail instellingen',
     title_email_preferences: 'E-mail instellingen',
 

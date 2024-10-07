@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { ModalState } from '../../modules/modals/context/ModalContext';
-import { classList } from '../../helpers/utils';
 import useFormBuilder from '../../hooks/useFormBuilder';
 import FormError from '../elements/forms/errors/FormError';
 import { ApiResponseSingle, ResponseError } from '../../props/ApiResponses';
@@ -9,6 +8,7 @@ import FundRequest from '../../props/models/FundRequest';
 import { useFundRequestValidatorService } from '../../services/FundRequestValidatorService';
 import Organization from '../../props/models/Organization';
 import FundRequestRecord from '../../props/models/FundRequestRecord';
+import classNames from 'classnames';
 
 export default function ModalFundRequestRecordCreate({
     modal,
@@ -51,14 +51,7 @@ export default function ModalFundRequestRecordCreate({
     });
 
     return (
-        <div
-            className={classList([
-                'modal',
-                'modal-md',
-                'modal-animated',
-                modal.loading ? 'modal-loading' : null,
-                className,
-            ])}>
+        <div className={classNames('modal', 'modal-md', 'modal-animated', modal.loading && 'modal-loading', className)}>
             <div className="modal-backdrop" onClick={modal.close} />
 
             <form className="modal-window form" onSubmit={form.submit}>
@@ -109,7 +102,7 @@ export default function ModalFundRequestRecordCreate({
                     ) : (
                         <div className="modal-section">
                             <div className="modal-info">
-                                <em className="mdi mdi-information" />U voegt eigenschappen toe in naam van&nbsp;
+                                <em className="mdi mdi-information" />U voegt persoonsgegevens toe in naam van&nbsp;
                                 <strong>{organization.name}</strong>
                             </div>
                         </div>

@@ -9,6 +9,11 @@ import useTranslate from '../../../../../../dashboard/hooks/useTranslate';
 import useEnvData from '../../../../../hooks/useEnvData';
 import FundRequestGoBackButton from '../FundRequestGoBackButton';
 import { clickOnKeyEnter } from '../../../../../../dashboard/helpers/wcag';
+import TranslateHtml from '../../../../../../dashboard/components/elements/translate-html/TranslateHtml';
+import EmailProviderLink from '../../../../../../dashboard/components/pages/auth/elements/EmailProviderLink';
+import useAssetUrl from '../../../../../hooks/useAssetUrl';
+import useAppConfigs from '../../../../../hooks/useAppConfigs';
+import SignUpFooter from '../../../../elements/sign-up/SignUpFooter';
 
 export default function FundRequestStepEmailSetup({
     fund,
@@ -26,6 +31,8 @@ export default function FundRequestStepEmailSetup({
     bsnWarning: React.ReactElement;
 }) {
     const envData = useEnvData();
+    const assetUrl = useAssetUrl();
+    const appConfigs = useAppConfigs();
 
     const translate = useTranslate();
     const identityEmailsService = useIdentityEmailsService();
@@ -53,12 +60,40 @@ export default function FundRequestStepEmailSetup({
         <Fragment>
             {progress}
 
-            {!emailSubmitted && (
+            {emailSubmitted ? (
+                <div className="sign_up-pane">
+                    <h1 className="sr-only">Er is een e-mail te bevestiging verstuurd</h1>
+                    <h2 className="sign_up-pane-header">E-mail verstuurd</h2>
+
+                    <div className="sign_up-pane-body">
+                        <div className="sign_up-email_sent">
+                            <div className="sign_up-email_sent-icon">
+                                <img
+                                    className="sign_up-email_sent-icon-img"
+                                    src={assetUrl('/assets/img/modal/email_signup.svg')}
+                                    alt=""
+                                />
+                            </div>
+                            <div className="sign_up-email_sent-title">
+                                {translate(`popup_auth.header.title_succes_${appConfigs?.communication_type}`)}
+                            </div>
+                            <TranslateHtml
+                                component={<div className="sign_up-email_sent-text" />}
+                                i18n={`popup_auth.header.subtitle_we_succes_${appConfigs?.communication_type}`}
+                                values={{ email: emailForm.values.email }}
+                            />
+                            <EmailProviderLink email={emailForm.values.email} />
+                        </div>
+                    </div>
+
+                    {bsnWarning}
+                </div>
+            ) : (
                 <div className="sign_up-pane">
                     <div className="sign_up-pane-header">
                         <h2 className="sign_up-pane-header-title">Aanmelden met e-mailadres</h2>
                     </div>
-                    <div className="sign_up-pane-body sign_up-pane-body-padless-bottom">
+                    <div className="sign_up-pane-body">
                         <form onSubmit={emailForm.submit}>
                             {emailSetupRequired && (
                                 <p className="sign_up-pane-text">
@@ -77,8 +112,7 @@ export default function FundRequestStepEmailSetup({
                                             onChangeValue={(email) => {
                                                 emailForm.update({ email });
                                             }}
-                                            placeholder="e-mail@e-mail.nl"
-                                            tabIndex={1}
+                                            tabIndex={0}
                                         />
                                         <FormError error={emailForm.errors.email} />
                                     </div>
@@ -88,12 +122,13 @@ export default function FundRequestStepEmailSetup({
                                             className="button button-primary button-fill"
                                             disabled={!emailForm.values.privacy && envData.config?.flags?.privacyPage}
                                             type="submit"
-                                            tabIndex={4}>
+                                            tabIndex={0}>
                                             {translate('popup_auth.buttons.submit')}
                                         </button>
                                     </div>
                                 </div>
                             </div>
+
                             {!emailSetupRequired && (
                                 <div className="sign_up-info">
                                     <div className="sign_up-info-title">
@@ -117,7 +152,7 @@ export default function FundRequestStepEmailSetup({
                                         <label
                                             className="sign_up-pane-text"
                                             htmlFor="privacy"
-                                            tabIndex={2}
+                                            tabIndex={0}
                                             onKeyDown={(e) => {
                                                 e.stopPropagation();
                                                 clickOnKeyEnter(e);
@@ -134,7 +169,7 @@ export default function FundRequestStepEmailSetup({
                                             Ik heb de{' '}
                                             <StateNavLink
                                                 name={'privacy'}
-                                                tabIndex={3}
+                                                tabIndex={0}
                                                 target={'_blank'}
                                                 onKeyDown={(e: React.KeyboardEvent<HTMLElement>) => {
                                                     e.stopPropagation();
@@ -151,25 +186,24 @@ export default function FundRequestStepEmailSetup({
                         </form>
                     </div>
 
-                    <div className="sign_up-pane-footer">
-                        <div className="flex-row">
-                            <FundRequestGoBackButton prevStep={prevStep} fund={fund} step={step} tabIndex={5} />
-
-                            <div className="flex-col text-right">
-                                {!emailSetupRequired && (
-                                    <button
-                                        className="button button-text button-text-padless"
-                                        disabled={envData.config.flags.privacyPage && !emailForm.values.privacy}
-                                        onClick={nextStep}
-                                        role="button"
-                                        tabIndex={6}>
-                                        Overslaan
-                                        <em className="mdi mdi-chevron-right icon-right" />
-                                    </button>
-                                )}
-                            </div>
-                        </div>
-                    </div>
+                    <SignUpFooter
+                        startActions={
+                            <FundRequestGoBackButton prevStep={prevStep} fund={fund} step={step} tabIndex={0} />
+                        }
+                        endActions={
+                            !emailSetupRequired && (
+                                <button
+                                    className="button button-text button-text-padless"
+                                    disabled={envData.config.flags.privacyPage && !emailForm.values.privacy}
+                                    onClick={nextStep}
+                                    role="button"
+                                    tabIndex={0}>
+                                    Overslaan
+                                    <em className="mdi mdi-chevron-right icon-right" />
+                                </button>
+                            )
+                        }
+                    />
 
                     {bsnWarning}
                 </div>

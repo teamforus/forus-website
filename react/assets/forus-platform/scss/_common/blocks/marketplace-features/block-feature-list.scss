@@ -1,5 +1,5 @@
 &.block-feature-list {
-    color: #282B39;
+    color: #282b39;
     margin-bottom: 32px;
 
     h3 {
@@ -28,9 +28,10 @@
                 align-items: center;
 
                 &:before {
-                    content: " ";
+                    content: ' ';
                     width: 14px;
                     height: 14px;
+                    min-width: 14px;
                     display: inline-block;
                     margin-right: 8px;
                     background: assetUrl('img/features/icons/check-icon.svg') no-repeat;
@@ -60,7 +61,7 @@
             .block-feature-list-items {
                 .block-feature-list-item {
                     margin-bottom: 12px;
-                    border-bottom: 1px solid #D4D9DD;
+                    border-bottom: 1px solid #d4d9dd;
                     padding-bottom: 12px;
 
                     &:last-child {
@@ -73,7 +74,62 @@
         }
     }
 
+    &.block-feature-list-tertiary {
+        .block-feature-list-items-wrapper {
+            border: none;
+            padding: 0;
+
+            .block-feature-list-items {
+                .block-feature-list-item {
+                    font-weight: 400;
+                    line-height: 22px;
+                    margin-bottom: 12px;
+
+                    &:last-child {
+                        margin-bottom: 0;
+                    }
+                }
+            }
+        }
+    }
+
+    &.block-feature-list-quaternary {
+        .block-feature-list-items-wrapper {
+            gap: 16px;
+
+            .block-feature-list-items-title {
+                border-bottom: 1px solid #d4d9dd;
+                padding-bottom: 16px;
+            }
+
+            .block-feature-list-items {
+                .block-feature-list-item {
+                    margin-bottom: 6px;
+
+                    &:last-child {
+                        margin-bottom: 0;
+                    }
+                }
+            }
+        }
+    }
+
     &:last-child {
         margin-bottom: 0;
+    }
+}
+
+&.block-feature-list-row {
+    display: flex;
+    gap: 24px;
+
+    .block-feature-list-col {
+        .block-feature-list-quaternary {
+            height: 100%;
+
+            .block-feature-list-items-wrapper {
+                height: 100%;
+            }
+        }
     }
 }

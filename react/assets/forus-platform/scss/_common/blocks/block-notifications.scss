@@ -9,16 +9,16 @@
         padding: 15px 25px;
         border-bottom: 1px solid var(--border-color);
         background-color: #fff;
-        transition: background-color .4s;
-        
+        transition: background-color 0.4s;
+
         .notification-title {
-            color: #292B39;
+            color: #292b39;
             font: 600 13px/20px var(--base-font);
             margin: 0 0 5px;
         }
-        
+
         .notification-description {
-            color: #646F79;
+            color: #646f79;
             font: 400 13px/20px var(--base-font);
             margin: 0 0;
         }
@@ -26,7 +26,7 @@
         .notification-date {
             display: flex;
             white-space: nowrap;
-            color: #8E959B;
+            color: #8e959b;
             font: 600 11px/20px var(--base-font);
 
             .mdi {

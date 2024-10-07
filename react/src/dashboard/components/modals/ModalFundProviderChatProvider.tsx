@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { ModalState } from '../../modules/modals/context/ModalContext';
-import { classList } from '../../helpers/utils';
 import useEnvData from '../../hooks/useEnvData';
 import useProductChatService from '../../services/ProductChatService';
 import Organization from '../../props/models/Organization';
@@ -10,6 +9,7 @@ import useFormBuilder from '../../hooks/useFormBuilder';
 import FormError from '../elements/forms/errors/FormError';
 import { groupBy } from 'lodash';
 import FundProviderChatMessage from '../../props/models/FundProviderChatMessage';
+import classNames from 'classnames';
 
 export default function ModalFundProviderChatProvider({
     modal,
@@ -101,14 +101,7 @@ export default function ModalFundProviderChatProvider({
     }, [loadMessages, updateInterval]);
 
     return (
-        <div
-            className={classList([
-                'modal',
-                'modal-md',
-                'modal-animated',
-                modal.loading ? 'modal-loading' : null,
-                className,
-            ])}>
+        <div className={classNames('modal', 'modal-md', 'modal-animated', modal.loading && 'modal-loading', className)}>
             <div className="modal-backdrop" onClick={closeModal} />
             <form className="modal-window form" onSubmit={form.submit}>
                 <div className="modal-close mdi mdi-close" onClick={closeModal} />
@@ -130,8 +123,8 @@ export default function ModalFundProviderChatProvider({
                                                     (message.counterpart == 'system'
                                                         ? 'system'
                                                         : panelType != message.counterpart
-                                                        ? 'in'
-                                                        : 'out')
+                                                          ? 'in'
+                                                          : 'out')
                                                 }`}>
                                                 <div className="chat-message-time">
                                                     {message.time}

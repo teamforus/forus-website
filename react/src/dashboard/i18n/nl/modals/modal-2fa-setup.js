@@ -1,5 +1,6 @@
-module.exports = {
+export default {
     errors: {
-        code_sent: 'There was an error while sending sms, check if number is correct',
+        code_sent:
+            'Er is een fout opgetreden bij het verzenden van de SMS. Controleer of het telefoonnummer correct is.',
     },
-}
+};

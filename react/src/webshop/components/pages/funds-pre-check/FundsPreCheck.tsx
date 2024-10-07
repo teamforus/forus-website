@@ -15,12 +15,11 @@ import useAppConfigs from '../../../hooks/useAppConfigs';
 import { useNavigateState } from '../../../modules/state_router/Router';
 import RecordType from '../../../../dashboard/props/models/RecordType';
 import { useRecordTypeService } from '../../../../dashboard/services/RecordTypeService';
-import { useTagService } from '../../../services/TagService';
+import { useTagService } from '../../../../dashboard/services/TagService';
 import Tag from '../../../../dashboard/props/models/Tag';
 import { useOrganizationService } from '../../../../dashboard/services/OrganizationService';
 import Organization from '../../../../dashboard/props/models/Organization';
 import ProgressPie from '../../elements/progress-pie/ProgressPie';
-import UIControlSearch from '../../../../dashboard/components/elements/forms/ui-controls/UIControlSearch';
 import SelectControl from '../../../../dashboard/components/elements/select-control/SelectControl';
 import UIControlCheckbox from '../../../../dashboard/components/elements/forms/ui-controls/UIControlCheckbox';
 import UIControlStep from '../../../../dashboard/components/elements/forms/ui-controls/UIControlStep';
@@ -422,17 +421,19 @@ export default function FundsPreCheck() {
                                     <div className="showcase-aside-block">
                                         <div className="form form-compact">
                                             <div className="form-group">
-                                                <UIControlSearch
+                                                <label className="form-label" htmlFor="search">
+                                                    {translate('funds.labels.search')}
+                                                </label>
+                                                <UIControlText
                                                     value={filter.values.q}
                                                     onChangeValue={(q) => filter.update({ q })}
-                                                    placeholder="Zoeken..."
                                                     ariaLabel="Zoeken"
                                                 />
                                             </div>
 
                                             <div className="form-group">
                                                 <label className="form-label" htmlFor="select_organization">
-                                                    Organisatie
+                                                    {translate('funds.labels.organization')}
                                                 </label>
                                                 <SelectControl
                                                     id="select_organization"
@@ -442,13 +443,12 @@ export default function FundsPreCheck() {
                                                     onChange={(organization_id: number) =>
                                                         filter.update({ organization_id })
                                                     }
-                                                    placeholder={organizations?.[0]?.name}
                                                 />
                                             </div>
 
                                             <div className="form-group">
                                                 <label className="form-label" htmlFor="select_category">
-                                                    Categorie
+                                                    {translate('funds.labels.category')}
                                                 </label>
                                                 <SelectControl
                                                     id="select_category"
@@ -456,7 +456,6 @@ export default function FundsPreCheck() {
                                                     value={filter.values.tag_id}
                                                     onChange={(tag_id: number) => filter.update({ tag_id })}
                                                     options={tags}
-                                                    placeholder={tags?.[0]?.name}
                                                 />
                                             </div>
                                         </div>
@@ -610,7 +609,6 @@ export default function FundsPreCheck() {
                                                                 }}
                                                                 name={preCheckRecord.record_type_key}
                                                                 id={`pre_check_record_${preCheckRecord.record_type_key}`}
-                                                                placeholder={preCheckRecord?.record_type?.name}
                                                             />
                                                         )}
 
@@ -628,7 +626,6 @@ export default function FundsPreCheck() {
                                                                 }}
                                                                 name={preCheckRecord.record_type_key}
                                                                 id={`pre_check_record_${preCheckRecord.record_type_key}`}
-                                                                placeholder={`Uw ${preCheckRecord.record_type.name}`}
                                                             />
                                                         )}
 
@@ -643,7 +640,6 @@ export default function FundsPreCheck() {
                                                                 min={0}
                                                                 name={preCheckRecord.record_type.key}
                                                                 id={`criterion_${preCheckRecord.record_type_key}`}
-                                                                placeholder={`Uw ${preCheckRecord.record_type.name}`}
                                                                 onChangeValue={(value) => {
                                                                     setPreChecks((preChecks) => {
                                                                         preChecks[activeStepIndex].record_types[

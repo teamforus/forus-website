@@ -5,13 +5,14 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#000000" />
-    <meta name="description" content="Forus test app" />
     <% if (disable_indexing) { %>
     <meta name="robots" content="noindex">
     <% } %>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:300,400,400i,500,600,700">
-    <link href="<%= libs.mdi.css %>" rel="stylesheet">
-    <link href="<%= libs.summernote.css %>" rel="stylesheet">
+    <link href="<%= webPath(`/assets/dist/css/materialdesignicons.min.css`) %>" rel="stylesheet">
+    <% if (['sponsor', 'provider', 'validator'].includes(type)) { %>
+        <link href="<%= webPath(`/assets/dist/js/summernote.${timestamp}.min.css`) %>" rel="stylesheet">
+    <% } %>
     <link rel="shortcut icon" type="image/x-icon" href="<%= favicon %>">
     <title><%= title %></title>
     <base href="<%= base %>">
@@ -19,28 +20,35 @@
 
 <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
+    <% if (env_data?.config?.tag_manager_id) { %>
+        <noscript>
+            <iframe
+                src="https://www.googletagmanager.com/ns.html?id=<%= env_data?.config?.tag_manager_id %>"
+                height="0"
+                width="0"
+                style="display:none;visibility:hidden">
+            </iframe>
+        </noscript>
+    <% } %>
     <div id="root"></div>
     <script>const env_data = JSON.parse('<%= JSON.stringify(env_data) %>');</script>
-    <script src="<%= libs.jquery.js %>"></script>
-    <script src="<%= libs.summernote.js %>"></script>
+    <% if (env_data?.client_type !== 'website') { %>
+        <script type="module">
+            import * as pdfjsDist from 'https://cdn.jsdelivr.net/npm/pdfjs-dist@4.2.67';
+            pdfjsDist.GlobalWorkerOptions.workerSrc = '//cdnjs.cloudflare.com/ajax/libs/pdf.js/4.2.67/pdf.worker.min.mjs';
+            window.pdfjsDist = pdfjsDist;
+        </script>
+    <% } %>
+
+    <% if (['sponsor', 'provider', 'validator'].includes(type)) { %>
+        <script src="<%= webPath(`/assets/dist/js/jquery.${timestamp}.min.js`) %>"></script>
+        <script src="<%= webPath(`/assets/dist/js/summernote.${timestamp}.min.js`) %>"></script>
+    <% } %>
+
     <script src="<%= script %>"></script>
 
     <% if (env_data?.config?.chat_id) { %>
-        <script>
-            (() => {
-                window.$zoho = window.$zoho || {};
-                window.$zoho.salesiq = window.$zoho.salesiq || { widgetcode: `<%= env_data?.config?.chat_id %>`, values: {}, ready: function () { } };
-                const d = document;
-                const s = d.createElement("script");
-                s.type = "text/javascript";
-                s.id = "zsiqscript";
-                s.defer = true;
-                s.src = "https://salesiq.zoho.eu/widget";
-                const t = d.getElementsByTagName("script")[0];
-                t.parentNode.insertBefore(s, t);
-                d.write("<div id='zsiqwidget'></div>");
-            })();
-        </script>
+        <script id="ze-snippet" src="https://static.zdassets.com/ekr/snippet.js?key=<%= env_data?.config?.chat_id %>"></script>
     <% } %>
 </body>
 

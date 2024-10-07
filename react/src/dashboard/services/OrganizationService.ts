@@ -1,11 +1,12 @@
-import ApiResponse, { ApiResponseSingle } from '../props/ApiResponses';
+import ApiResponse, { ApiResponseSingle, ResponseSimple } from '../props/ApiResponses';
 import { useState } from 'react';
 import ApiRequestService from './ApiRequestService';
-import Organization from '../props/models/Organization';
+import Organization, { SponsorProviderOrganization } from '../props/models/Organization';
 import { hasPermission } from '../helpers/utils';
-import ExternalFund from '../props/models/ExternalFund';
 import Product from '../props/models/Product';
 import OrganizationFeatureStatuses from './types/OrganizationFeatureStatuses';
+import FundProvider from '../props/models/FundProvider';
+import { ProviderFinancial } from '../components/pages/financial-dashboard/types/FinancialStatisticTypes';
 
 export class OrganizationService<T = Organization> {
     /**
@@ -92,43 +93,11 @@ export class OrganizationService<T = Organization> {
         });
     }
 
-    public updateBusinessType(id: number, business_type_id: number) {
-        return this.apiRequest.patch(`${this.prefix}/${id}/update-business`, {
-            business_type_id: business_type_id,
-        });
-    }
-
     public transferOwnership(id: number, data = {}) {
         return this.apiRequest.patch(`${this.prefix}/${id}/transfer-ownership`, data);
     }
 
-    public listValidatorsAvailable(data = {}): Promise<ApiResponse<T>> {
-        return this.apiRequest.get(`${this.prefix}`, {
-            ...data,
-            is_employee: 0,
-            is_validator: 1,
-        });
-    }
-
-    public readListValidators(id: number, data: object = {}) {
-        return this.apiRequest.get(`${this.prefix}/${id}/validators`, data);
-    }
-
-    public addExternalValidator(id: number, validator_organization_id: number, data = {}) {
-        return this.apiRequest.post(`${this.prefix}/${id}/validators`, {
-            ...data,
-            organization_id: validator_organization_id,
-        });
-    }
-
-    public removeExternalValidator(id: number, validator_organization_id: number, data = {}) {
-        return this.apiRequest.delete(`${this.prefix}/${id}/validators`, {
-            ...data,
-            organization_id: validator_organization_id,
-        });
-    }
-
-    public listProviders(id: number, data = {}): Promise<ApiResponse<T>> {
+    public listProviders(id: number, data = {}): Promise<ApiResponse<FundProvider>> {
         return this.apiRequest.get(`${this.prefix}/${id}/providers`, data);
     }
 
@@ -136,42 +105,36 @@ export class OrganizationService<T = Organization> {
         return this.apiRequest.get(`${this.prefix}/${id}/providers/export`, data);
     }
 
-    public listExternalFunds(id: number, data: object = {}): Promise<ApiResponse<ExternalFund>> {
-        return this.apiRequest.get(`${this.prefix}/${id}/external-funds`, data);
-    }
-
-    public externalFundUpdate(id: number, fund_id: number, data = {}): Promise<ApiResponse<T>> {
-        return this.apiRequest.patch(`${this.prefix}/${id}/external-funds/${fund_id}`, data);
-    }
-
-    public providerOrganizations(id: number, data = {}): Promise<ApiResponse<T>> {
+    public providerOrganizations(id: number, data = {}): Promise<ApiResponse<SponsorProviderOrganization>> {
         return this.apiRequest.get(`${this.prefix}/${id}/sponsor/providers`, data);
     }
 
-    public providerOrganization(id: number, provider_organization_id: number, data = {}): Promise<ApiResponse<T>> {
+    public providerOrganization(
+        id: number,
+        provider_organization_id: number,
+        data = {},
+    ): Promise<ApiResponseSingle<SponsorProviderOrganization>> {
         return this.apiRequest.get(`${this.prefix}/${id}/sponsor/providers/${provider_organization_id}`, data);
     }
 
-    public providerOrganizationsExport(id: number, data = {}): Promise<ApiResponse<T>> {
-        return this.apiRequest.get(`${this.prefix}/${id}/sponsor/providers/export`, data);
+    public providerOrganizationsExport(id: number, data = {}): Promise<ResponseSimple<ArrayBuffer>> {
+        return this.apiRequest.get(`${this.prefix}/${id}/sponsor/providers/export`, data, {
+            responseType: 'arraybuffer',
+        });
     }
 
-    public financeProviders(id: number, data = {}): Promise<ApiResponse<T>> {
+    public financeProviders(id: number, data = {}): Promise<ApiResponse<ProviderFinancial>> {
         return this.apiRequest.get(`${this.prefix}/${id}/sponsor/providers/finances`, data);
     }
 
-    public financeProvidersExport(id: number, data = {}): Promise<ApiResponse<T>> {
-        return this.apiRequest.get(`${this.prefix}/${id}/sponsor/providers/finances-export`, data);
+    public financeProvidersExport(id: number, data = {}): Promise<ResponseSimple<ArrayBuffer>> {
+        return this.apiRequest.get(`${this.prefix}/${id}/sponsor/providers/finances-export`, data, {
+            responseType: 'arraybuffer',
+        });
     }
 
-    public sponsorProducts(id: number, provider_organization_id: number, data = {}): Promise<ApiResponse<T>> {
+    public sponsorProducts(id: number, provider_organization_id: number, data = {}): Promise<ApiResponse<Product>> {
         return this.apiRequest.get(`${this.prefix}/${id}/sponsor/providers/${provider_organization_id}/products`, data);
-    }
-
-    public sponsorProduct(id: number, provider_organization_id: number, product_id: number): Promise<ApiResponse<T>> {
-        return this.apiRequest.get(
-            `${this.prefix}/${id}/sponsor/providers/${provider_organization_id}/products/${product_id}`,
-        );
     }
 
     public sponsorProductUpdate(
@@ -215,8 +178,9 @@ export class OrganizationService<T = Organization> {
         return {
             sponsor: [
                 { permissions: ['manage_funds', 'view_finances', 'view_funds'], name: 'organization-funds' },
-                { permissions: ['manage_vouchers'], name: 'vouchers' },
+                { permissions: ['manage_vouchers', 'view_vouchers'], name: 'vouchers' },
                 { permissions: ['view_finances'], name: 'transactions' },
+                { permissions: ['manage_payouts'], name: 'payouts' },
                 { permissions: ['validate_records'], name: 'csv-validation' },
             ],
             provider: [

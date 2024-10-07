@@ -3,13 +3,13 @@ import FundRequestRecord from '../../../../../dashboard/props/models/FundRequest
 import FormError from '../../../../../dashboard/components/elements/forms/errors/FormError';
 import useFormBuilder from '../../../../../dashboard/hooks/useFormBuilder';
 import UIControlText from '../../../../../dashboard/components/elements/forms/ui-controls/UIControlText';
-import useTranslate from '../../../../../dashboard/hooks/useTranslate';
 import FileUploader from '../../../elements/file-uploader/FileUploader';
 import FundRequest from '../../../../../dashboard/props/models/FundRequest';
 import FundRequestClarification from '../../../../../dashboard/props/models/FundRequestClarification';
 import usePushSuccess from '../../../../../dashboard/hooks/usePushSuccess';
 import { ResponseError } from '../../../../../dashboard/props/ApiResponses';
 import { useFundRequestClarificationService } from '../../../../services/FundRequestClarificationService';
+import MultilineText from '../../../../../dashboard/components/elements/multiline-text/MultilineText';
 
 export default function FundRequestRecordClarificationCard({
     record,
@@ -22,7 +22,6 @@ export default function FundRequestRecordClarificationCard({
     clarification: FundRequestClarification;
     setFundRequest: React.Dispatch<React.SetStateAction<FundRequest>>;
 }) {
-    const translate = useTranslate();
     const pushSuccess = usePushSuccess();
 
     const fundRequestClarificationService = useFundRequestClarificationService();
@@ -91,20 +90,24 @@ export default function FundRequestRecordClarificationCard({
                     <div className="fund-request-chat-message fund-request-chat-message-in">
                         <div className="fund-request-chat-message-time">{clarification.created_at_locale}</div>
                         <div className="fund-request-chat-message-content">
-                            <div className="fund-request-chat-message-text">{clarification.question}</div>
+                            <div className="fund-request-chat-message-text">
+                                <MultilineText text={clarification.question} />
+                            </div>
                         </div>
                     </div>
                     {clarification.state === 'answered' && (
                         <div className="fund-request-chat-message fund-request-chat-message-out">
                             <div className="fund-request-chat-message-time">{clarification.answered_at_locale}</div>
                             <div className="fund-request-chat-message-content">
-                                <div className="fund-request-chat-message-text">{clarification.answer}</div>
+                                <div className="fund-request-chat-message-text">
+                                    <MultilineText text={clarification.answer} />
+                                </div>
                                 {clarification.files.length > 0 && (
                                     <div className="fund-request-chat-message-file-uploader">
                                         <FileUploader
                                             type="fund_request_clarification_proof"
                                             files={clarification.files}
-                                            compact={true}
+                                            template={'compact'}
                                             readOnly={true}
                                             hideButtons={true}
                                         />
@@ -132,7 +135,6 @@ export default function FundRequestRecordClarificationCard({
                                 rows={5}
                                 value={form.values.answer}
                                 onChangeValue={(answer) => form.update({ answer })}
-                                placeholder={translate('fund_request_clarification.placeholder')}
                             />
                             <FormError error={form.errors?.answer} />
                         </div>
@@ -140,7 +142,7 @@ export default function FundRequestRecordClarificationCard({
                             <FileUploader
                                 type="fund_request_clarification_proof"
                                 files={[]}
-                                compact={true}
+                                template={'compact'}
                                 cropMedia={false}
                                 multiple={true}
                                 onFilesChange={({ files, fileItems }) => {

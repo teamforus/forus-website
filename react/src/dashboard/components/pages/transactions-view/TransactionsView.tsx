@@ -1,6 +1,5 @@
 import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
 import useActiveOrganization from '../../../hooks/useActiveOrganization';
-import { useTranslation } from 'react-i18next';
 import Transaction from '../../../props/models/Transaction';
 import useTransactionService from '../../../services/TransactionService';
 import useSetProgress from '../../../hooks/useSetProgress';
@@ -10,12 +9,13 @@ import StateNavLink from '../../../modules/state_router/StateNavLink';
 import { useParams } from 'react-router-dom';
 import TransactionDetails from './elements/TransactionDetails';
 import ReservationExtraPaymentDetails from '../reservations-view/elements/ReservationExtraPaymentDetails';
+import useTranslate from '../../../hooks/useTranslate';
 
 export default function TransactionsView() {
-    const { t } = useTranslation();
     const { address } = useParams();
 
     const envData = useEnvData();
+    const translate = useTranslate();
     const setProgress = useSetProgress();
     const activeOrganization = useActiveOrganization();
 
@@ -46,14 +46,18 @@ export default function TransactionsView() {
                 <StateNavLink
                     name={'transactions'}
                     params={{ organizationId: activeOrganization.id }}
+                    activeExact={true}
                     className="breadcrumb-item">
-                    {t('page_state_titles.transactions')}
+                    {isSponsor
+                        ? translate('page_state_titles.transactions')
+                        : translate('page_state_titles.transactions_provider')}
                 </StateNavLink>
 
                 {isSponsor && (
                     <StateNavLink
                         name={'transactions'}
                         params={{ organizationId: activeOrganization.id }}
+                        activeExact={true}
                         className="breadcrumb-item">
                         {transaction.fund.name}
                     </StateNavLink>

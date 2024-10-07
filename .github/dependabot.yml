@@ -3,18 +3,22 @@
 # Please see the documentation for all configuration options:
 # https://docs.github.com/github/administering-a-repository/configuration-options-for-dependency-updates
 
-# version: 2
-# updates:
-#   - package-ecosystem: "npm"
-#     directory: "/" # Location of package manifests
-#     schedule:
-#       interval: "weekly"
-#     reviewers:
-#       - "lexlog"
-#       - "dev-rminds"
-#       - "aghimpu"
-#     assignees:
-#       - "lexlog"
-#       - "dev-rminds"
-#     open-pull-requests-limit: 7
-#     target-branch: "develop"
+ version: 2
+ updates:
+   - package-ecosystem: "npm"
+     directory: "/" # Location of package manifests
+     schedule:
+       interval: "monthly"
+     reviewers:
+       - "lexlog"
+       - "dev-rminds"
+     assignees:
+       - "dev-rminds"
+     labels:
+       - "Urgency: Low"
+       - "dependencies"
+     open-pull-requests-limit: 10
+     target-branch: "develop"
+     ignore:
+       - dependency-name: "*"
+         update-types: [ "version-update:semver-patch"]

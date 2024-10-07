@@ -3,6 +3,7 @@ import Product from '../../../../../props/models/Product';
 import useAssetUrl from '../../../../../hooks/useAssetUrl';
 import useAuthIdentity from '../../../../../hooks/useAuthIdentity';
 import { clickOnKeyEnter } from '../../../../../../dashboard/helpers/wcag';
+import { useProductService } from '../../../../../services/ProductService';
 
 export default function ProductsListItemGrid({
     price,
@@ -16,6 +17,8 @@ export default function ProductsListItemGrid({
     const assetUrl = useAssetUrl();
     const authIdentity = useAuthIdentity();
 
+    const productService = useProductService();
+
     return (
         <div className="product-content">
             {authIdentity && (
@@ -25,7 +28,7 @@ export default function ProductsListItemGrid({
                     role={'button'}
                     tabIndex={0}
                     className={`block block-bookmark-toggle ${product.bookmarked ? 'active' : ''}`}
-                    aria-label="toevoegen aan verlanglijstje"
+                    aria-label="Toevoegen aan verlanglijstje"
                     aria-pressed={product.bookmarked}>
                     {product.bookmarked ? (
                         <em className="mdi mdi-cards-heart" />
@@ -37,13 +40,13 @@ export default function ProductsListItemGrid({
             <div className="product-photo">
                 <img
                     src={product.photo?.sizes?.small || assetUrl('/assets/img/placeholders/product-small.png')}
-                    alt={product.alternative_text}
+                    alt={productService.transformProductAlternativeText(product)}
                 />
             </div>
             <div className="product-details">
-                <h2 className="product-title" data-dusk="productName">
+                <h3 className="product-title" data-dusk="productName">
                     {product.name}
-                </h2>
+                </h3>
                 <div className="product-subtitle">{product.organization.name}</div>
                 <div className="product-price">{price}</div>
             </div>

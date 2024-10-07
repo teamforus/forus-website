@@ -5,11 +5,11 @@ import { useIdentity2FAService } from '../../../dashboard/services/Identity2FASe
 import usePushDanger from '../../../dashboard/hooks/usePushDanger';
 import usePushSuccess from '../../../dashboard/hooks/usePushSuccess';
 import useTimer from '../../../dashboard/hooks/useTimer';
-import { classList } from '../../../dashboard/helpers/utils';
 import FormError from '../../../dashboard/components/elements/forms/errors/FormError';
 import PincodeControl from '../../../dashboard/components/elements/forms/controls/PincodeControl';
 import BlockAuth2FAInfoBox from '../elements/block-auth-2fa-info-box/BlockAuth2FAInfoBox';
 import { clickOnKeyEnter } from '../../../dashboard/helpers/wcag';
+import classNames from 'classnames';
 
 export default function Modal2FADeactivate({
     modal,
@@ -123,13 +123,13 @@ export default function Modal2FADeactivate({
 
     return (
         <div
-            className={classList([
+            className={classNames(
                 'modal',
                 'modal-animated',
                 'modal-2fa-setup',
                 modal.loading ? '' : 'modal-loaded',
                 className,
-            ])}>
+            )}>
             <div className="modal-backdrop" onClick={cancel} />
 
             {step == 'confirmation' && (
@@ -173,6 +173,7 @@ export default function Modal2FADeactivate({
                                         valueType={'num'}
                                         blockSize={3}
                                         blockCount={2}
+                                        ariaLabel={'Voer de tweefactorauthenticatiecode in voor deactivering'}
                                     />
 
                                     <FormError error={errorCode} />
@@ -183,7 +184,7 @@ export default function Modal2FADeactivate({
                                         <button
                                             className="button button-text button-text-primary button-sm"
                                             type="button"
-                                            onClick={resendCode}
+                                            onClick={() => resendCode()}
                                             disabled={timer?.time > 0}>
                                             <div
                                                 className={`mdi mdi-refresh icon-start ${

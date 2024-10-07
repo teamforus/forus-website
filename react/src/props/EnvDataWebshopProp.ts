@@ -12,6 +12,7 @@ export default interface EnvDataWebshopProp {
         matomo_url?: string;
         matomo_site_id?: string;
         site_improve_analytics_id?: string;
+        tag_manager_id?: string;
         sessions?: boolean;
         google_maps_api_key?: string;
         default_title?: string;

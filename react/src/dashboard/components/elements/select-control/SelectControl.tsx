@@ -11,7 +11,7 @@ type SelectControlProps<T> = {
     strict?: boolean;
     allowSearch?: boolean;
     autoClear?: boolean;
-    value?: T | string | number;
+    value?: T | string | number | boolean;
     onChange: CallableFunction;
     onCreate?: CallableFunction;
     onSearchChange?: CallableFunction;
@@ -48,9 +48,10 @@ export type SelectControlOptionsProp<T> = {
     onInputClick: (e: React.MouseEvent<HTMLInputElement>) => void;
     modelValue?: { id: string; value: unknown; raw: T };
     searchOption: (e: React.MouseEvent<HTMLElement>) => void;
-    setShowOptions: (show: boolean) => void;
+    setShowOptions?: React.Dispatch<React.SetStateAction<boolean>>;
     searchInputChanged: () => void;
     onOptionsScroll: (e: UIEvent<HTMLElement>) => void;
+    disabled?: boolean;
 };
 
 export default function SelectControl<T>({
@@ -110,7 +111,7 @@ export default function SelectControl<T>({
     );
 
     const buildSearchedOptions = useCallback(() => {
-        const search = query.toLowerCase();
+        const search = query.toLowerCase().trim();
         const search_len = search.length;
         const options = allowSearch ? prepareOptions(search) : optionsPrepared;
 
@@ -245,5 +246,6 @@ export default function SelectControl<T>({
         onOptionsScroll,
         modelValue,
         className,
+        disabled,
     });
 }

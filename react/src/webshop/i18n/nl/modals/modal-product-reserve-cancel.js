@@ -1,4 +1,4 @@
-module.exports = {
+export default {
     // PRODUCT RESERVE CANCEL POPUP = popup-product-reserve-cancel.pug
     header_not_cancelable: {
         title: 'Neem contact op met {{organizationName}}',
