@@ -71,19 +71,21 @@ export default function Providers() {
         { id: 75, name: '< 75 km' },
     ]);
 
-    const [filterValues, filterActiveValues, filterUpdate] = useFilterNext<{
-        q: string;
-        page: number;
-        fund_id: number;
-        business_type_id: number;
-        product_category_id: number;
+    type ProviderFilters = {
+        q?: string;
+        page?: number;
+        fund_id?: number;
+        business_type_id?: number;
+        product_category_id?: number;
         product_sub_category_id?: number;
-        postcode: string;
-        distance: number;
-        show_map: boolean;
-        order_by: 'name';
-        order_dir: 'asc' | 'desc';
-    }>(
+        postcode?: string;
+        distance?: number;
+        show_map?: boolean;
+        order_by?: 'name';
+        order_dir?: 'asc' | 'desc';
+    };
+
+    const [filterValues, filterActiveValues, filterUpdate] = useFilterNext<ProviderFilters>(
         {
             q: '',
             page: 1,
@@ -116,7 +118,7 @@ export default function Providers() {
     );
 
     const buildQuery = useCallback(
-        (values) => ({
+        (values: ProviderFilters): ProviderFilters => ({
             q: values.q,
             page: values.page,
             fund_id: values.fund_id || null,
@@ -137,7 +139,7 @@ export default function Providers() {
     }, [filterActiveValues]);
 
     const fetchProviders = useCallback(
-        (query) => {
+        (query: ProviderFilters) => {
             setErrors(null);
             setProgress(0);
 
@@ -151,7 +153,7 @@ export default function Providers() {
     );
 
     const fetchProvidersMap = useCallback(
-        (query) => {
+        (query: object) => {
             setErrors(null);
             setProgress(0);
 
@@ -454,8 +456,11 @@ export default function Providers() {
                     </div>
                     {appConfigs.pages.providers && <CmsBlocks page={appConfigs.pages.providers} />}
 
-                    {!filterValues.show_map && providers?.data.length > 0 && (
-                        <div className="block block-organizations" id="providers_list">
+                    {!filterValues.show_map && (
+                        <div
+                            className="block block-organizations"
+                            id="providers_list"
+                            hidden={providers?.data.length == 0}>
                             {providers.data.map((provider) => (
                                 <ProvidersListItem key={provider.id} provider={provider} display={'list'} />
                             ))}
