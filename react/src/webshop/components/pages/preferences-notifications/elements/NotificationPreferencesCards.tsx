@@ -174,6 +174,7 @@ export default function NotificationPreferencesCards({
                                 className="preference-option"
                                 htmlFor={`option_${type.key}`}
                                 role="checkbox"
+                                onKeyDown={clickOnKeyEnter}
                                 tabIndex={0}
                                 aria-checked={type.subscribed}>
                                 <div className="preference-option-details">
