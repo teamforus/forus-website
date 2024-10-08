@@ -31,7 +31,7 @@ import EmptyCard from '../../elements/empty-card/EmptyCard';
 import useTranslate from '../../../hooks/useTranslate';
 import classNames from 'classnames';
 import usePushApiError from '../../../hooks/usePushApiError';
-import { StringParam, useQueryParams } from 'use-query-params';
+import { StringParam, useQueryParams, withDefault } from 'use-query-params';
 
 export default function FundRequests() {
     const envData = useEnvData();
@@ -48,16 +48,17 @@ export default function FundRequests() {
 
     const [employees, setEmployees] = useState(null);
     const [fundRequests, setFundRequests] = useState<
-        PaginationData<FundRequest> & {
-            meta: {
+        PaginationData<
+            FundRequest,
+            {
                 totals: {
                     hold: number;
                     total: number;
                     pending: number;
                     resolved: number;
                 };
-            };
-        }
+            }
+        >
     >(null);
 
     const fileService = useFileService();
@@ -65,11 +66,10 @@ export default function FundRequests() {
     const paginatorService = usePaginatorService();
     const fundRequestService = useFundRequestValidatorService();
 
-    const [query, setQueryParams] = useQueryParams({
-        tab: StringParam,
-    });
-
-    const [tab, setTab] = useState(query.tab || null);
+    const [{ fund_request_type }, setQueryParams] = useQueryParams(
+        { fund_request_type: withDefault(StringParam, null) },
+        { removeDefaultsFromUrl: true },
+    );
 
     const [paginatorKey] = useState('fund_requests');
 
@@ -105,6 +105,7 @@ export default function FundRequests() {
         page: 1,
         per_page: paginatorService.getPerPage(paginatorKey),
         state: states[0].key,
+        fund_request_type: null,
         employee_id: null,
         assigned: null,
         from: null,
@@ -118,12 +119,18 @@ export default function FundRequests() {
             setProgress(0);
 
             fundRequestService
-                .index(activeOrganization.id, { ...filter.activeValues, ...filterValues })
+                .index(activeOrganization.id, {
+                    ...filter.activeValues,
+                    ...filterValues,
+                    assigned: fund_request_type == 'hold' ? 0 : 1,
+                    state: fund_request_type == 'pending' ? 'pending' : null,
+                    is_resolved: fund_request_type == 'resolved' ? 1 : null,
+                })
                 .then((res) => setFundRequests(res.data))
                 .catch(pushApiError)
                 .finally(() => setProgress(100));
         },
-        [setProgress, activeOrganization.id, filter.activeValues, fundRequestService, pushApiError],
+        [setProgress, fundRequestService, activeOrganization.id, filter.activeValues, fund_request_type, pushApiError],
     );
 
     const fetchEmployees = useCallback(() => {
@@ -174,18 +181,8 @@ export default function FundRequests() {
     useEffect(() => fetchEmployees(), [fetchEmployees]);
 
     useEffect(() => {
-        setQueryParams({ tab });
-
-        if (tab == 'hold') {
-            fetchFundRequests({ assigned: 0 });
-        } else if (tab == 'pending') {
-            fetchFundRequests({ state: 'pending', assigned: 1 });
-        } else if (tab == 'resolved') {
-            fetchFundRequests({ assigned: 1, is_resolved: 1 });
-        } else {
-            fetchFundRequests();
-        }
-    }, [fetchFundRequests, setQueryParams, tab]);
+        fetchFundRequests();
+    }, [fetchFundRequests]);
 
     if (!fundRequests) {
         return <LoadingCard />;
@@ -206,23 +203,23 @@ export default function FundRequests() {
                     <div className="block block-label-tabs nowrap">
                         <div className="label-tab-set">
                             <div
-                                className={`label-tab label-tab-sm ${tab == null ? 'active' : ''}`}
-                                onClick={() => setTab(null)}>
+                                className={`label-tab label-tab-sm ${fund_request_type == null ? 'active' : ''}`}
+                                onClick={() => setQueryParams({ fund_request_type: null })}>
                                 {translate('validation_requests.tabs.all')} ({fundRequests.meta.totals.total})
                             </div>
                             <div
-                                className={`label-tab label-tab-sm ${tab == 'hold' ? 'active' : ''}`}
-                                onClick={() => setTab('hold')}>
+                                className={`label-tab label-tab-sm ${fund_request_type == 'hold' ? 'active' : ''}`}
+                                onClick={() => setQueryParams({ fund_request_type: 'hold' })}>
                                 {translate('validation_requests.tabs.hold')} ({fundRequests.meta.totals.hold})
                             </div>
                             <div
-                                className={`label-tab label-tab-sm ${tab == 'pending' ? 'active' : ''}`}
-                                onClick={() => setTab('pending')}>
+                                className={`label-tab label-tab-sm ${fund_request_type == 'pending' ? 'active' : ''}`}
+                                onClick={() => setQueryParams({ fund_request_type: 'pending' })}>
                                 {translate('validation_requests.tabs.pending')} ({fundRequests.meta.totals.pending})
                             </div>
                             <div
-                                className={`label-tab label-tab-sm ${tab == 'resolved' ? 'active' : ''}`}
-                                onClick={() => setTab('resolved')}>
+                                className={`label-tab label-tab-sm ${fund_request_type == 'resolved' ? 'active' : ''}`}
+                                onClick={() => setQueryParams({ fund_request_type: 'resolved' })}>
                                 {translate('validation_requests.tabs.resolved')} ({fundRequests.meta.totals.resolved})
                             </div>
                         </div>
