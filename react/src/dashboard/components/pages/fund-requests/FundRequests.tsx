@@ -1,6 +1,5 @@
-import React, { Fragment, useCallback, useEffect, useState } from 'react';
-import useFilter from '../../../hooks/useFilter';
-import { useFundRequestValidatorService } from '../../../services/FundRequestValidatorService';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { FundRequestTotals, useFundRequestValidatorService } from '../../../services/FundRequestValidatorService';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { getStateRouteUrl } from '../../../modules/state_router/Router';
 import Paginator from '../../../modules/paginator/components/Paginator';
@@ -29,9 +28,10 @@ import { dateFormat, dateParse } from '../../../helpers/dates';
 import usePaginatorService from '../../../modules/paginator/services/usePaginatorService';
 import EmptyCard from '../../elements/empty-card/EmptyCard';
 import useTranslate from '../../../hooks/useTranslate';
-import classNames from 'classnames';
 import usePushApiError from '../../../hooks/usePushApiError';
-import { StringParam, useQueryParams, withDefault } from 'use-query-params';
+import useFilterNext from '../../../modules/filter_next/useFilterNext';
+import FundRequestStateLabel from '../../elements/resource-states/FundRequestStateLabel';
+import { NumberParam, StringParam } from 'use-query-params';
 
 export default function FundRequests() {
     const envData = useEnvData();
@@ -47,29 +47,12 @@ export default function FundRequests() {
     const navigate = useNavigate();
 
     const [employees, setEmployees] = useState(null);
-    const [fundRequests, setFundRequests] = useState<
-        PaginationData<
-            FundRequest,
-            {
-                totals: {
-                    hold: number;
-                    total: number;
-                    pending: number;
-                    resolved: number;
-                };
-            }
-        >
-    >(null);
+    const [fundRequests, setFundRequests] = useState<PaginationData<FundRequest, { totals: FundRequestTotals }>>(null);
 
     const fileService = useFileService();
     const employeeService = useEmployeeService();
     const paginatorService = usePaginatorService();
     const fundRequestService = useFundRequestValidatorService();
-
-    const [{ fund_request_type }, setQueryParams] = useQueryParams(
-        { fund_request_type: withDefault(StringParam, null) },
-        { removeDefaultsFromUrl: true },
-    );
 
     const [paginatorKey] = useState('fund_requests');
 
@@ -86,33 +69,69 @@ export default function FundRequests() {
         { key: 'pending', name: 'Wachtend' },
     ]);
 
-    const [stateLabels] = useState({
-        pending: { label: 'primary-variant', icon: 'circle-outline' },
-        declined: { label: 'danger', icon: 'circle-off-outline' },
-        approved: { label: 'success', icon: 'circle-slice-8' },
-        approved_partly: { label: 'success', icon: 'circle-slice-4' },
-        disregarded: { label: 'default', icon: 'circle-outline' },
-    });
-
     const [assignedOptions] = useState([
         { key: null, name: 'Alle' },
         { key: 1, name: 'Toegewezen' },
         { key: 0, name: 'Niet toegewezen' },
     ]);
 
-    const filter = useFilter({
-        q: '',
-        page: 1,
-        per_page: paginatorService.getPerPage(paginatorKey),
-        state: states[0].key,
-        fund_request_type: null,
-        employee_id: null,
-        assigned: null,
-        from: null,
-        to: null,
-        order_by: 'state',
-        order_dir: 'asc',
-    });
+    const totals = useMemo(() => {
+        return fundRequests?.meta?.totals;
+    }, [fundRequests]);
+
+    const stateGroups = useMemo<Array<{ key: string; label: string }>>(
+        () => [
+            { key: 'all', label: translate('validation_requests.tabs.all', { total: totals?.all }) },
+            { key: 'pending', label: translate('validation_requests.tabs.pending', { total: totals?.pending }) },
+            { key: 'assigned', label: translate('validation_requests.tabs.assigned', { total: totals?.assigned }) },
+            { key: 'resolved', label: translate('validation_requests.tabs.resolved', { total: totals?.resolved }) },
+        ],
+        [totals, translate],
+    );
+
+    const [filterValues, filterActiveValues, filterUpdate, filter] = useFilterNext<{
+        q?: string;
+        page?: number;
+        per_page?: number;
+        state_group?: string;
+        state?: string;
+        employee_id?: number;
+        assigned: number;
+        from: string;
+        to: string;
+        order_by?: string;
+        order_dir?: string;
+    }>(
+        {
+            q: '',
+            page: 1,
+            per_page: paginatorService.getPerPage(paginatorKey),
+            state_group: stateGroups[0].key,
+            state: states[0].key,
+            employee_id: null,
+            assigned: null,
+            from: null,
+            to: null,
+            order_by: 'state',
+            order_dir: 'asc',
+        },
+        {
+            queryParamsRemoveDefault: true,
+            queryParams: {
+                q: StringParam,
+                page: NumberParam,
+                per_page: NumberParam,
+                state_group: StringParam,
+                state: StringParam,
+                employee_id: NumberParam,
+                assigned: NumberParam,
+                from: StringParam,
+                to: StringParam,
+                order_by: StringParam,
+                order_dir: StringParam,
+            },
+        },
+    );
 
     const fetchFundRequests = useCallback(
         (filterValues: object = {}) => {
@@ -120,17 +139,14 @@ export default function FundRequests() {
 
             fundRequestService
                 .index(activeOrganization.id, {
-                    ...filter.activeValues,
+                    ...filterActiveValues,
                     ...filterValues,
-                    assigned: fund_request_type == 'hold' ? 0 : 1,
-                    state: fund_request_type == 'pending' ? 'pending' : null,
-                    is_resolved: fund_request_type == 'resolved' ? 1 : null,
                 })
                 .then((res) => setFundRequests(res.data))
                 .catch(pushApiError)
                 .finally(() => setProgress(100));
         },
-        [setProgress, fundRequestService, activeOrganization.id, filter.activeValues, fund_request_type, pushApiError],
+        [setProgress, fundRequestService, activeOrganization.id, filterActiveValues, pushApiError],
     );
 
     const fetchEmployees = useCallback(() => {
@@ -145,7 +161,7 @@ export default function FundRequests() {
 
     const doExport = useCallback(
         (exportType: string) => {
-            fundRequestService.export(activeOrganization.id, { ...filter.activeValues, export_type: exportType }).then(
+            fundRequestService.export(activeOrganization.id, { ...filterActiveValues, export_type: exportType }).then(
                 (res) => {
                     const dateTime = format(new Date(), 'yyyy-MM-dd HH:mm:ss');
                     const fileType = res.headers['content-type'] + ';charset=utf-8;';
@@ -158,7 +174,7 @@ export default function FundRequests() {
                 },
             );
         },
-        [fundRequestService, activeOrganization, filter.activeValues, envData.client_type, fileService, pushDanger],
+        [fundRequestService, activeOrganization, filterActiveValues, envData.client_type, fileService, pushDanger],
     );
 
     const exportRequests = useCallback(() => {
@@ -202,26 +218,16 @@ export default function FundRequests() {
                 <div className="flex-col">
                     <div className="block block-label-tabs nowrap">
                         <div className="label-tab-set">
-                            <div
-                                className={`label-tab label-tab-sm ${fund_request_type == null ? 'active' : ''}`}
-                                onClick={() => setQueryParams({ fund_request_type: null })}>
-                                {translate('validation_requests.tabs.all')} ({fundRequests.meta.totals.total})
-                            </div>
-                            <div
-                                className={`label-tab label-tab-sm ${fund_request_type == 'hold' ? 'active' : ''}`}
-                                onClick={() => setQueryParams({ fund_request_type: 'hold' })}>
-                                {translate('validation_requests.tabs.hold')} ({fundRequests.meta.totals.hold})
-                            </div>
-                            <div
-                                className={`label-tab label-tab-sm ${fund_request_type == 'pending' ? 'active' : ''}`}
-                                onClick={() => setQueryParams({ fund_request_type: 'pending' })}>
-                                {translate('validation_requests.tabs.pending')} ({fundRequests.meta.totals.pending})
-                            </div>
-                            <div
-                                className={`label-tab label-tab-sm ${fund_request_type == 'resolved' ? 'active' : ''}`}
-                                onClick={() => setQueryParams({ fund_request_type: 'resolved' })}>
-                                {translate('validation_requests.tabs.resolved')} ({fundRequests.meta.totals.resolved})
-                            </div>
+                            {stateGroups?.map((stateGroup) => (
+                                <div
+                                    key={stateGroup.key}
+                                    onClick={() => filterUpdate({ state_group: stateGroup.key })}
+                                    className={`label-tab label-tab-sm ${
+                                        filterValues.state_group === stateGroup.key ? 'active' : ''
+                                    }`}>
+                                    {stateGroup.label} ({fundRequests.meta.totals[stateGroup.key]})
+                                </div>
+                            ))}
                         </div>
                     </div>
                 </div>
@@ -247,7 +253,7 @@ export default function FundRequests() {
                                         type="text"
                                         className="form-control"
                                         value={filter.values.q}
-                                        onChange={(e) => filter.update({ q: e.target.value })}
+                                        onChange={(e) => filterUpdate({ q: e.target.value })}
                                         placeholder={translate('validation_requests.labels.search')}
                                     />
                                 </div>
@@ -259,7 +265,7 @@ export default function FundRequests() {
                                 <input
                                     type="text"
                                     value={filter.values?.q}
-                                    onChange={(e) => filter.update({ q: e.target.value })}
+                                    onChange={(e) => filterUpdate({ q: e.target.value })}
                                     placeholder={translate('validation_requests.labels.search')}
                                     className="form-control"
                                 />
@@ -271,7 +277,7 @@ export default function FundRequests() {
                                     propKey={'key'}
                                     allowSearch={false}
                                     optionsComponent={SelectControlOptions}
-                                    onChange={(state: string) => filter.update({ state })}
+                                    onChange={(state: string) => filterUpdate({ state })}
                                 />
                             </FilterItemToggle>
                             <FilterItemToggle label={translate('validation_requests.labels.assignee_state')}>
@@ -281,7 +287,7 @@ export default function FundRequests() {
                                     propKey={'key'}
                                     allowSearch={false}
                                     optionsComponent={SelectControlOptions}
-                                    onChange={(assigned: number | null) => filter.update({ assigned })}
+                                    onChange={(assigned: number | null) => filterUpdate({ assigned })}
                                 />
                             </FilterItemToggle>
                             <FilterItemToggle label={translate('validation_requests.labels.assigned_to')}>
@@ -293,7 +299,7 @@ export default function FundRequests() {
                                         propValue={'email'}
                                         allowSearch={false}
                                         optionsComponent={SelectControlOptions}
-                                        onChange={(employee_id: number | null) => filter.update({ employee_id })}
+                                        onChange={(employee_id: number | null) => filterUpdate({ employee_id })}
                                     />
                                 )}
                             </FilterItemToggle>
@@ -301,7 +307,7 @@ export default function FundRequests() {
                                 <DatePickerControl
                                     placeholder={'yyyy-MM-dd'}
                                     value={dateParse(filter.values.from?.toString())}
-                                    onChange={(date) => filter.update({ from: dateFormat(date) })}
+                                    onChange={(date) => filterUpdate({ from: dateFormat(date) })}
                                 />
                             </FilterItemToggle>
 
@@ -309,7 +315,7 @@ export default function FundRequests() {
                                 <DatePickerControl
                                     placeholder={'yyyy-MM-dd'}
                                     value={dateParse(filter.values.to)}
-                                    onChange={(date: Date) => filter.update({ to: dateFormat(date) })}
+                                    onChange={(date: Date) => filterUpdate({ to: dateFormat(date) })}
                                 />
                             </FilterItemToggle>
                             <div className="form-actions">
@@ -420,43 +426,7 @@ export default function FundRequests() {
                                                 )}
                                             </td>
                                             <td>
-                                                {fundRequest.state == 'pending' && fundRequest.employee ? (
-                                                    <Fragment>
-                                                        {!fundRequest.records
-                                                            .map((record) => record.clarifications)
-                                                            .filter((clarifications) => clarifications.length)
-                                                            .length ? (
-                                                            <div className="label label-tag label-round label-success-var">
-                                                                <span className="mdi mdi-circle-outline icon-start" />
-                                                                <span>In behandeling</span>
-                                                            </div>
-                                                        ) : (
-                                                            <div className="label label-tag label-round label-warning">
-                                                                <span className="mdi mdi-circle-outline icon-start" />
-                                                                <span>Aanvullende informatie benodigd</span>
-                                                            </div>
-                                                        )}
-                                                    </Fragment>
-                                                ) : (
-                                                    <div
-                                                        className={classNames(
-                                                            'label',
-                                                            'label-tag',
-                                                            'label-round',
-                                                            `label-${stateLabels[fundRequest.state]?.label}`,
-                                                        )}>
-                                                        <em
-                                                            className={classNames(
-                                                                'mdi',
-                                                                `mdi-${stateLabels[fundRequest.state]?.icon}`,
-                                                                `icon-start`,
-                                                            )}
-                                                        />
-                                                        {!fundRequest.employee
-                                                            ? 'Beoordelaar nodig'
-                                                            : fundRequest.state_locale}
-                                                    </div>
-                                                )}
+                                                <FundRequestStateLabel fundRequest={fundRequest} />
                                             </td>
                                             <td className={'text-right'}>
                                                 <NavLink
@@ -484,7 +454,7 @@ export default function FundRequests() {
                     <Paginator
                         meta={fundRequests.meta}
                         filters={filter.values}
-                        updateFilters={filter.update}
+                        updateFilters={filterUpdate}
                         perPageKey={paginatorKey}
                     />
                 </div>

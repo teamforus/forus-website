@@ -1496,8 +1496,8 @@ export default {
         },
         tabs: {
             all: 'Alles',
-            hold: 'Beoordelaar nodig',
-            pending: 'In behandeling',
+            pending: 'Beoordelaar nodig',
+            assigned: 'In behandeling',
             resolved: 'Afgehandeld',
         },
         person: {
