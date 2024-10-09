@@ -253,7 +253,7 @@ router.state('identity-emails', <PreferencesEmails />, {
 });
 
 router.state('preferences-notifications', <PreferencesNotifications />, {
-    path: `/preferences/notifications`,
+    path: `/preferences/notifications/:section?`,
     protected: false,
 });
 
