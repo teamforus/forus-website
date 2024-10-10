@@ -76,19 +76,22 @@ export default function Payouts() {
                                 <div className="profile-content-title-count">{payoutTransactions.meta.total}</div>
                                 <h1 className="profile-content-header">{translate('payouts.header.title')}</h1>
                             </div>
-
-                            <div className="pull-right hide-sm">
-                                <div className="form form-compact">
-                                    <div className="form-group">
-                                        <input
-                                            type="text"
-                                            className={'form-control'}
-                                            value={filterValues.q}
-                                            onChange={(e) => filterUpdate({ q: e.target.value })}
-                                            placeholder={translate('payouts.header.search_placeholder')}
-                                        />
-                                    </div>
-                                </div>
+                        </div>
+                    </div>
+                )
+            }
+            filters={
+                payoutTransactions && (
+                    <div className="form form-compact">
+                        <div className="profile-aside-block">
+                            <div className="form-group">
+                                <input
+                                    type="text"
+                                    className={'form-control'}
+                                    value={filterValues.q}
+                                    onChange={(e) => filterUpdate({ q: e.target.value })}
+                                    placeholder={translate('payouts.header.search_placeholder')}
+                                />
                             </div>
                         </div>
                     </div>
