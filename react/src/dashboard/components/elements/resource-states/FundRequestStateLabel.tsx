@@ -1,6 +1,7 @@
-import React, { Fragment, useMemo, useState } from 'react';
+import React, { Fragment, useCallback, useMemo, useState } from 'react';
 import classNames from 'classnames';
 import FundRequest from '../../../props/models/FundRequest';
+import FundRequestClarification from '../../../props/models/FundRequestClarification';
 
 export default function FundRequestStateLabel({ fundRequest }: { fundRequest: FundRequest }) {
     const [stateLabels] = useState({
@@ -13,27 +14,31 @@ export default function FundRequestStateLabel({ fundRequest }: { fundRequest: Fu
         clarification_requested: { label: 'warning', icon: 'circle-outline' },
     });
 
-    const hasPendingClarifications = useMemo(() => {
+    const hasPendingClarifications = useCallback((clarifications: Array<FundRequestClarification>) => {
+        return clarifications.filter((clarification) => clarification.state == 'pending').length;
+    }, []);
+
+    const hasRecordsWithPendingClarifications = useMemo(() => {
         return fundRequest.records
             .map((record) => record.clarifications)
-            .filter((clarifications) => clarifications.length).length;
-    }, [fundRequest]);
+            .filter((clarifications) => hasPendingClarifications(clarifications)).length;
+    }, [fundRequest.records, hasPendingClarifications]);
 
     const localState = useMemo(() => {
         if (fundRequest.state == 'pending' && fundRequest.employee) {
-            return hasPendingClarifications
+            return hasRecordsWithPendingClarifications
                 ? { key: 'clarification_requested', label: 'Aanvullende informatie benodigd' }
                 : { key: 'assigned', label: 'In behandeling' };
         }
 
         return { key: fundRequest.state, label: fundRequest.employee ? fundRequest.state_locale : 'Beoordelaar nodig' };
-    }, [fundRequest, hasPendingClarifications]);
+    }, [fundRequest, hasRecordsWithPendingClarifications]);
 
     return (
         <Fragment>
             {fundRequest.state == 'pending' && fundRequest.employee ? (
                 <Fragment>
-                    {hasPendingClarifications ? (
+                    {hasRecordsWithPendingClarifications ? (
                         <div
                             className={classNames(
                                 'label',

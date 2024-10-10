@@ -133,21 +133,15 @@ export default function FundRequests() {
         },
     );
 
-    const fetchFundRequests = useCallback(
-        (filterValues: object = {}) => {
-            setProgress(0);
+    const fetchFundRequests = useCallback(() => {
+        setProgress(0);
 
-            fundRequestService
-                .index(activeOrganization.id, {
-                    ...filterActiveValues,
-                    ...filterValues,
-                })
-                .then((res) => setFundRequests(res.data))
-                .catch(pushApiError)
-                .finally(() => setProgress(100));
-        },
-        [setProgress, fundRequestService, activeOrganization.id, filterActiveValues, pushApiError],
-    );
+        fundRequestService
+            .index(activeOrganization.id, filterActiveValues)
+            .then((res) => setFundRequests(res.data))
+            .catch(pushApiError)
+            .finally(() => setProgress(100));
+    }, [setProgress, fundRequestService, activeOrganization.id, filterActiveValues, pushApiError]);
 
     const fetchEmployees = useCallback(() => {
         setProgress(0);
@@ -207,7 +201,7 @@ export default function FundRequests() {
     return (
         <div className="card" data-dusk="fundRequestsPageContent">
             <div className="card-header card-header-next">
-                <div className="flex flex-col flex-grow">
+                <div className="flex flex-grow">
                     <div className="card-title">
                         {translate('validation_requests.header.title')}
                         &nbsp;
