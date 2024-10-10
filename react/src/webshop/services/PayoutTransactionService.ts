@@ -1,4 +1,4 @@
-import ApiResponse, { ApiResponseSingle } from '../../dashboard/props/ApiResponses';
+import ApiResponse from '../../dashboard/props/ApiResponses';
 import { useState } from 'react';
 import ApiRequestService from '../../dashboard/services/ApiRequestService';
 import PayoutTransaction from '../../dashboard/props/models/PayoutTransaction';
@@ -18,10 +18,6 @@ export class PayoutTransactionService<T = PayoutTransaction> {
 
     public list(data: object = {}): Promise<ApiResponse<T>> {
         return this.apiRequest.get(`${this.prefix}/payouts`, data);
-    }
-
-    public show(address: string): Promise<ApiResponseSingle<T>> {
-        return this.apiRequest.get(`${this.prefix}/payouts/${address}`);
     }
 }
 

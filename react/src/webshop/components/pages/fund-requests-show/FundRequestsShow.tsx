@@ -133,11 +133,11 @@ export default function FundRequestsShow() {
 
                             {showCreditInfo && (
                                 <Fragment>
-                                    <div className="card-section">
+                                    <div className="card-section card-section-md">
                                         {fundRequest.payouts?.length > 0 && (
                                             <div className="block block-payouts-list">
-                                                {fundRequest.payouts.map((payout) => (
-                                                    <PayoutCard key={payout.id} payoutTransaction={payout} />
+                                                {fundRequest.payouts.map((payout, index) => (
+                                                    <PayoutCard key={index} payout={payout} />
                                                 ))}
                                             </div>
                                         )}

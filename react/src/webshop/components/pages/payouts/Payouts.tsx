@@ -1,5 +1,4 @@
 import React, { Fragment, useCallback, useEffect, useState } from 'react';
-import LoadingCard from '../../../../dashboard/components/elements/loading-card/LoadingCard';
 import BlockShowcaseProfile from '../../elements/block-showcase/BlockShowcaseProfile';
 import StateNavLink from '../../../modules/state_router/StateNavLink';
 import EmptyBlock from '../../elements/empty-block/EmptyBlock';
@@ -20,21 +19,11 @@ export default function Payouts() {
 
     const payoutTransactionService = usePayoutTransactionService();
 
-    const [payoutTransactions, setPayoutTransactions] = useState<PaginationData<PayoutTransaction>>(null);
+    const [payouts, setPayoutTransactions] = useState<PaginationData<PayoutTransaction>>(null);
 
-    const [filterValues, filterValuesActive, filterUpdate] = useFilterNext<{
-        q: string;
-        order_by?: string;
-        order_dir?: string;
-    }>(
-        {
-            q: '',
-            order_by: 'created_at',
-            order_dir: 'desc',
-        },
-        {
-            throttledValues: ['q'],
-        },
+    const [filterValues, filterValuesActive, filterUpdate] = useFilterNext<{ q: string }>(
+        { q: '' },
+        { throttledValues: ['q'] },
     );
 
     const fetchTransactions = useCallback(() => {
@@ -43,18 +32,12 @@ export default function Payouts() {
         payoutTransactionService
             .list(filterValuesActive)
             .then((res) => setPayoutTransactions(res.data))
-            .finally(() => {
-                setProgress(100);
-            });
+            .finally(() => setProgress(100));
     }, [setProgress, payoutTransactionService, filterValuesActive]);
 
     useEffect(() => {
         fetchTransactions();
     }, [fetchTransactions]);
-
-    if (!payoutTransactions) {
-        return <LoadingCard />;
-    }
 
     return (
         <BlockShowcaseProfile
@@ -69,11 +52,11 @@ export default function Payouts() {
                 </div>
             }
             profileHeader={
-                payoutTransactions && (
+                payouts && (
                     <div className="profile-content-header clearfix">
                         <div className="profile-content-title">
                             <div className="pull-left">
-                                <div className="profile-content-title-count">{payoutTransactions.meta.total}</div>
+                                <div className="profile-content-title-count">{payouts.meta.total}</div>
                                 <h1 className="profile-content-header">{translate('payouts.header.title')}</h1>
                             </div>
                         </div>
@@ -81,7 +64,7 @@ export default function Payouts() {
                 )
             }
             filters={
-                payoutTransactions && (
+                payouts && (
                     <div className="form form-compact">
                         <div className="profile-aside-block">
                             <div className="form-group">
@@ -97,19 +80,18 @@ export default function Payouts() {
                     </div>
                 )
             }>
-            {payoutTransactions && (
+            {payouts && (
                 <Fragment>
-                    {payoutTransactions?.data?.length > 0 && (
-                        <div className="block block-payouts-list" data-dusk="payoutsList">
-                            {payoutTransactions.data.map((payoutTransaction) => (
-                                <PayoutCard key={payoutTransaction.id} payoutTransaction={payoutTransaction} />
+                    {payouts?.data?.length > 0 && (
+                        <div className="block block-payouts-list">
+                            {payouts.data.map((payoutTransaction, index) => (
+                                <PayoutCard key={index} payout={payoutTransaction} />
                             ))}
                         </div>
                     )}
 
-                    {payoutTransactions?.data?.length == 0 && (
+                    {payouts?.data?.length == 0 && (
                         <EmptyBlock
-                            data-dusk="fundRequestsEmptyBlock"
                             title={translate('payouts.empty_block.title')}
                             description={translate('payouts.empty_block.subtitle')}
                             svgIcon={'payouts'}
@@ -128,13 +110,9 @@ export default function Payouts() {
                         />
                     )}
 
-                    <div className="card" hidden={payoutTransactions?.meta?.last_page < 2}>
+                    <div className="card" hidden={payouts?.meta?.last_page < 2}>
                         <div className="card-section">
-                            <Paginator
-                                meta={payoutTransactions.meta}
-                                filters={filterValues}
-                                updateFilters={filterUpdate}
-                            />
+                            <Paginator meta={payouts.meta} filters={filterValues} updateFilters={filterUpdate} />
                         </div>
                     </div>
                 </Fragment>

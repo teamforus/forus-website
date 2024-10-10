@@ -323,7 +323,7 @@
                     .fund-request-chat-info {
                         .fund-request-chat-status {
                             &:before {
-                                content: "•";
+                                content: '•';
                                 margin-right: 4px;
                                 font-size: 24px;
                                 color: #f21010;
@@ -352,7 +352,7 @@
                 }
 
                 &:before {
-                    content: "";
+                    content: '';
                     height: 100%;
                     border-right: 1px solid #d4d9dd;
                     position: absolute;
@@ -373,24 +373,13 @@
 
     .block-payouts-list {
         margin: 0 0 10px;
-
-        .payout-item {
-            box-shadow: none;
-            border: 1px solid var(--border-color);
-
-            &:hover {
-                box-shadow: none;
-            }
-        }
     }
 
+    // todo: css refactoring resource border consistency
     .block-vouchers {
         .voucher-item {
-            &:not(.voucher-item-static):not(.voucher-item-select) {
-                &:hover {
-                    box-shadow: none;
-                }
-            }
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
         }
     }
 
@@ -475,7 +464,7 @@
                                 }
                             }
                         }
-    
+
                         .fund-request-chat-conversation-content {
                             .fund-request-chat-message {
                                 width: 80%;
@@ -509,7 +498,7 @@
                             .card-heading {
                                 font: 700 14px/16px var(--base-font);
                                 margin: 0 0 4px;
-                
+
                                 .label {
                                     font: 600 10px/10px var(--base-font);
                                     border-radius: 3px;
@@ -641,7 +630,7 @@
 
                         .fund-request-chat-conversation-reply {
                             padding: 10px 12px 12px;
-                            border-top: 1px solid #DBDCDB;
+                            border-top: 1px solid #dbdcdb;
 
                             .button {
                                 font: 600 11px/20px var(--base-font);
