@@ -77,7 +77,7 @@ export default function Payouts() {
                                 <h1 className="profile-content-header">{translate('payouts.header.title')}</h1>
                             </div>
 
-                            <div className={'pull-right'}>
+                            <div className="pull-right hide-sm">
                                 <div className="form form-compact">
                                     <div className="form-group">
                                         <input

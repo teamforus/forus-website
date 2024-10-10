@@ -122,7 +122,7 @@ export default function FundRequestsShow() {
                         </div>
                     </div>
 
-                    {(fundRequest.payoutVoucher || fundRequest.vouchers.length > 0) && (
+                    {(fundRequest.payouts?.length > 0 || fundRequest.vouchers?.length > 0) && (
                         <div className={`card card-collapsable ${showCreditInfo ? 'open' : ''}`}>
                             <div className="card-header" onClick={() => setShowCreditInfo(!showCreditInfo)}>
                                 <div className="card-header-wrapper">
@@ -134,16 +134,16 @@ export default function FundRequestsShow() {
                             {showCreditInfo && (
                                 <Fragment>
                                     <div className="card-section">
-                                        {fundRequest.payoutVoucher && (
+                                        {fundRequest.payouts?.length > 0 && (
                                             <div className="block block-payouts-list">
-                                                <PayoutCard
-                                                    payoutTransaction={fundRequest.payoutVoucher?.transactions?.[0]}
-                                                />
+                                                {fundRequest.payouts.map((payout) => (
+                                                    <PayoutCard key={payout.id} payoutTransaction={payout} />
+                                                ))}
                                             </div>
                                         )}
 
                                         {fundRequest.vouchers?.length > 0 && (
-                                            <div className="block block-vouchers">
+                                            <div className="block block-vouchers block-vouchers-with-border">
                                                 {fundRequest.vouchers.map((voucher) => (
                                                     <VoucherCard
                                                         key={voucher.id}
