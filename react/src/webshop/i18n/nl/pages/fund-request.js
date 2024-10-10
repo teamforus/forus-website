@@ -28,18 +28,18 @@ export default {
         },
         fund_already_applied: {
             title: {
-                pending: 'Aanvraag in behandeling',
-                approved: 'Aanvraag in behandeling',
-                declined: 'Aanvraag in behandeling',
-                disregarded: 'Aanvraag in behandeling',
-                approved_partly: 'Aanvraag in behandeling',
+                pending: 'De aanvraag is in behandeling',
+                approved: 'De aanvraag is goedgekeurd',
+                declined: 'De aanvraag is afgekeurd',
+                disregarded: 'De aanvraag is afgekeurd',
+                approved_partly: 'De aanvraag is deels goedgekeurd',
             },
             subtitle: {
                 pending: 'De aanvraag is ingediend op {{ date }}',
                 approved: 'De aanvraag is goedgekeurd op {{ date }}',
                 declined: 'De aanvraag is afgewezen op {{ date }}',
                 disregarded: 'De aanvraag is afgewezen op {{ date }}',
-                approved_partly: 'De aanvraag is ingediend op {{ date }}',
+                approved_partly: 'De aanvraag is deels goedgekeurd op {{ date }}',
             },
             information:
                 'De aanvraag is afgewezen. Er is per e-mail een bericht verstuurd met meer informatie. Druk op de knop hieronder om de gegevens van de aanvraag te bekijken.',
