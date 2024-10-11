@@ -31,7 +31,13 @@ export default function FundRequestStateLabel({ fundRequest }: { fundRequest: Fu
                 : { key: 'assigned', label: 'In behandeling' };
         }
 
-        return { key: fundRequest.state, label: fundRequest.employee ? fundRequest.state_locale : 'Beoordelaar nodig' };
+        return {
+            key: fundRequest.state,
+            label:
+                !fundRequest.employee && fundRequest.state == 'pending'
+                    ? 'Beoordelaar nodig'
+                    : fundRequest.state_locale,
+        };
     }, [fundRequest, hasRecordsWithPendingClarifications]);
 
     return (
