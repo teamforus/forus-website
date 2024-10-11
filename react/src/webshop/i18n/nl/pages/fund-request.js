@@ -41,8 +41,11 @@ export default {
                 disregarded: 'De aanvraag is afgewezen op {{ date }}',
                 approved_partly: 'De aanvraag is deels goedgekeurd op {{ date }}',
             },
-            information:
-                'De aanvraag is afgewezen. Er is per e-mail een bericht verstuurd met meer informatie. Druk op de knop hieronder om de gegevens van de aanvraag te bekijken.',
+            information: [
+                'De aanvraag wordt zo snel mogelijk beoordeeld, dit kan enkele weken duren. ',
+                'Als de aanvraag niet compleet is kan het zijn dat er meer informatie nodig is. ',
+                'In dit geval wordt er een bericht verstuurd per e-mail. Druk op de knop hieronder om de status van de aanvraag te bekijken.',
+            ].join(' '),
             buttons: {
                 open_fund_request: 'Bekijk de aanvraag',
             },

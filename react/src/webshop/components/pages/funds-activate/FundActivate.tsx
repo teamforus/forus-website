@@ -487,8 +487,10 @@ export default function FundActivate() {
             return;
         }
 
-        if (fundRequests?.length > 0) {
-            setFundRequest(fundRequests[0]);
+        const request = fundRequests?.find((request) => ['pending', 'approved'].includes(request.state));
+
+        if (request) {
+            setFundRequest(request);
             setState('fund_already_applied');
             return;
         }
@@ -1050,17 +1052,19 @@ export default function FundActivate() {
                                         ))}
                                     </ul>
 
-                                    <div className="block block-warning">
-                                        <div className="block-warning-icon">
-                                            <div className="icon">
-                                                <em className="mdi mdi-information-outline" />
+                                    {fundRequest.state === 'pending' && (
+                                        <div className="block block-warning">
+                                            <div className="block-warning-icon">
+                                                <div className="icon">
+                                                    <em className="mdi mdi-information-outline" />
+                                                </div>
+                                            </div>
+
+                                            <div className="block-warning-content">
+                                                {translate('fund_request.sign_up.fund_already_applied.information')}
                                             </div>
                                         </div>
-
-                                        <div className="block-warning-content">
-                                            {translate('fund_request.sign_up.fund_already_applied.information')}
-                                        </div>
-                                    </div>
+                                    )}
                                 </div>
 
                                 <div className="sign_up-pane-footer text-center">
