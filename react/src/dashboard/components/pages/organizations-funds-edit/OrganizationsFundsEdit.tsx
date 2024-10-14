@@ -243,7 +243,7 @@ export default function OrganizationsFundsEdit() {
                     } else {
                         return form.setIsLocked(false);
                     }
-                } catch (e) {
+                } catch {
                     return form.setIsLocked(false);
                 }
             }
@@ -381,7 +381,7 @@ export default function OrganizationsFundsEdit() {
     }, [setProgress, tagService]);
 
     const updateFormFormulaProduct = useCallback(
-        (formula_id, field_name, field_value) => {
+        (formula_id: number, field_name: string, field_value: string | number) => {
             const formulaProducts = form.values.formula_products;
             formulaProducts[formula_id] = {
                 ...formulaProducts[formula_id],
@@ -409,7 +409,9 @@ export default function OrganizationsFundsEdit() {
     }, [fund?.allow_fund_requests, fund?.allow_prevalidations]);
 
     useEffect(() => {
-        fundId && fetchTags();
+        if (fundId) {
+            fetchTags();
+        }
     }, [fetchTags, fundId]);
 
     useEffect(() => {
