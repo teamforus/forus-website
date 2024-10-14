@@ -69,6 +69,13 @@ export default function FundRequests() {
         { key: 'pending', name: 'Wachtend' },
     ]);
 
+    const [stateLabels] = useState({
+        pending: { label: 'primary-variant', icon: 'circle-outline' },
+        declined: { label: 'danger', icon: 'circle-off-outline' },
+        approved: { label: 'success', icon: 'circle-slice-8' },
+        disregarded: { label: 'default', icon: 'circle-outline' },
+    });
+
     const [assignedOptions] = useState([
         { key: null, name: 'Alle' },
         { key: 1, name: 'Toegewezen' },
