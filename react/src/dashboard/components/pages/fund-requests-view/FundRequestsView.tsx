@@ -135,20 +135,6 @@ export default function FundRequestsView() {
         };
     }, [activeOrganization.bsn_enabled, authIdentity?.address, fundRequest, isValidatorsSupervisor]);
 
-    const [stateLabels] = useState({
-        pending: 'label-primary-variant',
-        declined: 'label-danger',
-        approved: 'label-success',
-        disregarded: 'label-default',
-    });
-
-    const [stateLabelIcons] = useState({
-        pending: 'circle-outline',
-        declined: 'circle-off-outline',
-        approved: 'circle-slice-8',
-        disregarded: 'circle-outline',
-    });
-
     const updateNotesRef = useRef<() => void>(null);
     const fetchEmailsRef = useRef<() => void>(null);
 
