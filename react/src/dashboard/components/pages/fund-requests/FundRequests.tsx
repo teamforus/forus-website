@@ -64,7 +64,7 @@ export default function FundRequests() {
     const [states] = useState([
         { key: null, name: 'Alle' },
         { key: 'approved', name: 'Geaccepteerd' },
-        { key: 'disregarded', name: 'Niet beoordeeld' },
+        { key: 'disregarded', name: 'Buiten behandeling geplaatst' },
         { key: 'declined', name: 'Geweigerd' },
         { key: 'pending', name: 'Wachtend' },
     ]);
