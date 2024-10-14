@@ -40,6 +40,7 @@ import FundRequestStepCriteria from './elements/steps/FundRequestStepCriteria';
 import useShouldRequestRecord from './hooks/useShouldRequestRecord';
 import FundCriterion from '../../../../dashboard/props/models/FundCriterion';
 import { orderBy, sortBy } from 'lodash';
+import FundRequestHelpBlock from './elements/FundRequestHelpBlock';
 
 export type LocalCriterion = FundCriterion & {
     input_value?: string;
@@ -693,6 +694,7 @@ export default function FundRequest() {
 
                         {steps[step] == 'application_overview' && (
                             <FundRequestValuesOverview
+                                fund={fund}
                                 onSubmitRequest={submitRequest}
                                 criteriaSteps={criteriaSteps}
                                 contactInformation={contactInformation}
@@ -713,6 +715,10 @@ export default function FundRequest() {
                                     <FundRequestProgress step={step} steps={steps} criteriaSteps={criteriaStepKeys} />
                                 }
                             />
+                        )}
+
+                        {!['application_overview', 'done'].includes(steps[step]) && (
+                            <FundRequestHelpBlock fund={fund} />
                         )}
                     </div>
                 </div>

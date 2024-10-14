@@ -181,21 +181,21 @@ export default function FundCriteriaEditor({
                 />
             ))}
 
-            <div className="criteria-editor-actions">
-                {isEditable && hasPermission(organization, 'manage_funds') && (
+            {isEditable && hasPermission(organization, 'manage_funds') && (
+                <div className="criteria-editor-actions">
                     <div className="button button-primary" onClick={addCriteria}>
                         <em className="mdi mdi-plus-circle icon-start" />
                         {translate('components.fund_criteria_editor.buttons.add_criteria')}
                     </div>
-                )}
 
-                {saveButton && (modified || deletedItemsCount > 0) && (
-                    <div className="button button-primary pull-right" onClick={saveCriteria}>
-                        <em className="mdi mdi-content-save icon-start" />
-                        {translate('components.fund_criteria_editor.buttons.save')}
-                    </div>
-                )}
-            </div>
+                    {saveButton && (modified || deletedItemsCount > 0) && (
+                        <div className="button button-primary pull-right" onClick={saveCriteria}>
+                            <em className="mdi mdi-content-save icon-start" />
+                            {translate('components.fund_criteria_editor.buttons.save')}
+                        </div>
+                    )}
+                </div>
+            )}
         </div>
     );
 }

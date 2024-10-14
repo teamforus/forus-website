@@ -1,0 +1,76 @@
+&.block-collapsable {
+    margin-bottom: 12px;
+
+    .block-item {
+        display: flex;
+        flex-direction: column;
+        margin: 0 0 10px;
+        background: #ffffff;
+        border: 1px solid var(--border-color);
+        box-shadow: 0 0 5px rgba(25, 39, 52, 0.22);
+        border-radius: calc(var(--border-radius));
+
+        .block-header {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            cursor: pointer;
+
+            .block-icon-collapse {
+                font-size: 24px;
+                line-height: 30px;
+            }
+
+            .block-title {
+                flex-grow: 1;
+                font: 700 14px/30px var(--base-font);
+            }
+
+            &:not(:last-child) {
+                border-bottom: 1px solid var(--border-color);
+            }
+        }
+
+        .block-body {
+            padding: 20px;
+
+            &.block-body-pb0 {
+                padding-bottom: 0;
+            }
+        }
+
+        .block-footer {
+            display: flex;
+            border-top: 1px solid #ddd;
+            padding: 15px 20px;
+
+            .button {
+                &:last-child {
+                    margin-right: 0;
+                }
+            }
+        }
+
+        &:last-child {
+            margin-bottom: 0;
+        }
+    }
+
+    .block-criteria-editor {
+        .criterion-item {
+            &:last-child {
+                margin-bottom: 20px;
+            }
+        }
+
+        .criteria-editor-actions {
+            margin: 10px -20px 0;
+            border-top: 1px solid #ddd;
+            padding: 15px 20px;
+        }
+    }
+
+    &:last-child {
+        margin-bottom: 0;
+    }
+}

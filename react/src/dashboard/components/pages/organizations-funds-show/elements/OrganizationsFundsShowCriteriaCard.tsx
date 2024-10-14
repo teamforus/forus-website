@@ -10,6 +10,7 @@ import RecordType from '../../../../props/models/RecordType';
 import { useRecordTypeService } from '../../../../services/RecordTypeService';
 import LoadingCard from '../../../elements/loading-card/LoadingCard';
 import FundCriterion from '../../../../props/models/FundCriterion';
+import OrganizationsFundsShowFundRequestConfigCard from './OrganizationsFundsShowFundRequestConfigCard';
 
 export default function OrganizationsFundsShowCriteriaCard({
     fund,
@@ -26,6 +27,7 @@ export default function OrganizationsFundsShowCriteriaCard({
     const recordTypeService = useRecordTypeService();
 
     const [recordTypes, setRecordTypes] = useState<Array<RecordType>>(null);
+    const [criteriaIsCollapsed, setCriteriaIsCollapsed] = useState(true);
 
     const saveCriteria = useCallback(
         (criteria: Array<FundCriterion>) => {
@@ -58,18 +60,52 @@ export default function OrganizationsFundsShowCriteriaCard({
 
     return recordTypes ? (
         <div className="card-section card-section-primary">
-            <div className="form">
-                <FundCriteriaEditor
-                    fund={fund}
-                    organization={fund.organization}
-                    criteria={fund.criteria}
-                    isEditable={fund.criteria_editable}
-                    recordTypes={recordTypes}
-                    setCriteria={(criteria) => setFund({ ...fund, criteria })}
-                    saveButton={true}
-                    onSaveCriteria={saveCriteria}
-                />
+            <div className="block block-collapsable">
+                <div className="block-item">
+                    <div className="block-header" onClick={() => setCriteriaIsCollapsed(!criteriaIsCollapsed)}>
+                        <em className={`block-icon-collapse mdi mdi-menu-${criteriaIsCollapsed ? 'right' : 'down'}`} />
+
+                        <div className="block-title">Voorwaarden bewerken</div>
+
+                        <div className="block-actions">
+                            {!criteriaIsCollapsed ? (
+                                <div
+                                    className="button button-default button-sm"
+                                    onClick={() => setCriteriaIsCollapsed(true)}>
+                                    <em className="mdi mdi-arrow-collapse-vertical icon-start" />
+                                    Inklappen
+                                </div>
+                            ) : (
+                                <div
+                                    className="button button-primary button-sm"
+                                    onClick={() => setCriteriaIsCollapsed(false)}>
+                                    <em className="mdi mdi-arrow-expand-vertical icon-start" />
+                                    Uitklappen
+                                </div>
+                            )}
+                        </div>
+                    </div>
+
+                    {!criteriaIsCollapsed && (
+                        <div className="block-body block-body-pb0">
+                            <div className="form">
+                                <FundCriteriaEditor
+                                    fund={fund}
+                                    organization={fund.organization}
+                                    criteria={fund.criteria}
+                                    isEditable={fund.criteria_editable}
+                                    recordTypes={recordTypes}
+                                    setCriteria={(criteria) => setFund({ ...fund, criteria })}
+                                    saveButton={true}
+                                    onSaveCriteria={saveCriteria}
+                                />
+                            </div>
+                        </div>
+                    )}
+                </div>
             </div>
+
+            <OrganizationsFundsShowFundRequestConfigCard fund={fund} setFund={setFund} />
         </div>
     ) : (
         <LoadingCard />
