@@ -140,7 +140,7 @@ export default function FundRequestsShow() {
                             <div className="card-header" onClick={() => setShowCreditInfo(!showCreditInfo)}>
                                 <div className="card-header-wrapper">
                                     <em className="mdi mdi-menu-down card-header-arrow" />
-                                    <h2 className="card-heading card-heading-lg">What you have received</h2>
+                                    <h2 className="card-heading card-heading-lg">Ontvangen</h2>
                                 </div>
                             </div>
 
