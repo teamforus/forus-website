@@ -27,25 +27,27 @@ export default function ModalFundHelp({ modal, fund }: { modal: ModalState; fund
                 </div>
 
                 <div className="modal-body">
-                    <div className="modal-section">
-                        <div className="modal-section-title">{fund.help_title}</div>
-                        <div className="modal-section-description">
-                            <Markdown content={fund.help_description_html} />
+                    <div className="modal-section flex flex-vertical flex-gap-xl">
+                        <div className="flex flex-vertical flex-gap">
+                            <div className="modal-section-title">{fund.help_title}</div>
+                            <div className="modal-section-description">
+                                <Markdown content={fund.help_description_html} />
+                            </div>
                         </div>
 
                         {(fund.help_show_chat ||
                             fund.help_show_phone ||
                             fund.help_show_email ||
                             fund.help_show_website) && (
-                            <div className="block block-pane">
+                            <div className="modal-fund-help-pane">
                                 {fund.help_show_chat && (
-                                    <div className="pane-section">
-                                        <div className="pane-icon">
+                                    <div className="modal-fund-help-pane-item">
+                                        <div className="modal-fund-help-pane-icon">
                                             <ChatIcon />
                                         </div>
-                                        <div className="pane-content">
-                                            <div className="pane-title">Chat</div>
-                                            <div className="pane-subtitle">
+                                        <div className="modal-fund-help-pane-content">
+                                            <div className="modal-fund-help-pane-title">Chat</div>
+                                            <div className="modal-fund-help-pane-subtitle">
                                                 <a
                                                     className="link"
                                                     href={fund.help_chat}
@@ -59,13 +61,13 @@ export default function ModalFundHelp({ modal, fund }: { modal: ModalState; fund
                                 )}
 
                                 {fund.help_show_phone && (
-                                    <div className="pane-section">
-                                        <div className="pane-icon">
+                                    <div className="modal-fund-help-pane-item">
+                                        <div className="modal-fund-help-pane-icon">
                                             <PhoneIcon />
                                         </div>
-                                        <div className="pane-content">
-                                            <div className="pane-title">Telefoon</div>
-                                            <div className="pane-subtitle">
+                                        <div className="modal-fund-help-pane-content">
+                                            <div className="modal-fund-help-pane-title">Telefoon</div>
+                                            <div className="modal-fund-help-pane-subtitle">
                                                 <a
                                                     href={`tel:+${fund.help_phone.replace(/\D/g, '')}`}
                                                     title={fund.help_phone}>
@@ -77,13 +79,13 @@ export default function ModalFundHelp({ modal, fund }: { modal: ModalState; fund
                                 )}
 
                                 {fund.help_show_email && (
-                                    <div className="pane-section">
-                                        <div className="pane-icon">
+                                    <div className="modal-fund-help-pane-item">
+                                        <div className="modal-fund-help-pane-icon">
                                             <EmailIcon />
                                         </div>
-                                        <div className="pane-content">
-                                            <div className="pane-title">E-mail</div>
-                                            <div className="pane-subtitle">
+                                        <div className="modal-fund-help-pane-content">
+                                            <div className="modal-fund-help-pane-title">E-mail</div>
+                                            <div className="modal-fund-help-pane-subtitle">
                                                 <a href={`mailto:${fund.help_email}`} title={fund.help_email}>
                                                     {strLimit(fund.help_email, 25)}
                                                 </a>
@@ -93,13 +95,13 @@ export default function ModalFundHelp({ modal, fund }: { modal: ModalState; fund
                                 )}
 
                                 {fund.help_show_website && (
-                                    <div className="pane-section">
-                                        <div className="pane-icon">
+                                    <div className="modal-fund-help-pane-item">
+                                        <div className="modal-fund-help-pane-icon">
                                             <WebsiteIcon />
                                         </div>
-                                        <div className="pane-content">
-                                            <div className="pane-title">Website</div>
-                                            <div className="pane-subtitle">
+                                        <div className="modal-fund-help-pane-content">
+                                            <div className="modal-fund-help-pane-title">Website</div>
+                                            <div className="modal-fund-help-pane-subtitle">
                                                 <a
                                                     href={fund.help_website}
                                                     title={fund.help_website}

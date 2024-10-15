@@ -1012,50 +1012,6 @@
         }
     }
 
-    .block-pane {
-        box-shadow: none;
-        border: 1px solid var(--sign-up-border-color);
-        border-radius: calc(var(--border-radius) / 2);
-
-        .pane-section {
-            display: flex;
-            padding: 15px;
-            justify-content: center;
-            align-items: center;
-            gap: 12px;
-
-            .pane-title {
-                flex-grow: 1;
-                font: 700 18px/27px var(--base-font);
-            }
-        }
-
-        @media (max-width: 600px) {
-            .pane-section {
-                flex-direction: column;
-
-                .pane-icon {
-                    svg {
-                        width: 36px;
-                        height: 36px;
-                    }
-                }
-
-                .pane-title {
-                    font-weight: 600;
-                }
-
-                .pane-actions {
-                    width: 100%;
-
-                    .button {
-                        width: 100%;
-                    }
-                }
-            }
-        }
-    }
-
     &.block-sign_up-fixed {
         flex-direction: column;
         justify-content: center;
