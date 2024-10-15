@@ -1,4 +1,4 @@
-import React, { Fragment, useCallback, useEffect, useState } from 'react';
+import React, { Fragment, useCallback, useContext, useEffect, useState } from 'react';
 import StateNavLink from '../../../modules/state_router/StateNavLink';
 import useTranslate from '../../../../dashboard/hooks/useTranslate';
 import FundRequest from '../../../../dashboard/props/models/FundRequest';
@@ -10,6 +10,8 @@ import useSetProgress from '../../../../dashboard/hooks/useSetProgress';
 import useSetTitle from '../../../hooks/useSetTitle';
 import PayoutCard from '../payouts/elements/PayoutCard';
 import VoucherCard from '../vouchers/elements/VoucherCard';
+import { useNavigateState } from '../../../modules/state_router/Router';
+import { authContext } from '../../../contexts/AuthContext';
 
 export default function FundRequestsShow() {
     const { id } = useParams();
@@ -17,6 +19,8 @@ export default function FundRequestsShow() {
     const setTitle = useSetTitle();
     const translate = useTranslate();
     const setProgress = useSetProgress();
+    const navigateState = useNavigateState();
+    const { identity, token } = useContext(authContext);
 
     const [fundRequest, setFundRequest] = useState<FundRequest>(null);
     const [showDeclinedNote, setShowDeclinedNote] = useState(true);
@@ -34,14 +38,26 @@ export default function FundRequestsShow() {
     }, [fundRequestService, setProgress, id]);
 
     useEffect(() => {
-        fetchFundRequest();
-    }, [fetchFundRequest]);
+        if (identity) {
+            fetchFundRequest();
+        }
+    }, [identity, fetchFundRequest]);
 
     useEffect(() => {
         if (fundRequest) {
             setTitle(translate('page_state_titles.fund-request-show', { fund_name: fundRequest.fund.name }));
         }
     }, [fundRequest, setTitle, translate]);
+
+    useEffect(() => {
+        if (!identity && !token) {
+            navigateState('start', null, null, { state: { target: `fundRequest-${id}` } });
+        }
+    }, [id, identity, navigateState, token]);
+
+    if (!identity || !fundRequest) {
+        return null;
+    }
 
     return (
         <BlockShowcaseProfile
@@ -82,9 +98,6 @@ export default function FundRequestsShow() {
                                 <div className="flex flex-center flex-vertical">
                                     {fundRequest.state === 'pending' && (
                                         <div className="label label-warning">{fundRequest.state_locale}</div>
-                                    )}
-                                    {fundRequest.state === 'approved_partly' && (
-                                        <div className="label label-success">{fundRequest.state_locale}</div>
                                     )}
                                     {fundRequest.state === 'approved' && (
                                         <div className="label label-success">{fundRequest.state_locale}</div>

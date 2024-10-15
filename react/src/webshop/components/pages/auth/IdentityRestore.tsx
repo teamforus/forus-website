@@ -33,7 +33,7 @@ export default function IdentityRestore({ confirmation = false }: { confirmation
         (target: Array<string>) => {
             if (target[0] == targetFundRequest) {
                 if (target?.[1]) {
-                    navigateState('fund-request', { id: target[1] });
+                    navigateState('fund-request-show', { id: target[1] });
                 } else {
                     navigateState('start');
                 }
