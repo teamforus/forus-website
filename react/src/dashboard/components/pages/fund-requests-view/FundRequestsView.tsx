@@ -34,6 +34,7 @@ import usePushApiError from '../../../hooks/usePushApiError';
 import classNames from 'classnames';
 import ModalApproveFundRequest from '../../modals/ModalApproveFundRequest';
 import Note from '../../../props/models/Note';
+import FundRequestStateLabel from '../../elements/resource-states/FundRequestStateLabel';
 
 export default function FundRequestsView() {
     const authIdentity = useAuthIdentity();
@@ -133,20 +134,6 @@ export default function FundRequestsView() {
             can_resign_as_supervisor: isPending && employee && isValidatorsSupervisor,
         };
     }, [activeOrganization.bsn_enabled, authIdentity?.address, fundRequest, isValidatorsSupervisor]);
-
-    const [stateLabels] = useState({
-        pending: 'label-primary-variant',
-        declined: 'label-danger',
-        approved: 'label-success',
-        disregarded: 'label-default',
-    });
-
-    const [stateLabelIcons] = useState({
-        pending: 'circle-outline',
-        declined: 'circle-off-outline',
-        approved: 'circle-slice-8',
-        disregarded: 'circle-outline',
-    });
 
     const updateNotesRef = useRef<() => void>(null);
     const fetchEmailsRef = useRef<() => void>(null);
@@ -506,28 +493,7 @@ export default function FundRequestsView() {
                                         </div>
                                         <div className="flex flex-vertical flex-center">
                                             <div className="flex flex-horizontal">
-                                                {!(
-                                                    fundRequestMeta.state == 'pending' && fundRequestMeta.is_assigned
-                                                ) && (
-                                                    <div
-                                                        className={`label label-tag label-round ${
-                                                            stateLabels[fundRequestMeta.state] || ''
-                                                        }`}>
-                                                        <em
-                                                            className={`mdi mdi-${
-                                                                stateLabelIcons[fundRequestMeta.state]
-                                                            } icon-start`}
-                                                        />
-                                                        <span>{fundRequestMeta.state_locale}</span>
-                                                    </div>
-                                                )}
-
-                                                {fundRequestMeta.state == 'pending' && fundRequestMeta.is_assigned && (
-                                                    <div className="label label-tag label-round label-warning">
-                                                        <span className="mdi mdi-circle-outline icon-start" />
-                                                        <span>In behandeling</span>
-                                                    </div>
-                                                )}
+                                                <FundRequestStateLabel fundRequest={fundRequest} />
                                             </div>
                                         </div>
                                     </div>
