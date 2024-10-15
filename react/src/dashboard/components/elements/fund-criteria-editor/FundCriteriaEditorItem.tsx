@@ -63,6 +63,7 @@ export default function FundCriteriaEditorItem({
 
     const [title, setTitle] = useState(criterion.title);
     const [description, setDescription] = useState(criterion.title);
+    const [extraDescription, setExtraDescription] = useState(criterion.title);
     const [showAttachments, setShowAttachments] = useState(criterion.show_attachment);
     const [label, setLabel] = useState(criterion.label || '');
     const [optional, setOptional] = useState(criterion.optional);
@@ -94,6 +95,7 @@ export default function FundCriteriaEditorItem({
                 title,
                 optional,
                 description,
+                extra_description: extraDescription,
                 show_attachment: showAttachments,
                 record_type_key: recordType?.key,
             };
@@ -122,6 +124,7 @@ export default function FundCriteriaEditorItem({
         showAttachments,
         validateCriteria,
         setCriterion,
+        extraDescription,
     ]);
 
     const defaultTitle = useMemo(() => {
@@ -157,15 +160,18 @@ export default function FundCriteriaEditorItem({
                     title={title}
                     description={description}
                     description_html={criterion.description_html}
+                    extra_description={extraDescription}
+                    extra_description_html={criterion.extra_description_html}
                     validateCriteria={validateCriteria}
                     onSubmit={(res) => {
                         setTitle(res.title);
                         setDescription(res.description);
+                        setExtraDescription(res.extra_description);
                     }}
                 />
             ));
         },
-        [description, openModal, title, validateCriteria],
+        [description, openModal, title, validateCriteria, extraDescription],
     );
 
     const removeCriterion = useCallback(
@@ -220,8 +226,15 @@ export default function FundCriteriaEditorItem({
         setTitle(criterion?.title);
         setOptional(criterion?.optional);
         setDescription(criterion?.description);
+        setExtraDescription(criterion?.extra_description);
         setShowAttachments(criterion?.show_attachment);
-    }, [criterion?.title, criterion?.description, criterion?.optional, criterion?.show_attachment]);
+    }, [
+        criterion?.title,
+        criterion?.description,
+        criterion?.extra_description,
+        criterion?.optional,
+        criterion?.show_attachment,
+    ]);
 
     useEffect(() => {
         if (saveCriterionRef) {
@@ -238,11 +251,13 @@ export default function FundCriteriaEditorItem({
 
                 <div className="criterion-actions">
                     {isEditing && (
-                        <div
-                            className="button button-primary button-icon pull-left"
+                        <button
+                            type="button"
+                            className="button button-default"
                             onClick={() => editDescription(criterion)}>
-                            <em className="mdi mdi-comment-text icon-start" />
-                        </div>
+                            <em className="mdi mdi-text-box-edit icon-start" />
+                            Tekst bewerken
+                        </button>
                     )}
 
                     {!isEditing && (
@@ -265,7 +280,7 @@ export default function FundCriteriaEditorItem({
                             onClick={() => removeCriterion(criterion)}
                             disabled={disabled || isEditing}>
                             <em className="mdi mdi-delete-outline icon-start" />
-                            {translate('components.fund_criteria_editor_item.buttons.cancel')}
+                            {translate('components.fund_criteria_editor_item.buttons.delete')}
                         </button>
                     )}
                 </div>

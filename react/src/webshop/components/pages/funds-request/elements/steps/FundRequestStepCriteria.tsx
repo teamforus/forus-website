@@ -165,7 +165,17 @@ export default function FundRequestStepCriteria({
                                             <div className="sign_up-pane-heading">
                                                 {criterion.title || criterion.title_default}
                                             </div>
+                                        </div>
 
+                                        {!criterion.fund_criteria_step_id &&
+                                            criterion.extra_description &&
+                                            criterion.extra_description !== '_' && (
+                                                <div className="sign_up-pane-description">
+                                                    <Markdown content={criterion.extra_description_html} />
+                                                </div>
+                                            )}
+
+                                        <div className="sign_up-pane-text">
                                             {criterion.description && criterion.description !== '_' && (
                                                 <Markdown content={criterion.description_html} />
                                             )}
@@ -176,9 +186,17 @@ export default function FundRequestStepCriteria({
                         ) : (
                             <Fragment>
                                 <div className="sign_up-pane-text">
+                                    {!criterion.fund_criteria_step_id &&
+                                        criterion.extra_description &&
+                                        criterion.extra_description !== '_' && (
+                                            <div className="sign_up-pane-description">
+                                                <Markdown content={criterion.extra_description_html} />
+                                            </div>
+                                        )}
+
                                     <div className="sign_up-pane-text">
                                         {criterion.description && criterion.description !== '_' && (
-                                            <Markdown ng-if="" content={criterion.description_html} fontSize={16} />
+                                            <Markdown content={criterion.description_html} fontSize={16} />
                                         )}
                                     </div>
 

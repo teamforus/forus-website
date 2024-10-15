@@ -13,6 +13,8 @@ export default function ModalFundCriteriaDescriptionEdit({
     criterion,
     description,
     description_html,
+    extra_description,
+    extra_description_html,
     validateCriteria,
     onSubmit,
 }: {
@@ -21,8 +23,10 @@ export default function ModalFundCriteriaDescriptionEdit({
     criterion: FundCriterion;
     description: string;
     description_html: string;
+    extra_description: string;
+    extra_description_html: string;
     validateCriteria: (criterion: FundCriterion) => Promise<Array<unknown>>;
-    onSubmit?: (res: { title: string; description: string }) => void;
+    onSubmit?: (res: { title: string; description: string; extra_description: string }) => void;
 }) {
     const translate = useTranslate();
 
@@ -30,20 +34,29 @@ export default function ModalFundCriteriaDescriptionEdit({
         title?: string;
         description?: string;
         description_html?: string;
+        extra_description?: string;
+        extra_description_html?: string;
     }>(
         {
             title: title,
             description: description,
             description_html: description_html,
+            extra_description: extra_description,
+            extra_description_html: extra_description_html,
         },
         (values) => {
             validateCriteria({
                 ...criterion,
                 title: form.values.title,
                 description: form.values.description,
+                extra_description: form.values.extra_description,
             })
                 .then(() => {
-                    onSubmit({ title: values.title, description: values.description });
+                    onSubmit({
+                        title: values.title,
+                        description: values.description,
+                        extra_description: values.extra_description,
+                    });
                     modal.close();
                 })
                 .catch((err: ResponseError) => {
@@ -61,7 +74,7 @@ export default function ModalFundCriteriaDescriptionEdit({
 
     return (
         <div className={`modal modal-animated ${modal.loading ? 'modal-loading' : null}`}>
-            <div className="modal-backdrop" onClick={modal.close} />
+            <div className="modal-backdrop" />
 
             <form className="modal-window form" onSubmit={form.submit}>
                 <a className="mdi mdi-close modal-close" onClick={modal.close} role="button" />
@@ -96,6 +109,19 @@ export default function ModalFundCriteriaDescriptionEdit({
                             />
 
                             <FormError error={form.errors['criteria.0.description']} />
+                        </div>
+
+                        <div className="form-group">
+                            <label className="form-label">
+                                {translate('modals.modal_fund_criteria_description.labels.extra_description')}
+                            </label>
+
+                            <MarkdownEditor
+                                value={form.values.extra_description_html || ''}
+                                onChange={(description: string) => form.update({ extra_description: description })}
+                            />
+
+                            <FormError error={form.errors['criteria.0.extra_description']} />
                         </div>
                     </div>
                 </div>
