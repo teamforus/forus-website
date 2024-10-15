@@ -93,7 +93,8 @@
 
 @import '_common/sections/blocks/block-map-office-card';
 @import '_common/sections/blocks/block-sessions';
-@import '_common/sections/blocks/block-sign_up';
+@import '_common/sections/blocks/block-sign_up';;
+@import '_common/sections/blocks/block-sign_up-help';
 @import '_common/sections/blocks/block-sign_up-provider';
 @import '_common/sections/blocks/block-notifications-table';
 
@@ -141,3 +142,4 @@
 @import '_common/modals/modal-pin-code';
 @import '_common/modals/modal-notification';
 @import '_common/modals/modal-open-in-me';
+@import '_common/modals/modal-fund-help';

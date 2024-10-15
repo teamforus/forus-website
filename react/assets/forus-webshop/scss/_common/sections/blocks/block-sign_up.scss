@@ -165,6 +165,7 @@
         box-sizing: border-box;
         border-radius: calc(var(--border-radius) / 2);
         box-shadow: var(--box-shadow);
+        margin-bottom: 30px;
 
         .sign_up-pane-header {
             border-bottom: 1px solid var(--sign-up-border-color);
@@ -818,6 +819,10 @@
                     }
                 }
             }
+        }
+
+        &:last-child {
+            margin-bottom: 0;
         }
     }
 
