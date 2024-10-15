@@ -16,18 +16,14 @@ export default function FundRequestHelpBlock({ fund }: { fund?: Fund }) {
     }
 
     return (
-        <div className="block block-pane">
-            <div className="pane-section">
-                <div className="pane-icon">
-                    <HelpIcon />
-                </div>
-                <div className="pane-title">{fund.help_block_text}</div>
-                <div className="pane-actions">
-                    <button className="button button-sm button-primary" onClick={openHelpModal}>
-                        {fund.help_button_text}
-                    </button>
-                </div>
+        <div className="block block-sign_up-help">
+            <div className="sign_up-help-icon">
+                <HelpIcon />
             </div>
+            <div className="sign_up-help-title">{fund.help_block_text}</div>
+            <button className="button button-sm button-primary sign_up-help-button" onClick={openHelpModal}>
+                {fund.help_button_text}
+            </button>
         </div>
     );
 }

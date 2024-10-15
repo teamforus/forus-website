@@ -18,46 +18,48 @@
                     }
                 }
 
-                .block-pane {
+                .modal-fund-help-pane {
                     box-shadow: none;
                     border: 1px solid var(--border-color);
-                    border-radius: calc(var(--border-radius) / 2);
+                    border-radius: var(--border-radius);
                     display: flex;
                     flex-direction: row;
-                    margin-top: 20px;
 
-                    .pane-section {
+                    .modal-fund-help-pane-item {
                         display: flex;
                         flex-direction: column;
-                        padding: 24px;
+                        padding: 25px;
                         justify-content: center;
                         align-items: center;
-                        border: none;
-                        flex: 1;
+                        gap: 10px;
+                        flex: 1 1 auto;
 
-                        .pane-icon {
+                        .modal-fund-help-pane-icon {
+                            display: flex;
                             border-radius: 50%;
                             background: #f4f5f7;
-                            padding: 17px;
-                            line-height: 0;
-                            margin-bottom: 12px;
+                            align-items: center;
+                            justify-content: center;
+                            width: 60px;
+                            height: 60px;
 
                             svg {
+                                display: block;
                                 width: 28px;
                                 height: 28px;
                             }
                         }
 
-                        .pane-content {
+                        .modal-fund-help-pane-content {
                             text-align: center;
 
-                            .pane-title {
+                            .modal-fund-help-pane-title {
                                 color: #353535;
                                 font: 400 13px/18px var(--base-font);
                                 white-space: nowrap;
                             }
 
-                            .pane-subtitle {
+                            .modal-fund-help-pane-subtitle {
                                 color: #222;
                                 font: 600 14px/21px var(--base-font);
                                 white-space: nowrap;
@@ -66,7 +68,7 @@
                                     font: inherit;
 
                                     &.link {
-                                        color: #004D93;
+                                        color: #004d93;
                                         text-decoration: underline;
                                     }
                                 }
@@ -76,18 +78,18 @@
 
                     @media (max-width: 960px) {
                         flex-direction: column;
-                        padding: 17px 20px;
+                        padding: 20px 20px;
+                        gap: 20px;
 
-                        .pane-section {
+                        .modal-fund-help-pane-item {
                             padding: 0;
                             flex-direction: row;
                             justify-content: flex-start;
                             gap: 12px;
-                            margin-bottom: 14px;
 
-                            .pane-icon {
-                                padding: 7px;
-                                margin-bottom: 0;
+                            .modal-fund-help-pane-icon {
+                                width: 30px;
+                                height: 30px;
 
                                 svg {
                                     width: 16px;
@@ -95,17 +97,16 @@
                                 }
                             }
 
-                            .pane-content {
+                            .modal-fund-help-pane-content {
                                 text-align: left;
 
-                                .pane-subtitle {
-                                    font-size: 13px;
-                                    line-height: 18px;
+                                .modal-fund-help-pane-title {
+                                    font: 400 13px/15px var(--base-font);
                                 }
-                            }
 
-                            &:last-child {
-                                margin-bottom: 0;
+                                .modal-fund-help-pane-subtitle {
+                                    font: 600 13px/15px var(--base-font);
+                                }
                             }
                         }
                     }

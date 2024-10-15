@@ -11,6 +11,7 @@ import { ResponseError } from '../../../../props/ApiResponses';
 import usePushDanger from '../../../../hooks/usePushDanger';
 import { useFundService } from '../../../../services/FundService';
 import usePushSuccess from '../../../../hooks/usePushSuccess';
+import classNames from 'classnames';
 
 export default function OrganizationsFundsShowFundRequestConfigCard({
     fund,
@@ -26,7 +27,7 @@ export default function OrganizationsFundsShowFundRequestConfigCard({
 
     const fundService = useFundService();
 
-    const [isCollapsed, setIsCollapsed] = useState(true);
+    const [collapsed, setCollapsed] = useState(true);
 
     const form = useFormBuilder<{
         help_title: string;
@@ -48,10 +49,10 @@ export default function OrganizationsFundsShowFundRequestConfigCard({
             help_title: '',
             help_block_text: '',
             help_button_text: '',
-            help_show_email: true,
-            help_show_phone: true,
-            help_show_website: true,
-            help_show_chat: true,
+            help_show_email: false,
+            help_show_phone: false,
+            help_show_website: false,
+            help_show_chat: false,
             help_email: '',
             help_phone: '',
             help_website: '',
@@ -63,6 +64,7 @@ export default function OrganizationsFundsShowFundRequestConfigCard({
         (values) => {
             setProgress(0);
 
+            console.log('asd-0');
             fundService
                 .update(fund.organization.id, fund.id, values)
                 .then(() => {
@@ -105,289 +107,282 @@ export default function OrganizationsFundsShowFundRequestConfigCard({
     }, [updateForm, fund]);
 
     return (
-        <div className="block block-collapsable">
-            <div className="block-item">
-                <div className="block-header" onClick={() => setIsCollapsed(!isCollapsed)}>
-                    <em className={`block-icon-collapse mdi mdi-menu-${isCollapsed ? 'right' : 'down'}`} />
+        <form className="block block-collapsable form" onSubmit={form.submit}>
+            <div className="collapsable-header" onClick={() => setCollapsed(!collapsed)}>
+                <em
+                    className={classNames(
+                        'collapsable-header-icon',
+                        'mdi',
+                        collapsed ? 'mdi-menu-right' : 'mdi-menu-down',
+                    )}
+                />
 
-                    <div className="block-title">Instellingen aanvraagformulier</div>
+                <div className="collapsable-header-title">Instellingen aanvraagformulier</div>
 
-                    <div className="block-actions">
-                        {!isCollapsed ? (
-                            <button className="button button-default button-sm" onClick={() => setIsCollapsed(true)}>
-                                <em className="mdi mdi-arrow-collapse-vertical icon-start" />
-                                Inklappen
-                            </button>
-                        ) : (
-                            <button className="button button-primary button-sm" onClick={() => setIsCollapsed(false)}>
-                                <em className="mdi mdi-arrow-expand-vertical icon-start" />
-                                Uitklappen
-                            </button>
-                        )}
-                    </div>
-                </div>
+                {!collapsed ? (
+                    <button
+                        className="button button-default button-sm"
+                        type="button"
+                        onClick={() => setCollapsed(true)}>
+                        <em className="mdi mdi-arrow-collapse-vertical icon-start" />
+                        Inklappen
+                    </button>
+                ) : (
+                    <button
+                        className="button button-primary button-sm"
+                        type="button"
+                        onClick={() => setCollapsed(false)}>
+                        <em className="mdi mdi-arrow-expand-vertical icon-start" />
+                        Uitklappen
+                    </button>
+                )}
+            </div>
 
-                {!isCollapsed && (
-                    <Fragment>
-                        <div className="block-body">
-                            <div className="form">
-                                <div className="form-group">
-                                    <div className="form-title">
-                                        {translate('fund_request_configurations.titles.main_information')}
-                                    </div>
-                                </div>
+            {!collapsed && (
+                <Fragment>
+                    <div className="collapsable-body">
+                        <div className="form-group">
+                            <div className="form-title">
+                                {translate('fund_request_configurations.titles.main_information')}
+                            </div>
+                        </div>
 
-                                <div className="form-group">
-                                    <CheckboxControl
-                                        id="enable_help_modal"
-                                        title={translate('fund_request_configurations.labels.enable_help_modal')}
-                                        checked={!!form.values.help_enabled}
-                                        onChange={(e) => form.update({ help_enabled: e.target.checked })}
-                                    />
-                                    <FormError error={form.errors?.help_enabled} />
-                                </div>
+                        <div className="form-group">
+                            <CheckboxControl
+                                id="enable_help_modal"
+                                title={translate('fund_request_configurations.labels.enable_help_modal')}
+                                checked={!!form.values.help_enabled}
+                                onChange={(e) => form.update({ help_enabled: e.target.checked })}
+                            />
+                            <FormError error={form.errors?.help_enabled} />
+                        </div>
 
-                                <div className="form-group row">
-                                    <div className="col col-xs-12 col-lg-6">
-                                        <div className="form-group">
-                                            <label className="form-label">
-                                                {translate('fund_request_configurations.labels.banner_text')}
-                                            </label>
-
-                                            <FormGroupInfo
-                                                info={
-                                                    <p>
-                                                        Banner tekst Een korte tekst onder het aanvraagformulier over de
-                                                        hulp optie tijdens het invullen van het aanvraagformulier. Deze
-                                                        tekst wordt naast de hulp knop getoond.
-                                                    </p>
-                                                }>
-                                                <input
-                                                    type="text"
-                                                    className="form-control"
-                                                    value={form.values.help_block_text ?? ''}
-                                                    placeholder={translate(
-                                                        'fund_request_configurations.labels.banner_text_placeholder',
-                                                    )}
-                                                    onChange={(e) => form.update({ help_block_text: e.target.value })}
-                                                />
-                                            </FormGroupInfo>
-
-                                            <FormError error={form.errors?.help_block_text} />
-                                        </div>
-                                    </div>
-
-                                    <div className="col col-xs-12 col-lg-6">
-                                        <div className="form-group">
-                                            <label className="form-label">
-                                                {translate('fund_request_configurations.labels.button_text')}
-                                            </label>
-
-                                            <FormGroupInfo
-                                                info={
-                                                    <p>
-                                                        Knop tekst De tekst van de knop onder het aanvraagformulier.
-                                                        Door te klikken op deze knop opent er meer informatie (en
-                                                        contactinformatie) over de geboden ondersteuning.
-                                                    </p>
-                                                }>
-                                                <input
-                                                    type="text"
-                                                    className="form-control"
-                                                    value={form.values.help_button_text ?? ''}
-                                                    placeholder={translate(
-                                                        'fund_request_configurations.labels.button_text_placeholder',
-                                                    )}
-                                                    onChange={(e) => form.update({ help_button_text: e.target.value })}
-                                                />
-                                            </FormGroupInfo>
-
-                                            <FormError error={form.errors?.help_button_text} />
-                                        </div>
-                                    </div>
-                                </div>
-
+                        <div className="form-group row">
+                            <div className="col col-xs-12 col-lg-6">
                                 <div className="form-group">
                                     <label className="form-label">
-                                        {translate('fund_request_configurations.labels.title')}
+                                        {translate('fund_request_configurations.labels.banner_text')}
                                     </label>
 
-                                    <input
-                                        type="text"
-                                        className="form-control"
-                                        value={form.values.help_title ?? ''}
-                                        placeholder={translate('fund_request_configurations.labels.title_placeholder')}
-                                        onChange={(e) => form.update({ help_title: e.target.value })}
-                                    />
-
-                                    <FormError error={form.errors?.help_title} />
+                                    <FormGroupInfo
+                                        info={
+                                            <p>
+                                                Banner tekst Een korte tekst onder het aanvraagformulier over de hulp
+                                                optie tijdens het invullen van het aanvraagformulier. Deze tekst wordt
+                                                naast de hulp knop getoond.
+                                            </p>
+                                        }>
+                                        <input
+                                            type="text"
+                                            className="form-control"
+                                            value={form.values.help_block_text ?? ''}
+                                            placeholder={translate(
+                                                'fund_request_configurations.labels.banner_text_placeholder',
+                                            )}
+                                            onChange={(e) => form.update({ help_block_text: e.target.value })}
+                                        />
+                                    </FormGroupInfo>
+                                    <FormError error={form.errors?.help_block_text} />
                                 </div>
+                            </div>
 
+                            <div className="col col-xs-12 col-lg-6">
                                 <div className="form-group">
                                     <label className="form-label">
-                                        {translate('fund_request_configurations.labels.description')}
+                                        {translate('fund_request_configurations.labels.button_text')}
                                     </label>
-                                    <MarkdownEditor
-                                        value={form.values.help_description_html}
-                                        onChange={(description) => form.update({ help_description: description })}
-                                        extendedOptions={true}
-                                        placeholder={translate(
-                                            'fund_request_configurations.labels.description_placeholder',
-                                        )}
-                                    />
-                                    <div className="form-hint">Max. 1000 tekens</div>
-                                    <FormError error={form.errors?.help_description} />
-                                </div>
 
-                                <div className="form-group">
-                                    <div className="form-title">
-                                        {translate('fund_request_configurations.titles.contact_details')}
-                                    </div>
-                                </div>
+                                    <FormGroupInfo
+                                        info={
+                                            <p>
+                                                Knop tekst De tekst van de knop onder het aanvraagformulier. Door te
+                                                klikken op deze knop opent er meer informatie (en contactinformatie)
+                                                over de geboden ondersteuning.
+                                            </p>
+                                        }>
+                                        <input
+                                            type="text"
+                                            className="form-control"
+                                            value={form.values.help_button_text ?? ''}
+                                            placeholder={translate(
+                                                'fund_request_configurations.labels.button_text_placeholder',
+                                            )}
+                                            onChange={(e) => form.update({ help_button_text: e.target.value })}
+                                        />
+                                    </FormGroupInfo>
 
-                                <div className="form-group row">
-                                    <div className="col col-xs-12 col-lg-6">
-                                        <div className="form-group">
-                                            <CheckboxControl
-                                                id="show_email"
-                                                title={translate('fund_request_configurations.labels.show_email')}
-                                                checked={!!form.values.help_show_email}
-                                                onChange={(e) => form.update({ help_show_email: e.target.checked })}
-                                            />
-                                            <FormError error={form.errors?.help_show_email} />
-                                        </div>
-
-                                        <div className="form-group">
-                                            <label className="form-label">
-                                                {translate('fund_request_configurations.labels.email')}
-                                            </label>
-
-                                            <input
-                                                type="text"
-                                                disabled={!form.values.help_show_email}
-                                                className="form-control"
-                                                value={form.values.help_email ?? ''}
-                                                placeholder={translate(
-                                                    'fund_request_configurations.labels.email_placeholder',
-                                                )}
-                                                onChange={(e) => form.update({ help_email: e.target.value })}
-                                            />
-
-                                            <FormError error={form.errors?.help_email} />
-                                        </div>
-
-                                        <div className="form-group">
-                                            <CheckboxControl
-                                                id="show_website"
-                                                title={translate('fund_request_configurations.labels.show_website')}
-                                                checked={!!form.values.help_show_website}
-                                                onChange={(e) => form.update({ help_show_website: e.target.checked })}
-                                            />
-                                            <FormError error={form.errors?.help_show_website} />
-                                        </div>
-
-                                        <div className="form-group">
-                                            <label className="form-label">
-                                                {translate('fund_request_configurations.labels.website')}
-                                            </label>
-
-                                            <input
-                                                type="text"
-                                                disabled={!form.values.help_show_website}
-                                                className="form-control"
-                                                value={form.values.help_website ?? ''}
-                                                placeholder={translate(
-                                                    'fund_request_configurations.labels.website_placeholder',
-                                                )}
-                                                onChange={(e) => form.update({ help_website: e.target.value })}
-                                            />
-
-                                            <FormError error={form.errors?.help_website} />
-                                        </div>
-                                    </div>
-
-                                    <div className="col col-xs-12 col-lg-6">
-                                        <div className="form-group">
-                                            <CheckboxControl
-                                                id="show_phone"
-                                                title={translate('fund_request_configurations.labels.show_phone')}
-                                                checked={!!form.values.help_show_phone}
-                                                onChange={(e) => form.update({ help_show_phone: e.target.checked })}
-                                            />
-                                            <FormError error={form.errors?.help_show_phone} />
-                                        </div>
-
-                                        <div className="form-group">
-                                            <label className="form-label">
-                                                {translate('fund_request_configurations.labels.phone')}
-                                            </label>
-
-                                            <input
-                                                type="text"
-                                                disabled={!form.values.help_show_phone}
-                                                className="form-control"
-                                                value={form.values.help_phone ?? ''}
-                                                placeholder={translate(
-                                                    'fund_request_configurations.labels.phone_placeholder',
-                                                )}
-                                                onChange={(e) => form.update({ help_phone: e.target.value })}
-                                            />
-
-                                            <FormError error={form.errors?.help_phone} />
-                                        </div>
-
-                                        <div className="form-group">
-                                            <CheckboxControl
-                                                id="show_chat"
-                                                title={translate('fund_request_configurations.labels.show_chat')}
-                                                checked={!!form.values.help_show_chat}
-                                                onChange={(e) => form.update({ help_show_chat: e.target.checked })}
-                                            />
-                                            <FormError error={form.errors?.help_show_chat} />
-                                        </div>
-
-                                        <div className="form-group">
-                                            <label className="form-label">
-                                                {translate('fund_request_configurations.labels.chat')}
-                                            </label>
-
-                                            <input
-                                                type="text"
-                                                disabled={!form.values.help_show_chat}
-                                                className="form-control"
-                                                value={form.values.help_chat ?? ''}
-                                                placeholder={translate(
-                                                    'fund_request_configurations.labels.chat_placeholder',
-                                                )}
-                                                onChange={(e) => form.update({ help_chat: e.target.value })}
-                                            />
-
-                                            <FormError error={form.errors?.help_chat} />
-                                        </div>
-                                    </div>
+                                    <FormError error={form.errors?.help_button_text} />
                                 </div>
                             </div>
                         </div>
 
-                        <div className="block-footer">
-                            <div className="flex-grow" />
+                        <div className="form-group">
+                            <label className="form-label">
+                                {translate('fund_request_configurations.labels.title')}
+                            </label>
 
+                            <input
+                                type="text"
+                                className="form-control"
+                                value={form.values.help_title ?? ''}
+                                placeholder={translate('fund_request_configurations.labels.title_placeholder')}
+                                onChange={(e) => form.update({ help_title: e.target.value })}
+                            />
+
+                            <FormError error={form.errors?.help_title} />
+                        </div>
+
+                        <div className="form-group">
+                            <label className="form-label">
+                                {translate('fund_request_configurations.labels.description')}
+                            </label>
+                            <MarkdownEditor
+                                value={form.values.help_description_html}
+                                onChange={(description) => form.update({ help_description: description })}
+                                extendedOptions={true}
+                                placeholder={translate('fund_request_configurations.labels.description_placeholder')}
+                            />
+                            <div className="form-hint">Max. 1000 tekens</div>
+                            <FormError error={form.errors?.help_description} />
+                        </div>
+
+                        <div className="form-group">
+                            <div className="form-title">
+                                {translate('fund_request_configurations.titles.contact_details')}
+                            </div>
+                        </div>
+
+                        <div className="form-group row">
+                            <div className="col col-xs-12 col-lg-6">
+                                <div className="form-group">
+                                    <CheckboxControl
+                                        id="show_email"
+                                        narrow={true}
+                                        title={translate('fund_request_configurations.labels.show_email')}
+                                        checked={!!form.values.help_show_email}
+                                        onChange={(e) => form.update({ help_show_email: e.target.checked })}
+                                    />
+
+                                    <label className="form-label">
+                                        {translate('fund_request_configurations.labels.email')}
+                                    </label>
+
+                                    <input
+                                        type="text"
+                                        disabled={!form.values.help_show_email}
+                                        className="form-control"
+                                        value={form.values.help_email ?? ''}
+                                        placeholder={translate('fund_request_configurations.labels.email_placeholder')}
+                                        onChange={(e) => form.update({ help_email: e.target.value })}
+                                    />
+
+                                    <FormError error={form.errors?.help_show_email} />
+                                    <FormError error={form.errors?.help_email} />
+                                </div>
+
+                                <div className="form-group">
+                                    <CheckboxControl
+                                        id="show_website"
+                                        narrow={true}
+                                        title={translate('fund_request_configurations.labels.show_website')}
+                                        checked={!!form.values.help_show_website}
+                                        onChange={(e) => form.update({ help_show_website: e.target.checked })}
+                                    />
+                                    <label className="form-label">
+                                        {translate('fund_request_configurations.labels.website')}
+                                    </label>
+
+                                    <input
+                                        type="text"
+                                        disabled={!form.values.help_show_website}
+                                        className="form-control"
+                                        value={form.values.help_website ?? ''}
+                                        placeholder={translate(
+                                            'fund_request_configurations.labels.website_placeholder',
+                                        )}
+                                        onChange={(e) => form.update({ help_website: e.target.value })}
+                                    />
+
+                                    <FormError error={form.errors?.help_show_website} />
+                                    <FormError error={form.errors?.help_website} />
+                                </div>
+                            </div>
+
+                            <div className="col col-xs-12 col-lg-6">
+                                <div className="form-group">
+                                    <CheckboxControl
+                                        id="show_phone"
+                                        narrow={true}
+                                        title={translate('fund_request_configurations.labels.show_phone')}
+                                        checked={!!form.values.help_show_phone}
+                                        onChange={(e) => form.update({ help_show_phone: e.target.checked })}
+                                    />
+                                    <label className="form-label">
+                                        {translate('fund_request_configurations.labels.phone')}
+                                    </label>
+
+                                    <input
+                                        type="text"
+                                        disabled={!form.values.help_show_phone}
+                                        className="form-control"
+                                        value={form.values.help_phone ?? ''}
+                                        placeholder={translate('fund_request_configurations.labels.phone_placeholder')}
+                                        onChange={(e) => form.update({ help_phone: e.target.value })}
+                                    />
+
+                                    <FormError error={form.errors?.help_show_phone} />
+                                    <FormError error={form.errors?.help_phone} />
+                                </div>
+
+                                <div className="form-group">
+                                    <CheckboxControl
+                                        id="show_chat"
+                                        narrow={true}
+                                        title={translate('fund_request_configurations.labels.show_chat')}
+                                        checked={!!form.values.help_show_chat}
+                                        onChange={(e) => form.update({ help_show_chat: e.target.checked })}
+                                    />
+
+                                    <label className="form-label">
+                                        {translate('fund_request_configurations.labels.chat')}
+                                    </label>
+
+                                    <input
+                                        type="text"
+                                        disabled={!form.values.help_show_chat}
+                                        className="form-control"
+                                        value={form.values.help_chat ?? ''}
+                                        placeholder={translate('fund_request_configurations.labels.chat_placeholder')}
+                                        onChange={(e) => form.update({ help_chat: e.target.value })}
+                                    />
+
+                                    <FormError error={form.errors?.help_show_chat} />
+                                    <FormError error={form.errors?.help_chat} />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="collapsable-footer flex flex-end">
+                        <div className="button-group">
                             <button
+                                type={'button'}
                                 className="button button-default"
                                 onClick={() => {
+                                    console.log('asd');
                                     form.reset();
-                                    setIsCollapsed(true);
+                                    setCollapsed(true);
                                 }}>
                                 {translate('fund_request_configurations.buttons.cancel')}
                             </button>
 
-                            <button className="button button-primary" onClick={() => form.submit()}>
+                            <button className="button button-primary" type="submit">
                                 {translate('fund_request_configurations.buttons.submit')}
                             </button>
                         </div>
-                    </Fragment>
-                )}
-            </div>
-        </div>
+                    </div>
+                </Fragment>
+            )}
+        </form>
     );
 }
