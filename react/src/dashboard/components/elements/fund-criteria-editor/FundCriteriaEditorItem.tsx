@@ -62,8 +62,14 @@ export default function FundCriteriaEditorItem({
     );
 
     const [title, setTitle] = useState(criterion.title);
-    const [description, setDescription] = useState(criterion.title);
-    const [extraDescription, setExtraDescription] = useState(criterion.title);
+    const [criterionTexts, setCriterionTexts] = useState<{
+        title: string;
+        description: string;
+        description_html: string;
+        extra_description: string;
+        extra_description_html: string;
+    }>(null);
+
     const [showAttachments, setShowAttachments] = useState(criterion.show_attachment);
     const [label, setLabel] = useState(criterion.label || '');
     const [optional, setOptional] = useState(criterion.optional);
@@ -92,12 +98,10 @@ export default function FundCriteriaEditorItem({
                 min: validations?.[recordType.key]?.min,
                 max: validations?.[recordType.key]?.max,
                 label,
-                title,
                 optional,
-                description,
-                extra_description: extraDescription,
                 show_attachment: showAttachments,
                 record_type_key: recordType?.key,
+                ...criterionTexts,
             };
 
             validateCriteria({ ..._criterion })
@@ -112,19 +116,17 @@ export default function FundCriteriaEditorItem({
                 });
         });
     }, [
-        values,
-        recordType,
-        operators,
-        validations,
         criterion?.id,
-        optional,
-        title,
+        operators,
+        recordType,
+        values,
+        validations,
         label,
-        description,
+        optional,
         showAttachments,
+        criterionTexts,
         validateCriteria,
         setCriterion,
-        extraDescription,
     ]);
 
     const defaultTitle = useMemo(() => {
@@ -157,21 +159,16 @@ export default function FundCriteriaEditorItem({
                 <ModalFundCriteriaDescriptionEdit
                     modal={modal}
                     criterion={criterion}
-                    title={title}
-                    description={description}
-                    description_html={criterion.description_html}
-                    extra_description={extraDescription}
-                    extra_description_html={criterion.extra_description_html}
+                    criterionTexts={criterionTexts}
                     validateCriteria={validateCriteria}
                     onSubmit={(res) => {
+                        setCriterionTexts(res);
                         setTitle(res.title);
-                        setDescription(res.description);
-                        setExtraDescription(res.extra_description);
                     }}
                 />
             ));
         },
-        [description, openModal, title, validateCriteria, extraDescription],
+        [openModal, criterionTexts, validateCriteria],
     );
 
     const removeCriterion = useCallback(
@@ -223,10 +220,16 @@ export default function FundCriteriaEditorItem({
     }, [criterion, preparedData]);
 
     useEffect(() => {
+        setCriterionTexts({
+            title: criterion?.title,
+            description: criterion?.description,
+            description_html: criterion?.description_html,
+            extra_description: criterion?.extra_description,
+            extra_description_html: criterion?.extra_description_html,
+        });
+
         setTitle(criterion?.title);
         setOptional(criterion?.optional);
-        setDescription(criterion?.description);
-        setExtraDescription(criterion?.extra_description);
         setShowAttachments(criterion?.show_attachment);
     }, [
         criterion?.title,
@@ -234,6 +237,8 @@ export default function FundCriteriaEditorItem({
         criterion?.extra_description,
         criterion?.optional,
         criterion?.show_attachment,
+        criterion?.description_html,
+        criterion?.extra_description_html,
     ]);
 
     useEffect(() => {
