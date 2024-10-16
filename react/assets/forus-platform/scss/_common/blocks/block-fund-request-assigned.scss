@@ -1,0 +1,16 @@
+.block.block-fund-request-assigned {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-right: 10px;
+
+    .block-fund-request-assigned-key {
+        color: #134478;
+        font: 600 13px/18px var(--base-font);
+    }
+
+    .block-fund-request-assigned-value {
+        color: #151b26;
+        font: 600 13px/18px var(--base-font);
+    }
+}
