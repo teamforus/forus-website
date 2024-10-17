@@ -36,6 +36,7 @@ import FundRequestStateLabel from '../../elements/resource-states/FundRequestSta
 import KeyValueItem from '../../elements/key-value/KeyValueItem';
 import TableRowActions from '../../elements/tables/TableRowActions';
 import Icon from '../../../../../assets/forus-platform/resources/_platform-common/assets/img/fund-request-icon.svg';
+import TableEmptyValue from '../../elements/table-empty-value/TableEmptyValue';
 
 export default function FundRequestsView() {
     const authIdentity = useAuthIdentity();
@@ -107,7 +108,10 @@ export default function FundRequestsView() {
             const operator = operators[criterion.operator] || 'moet';
             const value = `${criterion.record_type.key === 'net_worth' ? '€' : ''}${criterion.value}`;
 
-            return { ...criterion, description: `${criterion.record_type.name} ${operator} ${value} zijn.` };
+            return {
+                ...criterion,
+                description: `${criterion.record_type.name} ${operator} ${value} zijn.`,
+            };
         });
 
         return {
@@ -474,42 +478,39 @@ export default function FundRequestsView() {
 
             <div className="card">
                 <div className="card-header">
-                    <div className="flex">
-                        <div className="flex flex-grow">
-                            <div className="card-title">
-                                <Icon />
-                                Aanvraag ID:&nbsp;
+                    <div className="flex flex-row">
+                        <div className="card-title flex flex-grow flex-gap">
+                            <Icon />
+
+                            <div className="flex flex-gap-sm">
+                                Aanvraag ID
                                 <div className="text-strong">#{fundRequestMeta.id}</div>
                             </div>
                         </div>
 
                         {['pending', 'disregarded'].includes(fundRequestMeta.state) && (
-                            <div className="flex flex-self-start">
-                                <div className="flex-row">
-                                    {fundRequestMeta.employee && (
-                                        <div className="block block-fund-request-assigned">
-                                            <div className="block-fund-request-assigned-key">
-                                                {translate('validation_requests.labels.assigned_to_employee')}:
-                                            </div>
-
-                                            {fundRequestMeta.is_assigned ? (
-                                                <div className="flex">
-                                                    <em className="mdi mdi-account icon-start" />
-                                                    <div className="block-fund-request-assigned-value">
-                                                        Toegewezen aan mij
-                                                    </div>
-                                                </div>
-                                            ) : (
-                                                <div className="flex">
-                                                    <em className="mdi mdi-account-outline icon-start" />
-                                                    <div className="block-fund-request-assigned-value">
-                                                        {fundRequestMeta.employee.email}
-                                                    </div>
-                                                </div>
-                                            )}
+                            <div className="flex flex-gap">
+                                {fundRequestMeta.employee && (
+                                    <div className="block block-fund-request-assigned">
+                                        <div className="block-fund-request-assigned-key">
+                                            {translate('validation_requests.labels.assigned_to_employee')}:
                                         </div>
-                                    )}
 
+                                        {fundRequestMeta.is_assigned ? (
+                                            <div className="block-fund-request-assigned-value">
+                                                <em className="mdi mdi-account" />
+                                                Toegewezen aan mij
+                                            </div>
+                                        ) : (
+                                            <div className="block-fund-request-assigned-value">
+                                                <em className="mdi mdi-account-outline" />
+                                                {fundRequestMeta.employee.email}
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
+
+                                <div className="button-group">
                                     {fundRequestMeta.is_assignable && (
                                         <button
                                             className={`button ${
@@ -764,7 +765,7 @@ export default function FundRequestsView() {
                                             <td>{record.created_at_locale}</td>
 
                                             <td className="td-narrow text-right">
-                                                {fundRequestMeta.is_assigned && (
+                                                {fundRequestMeta.is_assigned ? (
                                                     <TableRowActions
                                                         content={() => (
                                                             <div className="dropdown dropdown-actions">
@@ -785,6 +786,8 @@ export default function FundRequestsView() {
                                                             </div>
                                                         )}
                                                     />
+                                                ) : (
+                                                    <TableEmptyValue />
                                                 )}
                                             </td>
                                         </tr>

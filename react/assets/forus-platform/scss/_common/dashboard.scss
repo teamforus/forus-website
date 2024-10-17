@@ -855,7 +855,6 @@ body {
         color: #282b39;
         cursor: inherit;
         display: flex;
-        align-items: center;
 
         .card-collapse {
             float: right;
@@ -872,10 +871,6 @@ body {
             margin-right: 5px;
             font-size: 20px;
             line-height: inherit;
-        }
-
-        svg {
-            margin-right: 10px;
         }
 
         &.card-title-sm {
