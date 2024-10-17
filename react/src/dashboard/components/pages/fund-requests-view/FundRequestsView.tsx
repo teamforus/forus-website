@@ -746,9 +746,7 @@ export default function FundRequestsView() {
                                         <th style={{ width: '20%' }}>
                                             {translate('validation_requests.labels.value')}
                                         </th>
-                                        <th style={{ width: '20%' }}>
-                                            {translate('validation_requests.labels.date')}
-                                        </th>
+                                        <th style={{ width: '20%' }}>{translate('validation_requests.labels.date')}</th>
                                         <th style={{ width: '20%' }} className="text-right">
                                             {translate('validation_requests.labels.actions')}
                                         </th>
