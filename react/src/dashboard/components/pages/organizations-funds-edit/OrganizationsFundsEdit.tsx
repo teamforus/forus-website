@@ -817,8 +817,8 @@ export default function OrganizationsFundsEdit() {
                                         <FormGroupInfo
                                             info={
                                                 <Fragment>
-                                                    De optie om verplichte of optionele vragen in het 
-                                                    aanvraagformulier te markeren met een informatieve tekst
+                                                    De optie om verplichte of optionele vragen in het aanvraagformulier
+                                                    te markeren met een informatieve tekst
                                                 </Fragment>
                                             }>
                                             <SelectControl
