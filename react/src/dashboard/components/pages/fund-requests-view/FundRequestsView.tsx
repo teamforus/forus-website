@@ -482,7 +482,7 @@ export default function FundRequestsView() {
                         <div className="card-title flex flex-grow flex-gap">
                             <Icon />
 
-                            <div className="flex flex-gap-sm">
+                            <div className="flex flex-gap-sm flex-self-center">
                                 Aanvraag ID
                                 <div className="text-strong">#{fundRequestMeta.id}</div>
                             </div>
