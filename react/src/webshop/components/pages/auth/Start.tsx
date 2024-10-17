@@ -1,6 +1,6 @@
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { authContext } from '../../../contexts/AuthContext';
-import { useNavigateState } from '../../../modules/state_router/Router';
+import { useNavigateState, useStateParams } from '../../../modules/state_router/Router';
 import { useAuthService } from '../../../services/AuthService';
 import useFormBuilder from '../../../../dashboard/hooks/useFormBuilder';
 import { ResponseError } from '../../../../dashboard/props/ApiResponses';
@@ -23,6 +23,7 @@ import useSetTitle from '../../../hooks/useSetTitle';
 import { clickOnKeyEnter } from '../../../../dashboard/helpers/wcag';
 import BlockShowcase from '../../elements/block-showcase/BlockShowcase';
 import BlockLoader from '../../elements/block-loader/BlockLoader';
+import SignUpFooter from '../../elements/sign-up/SignUpFooter';
 
 export default function Start() {
     const { token, signOut, setToken } = useContext(authContext);
@@ -36,6 +37,7 @@ export default function Start() {
     const setProgress = useSetProgress();
     const navigateState = useNavigateState();
 
+    const { target } = useStateParams<{ target?: string }>();
     const [state, setState] = useState<string>('start');
     const [timer, setTimer] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -68,7 +70,7 @@ export default function Start() {
     const authForm = useFormBuilder(
         {
             email: '',
-            target: 'fundRequest',
+            target: target || 'fundRequest',
             privacy: false,
         },
         async (values) => {
@@ -183,6 +185,8 @@ export default function Start() {
         }
 
         if (reset) {
+            setAuthEmailConfirmationSent(false);
+            setAuthEmailRestoreSent(false);
             setState('start');
         }
 
@@ -209,22 +213,23 @@ export default function Start() {
                         <label className="form-label" htmlFor="email">
                             <strong>{translate('popup_auth.input.mail')}</strong>
                         </label>
-                        <UIControlText
-                            type={'email'}
-                            value={authForm.values.email}
-                            onChange={(e) => authForm.update({ email: e.target.value })}
-                            validationMessages={{
-                                typeMismatch: translate('signup.items.errors.email.type_mismatch'),
-                                valueMissing: translate('signup.items.errors.email.value_missing'),
-                            }}
-                            id={'email'}
-                            name={'email'}
-                            tabIndex={1}
-                            autoFocus={true}
-                            required={true}
-                            dataDusk={'authEmailFormEmail'}
-                        />
-                        <FormError error={authForm.errors.email} />
+                        <div className="flex flex-vertical flex-gap">
+                            <div>
+                                <UIControlText
+                                    value={authForm.values.email}
+                                    onChange={(e) => authForm.update({ email: e.target.value })}
+                                    id={'email'}
+                                    name={'email'}
+                                    tabIndex={1}
+                                    autoFocus={true}
+                                    dataDusk={'authEmailFormEmail'}
+                                />
+                                <FormError error={authForm.errors.email} />
+                            </div>
+                            <div className="form-value-hint">
+                                Vul een geldig e-mailadres in, bijvoorbeeld <strong>naam@voorbeeld.com</strong>
+                            </div>
+                        </div>
                     </div>
                     <div className="form-group col col-lg-3">
                         <label className="form-label hide-sm" htmlFor="submit">
@@ -247,7 +252,7 @@ export default function Start() {
                         <div className="col col-lg-12">
                             <br className="hidden-lg" />
                             <label
-                                className="sign_up-pane-text sign_up-pane-text-sm flex"
+                                className="sign_up-pane-text sign_up-pane-text-sm sign_up-privacy"
                                 htmlFor="privacy"
                                 tabIndex={2}
                                 onKeyDown={(e) => {
@@ -256,6 +261,7 @@ export default function Start() {
                                 }}>
                                 <input
                                     type="checkbox"
+                                    className={'sign_up-privacy-checkbox'}
                                     checked={authForm.values.privacy}
                                     onChange={(e) => {
                                         authForm.update({ privacy: e.target.checked });
@@ -467,22 +473,24 @@ export default function Start() {
                                     <h1 className="block-title">Account herstellen</h1>
                                     {!authEmailRestoreSent && !authEmailConfirmationSent && (
                                         <div className="sign_up-pane">
-                                            <div className="sign_up-pane-body sign_up-pane-body-padless-bottom">
+                                            <div className="sign_up-pane-body">
                                                 <div className="sign_up-options">
                                                     {appConfigs.digid && digidOption('DigiD', 'Open DigiD inlogscherm')}
                                                 </div>
                                             </div>
-                                            <div className="sign_up-pane-footer">
-                                                <div
-                                                    role={'button'}
-                                                    tabIndex={0}
-                                                    onKeyDown={clickOnKeyEnter}
-                                                    className="button button-text button-text-padless"
-                                                    onClick={() => setState('start')}>
-                                                    <em className="mdi mdi-chevron-left icon-lefts" />
-                                                    Terug naar inloggen
-                                                </div>
-                                            </div>
+                                            <SignUpFooter
+                                                startActions={
+                                                    <div
+                                                        role={'button'}
+                                                        tabIndex={0}
+                                                        onKeyDown={clickOnKeyEnter}
+                                                        className="button button-text button-text-padless"
+                                                        onClick={() => setState('start')}>
+                                                        <em className="mdi mdi-chevron-left icon-lefts" />
+                                                        Terug naar inloggen
+                                                    </div>
+                                                }
+                                            />
                                         </div>
                                     )}
                                 </div>
@@ -502,20 +510,20 @@ export default function Start() {
 
                                     {!authEmailRestoreSent && !authEmailConfirmationSent && (
                                         <div className="sign_up-pane">
-                                            <div className="sign_up-pane-body sign_up-pane-body-padless-bottom">
-                                                {inlineEmailForm()}
-                                            </div>
-                                            <div className="sign_up-pane-footer">
-                                                <div
-                                                    role={'button'}
-                                                    tabIndex={4}
-                                                    onKeyDown={clickOnKeyEnter}
-                                                    className="button button-text button-text-padless"
-                                                    onClick={() => setState('start')}>
-                                                    <em className="mdi mdi-chevron-left icon-lefts" />
-                                                    Terug
-                                                </div>
-                                            </div>
+                                            <div className="sign_up-pane-body">{inlineEmailForm()}</div>
+                                            <SignUpFooter
+                                                startActions={
+                                                    <div
+                                                        role={'button'}
+                                                        tabIndex={4}
+                                                        onKeyDown={clickOnKeyEnter}
+                                                        className="button button-text button-text-padless"
+                                                        onClick={() => setState('start')}>
+                                                        <em className="mdi mdi-chevron-left icon-lefts" />
+                                                        Terug
+                                                    </div>
+                                                }
+                                            />
                                         </div>
                                     )}
 
@@ -590,7 +598,7 @@ export default function Start() {
                                 <div className="block-wrapper">
                                     <h1 className="block-title">Inloggen</h1>
                                     <div className="sign_up-pane">
-                                        <div className="sign_up-pane-body sign_up-pane-body-padless-bottom">
+                                        <div className="sign_up-pane-body">
                                             <div className="sign_up-pane-auth">
                                                 <div className="sign_up-pane-auth-content">
                                                     <div className="sign_up-pane-heading sign_up-pane-heading-lg">
@@ -622,17 +630,19 @@ export default function Start() {
                                                 </div>
                                             </div>
                                         </div>
-                                        <div className="sign_up-pane-footer">
-                                            <div
-                                                role={'button'}
-                                                tabIndex={0}
-                                                onKeyDown={clickOnKeyEnter}
-                                                className="button button-text button-text-padless"
-                                                onClick={() => setState('start')}>
-                                                <em className="mdi mdi-chevron-left icon-lefts" />
-                                                Terug
-                                            </div>
-                                        </div>
+                                        <SignUpFooter
+                                            startActions={
+                                                <div
+                                                    role={'button'}
+                                                    tabIndex={0}
+                                                    onKeyDown={clickOnKeyEnter}
+                                                    className="button button-text button-text-padless"
+                                                    onClick={() => setState('start')}>
+                                                    <em className="mdi mdi-chevron-left icon-lefts" />
+                                                    Terug
+                                                </div>
+                                            }
+                                        />
                                     </div>
                                 </div>
                             </div>

@@ -28,6 +28,7 @@ import ModalFundTopUp from '../../modals/ModalFundTopUp';
 import useTranslate from '../../../hooks/useTranslate';
 import useAssetUrl from '../../../hooks/useAssetUrl';
 import TableEmptyValue from '../../elements/table-empty-value/TableEmptyValue';
+import FundStateLabels from '../../elements/resource-states/FundStateLabels';
 
 export default function OrganizationFunds() {
     const translate = useTranslate();
@@ -44,8 +45,9 @@ export default function OrganizationFunds() {
 
     const [loading, setLoading] = useState(false);
     const [paginatorKey] = useState<string>('organization_funds');
-    const [funds, setFunds] = useState<PaginationData<Fund>>(null);
     const [implementations, setImplementations] = useState<Array<Partial<Implementation>>>(null);
+    const [funds, setFunds] =
+        useState<PaginationData<Fund, { unarchived_funds_total: number; archived_funds_total: number }>>(null);
 
     const [topUpInProgress, setTopUpInProgress] = useState(false);
 
@@ -55,12 +57,6 @@ export default function OrganizationFunds() {
         { key: 'paused', name: translate(`components.organization_funds.states.paused`) },
         { key: 'closed', name: translate(`components.organization_funds.states.closed`) },
     ]);
-
-    const [stateLabels] = useState({
-        active: 'label-success',
-        paused: 'label-warning',
-        closed: 'label-default',
-    });
 
     const [{ funds_type }, setQueryParams] = useQueryParams(
         { funds_type: withDefault(StringParam, 'active') },
@@ -147,7 +143,7 @@ export default function OrganizationFunds() {
     );
 
     const restoreFund = useCallback(
-        (e, fund: Fund) => {
+        (e: React.MouseEvent, fund: Fund) => {
             e?.stopPropagation();
             e?.preventDefault();
 
@@ -431,21 +427,7 @@ export default function OrganizationFunds() {
                                             )}
 
                                             <td>
-                                                {!fund.archived && stateLabels[fund.state] ? (
-                                                    <span className={`label ${stateLabels[fund.state] || ''}`}>
-                                                        {translate(
-                                                            `components.organization_funds.states.${fund.state}`,
-                                                        )}
-                                                    </span>
-                                                ) : (
-                                                    <TableEmptyValue />
-                                                )}
-
-                                                {fund.archived && (
-                                                    <span className="label label-default">
-                                                        {translate('components.organization_funds.states.archived')}
-                                                    </span>
-                                                )}
+                                                <FundStateLabels fund={fund} />
                                             </td>
 
                                             <td className="td-narrow text-right">

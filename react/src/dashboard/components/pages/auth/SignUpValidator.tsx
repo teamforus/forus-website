@@ -13,6 +13,7 @@ import SignUpStepProfileCreate from './elements/sign-up-steps/SignUpStepProfileC
 import SignUpStepOrganizationSelect from './elements/sign-up-steps/SignUpStepOrganizationSelect';
 import SignUpStepOrganizationAdd from './elements/sign-up-steps/SignUpStepOrganizationAdd';
 import useTranslate from '../../../hooks/useTranslate';
+import SignUpFooter from '../../../../webshop/components/elements/sign-up/SignUpFooter';
 
 export default function SignUpValidator() {
     const assetUrl = useAssetUrl();
@@ -218,22 +219,28 @@ export default function SignUpValidator() {
                                     {translate('sign_up_validator.header.subtitle_step_2')}
                                 </div>
                             </div>
-                            <div className="sign_up-pane-footer">
-                                <div className="row">
-                                    <div className="col col-lg-6 text-left">
-                                        <div className="button button-text button-text-padless" onClick={back}>
-                                            <em className="mdi mdi-chevron-left icon-left" />
-                                            {translate('sign_up_validator.buttons.back')}
-                                        </div>
-                                    </div>
-                                    <div className="col col-lg-6 text-right">
-                                        <div className="button button-text button-text-padless" onClick={next}>
-                                            {translate('sign_up_validator.buttons.next')}
-                                            <em className="mdi mdi-chevron-right icon-right"> </em>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            <SignUpFooter
+                                startActions={
+                                    <button
+                                        className="button button-text button-text-padless"
+                                        type={'button'}
+                                        onClick={back}
+                                        tabIndex={0}>
+                                        <em className="mdi mdi-chevron-left icon-left" />
+                                        {translate('sign_up_validator.buttons.back')}
+                                    </button>
+                                }
+                                endActions={
+                                    <button
+                                        className="button button-text button-text-padless"
+                                        type={'button'}
+                                        onClick={next}
+                                        tabIndex={0}>
+                                        {translate('sign_up_validator.buttons.next')}
+                                        <em className="mdi mdi-chevron-right icon-right" />
+                                    </button>
+                                }
+                            />
                         </div>
                     </Fragment>
                 )}

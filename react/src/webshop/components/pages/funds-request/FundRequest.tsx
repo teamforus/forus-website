@@ -27,7 +27,7 @@ import FundRequestStepEmailSetup from './elements/steps/FundRequestStepEmailSetu
 import FundRequestStepCriteriaOverview from './elements/steps/FundRequestStepCriteriaOverview';
 import FundRequestProgress from './elements/FundRequestProgress';
 import FundRequestStepDone from './elements/steps/FundRequestStepDone';
-import FundRequestStepOverview from './elements/steps/FundRequestStepOverview';
+import FundRequestValuesOverview from './elements/steps/FundRequestValuesOverview';
 import FundRequestStepContactInformation from './elements/steps/FundRequestStepContactInformation';
 import FundRequestStepConfirmCriteria from './elements/steps/FundRequestStepConfirmCriteria';
 import FundRequestBsnWarning from './elements/FundRequestBsnWarning';
@@ -40,6 +40,7 @@ import FundRequestStepCriteria from './elements/steps/FundRequestStepCriteria';
 import useShouldRequestRecord from './hooks/useShouldRequestRecord';
 import FundCriterion from '../../../../dashboard/props/models/FundCriterion';
 import { orderBy, sortBy } from 'lodash';
+import FundRequestHelpBlock from './elements/FundRequestHelpBlock';
 
 export type LocalCriterion = FundCriterion & {
     input_value?: string;
@@ -316,19 +317,26 @@ export default function FundRequest() {
     }, [digIdService, fund?.id, navigateState, pushDanger]);
 
     const transformInvalidCriteria = useCallback(
-        (item: FundCriterion): LocalCriterion => ({
-            ...item,
-            title_default: criterionTitle(item),
-            record_type_options: item.record_type?.options.reduce(
-                (list, option) => ({ ...list, [option.value]: option }),
-                {},
-            ),
-            files: [],
-            label: fundService.getCriterionLabelValue(item.record_type, item.value, translate),
-            input_value: fundService.getCriterionControlDefaultValue(item.record_type, item.operator),
-            control_type: fundService.getCriterionControlType(item.record_type, item.operator),
-        }),
-        [criterionTitle, fundService, translate],
+        function (item: FundCriterion): LocalCriterion {
+            const control_type = fundService.getCriterionControlType(item.record_type, item.operator);
+
+            return {
+                ...item,
+                title_default: criterionTitle(item),
+                record_type_options: item.record_type?.options.reduce(
+                    (list, option) => ({ ...list, [option.value]: option }),
+                    {},
+                ),
+                files: [],
+                label:
+                    control_type === 'ui_control_checkbox'
+                        ? item.label || 'Ik verklaar aan de bovenstaande voorwaarden te voldoen'
+                        : '',
+                input_value: fundService.getCriterionControlDefaultValue(item.record_type, item.operator),
+                control_type,
+            };
+        },
+        [criterionTitle, fundService],
     );
 
     const buildSteps = useCallback(() => {
@@ -583,8 +591,8 @@ export default function FundRequest() {
         }
     }, [autoSubmit, autoSubmitted, step, steps, submitConfirmCriteria]);
 
-    if (!fund || !vouchers || !fundRequests) {
-        return null;
+    if (!fund || !vouchers || !fundRequests || (steps[step] == 'confirm_criteria' && autoSubmit)) {
+        return <BlockShowcase wrapper={true} />;
     }
 
     return (
@@ -611,9 +619,7 @@ export default function FundRequest() {
                                 step={step}
                                 onPrevStep={prevStep}
                                 onNextStep={nextStep}
-                                pendingCriteria={criteriaSteps.reduce((list, step) => {
-                                    return [...list, ...step.criteria];
-                                }, [])}
+                                criteriaSteps={criteriaSteps}
                                 progress={
                                     <FundRequestProgress step={step} steps={steps} criteriaSteps={criteriaStepKeys} />
                                 }
@@ -694,9 +700,10 @@ export default function FundRequest() {
                         )}
 
                         {steps[step] == 'application_overview' && (
-                            <FundRequestStepOverview
-                                pendingCriteria={pendingCriteria.filter((criteria) => shouldRequestRecord(criteria))}
+                            <FundRequestValuesOverview
+                                fund={fund}
                                 onSubmitRequest={submitRequest}
+                                criteriaSteps={criteriaSteps}
                                 contactInformation={contactInformation}
                                 emailSetupShow={emailSetupShow}
                                 onPrevStep={prevStep}
@@ -715,6 +722,10 @@ export default function FundRequest() {
                                     <FundRequestProgress step={step} steps={steps} criteriaSteps={criteriaStepKeys} />
                                 }
                             />
+                        )}
+
+                        {!['application_overview', 'done'].includes(steps[step]) && (
+                            <FundRequestHelpBlock fund={fund} />
                         )}
                     </div>
                 </div>

@@ -179,6 +179,8 @@ export const TopNavbar = ({ hideOnScroll = false, className = '' }: { hideOnScro
                                     className={`button subnav-search-button hide-sm ${showSearchBox ? 'active' : ''}`}
                                     onClick={(e) => toggleSearchBox(e)}
                                     role="button"
+                                    tabIndex={0}
+                                    onKeyDown={clickOnKeyEnter}
                                     aria-label="Zoeken">
                                     <em className="mdi mdi-magnify" />
                                 </div>
@@ -470,7 +472,7 @@ export const TopNavbar = ({ hideOnScroll = false, className = '' }: { hideOnScro
                         )}
                         <button
                             className="button button-primary button-xs show-sm"
-                            onClick={() => startFundRequest()}
+                            onClick={() => startFundRequest({ reset: 1 })}
                             role="button"
                             aria-label={translate('topnavbar.buttons.login')}
                             id="login_mobile">

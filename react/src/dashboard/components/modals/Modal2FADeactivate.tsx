@@ -83,12 +83,12 @@ export default function Modal2FADeactivate({
     }, [auth2FA.provider_type.key, auth2FA.uuid, confirmationCode, deactivating, identity2FAService, pushDanger]);
 
     const cancel = useCallback(() => {
-        onCancel ? onCancel() : null;
+        onCancel?.();
         modal.close();
     }, [modal, onCancel]);
 
     const done = useCallback(() => {
-        onReady ? onReady() : null;
+        onReady?.();
         modal.close();
     }, [modal, onReady]);
 
@@ -172,7 +172,7 @@ export default function Modal2FADeactivate({
                                     <button
                                         className="button button-text button-text-primary button-sm"
                                         type="button"
-                                        onClick={resendCode}
+                                        onClick={() => resendCode()}
                                         disabled={timer?.time > 0}>
                                         <div
                                             className={`mdi mdi-refresh icon-start ${sendingCode ? 'mdi-spin' : ''}`}

@@ -42,6 +42,7 @@ import Employee from '../../../props/models/Employee';
 import Media from '../../../props/models/Media';
 import RecordType from '../../../props/models/RecordType';
 import FaqEditor from '../../elements/faq-editor-funds/FaqEditor';
+import FormGroupInfo from '../../elements/forms/elements/FormGroupInfo';
 
 export default function OrganizationsFundsEdit() {
     const { fundId } = useParams();
@@ -96,6 +97,12 @@ export default function OrganizationsFundsEdit() {
         { value: 'replace', name: 'Standaard content overschrijven' },
         { value: 'before', name: 'Voor de standaard content tonen' },
         { value: 'after', name: 'Na de standaard content tonen' },
+    ]);
+
+    const [shownCriteriaLabelDetails] = useState([
+        { value: 'optional', name: 'Optioneel' },
+        { value: 'required', name: 'Verplicht' },
+        { value: 'both', name: 'Optioneel en verplicht' },
     ]);
 
     const [applicationMethods] = useState([
@@ -191,6 +198,7 @@ export default function OrganizationsFundsEdit() {
         outcome_type?: 'voucher' | 'payout';
         voucher_amount_visible?: boolean;
         provider_products_required?: boolean;
+        criteria_label_requirement_show?: string;
     }>(
         {
             description_position: descriptionPositions[0]?.value,
@@ -203,6 +211,7 @@ export default function OrganizationsFundsEdit() {
             application_method: 'application_form',
             request_btn_text: applicationMethodsByKey['application_form']?.default_button_text,
             state: fundStates[0].value,
+            criteria_label_requirement_show: 'both',
 
             // contact information
             email_required: true,
@@ -234,7 +243,7 @@ export default function OrganizationsFundsEdit() {
                     } else {
                         return form.setIsLocked(false);
                     }
-                } catch (e) {
+                } catch {
                     return form.setIsLocked(false);
                 }
             }
@@ -372,7 +381,7 @@ export default function OrganizationsFundsEdit() {
     }, [setProgress, tagService]);
 
     const updateFormFormulaProduct = useCallback(
-        (formula_id, field_name, field_value) => {
+        (formula_id: number, field_name: string, field_value: string | number) => {
             const formulaProducts = form.values.formula_products;
             formulaProducts[formula_id] = {
                 ...formulaProducts[formula_id],
@@ -400,7 +409,9 @@ export default function OrganizationsFundsEdit() {
     }, [fund?.allow_fund_requests, fund?.allow_prevalidations]);
 
     useEffect(() => {
-        fundId && fetchTags();
+        if (fundId) {
+            fetchTags();
+        }
     }, [fetchTags, fundId]);
 
     useEffect(() => {
@@ -797,6 +808,33 @@ export default function OrganizationsFundsEdit() {
                                         <FormError error={form.errors?.request_btn_text} />
                                     </div>
                                 )}
+
+                                <div className="form-group form-group-inline">
+                                    <div className="form-label form-label-required">
+                                        {translate('funds_edit.labels.criteria_label_requirement_show')}
+                                    </div>
+                                    <div className="form-offset">
+                                        <FormGroupInfo
+                                            info={
+                                                <Fragment>
+                                                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsa
+                                                    deleniti incidunt reiciendis perferendis minima, nisi deserunt
+                                                    magnam maxime voluptatibus!
+                                                </Fragment>
+                                            }>
+                                            <SelectControl
+                                                propKey={'value'}
+                                                allowSearch={false}
+                                                value={form.values.criteria_label_requirement_show}
+                                                options={shownCriteriaLabelDetails}
+                                                disabled={!hasPermission(activeOrganization, 'manage_funds')}
+                                                onChange={(criteria_label_requirement_show: string) => {
+                                                    form.update({ criteria_label_requirement_show });
+                                                }}
+                                            />
+                                        </FormGroupInfo>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1158,17 +1196,30 @@ export default function OrganizationsFundsEdit() {
                                     <div className="form-label">
                                         {translate('funds_edit.labels.notification_amount')}
                                     </div>
-                                    <input
-                                        className="form-control"
-                                        type="number"
-                                        value={form.values.notification_amount || ''}
-                                        onChange={(e) => {
-                                            form.update({ notification_amount: e.target.value });
-                                        }}
-                                        disabled={!hasPermission(activeOrganization, 'manage_funds')}
-                                        placeholder={translate('funds_edit.labels.notification_amount')}
-                                    />
-                                    <FormError error={form.errors?.notification_amount} />
+                                    <div className="form-offset">
+                                        <FormGroupInfo
+                                            info={
+                                                <Fragment>
+                                                    Handig! Stel een minimum bedrag in voor het saldo van de regeling.
+                                                    Er wordt automatisch een e-mail verstuurd als het saldo voor de
+                                                    regeling lager is dan deze grens. De e-mail wordt verstuurd naar
+                                                    gebruikers met de rollen beheerder en financiën.
+                                                </Fragment>
+                                            }>
+                                            <input
+                                                className="form-control"
+                                                type="number"
+                                                value={form.values.notification_amount || ''}
+                                                onChange={(e) => {
+                                                    form.update({ notification_amount: e.target.value });
+                                                }}
+                                                disabled={!hasPermission(activeOrganization, 'manage_funds')}
+                                                placeholder={translate('funds_edit.labels.notification_amount')}
+                                            />
+                                        </FormGroupInfo>
+
+                                        <FormError error={form.errors?.notification_amount} />
+                                    </div>
                                 </div>
                             </div>
                         </div>

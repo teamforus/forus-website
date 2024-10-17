@@ -76,7 +76,7 @@ export const LayoutWebsite = ({ children }: { children: React.ReactElement }) =>
             )}
 
             <Modals />
-            <PushNotifications group={'default'} />
+            <PushNotifications />
             <UserDropdown />
             <CookiesPopup />
         </div>

@@ -22,7 +22,12 @@ type SummernoteObject = {
 
 type Summernote = SummernoteConstructor & SummernoteObject;
 
-const $ = typeof jQuery !== 'undefined' ? (jQuery as JQueryStatic & { summernote: Summernote }) : null;
+const $ =
+    typeof jQuery !== 'undefined'
+        ? (jQuery as JQueryStatic & {
+              summernote: Summernote;
+          })
+        : null;
 
 export default function MarkdownEditor({
     value = '',
@@ -198,15 +203,15 @@ export default function MarkdownEditor({
     );
 
     const CmsButton = useCallback(
-        (type = 'customLink', icon = 'link') => {
+        (type: 'mailPreview' | 'imageLink' | 'customLink' | 'youtubeLink' = 'customLink', icon = 'link') => {
             return function (context: { options: { icons: { [key: string]: string } }; invoke: CallableFunction }) {
                 const ui = $.summernote.ui;
                 const btnIcon = context.options.icons[icon];
 
-                const showLinkDialog = function (linkInfo: {
-                    text?: string;
-                    url?: string;
-                }): Promise<{ alt?: string; url?: string }> {
+                const showLinkDialog = function (
+                    type: 'imageLink' | 'customLink' | 'youtubeLink',
+                    linkInfo: { text?: string; url?: string },
+                ): Promise<{ alt?: string; url?: string }> {
                     return new Promise((resolve) => {
                         const { text, url } = linkInfo;
 
@@ -230,7 +235,7 @@ export default function MarkdownEditor({
                             const linkInfo = context.invoke('editor.getLinkInfo');
                             const { url, text } = linkInfo;
 
-                            showLinkDialog({ url, text }).then(
+                            showLinkDialog(type, { url, text }).then(
                                 (data) => {
                                     context.invoke('editor.restoreRange');
                                     context.invoke('editor.createLink', { ...linkInfo, ...data });
@@ -240,7 +245,7 @@ export default function MarkdownEditor({
                         }
 
                         if (type === 'imageLink' || type === 'youtubeLink') {
-                            showLinkDialog({}).then(
+                            showLinkDialog(type, {}).then(
                                 (data) => {
                                     const { alt, url } = data;
 
@@ -345,7 +350,10 @@ export default function MarkdownEditor({
             toolbars.push(['cms', ['cmsLink', 'unlink', ...(extendedOptions ? ['cmsMedia', 'cmsLinkYoutube'] : [])]]);
             toolbars.push(['code', localStorage.markdownCode == 'true' ? ['cmsCodeMarkdown'] : '']);
             toolbars.push(['view', ['fullscreen', ...(allowPreview ? ['cmsMailView'] : [])]]);
-            buttons?.length && toolbars.push(['buttons', buttons.map((button) => button.key)]);
+
+            if (buttons?.length) {
+                toolbars.push(['buttons', buttons.map((button) => button.key)]);
+            }
 
             return toolbars.filter((group) => group);
         },
@@ -354,7 +362,13 @@ export default function MarkdownEditor({
 
     const initTheEditor = useCallback(() => {
         const _buttons = buttons || [];
-        const icons = _buttons.reduce((icons, btn) => ({ ...icons, [btn.iconKey || btn.key]: btn.icon }), {});
+        const icons = _buttons.reduce(
+            (icons, btn) => ({
+                ...icons,
+                [btn.iconKey || btn.key]: btn.icon,
+            }),
+            {},
+        );
 
         if (initialized) {
             return;
@@ -418,7 +432,7 @@ export default function MarkdownEditor({
 
                     onChangeRef.current(value);
                     markdownValueRef.current = value;
-                    onUpdatedRaw && onUpdatedRaw({ data: { content: value, content_html } });
+                    onUpdatedRaw?.({ data: { content: value, content_html } });
                 },
                 onPaste: (e: Event & { originalEvent: ClipboardEvent }) => {
                     e.preventDefault();
